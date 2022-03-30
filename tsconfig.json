@@ -1,0 +1,54 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "composite": true,
+    "incremental": true,
+    "esModuleInterop": true,
+    "module": "es2020",
+    "strict": true,
+    "alwaysStrict": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": false,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "useUnknownInCatchVariables": false,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "downlevelIteration": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "preserve",
+    "module": "commonjs",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@/public/*": [
+        "public/*"
+      ]
+    },
+    "declaration": true
+  },
+  "include": [
+    "next.d.ts",
+    "next-env.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.json",
+    "src/**/*.txt"
+  ],
+  "exclude": ["node_modules"]
+}
