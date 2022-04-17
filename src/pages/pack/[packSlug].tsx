@@ -16,6 +16,7 @@ import { PackPosterWrapper } from '@/components/PackWrapper'
 const QUERY_PACK = gql`
   query ($slug: String!) {
     pack(slug: $slug) {
+      id
       displayName
       price
       cardsPerPack
@@ -80,6 +81,7 @@ export default function Pack() {
               <Column gap={32}>
                 <PackBreakdown
                   name={pack.displayName}
+                  id={pack.id}
                   price={pack.price}
                   cardsPerPack={pack.cardsPerPack}
                   seasons={seasons}

@@ -1,6 +1,6 @@
 import 'moment/locale/fr'
 
-import { useMemo } from 'react'
+import { useMemo, useCallback } from 'react'
 import moment from 'moment'
 
 import Column from '@/components/Column'
@@ -8,9 +8,11 @@ import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import Card from '@/components/Card'
 import Placeholder from '@/components/Placeholder'
+import { useCreatePaymentIntent } from '@/state/stripe/hooks'
 
 interface PackBreakdownProps {
   name: string
+  id: string
   seasons: number[]
   cardsPerPack: number
   price: number
@@ -20,6 +22,7 @@ interface PackBreakdownProps {
 
 export default function PackBreakdown({
   name,
+  id,
   seasons,
   cardsPerPack,
   price,
@@ -37,6 +40,14 @@ export default function PackBreakdown({
     return releaseMoment.format('dddd D MMMM [à] h[h]')
   }, [released, releaseDate])
 
+  const createPaymentIntent = useCreatePaymentIntent()
+
+  const purchasePack = useCallback(async () => {
+    createPaymentIntent(id)
+      .catch((err) => console.error(err))
+      .then((data) => console.log(data))
+  }, [id])
+
   return (
     <Card width="350px">
       <Column gap={32}>
@@ -53,7 +64,9 @@ export default function PackBreakdown({
           </TYPE.body>
         </Column>
         {released && (!availableSupply || availableSupply > 0) ? (
-          <PrimaryButton large>Acheter - {price.toFixed(2)}€</PrimaryButton>
+          <PrimaryButton onClick={purchasePack} large>
+            Acheter - {(price / 100).toFixed(2)}€
+          </PrimaryButton>
         ) : (
           <Placeholder>{released ? 'En rupture de stock' : `En vente ${releaseDateFormatted}`}</Placeholder>
         )}
