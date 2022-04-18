@@ -4,6 +4,7 @@ export enum ApplicationModal {
   SETTINGS,
   AUTH,
   DECK_INSERTION,
+  PACK_PURCHASE,
 }
 
 export const setOpenModal = createAction<{ modal: ApplicationModal | null }>('application/setOpenModal')

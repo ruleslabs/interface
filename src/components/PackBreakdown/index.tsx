@@ -1,6 +1,6 @@
 import 'moment/locale/fr'
 
-import { useMemo, useCallback } from 'react'
+import { useMemo, useCallback, useState } from 'react'
 import moment from 'moment'
 
 import Column from '@/components/Column'
@@ -9,6 +9,8 @@ import { PrimaryButton } from '@/components/Button'
 import Card from '@/components/Card'
 import Placeholder from '@/components/Placeholder'
 import { useCreatePaymentIntent } from '@/state/stripe/hooks'
+import PackPurchaseModal from '@/components/PackPurchaseModal'
+import { usePackPurchaseModalToggle } from '@/state/application/hooks'
 
 interface PackBreakdownProps {
   name: string
@@ -29,6 +31,9 @@ export default function PackBreakdown({
   releaseDate,
   availableSupply,
 }: PackBreakdownProps) {
+  const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null)
+  const togglePackPurchaseModal = usePackPurchaseModalToggle()
+
   const released = releaseDate ? +releaseDate - +new Date() <= 0 : true
 
   const releaseDateFormatted = useMemo(() => {
@@ -43,9 +48,12 @@ export default function PackBreakdown({
   const createPaymentIntent = useCreatePaymentIntent()
 
   const purchasePack = useCallback(async () => {
+    setStripeClientSecret(null)
+    togglePackPurchaseModal()
+
     createPaymentIntent(id)
       .catch((err) => console.error(err))
-      .then((data) => console.log(data))
+      .then((data) => setStripeClientSecret(data?.clientSecret ?? null))
   }, [id])
 
   return (
@@ -71,6 +79,7 @@ export default function PackBreakdown({
           <Placeholder>{released ? 'En rupture de stock' : `En vente ${releaseDateFormatted}`}</Placeholder>
         )}
       </Column>
+      <PackPurchaseModal stripeClientSecret={stripeClientSecret} amount={price} />
     </Card>
   )
 }

@@ -13,7 +13,6 @@ export default class RulesAPI {
         authorization: token ? `Bearer ${token}` : '',
         'Content-Type': 'application/json',
       },
-      mode: 'cors',
     })
     if (response.status !== 200) throw response
 

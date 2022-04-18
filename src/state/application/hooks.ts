@@ -40,3 +40,7 @@ export function useAuthModalToggle(): () => void {
 export function useDeckInsertionModalToggle(): () => void {
   return useToggleModal(ApplicationModal.DECK_INSERTION)
 }
+
+export function usePackPurchaseModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.PACK_PURCHASE)
+}
