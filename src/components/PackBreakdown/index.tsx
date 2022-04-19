@@ -32,6 +32,7 @@ export default function PackBreakdown({
   availableSupply,
 }: PackBreakdownProps) {
   const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null)
+  const [paymentIntentError, setPaymentIntentError] = useState(false)
   const togglePackPurchaseModal = usePackPurchaseModalToggle()
 
   const released = releaseDate ? +releaseDate - +new Date() <= 0 : true
@@ -51,10 +52,13 @@ export default function PackBreakdown({
     setStripeClientSecret(null)
     togglePackPurchaseModal()
 
-    createPaymentIntent(id)
-      .catch((err) => console.error(err))
+    createPaymentIntent(id, 1)
+      .catch((err) => {
+        setPaymentIntentError(true)
+        console.error(err)
+      })
       .then((data) => setStripeClientSecret(data?.clientSecret ?? null))
-  }, [id])
+  }, [id, createPaymentIntent, setPaymentIntentError, setStripeClientSecret])
 
   return (
     <Card width="350px">
@@ -79,7 +83,12 @@ export default function PackBreakdown({
           <Placeholder>{released ? 'En rupture de stock' : `En vente ${releaseDateFormatted}`}</Placeholder>
         )}
       </Column>
-      <PackPurchaseModal stripeClientSecret={stripeClientSecret} amount={price} />
+      <PackPurchaseModal
+        stripeClientSecret={stripeClientSecret}
+        paymentIntentError={paymentIntentError}
+        price={price}
+        quantity={1}
+      />
     </Card>
   )
 }

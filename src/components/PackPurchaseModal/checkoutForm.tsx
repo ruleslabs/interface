@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js'
 
@@ -39,7 +39,7 @@ const StripeInputWrapper = styled(RowCenter)`
   }
 
   & svg {
-    max-height: 20px;
+    max-height: 19px;
     width: 32px;
   }
 `
@@ -53,10 +53,18 @@ const StripeLabel = styled.label`
 
 interface CheckoutFormProps {
   stripeClientSecret: string | null
+  paymentIntentError: boolean
   amount: number
 }
 
-export default function CheckoutForm({ stripeClientSecret, amount }: CheckoutFormProps) {
+export default function CheckoutForm({ stripeClientSecret, paymentIntentError, amount }: CheckoutFormProps) {
+  const [loading, setLoading] = useState(!stripeClientSecret)
+  const [stripeElementsReady, setStripeElementsReady] = useState(false)
+
+  useEffect(() => {
+    setLoading(!stripeClientSecret || !stripeElementsReady)
+  }, [stripeClientSecret, stripeElementsReady])
+
   // stripe
   const stripe = useStripe()
   const elements = useElements()
@@ -87,29 +95,37 @@ export default function CheckoutForm({ stripeClientSecret, amount }: CheckoutFor
     []
   )
 
+  const handleCardNumberReady = useCallback(() => setStripeElementsReady(true), [setStripeElementsReady])
+
   const handleCheckout = useCallback(
     (event) => {
       event.preventDefault()
-      if (!stripeClientSecret) return
+      if (!stripeClientSecret || !stripe || !elements) return
 
-      const cardElement = elements.getElement(CardElement)
+      setLoading(true)
 
-      stripe.createToken(cardElement)
+      const cardNumberElement = elements.getElement(CardNumberElement)
+
+      stripe.createToken(cardNumberElement)
       stripe.createPaymentMethod({
         type: 'card',
-        card: cardElement,
+        card: cardNumberElement,
       })
-      stripe.confirmCardPayment(stripeClientSecret, {
-        payment_method: {
-          card: cardElement,
-        },
-      })
+      stripe
+        .confirmCardPayment(stripeClientSecret, {
+          payment_method: {
+            card: cardNumberElement,
+          },
+        })
+        .then((result) => {
+          setLoading(false)
+          if (result.error) console.error(result.error)
+        })
     },
-    [stripe, elements, stripeClientSecret]
+    [stripe, elements, stripeClientSecret, setLoading]
   )
 
   const handleCardNumberInput = useCallback((event) => {
-    console.log(event.brand)
     setCardBrand(event.brand ?? 'unknown')
   }, [])
 
@@ -120,7 +136,7 @@ export default function CheckoutForm({ stripeClientSecret, amount }: CheckoutFor
           <StripeLabel>
             <TYPE.body>Card Number</TYPE.body>
             <StripeInputWrapper>
-              <CardNumberElement width="100%" onChange={handleCardNumberInput} options={options} />
+              <CardNumberElement options={options} onChange={handleCardNumberInput} onReady={handleCardNumberReady} />
               {(cardBrandToIcon[cardBrand] ?? UnkownCardIcon)()}
             </StripeInputWrapper>
           </StripeLabel>
@@ -139,8 +155,12 @@ export default function CheckoutForm({ stripeClientSecret, amount }: CheckoutFor
             </StripeLabel>
           </Row>
         </Column>
-        <PrimaryButton onClick={handleCheckout} large>
-          Acheter - {(amount / 100).toFixed(2)}€
+        <PrimaryButton onClick={handleCheckout} disabled={loading} large>
+          {paymentIntentError
+            ? 'An error has occured'
+            : loading
+            ? 'Loading...'
+            : `Acheter - ${(amount / 100).toFixed(2)}€`}
         </PrimaryButton>
       </Column>
     </form>

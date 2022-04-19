@@ -18,10 +18,17 @@ const StyledPackPurchaseModal = styled.div`
 
 interface PackPurchaseModalProps {
   stripeClientSecret: string | null
-  amount: number
+  paymentIntentError: boolean
+  price: number
+  quantity: number
 }
 
-export default function PackPurchaseModal({ stripeClientSecret, amount }: PackPurchaseModalProps) {
+export default function PackPurchaseModal({
+  stripeClientSecret,
+  paymentIntentError,
+  price,
+  quantity,
+}: PackPurchaseModalProps) {
   // stripe
   const stripePromise = useStripePromise()
 
@@ -37,7 +44,11 @@ export default function PackPurchaseModal({ stripeClientSecret, amount }: PackPu
       <StyledPackPurchaseModal>
         <TYPE.medium textAlign="center">PAY ME 🥸</TYPE.medium>
         <Elements stripe={stripePromise}>
-          <CheckoutForm stripeClientSecret={stripeClientSecret} amount={amount} />
+          <CheckoutForm
+            stripeClientSecret={stripeClientSecret}
+            paymentIntentError={paymentIntentError}
+            amount={price * quantity}
+          />
         </Elements>
       </StyledPackPurchaseModal>
     </Modal>
