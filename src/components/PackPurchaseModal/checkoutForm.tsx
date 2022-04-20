@@ -155,7 +155,7 @@ export default function CheckoutForm({ stripeClientSecret, paymentIntentError, a
             </StripeLabel>
           </Row>
         </Column>
-        <PrimaryButton onClick={handleCheckout} disabled={loading} large>
+        <PrimaryButton onClick={handleCheckout} disabled={loading || paymentIntentError} large>
           {paymentIntentError
             ? 'An error has occured'
             : loading

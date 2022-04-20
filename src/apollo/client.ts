@@ -75,5 +75,15 @@ export default function createApolloClient(initialState: NormalizedCacheObject =
     ssrMode: Boolean(ctx),
     link: createPersistedQueryLink({ sha256 }).concat(authLink.concat(errorLink.concat(httpLink))),
     cache: new InMemoryCache().restore(initialState),
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: 'no-cache',
+        errorPolicy: 'ignore',
+      },
+      query: {
+        fetchPolicy: 'no-cache',
+        errorPolicy: 'all',
+      },
+    },
   })
 }

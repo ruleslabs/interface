@@ -18,7 +18,8 @@ export function useEtherEURPrice(): number | undefined {
     () =>
       fetch('https://api.coinbase.com/v2/prices/ETH-EUR/spot')
         .then((res) => res.json())
-        .then(onFetchSuccess),
+        .then(onFetchSuccess)
+        .catch((err) => console.error(err)),
     [onFetchSuccess]
   )
 

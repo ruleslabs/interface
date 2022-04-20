@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import NextLink from 'next/link'
 
 const StyledLink = styled.a`
-  display: inline-block;
+  display: flex;
 `
 
 interface LinkProps extends React.HTMLAttributes<HTMLAnchorElement> {

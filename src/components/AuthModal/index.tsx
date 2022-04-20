@@ -114,23 +114,30 @@ export default function AuthModal() {
   const authMode = useAuthMode()
   const setAuthMode = useSetAuthMode()
 
+  // Current user
+  const queryCurrentUser = useQueryCurrentUser()
+  const onSuccessfulConnexion = useCallback(
+    async (accessToken?: string) => {
+      storeAccessToken(accessToken)
+      const currentUser = await queryCurrentUser()
+
+      if (!!currentUser) toggleAuthModal()
+      else window.location.reload()
+    },
+    [queryCurrentUser, toggleAuthModal]
+  )
+
   // google oauth
   const handleGoogleLogin = useCallback(async (googleData) => {
     if (googleData.tokenId) {
-      authGoogleMutation({ variables: { token: googleData.tokenId } }).catch((err: Error) => {
-        console.error(err)
-      })
+      authGoogleMutation({ variables: { token: googleData.tokenId } })
+        .then((res: any) => onSuccessfulConnexion(res?.data?.authGoogle?.accessToken))
+        .catch((err: Error) => {
+          console.error(err)
+          setLoading(false)
+        })
     }
   }, [])
-
-  // Current user
-  const queryCurrentUser = useQueryCurrentUser()
-  const onSuccessfulConnexion = useCallback(async () => {
-    const currentUser = await queryCurrentUser()
-
-    if (!!currentUser) toggleAuthModal()
-    else window.location.reload()
-  }, [queryCurrentUser, toggleAuthModal])
 
   // signin
   const handleSignIn = useCallback(
@@ -140,7 +147,7 @@ export default function AuthModal() {
       setLoading(true)
 
       signInMutation({ variables: { email, password } })
-        .then(() => onSuccessfulConnexion())
+        .then((res: any) => onSuccessfulConnexion(res?.data?.signIn?.accessToken))
         .catch((err: Error) => {
           console.error(err)
           setLoading(false)
@@ -164,7 +171,7 @@ export default function AuthModal() {
       signUpMutation({
         variables: { email, username, password, starknetAddress, rulesPrivateKey, rulesPrivateKeyBackup },
       })
-        .then(() => onSuccessfulConnexion())
+        .then((res: any) => onSuccessfulConnexion(res?.data?.signUp?.accessToken))
         .catch((err: Error) => {
           console.error(err)
           setLoading(false)
@@ -227,13 +234,6 @@ export default function AuthModal() {
     authGoogleMutationReset()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authMode, isOpen])
-
-  if (signInData || signUpData || authGoogleData) {
-    const accessToken =
-      signInData?.signIn?.accessToken || signUpData?.signUp?.accessToken || authGoogleData?.authGoogle?.accessToken
-
-    storeAccessToken(accessToken)
-  }
 
   const SignInForm = () => {
     return (

@@ -12,8 +12,8 @@ function InputBase({ onUserInput, ...props }: InputProps | SearchBarProps) {
   return <input onChange={handleInput} {...props} />
 }
 
-const StyledInput = styled(InputBase)<{ valid: boolean }>`
-  background: ${({ theme, valid }) => (valid ? `${theme.bg3}80` : `${theme.red}20`)};
+const StyledInput = styled(InputBase)<{ $valid: boolean }>`
+  background: ${({ theme, $valid }) => ($valid ? `${theme.bg3}80` : `${theme.red}20`)};
   border: 1px solid ${({ theme }) => theme.bg3};
   border-radius: 4px;
   box-sizing: border-box;
@@ -57,7 +57,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export default function Input({ error, onUserInput, ...props }: InputProps) {
-  return <StyledInput onUserInput={onUserInput} valid={!error} {...props} />
+  return <StyledInput onUserInput={onUserInput} $valid={!error} {...props} />
 }
 
 interface SearchBarProps extends React.InputHTMLAttributes<HTMLInputElement> {
