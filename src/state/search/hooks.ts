@@ -187,25 +187,6 @@ export function useSearchCards({ facets, dateDesc = true, search = '', skip = fa
   return cardsSearch
 }
 
-export function useSearchPacks(): Search {
-  const [packsSearch, setPacksSearch] = useState<Search>({ hits: null, loading: true, error: null })
-
-  useEffect(() => {
-    setPacksSearch({ ...packsSearch, loading: true, error: null })
-
-    algoliaIndexes.packsReleaseDateDesc
-      .search('', { facetFilters: ['releaseDate:-0'], page: 0, hitsPerPage: 5 })
-      .then((res) => setPacksSearch({ hits: res.hits, loading: false, error: null }))
-      .catch((err) => {
-        setPacksSearch({ hits: null, loading: false, error: err })
-        console.error(err)
-      })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setPacksSearch])
-
-  return packsSearch
-}
-
 interface SearchOffersFacets {
   cardModelId?: string
 }

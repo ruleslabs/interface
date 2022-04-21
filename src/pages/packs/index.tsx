@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useQuery, gql } from '@apollo/client'
 
 import Row from '@/components/Row'
@@ -10,11 +9,10 @@ import Column from '@/components/Column'
 import Card from '@/components/Card'
 import PackCard from '@/components/PackCard'
 import { PackCountdownWrapper } from '@/components/PackWrapper'
-import { useSearchPacks } from '@/state/search/hooks'
 
-const QUERY_PACKS = gql`
-  query ($ids: [ID!]!) {
-    packsByIds(ids: $ids) {
+const QUERY_ALL_AVAILABLE_PACKS = gql`
+  query {
+    allAvailablePacks {
       pictureUrl(derivative: "width=320")
       slug
       maxSupply
@@ -25,27 +23,11 @@ const QUERY_PACKS = gql`
 `
 
 export default function Packs() {
-  const { hits: packsHits, loading: packsHitsLoading, error: packsHitsError } = useSearchPacks()
+  const { data: packsData, loading: packsLoading, error: packsError } = useQuery(QUERY_ALL_AVAILABLE_PACKS)
 
-  const packsIds = useMemo(
-    () =>
-      (packsHits ?? []).reduce<string[]>((acc, hit: any) => {
-        acc.push(hit.objectID)
-
-        return acc
-      }, []),
-    [packsHits]
-  )
-
-  const {
-    data: packsData,
-    loading: packsLoading,
-    error: packsError,
-  } = useQuery(QUERY_PACKS, { variables: { ids: packsIds }, skip: !packsIds.length })
-
-  const packs = packsData?.packsByIds ?? []
-  const isValid = !packsHitsError && !packsError
-  const isLoading = packsHitsLoading || packsLoading
+  const packs = packsData?.allAvailablePacks ?? []
+  const isValid = !packsError
+  const isLoading = packsLoading
 
   return (
     <>
