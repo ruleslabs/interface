@@ -41,7 +41,6 @@ export function useQueryCurrentUser(skip = false) {
     try {
       const response = await getApolloClient()?.query({ query: CURRENT_USER_QUERY })
       dispatch(setCurrentUser({ user: response?.data?.currentUser ?? null }))
-      console.log(response)
 
       return response?.data?.currentUser
     } catch {

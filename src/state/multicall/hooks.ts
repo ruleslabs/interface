@@ -24,6 +24,19 @@ interface CallState {
 const INVALID_CALL_STATE: CallState = { valid: false, syncing: false, loading: false, error: false }
 const LOADING_CALL_STATE: CallState = { valid: true, syncing: true, loading: true, error: false }
 
+function areCallInputsValid(callInputs?: RawArgs) {
+  if (!callInputs) return false
+
+  for (const key in Object.keys(callInputs)) {
+    const callInput = callInputs[key]
+
+    if (!callInput) return false
+    if (callInput.type === 'struct' && !areCallInputsValid(callInput)) return false
+  }
+
+  return true
+}
+
 function toCallState(callResult: CallResult, latestBlockNumber?: number): CallState {
   if (!callResult) return INVALID_CALL_STATE
   const { valid, data, blockNumber } = callResult
@@ -95,7 +108,10 @@ export function useMultipleContractSingleData(
 
   const selector = useMemo(() => hash.getSelectorFromName(methodName), [methodName])
 
-  const calldata = useMemo(() => (callInputs ? stark.compileCalldata(callInputs) : undefined), [callInputs])
+  const calldata = useMemo(
+    () => (areCallInputsValid(callInputs) ? stark.compileCalldata(callInputs) : undefined),
+    [callInputs]
+  )
 
   const calls = useMemo(
     () =>
