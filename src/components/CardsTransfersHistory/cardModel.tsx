@@ -68,10 +68,10 @@ export default function CardModelHistory({ cardModelId, ...props }: CardModelHis
 
         return acc
       }, []),
-    [transfersHits?.length]
+    [transfersHits]
   )
 
-  useEffect(() => setTransfers(transfersHits ?? []), [transfersHits?.length, setTransfers])
+  useEffect(() => setTransfers(transfersHits ?? []), [transfersHits, setTransfers])
 
   const {
     data: usersData,
@@ -80,8 +80,10 @@ export default function CardModelHistory({ cardModelId, ...props }: CardModelHis
   } = useQuery(QUERY_TRANSFERS_USERS, { variables: { ids: userIds }, skip: !userIds.length })
 
   useEffect(() => {
+    if (!usersData?.usersByIds) return
+
     setUsersTable(
-      ((usersData?.usersByIds ?? []) as any[]).reduce<{ [key: string]: string }>((acc, user: any) => {
+      (usersData?.usersByIds as any[]).reduce<{ [key: string]: string }>((acc, user: any) => {
         acc[user.id] = user
         return acc
       }, {})
