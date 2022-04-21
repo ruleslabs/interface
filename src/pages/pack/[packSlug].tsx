@@ -17,6 +17,7 @@ const QUERY_PACK = gql`
   query ($slug: String!) {
     pack(slug: $slug) {
       id
+      availableQuantity
       displayName
       price
       cardsPerPack
@@ -87,6 +88,7 @@ export default function Pack() {
                   seasons={seasons}
                   releaseDate={new Date(pack.releaseDate)}
                   availableSupply={pack.maxSupply ? pack.maxSupply - pack.supply : undefined}
+                  availableQuantity={pack.availableQuantity}
                 />
                 <Card width="350px">
                   <Column gap={32}>

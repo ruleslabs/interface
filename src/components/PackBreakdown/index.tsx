@@ -20,6 +20,7 @@ interface PackBreakdownProps {
   price: number
   releaseDate?: Date
   availableSupply?: number
+  availableQuantity?: number
 }
 
 export default function PackBreakdown({
@@ -30,6 +31,7 @@ export default function PackBreakdown({
   price,
   releaseDate,
   availableSupply,
+  availableQuantity,
 }: PackBreakdownProps) {
   const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null)
   const [paymentIntentError, setPaymentIntentError] = useState(false)
@@ -75,12 +77,18 @@ export default function PackBreakdown({
             Contient {cardsPerPack} carte{cardsPerPack > 1 ? 's' : ''}
           </TYPE.body>
         </Column>
-        {released && (!availableSupply || availableSupply > 0) ? (
+        {released && (!availableSupply || availableSupply > 0) && availableQuantity ? (
           <PrimaryButton onClick={purchasePack} large>
             Acheter - {(price / 100).toFixed(2)}€
           </PrimaryButton>
         ) : (
-          <Placeholder>{released ? 'En rupture de stock' : `En vente ${releaseDateFormatted}`}</Placeholder>
+          <Placeholder>
+            {released
+              ? availableQuantity
+                ? 'En rupture de stock'
+                : 'Déjà acheté'
+              : `En vente ${releaseDateFormatted}`}
+          </Placeholder>
         )}
       </Column>
       <PackPurchaseModal
