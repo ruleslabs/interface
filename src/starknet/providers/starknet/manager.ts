@@ -1,7 +1,7 @@
 import { useReducer } from 'react'
 import { Provider, ProviderInterface } from 'starknet'
 
-import { DEFAULT_NETWORK, isValidNetworkName, NetworkName } from '@/constants/networks'
+import { DEFAULT_NETWORK, networkId, ProviderUrlNetworksMap } from '@/constants/networks'
 import { StarknetState } from './model'
 
 interface StarknetStateManager {
@@ -20,11 +20,11 @@ interface UseStarknetManagerProps {
 }
 
 export function useStarknetManager({ network }: UseStarknetManagerProps): StarknetState {
-  const networkName: NetworkName = isValidNetworkName(network) ? network : DEFAULT_NETWORK
+  const networkUrl = ProviderUrlNetworksMap[networkId]
 
   const [state, dispatch] = useReducer(reducer, {
-    library: new Provider({ network: networkName }),
-    network: networkName,
+    library: new Provider(networkUrl ? { baseUrl: networkUrl } : undefined),
+    network: networkUrl ? networkId : DEFAULT_NETWORK,
   })
 
   return state

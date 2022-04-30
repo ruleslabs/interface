@@ -105,6 +105,10 @@ export default function CheckoutForm({ stripeClientSecret, paymentIntentError, a
       setLoading(true)
 
       const cardNumberElement = elements.getElement(CardNumberElement)
+      if (!cardNumberElement) {
+        setLoading(false) // TODO: handle error
+        return
+      }
 
       stripe.createToken(cardNumberElement)
       stripe.createPaymentMethod({
@@ -118,7 +122,7 @@ export default function CheckoutForm({ stripeClientSecret, paymentIntentError, a
           },
         })
         .then((result) => {
-          setLoading(false)
+          setLoading(false) // TODO: handle error
           if (result.error) console.error(result.error)
         })
     },
@@ -137,7 +141,7 @@ export default function CheckoutForm({ stripeClientSecret, paymentIntentError, a
             <TYPE.body>Card Number</TYPE.body>
             <StripeInputWrapper>
               <CardNumberElement options={options} onChange={handleCardNumberInput} onReady={handleCardNumberReady} />
-              {(cardBrandToIcon[cardBrand] ?? UnkownCardIcon)()}
+              {(cardBrandToIcon[cardBrand as keyof typeof cardBrandToIcon] ?? UnkownCardIcon)()}
             </StripeInputWrapper>
           </StripeLabel>
           <Row gap={16}>

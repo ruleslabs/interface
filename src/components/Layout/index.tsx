@@ -7,9 +7,8 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
   const queryCurrentUser = useQueryCurrentUser()
   const [loading, setLoading] = useState(true)
 
-  useEffect(async () => {
-    await queryCurrentUser()
-    setLoading(false)
+  useEffect(() => {
+    queryCurrentUser().then(() => setLoading(false))
   }, [queryCurrentUser, setLoading])
 
   if (loading) {

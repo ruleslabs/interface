@@ -118,7 +118,7 @@ export default function AuthModal() {
   const queryCurrentUser = useQueryCurrentUser()
   const onSuccessfulConnexion = useCallback(
     async (accessToken?: string) => {
-      storeAccessToken(accessToken)
+      storeAccessToken(accessToken ?? '')
       const currentUser = await queryCurrentUser()
 
       if (!!currentUser) toggleAuthModal()

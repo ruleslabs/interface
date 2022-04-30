@@ -24,14 +24,11 @@ interface CallState {
 const INVALID_CALL_STATE: CallState = { valid: false, syncing: false, loading: false, error: false }
 const LOADING_CALL_STATE: CallState = { valid: true, syncing: true, loading: true, error: false }
 
-function areCallInputsValid(callInputs?: RawArgs) {
+function areCallInputsValid(callInputs?: RawArgs): callInputs is RawArgs {
   if (!callInputs) return false
 
   for (const key in Object.keys(callInputs)) {
-    const callInput = callInputs[key]
-
-    if (!callInput) return false
-    if (callInput.type === 'struct' && !areCallInputsValid(callInput)) return false
+    if (!callInputs[key]) return false
   }
 
   return true

@@ -3,9 +3,14 @@ export enum SupportedNetworks {
   GOERLI = 'goerli-alpha',
 }
 
-export type NetworkName = 'mainnet-alpha' | 'goerli-alpha'
+export const ProviderUrlNetworksMap: { [network: string]: string } = {
+  [SupportedNetworks.GOERLI]: 'https://alpha4.starknet.io',
+}
 
-export const DEFAULT_NETWORK = 'goerli-alpha'
+export const defaultNetwork = SupportedNetworks.GOERLI
+export const networkId = process.env.STARKNET_NETWORK_ID ?? defaultNetwork
+
+export const DEFAULT_NETWORK = SupportedNetworks.GOERLI
 
 export enum SupportedChainIds {
   MAINNET = 1,
@@ -16,15 +21,11 @@ export const ChainIdsNetworksMap: { [network: string]: SupportedChainIds } = {
   [SupportedNetworks.GOERLI]: SupportedChainIds.GOERLI,
 }
 
-interface BasicChainInformation {
-  urls: string[]
-  name: string
-}
-
-export function isValidNetworkName(network?: string): network is NetworkName {
-  return !!network && Object.values(SupportedNetworks).includes(network as SupportedNetworks)
-}
-
+// interface BasicChainInformation {
+//   urls: string[]
+//   name: string
+// }
+// 
 // export const CHAINS: { [chainId: number]: BasicChainInformation } = {
 //   1: {
 //     urls: [
