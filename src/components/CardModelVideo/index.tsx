@@ -2,16 +2,39 @@ import React from 'react'
 import styled from 'styled-components'
 
 const StyledRuleVideo = styled.video`
-  width: 256px;
-  object-fit: cover;
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+  object-fit: contain;
 `
 
-interface RuleVideoProps extends React.HTMLAttributes<HTMLVideoElement> {
+const CardModelImageShadow = styled.img<{ rotation?: number; left?: number; bottom?: number; opacity?: number }>`
+  height: 100%;
+  position: absolute;
+  transform: rotate(${({ rotation = 0 }) => rotation}deg);
+  transform-origin: bottom left;
+  opacity: ${({ opacity = 1 }) => opacity};
+  z-index: -1;
+  left: ${({ left = 0 }) => left}px;
+  bottom: ${({ bottom = 0 }) => bottom}px;
+`
+
+interface CardModelVideoProps extends React.HTMLAttributes<HTMLVideoElement> {
   src: string
+  shadowImageSrc?: string
 }
 
-const RuleVideo = ({ src, ...props }: RuleVideoProps) => {
-  return <StyledRuleVideo src={src} loop autoPlay muted {...props} />
+export default function CardModelVideo({ src, shadowImageSrc, ...props }: CardModelVideoProps) {
+  return (
+    <>
+      <StyledRuleVideo src={src} loop autoPlay muted {...props} />
+      {shadowImageSrc && (
+        <>
+          <CardModelImageShadow src={shadowImageSrc} rotation={3} left={8} bottom={5} opacity={0.2} />
+          <CardModelImageShadow src={shadowImageSrc} rotation={8} left={4} bottom={15} opacity={0.05} />
+        </>
+      )}
+    </>
+  )
 }
-
-export default RuleVideo

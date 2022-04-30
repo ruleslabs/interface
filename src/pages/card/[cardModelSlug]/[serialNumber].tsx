@@ -6,7 +6,7 @@ import { WeiAmount } from '@rulesorg/sdk-core'
 
 import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'
-import Row, { RowBetween } from '@/components/Row'
+import Row, { RowReverse } from '@/components/Row'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import CardModelBreakdown from '@/components/CardModelBreakdown'
@@ -100,7 +100,7 @@ export default function RuleBreakout() {
             <div style={{ width: '32px', height: '32px', background: '#212121' }} />
           </Column>
           <PageBody gap={64}>
-            <RowBetween>
+            <RowReverse style={{ position: 'relative' }}>
               <CardModelVideo src={card.cardModel.videoUrl} />
               <Column gap={24}>
                 <CardModelBreakdown
@@ -119,7 +119,7 @@ export default function RuleBreakout() {
                   askEur={card.askEur}
                 />
               </Column>
-            </RowBetween>
+            </RowReverse>
             <CardTransfersHistory
               cardModelId={card.cardModel.id}
               serialNumber={card.serialNumber}

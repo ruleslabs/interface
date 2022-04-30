@@ -8,6 +8,6 @@ export interface StarknetState {
 }
 
 export const STARKNET_INITIAL_STATE: StarknetState = {
-  library: new Provider({ network: DEFAULT_NETWORK }),
-  network: DEFAULT_NETWORK,
+  library: new Provider({ network: process.env.NEXT_PUBLIC_STARKNET_NETWORK_ID ?? DEFAULT_NETWORK }),
+  network: process.env.NEXT_PUBLIC_STARKNET_NETWORK_ID ?? DEFAULT_NETWORK,
 }

@@ -6,7 +6,7 @@ import { WeiAmount } from '@rulesorg/sdk-core'
 
 import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'
-import Row, { RowBetween } from '@/components/Row'
+import Row, { RowReverse } from '@/components/Row'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import CardModelBreakdown from '@/components/CardModelBreakdown'
@@ -15,23 +15,6 @@ import CardModelTransfersHistory from '@/components/CardsTransfersHistory/cardMo
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import CardModelVideo from '@/components/CardModelVideo'
 import { useEtherEURPrice } from '@/hooks/useFiatPrice'
-
-const RuleImageWrapper = styled.div`
-  position: relative;
-  width: 256px;
-  height: fit-content;
-`
-
-const RuleImageShadow = styled.img<{ rotation?: number; left?: number; bottom?: number; opacity?: number }>`
-  width: 100%;
-  position: absolute;
-  transform: rotate(${({ rotation = 0 }) => rotation}deg);
-  transform-origin: bottom left;
-  opacity: ${({ opacity = 1 }) => opacity};
-  z-index: -1;
-  left: ${({ left = 0 }) => left}px;
-  bottom: ${({ bottom = 0 }) => bottom}px;
-`
 
 const PageBody = styled(Column)`
   flex-grow: 1;
@@ -113,12 +96,8 @@ export default function CardModelPage() {
             <div style={{ width: '32px', height: '32px', background: '#212121' }} />
           </Column>
           <PageBody gap={64}>
-            <RowBetween>
-              <RuleImageWrapper>
-                <CardModelVideo src={cardModel.videoUrl} />
-                <RuleImageShadow src={cardModel.pictureUrl} rotation={5} left={10} bottom={5} opacity={0.2} />
-                <RuleImageShadow src={cardModel.pictureUrl} rotation={13} left={6} bottom={15} opacity={0.05} />
-              </RuleImageWrapper>
+            <RowReverse style={{ position: 'relative' }}>
+              <CardModelVideo src={cardModel.videoUrl} shadowImageSrc={cardModel.pictureUrl} />
               <Column gap={24}>
                 <CardModelBreakdown
                   artistName={cardModel.artist.displayName}
@@ -135,7 +114,7 @@ export default function CardModelPage() {
                   cardsOnSaleCount={cardModel.cardsOnSaleCount}
                 />
               </Column>
-            </RowBetween>
+            </RowReverse>
             <CardModelTransfersHistory cardModelId={cardModel.id} style={{ marginTop: '32px' }} />
             <YoutubeEmbed embedId={cardModel.youtubePreviewId} style={{ minWidth: '100%' }} />
           </PageBody>

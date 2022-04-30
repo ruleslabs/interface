@@ -9,8 +9,6 @@ import { encryptWithPassword, encryptWithPublicKey, encodeKey, generateSalt, gen
 
 const spki = process.env.NEXT_PUBLIC_SPKI ?? ''
 
-const network = process.env.NEXT_PUBLIC_STARKNET_NETWORK_ID ?? ''
-
 export default function useCreateWallet() {
   const { library } = useStarknet()
 
