@@ -25,7 +25,7 @@ export const ChainIdsNetworksMap: { [network: string]: SupportedChainIds } = {
 //   urls: string[]
 //   name: string
 // }
-// 
+//
 // export const CHAINS: { [chainId: number]: BasicChainInformation } = {
 //   1: {
 //     urls: [

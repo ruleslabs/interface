@@ -1,6 +1,4 @@
-import { ProviderInterface, Provider } from 'starknet'
-
-import { DEFAULT_NETWORK } from '@/constants/networks'
+import { ProviderInterface } from 'starknet'
 
 export interface StarknetState {
   library?: ProviderInterface
