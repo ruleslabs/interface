@@ -13,10 +13,6 @@ export const PackPosterWrapper = styled(RowCenter)`
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
-
-  img {
-    box-shadow: 0 4px 5px 10px ${({ theme }) => theme.black}40;
-  }
 `
 
 const StyledPackCountdownWrapper = styled(ColumnCenter)<{ released: boolean }>`

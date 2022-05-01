@@ -9,6 +9,7 @@ import GridHeader from '@/components/GridHeader'
 import Section from '@/components/Section'
 import Link from '@/components/Link'
 import Grid from '@/components/Grid'
+import PackCard from '@/components/PackCard'
 
 const QUERY_USER_PACKS_BALANCES = gql`
   query ($slug: String!) {
@@ -23,7 +24,7 @@ const QUERY_USER_PACKS_BALANCES = gql`
   }
 `
 
-const Pack = styled.img`
+const StyledPackCard = styled(PackCard)`
   width: 100%;
 `
 
@@ -59,7 +60,7 @@ function Packs({ userId }: { userId: string }) {
       <Grid maxWidth={256}>
         {packsBalances.map((packBalance: any, index: number) => (
           <Link key={`pack-${index}`} href={`/pack/${packBalance.pack.slug}`}>
-            <Pack src={packBalance.pack.pictureUrl} />
+            <StyledPackCard slug={packBalance.pack.slug} pictureUrl={packBalance.pack.pictureUrl} soldout={false} />
           </Link>
         ))}
       </Grid>

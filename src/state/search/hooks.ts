@@ -23,7 +23,6 @@ const algoliaIndexes = {
   transfersDateDesc: client.initIndex('transfers-date-desc'),
   cardsDateDesc: client.initIndex('cards-date-desc'),
   cardsDateAsc: client.initIndex('cards-date-asc'),
-  packsReleaseDateDesc: client.initIndex('packs-releaseDate-desc'),
   offersPriceDesc: client.initIndex('offers-price-desc'),
   offersPriceAsc: client.initIndex('offers-price-asc'),
 }

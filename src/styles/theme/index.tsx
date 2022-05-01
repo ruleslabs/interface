@@ -27,7 +27,8 @@ export function colors(darkMode: boolean): Colors {
     white: '#ffffff',
     black: '#000000',
 
-    primary1: '#A167FC',
+    primary1: '#9F04DC',
+    primary2: '#7C03AE',
 
     bg1: '#181818',
     bg2: '#212121',

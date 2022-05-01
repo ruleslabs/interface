@@ -17,7 +17,7 @@ export const BaseButton = styled.button<{ large?: boolean }>`
 `
 
 export const PrimaryButton = styled(BaseButton)`
-  background: ${({ theme }) => theme.primary1};
+  background: ${({ theme }) => `radial-gradient(circle, ${theme.primary1} 0, ${theme.primary2} 50%)`};
   color: ${({ theme }) => theme.text1};
 
   &:active {
