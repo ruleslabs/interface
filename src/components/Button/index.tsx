@@ -5,6 +5,7 @@ import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
 import Caret from '@/components/Caret'
 import Checkmark from '@/images/checkmark.svg'
+import GoogleLogo from '@/images/google-logo.svg'
 
 export const BaseButton = styled.button<{ large?: boolean }>`
   border: none;
@@ -18,7 +19,7 @@ export const BaseButton = styled.button<{ large?: boolean }>`
 
 export const PrimaryButton = styled(BaseButton)`
   background: ${({ theme }) => `radial-gradient(circle, ${theme.primary1} 0, ${theme.primary2} 50%)`};
-  color: ${({ theme }) => theme.text1};
+  color: ${({ theme }) => theme.white};
 
   &:active {
     background: ${({ theme }) => theme.primary1}e0;
@@ -138,5 +139,42 @@ export function RadioButton({ selected, onChange }: RadioButtonProps) {
     <StyledRadioButton onClick={handleChange} selected={selected}>
       <Checkmark />
     </StyledRadioButton>
+  )
+}
+
+const StyledCustomGoogleLogin = styled(BaseButton)`
+  background: #3a7af2;
+  color: ${({ theme }) => theme.white};
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  &:disabled,
+  &[disabled] {
+    opacity: 0.8;
+  }
+
+  svg {
+    height: 24px;
+    border-radius: 100%;
+    background: #fff;
+    border: 4px solid #fff;
+    box-sizing: content-box;
+  }
+`
+
+interface CustomGoogleLoginProps {
+  onClick: () => void
+  disabled: boolean
+}
+
+export const CustomGoogleLogin = (props: CustomGoogleLoginProps) => {
+  return (
+    <StyledCustomGoogleLogin {...props}>
+      <GoogleLogo />
+      Connect with google
+    </StyledCustomGoogleLogin>
   )
 }

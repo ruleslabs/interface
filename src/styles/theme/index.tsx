@@ -86,6 +86,7 @@ export interface TextProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Text = styled.div<TextProps>`
+  width: fit-content;
   ${({ fontSize }) => fontSize && `font-size: ${fontSize}px`};
   ${({ fontWeight }) => fontWeight && `font-weight: ${fontWeight}`};
   ${({ textAlign }) => textAlign && `text-align: ${textAlign}`};
@@ -115,12 +116,15 @@ export const TYPE = {
     return <TextWrapper fontWeight={400} color={'primary1'} clickable {...props} />
   },
   subtitle(props: TextProps) {
-    return <TextWrapper fontWeight={400} fontSize={14} color={'text2'} {...props} />
+    return <TextWrapper fontWeight={400} color={'text2'} {...props} />
   },
   body(props: TextProps) {
     return <TextWrapper fontWeight={400} fontSize={16} color={'text1'} {...props} />
   },
   medium(props: TextProps) {
     return <TextWrapper fontWeight={500} fontSize={18} color={'text1'} {...props} />
+  },
+  large(props: TextProps) {
+    return <TextWrapper fontWeight={700} fontSize={26} color={'text1'} {...props} />
   },
 }

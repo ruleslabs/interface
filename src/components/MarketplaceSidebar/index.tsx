@@ -63,9 +63,10 @@ export default function MarketplaceSidebar() {
             <Checkbox
               key={`checkbox-season-${season}`}
               value={filters.seasons.includes(+season)}
-              label={Seasons[+season].name}
               onChange={() => toggleSeasonFilter(+season)}
-            />
+            >
+              <TYPE.body>{Seasons[+season].name}</TYPE.body>
+            </Checkbox>
           ))}
         </FilterWrapper>
 
@@ -75,9 +76,10 @@ export default function MarketplaceSidebar() {
             <Checkbox
               key={`checkbox-tier-${scarcity}`}
               value={filters.tiers.includes(scarcity)}
-              label={Scarcity[scarcity as keyof typeof Scarcity]}
               onChange={() => toggleTierFilter(scarcity)}
-            />
+            >
+              <TYPE.body>{Scarcity[scarcity as keyof typeof Scarcity]}</TYPE.body>
+            </Checkbox>
           ))}
         </FilterWrapper>
 

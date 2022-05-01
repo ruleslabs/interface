@@ -1,4 +1,5 @@
 import '@/styles/global.css'
+import '@/styles/fonts.css'
 
 import { NextPage } from 'next/types'
 import type { AppProps } from 'next/app'

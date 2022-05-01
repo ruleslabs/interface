@@ -8,9 +8,8 @@ import { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
 import { useModalOpen, useAuthModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
-import { PrimaryButton, IconButton, RowButton } from '@/components/Button'
+import { PrimaryButton, CustomGoogleLogin } from '@/components/Button'
 import { TYPE } from '@/styles/theme'
-import Caret from '@/components/Caret'
 import Input from '@/components/Input'
 import Checkbox from '@/components/Checkbox'
 import Link from '@/components/Link'
@@ -19,12 +18,19 @@ import { AuthMode } from '@/state/auth/actions'
 import { storeAccessToken } from '@/utils/accessToken'
 import useCreateWallet from '@/hooks/useCreateWallet'
 import { useQueryCurrentUser } from '@/state/user/hooks'
+import Separator from '@/components/Separator'
 
 import Close from '@/images/close.svg'
 
+const StyledClose = styled(Close)`
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+`
+
 const StyledAuthModal = styled(Column)`
-  width: 480px;
-  padding: 16px;
+  width: 546px;
+  padding: 26px;
   background: ${({ theme }) => theme.bg2};
   border-radius: 4px;
 `
@@ -35,6 +41,14 @@ const StyledForm = styled.form`
 
 const SubmitButton = styled(PrimaryButton)`
   height: 55px;
+  margin: 12px 0;
+`
+
+const SwitchAuthModeButton = styled(TYPE.subtitle)`
+  display: inline;
+  text-decoration: underline;
+  font-weight: 500;
+  cursor: pointer;
 `
 
 const SIGN_IN_MUTATION = gql`
@@ -239,12 +253,26 @@ export default function AuthModal() {
     return (
       <StyledForm key="sign-in-form" onSubmit={handleSignIn}>
         <Column gap={20}>
+          {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
+            <>
+              <GoogleLogin
+                render={(renderProps) => <CustomGoogleLogin {...renderProps} />}
+                clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
+                buttonText="Log in with Google"
+                onSuccess={handleGoogleLogin}
+                onFailure={handleGoogleLogin}
+                cookiePolicy={'single_host_origin'}
+              />
+              <Separator>or</Separator>
+            </>
+          )}
+
           <Column gap={12}>
             <Input
               id="email"
               value={email}
-              placeholder="email"
-              type="text"
+              placeholder="E-mail"
+              type="email"
               autoComplete="email"
               onUserInput={onEmailInput}
               error={formErrors.signInEmail}
@@ -252,7 +280,7 @@ export default function AuthModal() {
             <Input
               id="password"
               value={password}
-              placeholder="password"
+              placeholder="Password"
               type="password"
               autoComplete="password"
               onUserInput={onPasswordInput}
@@ -262,11 +290,8 @@ export default function AuthModal() {
 
           <Column gap={12}>
             <SubmitButton type="submit" large>
-              {loading ? 'Loading' : 'Submit'}
+              {loading ? 'Loading ...' : 'Submit'}
             </SubmitButton>
-            <Link href="/">
-              <TYPE.subtitle clickable>Forgot your password?</TYPE.subtitle>
-            </Link>
           </Column>
         </Column>
       </StyledForm>
@@ -276,12 +301,12 @@ export default function AuthModal() {
   const SignUpForm = () => {
     return (
       <StyledForm key="sign-up-form" onSubmit={handleSignUp}>
-        <Column gap={20}>
+        <Column gap={26}>
           <Column gap={12}>
             <Input
               id="email"
               value={email}
-              placeholder="Email"
+              placeholder="E-mail"
               type="text"
               onUserInput={onEmailInput}
               error={formErrors.signUpEmail}
@@ -308,10 +333,8 @@ export default function AuthModal() {
           <Column gap={12}>
             <Checkbox value={tosAgreed} onChange={toggleTosAgreed}>
               <TYPE.body>
-                I agree to Rules{' '}
-                <Link href="#">
-                  <TYPE.link>terms and conditions</TYPE.link>
-                </Link>
+                I agree to Rules&nbsp;
+                <Link href="/terms-and-conditions">terms and conditions</Link>
               </TYPE.body>
             </Checkbox>
             <Checkbox value={emailsAgreed} onChange={toggleEmailAgreed}>
@@ -320,7 +343,7 @@ export default function AuthModal() {
           </Column>
 
           <SubmitButton type="submit" large>
-            {loading ? 'Loading' : 'Submit'}
+            {loading ? 'Loading ...' : 'Submit'}
           </SubmitButton>
         </Column>
       </StyledForm>
@@ -329,37 +352,25 @@ export default function AuthModal() {
 
   return (
     <Modal onDismiss={toggleAuthModal} isOpen={isOpen}>
-      <StyledAuthModal gap={16}>
+      <StyledAuthModal gap={26}>
         <RowCenter justify="space-between" style={{ padding: '0 8px' }}>
-          <TYPE.body>{authMode === AuthMode.SIGN_IN ? 'Sign in' : 'Sign up'}</TYPE.body>
-          <IconButton onClick={toggleAuthModal}>
-            <Close />
-          </IconButton>
+          <TYPE.large>{authMode === AuthMode.SIGN_IN ? 'Connection' : 'Registration'}</TYPE.large>
+          <StyledClose onClick={toggleAuthModal} />
         </RowCenter>
 
         {authMode === AuthMode.SIGN_IN ? SignInForm() : SignUpForm()}
 
-        {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
-          <GoogleLogin
-            clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
-            buttonText="Log in with Google"
-            onSuccess={handleGoogleLogin}
-            onFailure={handleGoogleLogin}
-            cookiePolicy={'single_host_origin'}
-          >
-            <span>Login</span>
-          </GoogleLogin>
-        )}
-
-        <RowCenter justify="space-between" style={{ padding: '0 8px' }}>
+        <Column gap={12} style={{ padding: '0 8px' }}>
+          {authMode === AuthMode.SIGN_IN && <TYPE.subtitle clickable>Forgot your password?</TYPE.subtitle>}
           <TYPE.subtitle>
-            {authMode === AuthMode.SIGN_IN ? 'No account yet' : 'I already have an account'}
+            {authMode === AuthMode.SIGN_IN ? 'No account? ' : 'Already have an account? '}
+            <SwitchAuthModeButton
+              onClick={() => setAuthMode(authMode === AuthMode.SIGN_IN ? AuthMode.SIGN_UP : AuthMode.SIGN_IN)}
+            >
+              {authMode === AuthMode.SIGN_IN ? 'Join Rules' : 'Connect'}
+            </SwitchAuthModeButton>
           </TYPE.subtitle>
-          <RowButton onClick={() => setAuthMode(authMode === AuthMode.SIGN_IN ? AuthMode.SIGN_UP : AuthMode.SIGN_IN)}>
-            <TYPE.body>{authMode === AuthMode.SIGN_IN ? 'Sign up' : 'Sign in'}</TYPE.body>
-            <Caret direction="right" />
-          </RowButton>
-        </RowCenter>
+        </Column>
       </StyledAuthModal>
     </Modal>
   )
