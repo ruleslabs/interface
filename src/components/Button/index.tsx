@@ -167,7 +167,7 @@ const StyledCustomGoogleLogin = styled(BaseButton)`
 
 interface CustomGoogleLoginProps {
   onClick: () => void
-  disabled: boolean
+  disabled?: boolean
 }
 
 export const CustomGoogleLogin = (props: CustomGoogleLoginProps) => {
