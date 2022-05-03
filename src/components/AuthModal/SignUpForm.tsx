@@ -34,13 +34,7 @@ const SwitchAuthModeButton = styled(TYPE.subtitle)`
 
 const PREPARE_SIGN_UP_MUTATION = gql`
   mutation ($email: String!, $username: String!) {
-    prepareSignUp(input: { email: $email, username: $username }) {
-      error {
-        code
-        message
-        path
-      }
-    }
+    prepareSignUp(input: { email: $email, username: $username })
   }
 `
 
@@ -91,13 +85,13 @@ export default function SignUpForm() {
   )
 
   // errors
-  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({})
+  const [error, setError] = useState<{ message?: string; id?: string }>({})
 
   useEffect(() => {
-    if (prepareSignUpResult.error)
-      prepareSignUpResult.error?.graphQLErrors?.map((error) => setFormErrors(error.extensions))
-    else setFormErrors({})
-  }, [prepareSignUpResult.error, setFormErrors])
+    const error = prepareSignUpResult?.error?.graphQLErrors?.[0]
+    if (error) setError({ message: error.message, id: error.extensions?.id })
+    else if (!loading) setError({})
+  }, [prepareSignUpResult.error, setError])
 
   // reset form errors if modal is unmounted
   useEffect(() => {
@@ -121,7 +115,7 @@ export default function SignUpForm() {
               placeholder="E-mail"
               type="text"
               onUserInput={onEmailInput}
-              error={formErrors.email}
+              $valid={error?.id !== 'email'}
             />
             <Input
               id="username"
@@ -129,7 +123,7 @@ export default function SignUpForm() {
               placeholder="Username"
               type="text"
               onUserInput={onUsernameInput}
-              error={formErrors.username}
+              $valid={error?.id !== 'username'}
             />
             <Input
               id="password"
@@ -138,8 +132,9 @@ export default function SignUpForm() {
               type="password"
               onUserInput={onPasswordInput}
               autoComplete="new-password"
-              error={formErrors.password}
+              $valid={error?.id !== 'password'}
             />
+            <TYPE.body color="error">{error.message}</TYPE.body>
           </Column>
 
           <Column gap={12}>

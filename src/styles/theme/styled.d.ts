@@ -17,7 +17,7 @@ export interface Colors {
 
   gradient1: string
 
-  red: string
+  error: string
 }
 
 declare module 'styled-components' {

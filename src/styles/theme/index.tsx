@@ -40,7 +40,7 @@ export function colors(darkMode: boolean): Colors {
 
     gradient1: 'linear-gradient(90deg, #6E36E7, #CB49CE)',
 
-    red: '#ED2C12',
+    error: '#FF2F3B',
   }
 }
 

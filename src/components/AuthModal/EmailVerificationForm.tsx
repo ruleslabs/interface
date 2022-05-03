@@ -21,6 +21,13 @@ const StyledClose = styled(Close)`
   cursor: pointer;
 `
 
+const ResendCode = styled(TYPE.subtitle)`
+  display: inline;
+  text-decoration: underline;
+  font-weight: 500;
+  cursor: pointer;
+`
+
 const SIGN_UP_MUTATION = gql`
   mutation (
     $email: String!
@@ -106,6 +113,7 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: SignUpF
 
       <Column gap={26}>
         <TYPE.large>Enter the code to confirm your registration</TYPE.large>
+
         <Input
           id="emailVerificationCode"
           value={emailVerificationCode}
@@ -114,6 +122,11 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: SignUpF
           onUserInput={onEmailVerificationCodeInput}
           disabled={loading}
         />
+
+        <Column gap={8}>
+          <TYPE.body>The code has been emailed to {email}</TYPE.body>
+          <ResendCode>Resend the code</ResendCode>
+        </Column>
       </Column>
     </>
   )
