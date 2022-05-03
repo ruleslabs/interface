@@ -92,7 +92,7 @@ export function BackButton(props: React.HTMLAttributes<HTMLButtonElement>) {
   return (
     <RowButton {...props}>
       <Caret direction="left" />
-      <TYPE.white fontSize={16}>Retour</TYPE.white>
+      <TYPE.white fontSize={16}>Back</TYPE.white>
     </RowButton>
   )
 }

@@ -34,6 +34,14 @@ const StyledInput = styled(InputBase)<{ $valid: boolean }>`
   :-webkit-autofill:focus {
     transition: background-color 600000s 0s, color 600000s 0s;
   }
+
+  ::-webkit-outer-spin-button,
+  ::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  -moz-appearance: textfield;
 `
 
 const StyledSearchBar = styled(InputBase)`

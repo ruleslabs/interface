@@ -1,12 +1,20 @@
 import { createReducer } from '@reduxjs/toolkit'
 
-import { AuthMode, updateEmailField, updatePasswordField, updateUsernameField, setAuthMode } from './actions'
+import {
+  updateEmailField,
+  updatePasswordField,
+  updateUsernameField,
+  updateEmailVerificationCodeField,
+  setAuthMode,
+  AuthMode,
+} from './actions'
 
 export interface AuthState {
   form: {
     email: string
     password: string
     username: string
+    emailVerificationCode: string
   }
   authMode: AuthMode | null
 }
@@ -16,6 +24,7 @@ export const initialState: AuthState = {
     email: '',
     password: '',
     username: '',
+    emailVerificationCode: '',
   },
   authMode: null,
 }
@@ -23,37 +32,16 @@ export const initialState: AuthState = {
 export default createReducer(initialState, (builder) =>
   builder
     .addCase(updateEmailField, (state, { payload: { email } }) => {
-      const form = state.form
-
-      return {
-        ...state,
-        form: {
-          ...form,
-          email,
-        },
-      }
+      state.form.email = email
     })
     .addCase(updatePasswordField, (state, { payload: { password } }) => {
-      const form = state.form
-
-      return {
-        ...state,
-        form: {
-          ...form,
-          password,
-        },
-      }
+      state.form.password = password
     })
     .addCase(updateUsernameField, (state, { payload: { username } }) => {
-      const form = state.form
-
-      return {
-        ...state,
-        form: {
-          ...form,
-          username,
-        },
-      }
+      state.form.username = username
+    })
+    .addCase(updateEmailVerificationCodeField, (state, { payload: { code } }) => {
+      state.form.emailVerificationCode = code
     })
     .addCase(setAuthMode, (state, { payload: { authMode } }) => {
       return { ...state, authMode }
