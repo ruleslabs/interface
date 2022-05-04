@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react'
+import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { useMutation, gql } from '@apollo/client'
 
@@ -64,6 +64,9 @@ export default function SignUpForm() {
   const toggleAuthModal = useAuthModalToggle()
   const setAuthMode = useSetAuthMode()
 
+  // errors
+  const [error, setError] = useState<{ message?: string; id?: string }>({})
+
   //signup
   const handleSignUp = useCallback(
     async (event) => {
@@ -76,28 +79,17 @@ export default function SignUpForm() {
           if (!res?.data?.prepareSignUp?.error) setAuthMode(AuthMode.EMAIL_VERIFICATION)
           else setLoading(false)
         })
-        .catch((err: Error) => {
-          console.error(err)
+        .catch((prepareSignUpError: Error) => {
+          const error = prepareSignUpError?.graphQLErrors?.[0]
+          if (error) setError({ message: error.message, id: error.extensions?.id })
+          else if (!loading) setError({})
+
+          console.error(prepareSignUpError)
           setLoading(false)
         })
     },
     [email, username, prepareSignUpMutation, setAuthMode]
   )
-
-  // errors
-  const [error, setError] = useState<{ message?: string; id?: string }>({})
-
-  useEffect(() => {
-    const error = prepareSignUpResult?.error?.graphQLErrors?.[0]
-    if (error) setError({ message: error.message, id: error.extensions?.id })
-    else if (!loading) setError({})
-  }, [prepareSignUpResult.error, setError])
-
-  // reset form errors if modal is unmounted
-  useEffect(() => {
-    return () => prepareSignUpResult?.reset()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   return (
     <>
@@ -115,7 +107,7 @@ export default function SignUpForm() {
               placeholder="E-mail"
               type="text"
               onUserInput={onEmailInput}
-              $valid={error?.id !== 'email'}
+              $valid={error?.id !== 'email' || loading}
             />
             <Input
               id="username"
@@ -123,7 +115,7 @@ export default function SignUpForm() {
               placeholder="Username"
               type="text"
               onUserInput={onUsernameInput}
-              $valid={error?.id !== 'username'}
+              $valid={error?.id !== 'username' || loading}
             />
             <Input
               id="password"
@@ -132,7 +124,7 @@ export default function SignUpForm() {
               type="password"
               onUserInput={onPasswordInput}
               autoComplete="new-password"
-              $valid={error?.id !== 'password'}
+              $valid={error?.id !== 'password' || loading}
             />
             <TYPE.body color="error">{error.message}</TYPE.body>
           </Column>

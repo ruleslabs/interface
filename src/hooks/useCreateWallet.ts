@@ -9,12 +9,22 @@ import { encryptWithPassword, encryptWithPublicKey, encodeKey, generateSalt, gen
 
 const spki = process.env.NEXT_PUBLIC_SPKI ?? ''
 
-export default function useCreateWallet() {
+export interface WalletInfos {
+  starknetAddress: string
+  userKey: {
+    encryptedPrivateKey: string
+    salt: string
+    iv: string
+  }
+  backupKey: string
+}
+
+export default function useCreateWallet(): (password: string) => WalletInfos {
   const { library } = useStarknet()
 
   return useCallback(
     async (password: string) => {
-      if (!library) return
+      if (!library) throw new Error('Failed to deploy wallet')
 
       const privateKey = await stark.randomAddress()
       const starkPair = ec.getKeyPair(privateKey)
@@ -26,7 +36,7 @@ export default function useCreateWallet() {
       })
 
       if (deployTransaction.code !== 'TRANSACTION_RECEIVED' || !deployTransaction.address) {
-        throw new Error('Deploy transaction failed')
+        throw new Error('Failed to deploy wallet')
       }
 
       const salt = generateSalt()

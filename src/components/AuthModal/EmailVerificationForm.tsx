@@ -11,7 +11,7 @@ import { BackButton } from '@/components/Button'
 import { AuthMode } from '@/state/auth/actions'
 import { useAuthForm, useAuthActionHanlders, useSetAuthMode } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
-import useCreateWallet from '@/hooks/useCreateWallet'
+import useCreateWallet, { WalletInfos } from '@/hooks/useCreateWallet'
 
 import Close from '@/images/close.svg'
 
@@ -61,6 +61,7 @@ interface EmailVerificationFormProps {
 export default function EmailVerificationForm({ onSuccessfulConnexion }: SignUpFormProps) {
   // Wallet
   const createWallet = useCreateWallet()
+  const [walletInfos, setWalletInfos] = useState<WalletInfos | null>(null)
 
   // Loading
   const [loading, setLoading] = useState(false)
@@ -76,15 +77,31 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: SignUpF
   const toggleAuthModal = useAuthModalToggle()
   const setAuthMode = useSetAuthMode()
 
+  // errors
+  const [error, setError] = useState<{ message?: string; id?: string }>({})
+
+  // signUp
   useEffect(async () => {
     if (emailVerificationCode.length !== EMAIL_VERIFICATION_CODE_LENGTH) return
 
     setLoading(true)
 
-    const walletInfos = await createWallet(password)
-    if (!walletInfos) return
+    let newWalletInfos = walletInfos
 
-    const { starknetAddress, userKey: rulesPrivateKey, backupKey: rulesPrivateKeyBackup } = walletInfos
+    try {
+      if (!newWalletInfos) {
+        newWalletInfos = await createWallet(password)
+        setWalletInfos(newWalletInfos)
+      }
+    } catch (error: Error) {
+      setError({ message: `${error.message}, contact support if the error persist.` })
+
+      console.error(error)
+      setLoading(false)
+      return
+    }
+
+    const { starknetAddress, userKey: rulesPrivateKey, backupKey: rulesPrivateKeyBackup } = newWalletInfos
 
     signUpMutation({
       variables: {
@@ -98,11 +115,15 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: SignUpF
       },
     })
       .then((res: any) => onSuccessfulConnexion(res?.data?.signUp?.accessToken))
-      .catch((err: Error) => {
-        console.error(err)
+      .catch((signUpError: Error) => {
+        const error = signUpError?.graphQLErrors?.[0]
+        if (error) setError({ message: error.message, id: 'emailVerificationCode' })
+        else setError({})
+
+        console.error(signUpError)
         setLoading(false)
       })
-  }, [emailVerificationCode, email, username, password, signUpMutation, createWallet])
+  }, [emailVerificationCode, email, username, password, signUpMutation, createWallet, setWalletInfos])
 
   return (
     <>
@@ -114,14 +135,19 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: SignUpF
       <Column gap={26}>
         <TYPE.large>Enter the code to confirm your registration</TYPE.large>
 
-        <Input
-          id="emailVerificationCode"
-          value={emailVerificationCode}
-          placeholder="Code"
-          type="text"
-          onUserInput={onEmailVerificationCodeInput}
-          disabled={loading}
-        />
+        <Column gap={12}>
+          <Input
+            id="emailVerificationCode"
+            value={emailVerificationCode}
+            placeholder="Code"
+            type="text"
+            onUserInput={onEmailVerificationCodeInput}
+            loading={loading}
+            $valid={error.id !== 'emailVerificationCode' || loading}
+          />
+
+          <TYPE.body color="error">{error.message}</TYPE.body>
+        </Column>
 
         <Column gap={8}>
           <TYPE.body>The code has been emailed to {email}</TYPE.body>

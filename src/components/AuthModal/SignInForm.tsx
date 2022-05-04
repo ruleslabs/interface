@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react'
+import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import GoogleLogin from 'react-google-login'
 import { useMutation, gql } from '@apollo/client'
@@ -92,6 +92,9 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
     [authGoogleMutation, onSuccessfulConnexion, setLoading]
   )
 
+  // errors
+  const [error, setError] = useState<{ message?: string; id?: string }>({})
+
   // signin
   const handleSignIn = useCallback(
     (event) => {
@@ -101,30 +104,17 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
 
       signInMutation({ variables: { email, password } })
         .then((res: any) => onSuccessfulConnexion(res?.data?.signIn?.accessToken))
-        .catch((err: Error) => {
-          console.error(err)
+        .catch((signInError: Error) => {
+          const error = signInError?.graphQLErrors?.[0]
+          if (error) setError({ message: error.message, id: error.extensions?.id })
+          else if (!loading) setError({})
+
+          console.error(signInError)
           setLoading(false)
         })
     },
     [email, password, signInMutation, onSuccessfulConnexion, setLoading]
   )
-
-  // errors
-  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({})
-
-  useEffect(() => {
-    if (signInResult.error) signInResult.error?.graphQLErrors?.map((error) => setFormErrors(error.extensions))
-    else setFormErrors({})
-  }, [signInResult.error, setFormErrors])
-
-  // reset form errors if modal is unmounted
-  useEffect(() => {
-    return () => {
-      authGoogleResult?.reset()
-      signInResult?.reset()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   return (
     <>
@@ -157,7 +147,7 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
               type="email"
               autoComplete="email"
               onUserInput={onEmailInput}
-              error={formErrors.signInEmail}
+              error={error?.id !== 'email' || loading}
             />
             <Input
               id="password"
@@ -166,7 +156,7 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
               type="password"
               autoComplete="password"
               onUserInput={onPasswordInput}
-              error={formErrors.signInPassword}
+              error={error?.id !== 'password' || loading}
             />
           </Column>
 
