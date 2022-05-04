@@ -17,11 +17,14 @@ export default function useCountdown(date?: Date) {
     }
   }, [date])
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
+  const [timeLeft, setTimeLeft] = useState()
 
   useEffect(() => {
-    // exit early when we reach 0
-    if (!timeLeft) return
+    // init when null or exit early when we reach 0
+    if (!timeLeft) {
+      setTimeLeft(calculateTimeLeft())
+      return
+    }
 
     // save intervalId to clear the interval when the
     // component re-renders
@@ -33,7 +36,7 @@ export default function useCountdown(date?: Date) {
     return () => clearInterval(intervalId)
     // add timeLeft as a dependency to re-rerun the effect
     // when we update it
-  }, [timeLeft, calculateTimeLeft, setTimeLeft])
+  }, [date, timeLeft, calculateTimeLeft, setTimeLeft])
 
   if (!timeLeft) {
     return null

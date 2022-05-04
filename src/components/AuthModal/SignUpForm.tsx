@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { useMutation, gql } from '@apollo/client'
 
 import { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
@@ -8,7 +7,13 @@ import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import { AuthMode } from '@/state/auth/actions'
-import { useAuthForm, useAuthActionHanlders, useSetAuthMode } from '@/state/auth/hooks'
+import {
+  useAuthForm,
+  useAuthActionHanlders,
+  useSetAuthMode,
+  useRefreshNewEmailVerificationCodeTime,
+  usePrepareSignUpMutation,
+} from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import Checkbox from '@/components/Checkbox'
 import Link from '@/components/Link'
@@ -32,12 +37,6 @@ const SwitchAuthModeButton = styled(TYPE.subtitle)`
   cursor: pointer;
 `
 
-const PREPARE_SIGN_UP_MUTATION = gql`
-  mutation ($email: String!, $username: String!) {
-    prepareSignUp(input: { email: $email, username: $username })
-  }
-`
-
 const SubmitButton = styled(PrimaryButton)`
   height: 55px;
   margin: 12px 0;
@@ -48,7 +47,7 @@ export default function SignUpForm() {
   const [loading, setLoading] = useState(false)
 
   // graphql
-  const [prepareSignUpMutation, prepareSignUpResult] = useMutation(PREPARE_SIGN_UP_MUTATION)
+  const [prepareSignUpMutation] = usePrepareSignUpMutation()
 
   // checkboxes
   const [tosAgreed, setTosAgreed] = useState(false)
@@ -64,6 +63,9 @@ export default function SignUpForm() {
   const toggleAuthModal = useAuthModalToggle()
   const setAuthMode = useSetAuthMode()
 
+  // Countdown
+  const refreshNewEmailVerificationCodeTime = useRefreshNewEmailVerificationCodeTime()
+
   // errors
   const [error, setError] = useState<{ message?: string; id?: string }>({})
 
@@ -78,6 +80,7 @@ export default function SignUpForm() {
         .then((res: any) => {
           if (!res?.data?.prepareSignUp?.error) setAuthMode(AuthMode.EMAIL_VERIFICATION)
           else setLoading(false)
+          refreshNewEmailVerificationCodeTime()
         })
         .catch((prepareSignUpError: Error) => {
           const error = prepareSignUpError?.graphQLErrors?.[0]

@@ -11,4 +11,6 @@ export const updatePasswordField = createAction<{ password: string }>('auth/upda
 export const updateUsernameField = createAction<{ username: string }>('auth/updateUsernameField')
 export const updateEmailVerificationCodeField = createAction<{ code: string }>('auth/updateEmailVerificationCodeField')
 
+export const refreshNewEmailVerificationCodeTime = createAction('auth/refreshNewEmailVerificationCodeTime')
+
 export const setAuthMode = createAction<{ authMode: AuthMode | null }>('auth/setAuthMode')

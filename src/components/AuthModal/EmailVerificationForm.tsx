@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
-import { useMutation, gql } from '@apollo/client'
 
 import { EMAIL_VERIFICATION_CODE_LENGTH } from '@/constants/misc'
 import { RowCenter } from '@/components/Row'
@@ -9,9 +8,18 @@ import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'
 import { BackButton } from '@/components/Button'
 import { AuthMode } from '@/state/auth/actions'
-import { useAuthForm, useAuthActionHanlders, useSetAuthMode } from '@/state/auth/hooks'
+import {
+  useAuthForm,
+  useAuthActionHanlders,
+  useSetAuthMode,
+  useRefreshNewEmailVerificationCodeTime,
+  useNewEmailVerificationCodeTime,
+  useSignUpMutation,
+  usePrepareSignUpMutation,
+} from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import useCreateWallet, { WalletInfos } from '@/hooks/useCreateWallet'
+import useCountdown from '@/hooks/useCountdown'
 
 import Close from '@/images/close.svg'
 
@@ -28,32 +36,6 @@ const ResendCode = styled(TYPE.subtitle)`
   cursor: pointer;
 `
 
-const SIGN_UP_MUTATION = gql`
-  mutation (
-    $email: String!
-    $username: String!
-    $password: String!
-    $starknetAddress: String!
-    $rulesPrivateKey: RulesPrivateKeyAttributes!
-    $rulesPrivateKeyBackup: String!
-    $emailVerificationCode: String!
-  ) {
-    signUp(
-      input: {
-        email: $email
-        username: $username
-        password: $password
-        starknetAddress: $starknetAddress
-        rulesPrivateKey: $rulesPrivateKey
-        rulesPrivateKeyBackup: $rulesPrivateKeyBackup
-        emailVerificationCode: $emailVerificationCode
-      }
-    ) {
-      accessToken
-    }
-  }
-`
-
 interface EmailVerificationFormProps {
   onSuccessfulConnexion: (accessToken?: string) => void
 }
@@ -67,7 +49,8 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: SignUpF
   const [loading, setLoading] = useState(false)
 
   // graphql mutations
-  const [signUpMutation, signUpResult] = useMutation(SIGN_UP_MUTATION)
+  const [signUpMutation] = useSignUpMutation()
+  const [prepareSignUpMutation] = usePrepareSignUpMutation()
 
   // fields
   const { email, username, password, emailVerificationCode } = useAuthForm()
@@ -76,6 +59,11 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: SignUpF
   // modal
   const toggleAuthModal = useAuthModalToggle()
   const setAuthMode = useSetAuthMode()
+
+  // Countdown
+  const newEmailVerificationCodeTime = useNewEmailVerificationCodeTime()
+  const refreshNewEmailVerificationCodeTime = useRefreshNewEmailVerificationCodeTime()
+  const countdown = useCountdown(new Date(newEmailVerificationCodeTime))
 
   // errors
   const [error, setError] = useState<{ message?: string; id?: string }>({})
@@ -125,6 +113,32 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: SignUpF
       })
   }, [emailVerificationCode, email, username, password, signUpMutation, createWallet, setWalletInfos])
 
+  // new code
+  const handleNewCode = useCallback(
+    async (event) => {
+      event.preventDefault()
+
+      onEmailVerificationCodeInput('')
+      setLoading(true)
+
+      prepareSignUpMutation({ variables: { username, email } })
+        .then((res: any) => {
+          if (!res?.data?.prepareSignUp?.error) setAuthMode(AuthMode.EMAIL_VERIFICATION)
+          setLoading(false)
+          refreshNewEmailVerificationCodeTime()
+        })
+        .catch((prepareSignUpError: Error) => {
+          const error = prepareSignUpError?.graphQLErrors?.[0]
+          if (error) setError({ message: error.message, id: error.extensions?.id })
+          else if (!loading) setError({})
+
+          console.error(prepareSignUpError)
+          setLoading(false)
+        })
+    },
+    [email, username, prepareSignUpMutation, setAuthMode, onEmailVerificationCodeInput]
+  )
+
   return (
     <>
       <RowCenter justify="space-between" style={{ padding: '0 8px' }}>
@@ -142,7 +156,7 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: SignUpF
             placeholder="Code"
             type="text"
             onUserInput={onEmailVerificationCodeInput}
-            loading={loading}
+            loading={emailVerificationCode.length > 0 && loading}
             $valid={error.id !== 'emailVerificationCode' || loading}
           />
 
@@ -151,7 +165,11 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: SignUpF
 
         <Column gap={8}>
           <TYPE.body>The code has been emailed to {email}</TYPE.body>
-          <ResendCode>Resend the code</ResendCode>
+          {countdown?.seconds ? (
+            <TYPE.subtitle>New code in {countdown.seconds} seconds</TYPE.subtitle>
+          ) : (
+            <ResendCode onClick={handleNewCode}>Resend the code</ResendCode>
+          )}
         </Column>
       </Column>
     </>

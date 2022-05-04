@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import GoogleLogin from 'react-google-login'
-import { useMutation, gql } from '@apollo/client'
 
 import { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
@@ -9,7 +8,13 @@ import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton, CustomGoogleLogin } from '@/components/Button'
 import { AuthMode } from '@/state/auth/actions'
-import { useAuthForm, useAuthActionHanlders, useSetAuthMode } from '@/state/auth/hooks'
+import {
+  useAuthForm,
+  useAuthActionHanlders,
+  useSetAuthMode,
+  useSignInMutation,
+  useGoogleAuthMutation,
+} from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import Separator from '@/components/Separator'
 
@@ -37,26 +42,6 @@ const SubmitButton = styled(PrimaryButton)`
   margin: 12px 0;
 `
 
-const SIGN_IN_MUTATION = gql`
-  mutation ($email: String!, $password: String!) {
-    signIn(input: { email: $email, password: $password }) {
-      accessToken
-    }
-  }
-`
-
-const AUTH_GOOGLE_MUTATION = gql`
-  mutation ($token: String!) {
-    authGoogle(token: $token) {
-      accessToken
-      user {
-        id
-        login
-      }
-    }
-  }
-`
-
 interface SignInFormProps {
   onSuccessfulConnexion: (accessToken?: string) => void
 }
@@ -66,8 +51,8 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
   const [loading, setLoading] = useState(false)
 
   // graphql
-  const [signInMutation, signInResult] = useMutation(SIGN_IN_MUTATION)
-  const [authGoogleMutation, authGoogleResult] = useMutation(AUTH_GOOGLE_MUTATION)
+  const [signInMutation, signInResult] = useSignInMutation()
+  const [googleAuthMutation, googleAuthResult] = useGoogleAuthMutation()
 
   // fields
   const { email, password } = useAuthForm()
@@ -81,15 +66,15 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
   const handleGoogleLogin = useCallback(
     async (googleData) => {
       if (googleData.tokenId) {
-        authGoogleMutation({ variables: { token: googleData.tokenId } })
-          .then((res: any) => onSuccessfulConnexion(res?.data?.authGoogle?.accessToken))
+        googleAuthMutation({ variables: { token: googleData.tokenId } })
+          .then((res: any) => onSuccessfulConnexion(res?.data?.googleAuth?.accessToken))
           .catch((err: Error) => {
             console.error(err)
             setLoading(false)
           })
       }
     },
-    [authGoogleMutation, onSuccessfulConnexion, setLoading]
+    [googleAuthMutation, onSuccessfulConnexion, setLoading]
   )
 
   // errors
