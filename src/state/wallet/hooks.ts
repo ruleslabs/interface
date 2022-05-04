@@ -8,7 +8,7 @@ import ERC20ABI from '@/abis/ERC20.json'
 import { BIG_INT_UINT126_HIGH_FACTOR } from '@/constants/misc'
 import { useStarknet } from '@/starknet'
 import { ETH_ADDRESSES } from '@/constants/addresses'
-import { useMultipleContractSingleData } from '@/state/multicall/hooks'
+import { useMultipleContractSingleData } from '@/lib/hooks/multicall'
 
 interface Balance {
   low?: string

@@ -7,5 +7,5 @@ export const MULTICALL_ADDRESSES: AddressMap = {
 }
 
 export const ETH_ADDRESSES: AddressMap = {
-  [SupportedNetworks.GOERLI]: '0x07394cbe418daa16e42b87ba67372d4ab4a5df0b05c6e554d158458ce245bc10',
+  [SupportedNetworks.GOERLI]: '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
 }

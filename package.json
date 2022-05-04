@@ -2,6 +2,7 @@
   "name": "@rulesorg/interface",
   "version": "1.0.0",
   "description": "Rules interface",
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "yarn run clean && next build",
@@ -18,6 +19,7 @@
     "@reach/dialog": "^0.16.2",
     "@reduxjs/toolkit": "^1.6.2",
     "@rulesorg/sdk-core": "^0.1.0",
+    "@rulesorg/starknet-redux-multicall": "0.1.1",
     "@stripe/react-stripe-js": "^1.7.1",
     "@stripe/stripe-js": "^1.27.0",
     "@svgr/webpack": "^6.1.2",
@@ -44,6 +46,7 @@
     "react-spring": "^9.3.2",
     "starknet": "^3.5.1",
     "styled-components": "^5.3.3",
+    "tslib": "^2.4.0",
     "use-count-up": "^3.0.1"
   },
   "devDependencies": {

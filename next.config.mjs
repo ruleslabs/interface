@@ -3,13 +3,13 @@
 // Deps
 // -----------------------------------------------------------------------------
 
-const ESLintPlugin = require('eslint-webpack-plugin')
+import ESLintPlugin from 'eslint-webpack-plugin'
 
 // -----------------------------------------------------------------------------
 // Next.js config
 // -----------------------------------------------------------------------------
 
-module.exports = {
+const defaultConfig = {
   reactStrictMode: true,
   webpack: (config, { dev, isServer, defaultLoaders, dir }) => {
     if (dev) {
@@ -62,3 +62,5 @@ module.exports = {
     return config
   },
 }
+
+export default defaultConfig

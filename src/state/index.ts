@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query/react'
 
+import multicall from '@/lib/state/multicall'
 import search from './search/reducer'
 import application from './application/reducer'
 import auth from './auth/reducer'
 import user from './user/reducer'
 import deck from './deck/reducer'
-import multicall from './multicall/reducer'
 
 const store = configureStore({
   reducer: {
@@ -15,7 +15,7 @@ const store = configureStore({
     auth,
     user,
     deck,
-    multicall,
+    multicall: multicall.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: true }),
 })

@@ -9,7 +9,7 @@ import { Provider as ReduxProvider } from 'react-redux'
 
 import { StarknetProvider } from '@/starknet'
 import ApplicationUpdater from '@/state/application/updater'
-import MulticallUpdater from '@/state/multicall/updater'
+import { MulticallUpdater } from '@/lib/state/multicall'
 import { withApollo } from '@/apollo/apollo'
 import DefaultLayout from '@/components/Layout'
 import StyledThemeProvider from '@/styles/theme'
