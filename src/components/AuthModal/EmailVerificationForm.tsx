@@ -20,6 +20,7 @@ import {
 import { useAuthModalToggle } from '@/state/application/hooks'
 import useCreateWallet, { WalletInfos } from '@/hooks/useCreateWallet'
 import useCountdown from '@/hooks/useCountdown'
+import { passwordHasher } from '@/utils/password'
 
 import Close from '@/images/close.svg'
 
@@ -74,6 +75,8 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: SignUpF
 
     setLoading(true)
 
+    const hashedPassword = await passwordHasher(password)
+
     let newWalletInfos = walletInfos
 
     try {
@@ -95,7 +98,7 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: SignUpF
       variables: {
         email,
         username,
-        password,
+        password: hashedPassword,
         starknetAddress,
         rulesPrivateKey,
         rulesPrivateKeyBackup,

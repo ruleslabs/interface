@@ -17,6 +17,7 @@ import {
 } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import Separator from '@/components/Separator'
+import { passwordHasher } from '@/utils/password'
 
 import Close from '@/images/close.svg'
 
@@ -68,8 +69,12 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
       if (googleData.tokenId) {
         googleAuthMutation({ variables: { token: googleData.tokenId } })
           .then((res: any) => onSuccessfulConnexion(res?.data?.googleAuth?.accessToken))
-          .catch((err: Error) => {
-            console.error(err)
+          .catch((googleAuthError: Error) => {
+            const error = googleAuthError?.graphQLErrors?.[0]
+            if (error) setError({ message: error.message, id: error.extensions?.id })
+            else if (!loading) setError({})
+
+            console.error(googleAuthError)
             setLoading(false)
           })
       }
@@ -82,12 +87,14 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
 
   // signin
   const handleSignIn = useCallback(
-    (event) => {
+    async (event) => {
       event.preventDefault()
+
+      const hashedPassword = await passwordHasher(password)
 
       setLoading(true)
 
-      signInMutation({ variables: { email, password } })
+      signInMutation({ variables: { email, password: hashedPassword } })
         .then((res: any) => onSuccessfulConnexion(res?.data?.signIn?.accessToken))
         .catch((signInError: Error) => {
           const error = signInError?.graphQLErrors?.[0]
@@ -132,7 +139,7 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
               type="email"
               autoComplete="email"
               onUserInput={onEmailInput}
-              error={error?.id !== 'email' || loading}
+              $valid={error?.id !== 'email' || loading}
             />
             <Input
               id="password"
@@ -141,8 +148,9 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
               type="password"
               autoComplete="password"
               onUserInput={onPasswordInput}
-              error={error?.id !== 'password' || loading}
+              $valid={error?.id !== 'password' || loading}
             />
+            <TYPE.body color="error">{error.message}</TYPE.body>
           </Column>
 
           <Column gap={12}>

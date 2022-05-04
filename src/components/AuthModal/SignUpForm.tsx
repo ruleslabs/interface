@@ -17,6 +17,7 @@ import {
 import { useAuthModalToggle } from '@/state/application/hooks'
 import Checkbox from '@/components/Checkbox'
 import Link from '@/components/Link'
+import { validatePassword, passwordHasher, PasswordError } from '@/utils/password'
 
 import Close from '@/images/close.svg'
 
@@ -74,6 +75,31 @@ export default function SignUpForm() {
     async (event) => {
       event.preventDefault()
 
+      // Check tos
+      if (!tosAgreed) {
+        setError({ message: 'You must accept the terms and conditions' })
+        return
+      }
+
+      // Check password
+      const passwordError = await validatePassword(email, username, password)
+      if (passwordError !== null) {
+        switch (passwordError) {
+          case PasswordError.LENGTH:
+            setError({ message: 'Password should be at least 6 characters long' })
+            break
+
+          case PasswordError.LEVENSHTEIN:
+            setError({ message: 'Password too similar to your email or username' })
+            break
+
+          case PasswordError.PWNED:
+            setError({ message: 'This password appears in a public data breach, please choose a stronger password' })
+            break
+        }
+        return
+      }
+
       setLoading(true)
 
       prepareSignUpMutation({ variables: { username, email } })
@@ -91,7 +117,7 @@ export default function SignUpForm() {
           setLoading(false)
         })
     },
-    [email, username, prepareSignUpMutation, setAuthMode]
+    [email, username, password, prepareSignUpMutation, setAuthMode, tosAgreed]
   )
 
   return (

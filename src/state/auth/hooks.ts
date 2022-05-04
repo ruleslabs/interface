@@ -38,10 +38,6 @@ const GOOGLE_AUTH_MUTATION = gql`
   mutation ($token: String!) {
     googleAuth(token: $token) {
       accessToken
-      user {
-        id
-        login
-      }
     }
   }
 `

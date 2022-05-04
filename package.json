@@ -36,6 +36,7 @@
     "express": "^4.17.2",
     "graphql": "^16.2.0",
     "isomorphic-unfetch": "^3.1.0",
+    "js-levenshtein": "^1.1.6",
     "moment": "^2.29.1",
     "next": "^12.1.0",
     "react": "^17.0.2",

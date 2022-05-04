@@ -90,8 +90,8 @@ export function decodeKey(key: Uint8Array): string {
   return `0x${arrayToHex(key)}`
 }
 
-const hexToArray = (hex: string): Uint8Array => new Uint8Array(Buffer.from(padOddLengthHex(hex), 'hex'))
+export const hexToArray = (hex: string): Uint8Array => new Uint8Array(Buffer.from(padOddLengthHex(hex), 'hex'))
 
-const arrayToHex = (array: Uint8Array): string => Buffer.from(array).toString('hex')
+export const arrayToHex = (array: Uint8Array): string => Buffer.from(array).toString('hex')
 
-const padOddLengthHex = (hex: string) => (hex.length % 2 ? '0' : '') + hex
+export const padOddLengthHex = (hex: string) => (hex.length % 2 ? '0' : '') + hex
