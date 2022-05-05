@@ -109,7 +109,8 @@ const EmptyCard = ({ onClick, ...props }: EmptyCardProps) => {
 
 function Profile({ userId }: { userId: string }) {
   const router = useRouter()
-  const { userSlug } = router.query
+  const { username } = router.query
+  const userSlug = username?.toLowerCase()
 
   const currentUser = useCurrentUser()
   const isCurrentUserProfile = currentUser?.slug === userSlug
