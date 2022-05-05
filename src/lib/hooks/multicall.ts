@@ -1,6 +1,6 @@
 import { useBlockNumber } from '@/state/application/hooks'
 import multicall from '@/lib/state/multicall'
-import { SkipFirst } from '@types/tuple'
+import { SkipFirst } from '@/types/tuple'
 
 type SkipFirstParam<T extends (...args: any) => any> = SkipFirst<Parameters<T>, 1>
 

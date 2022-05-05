@@ -41,7 +41,7 @@ export default function AuthModal() {
     [queryCurrentUser, toggleAuthModal]
   )
 
-  const renderModal = (authMode: AuthMode) => {
+  const renderModal = (authMode: AuthMode | null) => {
     switch (authMode) {
       case AuthMode.SIGN_IN:
         return <SignInForm onSuccessfulConnexion={onSuccessfulConnexion} />
@@ -50,6 +50,7 @@ export default function AuthModal() {
       case AuthMode.EMAIL_VERIFICATION:
         return <EmailVerificationForm onSuccessfulConnexion={onSuccessfulConnexion} />
     }
+    return null
   }
 
   return (

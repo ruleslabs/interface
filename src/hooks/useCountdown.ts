@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 
-export default function useCountdown(date?: Date) {
-  const calculateTimeLeft = useCallback(() => {
+interface Countdown {
+  hours: number
+  minutes: number
+  seconds: number
+}
+
+export default function useCountdown(date?: Date): Countdown | null {
+  const calculateTimeLeft = useCallback((): Countdown | null => {
     if (!date) return null
 
     const difference = +date - +new Date()
@@ -17,7 +23,7 @@ export default function useCountdown(date?: Date) {
     }
   }, [date])
 
-  const [timeLeft, setTimeLeft] = useState()
+  const [timeLeft, setTimeLeft] = useState<Countdown | null>(null)
 
   useEffect(() => {
     // init when null or exit early when we reach 0

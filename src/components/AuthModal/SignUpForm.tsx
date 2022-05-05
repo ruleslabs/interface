@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import styled from 'styled-components'
+import { ApolloError } from '@apollo/client'
 
 import { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
@@ -17,7 +18,7 @@ import {
 import { useAuthModalToggle } from '@/state/application/hooks'
 import Checkbox from '@/components/Checkbox'
 import Link from '@/components/Link'
-import { validatePassword, passwordHasher, PasswordError } from '@/utils/password'
+import { validatePassword, PasswordError } from '@/utils/password'
 
 import Close from '@/images/close.svg'
 
@@ -108,9 +109,9 @@ export default function SignUpForm() {
           else setLoading(false)
           refreshNewEmailVerificationCodeTime()
         })
-        .catch((prepareSignUpError: Error) => {
+        .catch((prepareSignUpError: ApolloError) => {
           const error = prepareSignUpError?.graphQLErrors?.[0]
-          if (error) setError({ message: error.message, id: error.extensions?.id })
+          if (error) setError({ message: error.message, id: error.extensions?.id as string })
           else if (!loading) setError({})
 
           console.error(prepareSignUpError)
@@ -127,14 +128,14 @@ export default function SignUpForm() {
         <StyledClose onClick={toggleAuthModal} />
       </RowCenter>
 
-      <StyledForm key="sign-up-form" onSubmit={handleSignUp} novalidate>
+      <StyledForm key="sign-up-form" onSubmit={handleSignUp} noValidate>
         <Column gap={26}>
           <Column gap={12}>
             <Input
               id="email"
               value={email}
               placeholder="E-mail"
-              type="text"
+              type="email"
               onUserInput={onEmailInput}
               $valid={error?.id !== 'email' || loading}
             />

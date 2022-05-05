@@ -63,7 +63,7 @@ const QUERY_USER = gql`
 export default function ProfileLayout({ children }: { children: React.ReactElement }) {
   const router = useRouter()
   const { username } = router.query
-  const userSlug = username.toLowerCase()
+  const userSlug = typeof username === 'string' ? username.toLowerCase() : null
 
   const { data: userData, loading, error } = useQuery(QUERY_USER, { variables: { slug: userSlug }, skip: !userSlug })
 

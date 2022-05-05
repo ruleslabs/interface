@@ -83,7 +83,7 @@ export function useAuthForm(): AppState['auth']['form'] {
 
 export function useRefreshNewEmailVerificationCodeTime(): () => void {
   const dispatch = useAppDispatch()
-  return useCallback((authMode: AuthMode) => dispatch(refreshNewEmailVerificationCodeTime()), [dispatch])
+  return useCallback(() => dispatch(refreshNewEmailVerificationCodeTime()), [dispatch])
 }
 
 export function useNewEmailVerificationCodeTime(): AppState['auth']['newEmailVerificationCodeTime'] {

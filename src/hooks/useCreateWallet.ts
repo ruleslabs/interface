@@ -19,11 +19,11 @@ export interface WalletInfos {
   backupKey: string
 }
 
-export default function useCreateWallet(): (password: string) => WalletInfos {
+export default function useCreateWallet(): (password: string) => Promise<WalletInfos> {
   const { library } = useStarknet()
 
   return useCallback(
-    async (password: string) => {
+    async (password: string): Promise<WalletInfos> => {
       if (!library) throw new Error('Failed to deploy wallet')
 
       const privateKey = await stark.randomAddress()

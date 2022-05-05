@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import GoogleLogin from 'react-google-login'
+import { ApolloError } from '@apollo/client'
 
 import { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
@@ -69,9 +70,9 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
       if (googleData.tokenId) {
         googleAuthMutation({ variables: { token: googleData.tokenId } })
           .then((res: any) => onSuccessfulConnexion(res?.data?.googleAuth?.accessToken))
-          .catch((googleAuthError: Error) => {
+          .catch((googleAuthError: ApolloError) => {
             const error = googleAuthError?.graphQLErrors?.[0]
-            if (error) setError({ message: error.message, id: error.extensions?.id })
+            if (error) setError({ message: error.message, id: error.extensions?.id as string })
             else if (!loading) setError({})
 
             console.error(googleAuthError)
@@ -96,9 +97,9 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
 
       signInMutation({ variables: { email, password: hashedPassword } })
         .then((res: any) => onSuccessfulConnexion(res?.data?.signIn?.accessToken))
-        .catch((signInError: Error) => {
+        .catch((signInError: ApolloError) => {
           const error = signInError?.graphQLErrors?.[0]
-          if (error) setError({ message: error.message, id: error.extensions?.id })
+          if (error) setError({ message: error.message, id: error.extensions?.id as string })
           else if (!loading) setError({})
 
           console.error(signInError)
@@ -115,7 +116,7 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
         <StyledClose onClick={toggleAuthModal} />
       </RowCenter>
 
-      <StyledForm key="sign-in-form" onSubmit={handleSignIn} novalidate>
+      <StyledForm key="sign-in-form" onSubmit={handleSignIn} noValidate>
         <Column gap={20}>
           {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
             <>

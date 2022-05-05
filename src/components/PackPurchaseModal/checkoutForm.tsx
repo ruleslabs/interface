@@ -88,7 +88,7 @@ export default function CheckoutForm({ stripeClientSecret, paymentIntentError, a
           },
         },
         invalid: {
-          color: theme.red,
+          color: theme.error,
         },
       },
     }),

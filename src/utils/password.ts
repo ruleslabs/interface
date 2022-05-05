@@ -1,5 +1,4 @@
 import levenshtein from 'js-levenshtein'
-import argon2 from 'argon2'
 
 import { PASSWORD_MIN_LEVENSHTEIN, PASSWORD_MIN_LENGTH } from '@/constants/misc'
 import { arrayToHex } from './encryption'

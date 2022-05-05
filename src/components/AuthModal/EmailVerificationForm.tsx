@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
+import { ApolloError } from '@apollo/client'
 
 import { EMAIL_VERIFICATION_CODE_LENGTH } from '@/constants/misc'
 import { RowCenter } from '@/components/Row'
@@ -41,7 +42,7 @@ interface EmailVerificationFormProps {
   onSuccessfulConnexion: (accessToken?: string) => void
 }
 
-export default function EmailVerificationForm({ onSuccessfulConnexion }: SignUpFormProps) {
+export default function EmailVerificationForm({ onSuccessfulConnexion }: EmailVerificationFormProps) {
   // Wallet
   const createWallet = useCreateWallet()
   const [walletInfos, setWalletInfos] = useState<WalletInfos | null>(null)
@@ -64,56 +65,58 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: SignUpF
   // Countdown
   const newEmailVerificationCodeTime = useNewEmailVerificationCodeTime()
   const refreshNewEmailVerificationCodeTime = useRefreshNewEmailVerificationCodeTime()
-  const countdown = useCountdown(new Date(newEmailVerificationCodeTime))
+  const countdown = useCountdown(new Date(newEmailVerificationCodeTime ?? 0))
 
   // errors
   const [error, setError] = useState<{ message?: string; id?: string }>({})
 
   // signUp
-  useEffect(async () => {
+  useEffect(() => {
     if (emailVerificationCode.length !== EMAIL_VERIFICATION_CODE_LENGTH) return
 
     setLoading(true)
 
-    const hashedPassword = await passwordHasher(password)
+    const signUp = async () => {
+      const hashedPassword = await passwordHasher(password)
 
-    let newWalletInfos = walletInfos
+      let newWalletInfos = walletInfos
 
-    try {
-      if (!newWalletInfos) {
-        newWalletInfos = await createWallet(password)
-        setWalletInfos(newWalletInfos)
-      }
-    } catch (error: Error) {
-      setError({ message: `${error.message}, contact support if the error persist.` })
+      try {
+        if (!newWalletInfos) {
+          newWalletInfos = await createWallet(password)
+          setWalletInfos(newWalletInfos)
+        }
+      } catch (error: any) {
+        setError({ message: `${error.message}, contact support if the error persist.` })
 
-      console.error(error)
-      setLoading(false)
-      return
-    }
-
-    const { starknetAddress, userKey: rulesPrivateKey, backupKey: rulesPrivateKeyBackup } = newWalletInfos
-
-    signUpMutation({
-      variables: {
-        email,
-        username,
-        password: hashedPassword,
-        starknetAddress,
-        rulesPrivateKey,
-        rulesPrivateKeyBackup,
-        emailVerificationCode,
-      },
-    })
-      .then((res: any) => onSuccessfulConnexion(res?.data?.signUp?.accessToken))
-      .catch((signUpError: Error) => {
-        const error = signUpError?.graphQLErrors?.[0]
-        if (error) setError({ message: error.message, id: 'emailVerificationCode' })
-        else setError({})
-
-        console.error(signUpError)
+        console.error(error)
         setLoading(false)
+        return
+      }
+
+      const { starknetAddress, userKey: rulesPrivateKey, backupKey: rulesPrivateKeyBackup } = newWalletInfos
+
+      signUpMutation({
+        variables: {
+          email,
+          username,
+          password: hashedPassword,
+          starknetAddress,
+          rulesPrivateKey,
+          rulesPrivateKeyBackup,
+          emailVerificationCode,
+        },
       })
+        .then((res: any) => onSuccessfulConnexion(res?.data?.signUp?.accessToken))
+        .catch((signUpError: ApolloError) => {
+          const error = signUpError?.graphQLErrors?.[0]
+          if (error) setError({ message: error.message, id: 'emailVerificationCode' })
+          else setError({})
+
+          console.error(signUpError)
+        })
+    }
+    signUp().then(() => setLoading(false))
   }, [emailVerificationCode, email, username, password, signUpMutation, createWallet, setWalletInfos])
 
   // new code
@@ -130,9 +133,9 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: SignUpF
           setLoading(false)
           refreshNewEmailVerificationCodeTime()
         })
-        .catch((prepareSignUpError: Error) => {
+        .catch((prepareSignUpError: ApolloError) => {
           const error = prepareSignUpError?.graphQLErrors?.[0]
-          if (error) setError({ message: error.message, id: error.extensions?.id })
+          if (error) setError({ message: error.message, id: error.extensions?.id as string })
           else if (!loading) setError({})
 
           console.error(prepareSignUpError)
