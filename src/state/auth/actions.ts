@@ -6,10 +6,32 @@ export enum AuthMode {
   EMAIL_VERIFICATION,
 }
 
-export const updateEmailField = createAction<{ email: string }>('auth/updateEmailField')
-export const updatePasswordField = createAction<{ password: string }>('auth/updatePasswordField')
-export const updateUsernameField = createAction<{ username: string }>('auth/updateUsernameField')
+export interface AuthEmailPayload {
+  email: string
+}
+
+export interface AuthPasswordPayload {
+  password: string
+}
+
+export interface AuthUsernamePayload {
+  username: string
+}
+
+export interface AuthFormCheckboxPayload {
+  key: string
+  value: boolean
+}
+
+export interface AuthModePayload {
+  authMode: AuthMode | null
+}
+
+export const updateEmailField = createAction<AuthEmailPayload>('auth/updateEmailField')
+export const updatePasswordField = createAction<AuthPasswordPayload>('auth/updatePasswordField')
+export const updateUsernameField = createAction<AuthUsernamePayload>('auth/updateUsernameField')
+export const updateFormCheckboxes = createAction<AuthFormCheckboxPayload>('auth/updateFormCheckboxes')
 
 export const refreshNewEmailVerificationCodeTime = createAction('auth/refreshNewEmailVerificationCodeTime')
 
-export const setAuthMode = createAction<{ authMode: AuthMode | null }>('auth/setAuthMode')
+export const setAuthMode = createAction<AuthModePayload>('auth/setAuthMode')

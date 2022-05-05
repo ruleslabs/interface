@@ -61,7 +61,12 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: EmailVe
     },
     [setEmailVerificationCode]
   )
-  const { email, username, password } = useAuthForm()
+  const {
+    email,
+    username,
+    password,
+    checkboxes: { acceptCommercialEmails },
+  } = useAuthForm()
 
   // modal
   const toggleAuthModal = useAuthModalToggle()
@@ -110,6 +115,7 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: EmailVe
           rulesPrivateKey,
           rulesPrivateKeyBackup,
           emailVerificationCode,
+          acceptCommercialEmails,
         },
       })
         .then((res: any) => onSuccessfulConnexion(res?.data?.signUp?.accessToken))

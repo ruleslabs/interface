@@ -51,15 +51,21 @@ export default function SignUpForm() {
   // graphql
   const [prepareSignUpMutation] = usePrepareSignUpMutation()
 
-  // checkboxes
-  const [tosAgreed, setTosAgreed] = useState(false)
-  const [emailsAgreed, setEmailsAgreed] = useState(false)
-  const toggleTosAgreed = useCallback(() => setTosAgreed(!tosAgreed), [tosAgreed])
-  const toggleEmailAgreed = useCallback(() => setEmailsAgreed(!emailsAgreed), [emailsAgreed])
-
   // fields
-  const { email, password, username } = useAuthForm()
-  const { onEmailInput, onPasswordInput, onUsernameInput } = useAuthActionHanlders()
+  const {
+    email,
+    password,
+    username,
+    checkboxes: { acceptTos, acceptCommercialEmails },
+  } = useAuthForm()
+  const { onEmailInput, onPasswordInput, onUsernameInput, onCheckboxChange } = useAuthActionHanlders()
+
+  // checkboxes
+  const toggleTosAgreed = useCallback(() => onCheckboxChange('acceptTos', !acceptTos), [acceptTos])
+  const toggleEmailAgreed = useCallback(
+    () => onCheckboxChange('acceptCommercialEmails', !acceptCommercialEmails),
+    [acceptCommercialEmails]
+  )
 
   // modal
   const toggleAuthModal = useAuthModalToggle()
@@ -77,7 +83,7 @@ export default function SignUpForm() {
       event.preventDefault()
 
       // Check tos
-      if (!tosAgreed) {
+      if (!acceptTos) {
         setError({ message: 'You must accept the terms and conditions' })
         return
       }
@@ -118,7 +124,7 @@ export default function SignUpForm() {
           setLoading(false)
         })
     },
-    [email, username, password, prepareSignUpMutation, setAuthMode, tosAgreed]
+    [email, username, password, prepareSignUpMutation, setAuthMode, acceptTos]
   )
 
   return (
@@ -160,13 +166,13 @@ export default function SignUpForm() {
           </Column>
 
           <Column gap={12}>
-            <Checkbox value={tosAgreed} onChange={toggleTosAgreed}>
+            <Checkbox value={acceptTos} onChange={toggleTosAgreed}>
               <TYPE.body>
                 I agree to Rules&nbsp;
                 <Link href="/terms-and-conditions">terms and conditions</Link>
               </TYPE.body>
             </Checkbox>
-            <Checkbox value={emailsAgreed} onChange={toggleEmailAgreed}>
+            <Checkbox value={acceptCommercialEmails} onChange={toggleEmailAgreed}>
               <TYPE.body>I want to receive emails about packs and stuff</TYPE.body>
             </Checkbox>
           </Column>

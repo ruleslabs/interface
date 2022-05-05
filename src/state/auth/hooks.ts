@@ -9,6 +9,7 @@ import {
   updateUsernameField,
   setAuthMode,
   refreshNewEmailVerificationCodeTime,
+  updateFormCheckboxes,
   AuthMode,
 } from './actions'
 
@@ -49,6 +50,7 @@ const SIGN_UP_MUTATION = gql`
     $rulesPrivateKey: RulesPrivateKeyAttributes!
     $rulesPrivateKeyBackup: String!
     $emailVerificationCode: String!
+    $acceptCommercialEmails: Boolean!
   ) {
     signUp(
       input: {
@@ -59,6 +61,7 @@ const SIGN_UP_MUTATION = gql`
         rulesPrivateKey: $rulesPrivateKey
         rulesPrivateKeyBackup: $rulesPrivateKeyBackup
         emailVerificationCode: $emailVerificationCode
+        acceptCommercialEmails: $acceptCommercialEmails
       }
     ) {
       accessToken
@@ -92,6 +95,7 @@ export function useAuthActionHanlders(): {
   onEmailInput: (email: string) => void
   onPasswordInput: (password: string) => void
   onUsernameInput: (username: string) => void
+  onCheckboxChange: (key: string, value: boolean) => void
 } {
   const dispatch = useAppDispatch()
 
@@ -116,10 +120,18 @@ export function useAuthActionHanlders(): {
     [dispatch]
   )
 
+  const onCheckboxChange = useCallback(
+    (key: string, value: boolean) => {
+      dispatch(updateFormCheckboxes({ key, value }))
+    },
+    [dispatch]
+  )
+
   return {
     onEmailInput,
     onPasswordInput,
     onUsernameInput,
+    onCheckboxChange,
   }
 }
 
