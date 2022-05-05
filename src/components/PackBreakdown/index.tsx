@@ -11,6 +11,7 @@ import Placeholder from '@/components/Placeholder'
 import { useCreatePaymentIntent } from '@/state/stripe/hooks'
 import PackPurchaseModal from '@/components/PackPurchaseModal'
 import { usePackPurchaseModalToggle } from '@/state/application/hooks'
+import InputStepCounter from '@/components/Input/StepCounter'
 
 interface PackBreakdownProps {
   name: string
@@ -62,9 +63,13 @@ export default function PackBreakdown({
       .then((data) => setStripeClientSecret(data?.clientSecret ?? null))
   }, [id, createPaymentIntent, setPaymentIntentError, setStripeClientSecret])
 
+  const [quantity, setQuantity] = useState(1)
+  const incrementQuantity = useCallback(() => setQuantity(quantity + 1), [quantity, setQuantity])
+  const decrementQuantity = useCallback(() => setQuantity(quantity - 1), [quantity, setQuantity])
+
   return (
     <Card width="350px">
-      <Column gap={32}>
+      <Column gap={28}>
         <Column gap={8}>
           <TYPE.body fontWeight={700} fontSize={28}>
             {name}
@@ -78,9 +83,18 @@ export default function PackBreakdown({
           </TYPE.body>
         </Column>
         {released && (!availableSupply || availableSupply > 0) && availableQuantity ? (
-          <PrimaryButton onClick={purchasePack} large>
-            Acheter - {(price / 100).toFixed(2)}€
-          </PrimaryButton>
+          <Column gap={12}>
+            <InputStepCounter
+              value={quantity}
+              onIncrement={incrementQuantity}
+              onDecrement={decrementQuantity}
+              min={1}
+              max={availableQuantity}
+            />
+            <PrimaryButton onClick={purchasePack} large>
+              Acheter - {(price / 100).toFixed(2)}€
+            </PrimaryButton>
+          </Column>
         ) : (
           <Placeholder>
             {released
@@ -95,7 +109,7 @@ export default function PackBreakdown({
         stripeClientSecret={stripeClientSecret}
         paymentIntentError={paymentIntentError}
         price={price}
-        quantity={1}
+        quantity={quantity}
       />
     </Card>
   )

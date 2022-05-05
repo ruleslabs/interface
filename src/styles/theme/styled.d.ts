@@ -11,6 +11,7 @@ export interface Colors {
   bg2: string
   bg3: string
   bg4: string
+  bg5: string
 
   text1: string
   text2: string
