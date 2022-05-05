@@ -44,3 +44,7 @@ export function useDeckInsertionModalToggle(): () => void {
 export function usePackPurchaseModalToggle(): () => void {
   return useToggleModal(ApplicationModal.PACK_PURCHASE)
 }
+
+export function useNavModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.NAV)
+}

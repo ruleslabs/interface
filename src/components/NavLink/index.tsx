@@ -1,9 +1,10 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import ActiveLink from '@/components/ActiveLink'
+import { TYPE } from '@/styles/theme'
 
-const StyledLink = styled.a`
+const NavStyle = css`
   display: flex;
   padding: 0 20px;
   height: 100%;
@@ -19,17 +20,34 @@ const StyledLink = styled.a`
   &.active {
     font-weight: 700;
   }
+
+  ${({ theme }) => theme.media.medium`
+    &.active,
+    &:hover {
+      background: ${theme.bg5};
+    }
+  `}
 `
 
-interface NavLinkProps {
+const StyledLink = styled.a`
+  ${NavStyle}
+`
+
+const StyledButton = styled(TYPE.body)`
+  ${NavStyle}
+`
+
+interface NavLinkProps extends React.HTMLAttributes<HTMLDivElement> {
+  href?: string
   children: React.ReactNode
-  href: string
 }
 
-export default function NavLink({ children, href }: NavLinkProps) {
-  return (
+export default function NavLink({ children, href, ...props }: NavLinkProps) {
+  return href ? (
     <ActiveLink href={href} activeClassName="active">
-      <StyledLink>{children}</StyledLink>
+      <StyledLink {...props}>{children}</StyledLink>
     </ActiveLink>
+  ) : (
+    <StyledButton {...props}>{children}</StyledButton>
   )
 }

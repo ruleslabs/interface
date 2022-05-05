@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
 import { useCurrentUser } from '@/state/user/hooks'
@@ -18,7 +18,7 @@ const StyledAccountStatus = styled.div`
   height: 100%;
 `
 
-export default function AccountStatus() {
+export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement>) {
   const currentUser = useCurrentUser()
 
   const toggleSettingsModal = useSettingsModalToggle()
@@ -38,7 +38,7 @@ export default function AccountStatus() {
   const toggleSignUpModal = () => toggleAuthModalWithMode(AuthMode.SIGN_UP)
 
   return (
-    <>
+    <div {...props}>
       <StyledAccountStatus>
         {!!currentUser ? (
           <>
@@ -56,6 +56,6 @@ export default function AccountStatus() {
       </StyledAccountStatus>
       <SettingsModal currentUser={currentUser} />
       <AuthModal />
-    </>
+    </div>
   )
 }
