@@ -19,6 +19,11 @@ const StyledAuthModal = styled(Column)`
   padding: 26px;
   background: ${({ theme }) => theme.bg2};
   border-radius: 4px;
+
+  ${({ theme }) => theme.media.medium`
+    width: 100%;
+    height: 100%;
+  `}
 `
 
 export default function AuthModal() {

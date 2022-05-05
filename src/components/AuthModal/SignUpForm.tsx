@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
 
-import { RowCenter } from '@/components/Row'
+import { ModalHeader } from '@/components/Modal'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'
@@ -19,14 +19,6 @@ import { useAuthModalToggle } from '@/state/application/hooks'
 import Checkbox from '@/components/Checkbox'
 import Link from '@/components/Link'
 import { validatePassword, PasswordError } from '@/utils/password'
-
-import Close from '@/images/close.svg'
-
-const StyledClose = styled(Close)`
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-`
 
 const StyledForm = styled.form`
   width: 100%;
@@ -129,10 +121,7 @@ export default function SignUpForm() {
 
   return (
     <>
-      <RowCenter justify="space-between" style={{ padding: '0 8px' }}>
-        <TYPE.large>Registration</TYPE.large>
-        <StyledClose onClick={toggleAuthModal} />
-      </RowCenter>
+      <ModalHeader onClick={toggleAuthModal}>Registration</ModalHeader>
 
       <StyledForm key="sign-up-form" onSubmit={handleSignUp} noValidate>
         <Column gap={26}>

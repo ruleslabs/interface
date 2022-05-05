@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
 
+import { ModalHeader } from '@/components/Modal'
 import { EMAIL_VERIFICATION_CODE_LENGTH } from '@/constants/misc'
-import { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'
@@ -21,14 +21,6 @@ import { useAuthModalToggle } from '@/state/application/hooks'
 import useCreateWallet, { WalletInfos } from '@/hooks/useCreateWallet'
 import useCountdown from '@/hooks/useCountdown'
 import { passwordHasher } from '@/utils/password'
-
-import Close from '@/images/close.svg'
-
-const StyledClose = styled(Close)`
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-`
 
 const ResendCode = styled(TYPE.subtitle)`
   display: inline;
@@ -158,10 +150,9 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: EmailVe
 
   return (
     <>
-      <RowCenter justify="space-between" style={{ padding: '0 8px' }}>
+      <ModalHeader toggleModal={toggleAuthModal}>
         <BackButton onClick={() => setAuthMode(AuthMode.SIGN_UP)} />
-        <StyledClose onClick={toggleAuthModal} />
-      </RowCenter>
+      </ModalHeader>
 
       <Column gap={26}>
         <TYPE.large>Enter the code to confirm your registration</TYPE.large>
