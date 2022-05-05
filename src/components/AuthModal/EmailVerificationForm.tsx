@@ -11,7 +11,6 @@ import { BackButton } from '@/components/Button'
 import { AuthMode } from '@/state/auth/actions'
 import {
   useAuthForm,
-  useAuthActionHanlders,
   useSetAuthMode,
   useRefreshNewEmailVerificationCodeTime,
   useNewEmailVerificationCodeTime,
@@ -55,8 +54,14 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: EmailVe
   const [prepareSignUpMutation] = usePrepareSignUpMutation()
 
   // fields
-  const { email, username, password, emailVerificationCode } = useAuthForm()
-  const { onEmailVerificationCodeInput } = useAuthActionHanlders()
+  const [emailVerificationCode, setEmailVerificationCode] = useState('')
+  const onEmailVerificationCodeInput = useCallback(
+    (code: string) => {
+      if (/^[\d]*$/.test(code) && code.length <= EMAIL_VERIFICATION_CODE_LENGTH) setEmailVerificationCode(code)
+    },
+    [setEmailVerificationCode]
+  )
+  const { email, username, password } = useAuthForm()
 
   // modal
   const toggleAuthModal = useAuthModalToggle()
@@ -124,7 +129,7 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: EmailVe
     async (event) => {
       event.preventDefault()
 
-      onEmailVerificationCodeInput('')
+      setEmailVerificationCode('')
       setLoading(true)
 
       prepareSignUpMutation({ variables: { username, email } })
@@ -142,7 +147,7 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: EmailVe
           setLoading(false)
         })
     },
-    [email, username, prepareSignUpMutation, setAuthMode, onEmailVerificationCodeInput]
+    [email, username, prepareSignUpMutation, setAuthMode, setEmailVerificationCode]
   )
 
   return (

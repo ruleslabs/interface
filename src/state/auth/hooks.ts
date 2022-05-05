@@ -2,13 +2,11 @@ import { useCallback } from 'react'
 import { useMutation, gql } from '@apollo/client'
 
 import { AppState } from '@/state'
-import { EMAIL_VERIFICATION_CODE_LENGTH } from '@/constants/misc'
 import { useAppDispatch, useAppSelector } from '@/state/hooks'
 import {
   updateEmailField,
   updatePasswordField,
   updateUsernameField,
-  updateEmailVerificationCodeField,
   setAuthMode,
   refreshNewEmailVerificationCodeTime,
   AuthMode,
@@ -94,7 +92,6 @@ export function useAuthActionHanlders(): {
   onEmailInput: (email: string) => void
   onPasswordInput: (password: string) => void
   onUsernameInput: (username: string) => void
-  onEmailVerificationCodeInput: (code: string) => void
 } {
   const dispatch = useAppDispatch()
 
@@ -119,19 +116,10 @@ export function useAuthActionHanlders(): {
     [dispatch]
   )
 
-  const onEmailVerificationCodeInput = useCallback(
-    (code: string) => {
-      if (/^[\d]*$/.test(code) && code.length <= EMAIL_VERIFICATION_CODE_LENGTH)
-        dispatch(updateEmailVerificationCodeField({ code }))
-    },
-    [dispatch]
-  )
-
   return {
     onEmailInput,
     onPasswordInput,
     onUsernameInput,
-    onEmailVerificationCodeInput,
   }
 }
 

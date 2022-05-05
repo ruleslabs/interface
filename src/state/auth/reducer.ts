@@ -4,7 +4,6 @@ import {
   updateEmailField,
   updatePasswordField,
   updateUsernameField,
-  updateEmailVerificationCodeField,
   setAuthMode,
   refreshNewEmailVerificationCodeTime,
   AuthMode,
@@ -16,7 +15,6 @@ export interface AuthState {
     email: string
     password: string
     username: string
-    emailVerificationCode: string
   }
   newEmailVerificationCodeTime?: number
   authMode: AuthMode | null
@@ -27,7 +25,6 @@ export const initialState: AuthState = {
     email: '',
     password: '',
     username: '',
-    emailVerificationCode: '',
   },
   newEmailVerificationCodeTime: undefined,
   authMode: null,
@@ -43,9 +40,6 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(updateUsernameField, (state, { payload: { username } }) => {
       state.form.username = username
-    })
-    .addCase(updateEmailVerificationCodeField, (state, { payload: { code } }) => {
-      state.form.emailVerificationCode = code
     })
     .addCase(refreshNewEmailVerificationCodeTime, (state) => {
       state.newEmailVerificationCodeTime = new Date().getTime() + EMAIL_VERIFICATION_INTERVAL

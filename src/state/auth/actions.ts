@@ -9,7 +9,6 @@ export enum AuthMode {
 export const updateEmailField = createAction<{ email: string }>('auth/updateEmailField')
 export const updatePasswordField = createAction<{ password: string }>('auth/updatePasswordField')
 export const updateUsernameField = createAction<{ username: string }>('auth/updateUsernameField')
-export const updateEmailVerificationCodeField = createAction<{ code: string }>('auth/updateEmailVerificationCodeField')
 
 export const refreshNewEmailVerificationCodeTime = createAction('auth/refreshNewEmailVerificationCodeTime')
 
