@@ -72,12 +72,15 @@ export default function Header() {
       <Link href="/">
         <StyledLogo onClick={closeModal} />
       </Link>
+
       <NavBar>
         <NavLink href="/packs">Packs</NavLink>
         <NavLink href="/marketplace">Marketplace</NavLink>
         <NavLink href="/community">Community</NavLink>
       </NavBar>
+
       <div style={{ margin: 'auto' }} />
+
       <StyledAccountStatus />
 
       <MobileNavWrapper>

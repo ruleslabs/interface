@@ -45,7 +45,12 @@ const CardPicture = styled.img`
   cursor: pointer;
 `
 
-export default function DeckInsertionModal({ userId }: { userId: string }) {
+interface DeckInsertionModalProps {
+  userId: string
+  cardIndex: number
+}
+
+export default function DeckInsertionModal({ userId, cardIndex }: DeckInsertionModalProps) {
   // search bar
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 200)
@@ -61,14 +66,14 @@ export default function DeckInsertionModal({ userId }: { userId: string }) {
 
   // deck
   const { onInsertion } = useDeckActionHandlers()
-  const { deckCards } = useDeckState()
+  const { deck } = useDeckState()
 
   const handleCardInsertion = useCallback(
     (card: any) => {
       setCards([])
       setCardsTable([])
       setSearch('')
-      onInsertion(card)
+      onInsertion({ card, cardIndex })
       toggleDeckInsertionModal()
     },
     [onInsertion, toggleDeckInsertionModal]
@@ -80,11 +85,11 @@ export default function DeckInsertionModal({ userId }: { userId: string }) {
 
   const dashedDeckCardIds = useMemo(
     () =>
-      deckCards.reduce<string[]>((acc, deckCard: DeckCard) => {
-        acc.push(`-${deckCard.card.id}`) // dashed to exclude them from the algolia search
+      Object.keys(deck).reduce<string[]>((acc, cardIndex: DeckCard['cardIndex']) => {
+        acc.push(`-${deck[cardIndex].id}`) // dashed to exclude them from the algolia search
         return acc
       }, []),
-    [deckCards.length]
+    [deck]
   )
 
   const {

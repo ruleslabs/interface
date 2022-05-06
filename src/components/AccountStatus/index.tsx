@@ -38,8 +38,8 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
   const toggleSignUpModal = () => toggleAuthModalWithMode(AuthMode.SIGN_UP)
 
   return (
-    <div {...props}>
-      <StyledAccountStatus>
+    <>
+      <StyledAccountStatus {...props}>
         {!!currentUser ? (
           <>
             <NavLink href={`/user/${currentUser.slug}`}>{currentUser.username}</NavLink>
@@ -56,6 +56,6 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
       </StyledAccountStatus>
       <SettingsModal currentUser={currentUser} />
       <AuthModal />
-    </div>
+    </>
   )
 }
