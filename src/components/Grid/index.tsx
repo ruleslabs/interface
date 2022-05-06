@@ -13,13 +13,13 @@ const StyledGrid = styled.div<{ cols: number; gap: number }>`
   gap: ${({ gap }) => gap}px;
 `
 
-interface GridProps {
+interface GridProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
   gap?: number
   maxWidth?: number
 }
 
-export default function Grid({ children, maxWidth = MAX_WIDTH, gap = GAP }: GridProps) {
+export default function Grid({ children, maxWidth = MAX_WIDTH, gap = GAP, ...props }: GridProps) {
   const gridRef = useRef<HTMLDivElement>(null)
   const [cols, setCols] = useState(0)
   const { width: gridWidth } = useComponentSize(gridRef)
@@ -29,7 +29,7 @@ export default function Grid({ children, maxWidth = MAX_WIDTH, gap = GAP }: Grid
   }, [setCols, gridWidth])
 
   return (
-    <StyledGrid ref={gridRef} cols={cols} gap={gap}>
+    <StyledGrid ref={gridRef} cols={cols} gap={gap} {...props}>
       {cols && children}
     </StyledGrid>
   )

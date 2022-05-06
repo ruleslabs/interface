@@ -6,7 +6,6 @@ import moment from 'moment'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
-import Card from '@/components/Card'
 import Placeholder from '@/components/Placeholder'
 import { useCreatePaymentIntent } from '@/state/stripe/hooks'
 import PackPurchaseModal from '@/components/PackPurchaseModal'
@@ -68,7 +67,7 @@ export default function PackBreakdown({
   const decrementQuantity = useCallback(() => setQuantity(quantity - 1), [quantity, setQuantity])
 
   return (
-    <Card width="350px">
+    <>
       <Column gap={28}>
         <Column gap={8}>
           <TYPE.body fontWeight={700} fontSize={28}>
@@ -111,6 +110,6 @@ export default function PackBreakdown({
         price={price}
         quantity={quantity}
       />
-    </Card>
+    </>
   )
 }
