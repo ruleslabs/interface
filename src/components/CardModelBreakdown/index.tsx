@@ -57,7 +57,7 @@ export default function CardModelBreakdown({
         {serial ? (
           <Serial>
             #{serial}
-            <span> /{maxSupply}</span>
+            <span> /{maxSupply ?? ' +'}</span>
           </Serial>
         ) : (
           <Serial>

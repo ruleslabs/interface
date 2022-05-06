@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
@@ -13,51 +13,8 @@ import CardModelBreakdown from '@/components/CardModelBreakdown'
 import CardOwnership from '@/components/CardOwnership'
 import CardTransfersHistory from '@/components/CardsTransfersHistory/card'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
-import CardModelVideo from '@/components/CardModelVideo'
-import CardModelPicture from '@/components/CardModelPicture'
+import CardModel3D from '@/components/CardModel3D'
 import { useEtherEURPrice } from '@/hooks/useFiatPrice'
-import CardDisplaySelector from '@/components/CardDisplaySelector'
-
-const StyledCardDisplaySelector = styled(CardDisplaySelector)`
-  position: absolute;
-  top: 0;
-  left: -64px;
-
-  ${({ theme }) => theme.media.small`
-    position: initial;
-    flex-direction: row;
-    margin-bottom: 12px;
-  `}
-
-  ${({ theme }) => theme.media.medium`
-    left: 16px;
-  `}
-`
-
-const StyledCardModelVideo = styled(CardModelVideo)`
-  left: 16px;
-
-  ${({ theme }) => theme.media.small`
-    position: initial;
-    width: 100%;
-  `}
-
-  ${({ theme }) => theme.media.medium`
-    left: 96px;
-  `}
-`
-
-const StyledCardModelPicture = styled(CardModelPicture)`
-  left: 16px;
-
-  ${({ theme }) => theme.media.small`
-    position: initial;
-  `}
-
-  ${({ theme }) => theme.media.medium`
-    left: 96px;
-  `}
-`
 
 const MainSection = styled(Section)`
   position: relative;
@@ -76,6 +33,7 @@ const MainSection = styled(Section)`
 
 const MainSectionCardsWrapper = styled(Column)`
   gap: 24px;
+  width: 350px;
 
   ${({ theme }) => theme.media.small`
     gap: 16px;
@@ -149,10 +107,6 @@ export default function CardBreakout() {
     [cardData?.card, etherEURprice]
   )
 
-  const [cardModelDisplayMode, setCardModelDisplayMode] = useState<'front' | 'back' | 'spin'>('front')
-  const onBackSelected = useCallback(() => setCardModelDisplayMode('back'), [setCardModelDisplayMode])
-  const onFrontSelected = useCallback(() => setCardModelDisplayMode('front'), [setCardModelDisplayMode])
-
   if (!!error || !!loading) {
     if (!!error) console.error(error)
     return null
@@ -169,19 +123,10 @@ export default function CardBreakout() {
       </Section>
 
       <MainSection size="sm">
-        <StyledCardModelVideo
-          src={card.cardModel.videoUrl}
-          style={{ display: cardModelDisplayMode === 'front' ? 'initial' : 'none' }}
-        />
-        <StyledCardModelPicture
-          src={card.cardModel.backPictureUrl}
-          style={{ display: cardModelDisplayMode === 'back' ? 'initial' : 'none' }}
-        />
-        <StyledCardDisplaySelector
+        <CardModel3D
+          videoUrl={card.cardModel.videoUrl}
           pictureUrl={card.cardModel.pictureUrl}
           backPictureUrl={card.cardModel.backPictureUrl}
-          onBackSelected={onBackSelected}
-          onFrontSelected={onFrontSelected}
         />
         <MainSectionCardsWrapper>
           <Card>

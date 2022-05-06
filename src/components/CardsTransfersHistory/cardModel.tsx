@@ -7,13 +7,6 @@ import Row from '@/components/Row'
 import { useSearchTransfers, TransfersSort } from '@/state/search/hooks'
 import TransfersTable from './table'
 
-const StyledCardHistory = styled.div`
-  background: ${({ theme }) => theme.bg2};
-  border-radius: 3px;
-  padding: 32px;
-  width: 100%;
-`
-
 const SortingTitle = styled(Row)`
   align-items: baseline;
   gap: 16px;
@@ -91,7 +84,7 @@ export default function CardModelHistory({ cardModelId, ...props }: CardModelHis
   }, [usersData, setUsersTable])
 
   return (
-    <StyledCardHistory {...props}>
+    <>
       <SortingTitle>
         {(Object.keys(TransfersSort) as Array<keyof typeof TransfersSort>)
           .sort((a: any) => (a === transfersSort ? -1 : 1))
@@ -106,6 +99,7 @@ export default function CardModelHistory({ cardModelId, ...props }: CardModelHis
             </TYPE.body>
           ))}
       </SortingTitle>
+
       <TransfersTable
         transfers={transfers}
         usersTable={usersTable}
@@ -113,6 +107,6 @@ export default function CardModelHistory({ cardModelId, ...props }: CardModelHis
         error={!!usersError || !!usersError}
         showSerialNumber={true}
       />
-    </StyledCardHistory>
+    </>
   )
 }

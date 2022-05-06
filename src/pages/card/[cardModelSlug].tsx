@@ -6,25 +6,53 @@ import { WeiAmount } from '@rulesorg/sdk-core'
 
 import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'
-import Row, { RowReverse } from '@/components/Row'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import CardModelBreakdown from '@/components/CardModelBreakdown'
 import CardModelSales from '@/components/CardModelSales'
 import CardModelTransfersHistory from '@/components/CardsTransfersHistory/cardModel'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
-import CardModelVideo from '@/components/CardModelVideo'
 import { useEtherEURPrice } from '@/hooks/useFiatPrice'
+import CardModel3D from '@/components/CardModel3D'
+import Card from '@/components/Card'
 
-const PageBody = styled(Column)`
-  flex-grow: 1;
+const MainSection = styled(Section)`
+  position: relative;
+  display: flex;
+  flex-direction: row-reverse;
+  margin-bottom: 96px;
+
+  ${({ theme }) => theme.media.small`
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    max-width: 500px;
+    margin-bottom: 64px;
+  `}
+`
+
+const MainSectionCardsWrapper = styled(Column)`
+  gap: 24px;
+  width: 350px;
+
+  ${({ theme }) => theme.media.small`
+    gap: 16px;
+    width: 100%;
+  `}
+`
+
+const CardTransfersHistoryWrapper = styled(Card)`
+  ${({ theme }) => theme.media.extraSmall`
+    display: none;
+  `}
 `
 
 const QUERY_CARD_MODEL = gql`
   query ($slug: String!) {
     cardModel(slug: $slug) {
       id
-      pictureUrl(derivative: "width=512")
+      pictureUrl(derivative: "width=64")
+      backPictureUrl(derivative: "width=512")
       videoUrl
       lowestAsk
       averageSell
@@ -88,37 +116,42 @@ export default function CardModelPage() {
       <Section marginTop="32px">
         <BackButton onClick={router.back} />
       </Section>
+
+      <MainSection size="sm">
+        <CardModel3D
+          videoUrl={cardModel.videoUrl}
+          pictureUrl={cardModel.pictureUrl}
+          backPictureUrl={cardModel.backPictureUrl}
+        />
+        <MainSectionCardsWrapper>
+          <Card>
+            <CardModelBreakdown
+              artistName={cardModel.artist.displayName}
+              artistUsername={cardModel.artist.user.username}
+              artistUserSlug={cardModel.artist.user.slug}
+              season={cardModel.season}
+              scarcity={cardModel.scarcity.name}
+              maxSupply={cardModel.scarcity.maxSupply}
+            />
+          </Card>
+          <Card>
+            <CardModelSales
+              slug={`${cardModelSlug}`}
+              lowestAskEUR={cardModel.lowestAskEUR}
+              averageSellEUR={cardModel.averageSellEUR}
+              cardsOnSaleCount={cardModel.cardsOnSaleCount}
+            />
+          </Card>
+        </MainSectionCardsWrapper>
+      </MainSection>
+
       <Section size="sm">
-        <Row gap={42}>
-          <Column gap={12}>
-            <div style={{ width: '32px', height: '32px', background: '#212121' }} />
-            <div style={{ width: '32px', height: '32px', background: '#212121' }} />
-            <div style={{ width: '32px', height: '32px', background: '#212121' }} />
-          </Column>
-          <PageBody gap={64}>
-            <RowReverse style={{ position: 'relative' }}>
-              <CardModelVideo src={cardModel.videoUrl} shadowImageSrc={cardModel.pictureUrl} />
-              <Column gap={24}>
-                <CardModelBreakdown
-                  artistName={cardModel.artist.displayName}
-                  artistUsername={cardModel.artist.user.username}
-                  artistUserSlug={cardModel.artist.user.slug}
-                  season={cardModel.season}
-                  scarcity={cardModel.scarcity.name}
-                  maxSupply={cardModel.scarcity.maxSupply}
-                />
-                <CardModelSales
-                  slug={`${cardModelSlug}`}
-                  lowestAskEUR={cardModel.lowestAskEUR}
-                  averageSellEUR={cardModel.averageSellEUR}
-                  cardsOnSaleCount={cardModel.cardsOnSaleCount}
-                />
-              </Column>
-            </RowReverse>
-            <CardModelTransfersHistory cardModelId={cardModel.id} style={{ marginTop: '32px' }} />
-            <YoutubeEmbed embedId={cardModel.youtubePreviewId} style={{ minWidth: '100%' }} />
-          </PageBody>
-        </Row>
+        <Column gap={64}>
+          <CardTransfersHistoryWrapper>
+            <CardModelTransfersHistory cardModelId={cardModel.id} />
+          </CardTransfersHistoryWrapper>
+          <YoutubeEmbed embedId={cardModel.youtubePreviewId} style={{ minWidth: '100%' }} />
+        </Column>
       </Section>
     </>
   )
