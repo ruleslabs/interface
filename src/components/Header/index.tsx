@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 import AccountStatus from '@/components/AccountStatus'
-import NavLink from '@/components/NavLink'
+import { NavLink } from '@/components/NavLink'
 import Logo from '@/public/assets/logo.svg'
 import Link from '@/components/Link'
 import Hamburger from '@/images/hamburger.svg'

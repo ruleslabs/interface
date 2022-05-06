@@ -12,4 +12,4 @@ export interface Deck {
 export const setDeckCards = createAction<{ deckCards: DeckCard[] }>('deck/setDeckCards')
 
 export const removeDeckCard = createAction<{ cardIndex: number }>('deck/removeDeckCard')
-export const addDeckCard = createAction<{ deckCards: DeckCard }>('deck/addDeckCard')
+export const addDeckCard = createAction<{ deckCard: DeckCard }>('deck/addDeckCard')

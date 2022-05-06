@@ -14,7 +14,6 @@ import { SearchBar } from '@/components/Input'
 import Grid from '@/components/Grid'
 import { useSearchCards } from '@/state/search/hooks'
 import { useDeckState, useDeckActionHandlers } from '@/state/deck/hooks'
-import { DeckCard } from '@/state/deck/actions'
 import useDebounce from '@/hooks/useDebounce'
 
 import Close from '@/images/close.svg'
@@ -85,8 +84,8 @@ export default function DeckInsertionModal({ userId, cardIndex }: DeckInsertionM
 
   const dashedDeckCardIds = useMemo(
     () =>
-      Object.keys(deck).reduce<string[]>((acc, cardIndex: DeckCard['cardIndex']) => {
-        acc.push(`-${deck[cardIndex].id}`) // dashed to exclude them from the algolia search
+      Object.keys(deck).reduce<string[]>((acc, key: string) => {
+        acc.push(`-${deck[+key].id}`) // dashed to exclude them from the algolia search
         return acc
       }, []),
     [deck]

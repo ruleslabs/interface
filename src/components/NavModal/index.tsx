@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import { useCurrentUser } from '@/state/user/hooks'
 import Modal from '@/components/Modal'
-import NavLink from '@/components/NavLink'
+import { NavLink, NavLinkProps, NavButton } from '@/components/NavLink'
 import Column from '@/components/Column'
 import { useNavModalToggle, useModalOpen, useAuthModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
@@ -29,11 +29,19 @@ const NavWrapper = styled(Column)`
   right: 18px;
 `
 
-const StyledNavLink = styled(NavLink)`
+const NavLinkButtonStyle = css`
   width: 100%;
   padding: 14px 12px;
   font-size: 1rem;
   height: fit-content;
+`
+
+const StyledNavLink = styled(NavLink)`
+  ${NavLinkButtonStyle}
+`
+
+const StyledNavButton = styled(NavButton)`
+  ${NavLinkButtonStyle}
 `
 
 interface MenuLink {
@@ -47,7 +55,7 @@ const menuLinks: MenuLink[] = [
   { name: 'Community', link: '/community' },
 ] // TODO: move it somewhere else as a single source of truth
 
-const CustomNavLink = (props: React.HTMLAttributes<HTMLDivElement>) => {
+const CustomNavLink = (props: NavLinkProps) => {
   const toggleNavModal = useNavModalToggle()
 
   return <StyledNavLink onClick={toggleNavModal} {...props} />
@@ -113,7 +121,7 @@ export default function NavModal() {
                 </CustomNavLink>
               ))}
               {!!currentUser ? (
-                <StyledNavLink onClick={toggleSettings}>Settings</StyledNavLink>
+                <StyledNavButton onClick={toggleSettings}>Settings</StyledNavButton>
               ) : (
                 <>
                   <div style={{ margin: 'auto' }} />

@@ -8,7 +8,7 @@ export function useBlockNumber(): number | undefined {
   return useAppSelector((state: AppState) => state.application.blockNumber)
 }
 
-export function useModalOpen(modal: ApplicationModal): boolean {
+export function useModalOpen(modal: ApplicationModal | null): boolean {
   const openModal = useAppSelector((state) => state.application.openModal)
   return openModal === modal
 }

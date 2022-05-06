@@ -26,7 +26,7 @@ export default function CardSelectorBreakdown({
   price,
 }: CardSelectorBreakdownProps) {
   return (
-    <Card width="350px">
+    <Card>
       <Column gap={32}>
         <Row gap={12}>
           <CardModelImage src={pictureUrl} />

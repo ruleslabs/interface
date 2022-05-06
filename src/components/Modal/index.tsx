@@ -130,7 +130,7 @@ const StyledClose = styled(Close)`
 
 interface ModalHeaderProps {
   children: React.ReactNode
-  toggleModal: string
+  toggleModal: () => void
 }
 
 export const ModalHeader = ({ children, toggleModal }: ModalHeaderProps) => {

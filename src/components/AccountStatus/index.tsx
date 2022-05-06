@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
 import { useCurrentUser } from '@/state/user/hooks'
-import NavLink from '@/components/NavLink'
+import { NavLink } from '@/components/NavLink'
 import { useSettingsModalToggle, useAuthModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'

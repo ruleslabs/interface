@@ -121,7 +121,7 @@ export default function SignUpForm() {
 
   return (
     <>
-      <ModalHeader onClick={toggleAuthModal}>Registration</ModalHeader>
+      <ModalHeader toggleModal={toggleAuthModal}>Registration</ModalHeader>
 
       <StyledForm key="sign-up-form" onSubmit={handleSignUp} noValidate>
         <Column gap={26}>

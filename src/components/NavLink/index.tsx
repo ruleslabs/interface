@@ -37,17 +37,23 @@ const StyledButton = styled(TYPE.body)`
   ${NavStyle}
 `
 
-interface NavLinkProps extends React.HTMLAttributes<HTMLDivElement> {
-  href?: string
+export interface NavLinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
+  href: string
   children: React.ReactNode
 }
 
-export default function NavLink({ children, href, ...props }: NavLinkProps) {
-  return href ? (
+export function NavLink({ children, href, ...props }: NavLinkProps) {
+  return (
     <ActiveLink href={href} activeClassName="active">
       <StyledLink {...props}>{children}</StyledLink>
     </ActiveLink>
-  ) : (
-    <StyledButton {...props}>{children}</StyledButton>
   )
+}
+
+export interface NavButtonProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode
+}
+
+export function NavButton({ children, ...props }: NavButtonProps) {
+  return <StyledButton {...props}>{children}</StyledButton>
 }

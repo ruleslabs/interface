@@ -103,7 +103,7 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
 
   return (
     <>
-      <ModalHeader onClick={toggleAuthModal}>Connection</ModalHeader>
+      <ModalHeader toggleModal={toggleAuthModal}>Connection</ModalHeader>
 
       <StyledForm key="sign-in-form" onSubmit={handleSignIn} noValidate>
         <Column gap={20}>
