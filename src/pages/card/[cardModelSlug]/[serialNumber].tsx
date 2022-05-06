@@ -6,8 +6,8 @@ import { WeiAmount } from '@rulesorg/sdk-core'
 
 import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'
-import Row, { RowReverse } from '@/components/Row'
 import Column from '@/components/Column'
+import Card from '@/components/Card'
 import { TYPE } from '@/styles/theme'
 import CardModelBreakdown from '@/components/CardModelBreakdown'
 import CardOwnership from '@/components/CardOwnership'
@@ -18,8 +18,75 @@ import CardModelPicture from '@/components/CardModelPicture'
 import { useEtherEURPrice } from '@/hooks/useFiatPrice'
 import CardDisplaySelector from '@/components/CardDisplaySelector'
 
-const PageBody = styled(Column)`
-  flex-grow: 1;
+const StyledCardDisplaySelector = styled(CardDisplaySelector)`
+  position: absolute;
+  top: 0;
+  left: -64px;
+
+  ${({ theme }) => theme.media.small`
+    position: initial;
+    flex-direction: row;
+    margin-bottom: 12px;
+  `}
+
+  ${({ theme }) => theme.media.medium`
+    left: 16px;
+  `}
+`
+
+const StyledCardModelVideo = styled(CardModelVideo)`
+  left: 16px;
+
+  ${({ theme }) => theme.media.small`
+    position: initial;
+    width: 100%;
+  `}
+
+  ${({ theme }) => theme.media.medium`
+    left: 96px;
+  `}
+`
+
+const StyledCardModelPicture = styled(CardModelPicture)`
+  left: 16px;
+
+  ${({ theme }) => theme.media.small`
+    position: initial;
+  `}
+
+  ${({ theme }) => theme.media.medium`
+    left: 96px;
+  `}
+`
+
+const MainSection = styled(Section)`
+  position: relative;
+  display: flex;
+  flex-direction: row-reverse;
+  margin-bottom: 96px;
+
+  ${({ theme }) => theme.media.small`
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    max-width: 500px;
+    margin-bottom: 64px;
+  `}
+`
+
+const MainSectionCardsWrapper = styled(Column)`
+  gap: 24px;
+
+  ${({ theme }) => theme.media.small`
+    gap: 16px;
+    width: 100%;
+  `}
+`
+
+const CardTransfersHistoryWrapper = styled(Card)`
+  ${({ theme }) => theme.media.extraSmall`
+    display: none;
+  `}
 `
 
 const QUERY_CARD = gql`
@@ -60,7 +127,7 @@ const QUERY_CARD = gql`
   }
 `
 
-export default function RuleBreakout() {
+export default function CardBreakout() {
   const router = useRouter()
   const { cardModelSlug, serialNumber } = router.query
   const cardSlug = `${cardModelSlug}-${serialNumber}`
@@ -100,47 +167,52 @@ export default function RuleBreakout() {
       <Section marginTop="32px">
         <BackButton onClick={router.back} />
       </Section>
-      <Section size="sm">
-        <Row gap={42}>
-          <CardDisplaySelector
-            pictureUrl={card.cardModel.pictureUrl}
-            backPictureUrl={card.cardModel.backPictureUrl}
-            onBackSelected={onBackSelected}
-            onFrontSelected={onFrontSelected}
-          />
-          <PageBody gap={64}>
-            <RowReverse style={{ position: 'relative' }}>
-              {cardModelDisplayMode === 'front' ? (
-                <CardModelVideo src={card.cardModel.videoUrl} />
-              ) : cardModelDisplayMode === 'back' ? (
-                <CardModelPicture src={card.cardModel.backPictureUrl} />
-              ) : null}
-              <Column gap={24}>
-                <CardModelBreakdown
-                  artistName={card.cardModel.artist.displayName}
-                  artistUsername={card.cardModel.artist.user.username}
-                  artistUserSlug={card.cardModel.artist.user.slug}
-                  season={card.cardModel.season}
-                  scarcity={card.cardModel.scarcity.name}
-                  maxSupply={card.cardModel.scarcity.maxSupply}
-                  serial={card.serialNumber}
-                />
-                <CardOwnership
-                  ownerSlug={card.owner.user.slug}
-                  ownerUsername={card.owner.user.username}
-                  ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
-                  askEur={card.askEur}
-                />
-              </Column>
-            </RowReverse>
-            <CardTransfersHistory
-              cardModelId={card.cardModel.id}
-              serialNumber={card.serialNumber}
-              style={{ marginTop: '32px' }}
+
+      <MainSection size="sm">
+        <StyledCardModelVideo
+          src={card.cardModel.videoUrl}
+          style={{ display: cardModelDisplayMode === 'front' ? 'initial' : 'none' }}
+        />
+        <StyledCardModelPicture
+          src={card.cardModel.backPictureUrl}
+          style={{ display: cardModelDisplayMode === 'back' ? 'initial' : 'none' }}
+        />
+        <StyledCardDisplaySelector
+          pictureUrl={card.cardModel.pictureUrl}
+          backPictureUrl={card.cardModel.backPictureUrl}
+          onBackSelected={onBackSelected}
+          onFrontSelected={onFrontSelected}
+        />
+        <MainSectionCardsWrapper>
+          <Card>
+            <CardModelBreakdown
+              artistName={card.cardModel.artist.displayName}
+              artistUsername={card.cardModel.artist.user.username}
+              artistUserSlug={card.cardModel.artist.user.slug}
+              season={card.cardModel.season}
+              scarcity={card.cardModel.scarcity.name}
+              maxSupply={card.cardModel.scarcity.maxSupply}
+              serial={card.serialNumber}
             />
-            <YoutubeEmbed embedId={card.cardModel.youtubePreviewId} style={{ minWidth: '100%' }} />
-          </PageBody>
-        </Row>
+          </Card>
+          <Card>
+            <CardOwnership
+              ownerSlug={card.owner.user.slug}
+              ownerUsername={card.owner.user.username}
+              ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
+              askEur={card.askEur}
+            />
+          </Card>
+        </MainSectionCardsWrapper>
+      </MainSection>
+
+      <Section size="sm">
+        <Column gap={64}>
+          <CardTransfersHistoryWrapper>
+            <CardTransfersHistory cardModelId={card.cardModel.id} serialNumber={card.serialNumber} />
+          </CardTransfersHistoryWrapper>
+          <YoutubeEmbed embedId={card.cardModel.youtubePreviewId} style={{ minWidth: '100%' }} />
+        </Column>
       </Section>
     </>
   )

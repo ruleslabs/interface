@@ -1,17 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 
 import { TYPE } from '@/styles/theme'
 import { useSearchTransfers } from '@/state/search/hooks'
 import TransfersTable from './table'
-
-const StyledCardHistory = styled.div`
-  background: ${({ theme }) => theme.bg2};
-  border-radius: 3px;
-  padding: 32px;
-  width: 100%;
-`
 
 const QUERY_TRANSFERS_USERS = gql`
   query ($ids: [ID!]!) {
@@ -71,7 +63,7 @@ export default function CardTransfersHistory({ cardModelId, serialNumber, ...pro
   }, [usersData, setUsersTable])
 
   return (
-    <StyledCardHistory {...props}>
+    <div {...props}>
       <TYPE.body fontSize={28} fontWeight={700}>
         Historique de cet exemplaire
       </TYPE.body>
@@ -82,6 +74,6 @@ export default function CardTransfersHistory({ cardModelId, serialNumber, ...pro
         error={!!usersError || !!usersError}
         showSerialNumber={false}
       />
-    </StyledCardHistory>
+    </div>
   )
 }

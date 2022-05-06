@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 
 import Column from '@/components/Column'
@@ -7,10 +8,6 @@ import Spin from '@/images/spin.svg'
 
 const StyledCardDisplaySelector = styled(Column)`
   gap: 12px;
-
-  ${({ theme }) => theme.media.medium`
-    flex-direction: row;
-  `}
 
   div {
     border-radius: 3px;
@@ -28,7 +25,7 @@ const StyledCardDisplaySelector = styled(Column)`
   }
 `
 
-interface CardDisplaySelectorProps {
+interface CardDisplaySelectorProps extends React.HTMLAttributes<HTMLDivElement> {
   pictureUrl: string
   backPictureUrl: string
   onFrontSelected: () => void
@@ -40,9 +37,10 @@ export default function CardDisplaySelector({
   backPictureUrl,
   onFrontSelected,
   onBackSelected,
+  ...props
 }: CardDisplaySelectorProps) {
   return (
-    <StyledCardDisplaySelector>
+    <StyledCardDisplaySelector {...props}>
       <div onClick={onFrontSelected}>
         <img src={pictureUrl} />
       </div>

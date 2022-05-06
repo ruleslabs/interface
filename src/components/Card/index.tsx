@@ -5,6 +5,10 @@ const Card = styled.div`
   background: ${({ theme }) => theme.bg2};
   border-radius: 3px;
   width: 100%;
+
+  ${({ theme }) => theme.media.small`
+    padding: 22px 26px;
+  `}
 `
 
 export default Card

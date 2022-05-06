@@ -14,6 +14,14 @@ const Avatar = styled.img`
   border-radius: 50%;
 `
 
+const StyledTable = styled(Table)`
+  ${({ theme }) => theme.media.small`
+    td:first-child {
+      display: none;
+    }
+  `}
+`
+
 interface TransfersTableProps {
   transfers: any[]
   usersTable: { [key: string]: any }
@@ -34,7 +42,7 @@ export default function TransfersTable({
   const etherEURprice = useEtherEURPrice()
 
   return (
-    <Table>
+    <StyledTable>
       <thead>
         <tr>
           <td />
@@ -107,6 +115,6 @@ export default function TransfersTable({
           </tr>
         )}
       </tbody>
-    </Table>
+    </StyledTable>
   )
 }

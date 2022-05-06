@@ -5,7 +5,6 @@ import { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
 import Certified from '@/images/certified.svg'
 import Link from '@/components/Link'
-import Card from '@/components/Card'
 
 const UserLogin = styled(RowCenter)`
   margin 4px 0 32px;
@@ -42,7 +41,7 @@ export default function CardModelBreakdown({
   serial,
 }: CardModelBreakdownProps) {
   return (
-    <Card>
+    <>
       <TYPE.medium fontSize={28} fontWeight={700}>
         {artistName}
       </TYPE.medium>
@@ -67,6 +66,6 @@ export default function CardModelBreakdown({
           </Serial>
         )}
       </Column>
-    </Card>
+    </>
   )
 }
