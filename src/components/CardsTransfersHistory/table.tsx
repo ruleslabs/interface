@@ -62,18 +62,18 @@ export default function TransfersTable({
           transfers.map((transfer, index) => (
             <tr key={`rule-nft-history-${index}`}>
               <td>
-                <Link href={`/${usersTable[transfer.toUserId].slug}`}>
+                <Link href={`/user/${usersTable[transfer.toUserId].slug}`}>
                   <Avatar src={usersTable[transfer.toUserId].profile.pictureUrl} />
                 </Link>
               </td>
               <td>
-                <Link href={`/${usersTable[transfer.toUserId].slug}`}>
+                <Link href={`/user/${usersTable[transfer.toUserId].slug}`}>
                   <TYPE.body clickable>{usersTable[transfer.toUserId].username}</TYPE.body>
                 </Link>
               </td>
               <td>
                 {!!transfer.fromUserId ? (
-                  <Link href={`/${usersTable[transfer.fromUserId].slug}`}>
+                  <Link href={`/user/${usersTable[transfer.fromUserId].slug}`}>
                     <TYPE.body clickable>{usersTable[transfer.fromUserId].username}</TYPE.body>
                   </Link>
                 ) : (

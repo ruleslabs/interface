@@ -52,7 +52,7 @@ export default function Community() {
           {certifiedUserLoading
             ? 'loading'
             : certifiedUsers.map((user: any) => (
-                <Link key={`user-${user.slug}`} href={`/${user.slug}`}>
+                <Link key={`user-${user.slug}`} href={`/user/${user.slug}`}>
                   <User username={user.username} pictureUrl={user.profile.pictureUrl} certified={true} />
                 </Link>
               ))}

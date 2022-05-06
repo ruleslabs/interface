@@ -103,9 +103,9 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
           </ColumnCenter>
         </UserSection>
         <TabBar>
-          <TabLink href={`/${userSlug}`}>Showcase</TabLink>
-          <TabLink href={`/${userSlug}/cards`}>Cartes</TabLink>
-          <TabLink href={`/${userSlug}/packs`}>Packs</TabLink>
+          <TabLink href={`/user/${userSlug}`}>Showcase</TabLink>
+          <TabLink href={`/user/${userSlug}/cards`}>Cartes</TabLink>
+          <TabLink href={`/user/${userSlug}/packs`}>Packs</TabLink>
         </TabBar>
       </StyledSection>
       {React.cloneElement(children, { userId: user.id })}

@@ -88,7 +88,7 @@ export default function OffersTable({
                   </Link>
                 </td>
                 <td>
-                  <Link href={`/${usersTable[offer.fromUserId].slug}`}>
+                  <Link href={`/user/${usersTable[offer.fromUserId].slug}`}>
                     <TYPE.body clickable>{usersTable[offer.fromUserId].username}</TYPE.body>
                   </Link>
                 </td>

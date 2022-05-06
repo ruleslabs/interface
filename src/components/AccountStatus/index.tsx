@@ -42,7 +42,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
       <StyledAccountStatus>
         {!!currentUser ? (
           <>
-            <NavLink href={`/${currentUser.slug}`}>{currentUser.username}</NavLink>
+            <NavLink href={`/user/${currentUser.slug}`}>{currentUser.username}</NavLink>
             <IconButton onClick={toggleSettingsModal}>
               <Settings />
             </IconButton>
