@@ -113,7 +113,7 @@ export default function NavModal() {
           ) : (
             <>
               {!!currentUser && (
-                <CustomNavLink href={`/user/user/${currentUser.slug}`}>{currentUser.username}</CustomNavLink>
+                <CustomNavLink href={`/user/${currentUser.slug}`}>{currentUser.username}</CustomNavLink>
               )}
               {menuLinks.map((menuLink: MenuLink, index: number) => (
                 <CustomNavLink key={`nav-link-${index}`} href={menuLink.link} onClick={toggleNavModal}>
