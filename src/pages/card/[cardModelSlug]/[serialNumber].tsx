@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
@@ -14,7 +14,9 @@ import CardOwnership from '@/components/CardOwnership'
 import CardTransfersHistory from '@/components/CardsTransfersHistory/card'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import CardModelVideo from '@/components/CardModelVideo'
+import CardModelPicture from '@/components/CardModelPicture'
 import { useEtherEURPrice } from '@/hooks/useFiatPrice'
+import CardDisplaySelector from '@/components/CardDisplaySelector'
 
 const PageBody = styled(Column)`
   flex-grow: 1;
@@ -39,6 +41,8 @@ const QUERY_CARD = gql`
       cardModel {
         id
         videoUrl
+        pictureUrl(derivative: "width=64")
+        backPictureUrl(derivative: "width=512")
         season
         youtubePreviewId
         artist {
@@ -78,6 +82,10 @@ export default function RuleBreakout() {
     [cardData?.card, etherEURprice]
   )
 
+  const [cardModelDisplayMode, setCardModelDisplayMode] = useState<'front' | 'back' | 'spin'>('front')
+  const onBackSelected = useCallback(() => setCardModelDisplayMode('back'), [setCardModelDisplayMode])
+  const onFrontSelected = useCallback(() => setCardModelDisplayMode('front'), [setCardModelDisplayMode])
+
   if (!!error || !!loading) {
     if (!!error) console.error(error)
     return null
@@ -94,14 +102,19 @@ export default function RuleBreakout() {
       </Section>
       <Section size="sm">
         <Row gap={42}>
-          <Column gap={12}>
-            <div style={{ width: '32px', height: '32px', background: '#212121' }} />
-            <div style={{ width: '32px', height: '32px', background: '#212121' }} />
-            <div style={{ width: '32px', height: '32px', background: '#212121' }} />
-          </Column>
+          <CardDisplaySelector
+            pictureUrl={card.cardModel.pictureUrl}
+            backPictureUrl={card.cardModel.backPictureUrl}
+            onBackSelected={onBackSelected}
+            onFrontSelected={onFrontSelected}
+          />
           <PageBody gap={64}>
             <RowReverse style={{ position: 'relative' }}>
-              <CardModelVideo src={card.cardModel.videoUrl} />
+              {cardModelDisplayMode === 'front' ? (
+                <CardModelVideo src={card.cardModel.videoUrl} />
+              ) : cardModelDisplayMode === 'back' ? (
+                <CardModelPicture src={card.cardModel.backPictureUrl} />
+              ) : null}
               <Column gap={24}>
                 <CardModelBreakdown
                   artistName={card.cardModel.artist.displayName}

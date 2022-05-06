@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const StyledRuleVideo = styled.video`
+const StyledVideo = styled.video`
   position: absolute;
   height: 100%;
   top: 0;
@@ -28,7 +28,7 @@ interface CardModelVideoProps extends React.HTMLAttributes<HTMLVideoElement> {
 export default function CardModelVideo({ src, shadowImageSrc, ...props }: CardModelVideoProps) {
   return (
     <>
-      <StyledRuleVideo src={src} loop autoPlay muted {...props} />
+      <StyledVideo src={src} loop autoPlay muted {...props} />
       {shadowImageSrc && (
         <>
           <CardModelImageShadow src={shadowImageSrc} rotation={3} left={8} bottom={5} opacity={0.2} />
