@@ -21,6 +21,14 @@ const DECK_CARDS_GAP = 32
 const ShowcaseSection = styled(Section)`
   position: relative;
   margin: 48px auto 32px;
+
+  ${({ theme }) => theme.media.small`
+    margin-top: 0 !important;
+  `}
+
+  ${({ theme }) => theme.media.medium`
+    margin-top: 32px;
+  `}
 `
 
 const DeckImage = styled.img`

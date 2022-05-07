@@ -46,7 +46,7 @@ export default function CardModelBreakdown({
         {artistName}
       </TYPE.medium>
       <UserLogin>
-        <Link href={`/${artistUsername}`}>
+        <Link href={`/user/${artistUsername}`}>
           <TYPE.body clickable>{artistUsername}</TYPE.body>
         </Link>
         <Certified width="18px" />

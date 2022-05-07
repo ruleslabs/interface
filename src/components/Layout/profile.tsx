@@ -19,10 +19,23 @@ const StyledSection = styled(Section)`
   height: 397px;
   position: relative;
   display: inline-block;
+
+  ${({ theme }) => theme.media.medium`
+    margin-bottom: 28px;
+  `}
+
+  ${({ theme }) => theme.media.small`
+    height: 463px;
+  `}
 `
 
 const UserSection = styled(Section)`
   z-index: 2;
+  margin-top: -104px;
+
+  ${({ theme }) => theme.media.small`
+    width: fit-content;
+  `}
 `
 
 const Gradient = styled.div`
@@ -81,7 +94,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
     <>
       <StyledSection size="max">
         <Gradient />
-        <UserSection marginTop="-104px">
+        <UserSection>
           <ColumnCenter gap={8} style={{ width: 'fit-content' }}>
             <User
               username={`${user.username}`}

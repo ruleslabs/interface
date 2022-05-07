@@ -30,6 +30,7 @@ const FrameStyle = css`
   ${({ theme }) => theme.media.small`
     position: initial;
     width: 100%;
+    max-width: 500px; /* Safari height bug */
   `}
 
   ${({ theme }) => theme.media.medium`
@@ -61,6 +62,7 @@ export default function CardModel3D({ videoUrl, pictureUrl, backPictureUrl }: Ca
       <StyledVideo
         src={videoUrl}
         style={{ display: cardModelDisplayMode === 'front' ? 'initial' : 'none' }}
+        playsinline
         loop
         autoPlay
         muted
