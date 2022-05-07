@@ -62,7 +62,7 @@ export default function CardModel3D({ videoUrl, pictureUrl, backPictureUrl }: Ca
       <StyledVideo
         src={videoUrl}
         style={{ display: cardModelDisplayMode === 'front' ? 'initial' : 'none' }}
-        playsinline
+        playsInline
         loop
         autoPlay
         muted
