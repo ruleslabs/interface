@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 
 const Table = styled.table`
-  margin-top: 32px;
   border-spacing: 0px;
   width: 100%;
   border-collapse: separate;

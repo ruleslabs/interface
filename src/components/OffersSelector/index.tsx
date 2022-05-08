@@ -20,8 +20,20 @@ const QUERY_OFFERS_USERS = gql`
 const StyledOffersSelector = styled.div`
   background: ${({ theme }) => theme.bg2};
   border-radius: 3px;
-  padding: 32px;
-  width: 100%;
+  padding: 22px 32px;
+`
+
+const AvailabilityCount = styled(TYPE.body)`
+  ${({ theme }) => theme.media.medium`
+    display: none;
+  `}
+`
+
+const TableTitle = styled(TYPE.large)`
+  ${({ theme }) => theme.media.small`
+    width: 100%;
+    text-align: center;
+  `}
 `
 
 interface OffersSelectorProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -83,12 +95,10 @@ export default function OffersSelector({
   return (
     <StyledOffersSelector {...props}>
       <RowBetween alignItems="baseline">
-        <TYPE.body fontSize={28} fontWeight={700}>
-          Sélectionnez un exemplaire
-        </TYPE.body>
-        <TYPE.body>
+        <TableTitle>Select a card</TableTitle>
+        <AvailabilityCount>
           {cardsOnSaleCount} disponible{cardsOnSaleCount > 1 ? 's' : ''}
-        </TYPE.body>
+        </AvailabilityCount>
       </RowBetween>
       <OffersTable
         offers={offers}
@@ -99,6 +109,7 @@ export default function OffersSelector({
         selectOffer={selectOffer}
         sortDesc={sortDesc}
         toggleSort={toggleSort}
+        cardsOnSaleCount={cardsOnSaleCount}
       />
     </StyledOffersSelector>
   )

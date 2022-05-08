@@ -1,12 +1,48 @@
 import { useState, useCallback } from 'react'
+import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
 
 import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'
-import Row from '@/components/Row'
 import OffersSelectorBreakdown from '@/components/OffersSelectorBreakdown'
 import OffersSelector from '@/components/OffersSelector'
+import Card from '@/components/Card'
+
+const MainSection = styled(Section)`
+  display: flex;
+  gap: 64px;
+
+  ${({ theme }) => theme.media.medium`
+    gap: 32px;
+  `}
+
+  ${({ theme }) => theme.media.small`
+    flex-direction: column;
+    gap: 16px;
+  `}
+`
+
+const OffersSelectorBreakdownCard = styled(Card)`
+  width: 350px;
+  height: fit-content;
+
+  ${({ theme }) => theme.media.small`
+    width: 100%;
+  `}
+`
+
+const StyledOffersSelector = styled(OffersSelector)`
+  flex: 1;
+
+  ${({ theme }) => theme.media.medium`
+    padding: 32px 24px;
+  `}
+
+  ${({ theme }) => theme.media.small`
+    padding: 32px 0;
+  `}
+`
 
 const QUERY_CARD_MODEL = gql`
   query ($slug: String!) {
@@ -48,16 +84,16 @@ export default function BuyRule() {
       <Section marginTop="32px">
         <BackButton onClick={router.back} />
       </Section>
-      <Section>
-        <Row justify="end" gap={64}>
-          {isValid && !isLoading && cardModel && (
-            <>
-              <OffersSelector
-                cardModelId={cardModel.id}
-                cardsOnSaleCount={cardModel.cardsOnSaleCount}
-                selectedOffer={selectedOffer}
-                selectOffer={selectOffer}
-              />
+      <MainSection>
+        {isValid && !isLoading && cardModel && (
+          <>
+            <StyledOffersSelector
+              cardModelId={cardModel.id}
+              cardsOnSaleCount={cardModel.cardsOnSaleCount}
+              selectedOffer={selectedOffer}
+              selectOffer={selectOffer}
+            />
+            <OffersSelectorBreakdownCard>
               <OffersSelectorBreakdown
                 artistName={cardModel.artist?.displayName}
                 season={cardModel.season}
@@ -65,10 +101,10 @@ export default function BuyRule() {
                 pictureUrl={cardModel.pictureUrl}
                 price={selectedOffer?.price}
               />
-            </>
-          )}
-        </Row>
-      </Section>
+            </OffersSelectorBreakdownCard>
+          </>
+        )}
+      </MainSection>
     </>
   )
 }

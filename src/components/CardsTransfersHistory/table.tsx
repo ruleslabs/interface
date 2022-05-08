@@ -15,6 +15,8 @@ const Avatar = styled.img`
 `
 
 const StyledTable = styled(Table)`
+  margin-top: 22px;
+
   ${({ theme }) => theme.media.small`
     td:first-child {
       display: none;

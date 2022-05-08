@@ -9,10 +9,33 @@ import Caret from '@/components/Caret'
 import Link from '@/components/Link'
 import { useEtherEURPrice } from '@/hooks/useFiatPrice'
 
+const StyledTable = styled(Table)`
+  margin-top: 22px;
+
+  ${({ theme }) => theme.media.medium`
+    thead td:last-child {
+      display: none;
+    }
+  `}
+`
+
 const StyledCaret = styled(Caret)`
   width: 10px;
   height: 10px;
   margin-left: 8px;
+`
+
+const RadioButtonWrapper = styled.td`
+  width: 72px;
+
+  ${({ theme }) => theme.media.medium`
+    width: 48px;
+  `}
+
+  ${({ theme }) => theme.media.small`
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  `}
 `
 
 interface OffersTableProps {
@@ -41,7 +64,7 @@ export default function OffersTable({
   const etherEURprice = useEtherEURPrice()
 
   return (
-    <Table>
+    <StyledTable>
       <thead>
         <tr>
           <td />
@@ -71,12 +94,12 @@ export default function OffersTable({
 
             return (
               <tr key={`offer-${index}`}>
-                <td style={{ width: '72px' }}>
+                <RadioButtonWrapper>
                   <RadioButton
                     selected={offer.serialNumber === selectedOffer?.serialNumber}
                     onChange={() => selectOffer(offerToSelect)}
                   />
-                </td>
+                </RadioButtonWrapper>
                 <td>
                   <TYPE.body fontWeight={700} onClick={() => selectOffer(offerToSelect)}>
                     {price ? `${price}€` : '-'}
@@ -103,6 +126,6 @@ export default function OffersTable({
           </tr>
         )}
       </tbody>
-    </Table>
+    </StyledTable>
   )
 }
