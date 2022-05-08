@@ -10,6 +10,7 @@ import Section from '@/components/Section'
 import Link from '@/components/Link'
 import Grid from '@/components/Grid'
 import PackCard from '@/components/PackCard'
+import { TYPE } from '@/styles/theme'
 
 const QUERY_USER_PACKS_BALANCES = gql`
   query ($slug: String!) {
@@ -30,7 +31,8 @@ const StyledPackCard = styled(PackCard)`
 
 function Packs({ userId }: { userId: string }) {
   const router = useRouter()
-  const { userSlug } = router.query
+  const { username } = router.query
+  const userSlug = typeof username === 'string' ? username.toLowerCase() : null
 
   const [increaseSort, setIncreaseSort] = useState(true)
 
@@ -51,11 +53,13 @@ function Packs({ userId }: { userId: string }) {
   return (
     <Section>
       <GridHeader sortTexts={['Plus récents', 'Moins récents']} sortValue={increaseSort} onSortUpdate={toggleSort}>
-        {!isValid
-          ? 'An error has occured'
-          : isLoading
-          ? 'Loading...'
-          : `${packsBalances.length} pack${packsBalances.length > 1 ? 's' : ''}`}
+        <TYPE.body>
+          {!isValid
+            ? 'An error has occured'
+            : isLoading
+            ? 'Loading...'
+            : `${packsBalances.length} pack${packsBalances.length > 1 ? 's' : ''}`}
+        </TYPE.body>
       </GridHeader>
       <Grid maxWidth={256}>
         {packsBalances.map((packBalance: any, index: number) => (

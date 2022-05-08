@@ -81,18 +81,19 @@ export function useCardModelOnSale(pictureDerivative: string) {
   const cardModelsOnSale =
     (Boolean(process.env.NEXT_PUBLIC_DEMO) ? queryData?.allCardModels : queryData?.cardModelsOnSale) ?? []
 
-  const cardModels = useMemo(
-    () =>
-      etherEURprice
-        ? cardModelsOnSale.map((cardModel: any) => ({
-            ...cardModel,
-            lowestAskEUR: WeiAmount.fromRawAmount(cardModel.lowestAsk ?? 0)
-              .multiply(Math.round(etherEURprice))
-              .toFixed(2),
-          }))
-        : cardModelsOnSale,
-    [etherEURprice, cardModelsOnSale]
-  )
+  const cardModels = useMemo(() => {
+    if (!etherEURprice) return cardModelsOnSale
+
+    return cardModelsOnSale.map((cardModel: any) => {
+      const weiAmount = WeiAmount.fromRawAmount(cardModel.lowestAsk ?? 0)
+
+      return {
+        ...cardModel,
+        lowestAskETH: weiAmount.toFixed(4),
+        lowestAskEUR: weiAmount.multiply(Math.round(etherEURprice)).toFixed(2),
+      }
+    })
+  }, [etherEURprice, cardModelsOnSale])
 
   return { cardModels, loading, error }
 }

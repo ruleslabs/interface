@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import { Seasons, Scarcity } from '@rulesorg/sdk-core'
 
@@ -5,6 +6,20 @@ import Checkbox from '@/components/Checkbox'
 import Slider from '@/components/Slider'
 import { TYPE } from '@/styles/theme'
 import { useMarketplaceFilters, useTiersFilterToggler, useSeasonsFilterToggler } from '@/state/search/hooks'
+
+import Close from '@/images/close.svg'
+
+const StyledClose = styled(Close)`
+  display: none;
+  right: 18px;
+  top: 24px;
+  position: absolute;
+  cursor: pointer;
+
+  ${({ theme }) => theme.media.medium`
+    display: initial;
+  `}
+`
 
 const StyledMarketplaceSidebar = styled.div`
   background: ${({ theme }) => theme.bg2};
@@ -14,7 +29,10 @@ const StyledMarketplaceSidebar = styled.div`
   bottom: 0;
   left: 0;
   z-index: 1;
-  padding: 40px 0 0;
+
+  ${({ theme }) => theme.media.medium`
+    top: 62px;
+  `}
 `
 
 const SidebarContent = styled.div`
@@ -26,6 +44,10 @@ const SidebarContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 28px;
+
+  ${({ theme }) => theme.media.medium`
+    top: 64px;
+  `}
 `
 
 const SidebarTitle = styled(TYPE.body)`
@@ -46,14 +68,19 @@ const FilterWrapper = styled.div`
   gap: 12px;
 `
 
-export default function MarketplaceSidebar() {
+interface MarketplaceSidebarProps extends React.HTMLAttributes<HTMLDivElement> {
+  dispatch: () => void
+}
+
+export default function MarketplaceSidebar({ dispatch, ...props }: MarketplaceSidebarProps) {
   const filters = useMarketplaceFilters()
 
   const toggleTierFilter = useTiersFilterToggler()
   const toggleSeasonFilter = useSeasonsFilterToggler()
 
   return (
-    <StyledMarketplaceSidebar>
+    <StyledMarketplaceSidebar {...props}>
+      <StyledClose onClick={dispatch} />
       <SidebarContent>
         <SidebarTitle>Filters</SidebarTitle>
 

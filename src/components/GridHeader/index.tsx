@@ -20,9 +20,11 @@ interface GridHeaderProps {
 export default function GridHeader({ sortTexts, sortValue, onSortUpdate, children }: GridHeaderProps) {
   return (
     <RowBetween>
-      <TYPE.body>{children}</TYPE.body>
+      {children}
       <Sort gap={8} onClick={onSortUpdate}>
-        <TYPE.body style={{ lineHeight: 1.6 }}>{sortTexts[sortValue ? 0 : 1]}</TYPE.body>
+        <TYPE.body fontWeight={700} style={{ lineHeight: 1.6 }}>
+          {sortTexts[sortValue ? 0 : 1]}
+        </TYPE.body>
         <Hover width="24" height="24" reverse={!sortValue} />
       </Sort>
     </RowBetween>

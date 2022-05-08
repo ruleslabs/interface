@@ -8,6 +8,7 @@ import Section from '@/components/Section'
 import CardModel from '@/components/CardModel'
 import Grid from '@/components/Grid'
 import { useSearchCards } from '@/state/search/hooks'
+import { TYPE } from '@/styles/theme'
 
 const QUERY_CARDS = gql`
   query ($ids: [ID!]!) {
@@ -58,11 +59,13 @@ function Cards({ userId }: { userId: string }) {
   return (
     <Section>
       <GridHeader sortTexts={['Plus récentes', 'Moins récentes']} sortValue={sortDesc} onSortUpdate={toggleSort}>
-        {!isValid
-          ? 'An error has occured'
-          : isLoading
-          ? 'Loading...'
-          : `${cards.length} carte${cards.length > 1 ? 's' : ''}`}
+        <TYPE.body>
+          {!isValid
+            ? 'An error has occured'
+            : isLoading
+            ? 'Loading...'
+            : `${cards.length} carte${cards.length > 1 ? 's' : ''}`}
+        </TYPE.body>
       </GridHeader>
       {isValid && !isLoading && (
         <Grid gap={64}>
