@@ -6,7 +6,7 @@ export interface OnboardingState {
   onboardingPage: OnboardingPage | null
 }
 
-export const initialState: AuthState = {
+export const initialState: OnboardingState = {
   onboardingPage: null,
 }
 

@@ -109,7 +109,6 @@ export default function OffersSelector({
         selectOffer={selectOffer}
         sortDesc={sortDesc}
         toggleSort={toggleSort}
-        cardsOnSaleCount={cardsOnSaleCount}
       />
     </StyledOffersSelector>
   )
