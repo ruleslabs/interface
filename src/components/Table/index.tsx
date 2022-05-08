@@ -15,7 +15,7 @@ const Table = styled.table`
     border-color: ${({ theme }) => theme.bg2};
     border-style: solid;
 
-    * {
+    & > * {
       width: fit-content;
     }
   }
