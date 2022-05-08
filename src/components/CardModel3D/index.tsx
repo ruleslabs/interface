@@ -59,15 +59,17 @@ export default function CardModel3D({ videoUrl, pictureUrl, backPictureUrl }: Ca
 
   return (
     <>
-      <StyledVideo
-        src={videoUrl}
-        style={{ display: cardModelDisplayMode === 'front' ? 'initial' : 'none' }}
-        playsInline
-        loop
-        autoPlay
-        muted
-      />
-      <StyledImage src={backPictureUrl} style={{ display: cardModelDisplayMode === 'back' ? 'initial' : 'none' }} />
+      <div>
+        <StyledVideo
+          src={videoUrl}
+          style={{ display: cardModelDisplayMode === 'front' ? 'initial' : 'none' }}
+          playsInline
+          loop
+          autoPlay
+          muted
+        />
+        <StyledImage src={backPictureUrl} style={{ display: cardModelDisplayMode === 'back' ? 'initial' : 'none' }} />
+      </div>
       <StyledCardDisplaySelector
         pictureUrl={pictureUrl}
         backPictureUrl={backPictureUrl}
