@@ -37,7 +37,7 @@ const SubmitButton = styled(PrimaryButton)`
 `
 
 interface SignInFormProps {
-  onSuccessfulConnexion: (accessToken?: string) => void
+  onSuccessfulConnexion: (accessToken?: string, onboard?: boolean) => void
 }
 
 export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {

@@ -30,7 +30,7 @@ const ResendCode = styled(TYPE.subtitle)`
 `
 
 interface EmailVerificationFormProps {
-  onSuccessfulConnexion: (accessToken?: string) => void
+  onSuccessfulConnexion: (accessToken?: string, onboard?: boolean) => void
 }
 
 export default function EmailVerificationForm({ onSuccessfulConnexion }: EmailVerificationFormProps) {
@@ -110,7 +110,7 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: EmailVe
           acceptCommercialEmails,
         },
       })
-        .then((res: any) => onSuccessfulConnexion(res?.data?.signUp?.accessToken))
+        .then((res: any) => onSuccessfulConnexion(res?.data?.signUp?.accessToken, true))
         .catch((signUpError: ApolloError) => {
           const error = signUpError?.graphQLErrors?.[0]
           if (error) setError({ message: error.message, id: 'emailVerificationCode' })

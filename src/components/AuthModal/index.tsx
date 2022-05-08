@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import Modal from '@/components/Modal'
 import Column from '@/components/Column'
-import { useModalOpen, useAuthModalToggle } from '@/state/application/hooks'
+import { useModalOpen, useAuthModalToggle, useOnboardingModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
@@ -30,20 +30,23 @@ export default function AuthModal() {
   // modal
   const isOpen = useModalOpen(ApplicationModal.AUTH)
   const toggleAuthModal = useAuthModalToggle()
+  const toggleOnboardingModal = useOnboardingModalToggle()
 
   const authMode = useAuthMode()
 
   // Current user
   const queryCurrentUser = useQueryCurrentUser()
   const onSuccessfulConnexion = useCallback(
-    async (accessToken?: string) => {
+    async (accessToken?: string, onboard?: boolean) => {
       storeAccessToken(accessToken ?? '')
       const currentUser = await queryCurrentUser()
 
-      if (!!currentUser) toggleAuthModal()
-      else window.location.reload()
+      if (!!currentUser) {
+        if (onboard) toggleOnboardingModal()
+        else toggleAuthModal()
+      } else window.location.reload()
     },
-    [queryCurrentUser, toggleAuthModal]
+    [queryCurrentUser, toggleAuthModal, toggleOnboardingModal]
   )
 
   const renderModal = (authMode: AuthMode | null) => {

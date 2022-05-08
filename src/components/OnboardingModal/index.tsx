@@ -24,7 +24,7 @@ const StyledOnboardingModal = styled(Section)`
   `}
 `
 
-export default function AuthModal() {
+export default function OnboardingModal() {
   // modal
   const isOpen = useModalOpen(ApplicationModal.ONBOARDING)
   const toggleOnboardingModal = useOnboardingModalToggle()
@@ -33,6 +33,7 @@ export default function AuthModal() {
 
   const renderModal = (onboardingPage: OnboardingPage | null) => {
     switch (onboardingPage) {
+      default:
       case OnboardingPage.INTRODUCTION:
         return <IntroductionPage nextPage={OnboardingPage.STARTER_PACK} />
       case OnboardingPage.STARTER_PACK:

@@ -9,6 +9,7 @@ import { AuthMode } from '@/state/auth/actions'
 import Settings from '@/images/settings.svg'
 import SettingsModal from '@/components/SettingsModal'
 import AuthModal from '@/components/AuthModal'
+import OnboardingModal from '@/components/OnboardingModal'
 import { PrimaryButton, SecondaryButton, IconButton } from '@/components/Button'
 
 const StyledAccountStatus = styled.div`
@@ -55,6 +56,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
         )}
       </StyledAccountStatus>
       <SettingsModal currentUser={currentUser} />
+      <OnboardingModal />
       <AuthModal />
     </>
   )
