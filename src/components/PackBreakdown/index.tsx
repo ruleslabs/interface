@@ -91,7 +91,7 @@ export default function PackBreakdown({
               max={availableQuantity}
             />
             <PrimaryButton onClick={purchasePack} large>
-              Acheter - {(price / 100).toFixed(2)}€
+              Buy - {(price / 100).toFixed(2)}€
             </PrimaryButton>
           </Column>
         ) : (

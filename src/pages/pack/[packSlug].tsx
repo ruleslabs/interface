@@ -60,7 +60,7 @@ const QUERY_PACK = gql`
       displayName
       price
       cardsPerPack
-      pictureUrl(derivative: "width=256")
+      pictureUrl(derivative: "width=512")
       releaseDate
       maxSupply
       supply

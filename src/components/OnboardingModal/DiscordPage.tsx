@@ -1,0 +1,78 @@
+import styled from 'styled-components'
+
+import { TYPE } from '@/styles/theme'
+import Column, { ColumnCenter } from '@/components/Column'
+import { PageBody, SkipButton, MainActionButton } from './SubComponents'
+import { useOnboardingModalToggle } from '@/state/application/hooks'
+
+const StyledPageBody = styled(PageBody)`
+  ${({ theme }) => theme.media.medium`
+    padding: 48px 32px 0;
+  `}
+`
+
+const DiscordScreenWrapper = styled.div`
+  position: relative;
+  flex: 1;
+  width: 100%;
+
+  img {
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    object-fit: contain;
+  }
+
+  ${({ theme }) => theme.media.medium`
+    img {
+      position: initial;
+    }
+  `}
+`
+
+const PageWrapper = styled(ColumnCenter)`
+  gap: 24px;
+  position: absolute;
+  top: 48px;
+  left: 0;
+  right: 0;
+  bottom: 38px;
+
+  ${({ theme }) => theme.media.medium`
+    position: initial;
+  `}
+`
+
+const PageContent = styled(Column)`
+  width: 440px;
+  gap: 16px;
+
+  * {
+    width: 100%;
+  }
+
+  ${({ theme }) => theme.media.small`
+    width: 100%;
+  `}
+`
+
+export default function DiscordPage() {
+  const toggleOnboardingModal = useOnboardingModalToggle()
+
+  return (
+    <StyledPageBody>
+      <PageWrapper>
+        <TYPE.large textAlign="center">Join the Discord</TYPE.large>
+        <DiscordScreenWrapper>
+          <img src="/assets/discord-screen.png" />
+        </DiscordScreenWrapper>
+        <PageContent>
+          <MainActionButton large>Join</MainActionButton>
+          <SkipButton onClick={toggleOnboardingModal}>Skip</SkipButton>
+        </PageContent>
+      </PageWrapper>
+    </StyledPageBody>
+  )
+}

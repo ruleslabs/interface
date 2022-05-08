@@ -7,6 +7,7 @@ import application from './application/reducer'
 import auth from './auth/reducer'
 import user from './user/reducer'
 import deck from './deck/reducer'
+import onboarding from './onboarding/reducer'
 
 const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ const store = configureStore({
     auth,
     user,
     deck,
+    onboarding,
     multicall: multicall.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: true }),

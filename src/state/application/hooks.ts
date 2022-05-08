@@ -48,3 +48,7 @@ export function usePackPurchaseModalToggle(): () => void {
 export function useNavModalToggle(): () => void {
   return useToggleModal(ApplicationModal.NAV)
 }
+
+export function useOnboardingModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.ONBOARDING)
+}
