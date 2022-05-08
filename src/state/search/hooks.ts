@@ -17,6 +17,16 @@ const CARD_MODELS_ON_SALE_QUERY = gql`
   }
 `
 
+const CARD_MODELS_QUERY = gql`
+  query ($pictureDerivative: String) {
+    allCardModels {
+      slug
+      lowestAsk
+      pictureUrl(derivative: $pictureDerivative)
+    }
+  }
+`
+
 const client = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_ID ?? '', process.env.NEXT_PUBLIC_ALGOLIA_KEY ?? '')
 const algoliaIndexes = {
   transfersPriceDesc: client.initIndex('transfers-price-desc'),
@@ -60,16 +70,25 @@ export function useSeasonsFilterToggler(): (season: number) => void {
 export function useCardModelOnSale(pictureDerivative: string) {
   const etherEURprice = useEtherEURPrice()
 
-  const { data: queryData, loading, error } = useQuery(CARD_MODELS_ON_SALE_QUERY, { variables: { pictureDerivative } })
+  const {
+    data: queryData,
+    loading,
+    error,
+  } = useQuery(Boolean(process.env.NEXT_PUBLIC_DEMO) ? CARD_MODELS_QUERY : CARD_MODELS_ON_SALE_QUERY, {
+    variables: { pictureDerivative },
+  })
 
-  const cardModelsOnSale = queryData?.cardModelsOnSale ?? []
+  const cardModelsOnSale =
+    (Boolean(process.env.NEXT_PUBLIC_DEMO) ? queryData?.allCardModels : queryData?.cardModelsOnSale) ?? []
 
   const cardModels = useMemo(
     () =>
       etherEURprice
         ? cardModelsOnSale.map((cardModel: any) => ({
             ...cardModel,
-            lowestAskEUR: WeiAmount.fromRawAmount(cardModel.lowestAsk).multiply(Math.round(etherEURprice)).toFixed(2),
+            lowestAskEUR: WeiAmount.fromRawAmount(cardModel.lowestAsk ?? 0)
+              .multiply(Math.round(etherEURprice))
+              .toFixed(2),
           }))
         : cardModelsOnSale,
     [etherEURprice, cardModelsOnSale]

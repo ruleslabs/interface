@@ -30,7 +30,7 @@ export default function Grid({ children, maxWidth = MAX_WIDTH, gap = GAP, ...pro
 
   return (
     <StyledGrid ref={gridRef} cols={cols} gap={gap} {...props}>
-      {cols && children}
+      {!!cols && children}
     </StyledGrid>
   )
 }

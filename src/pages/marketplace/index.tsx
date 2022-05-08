@@ -14,6 +14,13 @@ const MarketplaceBody = styled.div`
   margin: 0 64px 32px 347px;
 `
 
+const StyledGrid = styled(Grid)`
+  ${({ theme }) => theme.media.extraSmall`
+    grid-template-columns: repeat(1, 1fr);
+    padding: 0 32px;
+  `}
+`
+
 export default function Marketplace() {
   const [increaseSort, setIncreaseSort] = useState(true)
 
@@ -21,7 +28,7 @@ export default function Marketplace() {
     setIncreaseSort(!increaseSort)
   }, [increaseSort, setIncreaseSort])
 
-  const { cardModels, loading, error } = useCardModelOnSale('width=512')
+  const { cardModels, loading, error } = useCardModelOnSale('width=720')
 
   if (!!error || !!loading) {
     if (!!error) console.error(error)
@@ -39,17 +46,17 @@ export default function Marketplace() {
             sortValue={increaseSort}
             onSortUpdate={toggleSort}
           />
-          <Grid>
+          <StyledGrid>
             {cardModels.map((cardModel: any, index: number) => (
               <ColumnCenter gap={12} key={`mktp-card-${index}`}>
                 <CardModel pictureUrl={cardModel.pictureUrl} cardModelSlug={cardModel.slug} />
                 <TYPE.body textAlign="center">
-                  à partir de <br />
+                  starting from <br />
                   {cardModel.lowestAskEUR ?? '-'} €
                 </TYPE.body>
               </ColumnCenter>
             ))}
-          </Grid>
+          </StyledGrid>
         </MarketplaceBody>
       </Section>
     </>
