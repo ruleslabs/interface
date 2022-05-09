@@ -56,10 +56,10 @@ const StyledInput = styled(InputBase)<{ $valid: boolean }>`
 `
 
 const StyledSearchBar = styled(InputBase)`
-  background: ${({ theme }) => theme.bg3};
-  border: none;
+  background: ${({ theme }) => theme.bg5};
+  border: 1px solid ${({ theme }) => theme.bg3};
   border-radius: 3px;
-  height: 35px;
+  height: 40px;
   outline: none;
   color: ${({ theme }) => theme.text1};
   padding-left: 16px;

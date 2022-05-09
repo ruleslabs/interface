@@ -1,22 +1,101 @@
+import { useState, useCallback, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 
 import Link from '@/components/Link'
 import Section from '@/components/Section'
 import { SearchBar } from '@/components/Input'
-import { PrimaryButton } from '@/components/Button'
-import Row from '@/components/Row'
+import Column from '@/components/Column'
+import Row, { RowCenter } from '@/components/Row'
 import User from '@/components/User'
+import { useSearchUsers, useSearchedUsers } from '@/state/search/hooks'
+import useDebounce from '@/hooks/useDebounce'
+import { TYPE } from '@/styles/theme'
+
+import Certified from '@/images/certified.svg'
+
+const StyledSearchBar = styled(SearchBar)`
+  width: 100%;
+`
+
+const SearchResults = styled(Column)<{ visible: boolean }>`
+  border: solid ${({ theme }) => theme.bg3};
+  border-width: 0 1px 1px;
+  position: absolute;
+  background: ${({ theme }) => theme.bg5};
+  left: 0;
+  right: 0;
+  border-radius: 0 0 3px 3px;
+
+  & > div:first-child {
+    height: 1px;
+    width: 100%;
+    background: ${({ theme }) => theme.bg3};
+    margin: 0 auto;
+  }
+`
+
+const SearchBarWrapper = styled.div<{ focused: boolean }>`
+  position: relative;
+  max-width: 576px;
+  width: 100%;
+
+  ${({ focused }) => `
+    & > ${SearchResults} {
+      ${!focused ? 'display: none;' : ''}
+    }
+
+    & > ${StyledSearchBar} {
+      ${
+        focused &&
+        `
+          border-width: 1px 1px 0;
+          border-radius: 3px 3px 0 0;
+        `
+      }
+    }
+  `}
+`
 
 const UsersHeading = styled.h3`
   font-size: 18px;
   margin: 0 0 16px;
 `
 
+const SearchSuggestedUser = styled(RowCenter)`
+  padding: 8px 16px;
+  cursor: pointer;
+  gap: 16px;
+
+  :hover {
+    background: ${({ theme }) => theme.bg2};
+  }
+
+  img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+  }
+`
+
 const StyledUsersRow = styled(Row)`
   margin-bottom: 60px;
   width: 100%;
   overflow: scroll;
+  gap: 32px;
+`
+
+const USERS_BY_IDS_QUERY = gql`
+  query ($ids: [ID!]!) {
+    usersByIds(ids: $ids) {
+      slug
+      username
+      profile {
+        pictureUrl(derivative: "width=128")
+        certified
+      }
+    }
+  }
 `
 
 const CERTIFIED_USERS_QUERY = gql`
@@ -31,32 +110,106 @@ const CERTIFIED_USERS_QUERY = gql`
   }
 `
 
-export default function Community() {
-  const { data: certifiedUsersData, loading: certifiedUserLoading } = useQuery(CERTIFIED_USERS_QUERY)
+interface CustomUsersRowProps {
+  loading?: boolean
+  users: any[]
+}
 
+const UsersRow = ({ loading = false, users }: CustomUsersRowProps) => {
+  return (
+    <StyledUsersRow>
+      {loading
+        ? 'loading'
+        : users.map((user: any) => (
+            <Link key={`user-${user.slug}`} href={`/user/${user.slug}`}>
+              <User username={user.username} pictureUrl={user.profile.pictureUrl} certified={true} />
+            </Link>
+          ))}
+    </StyledUsersRow>
+  )
+}
+
+export default function Community() {
+  // search bar
+  const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search, 200)
+  const onSearchBarInput = useCallback((value) => setSearch(value), [setSearch])
+
+  // certified
+  const { data: certifiedUsersData, loading: certifiedUsersLoading } = useQuery(CERTIFIED_USERS_QUERY)
   const certifiedUsers = certifiedUsersData?.allCertifiedUsers ?? []
+
+  // search history
+  const { searchedUsers, loading: searchedUsersLoading } = useSearchedUsers()
+
+  // search
+  const [isSearchBarFocused, setIsSearchBarFocused] = useState(false)
+  const [searchSuggestedUserIds, setSearchSuggestedUserIds] = useState<string[]>([])
+
+  const searchBarWrapperRef = useRef(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchBarWrapperRef.current && !searchBarWrapperRef.current.contains(event.target))
+        setIsSearchBarFocused(false)
+    }
+
+    document.addEventListener('click', handleClickOutside, true)
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true)
+    }
+  }, [setIsSearchBarFocused])
+
+  const onSearchBarFocus = useCallback(() => setIsSearchBarFocused(true), [setIsSearchBarFocused])
+
+  const {
+    hits: usersHits,
+    loading: usersHitsLoading,
+    error: usersHitsError,
+  } = useSearchUsers({ search: debouncedSearch })
+
+  console.log(usersHits)
+
+  useEffect(() => {
+    setSearchSuggestedUserIds((usersHits ?? []).map((hit: any) => hit.userId))
+  }, [usersHits, setSearchSuggestedUserIds])
+
+  const {
+    data: usersData,
+    loading: usersLoading,
+    error: usersError,
+  } = useQuery(USERS_BY_IDS_QUERY, { variables: { ids: searchSuggestedUserIds }, skip: !searchSuggestedUserIds.length })
+
+  const searchSuggestedUsers = usersData?.usersByIds ?? []
 
   return (
     <>
       <Section marginBottom="84px" marginTop="44px">
-        <Row gap={16}>
-          <SearchBar style={{ width: '576px' }} placeholder="Chercher un collectionneur..." onUserInput={() => 0} />
-          <PrimaryButton>Rechercher</PrimaryButton>
-        </Row>
+        <SearchBarWrapper ref={searchBarWrapperRef} focused={isSearchBarFocused && searchSuggestedUsers?.length > 0}>
+          <StyledSearchBar
+            placeholder="Look for a collector..."
+            onUserInput={onSearchBarInput}
+            onFocus={onSearchBarFocus}
+          />
+          <SearchResults>
+            <div />
+            {searchSuggestedUsers.map((user) => (
+              <SearchSuggestedUser key={`user-${user.username}`}>
+                <img src={user.profile.pictureUrl} />
+                <RowCenter gap={6}>
+                  <TYPE.body>{user.username}</TYPE.body>
+                  {user.profile.certified && <Certified width="18px" />}
+                </RowCenter>
+              </SearchSuggestedUser>
+            ))}
+          </SearchResults>
+        </SearchBarWrapper>
       </Section>
       <Section>
         <UsersHeading>Vus récemment</UsersHeading>
-        <StyledUsersRow gap={32} />
+        <UsersRow loading={searchedUsersLoading} users={searchedUsers} />
         <UsersHeading>Collectionneurs certifiés</UsersHeading>
-        <StyledUsersRow gap={32}>
-          {certifiedUserLoading
-            ? 'loading'
-            : certifiedUsers.map((user: any) => (
-                <Link key={`user-${user.slug}`} href={`/user/${user.slug}`}>
-                  <User username={user.username} pictureUrl={user.profile.pictureUrl} certified={true} />
-                </Link>
-              ))}
-        </StyledUsersRow>
+        <UsersRow loading={certifiedUsersLoading} users={certifiedUsers} />
       </Section>
     </>
   )

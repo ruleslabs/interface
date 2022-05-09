@@ -27,6 +27,21 @@ const CARD_MODELS_QUERY = gql`
   }
 `
 
+const SEARCHED_USERS_QUERY = gql`
+  query {
+    currentUser {
+      searchedUsers {
+        slug
+        username
+        profile {
+          pictureUrl
+          certified
+        }
+      }
+    }
+  }
+`
+
 const client = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_ID ?? '', process.env.NEXT_PUBLIC_ALGOLIA_KEY ?? '')
 const algoliaIndexes = {
   transfersPriceDesc: client.initIndex('transfers-price-desc'),
@@ -35,6 +50,7 @@ const algoliaIndexes = {
   cardsDateAsc: client.initIndex('cards-date-asc'),
   offersPriceDesc: client.initIndex('offers-price-desc'),
   offersPriceAsc: client.initIndex('offers-price-asc'),
+  users: client.initIndex('users'),
 }
 
 export function useMarketplaceFilters() {
@@ -239,4 +255,33 @@ export function useSearchOffers({ facets, priceDesc = true, skip = false }: Sear
   }, [facetFilters, setOffersSearch, priceDesc, skip])
 
   return offersSearch
+}
+
+interface SearchUsersProps {
+  search?: string
+}
+
+export function useSearchUsers({ search = '' }: SearchUsersProps) {
+  const [usersSearch, setUsersSearch] = useState<Search>({ hits: null, loading: true, error: null })
+
+  useEffect(() => {
+    algoliaIndexes.users
+      .search(search, { page: 0, hitsPerPage: 10 })
+      .then((res) => setUsersSearch({ hits: res.hits, loading: false, error: null }))
+      .catch((err) => {
+        setUsersSearch({ hits: null, loading: false, error: err })
+        console.error(err)
+      })
+  }, [search, setUsersSearch])
+
+  return usersSearch
+}
+
+export function useSearchedUsers() {
+  const { data: queryData, loading, error } = useQuery(SEARCHED_USERS_QUERY)
+  const searchedUsers = [...(queryData?.currentUser?.searchedUsers ?? [])] // mandatory for reverse() to work
+
+  const orderedSearchedUsers = useMemo(() => searchedUsers.reverse(), [searchedUsers])
+
+  return { searchedUsers: orderedSearchedUsers, loading, error }
 }
