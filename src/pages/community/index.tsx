@@ -145,6 +145,7 @@ export default function Community() {
   // search
   const [isSearchBarFocused, setIsSearchBarFocused] = useState(false)
   const [searchSuggestedUserIds, setSearchSuggestedUserIds] = useState<string[]>([])
+  const [searchSuggestedUsers, setSearchSuggestedUsers] = useState<any[]>([])
 
   const searchBarWrapperRef = useRef(null)
 
@@ -168,8 +169,6 @@ export default function Community() {
     error: usersHitsError,
   } = useSearchUsers({ search: debouncedSearch })
 
-  console.log(usersHits)
-
   useEffect(() => {
     setSearchSuggestedUserIds((usersHits ?? []).map((hit: any) => hit.userId))
   }, [usersHits, setSearchSuggestedUserIds])
@@ -180,7 +179,10 @@ export default function Community() {
     error: usersError,
   } = useQuery(USERS_BY_IDS_QUERY, { variables: { ids: searchSuggestedUserIds }, skip: !searchSuggestedUserIds.length })
 
-  const searchSuggestedUsers = usersData?.usersByIds ?? []
+  useEffect(() => {
+    if (usersLoading) return
+    setSearchSuggestedUsers(usersData?.usersByIds ?? [])
+  }, [usersData, usersLoading, setSearchSuggestedUsers])
 
   return (
     <>
@@ -196,7 +198,7 @@ export default function Community() {
             {searchSuggestedUsers.map((user) => (
               <SearchSuggestedUser key={`user-${user.username}`}>
                 <img src={user.profile.pictureUrl} />
-                <RowCenter gap={6}>
+                <RowCenter gap={4}>
                   <TYPE.body>{user.username}</TYPE.body>
                   {user.profile.certified && <Certified width="18px" />}
                 </RowCenter>
@@ -206,9 +208,13 @@ export default function Community() {
         </SearchBarWrapper>
       </Section>
       <Section>
-        <UsersHeading>Vus récemment</UsersHeading>
-        <UsersRow loading={searchedUsersLoading} users={searchedUsers} />
-        <UsersHeading>Collectionneurs certifiés</UsersHeading>
+        {searchedUsers.length > 0 && (
+          <>
+            <UsersHeading>Seen recently</UsersHeading>
+            <UsersRow loading={searchedUsersLoading} users={searchedUsers} />
+          </>
+        )}
+        <UsersHeading>Verified collectors</UsersHeading>
         <UsersRow loading={certifiedUsersLoading} users={certifiedUsers} />
       </Section>
     </>
