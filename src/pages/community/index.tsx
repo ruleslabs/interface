@@ -196,13 +196,15 @@ export default function Community() {
           <SearchResults>
             <div />
             {searchSuggestedUsers.map((user) => (
-              <SearchSuggestedUser key={`user-${user.username}`}>
-                <img src={user.profile.pictureUrl} />
-                <RowCenter gap={4}>
-                  <TYPE.body>{user.username}</TYPE.body>
-                  {user.profile.certified && <Certified width="18px" />}
-                </RowCenter>
-              </SearchSuggestedUser>
+              <Link key={`user-${user.username}`} href={`/user/${user.username}`}>
+                <SearchSuggestedUser>
+                  <img src={user.profile.pictureUrl} />
+                  <RowCenter gap={4}>
+                    <TYPE.body>{user.username}</TYPE.body>
+                    {user.profile.certified && <Certified width="18px" />}
+                  </RowCenter>
+                </SearchSuggestedUser>
+              </Link>
             ))}
           </SearchResults>
         </SearchBarWrapper>

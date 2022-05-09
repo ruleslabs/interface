@@ -2,12 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import NextLink from 'next/link'
 
-const StyledLink = styled.a<{ text: boolean }>`
-  ${({ text, theme }) => `
+const StyledLink = styled.a<{ text: boolean; underline: boolean }>`
+  ${({ text, theme, underline }) => `
     color: ${theme.primary1};
 
     :hover {
-      text-decoration: underline;
+      ${underline ? 'text-decoration: underline;' : ''}
     }
   `}
 `
@@ -15,12 +15,13 @@ const StyledLink = styled.a<{ text: boolean }>`
 interface LinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
   href: string
   children: React.ReactNode
+  underline: boolean
 }
 
-export default function Link({ href, children, ...props }: LinkProps) {
+export default function Link({ href, children, underline = false, ...props }: LinkProps) {
   return (
     <NextLink href={href}>
-      <StyledLink href={href} text={typeof children === 'string'} {...props}>
+      <StyledLink href={href} text={typeof children === 'string'} underline={underline} {...props}>
         {children}
       </StyledLink>
     </NextLink>

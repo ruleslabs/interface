@@ -158,7 +158,9 @@ export default function SignUpForm() {
             <Checkbox value={acceptTos} onChange={toggleTosAgreed}>
               <TYPE.body>
                 I agree to Rules&nbsp;
-                <Link href="/terms-and-conditions">terms and conditions</Link>
+                <Link href="/terms-and-conditions" underline>
+                  terms and conditions
+                </Link>
               </TYPE.body>
             </Checkbox>
             <Checkbox value={acceptCommercialEmails} onChange={toggleEmailAgreed}>
