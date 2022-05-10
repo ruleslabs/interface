@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
-import { ApolloError } from '@apollo/client'
 
 import Section from '@/components/Section'
 import { TYPE } from '@/styles/theme'
@@ -9,7 +8,7 @@ import Row, { RowCenter } from '@/components/Row'
 import { ColumnCenter } from '@/components/Column'
 import User from '@/components/User'
 import TabLink from '@/components/TabLink'
-import { useSearchUserMutation } from '@/state/user/hooks'
+import { useSearchUser } from '@/state/user/hooks'
 
 import Instagram from '@/images/instagram-color.svg'
 import Twitch from '@/images/twitch-white.svg'
@@ -66,24 +65,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
   const { username } = router.query
   const userSlug = typeof username === 'string' ? username.toLowerCase() : null
 
-  const [error, setError] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState<any | null>(null)
-  const [searchUserMutation] = useSearchUserMutation()
-
-  useEffect(() => {
-    if (userSlug)
-      searchUserMutation({ variables: { slug: userSlug } })
-        .then((res: any) => {
-          setLoading(false)
-          setUser(res?.data?.searchUser ?? null)
-        })
-        .catch((error: ApolloError) => {
-          setError(true)
-          setLoading(false)
-          console.error(error)
-        })
-  }, [searchUserMutation])
+  const { user, loading, error } = useSearchUser(userSlug)
 
   if (error || (!user && !loading)) return <TYPE.body>User not found</TYPE.body>
   else if (!user) return null
