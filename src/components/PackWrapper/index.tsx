@@ -21,6 +21,12 @@ const StyledPackCountdownWrapper = styled(ColumnCenter)<{ released: boolean }>`
   gap: 8px;
 `
 
+const CountdownWrapper = styled.div`
+  div {
+    width: 100%;
+  }
+`
+
 interface PackCountdownWrapper {
   releaseDate: Date
   children: React.ReactNode
@@ -32,13 +38,13 @@ export function PackCountdownWrapper({ releaseDate, children }: PackCountdownWra
   return (
     <StyledPackCountdownWrapper released={!countdown}>
       {countdown && (
-        <div>
+        <CountdownWrapper>
           <TYPE.body textAlign="center">Sortie dans</TYPE.body>
           <TYPE.body fontWeight={700} fontSize={48} textAlign="center">
             {String(countdown.hours).padStart(2, '0')}:{String(countdown.minutes).padStart(2, '0')}:
             {String(countdown.seconds).padStart(2, '0')}
           </TYPE.body>
-        </div>
+        </CountdownWrapper>
       )}
       {children}
     </StyledPackCountdownWrapper>
