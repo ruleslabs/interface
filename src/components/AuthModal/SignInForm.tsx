@@ -45,8 +45,8 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
   const [loading, setLoading] = useState(false)
 
   // graphql
-  const [signInMutation, signInResult] = useSignInMutation()
-  const [googleAuthMutation, googleAuthResult] = useGoogleAuthMutation()
+  const [signInMutation] = useSignInMutation()
+  const [googleAuthMutation] = useGoogleAuthMutation()
 
   // fields
   const { email, password } = useAuthForm()

@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
-import { useQuery, gql } from '@apollo/client'
+import { ApolloError } from '@apollo/client'
 
 import Section from '@/components/Section'
 import { TYPE } from '@/styles/theme'
@@ -9,6 +9,7 @@ import Row, { RowCenter } from '@/components/Row'
 import { ColumnCenter } from '@/components/Column'
 import User from '@/components/User'
 import TabLink from '@/components/TabLink'
+import { useSearchUserMutation } from '@/state/user/hooks'
 
 import Instagram from '@/images/instagram-color.svg'
 import Twitch from '@/images/twitch-white.svg'
@@ -60,35 +61,32 @@ const TabBar = styled(Row)`
   gap: 32px;
 `
 
-const QUERY_USER = gql`
-  query ($slug: String!) {
-    user(slug: $slug) {
-      id
-      username
-      profile {
-        pictureUrl(derivative: "width=320")
-        certified
-      }
-    }
-  }
-`
-
 export default function ProfileLayout({ children }: { children: React.ReactElement }) {
   const router = useRouter()
   const { username } = router.query
   const userSlug = typeof username === 'string' ? username.toLowerCase() : null
 
-  const { data: userData, loading, error } = useQuery(QUERY_USER, { variables: { slug: userSlug }, skip: !userSlug })
+  const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<any | null>(null)
+  const [searchUserMutation] = useSearchUserMutation()
 
-  const user = userData?.user
+  useEffect(() => {
+    if (userSlug)
+      searchUserMutation({ variables: { slug: userSlug } })
+        .then((res: any) => {
+          setLoading(false)
+          setUser(res?.data?.searchUser ?? null)
+        })
+        .catch((error: ApolloError) => {
+          setError(true)
+          setLoading(false)
+          console.error(error)
+        })
+  }, [searchUserMutation])
 
-  if (!!error || !!loading) {
-    return null
-  }
-
-  if (!error && !loading && !user) {
-    return <TYPE.body>User not found</TYPE.body>
-  }
+  if (error || (!user && !loading)) return <TYPE.body>User not found</TYPE.body>
+  else if (!user) return null
 
   return (
     <>

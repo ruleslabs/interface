@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useQuery, gql } from '@apollo/client'
+import { useQuery, useMutation, gql } from '@apollo/client'
 
 import { getApolloClient } from '@/apollo/apollo'
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
@@ -16,6 +16,19 @@ const CURRENT_USER_QUERY = gql`
         salt
         iv
         encryptedPrivateKey
+      }
+    }
+  }
+`
+
+const SEARCH_USER_MUTATION = gql`
+  mutation ($slug: String!) {
+    searchUser(slug: $slug) {
+      id
+      username
+      profile {
+        pictureUrl(derivative: "width=320")
+        certified
       }
     }
   }
@@ -49,4 +62,8 @@ export function useQueryCurrentUser(skip = false) {
       return null
     }
   }, [dispatch, setCurrentUser, getApolloClient])
+}
+
+export function useSearchUserMutation() {
+  return useMutation(SEARCH_USER_MUTATION)
 }
