@@ -36,13 +36,19 @@ const DeckImage = styled.img`
   display: block;
 `
 
-const StyledEmptyCard = styled(RowCenter)`
+const StyledEmptyCard = styled(RowCenter)<{ clickable: boolean }>`
   border-radius: 10px;
   transition: background 100ms ease;
 
-  :hover {
-    background: ${({ theme }) => theme.white}20;
-  }
+  ${({ clickable, theme }) =>
+    clickable &&
+    `
+      cursor: pointer;
+
+      :hover {
+        background: ${theme.white}20;
+      }
+    `}
 
   ::after {
     content: '';
@@ -139,7 +145,7 @@ interface EmptyCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const EmptyCard = ({ onClick, ...props }: EmptyCardProps) => {
   return (
-    <StyledEmptyCard style={onClick ? { cursor: 'pointer' } : {}} onClick={onClick} justify="center" {...props}>
+    <StyledEmptyCard clickable={!!onClick} onClick={onClick} justify="center" {...props}>
       {onClick && <TYPE.body fontSize={32}>+</TYPE.body>}
     </StyledEmptyCard>
   )
@@ -242,7 +248,7 @@ function Profile({ userId }: { userId: string }) {
           />
         </DeckGridSecondLine>
       </ShowcaseSection>
-      {isCurrentUserProfile && cardIndexToInsert && (
+      {isCurrentUserProfile && cardIndexToInsert > 0 && (
         <DeckInsertionModal userId={userId} cardIndex={cardIndexToInsert} />
       )}
     </>
