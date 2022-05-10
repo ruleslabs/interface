@@ -63,7 +63,7 @@ const TabBar = styled(Row)`
 export default function ProfileLayout({ children }: { children: React.ReactElement }) {
   const router = useRouter()
   const { username } = router.query
-  const userSlug = typeof username === 'string' ? username.toLowerCase() : null
+  const userSlug = typeof username === 'string' ? username.toLowerCase() : undefined
 
   const { user, loading, error } = useSearchUser(userSlug)
 

@@ -18,7 +18,7 @@ const StyledSearchBar = styled(SearchBar)`
   width: 100%;
 `
 
-const SearchResults = styled(Column)<{ visible: boolean }>`
+const SearchResults = styled(Column)`
   border: solid ${({ theme }) => theme.bg3};
   border-width: 0 1px 1px;
   position: absolute;
@@ -147,10 +147,10 @@ export default function Community() {
   const [searchSuggestedUserIds, setSearchSuggestedUserIds] = useState<string[]>([])
   const [searchSuggestedUsers, setSearchSuggestedUsers] = useState<any[]>([])
 
-  const searchBarWrapperRef = useRef(null)
+  const searchBarWrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: any) => {
       if (searchBarWrapperRef.current && !searchBarWrapperRef.current.contains(event.target))
         setIsSearchBarFocused(false)
     }

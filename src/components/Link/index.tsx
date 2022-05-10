@@ -15,7 +15,7 @@ const StyledLink = styled.a<{ text: boolean; underline: boolean }>`
 interface LinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
   href: string
   children: React.ReactNode
-  underline: boolean
+  underline?: boolean
 }
 
 export default function Link({ href, children, underline = false, ...props }: LinkProps) {
