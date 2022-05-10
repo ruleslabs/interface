@@ -46,7 +46,7 @@ const StyledEmptyCard = styled(RowCenter)`
 
   ::after {
     content: '';
-    padding-bottom: 141%;
+    padding-bottom: 140%;
   }
 `
 
@@ -78,8 +78,8 @@ const DeckGrid = styled.div`
 `
 
 const DeckGridFirstLine = styled(DeckGrid)`
-  top: 8.7%;
-  grid-template-columns: 5.4% 25.5% 1fr 25.5% 1fr 25.5% 7.6%;
+  top: 6.1%;
+  grid-template-columns: 5.4% 26.9% 1fr 26.9% 1fr 26.9% 5.8%;
 
   #card1 {
     grid-column-start: 2;
@@ -98,8 +98,8 @@ const DeckGridFirstLine = styled(DeckGrid)`
 `
 
 const DeckGridSecondLine = styled(DeckGrid)`
-  top: 52.4%;
-  grid-template-columns: 20.8% 25.5% 1fr 25.5% 22.8%;
+  top: 48.3%;
+  grid-template-columns: 20.8% 26.9% 1fr 26.9% 21.3%;
 
   #card4 {
     grid-column-start: 2;
