@@ -7,3 +7,5 @@ export const EMAIL_VERIFICATION_INTERVAL = process.env.NODE_ENV === 'production'
 
 export const PASSWORD_MIN_LEVENSHTEIN = 4
 export const PASSWORD_MIN_LENGTH = 6
+
+export const BLOCK_POLLING = 10_000 // 10s

@@ -1680,18 +1680,10 @@
     redux-thunk "^2.4.1"
     reselect "^4.1.5"
 
-"@rulesorg/sdk-core@/Users/charleslanier/projects/rules/sdk-core/":
-  version "0.6.3"
-  dependencies:
-    "@ethersproject/keccak256" "^5.6.0"
-    big.js "^6.1.1"
-    jsbi "^4.1.0"
-    multiformats "^9.6.4"
-    tiny-invariant "^1.2.0"
-    toformat "^2.0.0"
-
-"@rulesorg/sdk-core@file:../sdk-core":
-  version "0.6.3"
+"@rulesorg/sdk-core@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@rulesorg/sdk-core/-/sdk-core-0.7.0.tgz#9dbcdb364382d375ff493b542fa7ea7f81e09125"
+  integrity sha512-gTerq8zqLk3V1ojh3swuPgWqctv27gSIiwPwkTocO1t9tIvaV9iqg+0ApX3E0ZaYfucZPrpNGDP/a2mPtR7wWw==
   dependencies:
     "@ethersproject/keccak256" "^5.6.0"
     big.js "^6.1.1"

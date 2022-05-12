@@ -6,8 +6,7 @@ import { useAppDispatch } from '@/state/hooks'
 import { updateBlockNumber, updateEthereumBlockNumber } from './actions'
 import { useStarknet } from '@/starknet'
 import useDebounce from '@/hooks/useDebounce'
-
-const BLOCK_POLLING = 5000 // 5s
+import { BLOCK_POLLING } from '@/constants/misc'
 
 function useBlockNumber() {
   const { provider } = useStarknet()
