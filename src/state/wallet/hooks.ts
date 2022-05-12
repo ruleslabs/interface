@@ -1,7 +1,8 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import JSBI from 'jsbi'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { Abi } from 'starknet'
+import { useWeb3React } from '@web3-react/core'
 
 import ERC20ABI from '@/abis/ERC20.json'
 
@@ -9,6 +10,7 @@ import { BIG_INT_UINT126_HIGH_FACTOR } from '@/constants/misc'
 import { useStarknet } from '@/starknet'
 import { ETH_ADDRESSES } from '@/constants/addresses'
 import { useMultipleContractSingleData } from '@/lib/hooks/multicall'
+import { useEthereumBlockNumber } from '@/state/application/hooks'
 
 interface Balance {
   low?: string
@@ -38,4 +40,19 @@ export function useETHBalances(addresses: string[]): { [address: string]: WeiAmo
       return acc
     }, {})
   }, [results, addresses])
+}
+
+export function useEthereumETHBalance(address?: string): WeiAmount | undefined {
+  const { provider } = useWeb3React()
+  const blockNumber = useEthereumBlockNumber()
+  const [balance, setBalance] = useState<WeiAmount | undefined>()
+
+  useEffect(() => {
+    if (!provider || !address || !blockNumber) return
+    provider.getBalance(address).then((res) => {
+      if (res) setBalance(WeiAmount.fromRawAmount(res))
+    })
+  }, [provider, address, setBalance, blockNumber])
+
+  return balance
 }

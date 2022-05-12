@@ -11,9 +11,7 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
     queryCurrentUser().then(() => setLoading(false))
   }, [queryCurrentUser, setLoading])
 
-  if (loading) {
-    return null
-  }
+  if (loading) return null
 
   return (
     <>

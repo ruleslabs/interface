@@ -1,14 +1,16 @@
 import { createReducer } from '@reduxjs/toolkit'
 
-import { setOpenModal, updateBlockNumber, ApplicationModal } from './actions'
+import { setOpenModal, updateBlockNumber, updateEthereumBlockNumber, ApplicationModal } from './actions'
 
 export interface ApplicationState {
-  openModal: ApplicationModal | null
-  blockNumber?: number
+  readonly openModal: ApplicationModal | null
+  readonly blockNumber?: number
+  readonly ethereumBlockNumber: { readonly [chainId: number]: number }
 }
 
 export const initialState: ApplicationState = {
-  openModal: null,
+  openModal: ApplicationModal.DEPOSIT, // null,
+  ethereumBlockNumber: {},
 }
 
 export default createReducer(initialState, (builder) =>
@@ -21,5 +23,12 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(updateBlockNumber, (state, { payload: { blockNumber } }) => {
       state.blockNumber = Math.max(state.blockNumber ?? 0, blockNumber)
+    })
+    .addCase(updateEthereumBlockNumber, (state, { payload: { blockNumber, chainId } }) => {
+      if (typeof state.ethereumBlockNumber[chainId] !== 'number') {
+        state.ethereumBlockNumber[chainId] = blockNumber
+      } else {
+        state.ethereumBlockNumber[chainId] = Math.max(blockNumber, state.ethereumBlockNumber[chainId])
+      }
     })
 )

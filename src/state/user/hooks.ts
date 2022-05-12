@@ -55,9 +55,6 @@ export function useCurrentUser() {
 export function useQueryCurrentUser(skip = false) {
   const dispatch = useAppDispatch()
 
-  const { data: currentUserData, loading, error } = useQuery(CURRENT_USER_QUERY, { skip })
-  const currentUser = currentUserData?.currentUser
-
   return useCallback(async () => {
     try {
       const response = await getApolloClient()?.query({ query: CURRENT_USER_QUERY })

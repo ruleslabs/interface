@@ -8,12 +8,11 @@ import Column from '@/components/Column'
 import Row from '@/components/Row'
 import { TYPE } from '@/styles/theme'
 import Link from '@/components/Link'
-import useRampSdk from '@/hooks/useRampSdk'
 import { useEtherEURPrice } from '@/hooks/useFiatPrice'
-import MetamaskCard from '@/components/MetamaskCard'
 import { storeAccessToken } from '@/utils/accessToken'
 import { useRemoveCurrentUser } from '@/state/user/hooks'
 import { useRevokeSessionMutation } from '@/state/auth/hooks'
+import { useDepositModalToggle } from '@/state/application/hooks'
 
 const Balance = styled(Row)`
   align-items: center;
@@ -29,14 +28,16 @@ interface SettingsProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export default function Settings({ dispatch, ...props }: SettingsProps) {
   const currentUser = useCurrentUser()
-
   const router = useRouter()
 
-  const rampSdk = useRampSdk({ email: currentUser?.email, key: currentUser?.starknetAddress })
+  // Deposit ETH
+  const toggleDepositModal = useDepositModalToggle()
 
+  // ETH balance
   const etherEURprice = useEtherEURPrice()
   const balance = useETHBalances([currentUser?.starknetAddress])[currentUser?.starknetAddress]
 
+  // Logout
   const [revokeSessionMutation] = useRevokeSessionMutation()
   const removeCurrentUser = useRemoveCurrentUser()
   const logout = useCallback(() => {
@@ -66,12 +67,9 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
         </Balance>
       </Column>
       <Column gap={26}>
-        {rampSdk && (
-          <TYPE.body clickable onClick={rampSdk.show}>
-            Deposit
-          </TYPE.body>
-        )}
-        <MetamaskCard />
+        <TYPE.body onClick={toggleDepositModal} clickable>
+          Deposit ETH
+        </TYPE.body>
         <Link href="/" onClick={dispatch}>
           <TYPE.body clickable>Retirer le solde</TYPE.body>
         </Link>

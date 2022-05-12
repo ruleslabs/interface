@@ -20,17 +20,17 @@ export interface WalletInfos {
 }
 
 export default function useCreateWallet(): (password: string) => Promise<WalletInfos> {
-  const { library } = useStarknet()
+  const { provider } = useStarknet()
 
   return useCallback(
     async (password: string): Promise<WalletInfos> => {
-      if (!library) throw new Error('Failed to deploy wallet')
+      if (!provider) throw new Error('Failed to deploy wallet')
 
       const privateKey = await stark.randomAddress()
       const starkPair = ec.getKeyPair(privateKey)
       const starkPub = ec.getStarkKey(starkPair)
 
-      const deployTransaction = await library.deployContract({
+      const deployTransaction = await provider.deployContract({
         contract: CompiledAccountContract,
         constructorCalldata: stark.compileCalldata({ public_key: starkPub }),
       })
@@ -52,6 +52,6 @@ export default function useCreateWallet(): (password: string) => Promise<WalletI
         backupKey: encryptedPrivateKeyBackup,
       }
     },
-    [library]
+    [provider]
   )
 }

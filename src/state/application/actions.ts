@@ -7,7 +7,11 @@ export enum ApplicationModal {
   DECK_INSERTION,
   PACK_PURCHASE,
   ONBOARDING,
+  DEPOSIT,
 }
 
 export const setOpenModal = createAction<{ modal: ApplicationModal | null }>('application/setOpenModal')
 export const updateBlockNumber = createAction<{ blockNumber: number }>('application/updateBlockNumber')
+export const updateEthereumBlockNumber = createAction<{ chainId: number; blockNumber: number }>(
+  'application/updateEthereumBlockNumber'
+)

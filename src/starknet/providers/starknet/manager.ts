@@ -5,7 +5,7 @@ import { DEFAULT_NETWORK, networkId, ProviderUrlNetworksMap } from '@/constants/
 import { StarknetState } from './model'
 
 interface StarknetStateManager {
-  library: ProviderInterface
+  provider: ProviderInterface
   network: string
 }
 
@@ -23,7 +23,7 @@ export function useStarknetManager({ network }: UseStarknetManagerProps): Starkn
   const networkUrl = ProviderUrlNetworksMap[networkId]
 
   const [state, dispatch] = useReducer(reducer, {
-    library: new Provider(networkUrl ? { baseUrl: networkUrl } : undefined),
+    provider: new Provider(networkUrl ? { baseUrl: networkUrl } : undefined),
     network: networkUrl ? networkId : DEFAULT_NETWORK,
   })
 

@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { useWeb3React } from '@web3-react/core'
 
 import { AppState } from '@/state'
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
@@ -6,6 +7,11 @@ import { setOpenModal, ApplicationModal } from './actions'
 
 export function useBlockNumber(): number | undefined {
   return useAppSelector((state: AppState) => state.application.blockNumber)
+}
+
+export function useEthereumBlockNumber(): number | undefined {
+  const { chainId } = useWeb3React()
+  return useAppSelector((state: AppState) => state.application.ethereumBlockNumber[chainId ?? -1])
 }
 
 export function useModalOpen(modal: ApplicationModal | null): boolean {
@@ -51,4 +57,8 @@ export function useNavModalToggle(): () => void {
 
 export function useOnboardingModalToggle(): () => void {
   return useToggleModal(ApplicationModal.ONBOARDING)
+}
+
+export function useDepositModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.DEPOSIT)
 }
