@@ -14,6 +14,7 @@ import { PrimaryButton, SecondaryButton } from '@/components/Button'
 import Separator from '@/components/Separator'
 import { useEthereumETHBalance } from '@/state/wallet/hooks'
 import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
+import { useEthereumStarkgateContract } from '@/hooks/useContract'
 
 import RampIcon from '@/images/ramp.svg'
 import MetamaskIcon from '@/images/metamask.svg'
@@ -110,6 +111,29 @@ export default function DepositModal() {
   const balance = useEthereumETHBalance(account)
   const parsedDepositAmount = useMemo(() => tryParseWeiAmount(depositAmount), [depositAmount])
 
+  const ethereumStarkgateContract = useEthereumStarkgateContract()
+  const handleDeposit = useCallback(() => {
+    if (!ethereumStarkgateContract || !depositAmount || !currentUser?.starknetAddress) return
+
+    const estimate = ethereumStarkgateContract.estimateGas.deposit
+    const method = ethereumStarkgateContract.deposit
+    const args: Array<string | string[] | number> = [currentUser.starknetAddress]
+    const value = parsedDepositAmount.quotient.toString()
+
+    estimate(...args, value ? { value } : {})
+      .then((estimatedGasLimit) =>
+        method(...args, { ...(value ? { value } : {}), gasLimit: estimatedGasLimit }).then((response: any) => {
+          console.log(response)
+        })
+      )
+      .catch((error) => {
+        // we only care if the error is something _other_ than the user rejected the tx
+        if ((error as any)?.code !== 4001) {
+          console.error(error)
+        }
+      })
+  }, [depositAmount])
+
   return (
     <Modal onDismiss={toggleDepositModal} isOpen={isOpen}>
       <StyledDepositModal gap={26}>
@@ -148,7 +172,9 @@ export default function DepositModal() {
                   Insufficient ETH balance
                 </PrimaryButton>
               ) : (
-                <PrimaryButton large>Deposit</PrimaryButton>
+                <PrimaryButton onClick={handleDeposit} large>
+                  Deposit
+                </PrimaryButton>
               )}
             </Column>
           ) : account ? (

@@ -9,7 +9,7 @@ export interface ApplicationState {
 }
 
 export const initialState: ApplicationState = {
-  openModal: ApplicationModal.DEPOSIT, // null,
+  openModal: null,
   blockNumber: 1, // set blockNumber to 1 to run the call listeners cause `get_block` is very slow atm
   ethereumBlockNumber: {},
 }
