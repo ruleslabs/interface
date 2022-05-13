@@ -16,10 +16,24 @@ import { useDepositModalToggle } from '@/state/application/hooks'
 
 const Balance = styled(Row)`
   align-items: center;
-  gap: 12px;
+  gap: 8px 20px;
   width: 100%;
-  padding: 12px;
+  padding: 18px 12px;
   background: ${({ theme }) => theme.bg5};
+  flex-wrap: wrap;
+
+  div {
+    font-size: 25px;
+  }
+
+  ${({ theme }) => theme.media.medium`
+    gap: 8px 12px;
+    padding: 12px;
+
+    div {
+      font-size: 16px;
+    }
+  `}
 `
 
 interface SettingsProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -59,7 +73,7 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
           {etherEURprice && balance ? (
             <>
               <TYPE.body>{+balance.toFixed(4)} ETH</TYPE.body>
-              <TYPE.body color="text2">({balance.multiply(Math.round(etherEURprice)).toFixed(2)} EUR)</TYPE.body>
+              <TYPE.body color="text2">{balance.multiply(Math.round(etherEURprice)).toFixed(2)} EUR</TYPE.body>
             </>
           ) : (
             <TYPE.subtitle>Loading...</TYPE.subtitle>
