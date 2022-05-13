@@ -1,9 +1,6 @@
 import styled from 'styled-components'
 
-import Section from '@/components/Section'
-import Modal from '@/components/Modal'
-import { useModalOpen, useOnboardingModalToggle } from '@/state/application/hooks'
-import { ApplicationModal } from '@/state/application/actions'
+import Card from '@/components/Card'
 import { useOnboardingPage } from '@/state/onboarding/hooks'
 import { OnboardingPage } from '@/state/onboarding/actions'
 
@@ -11,24 +8,19 @@ import DiscordPage from './DiscordPage'
 import IntroductionPage from './IntroductionPage'
 import StarterPackPage from './StarterPackPage'
 
-const StyledOnboardingModal = styled(Section)`
-  background: ${({ theme }) => theme.bg2};
-  border-radius: 4px;
+const StyledOnboarding = styled(Card)`
   margin: 0;
   padding: 0;
-  width: calc(100vw - 64px);
+  width: 100%;
 
   ${({ theme }) => theme.media.medium`
-    width: 100%;
     height: 100%;
+    padding: 28px;
   `}
 `
 
-export default function OnboardingModal() {
-  // modal
-  const isOpen = useModalOpen(ApplicationModal.ONBOARDING)
-  const toggleOnboardingModal = useOnboardingModalToggle()
-
+export default function Onboarding() {
+  // page
   const onboardingPage = useOnboardingPage()
 
   const renderModal = (onboardingPage: OnboardingPage | null) => {
@@ -44,9 +36,5 @@ export default function OnboardingModal() {
     return null
   }
 
-  return (
-    <Modal onDismiss={toggleOnboardingModal} isOpen={isOpen}>
-      <StyledOnboardingModal>{renderModal(onboardingPage)}</StyledOnboardingModal>
-    </Modal>
-  )
+  return <StyledOnboarding>{renderModal(onboardingPage)}</StyledOnboarding>
 }

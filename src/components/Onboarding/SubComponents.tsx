@@ -35,9 +35,7 @@ export const PageWrapper = styled(Row)`
   right: 48px;
 
   ${({ theme }) => theme.media.medium`
-    gap: 48px;
-    left: 48px;
-    top: 64px;
+    position: initial;
 
     & > div:last-child {
       display: none;
@@ -63,6 +61,10 @@ export const MainActionButton = styled(PrimaryButton)`
 export const PageBody = styled.div`
   padding-bottom: 58%;
   position: relative;
+
+  ${({ theme }) => theme.media.medium`
+    padding: 0;
+  `}
 `
 
 export const SkipButton = styled(TYPE.subtitle)`

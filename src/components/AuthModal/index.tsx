@@ -1,9 +1,10 @@
 import { useCallback } from 'react'
 import styled from 'styled-components'
+import { useRouter } from 'next/router'
 
 import Modal from '@/components/Modal'
 import Column from '@/components/Column'
-import { useModalOpen, useAuthModalToggle, useOnboardingModalToggle } from '@/state/application/hooks'
+import { useModalOpen, useAuthModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
@@ -27,10 +28,11 @@ const StyledAuthModal = styled(Column)`
 `
 
 export default function AuthModal() {
+  const router = useRouter()
+
   // modal
   const isOpen = useModalOpen(ApplicationModal.AUTH)
   const toggleAuthModal = useAuthModalToggle()
-  const toggleOnboardingModal = useOnboardingModalToggle()
 
   const authMode = useAuthMode()
 
@@ -42,11 +44,11 @@ export default function AuthModal() {
       const currentUser = await queryCurrentUser()
 
       if (!!currentUser) {
-        if (onboard) toggleOnboardingModal()
+        if (onboard) router.push('/onboard')
         else toggleAuthModal()
       } else window.location.reload()
     },
-    [queryCurrentUser, toggleAuthModal, toggleOnboardingModal]
+    [queryCurrentUser, toggleAuthModal, router]
   )
 
   const renderModal = (authMode: AuthMode | null) => {

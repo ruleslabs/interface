@@ -32,6 +32,7 @@ const Balance = styled(Row)`
 
     div {
       font-size: 16px;
+      font-weight: 400;
     }
   `}
 `
@@ -72,7 +73,7 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
         <Balance>
           {etherEURprice && balance ? (
             <>
-              <TYPE.body>{+balance.toFixed(4)} ETH</TYPE.body>
+              <TYPE.body fontWeight={700}>{+balance.toFixed(4)} ETH</TYPE.body>
               <TYPE.body color="text2">{balance.multiply(Math.round(etherEURprice)).toFixed(2)} EUR</TYPE.body>
             </>
           ) : (

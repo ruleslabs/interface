@@ -6,7 +6,6 @@ export enum ApplicationModal {
   AUTH,
   DECK_INSERTION,
   PACK_PURCHASE,
-  ONBOARDING,
   DEPOSIT,
 }
 

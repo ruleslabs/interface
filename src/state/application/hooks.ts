@@ -55,10 +55,6 @@ export function useNavModalToggle(): () => void {
   return useToggleModal(ApplicationModal.NAV)
 }
 
-export function useOnboardingModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.ONBOARDING)
-}
-
 export function useDepositModalToggle(): () => void {
   return useToggleModal(ApplicationModal.DEPOSIT)
 }

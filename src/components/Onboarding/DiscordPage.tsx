@@ -1,9 +1,9 @@
 import styled from 'styled-components'
+import { useRouter } from 'next/router'
 
 import { TYPE } from '@/styles/theme'
 import Column, { ColumnCenter } from '@/components/Column'
 import { PageBody, SkipButton, MainActionButton } from './SubComponents'
-import { useOnboardingModalToggle } from '@/state/application/hooks'
 
 const StyledPageBody = styled(PageBody)`
   ${({ theme }) => theme.media.medium`
@@ -59,7 +59,7 @@ const PageContent = styled(Column)`
 `
 
 export default function DiscordPage() {
-  const toggleOnboardingModal = useOnboardingModalToggle()
+  const router = useRouter()
 
   return (
     <StyledPageBody>
@@ -70,7 +70,7 @@ export default function DiscordPage() {
         </DiscordScreenWrapper>
         <PageContent>
           <MainActionButton large>Join</MainActionButton>
-          <SkipButton onClick={toggleOnboardingModal}>Skip</SkipButton>
+          <SkipButton onClick={() => router.back()}>Skip</SkipButton>
         </PageContent>
       </PageWrapper>
     </StyledPageBody>
