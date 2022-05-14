@@ -18,9 +18,9 @@ const CURRENT_USER_QUERY = gql`
         encryptedPrivateKey
       }
       profile {
-        discordUsername
         twitterUsername
         instagramUsername
+        discordId
       }
     }
   }
@@ -58,6 +58,16 @@ const EDIT_PROFILE_MUTATION = gql`
   }
 `
 
+const CONNECT_DISCORD_ACCOUNT_MUTATION = gql`
+  mutation ($code: String!) {
+    connectDiscordAccount(code: $code) {
+      discordId
+      discordUsername
+      discordDiscriminator
+    }
+  }
+`
+
 export function useRemoveCurrentUser() {
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setCurrentUser({ user: null })), [dispatch, setCurrentUser])
@@ -67,6 +77,11 @@ export function useCurrentUser() {
   const currentUser = useAppSelector((state) => state.user.currentUser)
   return currentUser
 }
+
+// export function useSetCurrentUser() {
+//   const dispatch = useAppDispatch()
+//   return useCallback((user: any) => dispatch(setCurrentUser({ user })), [dispatch, setCurrentUser])
+// }
 
 export function useQueryCurrentUser(skip = false) {
   const dispatch = useAppDispatch()
@@ -128,4 +143,8 @@ export function useSearchUser(userSlug?: string) {
 
 export function useEditProfileMutation() {
   return useMutation(EDIT_PROFILE_MUTATION)
+}
+
+export function useConnectDiscordAccountMutation() {
+  return useMutation(CONNECT_DISCORD_ACCOUNT_MUTATION)
 }
