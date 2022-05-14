@@ -11,7 +11,7 @@ import TabLink from '@/components/TabLink'
 import { useSearchUser } from '@/state/user/hooks'
 
 import Instagram from '@/images/instagram-color.svg'
-import Twitch from '@/images/twitch-white.svg'
+// import Twitch from '@/images/twitch-white.svg'
 import Twitter from '@/images/twitter-color.svg'
 
 const StyledSection = styled(Section)`
@@ -83,15 +83,16 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
               size="lg"
             />
             <RowCenter gap={8}>
-              <SocialLink href="https://instagram.com/">
-                <Instagram />
-              </SocialLink>
-              <SocialLink href="https://instagram.com/">
-                <Twitter />
-              </SocialLink>
-              <SocialLink href="https://instagram.com/">
-                <Twitch />
-              </SocialLink>
+              {user?.profile?.instagramUsername && (
+                <SocialLink target="_blank" href={`https://instagram.com/${user.profile.instagramUsername}`}>
+                  <Instagram />
+                </SocialLink>
+              )}
+              {user?.profile?.instagramUsername && (
+                <SocialLink target="_blank" href={`https://twitter.com/${user.profile.twitterUsername}`}>
+                  <Twitter />
+                </SocialLink>
+              )}
             </RowCenter>
           </ColumnCenter>
         </UserSection>

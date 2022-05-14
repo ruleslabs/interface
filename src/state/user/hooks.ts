@@ -32,6 +32,8 @@ const SEARCH_USER_CONTENT = `
   profile {
     pictureUrl(derivative: "width=320")
     certified
+    twitterUsername
+    instagramUsername
   }
 `
 
