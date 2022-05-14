@@ -1,7 +1,9 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
+import { RowCenter } from '@/components/Row'
 import Spinner from '@/components/Spinner'
+import { TYPE } from '@/styles/theme'
 
 function InputBase({ onUserInput, ...props }: InputProps | SearchBarProps) {
   const handleInput = useCallback(
@@ -14,27 +16,30 @@ function InputBase({ onUserInput, ...props }: InputProps | SearchBarProps) {
   return <input onChange={handleInput} {...props} />
 }
 
-const InputWrapper = styled.div`
+const InputWrapper = styled(RowCenter)<{ prefixed: boolean; $valid: boolean }>`
   position: relative;
-`
-
-const StyledInput = styled(InputBase)<{ $valid: boolean }>`
   background: ${({ theme }) => theme.bg3}80;
   border: 1px solid ${({ theme, $valid }) => ($valid ? theme.bg3 : theme.error)};
   border-radius: 4px;
   box-sizing: border-box;
+  padding: ${({ prefixed }) => (prefixed ? '0 20px 0 12px' : '0 20px')};
+
+  :focus-within {
+    outline: ${({ theme }) => theme.primary1} solid 2px;
+    outline-offset: -1px;
+  }
+`
+
+const StyledInput = styled(InputBase)`
+  border: none;
+  background: transparent;
   font-size: 16px;
-  padding: 0 20px;
   height: 55px;
   width: 100%;
+  outline: none;
 
   :disabled {
     color: ${({ theme }) => theme.text2};
-  }
-
-  :focus {
-    outline: ${({ theme }) => theme.primary1} solid 2px;
-    outline-offset: -1px;
   }
 
   &::placeholder {
@@ -82,13 +87,15 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   $valid?: boolean
   loading?: boolean
   onUserInput: (value: string) => void
+  prefix?: string
 }
 
-export default function Input({ $valid = true, loading = false, onUserInput, ...props }: InputProps) {
+export default function Input({ $valid = true, loading = false, prefix, onUserInput, ...props }: InputProps) {
   return (
-    <InputWrapper>
+    <InputWrapper $valid={$valid} prefixed={!!prefix}>
+      {prefix && <TYPE.subtitle>{prefix}&nbsp;</TYPE.subtitle>}
       {loading && <StyledSpinner fill="text2" />}
-      <StyledInput onUserInput={onUserInput} $valid={$valid} disabled={loading} {...props} />
+      <StyledInput onUserInput={onUserInput} disabled={loading} {...props} />
     </InputWrapper>
   )
 }

@@ -40,7 +40,7 @@ interface Session {
   currentSession: boolean
 }
 
-export default function Settings() {
+export default function Security() {
   const { data: activeSessionsData, error: activeSessionError } = useQuery(GET_ACTIVE_SESSIONS)
   const [revokeSessionMutation, { data: revokeSessionData, error: revokeSessionError }] = useRevokeSessionMutation()
 

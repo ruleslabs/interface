@@ -17,6 +17,11 @@ const CURRENT_USER_QUERY = gql`
         iv
         encryptedPrivateKey
       }
+      profile {
+        discordUsername
+        twitterUsername
+        instagramUsername
+      }
     }
   }
 `
@@ -39,6 +44,15 @@ const SEARCH_USER_MUTATION = gql`
 const SEARCH_USER_QUERY = gql`
   query ($slug: String!) {
     user(slug: $slug) { ${SEARCH_USER_CONTENT} }
+  }
+`
+
+const EDIT_PROFILE_MUTATION = gql`
+  mutation ($instagramUsername: String!, $twitterUsername: String!) {
+    editProfile(input: { instagramUsername: $instagramUsername, twitterUsername: $twitterUsername }) {
+      twitterUsername
+      instagramUsername
+    }
   }
 `
 
@@ -108,4 +122,8 @@ export function useSearchUser(userSlug?: string) {
   }, [searchUserMutation, setUser, currentUser, userSlug, queryData])
 
   return currentUser ? { user, loading, error } : { user, queryLoading, queryError }
+}
+
+export function useEditProfileMutation() {
+  return useMutation(EDIT_PROFILE_MUTATION)
 }

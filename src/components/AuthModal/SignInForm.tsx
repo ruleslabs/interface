@@ -68,7 +68,6 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
             else if (!loading) setError({})
 
             console.error(googleAuthError)
-            setLoading(false)
           })
       }
     },
