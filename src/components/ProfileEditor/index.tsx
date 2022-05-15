@@ -53,6 +53,8 @@ const DiscordDisconnect = styled(TYPE.body)`
 
 export default function ProfileEditor() {
   const currentUser = useCurrentUser()
+  const queryCurrentUser = useQueryCurrentUser()
+
   const router = useRouter()
   const discordCode = router?.query?.code
 
@@ -151,8 +153,6 @@ export default function ProfileEditor() {
     twitterUsername,
     isDiscordVisible,
   ])
-
-  const queryCurrentUser = useQueryCurrentUser()
 
   const saveSocialLinks = useCallback(() => {
     setSetSocialLinksLoading(true)
