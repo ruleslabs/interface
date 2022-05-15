@@ -70,6 +70,8 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
   if (error || (!user && !loading)) return <TYPE.body>User not found</TYPE.body>
   else if (!user) return null
 
+  const discordUser = user?.profile?.discordUser
+
   return (
     <>
       <StyledSection size="max">

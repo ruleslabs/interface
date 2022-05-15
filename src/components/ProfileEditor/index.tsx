@@ -11,12 +11,14 @@ import Row from '@/components/Row'
 import Input from '@/components/Input'
 import {
   useCurrentUser,
-  useEditProfileMutation,
   useQueryCurrentUser,
+  useSetSocialLinksMutation,
   useConnectDiscordAccountMutation,
   useDisconnectDiscordAccountMutation,
+  useSetDiscordVisibilityMutation,
 } from '@/state/user/hooks'
 import Link from '@/components/Link'
+import Checkbox from '@/components/Checkbox'
 
 const StyledProfileEditor = styled(Card)`
   margin: 0;
@@ -34,9 +36,10 @@ const SocialLinksWrapper = styled(Column)`
   width 300px;
 `
 
-const DiscordStatusWrapper = styled.div`
+const DiscordStatusWrapper = styled(Column)`
   width: 100%;
   height: 100px;
+  gap: 16px;
 `
 
 const DiscordConnect = styled(PrimaryButton)`
@@ -53,8 +56,12 @@ export default function ProfileEditor() {
   const router = useRouter()
   const discordCode = router?.query?.code
 
-  const [modified, setModified] = useState(false)
+  // modified
+  const [socialLinksModified, setSocialLinksModified] = useState(false)
+  const [discordVisibilityModified, setDiscordVisibilityModified] = useState(false)
 
+  // social links
+  const [setSocialLinksMutation] = useSetSocialLinksMutation()
   const [instagramUsername, setInstagramUsername] = useState(currentUser?.profile?.instagramUsername ?? '')
   const [twitterUsername, setTwitterUsername] = useState(currentUser?.profile?.twitterUsername ?? '')
 
@@ -72,43 +79,16 @@ export default function ProfileEditor() {
     [setTwitterUsername]
   )
 
-  useEffect(() => {
-    setModified(
-      (currentUser?.profile?.instagramUsername ?? '') !== instagramUsername ||
-        (currentUser?.profile?.twitterUsername ?? '') !== twitterUsername
-    )
-  }, [
-    setModified,
-    currentUser?.profile?.instagramUsername,
-    currentUser?.profile?.twitterUsername,
-    instagramUsername,
-    twitterUsername,
-  ])
-
-  // edit social links
-  const [loading, setLoading] = useState(false)
-  const [editProfileMutation] = useEditProfileMutation()
-
-  const queryCurrentUser = useQueryCurrentUser()
-  const saveChanges = useCallback(() => {
-    setLoading(true)
-
-    editProfileMutation({ variables: { twitterUsername, instagramUsername } })
-      .then((res: any) => {
-        queryCurrentUser()
-        setLoading(false)
-      })
-      .catch((editProfileError: ApolloError) => {
-        console.error(editProfileError) // TODO: handle error
-        setLoading(false)
-      })
-  }, [editProfileMutation, queryCurrentUser, setLoading, twitterUsername, instagramUsername])
-
   // discord
   const [discordLoading, setDiscordLoading] = useState(!!discordCode || !!currentUser?.profile?.discordId)
   const [connectDiscordAccountMutation] = useConnectDiscordAccountMutation()
   const [disconnectDiscordAccountMutation] = useDisconnectDiscordAccountMutation()
+  const [setDiscordVisibilityMutation] = useSetDiscordVisibilityMutation()
+
   const [discordUser, setDiscordUser] = useState<any | null>(currentUser?.profile?.discordUser)
+  const [isDiscordVisible, setIsDiscordVisible] = useState<boolean>(currentUser?.profile?.isDiscordVisible ?? false)
+
+  const toggleDiscordVisibility = useCallback(() => setIsDiscordVisible(!isDiscordVisible), [isDiscordVisible])
 
   useEffect(() => {
     if (!discordCode) return
@@ -152,6 +132,75 @@ export default function ProfileEditor() {
     []
   )
 
+  // save changes
+  const [setDiscordVisibilityLoading, setSetDiscordVisibilityLoading] = useState(false)
+  const [setSocialLinksLoading, setSetSocialLinksLoading] = useState(false)
+
+  useEffect(() => {
+    setSocialLinksModified(
+      (currentUser?.profile?.instagramUsername ?? '') !== instagramUsername ||
+        (currentUser?.profile?.twitterUsername ?? '') !== twitterUsername
+    )
+    setDiscordVisibilityModified((currentUser?.profile?.isDiscordVisible ?? false) !== isDiscordVisible)
+  }, [
+    setSocialLinksModified,
+    currentUser?.profile?.instagramUsername,
+    currentUser?.profile?.twitterUsername,
+    currentUser?.profile?.isDiscordVisible,
+    instagramUsername,
+    twitterUsername,
+    isDiscordVisible,
+  ])
+
+  const queryCurrentUser = useQueryCurrentUser()
+
+  const saveSocialLinks = useCallback(() => {
+    setSetSocialLinksLoading(true)
+    setSocialLinksMutation({ variables: { twitterUsername, instagramUsername } })
+      .then((res: any) => {
+        setSocialLinksModified(false)
+
+        queryCurrentUser()
+        setSetSocialLinksLoading(false)
+      })
+      .catch((editProfileError: ApolloError) => {
+        console.error(editProfileError) // TODO: handle error
+        setSetSocialLinksLoading(false)
+      })
+  }, [
+    queryCurrentUser,
+    setSocialLinksMutation,
+    setSetSocialLinksLoading,
+    setSocialLinksModified,
+    twitterUsername,
+    instagramUsername,
+  ])
+  const saveDiscordVisibility = useCallback(() => {
+    setSetDiscordVisibilityLoading(true)
+    setDiscordVisibilityMutation({ variables: { visible: isDiscordVisible } })
+      .then((res: any) => {
+        setDiscordVisibilityModified(false)
+
+        queryCurrentUser()
+        setSetDiscordVisibilityLoading(false)
+      })
+      .catch((setDiscordVisibilityError: ApolloError) => {
+        console.error(setDiscordVisibilityError) // TODO: handle error
+        setSetDiscordVisibilityLoading(false)
+      })
+  }, [
+    queryCurrentUser,
+    setDiscordVisibilityMutation,
+    setSetDiscordVisibilityLoading,
+    setDiscordVisibilityModified,
+    isDiscordVisible,
+  ])
+
+  const saveChanges = useCallback(() => {
+    if (socialLinksModified) saveSocialLinks()
+    if (discordVisibilityModified) saveDiscordVisibility()
+  }, [socialLinksModified, discordVisibilityModified, saveSocialLinks, saveDiscordVisibility])
+
   if (!currentUser) return null
 
   return (
@@ -161,19 +210,24 @@ export default function ProfileEditor() {
           <TYPE.large>Discord</TYPE.large>
           <DiscordStatusWrapper>
             {discordUser?.username && discordUser?.discriminator ? (
-              <Row gap={24}>
-                <TYPE.body spanColor="text2">
-                  Connected as {discordUser.username}
-                  <span>#{discordUser.discriminator}</span>
-                </TYPE.body>
-                {discordLoading ? (
-                  <TYPE.subtitle>Loading ...</TYPE.subtitle>
-                ) : (
-                  <DiscordDisconnect onClick={handleDiscordDisconnect} clickable>
-                    Disconnect
-                  </DiscordDisconnect>
-                )}
-              </Row>
+              <>
+                <Row gap={24}>
+                  <TYPE.body spanColor="text2">
+                    Connected as {discordUser.username}
+                    <span>#{discordUser.discriminator}</span>
+                  </TYPE.body>
+                  {discordLoading ? (
+                    <TYPE.subtitle>Loading ...</TYPE.subtitle>
+                  ) : (
+                    <DiscordDisconnect onClick={handleDiscordDisconnect} clickable>
+                      Disconnect
+                    </DiscordDisconnect>
+                  )}
+                </Row>
+                <Checkbox value={isDiscordVisible} onChange={toggleDiscordVisibility}>
+                  <TYPE.body>Public</TYPE.body>
+                </Checkbox>
+              </>
             ) : (
               <Link href={discordOAuthRedirectUrl}>
                 <DiscordConnect disabled={discordLoading} large>
@@ -197,8 +251,20 @@ export default function ProfileEditor() {
             <Input value={twitterUsername} onUserInput={handleTiwtterInput} prefix="@" />
           </Column>
 
-          <PrimaryButton disabled={!modified || loading} onClick={saveChanges} large>
-            {loading ? 'Loading ...' : 'Save changes'}
+          <PrimaryButton
+            disabled={
+              (!socialLinksModified && !discordVisibilityModified) ||
+              setDiscordVisibilityLoading ||
+              setSocialLinksLoading
+            }
+            onClick={saveChanges}
+            large
+          >
+            {setDiscordVisibilityLoading || setSocialLinksLoading
+              ? 'Loading ...'
+              : discordVisibilityModified || socialLinksModified
+              ? 'Save changes'
+              : 'No changes to save'}
           </PrimaryButton>
         </SocialLinksWrapper>
       </Column>

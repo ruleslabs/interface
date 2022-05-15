@@ -20,6 +20,7 @@ const CURRENT_USER_QUERY = gql`
       profile {
         twitterUsername
         instagramUsername
+        isDiscordVisible
         discordUser {
           username
           discriminator
@@ -52,9 +53,9 @@ const SEARCH_USER_QUERY = gql`
   }
 `
 
-const EDIT_PROFILE_MUTATION = gql`
+const SET_SOCIAL_LINKS_MUTATION = gql`
   mutation ($instagramUsername: String!, $twitterUsername: String!) {
-    editProfile(input: { instagramUsername: $instagramUsername, twitterUsername: $twitterUsername }) {
+    setSocialLinks(input: { instagramUsername: $instagramUsername, twitterUsername: $twitterUsername }) {
       twitterUsername
       instagramUsername
     }
@@ -75,6 +76,14 @@ const DISCONNECT_DISCORD_ACCOUNT_MUTATION = gql`
   mutation {
     disconnectDiscordAccount {
       discordId
+    }
+  }
+`
+
+const SET_DISCORD_ACCOUNT_VISIBILITY_MUTATION = gql`
+  mutation ($visible: Boolean!) {
+    setDiscordAccountVisibility(visible: $visible) {
+      visible
     }
   }
 `
@@ -152,8 +161,12 @@ export function useSearchUser(userSlug?: string) {
   return currentUser ? { user, loading, error } : { user, queryLoading, queryError }
 }
 
-export function useEditProfileMutation() {
-  return useMutation(EDIT_PROFILE_MUTATION)
+export function useSetSocialLinksMutation() {
+  return useMutation(SET_SOCIAL_LINKS_MUTATION)
+}
+
+export function useSetDiscordVisibilityMutation() {
+  return useMutation(SET_DISCORD_ACCOUNT_VISIBILITY_MUTATION)
 }
 
 export function useConnectDiscordAccountMutation() {
