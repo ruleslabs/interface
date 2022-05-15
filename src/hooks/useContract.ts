@@ -8,12 +8,7 @@ import MulticallABI from '@/abis/multicall.json'
 import EthereumStarkgateABI from '@/abis/ethereum/starkgate.json'
 
 import { useStarknet } from '@/starknet'
-import {
-  AddressMap,
-  MULTICALL_ADDRESSES,
-  ETHEREUM_MULTICALL_ADDRESSES,
-  STARKGATE_ADDRESSES,
-} from '@/constants/addresses'
+import { AddressMap, MULTICALL_ADDRESSES, STARKGATE_ADDRESSES } from '@/constants/addresses'
 
 //
 // Starknet
@@ -50,7 +45,11 @@ function getProviderOrSigner(provider: Web3Provider, account?: string): Web3Prov
   return account ? getSigner(provider, account) : provider
 }
 
-export function useEthereumContract(addressOrAddressMap: string | AddressMap, abi: any, withSignerIfPossible = true) {
+export function useEthereumContract(
+  addressOrAddressMap: string | AddressMap,
+  abi: any,
+  withSignerIfPossible = true
+): EthereumContract | null {
   const { chainId, provider, account } = useWeb3React()
 
   return useMemo(() => {
@@ -74,10 +73,6 @@ export function useEthereumContract(addressOrAddressMap: string | AddressMap, ab
   }, [addressOrAddressMap, chainId, provider])
 }
 
-export function useEthereumMulticallContract(): Contract | null {
-  return useEthereumContract(ETHEREUM_MULTICALL_ADDRESSES, MulticallABI as Abi, false)
-}
-
-export function useEthereumStarkgateContract(): Contract | null {
+export function useEthereumStarkgateContract(): EthereumContract | null {
   return useEthereumContract(STARKGATE_ADDRESSES, EthereumStarkgateABI as Abi)
 }

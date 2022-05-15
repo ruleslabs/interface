@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import React, { useCallback, useRef } from 'react'
 import styled from 'styled-components'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
@@ -64,7 +64,7 @@ const Currency = styled(RowCenter)`
   }
 `
 
-interface CurrencyInputProps {
+interface CurrencyInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onUserInput: (value: string) => void
   balance?: WeiAmount
 }
@@ -78,7 +78,7 @@ export default function CurrencyInput({ onUserInput, balance, ...props }: Curren
     [onUserInput]
   )
 
-  const inputRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
   const setInputFocus = useCallback(() => inputRef.current?.focus(), [inputRef])
 
   return (

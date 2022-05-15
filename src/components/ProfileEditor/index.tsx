@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
+import { ApolloError } from '@apollo/client'
 
 import Card from '@/components/Card'
 import { TYPE } from '@/styles/theme'

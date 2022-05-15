@@ -85,14 +85,14 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
         <TYPE.body onClick={toggleDepositModal} clickable>
           Deposit ETH
         </TYPE.body>
-        <Link href="/" onClick={dispatch}>
-          <TYPE.body clickable>Retirer le solde</TYPE.body>
+        <Link href="/settings/profile" onClick={dispatch}>
+          <TYPE.body clickable>Profile settings</TYPE.body>
         </Link>
-        <Link href="/" onClick={dispatch}>
-          <TYPE.body clickable>Activité</TYPE.body>
+        <Link href="/settings/activity" onClick={dispatch}>
+          <TYPE.body clickable>Activity</TYPE.body>
         </Link>
         <Link href="/settings/security" onClick={dispatch}>
-          <TYPE.body clickable>Sécurité</TYPE.body>
+          <TYPE.body clickable>Security</TYPE.body>
         </Link>
         <TYPE.body clickable onClick={logout}>
           Logout

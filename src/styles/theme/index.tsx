@@ -79,7 +79,12 @@ export default function StyledThemeProvider({ children }: StyledThemeProviderPro
   )
 }
 
-export interface TextProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface TextWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
+  color?: string
+  spanColor?: string
+}
+
+export interface TextProps extends TextWrapperProps {
   fontSize?: number
   fontWeight?: number
   textAlign?: string
@@ -102,8 +107,8 @@ const Text = styled.div<TextProps>`
     `}
 `
 
-const TextWrapper = styled(Text)<{ color: string; spanColor?: string }>`
-  color: ${({ color, theme }) => (theme as any)[color]};
+const TextWrapper = styled(Text)<TextWrapperProps>`
+  color: ${({ color = 'text1', theme }) => (theme as any)[color]};
   ${({ spanColor, theme }) =>
     spanColor &&
     `

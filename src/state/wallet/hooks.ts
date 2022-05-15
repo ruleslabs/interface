@@ -50,7 +50,7 @@ export function useEthereumETHBalance(address?: string): WeiAmount | undefined {
   useEffect(() => {
     if (!provider || !address || !blockNumber) return
     provider.getBalance(address).then((res) => {
-      if (res) setBalance(WeiAmount.fromRawAmount(res))
+      if (res) setBalance(WeiAmount.fromRawAmount(JSBI.BigInt(res)))
     })
   }, [provider, address, setBalance, blockNumber])
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Seasons, Scarcity } from '@rulesorg/sdk-core'
+import { Seasons, ScarcityName } from '@rulesorg/sdk-core'
 
 import Checkbox from '@/components/Checkbox'
 import Slider from '@/components/Slider'
@@ -99,13 +99,13 @@ export default function MarketplaceSidebar({ dispatch, ...props }: MarketplaceSi
 
         <FilterWrapper>
           <FilterName>Scarcities</FilterName>
-          {Object.keys(Scarcity).map((scarcity: string) => (
+          {ScarcityName.map((scarcity: string) => (
             <Checkbox
               key={`checkbox-tier-${scarcity}`}
               value={filters.tiers.includes(scarcity)}
               onChange={() => toggleTierFilter(scarcity)}
             >
-              <TYPE.body>{Scarcity[scarcity as keyof typeof Scarcity]}</TYPE.body>
+              <TYPE.body>{scarcity}</TYPE.body>
             </Checkbox>
           ))}
         </FilterWrapper>

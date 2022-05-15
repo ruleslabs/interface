@@ -113,7 +113,7 @@ export default function DepositModal() {
 
   const ethereumStarkgateContract = useEthereumStarkgateContract()
   const handleDeposit = useCallback(() => {
-    if (!ethereumStarkgateContract || !depositAmount || !currentUser?.starknetAddress) return
+    if (!ethereumStarkgateContract || !parsedDepositAmount || !currentUser?.starknetAddress) return
 
     const estimate = ethereumStarkgateContract.estimateGas.deposit
     const method = ethereumStarkgateContract.deposit
@@ -126,11 +126,9 @@ export default function DepositModal() {
           console.log(response)
         })
       )
-      .catch((error) => {
+      .catch((error: any) => {
         // we only care if the error is something _other_ than the user rejected the tx
-        if ((error as any)?.code !== 4001) {
-          console.error(error)
-        }
+        if (error?.code !== 4001) console.error(error)
       })
   }, [depositAmount])
 

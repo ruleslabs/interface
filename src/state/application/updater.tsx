@@ -63,7 +63,7 @@ function useEthereumBlockNumber() {
   useEffect(() => {
     if (!provider || !chainId) return undefined
 
-    setState({ chainId, ethereumBlockNumber: null })
+    setState({ chainId, blockNumber: null })
 
     provider
       .getBlockNumber()
