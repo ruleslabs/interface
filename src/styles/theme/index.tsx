@@ -102,8 +102,15 @@ const Text = styled.div<TextProps>`
     `}
 `
 
-const TextWrapper = styled(Text)<{ color: string }>`
+const TextWrapper = styled(Text)<{ color: string; spanColor?: string }>`
   color: ${({ color, theme }) => (theme as any)[color]};
+  ${({ spanColor, theme }) =>
+    spanColor &&
+    `
+      span {
+        color: ${(theme as any)[spanColor]};
+      }
+    `}
 `
 
 export const TYPE = {

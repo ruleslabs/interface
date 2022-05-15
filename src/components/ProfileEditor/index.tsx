@@ -97,16 +97,20 @@ export default function ProfileEditor() {
   }, [editProfileMutation, queryCurrentUser, setLoading, twitterUsername, instagramUsername])
 
   // discord
-  const [discordLoading, setDiscordLoading] = useState(!!discordCode)
+  const [discordLoading, setDiscordLoading] = useState(!!discordCode || !!currentUser?.profile?.discordId)
   const [connectDiscordAccountMutation] = useConnectDiscordAccountMutation()
+  const [discordUser, setDiscordUser] = useState<any | null>(currentUser?.profile?.discordUser)
 
   useEffect(() => {
     if (!discordCode) return
 
+    setDiscordLoading(true)
+
     router.replace('/settings/profile', undefined, { shallow: true })
     connectDiscordAccountMutation({ variables: { code: discordCode } })
       .then((res: any) => {
-        console.log(res?.data?.connectDiscordAccount)
+        setDiscordUser(res?.data?.connectDiscordAccount ?? null)
+
         queryCurrentUser()
         setDiscordLoading(false)
       })
@@ -114,7 +118,7 @@ export default function ProfileEditor() {
         console.error(connectDiscordAccountError)
         setDiscordLoading(false)
       })
-  }, [discordCode, router, connectDiscordAccountMutation, queryCurrentUser, setDiscordLoading])
+  }, [discordCode, router, connectDiscordAccountMutation, queryCurrentUser, setDiscordLoading, setDiscordUser])
 
   const discordOAuthRedirectUrl = useMemo(
     () =>
@@ -133,8 +137,11 @@ export default function ProfileEditor() {
           <TYPE.large>Discord</TYPE.large>
           <DiscordStatusWrapper>
             <Link href={discordOAuthRedirectUrl}>
-              {currentUser.profile.discordId ? (
-                <TYPE.body>{currentUser.profile.discordId}</TYPE.body>
+              {discordUser.username && discordUser.discriminator ? (
+                <TYPE.body spanColor="text2">
+                  Connected as {discordUser.username}
+                  <span>#{discordUser.discriminator}</span>
+                </TYPE.body>
               ) : (
                 <DiscordConnect disabled={discordLoading} large>
                   {discordLoading ? 'Loading ...' : 'Connect my account'}

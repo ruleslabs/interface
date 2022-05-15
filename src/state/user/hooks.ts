@@ -20,7 +20,10 @@ const CURRENT_USER_QUERY = gql`
       profile {
         twitterUsername
         instagramUsername
-        discordId
+        discordUser {
+          username
+          discriminator
+        }
       }
     }
   }

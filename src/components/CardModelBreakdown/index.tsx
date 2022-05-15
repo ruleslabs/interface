@@ -16,8 +16,8 @@ const UserLogin = styled(RowCenter)`
 `
 
 const Serial = styled(TYPE.body)`
-  & span {
-    opacity: 0.5;
+  span {
+    color: ${({ theme }) => theme.text2}
   }
 `
 
