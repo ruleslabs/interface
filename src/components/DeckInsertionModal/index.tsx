@@ -160,9 +160,9 @@ export default function DeckInsertionModal({ userId, cardIndex }: DeckInsertionM
                 return (
                   <Column key={`deck-insertion-card-${index}`} gap={12}>
                     <CardPicture src={card?.cardModel.pictureUrl} onClick={() => handleCardInsertion(card)} />
-                    <TYPE.body textAlign="center">
+                    <TYPE.body textAlign="center" spanColor="text2">
                       {hit.artistName}
-                      <span style={{ opacity: 0.5 }}> # {card?.serialNumber}</span>
+                      <span> # {card?.serialNumber}</span>
                     </TYPE.body>
                   </Column>
                 )

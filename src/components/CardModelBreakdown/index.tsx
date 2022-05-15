@@ -15,12 +15,6 @@ const UserLogin = styled(RowCenter)`
   }
 `
 
-const Serial = styled(TYPE.body)`
-  span {
-    color: ${({ theme }) => theme.text2}
-  }
-`
-
 interface CardModelBreakdownProps {
   artistName: string
   artistUsername: string
@@ -55,15 +49,15 @@ export default function CardModelBreakdown({
         <TYPE.body>Season {season}</TYPE.body>
         <TYPE.body>{scarcity} Card</TYPE.body>
         {serial ? (
-          <Serial>
+          <TYPE.body spanColor="text2">
             #{serial}
             <span> /{maxSupply ?? ' +'}</span>
-          </Serial>
+          </TYPE.body>
         ) : (
-          <Serial>
+          <TYPE.body spanColor="text2">
             {maxSupply ? `${maxSupply} ex.` : ''}
-            <span color="text2"> Serie {maxSupply ? 'limitée' : 'illimitée'}</span>
-          </Serial>
+            <span> Serie {maxSupply ? 'limitée' : 'illimitée'}</span>
+          </TYPE.body>
         )}
       </Column>
     </>
