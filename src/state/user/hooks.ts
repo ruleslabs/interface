@@ -64,9 +64,17 @@ const EDIT_PROFILE_MUTATION = gql`
 const CONNECT_DISCORD_ACCOUNT_MUTATION = gql`
   mutation ($code: String!) {
     connectDiscordAccount(code: $code) {
+      id
+      username
+      discriminator
+    }
+  }
+`
+
+const DISCONNECT_DISCORD_ACCOUNT_MUTATION = gql`
+  mutation {
+    disconnectDiscordAccount {
       discordId
-      discordUsername
-      discordDiscriminator
     }
   }
 `
@@ -150,4 +158,8 @@ export function useEditProfileMutation() {
 
 export function useConnectDiscordAccountMutation() {
   return useMutation(CONNECT_DISCORD_ACCOUNT_MUTATION)
+}
+
+export function useDisconnectDiscordAccountMutation() {
+  return useMutation(DISCONNECT_DISCORD_ACCOUNT_MUTATION)
 }

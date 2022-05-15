@@ -6,12 +6,14 @@ import Card from '@/components/Card'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import Column from '@/components/Column'
+import Row from '@/components/Row'
 import Input from '@/components/Input'
 import {
   useCurrentUser,
   useEditProfileMutation,
   useQueryCurrentUser,
   useConnectDiscordAccountMutation,
+  useDisconnectDiscordAccountMutation,
 } from '@/state/user/hooks'
 import Link from '@/components/Link'
 
@@ -37,7 +39,12 @@ const DiscordStatusWrapper = styled.div`
 `
 
 const DiscordConnect = styled(PrimaryButton)`
-  width: 100%;
+  width: 300px;
+`
+
+const DiscordDisconnect = styled(TYPE.body)`
+  color: ${({ theme }) => theme.error};
+  font-weight: 700;
 `
 
 export default function ProfileEditor() {
@@ -91,7 +98,7 @@ export default function ProfileEditor() {
         setLoading(false)
       })
       .catch((editProfileError: ApolloError) => {
-        console.error(editProfileError)
+        console.error(editProfileError) // TODO: handle error
         setLoading(false)
       })
   }, [editProfileMutation, queryCurrentUser, setLoading, twitterUsername, instagramUsername])
@@ -99,6 +106,7 @@ export default function ProfileEditor() {
   // discord
   const [discordLoading, setDiscordLoading] = useState(!!discordCode || !!currentUser?.profile?.discordId)
   const [connectDiscordAccountMutation] = useConnectDiscordAccountMutation()
+  const [disconnectDiscordAccountMutation] = useDisconnectDiscordAccountMutation()
   const [discordUser, setDiscordUser] = useState<any | null>(currentUser?.profile?.discordUser)
 
   useEffect(() => {
@@ -115,10 +123,25 @@ export default function ProfileEditor() {
         setDiscordLoading(false)
       })
       .catch((connectDiscordAccountError: ApolloError) => {
-        console.error(connectDiscordAccountError)
+        console.error(connectDiscordAccountError) // TODO: handle error
         setDiscordLoading(false)
       })
   }, [discordCode, router, connectDiscordAccountMutation, queryCurrentUser, setDiscordLoading, setDiscordUser])
+
+  const handleDiscordDisconnect = useCallback(() => {
+    setDiscordLoading(true)
+
+    disconnectDiscordAccountMutation()
+      .then((res: any) => {
+        setDiscordUser(null)
+        queryCurrentUser()
+        setDiscordLoading(false)
+      })
+      .catch((disconnectDiscordAccountError: ApolloError) => {
+        console.error(disconnectDiscordAccountError) // TODO: handle error
+        setDiscordLoading(false)
+      })
+  }, [disconnectDiscordAccountMutation, queryCurrentUser])
 
   const discordOAuthRedirectUrl = useMemo(
     () =>
@@ -132,26 +155,35 @@ export default function ProfileEditor() {
 
   return (
     <StyledProfileEditor>
-      <SocialLinksWrapper>
+      <Column gap={16}>
         <Column gap={16}>
           <TYPE.large>Discord</TYPE.large>
           <DiscordStatusWrapper>
-            <Link href={discordOAuthRedirectUrl}>
-              {discordUser.username && discordUser.discriminator ? (
+            {discordUser?.username && discordUser?.discriminator ? (
+              <Row gap={24}>
                 <TYPE.body spanColor="text2">
                   Connected as {discordUser.username}
                   <span>#{discordUser.discriminator}</span>
                 </TYPE.body>
-              ) : (
+                {discordLoading ? (
+                  <TYPE.subtitle>Loading ...</TYPE.subtitle>
+                ) : (
+                  <DiscordDisconnect onClick={handleDiscordDisconnect} clickable>
+                    Disconnect
+                  </DiscordDisconnect>
+                )}
+              </Row>
+            ) : (
+              <Link href={discordOAuthRedirectUrl}>
                 <DiscordConnect disabled={discordLoading} large>
                   {discordLoading ? 'Loading ...' : 'Connect my account'}
                 </DiscordConnect>
-              )}
-            </Link>
+              </Link>
+            )}
           </DiscordStatusWrapper>
         </Column>
 
-        <Column gap={16}>
+        <SocialLinksWrapper>
           <TYPE.large>Social networks</TYPE.large>
 
           <Column gap={12}>
@@ -167,8 +199,8 @@ export default function ProfileEditor() {
           <PrimaryButton disabled={!modified || loading} onClick={saveChanges} large>
             {loading ? 'Loading ...' : 'Save changes'}
           </PrimaryButton>
-        </Column>
-      </SocialLinksWrapper>
+        </SocialLinksWrapper>
+      </Column>
     </StyledProfileEditor>
   )
 }
