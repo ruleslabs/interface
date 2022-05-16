@@ -22,3 +22,7 @@ msgstr "Échange"
 #: src/components/Header/index.tsx
 msgid "Packs"
 msgstr "Packs"
+
+#: src/components/NavModal/index.tsx
+msgid "Settings"
+msgstr "Paramètres"

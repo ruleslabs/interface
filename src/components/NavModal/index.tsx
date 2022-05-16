@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import styled, { css } from 'styled-components'
+import { Trans } from '@lingui/macro'
 
 import { useCurrentUser } from '@/state/user/hooks'
 import Modal from '@/components/Modal'
@@ -11,6 +12,7 @@ import { AuthMode } from '@/state/auth/actions'
 import { ApplicationModal } from '@/state/application/actions'
 import { BackButton } from '@/components/Button'
 import Settings from '@/components/SettingsModal/Settings'
+import LanguageSelector from '@/components/SettingsModal/LanguageSelector'
 import { SecondaryButton, PrimaryButton } from '@/components/Button'
 
 const StyledNavModal = styled.div`
@@ -42,6 +44,10 @@ const StyledNavLink = styled(NavLink)`
 
 const StyledNavButton = styled(NavButton)`
   ${NavLinkButtonStyle}
+`
+
+const StyledLanguageSelector = styled(LanguageSelector)`
+  margin: 16px 0;
 `
 
 interface MenuLink {
@@ -112,16 +118,21 @@ export default function NavModal() {
             <StyledSettings dispatch={toggleSettings} />
           ) : (
             <>
-              {!!currentUser && (
-                <CustomNavLink href={`/user/${currentUser.slug}`}>{currentUser.username}</CustomNavLink>
-              )}
+              {currentUser && <CustomNavLink href={`/user/${currentUser.slug}`}>{currentUser.username}</CustomNavLink>}
+
               {menuLinks.map((menuLink: MenuLink, index: number) => (
                 <CustomNavLink key={`nav-link-${index}`} href={menuLink.link} onClick={toggleNavModal}>
-                  {menuLink.name}
+                  <Trans id={menuLink.name}>{menuLink.name}</Trans>
                 </CustomNavLink>
               ))}
-              {!!currentUser ? (
-                <StyledNavButton onClick={toggleSettings}>Settings</StyledNavButton>
+
+              {currentUser ? (
+                <>
+                  <StyledNavButton onClick={toggleSettings}>
+                    <Trans>Settings</Trans>
+                  </StyledNavButton>
+                  <div style={{ margin: 'auto' }} />
+                </>
               ) : (
                 <>
                   <div style={{ margin: 'auto' }} />
@@ -131,6 +142,8 @@ export default function NavModal() {
                   </Column>
                 </>
               )}
+
+              <StyledLanguageSelector />
             </>
           )}
         </NavWrapper>

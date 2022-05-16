@@ -9,5 +9,5 @@ export const DEFAULT_LOCALE: SupportedLocale = 'en-US'
 
 export const LOCALE_LABEL: { [locale in SupportedLocale]: string } = {
   'en-US': 'English',
-  'fr-FR': 'français',
+  'fr-FR': 'Français',
 }
