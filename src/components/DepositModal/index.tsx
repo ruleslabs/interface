@@ -35,7 +35,9 @@ const StyledDepositModal = styled(Column)`
 
 const StyledSecondaryButton = styled(SecondaryButton)`
   display: flex;
+  text-align: initial;
   align-items: center;
+  padding: 8px 12px 8px 16px;
   border: 1px solid ${({ theme }) => theme.bg3};
   background: ${({ theme }) => theme.bg5};
   gap: 16px;

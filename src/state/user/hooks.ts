@@ -12,6 +12,7 @@ const CURRENT_USER_QUERY = gql`
       email
       slug
       starknetAddress
+      boughtStarterPack
       rulesPrivateKey {
         salt
         iv
