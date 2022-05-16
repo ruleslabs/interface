@@ -63,6 +63,12 @@ const StyledAccountStatus = styled(AccountStatus)`
   `}
 `
 
+export const menuLinks: MenuLink[] = [
+  { name: 'Packs', link: '/packs' },
+  { name: 'Marketplace', link: '/marketplace' },
+  { name: 'Community', link: '/community' },
+] // TODO: move it somewhere else as a single source of truth
+
 export default function Header() {
   const openNavModal = useOpenModal(ApplicationModal.NAV)
   const closeModal = useCloseModal()
@@ -75,15 +81,13 @@ export default function Header() {
       </Link>
 
       <NavBar>
-        <NavLink href="/packs">
-          <Trans>Packs</Trans>
-        </NavLink>
-        <NavLink href="/marketplace">
-          <Trans>Marketplace</Trans>
-        </NavLink>
-        <NavLink href="/community">
-          <Trans>Community</Trans>
-        </NavLink>
+        {menuLinks.map((menuLink: MenuLink, index: number) => (
+          <Trans
+            key={`nav-link-${index}`}
+            id={menuLink.name}
+            render={({ translation }) => <NavLink href="/packs">{translation}</NavLink>}
+          />
+        ))}
       </NavBar>
 
       <div style={{ margin: 'auto' }} />

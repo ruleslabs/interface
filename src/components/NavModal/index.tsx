@@ -14,6 +14,7 @@ import { BackButton } from '@/components/Button'
 import Settings from '@/components/SettingsModal/Settings'
 import LanguageSelector from '@/components/SettingsModal/LanguageSelector'
 import { SecondaryButton, PrimaryButton } from '@/components/Button'
+import { menuLinks } from '@/components/Header'
 
 const StyledNavModal = styled.div`
   margin-top: 62px;
@@ -54,12 +55,6 @@ interface MenuLink {
   name: string
   link: string
 }
-
-const menuLinks: MenuLink[] = [
-  { name: 'Packs', link: '/packs' },
-  { name: 'Marketplace', link: '/marketplace' },
-  { name: 'Community', link: '/community' },
-] // TODO: move it somewhere else as a single source of truth
 
 const CustomNavLink = (props: NavLinkProps) => {
   const toggleNavModal = useNavModalToggle()
@@ -121,9 +116,15 @@ export default function NavModal() {
               {currentUser && <CustomNavLink href={`/user/${currentUser.slug}`}>{currentUser.username}</CustomNavLink>}
 
               {menuLinks.map((menuLink: MenuLink, index: number) => (
-                <CustomNavLink key={`nav-link-${index}`} href={menuLink.link} onClick={toggleNavModal}>
-                  <Trans id={menuLink.name}>{menuLink.name}</Trans>
-                </CustomNavLink>
+                <Trans
+                  key={`nav-link-${index}`}
+                  id={menuLink.name}
+                  render={({ translation }) => (
+                    <CustomNavLink href={menuLink.link} onClick={toggleNavModal}>
+                      {translation}
+                    </CustomNavLink>
+                  )}
+                />
               ))}
 
               {currentUser ? (
