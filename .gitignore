@@ -29,3 +29,7 @@ node_modules/
 
 # MacOS desktop service store
 .DS_Store
+
+# generated
+/src/locales/**/*.mjs
+/src/locales/**/en-US.po

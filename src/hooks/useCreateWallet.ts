@@ -4,7 +4,7 @@ const CompiledAccountContract = require('../contracts/Account.txt').default
 import { useCallback } from 'react'
 import { stark, ec } from 'starknet'
 
-import { useStarknet } from '@/starknet'
+import { useStarknet } from '@/lib/starknet'
 import { encryptWithPassword, encryptWithPublicKey, encodeKey, generateSalt, generateIV } from '@/utils/encryption'
 
 const spki = process.env.NEXT_PUBLIC_SPKI ?? ''

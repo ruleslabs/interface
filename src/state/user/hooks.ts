@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useQuery, useMutation, gql, ApolloError } from '@apollo/client'
 
+import { SupportedLocale } from '@/constants/locales'
+import { AppState } from '@/state'
 import { getApolloClient } from '@/apollo/apollo'
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
-import { setCurrentUser } from './actions'
+import { setCurrentUser, updateUserLocale } from './actions'
 
 const CURRENT_USER_QUERY = gql`
   query {
@@ -176,4 +178,23 @@ export function useConnectDiscordAccountMutation() {
 
 export function useDisconnectDiscordAccountMutation() {
   return useMutation(DISCONNECT_DISCORD_ACCOUNT_MUTATION)
+}
+
+// Locales
+export function useUserLocale(): AppState['user']['userLocale'] {
+  return useAppSelector((state) => state.user.userLocale)
+}
+
+export function useUserLocaleManager(): [AppState['user']['userLocale'], (newLocale: SupportedLocale) => void] {
+  const dispatch = useAppDispatch()
+  const locale = useUserLocale()
+
+  const setLocale = useCallback(
+    (newLocale: SupportedLocale) => {
+      dispatch(updateUserLocale({ userLocale: newLocale }))
+    },
+    [dispatch]
+  )
+
+  return [locale, setLocale]
 }

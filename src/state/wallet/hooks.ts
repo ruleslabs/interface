@@ -7,7 +7,7 @@ import { useWeb3React } from '@web3-react/core'
 import ERC20ABI from '@/abis/ERC20.json'
 
 import { BIG_INT_UINT126_HIGH_FACTOR } from '@/constants/misc'
-import { useStarknet } from '@/starknet'
+import { useStarknet } from '@/lib/starknet'
 import { ETH_ADDRESSES } from '@/constants/addresses'
 import { useMultipleContractSingleData } from '@/lib/hooks/multicall'
 import { useEthereumBlockNumber } from '@/state/application/hooks'

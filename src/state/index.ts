@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query/react'
+import { load, save } from 'redux-localstorage-simple'
 
 import multicall from '@/lib/state/multicall'
 import search from './search/reducer'
@@ -8,6 +9,8 @@ import auth from './auth/reducer'
 import user from './user/reducer'
 import deck from './deck/reducer'
 import onboarding from './onboarding/reducer'
+
+const PERSISTED_KEYS: string[] = ['user']
 
 const store = configureStore({
   reducer: {
@@ -19,7 +22,9 @@ const store = configureStore({
     onboarding,
     multicall: multicall.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: true }),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ thunk: true }).concat(save({ states: PERSISTED_KEYS, debounce: 1000 })),
+  preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: process.env.NODE_ENV !== 'production' }),
 })
 
 setupListeners(store.dispatch)

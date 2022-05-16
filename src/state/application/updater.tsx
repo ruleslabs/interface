@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core'
 
 import { useAppDispatch } from '@/state/hooks'
 import { updateBlockNumber, updateEthereumBlockNumber } from './actions'
-import { useStarknet } from '@/starknet'
+import { useStarknet } from '@/lib/starknet'
 import useDebounce from '@/hooks/useDebounce'
 import { BLOCK_POLLING } from '@/constants/misc'
 

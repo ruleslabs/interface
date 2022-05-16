@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Trans } from '@lingui/macro'
 
 import AccountStatus from '@/components/AccountStatus'
 import { NavLink } from '@/components/NavLink'
@@ -74,9 +75,15 @@ export default function Header() {
       </Link>
 
       <NavBar>
-        <NavLink href="/packs">Packs</NavLink>
-        <NavLink href="/marketplace">Marketplace</NavLink>
-        <NavLink href="/community">Community</NavLink>
+        <NavLink href="/packs">
+          <Trans>Packs</Trans>
+        </NavLink>
+        <NavLink href="/marketplace">
+          <Trans>Marketplace</Trans>
+        </NavLink>
+        <NavLink href="/community">
+          <Trans>Community</Trans>
+        </NavLink>
       </NavBar>
 
       <div style={{ margin: 'auto' }} />

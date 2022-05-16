@@ -9,8 +9,9 @@ import { Provider as ReduxProvider } from 'react-redux'
 import { Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 
+import { LanguageProvider } from '@/lib/i18n'
 import { metaMaskHooks, metaMask } from '@/constants/connectors'
-import { StarknetProvider } from '@/starknet'
+import { StarknetProvider } from '@/lib/starknet'
 import ApplicationUpdater from '@/state/application/updater'
 import { MulticallUpdater } from '@/lib/state/multicall'
 import { withApollo } from '@/apollo/apollo'
@@ -34,17 +35,19 @@ function App({ Component, pageProps }: AppProps) {
 
   return (
     <ReduxProvider store={store}>
-      <React.Fragment>
-        <StarknetProvider network={process.env.NEXT_PUBLIC_STARKNET_NETWORK}>
-          <Web3ReactProvider connectors={connectors}>
-            <Updaters />
-            <Head>
-              <title>Rules</title>
-            </Head>
-            <StyledThemeProvider>{getLayout(<Component {...pageProps} />)}</StyledThemeProvider>
-          </Web3ReactProvider>
-        </StarknetProvider>
-      </React.Fragment>
+      <LanguageProvider>
+        <React.Fragment>
+          <StarknetProvider network={process.env.NEXT_PUBLIC_STARKNET_NETWORK}>
+            <Web3ReactProvider connectors={connectors}>
+              <Updaters />
+              <Head>
+                <title>Rules</title>
+              </Head>
+              <StyledThemeProvider>{getLayout(<Component {...pageProps} />)}</StyledThemeProvider>
+            </Web3ReactProvider>
+          </StarknetProvider>
+        </React.Fragment>
+      </LanguageProvider>
     </ReduxProvider>
   )
 }

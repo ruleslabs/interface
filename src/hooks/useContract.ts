@@ -7,7 +7,7 @@ import { useWeb3React } from '@web3-react/core'
 import MulticallABI from '@/abis/multicall.json'
 import EthereumStarkgateABI from '@/abis/ethereum/starkgate.json'
 
-import { useStarknet } from '@/starknet'
+import { useStarknet } from '@/lib/starknet'
 import { AddressMap, MULTICALL_ADDRESSES, STARKGATE_ADDRESSES } from '@/constants/addresses'
 
 //

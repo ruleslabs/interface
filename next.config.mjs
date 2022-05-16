@@ -49,7 +49,14 @@ const defaultConfig = {
             }
           }
         ]
-      }
+      }, {
+        test: /\.po$/,
+        use: [
+          {
+            loader: "@lingui/loader",
+          },
+        ],
+      },
     )
 
     config.module.rules.push(
