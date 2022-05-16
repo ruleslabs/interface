@@ -127,12 +127,9 @@ export default function NavModal() {
               ))}
 
               {currentUser ? (
-                <>
-                  <StyledNavButton onClick={toggleSettings}>
-                    <Trans>Settings</Trans>
-                  </StyledNavButton>
-                  <div style={{ margin: 'auto' }} />
-                </>
+                <StyledNavButton onClick={toggleSettings}>
+                  <Trans>Settings</Trans>
+                </StyledNavButton>
               ) : (
                 <>
                   <div style={{ margin: 'auto' }} />
@@ -142,10 +139,12 @@ export default function NavModal() {
                   </Column>
                 </>
               )}
-
-              <StyledLanguageSelector />
             </>
           )}
+
+          {currentUser && <div style={{ margin: 'auto' }} />}
+
+          <StyledLanguageSelector />
         </NavWrapper>
       </StyledNavModal>
     </Modal>
