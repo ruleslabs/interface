@@ -81,7 +81,7 @@ export default function PackBreakdown({
             Contient {cardsPerPack} carte{cardsPerPack > 1 ? 's' : ''}
           </TYPE.body>
         </Column>
-        {released && (!availableSupply || availableSupply > 0) && availableQuantity ? (
+        {released && (availableSupply === undefined || availableSupply > 0) && availableQuantity ? (
           <Column gap={12}>
             <InputStepCounter
               value={quantity}

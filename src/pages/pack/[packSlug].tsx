@@ -64,6 +64,7 @@ const QUERY_PACK = gql`
       releaseDate
       maxSupply
       supply
+      season
       cardModels {
         cardModel {
           slug
@@ -79,15 +80,12 @@ export default function Pack() {
   const router = useRouter()
   const { packSlug } = router.query
 
-  const {
-    data: packData,
-    loading: packLoading,
-    error: packError,
-  } = useQuery(QUERY_PACK, { variables: { slug: packSlug }, skip: !packSlug })
+  const packQuery = useQuery(QUERY_PACK, { variables: { slug: packSlug }, skip: !packSlug })
 
   // get seasons from pack cardModels
   const seasons = useMemo(() => {
-    const seasons = ((packData?.pack?.cardModels ?? []) as any[]).reduce<number[]>(
+    if (packQuery.data?.pack?.season) return [packQuery.data?.pack?.season]
+    const seasons = ((packQuery.data?.pack?.cardModels ?? []) as any[]).reduce<number[]>(
       (acc, { cardModel }: { cardModel: any }) => {
         if (!acc.includes(cardModel.season)) acc.push(cardModel.season)
         return acc
@@ -96,11 +94,11 @@ export default function Pack() {
     )
 
     return seasons.sort()
-  }, [packData?.pack?.cardModels])
+  }, [packQuery.data?.pack])
 
-  const pack = packData?.pack
-  const isValid = !packError
-  const isLoading = packLoading || !pack
+  const pack = packQuery.data?.pack
+  const isValid = !packQuery.error
+  const isLoading = packQuery.loading
 
   return (
     <>
