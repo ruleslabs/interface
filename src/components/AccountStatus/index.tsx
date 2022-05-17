@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
+import { Trans } from '@lingui/macro'
 
 import { useCurrentUser } from '@/state/user/hooks'
 import { NavLink } from '@/components/NavLink'
@@ -50,8 +51,12 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
           </>
         ) : (
           <>
-            <PrimaryButton onClick={toggleSignInModal}>Sign in</PrimaryButton>
-            <SecondaryButton onClick={toggleSignUpModal}>Sign up</SecondaryButton>
+            <PrimaryButton onClick={toggleSignInModal}>
+              <Trans>Sign in</Trans>
+            </PrimaryButton>
+            <SecondaryButton onClick={toggleSignUpModal}>
+              <Trans>Sign up</Trans>
+            </SecondaryButton>
           </>
         )}
       </StyledAccountStatus>

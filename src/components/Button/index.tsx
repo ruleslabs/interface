@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import styled from 'styled-components'
+import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
@@ -174,7 +175,7 @@ export const CustomGoogleLogin = (props: CustomGoogleLoginProps) => {
   return (
     <StyledCustomGoogleLogin {...props}>
       <GoogleLogo />
-      Connect with google
+      <Trans>Connect with google</Trans>
     </StyledCustomGoogleLogin>
   )
 }

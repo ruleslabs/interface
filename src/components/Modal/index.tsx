@@ -4,6 +4,8 @@ import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { DialogOverlay, DialogContent } from '@reach/dialog'
 import { animated, useTransition } from 'react-spring'
+import { Trans } from '@lingui/macro'
+
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
 
@@ -136,7 +138,11 @@ interface ModalHeaderProps {
 export const ModalHeader = ({ children, toggleModal }: ModalHeaderProps) => {
   return (
     <RowCenter justify="space-between" style={{ padding: '0 8px' }}>
-      {typeof children === 'string' ? <ModalTitle>{children}</ModalTitle> : children}
+      {typeof children === 'string' ? (
+        <Trans id={children} render={({ translation }) => <ModalTitle>{translation}</ModalTitle>} />
+      ) : (
+        children
+      )}
       <StyledClose onClick={toggleModal} />
     </RowCenter>
   )

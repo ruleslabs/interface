@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import GoogleLogin from 'react-google-login'
 import { ApolloError } from '@apollo/client'
+import { Trans } from '@lingui/macro'
 
 import { ModalHeader } from '@/components/Modal'
 import Column from '@/components/Column'
@@ -37,10 +38,10 @@ const SubmitButton = styled(PrimaryButton)`
 `
 
 interface SignInFormProps {
-  onSuccessfulConnexion: (accessToken?: string, onboard?: boolean) => void
+  onSuccessfulConnection: (accessToken?: string, onboard?: boolean) => void
 }
 
-export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
+export default function SignInForm({ onSuccessfulConnection }: SignInFormProps) {
   // Loading
   const [loading, setLoading] = useState(false)
 
@@ -61,7 +62,7 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
     async (googleData) => {
       if (googleData.tokenId) {
         googleAuthMutation({ variables: { token: googleData.tokenId } })
-          .then((res: any) => onSuccessfulConnexion(res?.data?.googleAuth?.accessToken))
+          .then((res: any) => onSuccessfulConnection(res?.data?.googleAuth?.accessToken))
           .catch((googleAuthError: ApolloError) => {
             const error = googleAuthError?.graphQLErrors?.[0]
             if (error) setError({ message: error.message, id: error.extensions?.id as string })
@@ -71,7 +72,7 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
           })
       }
     },
-    [googleAuthMutation, onSuccessfulConnexion, setLoading]
+    [googleAuthMutation, onSuccessfulConnection, setLoading]
   )
 
   // errors
@@ -87,7 +88,7 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
       setLoading(true)
 
       signInMutation({ variables: { email, password: hashedPassword } })
-        .then((res: any) => onSuccessfulConnexion(res?.data?.signIn?.accessToken))
+        .then((res: any) => onSuccessfulConnection(res?.data?.signIn?.accessToken))
         .catch((signInError: ApolloError) => {
           const error = signInError?.graphQLErrors?.[0]
           if (error) setError({ message: error.message, id: error.extensions?.id as string })
@@ -97,7 +98,7 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
           setLoading(false)
         })
     },
-    [email, password, signInMutation, onSuccessfulConnexion, setLoading]
+    [email, password, signInMutation, onSuccessfulConnection, setLoading]
   )
 
   return (
@@ -111,12 +112,13 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
               <GoogleLogin
                 render={(renderProps) => <CustomGoogleLogin {...renderProps} />}
                 clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
-                buttonText="Log in with Google"
                 onSuccess={handleGoogleLogin}
                 onFailure={handleGoogleLogin}
                 cookiePolicy={'single_host_origin'}
               />
-              <Separator>or</Separator>
+              <Separator>
+                <Trans>or</Trans>
+              </Separator>
             </>
           )}
 
@@ -130,16 +132,27 @@ export default function SignInForm({ onSuccessfulConnexion }: SignInFormProps) {
               onUserInput={onEmailInput}
               $valid={error?.id !== 'email' || loading}
             />
-            <Input
-              id="password"
-              value={password}
-              placeholder="Password"
-              type="password"
-              autoComplete="password"
-              onUserInput={onPasswordInput}
-              $valid={error?.id !== 'password' || loading}
+            <Trans
+              id="Password"
+              render={({ translation }) => (
+                <Input
+                  id="password"
+                  value={password}
+                  placeholder={translation}
+                  type="password"
+                  autoComplete="password"
+                  onUserInput={onPasswordInput}
+                  $valid={error?.id !== 'password' || loading}
+                />
+              )}
             />
-            <TYPE.body color="error">{error.message}</TYPE.body>
+
+            {error.message && (
+              <Trans
+                id={error.message}
+                render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
+              />
+            )}
           </Column>
 
           <Column gap={12}>

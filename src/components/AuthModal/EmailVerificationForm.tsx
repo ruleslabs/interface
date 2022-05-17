@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
+import { Trans } from '@lingui/macro'
 
 import { ModalHeader } from '@/components/Modal'
 import { EMAIL_VERIFICATION_CODE_LENGTH } from '@/constants/misc'
@@ -30,10 +31,10 @@ const ResendCode = styled(TYPE.subtitle)`
 `
 
 interface EmailVerificationFormProps {
-  onSuccessfulConnexion: (accessToken?: string, onboard?: boolean) => void
+  onSuccessfulConnection: (accessToken?: string, onboard?: boolean) => void
 }
 
-export default function EmailVerificationForm({ onSuccessfulConnexion }: EmailVerificationFormProps) {
+export default function EmailVerificationForm({ onSuccessfulConnection }: EmailVerificationFormProps) {
   // Wallet
   const createWallet = useCreateWallet()
   const [walletInfos, setWalletInfos] = useState<WalletInfos | null>(null)
@@ -110,7 +111,7 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: EmailVe
           acceptCommercialEmails,
         },
       })
-        .then((res: any) => onSuccessfulConnexion(res?.data?.signUp?.accessToken, true))
+        .then((res: any) => onSuccessfulConnection(res?.data?.signUp?.accessToken, true))
         .catch((signUpError: ApolloError) => {
           const error = signUpError?.graphQLErrors?.[0]
           if (error) setError({ message: error.message, id: 'emailVerificationCode' })
@@ -168,7 +169,12 @@ export default function EmailVerificationForm({ onSuccessfulConnexion }: EmailVe
             $valid={error.id !== 'emailVerificationCode' || loading}
           />
 
-          <TYPE.body color="error">{error.message}</TYPE.body>
+          {error.message && (
+            <Trans
+              id={error.message}
+              render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
+            />
+          )}
         </Column>
 
         <Column gap={8}>

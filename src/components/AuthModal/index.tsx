@@ -38,7 +38,7 @@ export default function AuthModal() {
 
   // Current user
   const queryCurrentUser = useQueryCurrentUser()
-  const onSuccessfulConnexion = useCallback(
+  const onSuccessfulConnection = useCallback(
     async (accessToken?: string, onboard?: boolean) => {
       storeAccessToken(accessToken ?? '')
       const currentUser = await queryCurrentUser()
@@ -54,11 +54,11 @@ export default function AuthModal() {
   const renderModal = (authMode: AuthMode | null) => {
     switch (authMode) {
       case AuthMode.SIGN_IN:
-        return <SignInForm onSuccessfulConnexion={onSuccessfulConnexion} />
+        return <SignInForm onSuccessfulConnection={onSuccessfulConnection} />
       case AuthMode.SIGN_UP:
         return <SignUpForm />
       case AuthMode.EMAIL_VERIFICATION:
-        return <EmailVerificationForm onSuccessfulConnexion={onSuccessfulConnexion} />
+        return <EmailVerificationForm onSuccessfulConnection={onSuccessfulConnection} />
     }
     return null
   }

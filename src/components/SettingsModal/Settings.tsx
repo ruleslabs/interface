@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
+import { Trans } from '@lingui/macro'
 
 import { useCurrentUser } from '@/state/user/hooks'
 import { useETHBalances } from '@/state/wallet/hooks'
@@ -69,7 +70,9 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
   return (
     <Column gap={20} {...props}>
       <Column gap={12}>
-        <TYPE.body>Solde du compte</TYPE.body>
+        <TYPE.body>
+          <Trans>Current balance</Trans>
+        </TYPE.body>
         <Balance>
           {etherEURprice && balance ? (
             <>
@@ -83,19 +86,25 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
       </Column>
       <Column gap={26}>
         <TYPE.body onClick={toggleDepositModal} clickable>
-          Deposit ETH
+          <Trans>Deposit ETH</Trans>
         </TYPE.body>
         <Link href="/settings/profile" onClick={dispatch}>
-          <TYPE.body clickable>Profile settings</TYPE.body>
+          <TYPE.body clickable>
+            <Trans>Profile settings</Trans>
+          </TYPE.body>
         </Link>
         <Link href="/settings/activity" onClick={dispatch}>
-          <TYPE.body clickable>Activity</TYPE.body>
+          <TYPE.body clickable>
+            <Trans>Activity</Trans>
+          </TYPE.body>
         </Link>
         <Link href="/settings/security" onClick={dispatch}>
-          <TYPE.body clickable>Security</TYPE.body>
+          <TYPE.body clickable>
+            <Trans>Security</Trans>
+          </TYPE.body>
         </Link>
         <TYPE.body clickable onClick={logout}>
-          Logout
+          <Trans>Logout</Trans>
         </TYPE.body>
       </Column>
     </Column>

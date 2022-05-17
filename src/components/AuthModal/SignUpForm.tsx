@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
+import { Trans } from '@lingui/macro'
 
 import { ModalHeader } from '@/components/Modal'
 import Column from '@/components/Column'
@@ -134,37 +135,57 @@ export default function SignUpForm() {
               onUserInput={onEmailInput}
               $valid={error?.id !== 'email' || loading}
             />
-            <Input
-              id="username"
-              value={username}
-              placeholder="Username"
-              type="text"
-              onUserInput={onUsernameInput}
-              $valid={error?.id !== 'username' || loading}
+            <Trans
+              id="Username"
+              render={({ translation }) => (
+                <Input
+                  id="username"
+                  value={username}
+                  placeholder={translation}
+                  type="text"
+                  onUserInput={onUsernameInput}
+                  $valid={error?.id !== 'username' || loading}
+                />
+              )}
             />
-            <Input
-              id="password"
-              value={password}
-              placeholder="Password"
-              type="password"
-              onUserInput={onPasswordInput}
-              autoComplete="new-password"
-              $valid={error?.id !== 'password' || loading}
+            <Trans
+              id="Password"
+              render={({ translation }) => (
+                <Input
+                  id="password"
+                  value={password}
+                  placeholder={translation}
+                  type="password"
+                  onUserInput={onPasswordInput}
+                  autoComplete="new-password"
+                  $valid={error?.id !== 'password' || loading}
+                />
+              )}
             />
-            <TYPE.body color="error">{error.message}</TYPE.body>
+
+            {error.message && (
+              <Trans
+                id={error.message}
+                render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
+              />
+            )}
           </Column>
 
           <Column gap={12}>
             <Checkbox value={acceptTos} onChange={toggleTosAgreed}>
               <TYPE.body>
-                I agree to Rules&nbsp;
-                <Link href="/terms-and-conditions" underline>
-                  terms and conditions
-                </Link>
+                <Trans>
+                  I agree to Rules&nbsp;
+                  <Link href="/terms-and-conditions" underline>
+                    terms and conditions
+                  </Link>
+                </Trans>
               </TYPE.body>
             </Checkbox>
             <Checkbox value={acceptCommercialEmails} onChange={toggleEmailAgreed}>
-              <TYPE.body>I want to receive emails about packs and stuff</TYPE.body>
+              <TYPE.body>
+                <Trans>Please send updates about pack releases and new stuff</Trans>
+              </TYPE.body>
             </Checkbox>
           </Column>
 

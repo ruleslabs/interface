@@ -26,3 +26,118 @@ msgstr "Packs"
 #: src/components/NavModal/index.tsx
 msgid "Settings"
 msgstr "Paramètres"
+
+#: src/components/SettingsModal/Settings.tsx
+msgid "Activity"
+msgstr "Activité"
+
+#: src/components/SettingsModal/Settings.tsx
+msgid "Current balance"
+msgstr "Solde du compte"
+
+#: src/components/SettingsModal/Settings.tsx
+msgid "Deposit ETH"
+msgstr "Déposer de l'ETH"
+
+#: src/components/SettingsModal/Settings.tsx
+msgid "Logout"
+msgstr "Se déconnecter"
+
+#: src/components/SettingsModal/Settings.tsx
+msgid "Profile settings"
+msgstr "Gestion du profil"
+
+#: src/components/SettingsModal/Settings.tsx
+msgid "Security"
+msgstr "Sécurité"
+
+#: src/components/NavModal/index.tsx
+msgid "Settings"
+msgstr "Paramètres"
+
+#: src/components/AccountStatus/index.tsx
+msgid "Sign in"
+msgstr "Connexion"
+
+#: src/components/AccountStatus/index.tsx
+msgid "Sign up"
+msgstr "Inscription"
+
+#: src/components/AuthModal/SignInForm.tsx
+msgid "or"
+msgstr "ou"
+
+#: src/components/Button/index.tsx
+msgid "Connect with google"
+msgstr "Se connecter avec google"
+
+#: src/components/Modal/index.tsx
+msgid "Connection"
+msgstr "Connexion"
+
+#: src/components/Modal/index.tsx
+msgid "Registration"
+msgstr "Inscription"
+
+#: src/components/AuthModal/SignInForm.tsx
+#: src/components/AuthModal/SignUpForm.tsx
+msgid "Password"
+msgstr "Mot de passe"
+
+#: src/components/AuthModal/SignUpForm.tsx
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#: src/components/AuthModal/SignUpForm.tsx
+msgid "I agree to Rules <0>terms and conditions</0>"
+msgstr "J’accepte les <0>conditions d’utilisation de Rules</0>"
+
+#: src/components/AuthModal/SignUpForm.tsx
+msgid "Please send updates about pack releases and new stuff"
+msgstr "Prévenez-moi des sorties de packs et nouveautés"
+
+#: Auth errors
+msgid "Unknown email"
+msgstr "Email inconnu "
+
+msgid "Invalid password"
+msgstr "Mot de passe invalide"
+
+msgid "Failed to sign in"
+msgstr "Echec de connexion"
+
+msgid "Too many requests, wait a few moments"
+msgstr "Trop de requêtes, attendez un moment"
+
+msgid "Email verification code has expired"
+msgstr "Le code de verification a expiré"
+
+msgid "Too many failed email verification attemps"
+msgstr "Trop d'échecs de vérification de l'email"
+
+msgid "Wrong email verification code"
+msgstr "Code de verification erroné"
+
+msgid "Email already in use"
+msgstr "Email déjà utilisé"
+
+msgid "Username already in use"
+msgstr "Nom d'utilisateur déjà utilisé"
+
+msgid "Invalid or unauthorized email address"
+msgstr "Email invalide ou non autorisé "
+
+msgid "Invalid username"
+msgstr "Nom d'utilisateur invalide"
+
+msgid "Password should be at least 6 characters long"
+msgstr "Le mot de passe doit comporter au moins 6 caractères"
+
+msgid "Password too similar to your email or username"
+msgstr "Mot de passe trop similaire à votre email ou nom d'utilisateur"
+
+msgid "This password appears in a public data breach, please choose a stronger password"
+msgstr "Ce mot de passe apparaît dans une base de données de mot de passe volés, veuillez choisir un mot de passe plus fort"
+
+msgid "You must accept the terms and conditions"
+msgstr "Vous devez accepter les condition générales d'utilisation"
