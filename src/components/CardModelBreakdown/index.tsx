@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Trans, t } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
@@ -46,8 +47,10 @@ export default function CardModelBreakdown({
         <Certified width="18px" />
       </UserLogin>
       <Column gap={8}>
-        <TYPE.body>Season {season}</TYPE.body>
-        <TYPE.body>{scarcity} Card</TYPE.body>
+        <TYPE.body>
+          <Trans>Season {season}</Trans>
+        </TYPE.body>
+        <Trans id={`${scarcity} card`} render={({ translation }) => <TYPE.body>{translation}</TYPE.body>} />
         {serial ? (
           <TYPE.body spanColor="text2">
             #{serial}
@@ -56,7 +59,7 @@ export default function CardModelBreakdown({
         ) : (
           <TYPE.body spanColor="text2">
             {maxSupply ? `${maxSupply} ex.` : ''}
-            <span> Serie {maxSupply ? 'limitée' : 'illimitée'}</span>
+            <span>{maxSupply ? t`Limited edition` : t`Unlimited edition`}</span>
           </TYPE.body>
         )}
       </Column>

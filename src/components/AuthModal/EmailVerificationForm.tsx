@@ -156,7 +156,9 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
       </ModalHeader>
 
       <Column gap={26}>
-        <TYPE.large>Enter the code to confirm your registration</TYPE.large>
+        <TYPE.large>
+          <Trans>Enter the code to confirm your registration</Trans>
+        </TYPE.large>
 
         <Column gap={12}>
           <Input
@@ -178,11 +180,17 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
         </Column>
 
         <Column gap={8}>
-          <TYPE.body>The code has been emailed to {email}</TYPE.body>
+          <TYPE.body>
+            <Trans>The code has been emailed to {email}</Trans>
+          </TYPE.body>
           {countdown?.seconds ? (
-            <TYPE.subtitle>New code in {countdown.seconds} seconds</TYPE.subtitle>
+            <TYPE.subtitle>
+              <Trans>New code in {countdown.seconds} seconds</Trans>
+            </TYPE.subtitle>
           ) : (
-            <ResendCode onClick={handleNewCode}>Resend the code</ResendCode>
+            <ResendCode onClick={handleNewCode}>
+              <Trans>Resend the code</Trans>
+            </ResendCode>
           )}
         </Column>
       </Column>

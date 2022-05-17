@@ -1,6 +1,7 @@
 import { useMemo, useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
+import { t } from '@lingui/macro'
 
 import Modal from '@/components/Modal'
 import { useModalOpen, useDeckInsertionModalToggle } from '@/state/application/hooks'
@@ -42,6 +43,10 @@ const StyledDeckInsertionModal = styled.div`
 const CardPicture = styled.img`
   width: 100%;
   cursor: pointer;
+`
+
+const CardName = styled(TYPE.body)`
+  width: 100%;
 `
 
 interface DeckInsertionModalProps {
@@ -147,12 +152,14 @@ export default function DeckInsertionModal({ userId, cardIndex }: DeckInsertionM
         </Row>
         <Section marginTop="16px">
           <Column gap={32}>
+
             <SearchBar
               style={{ width: '100%' }}
               onUserInput={onSearchBarInput}
-              placeholder="Chercher une carte..."
+              placeholder={t`Search a card...`}
               value={search}
             />
+
             <Grid gap={64} maxWidth={256}>
               {cards.map((hit: any, index: number) => {
                 const card = cardsTable[hit.cardId]
@@ -160,10 +167,10 @@ export default function DeckInsertionModal({ userId, cardIndex }: DeckInsertionM
                 return (
                   <Column key={`deck-insertion-card-${index}`} gap={12}>
                     <CardPicture src={card?.cardModel.pictureUrl} onClick={() => handleCardInsertion(card)} />
-                    <TYPE.body textAlign="center" spanColor="text2">
+                    <CardName textAlign="center" spanColor="text2">
                       {hit.artistName}
                       <span> # {card?.serialNumber}</span>
-                    </TYPE.body>
+                    </CardName>
                   </Column>
                 )
               })}

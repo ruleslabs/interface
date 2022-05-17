@@ -1,3 +1,5 @@
+import { Trans, Plural } from '@lingui/macro'
+
 import { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
@@ -18,21 +20,29 @@ export default function CardModelSales({ slug, lowestAskEUR, averageSellEUR, car
         <TYPE.body fontWeight={700} fontSize={26}>
           {lowestAskEUR ?? '- '}€
           <br />
-          <TYPE.body>prix minimum</TYPE.body>
+          <TYPE.body>
+            <Trans>Lowest ask</Trans>
+          </TYPE.body>
         </TYPE.body>
         <TYPE.body fontWeight={700} fontSize={26}>
           {averageSellEUR ?? '- '}€
           <br />
-          <TYPE.body>vente moyenne</TYPE.body>
+          <TYPE.body>
+            <Trans>Average sale</Trans>
+          </TYPE.body>
         </TYPE.body>
       </RowCenter>
       <Column gap={8}>
         <TYPE.body textAlign="center">
-          {`${cardsOnSaleCount} carte${cardsOnSaleCount > 1 ? 's' : ''} à vendre`}
+          <Plural
+            value={cardsOnSaleCount}
+            _1="{cardsOnSaleCount} card on sale"
+            other="{cardsOnSaleCount} cards on sale"
+          />
         </TYPE.body>
         <Link href={`/card/${slug}/buy`}>
           <PrimaryButton style={{ width: '100%' }} large>
-            Selectionner et acheter
+            <Trans>Select and buy</Trans>
           </PrimaryButton>
         </Link>
       </Column>

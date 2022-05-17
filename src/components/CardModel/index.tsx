@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Trans } from '@lingui/macro'
 
 import Link from '@/components/Link'
 import { TYPE } from '@/styles/theme'
@@ -46,7 +47,9 @@ export default function CardModel({ cardModelSlug, pictureUrl, onSale = false, w
         <Card src={pictureUrl} />
         {onSale && (
           <OnSale>
-            <TYPE.medium>EN VENTE</TYPE.medium>
+            <TYPE.medium>
+              <Trans>ON SALE</Trans>
+            </TYPE.medium>
           </OnSale>
         )}
       </Link>

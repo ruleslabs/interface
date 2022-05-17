@@ -71,6 +71,10 @@ msgstr "ou"
 msgid "Connect with google"
 msgstr "Se connecter avec google"
 
+#: src/components/Button/index.tsx
+msgid "Back"
+msgstr "Retour"
+
 #: src/components/Modal/index.tsx
 msgid "Connection"
 msgstr "Connexion"
@@ -78,6 +82,18 @@ msgstr "Connexion"
 #: src/components/Modal/index.tsx
 msgid "Registration"
 msgstr "Inscription"
+
+#: src/components/AuthModal/EmailVerificationForm.tsx
+msgid "The code has been emailed to {email}"
+msgstr "Le code a été envoyé à {email}"
+
+#: src/components/AuthModal/EmailVerificationForm.tsx
+msgid "New code in {0} seconds"
+msgstr "Nouveau code dans {0} secondes"
+
+#: src/components/AuthModal/EmailVerificationForm.tsx
+msgid "Resend the code"
+msgstr "Renvoyer le code"
 
 #: src/components/AuthModal/SignInForm.tsx
 #: src/components/AuthModal/SignUpForm.tsx
@@ -88,6 +104,18 @@ msgstr "Mot de passe"
 msgid "Username"
 msgstr "Nom d'utilisateur"
 
+#: src/components/AuthModal/SignInForm.tsx
+msgid "Forgot your password?"
+msgstr "Mot de passe oublié?"
+
+#: src/components/AuthModal/SignInForm.tsx
+msgid "No account? <0>Join Rules</0>"
+msgstr "Pas encore de compte? <0>Rejoins Rules</0>"
+
+#: src/components/AuthModal/SignUpForm.tsx
+msgid "Already have an account? <0>Connect</0>"
+msgstr "Déjà un compte? <0>Se connecter</0>"
+
 #: src/components/AuthModal/SignUpForm.tsx
 msgid "I agree to Rules <0>terms and conditions</0>"
 msgstr "J’accepte les <0>conditions d’utilisation de Rules</0>"
@@ -95,6 +123,10 @@ msgstr "J’accepte les <0>conditions d’utilisation de Rules</0>"
 #: src/components/AuthModal/SignUpForm.tsx
 msgid "Please send updates about pack releases and new stuff"
 msgstr "Prévenez-moi des sorties de packs et nouveautés"
+
+#: src/components/AuthModal/EmailVerificationForm.tsx
+msgid "Enter the code to confirm your registration"
+msgstr "Entre le code pour confirmer ton inscription"
 
 #: Auth errors
 msgid "Unknown email"
@@ -141,3 +173,143 @@ msgstr "Ce mot de passe apparaît dans une base de données de mot de passe vol�
 
 msgid "You must accept the terms and conditions"
 msgstr "Vous devez accepter les condition générales d'utilisation"
+
+#: src/components/CardModelBreakdown
+msgid "Limited edition"
+msgstr "Édition limitée"
+
+#: src/components/CardModelBreakdown
+msgid "Unlimited edition"
+msgstr "Édition illimitée"
+
+#: src/components/CardModelBreakdown
+msgid "Season {season}"
+msgstr "Saison {season}"
+
+#: src/components/CardModelBreakdown
+msgid "Common card"
+msgstr "Carte commune"
+
+#: src/components/CardModelSales
+msgid "Average sale"
+msgstr "Vente moyenne"
+
+#: src/components/CardModelSales
+msgid "Lowest ask"
+msgstr "Prix minimum"
+
+#: src/components/CardModelSales
+msgid "Select and buy"
+msgstr "Selectionner et acheter"
+
+#: src/components/CardModelSales
+msgid "{cardsOnSaleCount, plural, =1 {{cardsOnSaleCount} card on sale} other {{cardsOnSaleCount} cards on sale}}"
+msgstr "{cardsOnSaleCount, plural, =1 {{cardsOnSaleCount} carte en vente} other {{cardsOnSaleCount} cartes en vente}}"
+
+#: src/components/CardOwnership/index.tsx
+msgid "Belongs to <0>{ownerUsername}</0>"
+msgstr "Appartient à <0>{ownerUsername}</0>"
+
+#: src/components/CardOwnership/index.tsx
+msgid "{0, plural, =0 {Place for Sale} other {Buy - {askEur}€}}"
+msgstr "{0, plural, =0 {Mettre en vente} other {Acheter - {askEur}€}}"
+
+#: src/components/CardOwnership/index.tsx
+msgid "Close offer - {askEur}€"
+msgstr "Arrêter la vente - {askEur}€"
+
+#: src/components/CardOwnership/index.tsx
+msgid "Offer"
+msgstr "Offrir"
+
+#: src/components/CardOwnership/index.tsx
+msgid "This card is not on sale."
+msgstr "Cet exemplaire n’est pas à vendre."
+
+#: src/components/CardModel/index.tsx
+msgid "ON SALE"
+msgstr "EN VENTE"
+
+#: src/comporter/CardTransfersHistory/cardModel.tsx
+msgid "Last sales"
+msgstr "Dernières ventes"
+
+#: src/comporter/CardTransfersHistory/cardModel.tsx
+msgid "Highest sales"
+msgstr "Meilleures ventes"
+
+#: src/comporter/CardTransfersHistory/card.tsx
+msgid "Latest sales for this card"
+msgstr "Dernières ventes de cet exemplaire"
+
+#: src/components/CardsTransfersHistory/table.tsx
+msgid "Seller"
+msgstr "Vendeur"
+
+#: src/components/CardsTransfersHistory/table.tsx
+msgid "Serial"
+msgstr "Numéro de série"
+
+#: src/components/CardsTransfersHistory/table.tsx
+msgid "Buyer"
+msgstr "Acheteur"
+
+#: src/components/CardsTransfersHistory/table.tsx
+msgid "Date"
+msgstr "Date"
+
+#: src/components/CardsTransfersHistory/table.tsx
+msgid "Price"
+msgstr "Prix"
+
+#: src/components/CardsTransfersHistory/table.tsx
+msgid "Offered by Rules"
+msgstr "Offert par Rules"
+
+#: src/components/CardsTransfersHistory/table.tsx
+msgid "Pack opening"
+msgstr "Ouverture de pack"
+
+#: src/components/DeckInsertionModal/index.tsx
+msgid "Search a card..."
+msgstr "Chercher une carte..."
+
+#: src/components/DepositModal/index.tsx
+msgid "Buy ETH with your credit card or a bank transfer"
+msgstr "Achetez de l'ETH avec votre carte de crédit ou un virement bancaire"
+
+#: src/components/DepositModal/index.tsx
+msgid "Connect Metamask"
+msgstr "Connecter Metamask"
+
+#: src/components/DepositModal/index.tsx
+msgid "From your bank account"
+msgstr "Depuis votre compte bancaire"
+
+#: src/components/DepositModal/index.tsx
+msgid "From your Ethereum wallet"
+msgstr "Depuis votre portefeuille Ethereum"
+
+#: src/components/DepositModal/index.tsx
+msgid "Deposit ETH from your wallet"
+msgstr "Déposez de l'ETH depuis votre portefeuille"
+
+#: src/components/DepositModal/index.tsx
+msgid "Fund your account"
+msgstr "Alimenter votre compte"
+
+#: src/components/DepositModal/index.tsx
+msgid "Metamask connected to the wrong network,<0/>please <1>switch network</1>"
+msgstr "Metamask n'est pas connecté au bon réseau,<0/>veuillez <1>changer de réseau</1>"
+
+#: src/components/DepositModal/index.tsx
+msgid "Enter an amount"
+msgstr "Entrez un montant"
+
+#: src/components/DepositModal/index.tsx
+msgid "Deposit"
+msgstr "Déposer"
+
+#: src/components/DepositModal/index.tsx
+msgid "Insufficient ETH balance"
+msgstr "Solde ETH insuffisant"

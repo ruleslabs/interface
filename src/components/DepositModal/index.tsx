@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
+import { Trans, t } from '@lingui/macro'
 
 import { useCurrentUser } from '@/state/user/hooks'
 import Modal, { ModalHeader } from '@/components/Modal'
@@ -137,23 +138,29 @@ export default function DepositModal() {
   return (
     <Modal onDismiss={toggleDepositModal} isOpen={isOpen}>
       <StyledDepositModal gap={26}>
-        <ModalHeader toggleModal={toggleDepositModal}>Fund your account</ModalHeader>
+        <ModalHeader toggleModal={toggleDepositModal}>{t`Fund your account`}</ModalHeader>
 
         <Column gap={16}>
-          <TYPE.medium>from your bank account</TYPE.medium>
+          <TYPE.medium>
+            <Trans>From your bank account</Trans>
+          </TYPE.medium>
           {rampSdk && (
             <CustomButton
               title="Ramp"
-              subtitle="Buy ETH with your credit card or a bank transfer"
+              subtitle={t`Buy ETH with your credit card or a bank transfer`}
               onClick={rampSdk.show}
             >
               <RampIcon />
             </CustomButton>
           )}
 
-          <Separator>or</Separator>
+          <Separator>
+            <Trans>or</Trans>
+          </Separator>
 
-          <TYPE.medium>from your Ethereum wallet</TYPE.medium>
+          <TYPE.medium>
+            <Trans>From your Ethereum wallet</Trans>
+          </TYPE.medium>
 
           {account && chainId === desiredChainId ? (
             <Column gap={16}>
@@ -165,27 +172,33 @@ export default function DepositModal() {
               />
               {!+depositAmount || !parsedDepositAmount ? (
                 <PrimaryButton disabled large>
-                  Enter an amount
+                  <Trans>Enter an amount</Trans>
                 </PrimaryButton>
               ) : balance?.lessThan(parsedDepositAmount) ? (
                 <PrimaryButton disabled large>
-                  Insufficient ETH balance
+                  <Trans>Insufficient ETH balance</Trans>
                 </PrimaryButton>
               ) : (
                 <PrimaryButton onClick={handleDeposit} large>
-                  Deposit
+                  <Trans>Deposit</Trans>
                 </PrimaryButton>
               )}
             </Column>
           ) : account ? (
             <WrongNetwork>
-              Metamask connected to the wrong network,
-              <br />
-              please&nbsp;
-              <span onClick={activateMetamask}>switch network</span>
+              <Trans>
+                Metamask connected to the wrong network,
+                <br />
+                please&nbsp;
+                <span onClick={activateMetamask}>switch network</span>
+              </Trans>
             </WrongNetwork>
           ) : (
-            <CustomButton title="Connect Metamask" subtitle="Deposit ETH from your wallet" onClick={activateMetamask}>
+            <CustomButton
+              title={t`Connect Metamask`}
+              subtitle={t`Deposit ETH from your wallet`}
+              onClick={activateMetamask}
+            >
               <MetamaskIcon />
             </CustomButton>
           )}

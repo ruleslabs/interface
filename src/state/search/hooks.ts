@@ -117,11 +117,11 @@ export function useCardModelOnSale(pictureDerivative: string) {
 export const TransfersSort = {
   dateDesc: {
     index: algoliaIndexes.transfersDateDesc,
-    displayName: 'Dernières ventes',
+    displayName: 'Last sales',
   },
   priceDesc: {
     index: algoliaIndexes.transfersPriceDesc,
-    displayName: 'Meilleures ventes',
+    displayName: 'Highest sales',
   },
 }
 

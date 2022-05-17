@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useQuery, gql } from '@apollo/client'
+import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
 import { useSearchTransfers } from '@/state/search/hooks'
@@ -65,7 +66,7 @@ export default function CardTransfersHistory({ cardModelId, serialNumber, ...pro
   return (
     <div {...props}>
       <TYPE.body fontSize={28} fontWeight={700}>
-        Historique de cet exemplaire
+        <Trans>Latest sales for this card</Trans>
       </TYPE.body>
       <TransfersTable
         transfers={transfers}

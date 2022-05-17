@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
+import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
 import Row from '@/components/Row'
@@ -89,14 +90,19 @@ export default function CardModelHistory({ cardModelId, ...props }: CardModelHis
         {(Object.keys(TransfersSort) as Array<keyof typeof TransfersSort>)
           .sort((a: any) => (a === transfersSort ? -1 : 1))
           .map((sort) => (
-            <TYPE.body
+            <Trans
               key={`sorting-title-${sort}`}
-              color="text2"
-              fontWeight={700}
-              onClick={sort !== transfersSort ? () => setTransfersSort(sort) : undefined}
-            >
-              {TransfersSort[sort].displayName}
-            </TYPE.body>
+              id={TransfersSort[sort].displayName}
+              render={({ translation }) => (
+                <TYPE.body
+                  color="text2"
+                  fontWeight={700}
+                  onClick={sort !== transfersSort ? () => setTransfersSort(sort) : undefined}
+                >
+                  {translation}
+                </TYPE.body>
+              )}
+            />
           ))}
       </SortingTitle>
 

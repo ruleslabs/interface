@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Trans, Plural } from '@lingui/macro'
 
 import { useCurrentUser } from '@/state/user/hooks'
 import { RowCenter } from '@/components/Row'
@@ -47,27 +48,39 @@ export default function RuleOwnership({
           <Avatar src={ownerProfilePictureUrl} />
         </Link>
         <TYPE.body>
-          {'appartient à '}
-          <Link href={`/user/${ownerSlug}`}>
-            <TYPE.body clickable>{ownerUsername}</TYPE.body>
-          </Link>
+          <Trans>
+            Belongs to&nbsp;
+            <Link href={`/user/${ownerSlug}`} color="text1" underline>
+              {ownerUsername}
+            </Link>
+          </Trans>
         </TYPE.body>
       </RowCenter>
       <ButtonsWrapper gap={12}>
         {!!askEur || currentUser?.slug === ownerSlug ? (
           <>
-            <PrimaryButton large>{askEur ? `Acheter - ${askEur}€` : 'Mettre en vente'}</PrimaryButton>
+            {currentUser?.slug === ownerSlug && !!askEur ? (
+              <PrimaryButton large>
+                <Trans>Close offer - {askEur}€</Trans>
+              </PrimaryButton>
+            ) : (
+              <PrimaryButton large>
+                <Plural value={askEur ?? 0} _0="Place for Sale" other="Buy - {0}€" />
+              </PrimaryButton>
+            )}
             {!askEur && (
               <SecondaryButton large>
                 <RowCenter justify="center" gap={4}>
                   <StyledPresent />
-                  Offrir
+                  <Trans>Offer</Trans>
                 </RowCenter>
               </SecondaryButton>
             )}
           </>
         ) : (
-          <Placeholder>Cet exemplaire n’est pas à vendre.</Placeholder>
+          <Placeholder>
+            <Trans>This card is not on sale.</Trans>
+          </Placeholder>
         )}
       </ButtonsWrapper>
     </Column>

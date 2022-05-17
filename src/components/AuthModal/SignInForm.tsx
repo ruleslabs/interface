@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import GoogleLogin from 'react-google-login'
 import { ApolloError } from '@apollo/client'
-import { Trans } from '@lingui/macro'
+import { Trans, t } from '@lingui/macro'
 
 import { ModalHeader } from '@/components/Modal'
 import Column from '@/components/Column'
@@ -103,7 +103,7 @@ export default function SignInForm({ onSuccessfulConnection }: SignInFormProps) 
 
   return (
     <>
-      <ModalHeader toggleModal={toggleAuthModal}>Connection</ModalHeader>
+      <ModalHeader toggleModal={toggleAuthModal}>{t`Connection`}</ModalHeader>
 
       <StyledForm key="sign-in-form" onSubmit={handleSignIn} noValidate>
         <Column gap={20}>
@@ -132,19 +132,14 @@ export default function SignInForm({ onSuccessfulConnection }: SignInFormProps) 
               onUserInput={onEmailInput}
               $valid={error?.id !== 'email' || loading}
             />
-            <Trans
-              id="Password"
-              render={({ translation }) => (
-                <Input
-                  id="password"
-                  value={password}
-                  placeholder={translation}
-                  type="password"
-                  autoComplete="password"
-                  onUserInput={onPasswordInput}
-                  $valid={error?.id !== 'password' || loading}
-                />
-              )}
+            <Input
+              id="password"
+              value={password}
+              placeholder={t`Password`}
+              type="password"
+              autoComplete="password"
+              onUserInput={onPasswordInput}
+              $valid={error?.id !== 'password' || loading}
             />
 
             {error.message && (
@@ -164,10 +159,14 @@ export default function SignInForm({ onSuccessfulConnection }: SignInFormProps) 
       </StyledForm>
 
       <Column gap={12} style={{ padding: '0 8px' }}>
-        <TYPE.subtitle clickable>Forgot your password?</TYPE.subtitle>
+        <TYPE.subtitle clickable>
+          <Trans>Forgot your password?</Trans>
+        </TYPE.subtitle>
         <TYPE.subtitle>
-          No account?&nbsp;
-          <SwitchAuthModeButton onClick={() => setAuthMode(AuthMode.SIGN_UP)}>Join Rules</SwitchAuthModeButton>
+          <Trans>
+            No account?&nbsp;
+            <SwitchAuthModeButton onClick={() => setAuthMode(AuthMode.SIGN_UP)}>Join Rules</SwitchAuthModeButton>
+          </Trans>
         </TYPE.subtitle>
       </Column>
     </>

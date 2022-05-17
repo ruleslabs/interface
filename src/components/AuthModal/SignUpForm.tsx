@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
-import { Trans } from '@lingui/macro'
+import { Trans, t } from '@lingui/macro'
 
 import { ModalHeader } from '@/components/Modal'
 import Column from '@/components/Column'
@@ -122,7 +122,7 @@ export default function SignUpForm() {
 
   return (
     <>
-      <ModalHeader toggleModal={toggleAuthModal}>Registration</ModalHeader>
+      <ModalHeader toggleModal={toggleAuthModal}>{t`Registration`}</ModalHeader>
 
       <StyledForm key="sign-up-form" onSubmit={handleSignUp} noValidate>
         <Column gap={26}>
@@ -135,32 +135,22 @@ export default function SignUpForm() {
               onUserInput={onEmailInput}
               $valid={error?.id !== 'email' || loading}
             />
-            <Trans
-              id="Username"
-              render={({ translation }) => (
-                <Input
-                  id="username"
-                  value={username}
-                  placeholder={translation}
-                  type="text"
-                  onUserInput={onUsernameInput}
-                  $valid={error?.id !== 'username' || loading}
-                />
-              )}
+            <Input
+              id="username"
+              value={username}
+              placeholder={t`Username`}
+              type="text"
+              onUserInput={onUsernameInput}
+              $valid={error?.id !== 'username' || loading}
             />
-            <Trans
-              id="Password"
-              render={({ translation }) => (
-                <Input
-                  id="password"
-                  value={password}
-                  placeholder={translation}
-                  type="password"
-                  onUserInput={onPasswordInput}
-                  autoComplete="new-password"
-                  $valid={error?.id !== 'password' || loading}
-                />
-              )}
+            <Input
+              id="password"
+              value={password}
+              placeholder={t`Password`}
+              type="password"
+              onUserInput={onPasswordInput}
+              autoComplete="new-password"
+              $valid={error?.id !== 'password' || loading}
             />
 
             {error.message && (
@@ -197,8 +187,10 @@ export default function SignUpForm() {
 
       <div style={{ padding: '0 8px' }}>
         <TYPE.subtitle>
-          Already have an account?&nbsp;
-          <SwitchAuthModeButton onClick={() => setAuthMode(AuthMode.SIGN_IN)}>Connect</SwitchAuthModeButton>
+          <Trans>
+            Already have an account?&nbsp;
+            <SwitchAuthModeButton onClick={() => setAuthMode(AuthMode.SIGN_IN)}>Connect</SwitchAuthModeButton>
+          </Trans>
         </TYPE.subtitle>
       </div>
     </>
