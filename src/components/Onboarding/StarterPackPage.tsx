@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import styled from 'styled-components'
 import { gql, useQuery } from '@apollo/client'
+import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
@@ -37,28 +38,34 @@ export default function StarterPackPage({ nextPage }: StarterPackPageProps) {
   const setOnboardingPage = useSetOnboardingPage()
   const handleNextPage = useCallback(() => setOnboardingPage(nextPage), [setOnboardingPage, nextPage])
 
-  const { data, loading, error } = useQuery(LAST_STARTER_PACK)
-  const lastStarterPack = data?.lastStarterPack
+  const lastStarterPackQuery = useQuery(LAST_STARTER_PACK)
+  const pack = lastStarterPackQuery.data?.lastStarterPack
 
   return (
     <PageBody>
       <PageWrapper>
         <PackPictureWrapper>
-          <img src={lastStarterPack?.pictureUrl} />
+          <img src={pack?.pictureUrl} />
         </PackPictureWrapper>
         <PageContent>
-          <TYPE.large textAlign="center">Get your first pack</TYPE.large>
+          <TYPE.large textAlign="center">
+            <Trans>Get your first pack</Trans>
+          </TYPE.large>
           <TYPE.body>
-            RULES cards can be found in packs. Packs are available in limited quantity drops. Don&apos;t panic! We have
-            locked a Starter Pack for you. This pack contains 3 common cards that will get you started.
+            <Trans>
+              RULES cards can be found in packs. Packs are available in limited quantity drops. Don&apos;t panic! We
+              have locked a Starter Pack for you. This pack contains 3 common cards that will get you started.
+            </Trans>
           </TYPE.body>
           <Column gap={16}>
-            {lastStarterPack && (
+            {pack && (
               <MainActionButton onClick={handleNextPage} large>
-                Buy - {(lastStarterPack.price / 100).toFixed(2)}€
+                <Trans>Buy - {(pack.price / 100).toFixed(2)}€</Trans>
               </MainActionButton>
             )}
-            <SkipButton onClick={handleNextPage}>Skip</SkipButton>
+            <SkipButton onClick={handleNextPage}>
+              <Trans>Skip</Trans>
+            </SkipButton>
           </Column>
         </PageContent>
         <div />

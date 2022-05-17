@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
+import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
 import Column, { ColumnCenter } from '@/components/Column'
@@ -64,13 +65,19 @@ export default function DiscordPage() {
   return (
     <StyledPageBody>
       <PageWrapper>
-        <TYPE.large textAlign="center">Join the Discord</TYPE.large>
+        <TYPE.large textAlign="center">
+          <Trans>Join the Discord</Trans>
+        </TYPE.large>
         <DiscordScreenWrapper>
           <img src="/assets/discord-screen.png" />
         </DiscordScreenWrapper>
         <PageContent>
-          <MainActionButton large>Join</MainActionButton>
-          <SkipButton onClick={() => router.back()}>Skip</SkipButton>
+          <MainActionButton large>
+            <Trans>Join</Trans>
+          </MainActionButton>
+          <SkipButton onClick={() => router.back()}>
+            <Trans>Skip</Trans>
+          </SkipButton>
         </PageContent>
       </PageWrapper>
     </StyledPageBody>

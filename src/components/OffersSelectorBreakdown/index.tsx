@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Trans, t } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
 import Row from '@/components/Row'
@@ -30,12 +31,14 @@ export default function CardSelectorBreakdown({
         <CardModelImage src={pictureUrl} />
         <Column gap={8}>
           <TYPE.body fontWeight={700}>{artistName}</TYPE.body>
-          <TYPE.body>Season {season}</TYPE.body>
-          <TYPE.body>{scarcity}</TYPE.body>
+          <TYPE.body>
+            <Trans>Season {season}</Trans>
+          </TYPE.body>
+          <Trans id={scarcity} render={({ translation }) => <TYPE.body>{translation}</TYPE.body>} />
         </Column>
       </Row>
       <PrimaryButton large disabled={!price}>
-        {price ? `Acheter - ${price}€` : 'Selectionnez un exemplaire'}
+        {price ? t`Acheter - ${price}€` : t`Select a card`}
       </PrimaryButton>
     </Column>
   )

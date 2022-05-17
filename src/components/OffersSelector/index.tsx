@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
+import { Plural, Trans } from '@lingui/macro'
 
 import OffersTable from './table'
 import { TYPE } from '@/styles/theme'
@@ -95,9 +96,11 @@ export default function OffersSelector({
   return (
     <StyledOffersSelector {...props}>
       <RowBetween alignItems="baseline">
-        <TableTitle>Select a card</TableTitle>
+        <TableTitle>
+          <Trans>Select a card</Trans>
+        </TableTitle>
         <AvailabilityCount>
-          {cardsOnSaleCount} disponible{cardsOnSaleCount > 1 ? 's' : ''}
+          <Plural value={cardsOnSaleCount} _1="{cardsOnSaleCount} available" other="{cardsOnSaleCount} availables" />
         </AvailabilityCount>
       </RowBetween>
       <OffersTable

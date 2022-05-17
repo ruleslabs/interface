@@ -2,6 +2,7 @@ import 'moment/locale/fr'
 
 import { useMemo, useCallback, useState } from 'react'
 import moment from 'moment'
+import { Plural, Trans, t } from '@lingui/macro'
 
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
@@ -11,6 +12,7 @@ import { useCreatePaymentIntent } from '@/state/stripe/hooks'
 import PackPurchaseModal from '@/components/PackPurchaseModal'
 import { usePackPurchaseModalToggle } from '@/state/application/hooks'
 import InputStepCounter from '@/components/Input/StepCounter'
+import { useActiveLocale } from '@/hooks/useActiveLocale'
 
 interface PackBreakdownProps {
   name: string
@@ -36,6 +38,7 @@ export default function PackBreakdown({
   const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null)
   const [paymentIntentError, setPaymentIntentError] = useState(false)
   const togglePackPurchaseModal = usePackPurchaseModalToggle()
+  const locale = useActiveLocale()
 
   const released = releaseDate ? +releaseDate - +new Date() <= 0 : true
 
@@ -43,10 +46,10 @@ export default function PackBreakdown({
     if (released) return null
 
     const releaseMoment = moment(releaseDate)
-    releaseMoment.locale('fr')
+    releaseMoment.locale(locale)
 
-    return releaseMoment.format('dddd D MMMM [à] h[h]')
-  }, [released, releaseDate])
+    return releaseMoment.format('dddd D MMMM LT')
+  }, [released, releaseDate, locale])
 
   const createPaymentIntent = useCreatePaymentIntent()
 
@@ -70,15 +73,20 @@ export default function PackBreakdown({
     <>
       <Column gap={28}>
         <Column gap={8}>
-          <TYPE.body fontWeight={700} fontSize={28}>
-            {name}
+          <Trans
+            id={name}
+            render={({ translation }) => (
+              <TYPE.body fontWeight={700} fontSize={28}>
+                {translation}
+              </TYPE.body>
+            )}
+          />
+          <TYPE.body>
+            <Plural value={seasons.length} _1="Season" other="Seasons" />
+            {seasons.map((season, index) => `${index > 0 ? ', ' : ' '}${season}`)}
           </TYPE.body>
           <TYPE.body>
-            Season{seasons.length > 1 ? 's ' : ' '}
-            {seasons.map((season, index) => `${index > 0 ? ', ' : ''}${season}`)}
-          </TYPE.body>
-          <TYPE.body>
-            Contient {cardsPerPack} carte{cardsPerPack > 1 ? 's' : ''}
+            <Plural value={cardsPerPack} _1="Includes {cardsPerPack} card" other="Includes {cardsPerPack} cards" />
           </TYPE.body>
         </Column>
         {released && (availableSupply === undefined || availableSupply > 0) && availableQuantity ? (
@@ -91,16 +99,12 @@ export default function PackBreakdown({
               max={availableQuantity}
             />
             <PrimaryButton onClick={purchasePack} large>
-              Buy - {(price / 100).toFixed(2)}€
+              <Trans>Buy - {(price / 100).toFixed(2)}€</Trans>
             </PrimaryButton>
           </Column>
         ) : (
           <Placeholder>
-            {released
-              ? availableQuantity
-                ? 'En rupture de stock'
-                : 'Déjà acheté'
-              : `En vente ${releaseDateFormatted}`}
+            {released ? (availableQuantity ? t`Sold out` : t`Already bought`) : t`On sale ${releaseDateFormatted}`}
           </Placeholder>
         )}
       </Column>

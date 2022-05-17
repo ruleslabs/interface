@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import styled from 'styled-components'
+import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
 import { PageBody, PageContent, PageWrapper, MainActionButton } from './SubComponents'
@@ -29,13 +30,17 @@ export default function IntroductionPage({ nextPage }: IntroductionPageProps) {
       <PageWrapper>
         <Illustration src="/assets/onboarding-character.png" />
         <PageContent>
-          <TYPE.large textAlign="center">Welcome !</TYPE.large>
+          <TYPE.large textAlign="center">
+            <Trans>Welcome !</Trans>
+          </TYPE.large>
           <TYPE.body>
-            RULES is a community of passionate collectors. We support artists and fight for independence. You&apos;re
-            now part of the family. Welcome!
+            <Trans>
+              RULES is a community of passionate collectors. We support artists and fight for independence. You&apos;re
+              now part of the family. Welcome!
+            </Trans>
           </TYPE.body>
           <MainActionButton onClick={handleNextPage} large>
-            Next
+            <Trans>Next</Trans>
           </MainActionButton>
         </PageContent>
         <div />

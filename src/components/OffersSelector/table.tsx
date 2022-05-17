@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { WeiAmount } from '@rulesorg/sdk-core'
+import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
 import Table from '@/components/Table'
@@ -70,15 +71,19 @@ export default function OffersTable({
           <td />
           <td>
             <TYPE.medium onClick={toggleSort} style={{ cursor: 'pointer' }}>
-              Prix
+              <Trans>Price</Trans>
               <StyledCaret direction={sortDesc ? 'bottom' : 'top'} filled />
             </TYPE.medium>
           </td>
           <td>
-            <TYPE.medium>Serial</TYPE.medium>
+            <TYPE.medium>
+              <Trans>Serial</Trans>
+            </TYPE.medium>
           </td>
           <td>
-            <TYPE.medium>Vendeur</TYPE.medium>
+            <TYPE.medium>
+              <Trans>Seller</Trans>
+            </TYPE.medium>
           </td>
           <td style={{ width: '100px' }} />
         </tr>

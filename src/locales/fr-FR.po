@@ -349,3 +349,71 @@ msgstr "Commune"
 #: src/components/MarketplaceSidebar/index.tsx
 msgid "Platinium"
 msgstr "Platine"
+
+#: src/components/OffersSelector/index.tsx
+msgid "{cardsOnSaleCount, plural, =1 {{cardsOnSaleCount} available} other {{cardsOnSaleCount} availables}}"
+msgstr "{cardsOnSaleCount, plural, =1 {{cardsOnSaleCount} disponible} other {{cardsOnSaleCount} disponibles}}"
+
+#: src/components/OffersSelector/index.tsx
+msgid "Select a card"
+msgstr "Selectionnez une carte"
+
+#: src/components/Onboarding/IntroductionPage.tsx
+msgid "RULES is a community of passionate collectors. We support artists and fight for independence. You're now part of the family. Welcome!"
+msgstr "RULES est une communauté de collectionneurs passionnés.  Nous soutenons les artistes et luttons pour l’indépendance. Tu fais désormais partie de la mif. Bienvenue !"
+
+#: src/components/Onboarding/IntroductionPage.tsx
+msgid "Next"
+msgstr "Suivant"
+
+#: src/components/Onboarding/IntroductionPage.tsx
+msgid "Welcome !"
+msgstr "Bienvenue !"
+
+#: src/components/Onboarding/StarterPackPage.tsx
+msgid "RULES cards can be found in packs. Packs are available in limited quantity drops. Don't panic! We have locked a Starter Pack for you. This pack contains 3 common cards that will get you started."
+msgstr "Les cartes RULES sont distribuées dans des packs. Ils sont proposées sous forme de drops, en quantités limitées. Pas de panique ! Nous avons réservé un Starter Pack pour toi. Il contient 3 cartes communes pour commencer ta collection."
+
+#: src/components/Onboarding/StarterPackPage.tsx
+msgid "Get your first pack"
+msgstr "Chope ton premier pack"
+
+#: src/components/Onboarding/StarterPackPage.tsx
+msgid "Skip"
+msgstr "Suivant"
+
+#: src/components/Onboarding/DiscordPage.tsx
+msgid "Join"
+msgstr "Rejoindre"
+
+#: src/components/Onboarding/DiscordPage.tsx
+msgid "Join the Discord"
+msgstr "Rejoins le Discord"
+
+#: src/components/PackBreakdown/index.tsx
+msgid "{cardsPerPack, plural, =1 {Includes {cardsPerPack} card} other {Includes {cardsPerPack} cards}}"
+msgstr "{cardsPerPack, plural, =1 {Contient {cardsPerPack} carte} other {Contient {cardsPerPack} cartes}}"
+
+#: src/components/PackBreakdown/index.tsx
+msgid "{0, plural, =1 {Season} other {Seasons}}"
+msgstr "{0, plural, =1 {Saison} other {Saisons}}"
+
+#: Packs names
+msgid "Starter Pack Season 3"
+msgstr "Starter Pack Saison 3"
+
+#: src/components/PackBreakdown/index.tsx
+msgid "Buy - {0}€"
+msgstr "Acheter - {0}€"
+
+#: src/components/PackBreakdown/index.tsx
+msgid "Already bought"
+msgstr "Déjà acheté"
+
+#: src/components/PackBreakdown/index.tsx
+msgid "Sold out"
+msgstr "En rupture de stock"
+
+#: src/components/PackBreakdown/index.tsx
+msgid "On sale {releaseDateFormatted}"
+msgstr "En vente {releaseDateFormatted}"

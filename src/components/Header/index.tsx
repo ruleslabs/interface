@@ -85,7 +85,7 @@ export default function Header() {
           <Trans
             key={`nav-link-${index}`}
             id={menuLink.name}
-            render={({ translation }) => <NavLink href="/packs">{translation}</NavLink>}
+            render={({ translation }) => <NavLink href={menuLink.link}>{translation}</NavLink>}
           />
         ))}
       </NavBar>
