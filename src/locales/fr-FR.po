@@ -313,3 +313,39 @@ msgstr "Déposer"
 #: src/components/DepositModal/index.tsx
 msgid "Insufficient ETH balance"
 msgstr "Solde ETH insuffisant"
+
+#: src/components/Input/CurrencyInput.tsx
+msgid "Balance: {0}"
+msgstr "Solde: {0}"
+
+#: src/components/Layout/profile.tsx
+msgid "Packs"
+msgstr "Packs"
+
+#: src/components/Layout/profile.tsx
+msgid "Deck"
+msgstr "Deck"
+
+#: src/components/Layout/profile.tsx
+msgid "Cards"
+msgstr "Cartes"
+
+#: src/components/MarketplaceSidebar/index.tsx
+msgid "Scarcities"
+msgstr "Raretés"
+
+#: src/components/MarketplaceSidebar/index.tsx
+msgid "Seasons"
+msgstr "Saisons"
+
+#: src/components/MarketplaceSidebar/index.tsx
+msgid "Season {season}"
+msgstr "Saison {season}"
+
+#: src/components/MarketplaceSidebar/index.tsx
+msgid "Common"
+msgstr "Commune"
+
+#: src/components/MarketplaceSidebar/index.tsx
+msgid "Platinium"
+msgstr "Platine"

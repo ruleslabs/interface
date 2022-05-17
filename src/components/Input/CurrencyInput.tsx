@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from 'react'
 import styled from 'styled-components'
 import { WeiAmount } from '@rulesorg/sdk-core'
+import { Trans } from '@lingui/macro'
 
 import Row, { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
@@ -90,7 +91,9 @@ export default function CurrencyInput({ onUserInput, balance, ...props }: Curren
           <TYPE.body>ETH</TYPE.body>
         </Currency>
       </Row>
-      <TYPE.subtitle textAlign="right">Balance: {balance?.toFixed(4) ?? 0}</TYPE.subtitle>
+      <TYPE.subtitle textAlign="right">
+        <Trans>Balance: {balance?.toFixed(4) ?? 0}</Trans>
+      </TYPE.subtitle>
     </StyledCurrencyInput>
   )
 }

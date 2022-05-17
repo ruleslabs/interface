@@ -152,7 +152,6 @@ export default function DeckInsertionModal({ userId, cardIndex }: DeckInsertionM
         </Row>
         <Section marginTop="16px">
           <Column gap={32}>
-
             <SearchBar
               style={{ width: '100%' }}
               onUserInput={onSearchBarInput}

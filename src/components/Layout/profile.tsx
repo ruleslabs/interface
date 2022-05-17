@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
+import { Trans } from '@lingui/macro'
 
 import Section from '@/components/Section'
 import { TYPE } from '@/styles/theme'
@@ -99,9 +100,15 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
           </ColumnCenter>
         </UserSection>
         <TabBar>
-          <TabLink href={`/user/${userSlug}`}>Showcase</TabLink>
-          <TabLink href={`/user/${userSlug}/cards`}>Cartes</TabLink>
-          <TabLink href={`/user/${userSlug}/packs`}>Packs</TabLink>
+          <TabLink href={`/user/${userSlug}`}>
+            <Trans>Deck</Trans>
+          </TabLink>
+          <TabLink href={`/user/${userSlug}/cards`}>
+            <Trans>Cards</Trans>
+          </TabLink>
+          <TabLink href={`/user/${userSlug}/packs`}>
+            <Trans>Packs</Trans>
+          </TabLink>
         </TabBar>
       </StyledSection>
       {React.cloneElement(children, { userId: user.id })}

@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Seasons, ScarcityName } from '@rulesorg/sdk-core'
+import { Trans } from '@lingui/macro'
 
 import Checkbox from '@/components/Checkbox'
 import Slider from '@/components/Slider'
@@ -82,36 +83,46 @@ export default function MarketplaceSidebar({ dispatch, ...props }: MarketplaceSi
     <StyledMarketplaceSidebar {...props}>
       <StyledClose onClick={dispatch} />
       <SidebarContent>
-        <SidebarTitle>Filters</SidebarTitle>
+        <SidebarTitle>
+          <Trans>Filters</Trans>
+        </SidebarTitle>
 
         <FilterWrapper>
-          <FilterName>Seasons</FilterName>
+          <FilterName>
+            <Trans>Seasons</Trans>
+          </FilterName>
           {Object.keys(Seasons).map((season: string) => (
             <Checkbox
               key={`checkbox-season-${season}`}
               value={filters.seasons.includes(+season)}
               onChange={() => toggleSeasonFilter(+season)}
             >
-              <TYPE.body>{Seasons[+season].name}</TYPE.body>
+              <TYPE.body>
+                <Trans>Season {season}</Trans>
+              </TYPE.body>
             </Checkbox>
           ))}
         </FilterWrapper>
 
         <FilterWrapper>
-          <FilterName>Scarcities</FilterName>
+          <FilterName>
+            <Trans>Scarcities</Trans>
+          </FilterName>
           {ScarcityName.map((scarcity: string) => (
             <Checkbox
               key={`checkbox-tier-${scarcity}`}
               value={filters.tiers.includes(scarcity)}
               onChange={() => toggleTierFilter(scarcity)}
             >
-              <TYPE.body>{scarcity}</TYPE.body>
+              <Trans id={scarcity} render={({ translation }) => <TYPE.body>{translation}</TYPE.body>} />
             </Checkbox>
           ))}
         </FilterWrapper>
 
         <FilterWrapper>
-          <FilterName>Price</FilterName>
+          <FilterName>
+            <Trans>Price</Trans>
+          </FilterName>
           <Slider unit="€" max={100_000} />
         </FilterWrapper>
       </SidebarContent>
