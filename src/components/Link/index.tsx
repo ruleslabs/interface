@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import NextLink from 'next/link'
 
-const StyledLink = styled.a<{ color: string; underline: boolean }>`
+const StyledLink = styled.a<{ color?: string; underline: boolean }>`
   ${({ color = 'primary1', theme, underline }) => `
     color: ${(theme as any)[color]};
 

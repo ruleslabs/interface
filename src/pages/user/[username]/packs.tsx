@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
-import { Plural } from '@lingui/macro'
+import { Plural, t } from '@lingui/macro'
 
 import DefaultLayout from '@/components/Layout'
 import ProfileLayout from '@/components/Layout/profile'

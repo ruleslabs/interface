@@ -30,7 +30,7 @@ interface ProviderProps {
   locale: SupportedLocale
   forceRenderAfterLocaleChange?: boolean
   onActivate?: (locale: SupportedLocale) => void
-  children: ReactNode.ReactNode
+  children: React.ReactNode
 }
 
 export function Provider({ locale, forceRenderAfterLocaleChange = true, onActivate, children }: ProviderProps) {

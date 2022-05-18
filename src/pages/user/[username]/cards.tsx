@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react'
 import { useQuery, gql } from '@apollo/client'
-import { Plural } from '@lingui/macro'
+import { Plural, t } from '@lingui/macro'
 
 import DefaultLayout from '@/components/Layout'
 import ProfileLayout from '@/components/Layout/profile'

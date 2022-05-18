@@ -51,11 +51,6 @@ const StyledLanguageSelector = styled(LanguageSelector)`
   margin: 16px 0;
 `
 
-interface MenuLink {
-  name: string
-  link: string
-}
-
 const CustomNavLink = (props: NavLinkProps) => {
   const toggleNavModal = useNavModalToggle()
 
@@ -115,7 +110,7 @@ export default function NavModal() {
             <>
               {currentUser && <CustomNavLink href={`/user/${currentUser.slug}`}>{currentUser.username}</CustomNavLink>}
 
-              {menuLinks.map((menuLink: MenuLink, index: number) => (
+              {menuLinks.map((menuLink, index: number) => (
                 <Trans
                   key={`nav-link-${index}`}
                   id={menuLink.name}

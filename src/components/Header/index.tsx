@@ -63,6 +63,11 @@ const StyledAccountStatus = styled(AccountStatus)`
   `}
 `
 
+interface MenuLink {
+  name: string
+  link: string
+}
+
 export const menuLinks: MenuLink[] = [
   { name: 'Packs', link: '/packs' },
   { name: 'Marketplace', link: '/marketplace' },
