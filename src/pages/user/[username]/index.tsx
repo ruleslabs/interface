@@ -20,7 +20,7 @@ const DECK_CARDS_GAP = 32
 
 const ShowcaseSection = styled(Section)`
   position: relative;
-  margin: 48px auto 32px;
+  margin: 48px auto 0;
 
   ${({ theme }) => theme.media.small`
     margin-top: 0 !important;

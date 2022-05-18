@@ -12,7 +12,7 @@ import { AuthMode } from '@/state/auth/actions'
 import { ApplicationModal } from '@/state/application/actions'
 import { BackButton } from '@/components/Button'
 import Settings from '@/components/SettingsModal/Settings'
-import LanguageSelector from '@/components/SettingsModal/LanguageSelector'
+import LanguageSelector from '@/components/LanguageSelector'
 import { SecondaryButton, PrimaryButton } from '@/components/Button'
 import { menuLinks } from '@/components/Header'
 
