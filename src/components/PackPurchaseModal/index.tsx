@@ -43,7 +43,7 @@ export default function PackPurchaseModal({
   return (
     <Modal onDismiss={onDismiss} isOpen={isOpen}>
       <StyledPackPurchaseModal gap={26}>
-        <ModalHeader toggleModal={togglePackPurchaseModal}>{t`Checkout`}</ModalHeader>
+        <ModalHeader onDismiss={togglePackPurchaseModal}>{t`Checkout`}</ModalHeader>
         <Elements stripe={stripePromise}>
           <CheckoutForm
             stripeClientSecret={stripeClientSecret}

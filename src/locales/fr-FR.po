@@ -513,3 +513,11 @@ msgstr "{0, plural, =1 {{0} carte} other {{0} cartes}}"
 #: src/pages/user/[username]/packs.tsx
 msgid "{0, plural, =1 {{0} pack} other {{0} packs}}"
 msgstr "{0, plural, =1 {{0} pack} other {{0} packs}}"
+
+#: src/components/MarketplaceSidebar/index.tsx
+msgid "Filters"
+msgstr "Filtres"
+
+#: src/pages/pack/[packSlug]/open.tsx
+msgid "Open pack"
+msgstr "Ouvrir le pack"

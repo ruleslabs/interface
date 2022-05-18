@@ -106,7 +106,7 @@ export default function Pack() {
   }, [packQuery.data?.pack])
 
   const pack = packQuery.data?.pack
-  const isValid = !packQuery.error
+  const isValid = !packQuery.error && pack
   const isLoading = packQuery.loading
 
   return (
@@ -114,10 +114,12 @@ export default function Pack() {
       <Section marginTop="36px">
         <BackButton onClick={router.back} />
       </Section>
-      {!isValid ? (
-        <TYPE.body textAlign="center">An error has occured</TYPE.body>
-      ) : isLoading ? (
+      {isLoading ? (
         <TYPE.body textAlign="center">Loading...</TYPE.body>
+      ) : !isValid ? (
+        <TYPE.body textAlign="center">
+          <Trans>An error has occured</Trans>
+        </TYPE.body>
       ) : (
         <>
           <StyledMainSection>

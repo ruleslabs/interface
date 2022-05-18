@@ -151,7 +151,7 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
 
   return (
     <>
-      <ModalHeader toggleModal={toggleAuthModal}>
+      <ModalHeader onDismiss={toggleAuthModal}>
         <BackButton onClick={() => setAuthMode(AuthMode.SIGN_UP)} />
       </ModalHeader>
 

@@ -41,12 +41,13 @@ interface PackCardProps {
   pictureUrl: string
   soldout?: boolean
   width?: number
+  open?: boolean
 }
 
-export default function PackCard({ slug, pictureUrl, soldout = false, width }: PackCardProps) {
+export default function PackCard({ slug, pictureUrl, soldout = false, open = false, width }: PackCardProps) {
   return (
     <StyledPackCard width={width}>
-      <Link href={`/pack/${slug}`}>
+      <Link href={`/pack/${slug}${open ? '/open' : ''}`}>
         <Card src={pictureUrl} />
         {soldout && <Soldout>SOLD OUT</Soldout>}
       </Link>

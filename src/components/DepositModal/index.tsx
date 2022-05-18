@@ -138,7 +138,7 @@ export default function DepositModal() {
   return (
     <Modal onDismiss={toggleDepositModal} isOpen={isOpen}>
       <StyledDepositModal gap={26}>
-        <ModalHeader toggleModal={toggleDepositModal}>{t`Fund your account`}</ModalHeader>
+        <ModalHeader onDismiss={toggleDepositModal}>{t`Fund your account`}</ModalHeader>
 
         <Column gap={16}>
           <TYPE.medium>

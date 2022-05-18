@@ -122,7 +122,7 @@ export default function SignUpForm() {
 
   return (
     <>
-      <ModalHeader toggleModal={toggleAuthModal}>{t`Registration`}</ModalHeader>
+      <ModalHeader onDismiss={toggleAuthModal}>{t`Registration`}</ModalHeader>
 
       <StyledForm key="sign-up-form" onSubmit={handleSignUp} noValidate>
         <Column gap={26}>
@@ -180,7 +180,7 @@ export default function SignUpForm() {
           </Column>
 
           <SubmitButton type="submit" large>
-            {loading ? 'Loading ...' : 'Submit'}
+            {loading ? 'Loading ...' : t`Sign up`}
           </SubmitButton>
         </Column>
       </StyledForm>

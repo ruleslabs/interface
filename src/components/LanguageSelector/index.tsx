@@ -45,7 +45,11 @@ export default function LanguageSelector(props: LanguageSelectorProps) {
     <StyledLanguageSelector {...props}>
       {SUPPORTED_LOCALES.map((locale, index) => (
         <>
-          {index ? <TYPE.body color="text2">-</TYPE.body> : null}
+          {index ? (
+            <TYPE.body key={`locale-separator-${index}`} color="text2">
+              -
+            </TYPE.body>
+          ) : null}
           <LocaleLabel key={locale} active={userLocale === locale} onClick={() => handleLocaleChange(locale)}>
             {LOCALE_LABEL[locale]}
           </LocaleLabel>

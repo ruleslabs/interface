@@ -8,10 +8,10 @@ import DefaultLayout from '@/components/Layout'
 import ProfileLayout from '@/components/Layout/profile'
 import GridHeader from '@/components/GridHeader'
 import Section from '@/components/Section'
-import Link from '@/components/Link'
 import Grid from '@/components/Grid'
 import PackCard from '@/components/PackCard'
 import { TYPE } from '@/styles/theme'
+import { useCurrentUser } from '@/state/user/hooks'
 
 const QUERY_USER_PACKS_BALANCES = gql`
   query ($slug: String!) {
@@ -34,6 +34,9 @@ function Packs({ userId }: { userId: string }) {
   const router = useRouter()
   const { username } = router.query
   const userSlug = typeof username === 'string' ? username.toLowerCase() : null
+
+  const currentUser = useCurrentUser()
+  const isCurrentUserProfile = currentUser?.slug === userSlug
 
   const [increaseSort, setIncreaseSort] = useState(true)
 
@@ -66,9 +69,13 @@ function Packs({ userId }: { userId: string }) {
       </GridHeader>
       <Grid maxWidth={256}>
         {packsBalances.map((packBalance: any, index: number) => (
-          <Link key={`pack-${index}`} href={`/pack/${packBalance.pack.slug}`}>
-            <StyledPackCard slug={packBalance.pack.slug} pictureUrl={packBalance.pack.pictureUrl} soldout={false} />
-          </Link>
+          <StyledPackCard
+            key={`pack-${index}`}
+            slug={packBalance.pack.slug}
+            pictureUrl={packBalance.pack.pictureUrl}
+            soldout={false}
+            open={isCurrentUserProfile}
+          />
         ))}
       </Grid>
     </Section>

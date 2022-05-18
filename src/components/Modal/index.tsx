@@ -131,14 +131,14 @@ const StyledClose = styled(Close)`
 
 interface ModalHeaderProps {
   children: React.ReactNode
-  toggleModal: () => void
+  onDismiss: () => void
 }
 
-export const ModalHeader = ({ children, toggleModal }: ModalHeaderProps) => {
+export const ModalHeader = ({ children, onDismiss }: ModalHeaderProps) => {
   return (
     <RowCenter justify="space-between" style={{ padding: '0 8px' }}>
       {typeof children === 'string' ? <ModalTitle>{children}</ModalTitle> : children}
-      <StyledClose onClick={toggleModal} />
+      <StyledClose onClick={onDismiss} />
     </RowCenter>
   )
 }

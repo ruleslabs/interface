@@ -58,3 +58,7 @@ export function useNavModalToggle(): () => void {
 export function useDepositModalToggle(): () => void {
   return useToggleModal(ApplicationModal.DEPOSIT)
 }
+
+export function useStarknetSignerModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.STARKNET_SIGNER)
+}
