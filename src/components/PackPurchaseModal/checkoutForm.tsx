@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js'
+import { Trans, t } from '@lingui/macro'
 
 import useTheme from '@/hooks/useTheme'
 import Column from '@/components/Column'
@@ -49,6 +50,10 @@ const StripeLabel = styled.label`
   flex-direction: column;
   gap: 8px;
   width: 100%;
+
+  div:first-child {
+    margin-left: 8px;
+  }
 `
 
 interface CheckoutFormProps {
@@ -138,7 +143,9 @@ export default function CheckoutForm({ stripeClientSecret, paymentIntentError, a
       <Column gap={32}>
         <Column gap={16}>
           <StripeLabel>
-            <TYPE.body>Card Number</TYPE.body>
+            <TYPE.body>
+              <Trans>Card Number</Trans>
+            </TYPE.body>
             <StripeInputWrapper>
               <CardNumberElement options={options} onChange={handleCardNumberInput} onReady={handleCardNumberReady} />
               {(cardBrandToIcon[cardBrand as keyof typeof cardBrandToIcon] ?? UnkownCardIcon)()}
@@ -146,7 +153,9 @@ export default function CheckoutForm({ stripeClientSecret, paymentIntentError, a
           </StripeLabel>
           <Row gap={16}>
             <StripeLabel>
-              <TYPE.body>Expiration</TYPE.body>
+              <TYPE.body>
+                <Trans>Expiration</Trans>
+              </TYPE.body>
               <StripeInputWrapper>
                 <CardExpiryElement options={options} />
               </StripeInputWrapper>
@@ -161,10 +170,10 @@ export default function CheckoutForm({ stripeClientSecret, paymentIntentError, a
         </Column>
         <PrimaryButton onClick={handleCheckout} disabled={loading || paymentIntentError} large>
           {paymentIntentError
-            ? 'An error has occured'
+            ? t`An error has occured`
             : loading
             ? 'Loading...'
-            : `Acheter - ${(amount / 100).toFixed(2)}€`}
+            : t`Buy - ${(amount / 100).toFixed(2)}€`}
         </PrimaryButton>
       </Column>
     </form>

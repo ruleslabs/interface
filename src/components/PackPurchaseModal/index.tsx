@@ -1,15 +1,16 @@
 import { useCallback } from 'react'
 import styled from 'styled-components'
 import { Elements } from '@stripe/react-stripe-js'
+import { t } from '@lingui/macro'
 
-import Modal from '@/components/Modal'
+import Modal, { ModalHeader } from '@/components/Modal'
 import { useModalOpen, usePackPurchaseModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
-import { TYPE } from '@/styles/theme'
 import CheckoutForm from './checkoutForm'
 import { useStripePromise } from '@/state/stripe/hooks'
+import Column from '@/components/Column'
 
-const StyledPackPurchaseModal = styled.div`
+const StyledPackPurchaseModal = styled(Column)`
   width: 560px;
   padding: 16px;
   background: ${({ theme }) => theme.bg2};
@@ -41,8 +42,8 @@ export default function PackPurchaseModal({
 
   return (
     <Modal onDismiss={onDismiss} isOpen={isOpen}>
-      <StyledPackPurchaseModal>
-        <TYPE.medium textAlign="center">PAY ME 🥸</TYPE.medium>
+      <StyledPackPurchaseModal gap={26}>
+        <ModalHeader toggleModal={togglePackPurchaseModal}>{t`Checkout`}</ModalHeader>
         <Elements stripe={stripePromise}>
           <CheckoutForm
             stripeClientSecret={stripeClientSecret}

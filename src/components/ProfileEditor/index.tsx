@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
 import { ApolloError } from '@apollo/client'
+import { Trans, t } from '@lingui/macro'
 
 import Card from '@/components/Card'
 import { TYPE } from '@/styles/theme'
@@ -213,25 +214,27 @@ export default function ProfileEditor() {
               <>
                 <Row gap={24}>
                   <TYPE.body spanColor="text2">
-                    Connected as {discordUser.username}
+                    <Trans>Connected as {discordUser.username}</Trans>
                     <span>#{discordUser.discriminator}</span>
                   </TYPE.body>
                   {discordLoading ? (
                     <TYPE.subtitle>Loading ...</TYPE.subtitle>
                   ) : (
                     <DiscordDisconnect onClick={handleDiscordDisconnect} clickable>
-                      Disconnect
+                      <Trans>Disconnect</Trans>
                     </DiscordDisconnect>
                   )}
                 </Row>
                 <Checkbox value={isDiscordVisible} onChange={toggleDiscordVisibility}>
-                  <TYPE.body>Public</TYPE.body>
+                  <TYPE.body>
+                    <Trans>Public</Trans>
+                  </TYPE.body>
                 </Checkbox>
               </>
             ) : (
               <Link href={discordOAuthRedirectUrl}>
                 <DiscordConnect disabled={discordLoading} large>
-                  {discordLoading ? 'Loading ...' : 'Connect my account'}
+                  {discordLoading ? 'Loading ...' : t`Connect my account`}
                 </DiscordConnect>
               </Link>
             )}
@@ -239,7 +242,9 @@ export default function ProfileEditor() {
         </Column>
 
         <SocialLinksWrapper>
-          <TYPE.large>Social networks</TYPE.large>
+          <TYPE.large>
+            <Trans>Social networks</Trans>
+          </TYPE.large>
 
           <Column gap={12}>
             <TYPE.body>Instagram</TYPE.body>
@@ -263,8 +268,8 @@ export default function ProfileEditor() {
             {setDiscordVisibilityLoading || setSocialLinksLoading
               ? 'Loading ...'
               : discordVisibilityModified || socialLinksModified
-              ? 'Save changes'
-              : 'No changes to save'}
+              ? t`Save changes`
+              : t`No changes to save`}
           </PrimaryButton>
         </SocialLinksWrapper>
       </Column>

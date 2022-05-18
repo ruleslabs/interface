@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import styled from 'styled-components'
+import { Trans } from '@lingui/macro'
 
 import MarketplaceSidebar from '@/components/MarketplaceSidebar'
 import Section from '@/components/Section'
@@ -83,7 +84,7 @@ export default function Marketplace() {
       <MainSection size="max">
         <MarketplaceBody>
           <GridHeader
-            sortTexts={['Prix croissant', 'Prix décroissant']}
+            sortTexts={['Price: low to high', 'Price: high to low']}
             sortValue={increaseSort}
             onSortUpdate={toggleSort}
           >
@@ -94,7 +95,7 @@ export default function Marketplace() {
               <ColumnCenter gap={12} key={`mktp-card-${index}`}>
                 <CardModel pictureUrl={cardModel.pictureUrl} cardModelSlug={cardModel.slug} />
                 <TYPE.body textAlign="center">
-                  starting from
+                  <Trans>starting from</Trans>
                   <br />
                   <Row>
                     {+cardModel.lowestAskETH ?? '-'} ETH&nbsp;

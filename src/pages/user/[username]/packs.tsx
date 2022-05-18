@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
+import { Plural } from '@lingui/macro'
 
 import DefaultLayout from '@/components/Layout'
 import ProfileLayout from '@/components/Layout/profile'
@@ -52,13 +53,15 @@ function Packs({ userId }: { userId: string }) {
 
   return (
     <Section>
-      <GridHeader sortTexts={['Plus récents', 'Moins récents']} sortValue={increaseSort} onSortUpdate={toggleSort}>
+      <GridHeader sortTexts={['Newest', 'Oldest']} sortValue={increaseSort} onSortUpdate={toggleSort}>
         <TYPE.body>
-          {!isValid
-            ? 'An error has occured'
-            : isLoading
-            ? 'Loading...'
-            : `${packsBalances.length} pack${packsBalances.length > 1 ? 's' : ''}`}
+          {!isValid ? (
+            t`An error has occured`
+          ) : isLoading ? (
+            'Loading...'
+          ) : (
+            <Plural value={packsBalances.length} _1="{0} pack" other="{0} packs" />
+          )}
         </TYPE.body>
       </GridHeader>
       <Grid maxWidth={256}>

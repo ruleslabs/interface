@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { useQuery, gql } from '@apollo/client'
 import styled from 'styled-components'
+import { Trans } from '@lingui/macro'
 
 import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'
@@ -50,6 +51,14 @@ const CardsColumn = styled(Column)`
     max-width: 500px;
     gap: 24px;
   `}
+`
+
+const ExplanationsCard = styled(Card)`
+  br {
+    display: block;
+    margin-top: 32px;
+    content: '';
+  }
 `
 
 const QUERY_PACK = gql`
@@ -129,21 +138,26 @@ export default function Pack() {
                     availableQuantity={pack.availableQuantity}
                   />
                 </Card>
-                <Card>
+                <ExplanationsCard>
                   <Column gap={32}>
-                    <TYPE.body>Les cartes de ce pack sont créées en étroite collaboration avec les artistes.</TYPE.body>
-                    <TYPE.body>50% des revenus leur sont reversés directement.</TYPE.body>
                     <TYPE.body>
-                      Chaque carte donne accès à un channel Discord spécifique et à des airdrops de cadeaux tout au long
-                      de l’année.
+                      <Trans>
+                        Cards of this pack are created by working closely with the artists.
+                        <br />
+                        50% of revenues will be distributed to them directly.
+                        <br />
+                        Each card gives access to specific Discord channel and to airdrops of gifts during the year.
+                      </Trans>
                     </TYPE.body>
                   </Column>
-                </Card>
+                </ExplanationsCard>
               </CardsColumn>
             </Row>
           </StyledMainSection>
           <Section>
-            <CardModelsSelectionTitle>Selection de cartes possibles</CardModelsSelectionTitle>
+            <CardModelsSelectionTitle>
+              <Trans>Selection of possible cards</Trans>
+            </CardModelsSelectionTitle>
             <StyledGrid gap={44}>
               {(pack.cardModels ?? []).map(({ cardModel }: { cardModel: any }, index: number) => (
                 <CardModel

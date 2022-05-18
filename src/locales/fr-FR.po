@@ -417,3 +417,99 @@ msgstr "En rupture de stock"
 #: src/components/PackBreakdown/index.tsx
 msgid "On sale {releaseDateFormatted}"
 msgstr "En vente {releaseDateFormatted}"
+
+#: src/components/PackPurchaseModal/checkoutForm.tsx
+msgid "Card Number"
+msgstr "Numéro de carte"
+
+#: src/components/PackPurchaseModal/checkoutForm.tsx
+msgid "An error has occured"
+msgstr "Une erreur est survenue"
+
+#: src/components/PackPurchaseModal/checkoutForm.tsx
+msgid "Buy - {0}€"
+msgstr "Acheter - {0}€"
+
+#: src/components/PackPurchaseModal/checkoutForm.tsx
+msgid "Expiration"
+msgstr "Expiration"
+
+#: src/components/PackWrapper/index.tsx
+msgid "Release in"
+msgstr "Sortie dans"
+
+#: src/components/ProfileEditor/index.tsx
+msgid "No changes to save"
+msgstr "Aucune modification à enregistrer"
+
+#: src/components/ProfileEditor/index.tsx
+msgid "Disconnect"
+msgstr "Déconnecter"
+
+#: src/components/ProfileEditor/index.tsx
+msgid "Connect my account"
+msgstr "Connecter mon compte"
+
+#: src/components/ProfileEditor/index.tsx
+msgid "Social networks"
+msgstr "Réseaux sociaux"
+
+#: src/components/ProfileEditor/index.tsx
+msgid "Save changes"
+msgstr "Enregistrer les modifications"
+
+#: src/components/ProfileEditor/index.tsx
+msgid "Connected as {0}"
+msgstr "Connecté en tant que {0}"
+
+#: src/components/ProfileEditor/index.tsx
+msgid "Public"
+msgstr "Publique"
+
+#: src/pages/community/index.tsx
+msgid "Look for a collector..."
+msgstr "Chercher un collectionneur..."
+
+#: src/pages/community/index.tsx
+msgid "Verified collectors"
+msgstr "Collectionneurs certifiés"
+
+#: src/pages/community/index.tsx
+msgid "Seen recently"
+msgstr "Vus récemment"
+
+#: src/pages/marketplace/index.tsx
+msgid "starting from"
+msgstr "à partir de"
+
+#: src/pages/marketplace/index.tsx
+msgid "Price: low to high"
+msgstr "Prix croissant"
+
+#: src/pages/marketplace/index.tsx
+msgid "Price: high to low"
+msgstr "Prix décroissant"
+
+#: src/pages/pack/[packSlug].tsx
+msgid "Selection of possible cards"
+msgstr "Selection de cartes possibles"
+
+#: src/pages/pack/[packSlug].tsx
+msgid "Cards of this pack are created by working closely with the artists.<0/>50% of revenues will be distributed to them directly.<1/>Each card gives access to specific Discord channel and to airdrops of gifts during the year."
+msgstr "Les cartes de ce pack sont créées en étroite collaboration avec les artistes.<0/>50% des revenus leur sont reversés directement.<1/>Chaque carte donne accès à un channel Discord spécifique et à des airdrops de cadeaux tout au long de l’année."
+
+#: src/pages/user/[username]/cards.tsx
+msgid "Oldest"
+msgstr "Moins récentes"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "Newest"
+msgstr "Plus récentes"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "{0, plural, =1 {{0} card} other {{0} cards}}"
+msgstr "{0, plural, =1 {{0} carte} other {{0} cartes}}"
+
+#: src/pages/user/[username]/packs.tsx
+msgid "{0, plural, =1 {{0} pack} other {{0} packs}}"
+msgstr "{0, plural, =1 {{0} pack} other {{0} packs}}"

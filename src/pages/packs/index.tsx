@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useQuery, gql } from '@apollo/client'
 import styled from 'styled-components'
+import { Trans } from '@lingui/macro'
 
 import { useCurrentUser } from '@/state/user/hooks'
 import Section from '@/components/Section'
@@ -112,7 +113,9 @@ export default function Packs() {
     <>
       <PacksWrapper>
         {!isValid ? (
-          <TYPE.body textAlign="center">An error has occured</TYPE.body>
+          <TYPE.body textAlign="center">
+            <Trans>An error has occured</Trans>
+          </TYPE.body>
         ) : isLoading ? (
           <TYPE.body textAlign="center">Loading...</TYPE.body>
         ) : (

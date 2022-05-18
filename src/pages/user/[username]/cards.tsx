@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from 'react'
 import { useQuery, gql } from '@apollo/client'
+import { Plural } from '@lingui/macro'
 
 import DefaultLayout from '@/components/Layout'
 import ProfileLayout from '@/components/Layout/profile'
@@ -58,13 +59,15 @@ function Cards({ userId }: { userId: string }) {
 
   return (
     <Section>
-      <GridHeader sortTexts={['Plus récentes', 'Moins récentes']} sortValue={sortDesc} onSortUpdate={toggleSort}>
+      <GridHeader sortTexts={['Newest', 'Oldest']} sortValue={sortDesc} onSortUpdate={toggleSort}>
         <TYPE.body>
-          {!isValid
-            ? 'An error has occured'
-            : isLoading
-            ? 'Loading...'
-            : `${cards.length} carte${cards.length > 1 ? 's' : ''}`}
+          {!isValid ? (
+            t`An error has occured`
+          ) : isLoading ? (
+            'Loading...'
+          ) : (
+            <Plural value={cards.length} _1="{0} card" other="{0} cards" />
+          )}
         </TYPE.body>
       </GridHeader>
       {isValid && !isLoading && (

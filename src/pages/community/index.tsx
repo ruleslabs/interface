@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
+import { Trans, t } from '@lingui/macro'
 
 import Link from '@/components/Link'
 import Section from '@/components/Section'
@@ -189,7 +190,7 @@ export default function Community() {
       <Section marginBottom="84px" marginTop="44px">
         <SearchBarWrapper ref={searchBarWrapperRef} focused={isSearchBarFocused && searchSuggestedUsers?.length > 0}>
           <StyledSearchBar
-            placeholder="Look for a collector..."
+            placeholder={t`Look for a collector...`}
             onUserInput={onSearchBarInput}
             onFocus={onSearchBarFocus}
           />
@@ -212,11 +213,15 @@ export default function Community() {
       <Section>
         {searchedUsers.length > 0 && (
           <>
-            <UsersHeading>Seen recently</UsersHeading>
+            <UsersHeading>
+              <Trans>Seen recently</Trans>
+            </UsersHeading>
             <UsersRow loading={searchedUsersLoading} users={searchedUsers} />
           </>
         )}
-        <UsersHeading>Verified collectors</UsersHeading>
+        <UsersHeading>
+          <Trans>Verified collectors</Trans>
+        </UsersHeading>
         <UsersRow loading={certifiedUsersLoading} users={certifiedUsers} />
       </Section>
     </>

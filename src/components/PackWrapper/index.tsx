@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Trans } from '@lingui/macro'
 
 import useCountdown from '@/hooks/useCountdown'
 import { RowCenter } from '@/components/Row'
@@ -39,7 +40,9 @@ export function PackCountdownWrapper({ releaseDate, children }: PackCountdownWra
     <StyledPackCountdownWrapper released={!countdown}>
       {countdown && (
         <CountdownWrapper>
-          <TYPE.body textAlign="center">Sortie dans</TYPE.body>
+          <TYPE.body textAlign="center">
+            <Trans>Release in</Trans>
+          </TYPE.body>
           <TYPE.body fontWeight={700} fontSize={48} textAlign="center">
             {String(countdown.hours).padStart(2, '0')}:{String(countdown.minutes).padStart(2, '0')}:
             {String(countdown.seconds).padStart(2, '0')}
