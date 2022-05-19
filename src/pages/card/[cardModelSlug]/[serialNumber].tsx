@@ -15,6 +15,7 @@ import CardTransfersHistory from '@/components/CardsTransfersHistory/card'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import CardModel3D from '@/components/CardModel3D'
 import { useEtherEURPrice } from '@/hooks/useFiatPrice'
+import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
 
 const MainSection = styled(Section)`
   position: relative;
@@ -67,7 +68,6 @@ const QUERY_CARD = gql`
         id
         videoUrl
         pictureUrl(derivative: "width=64")
-        backPictureUrl(derivative: "width=512")
         season
         youtubePreviewId
         artist {
@@ -107,6 +107,8 @@ export default function CardBreakout() {
     [cardData?.card, etherEURprice]
   )
 
+  const backPictureUrl = useCardsBackPictureUrl(512)
+
   if (!!error || !!loading) {
     if (!!error) console.error(error)
     return null
@@ -126,7 +128,7 @@ export default function CardBreakout() {
         <CardModel3D
           videoUrl={card.cardModel.videoUrl}
           pictureUrl={card.cardModel.pictureUrl}
-          backPictureUrl={card.cardModel.backPictureUrl}
+          backPictureUrl={backPictureUrl}
         />
         <MainSectionCardsWrapper>
           <Card>

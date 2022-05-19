@@ -12,6 +12,9 @@ import { BackButton } from '@/components/Button'
 import { useStarknetSignerModalToggle } from '@/state/application/hooks'
 import StarknetSignerModal from '@/components/StarknetSignerModal'
 import { usePackOpeningMutation } from '@/state/packOpening/hooks'
+import PackOpeningCards from '@/components/PackOpeningCards'
+import Loader from '@/components/Loader'
+import Column from '@/components/Column'
 
 import SoundOn from '@/images/sound-on.svg'
 import SoundOff from '@/images/sound-off.svg'
@@ -50,12 +53,20 @@ const PackImage = styled.img`
 const OpenPackButton = styled(PrimaryButton)`
   padding-left: 38px;
   padding-right: 38px;
-  margin: 90px auto 0;
+  margin: 0 auto;
   display: block;
 `
 
 const StyledSoundSwitch = styled.div`
   cursor: pointer;
+`
+
+const StyledLoader = styled(Loader)`
+  margin: 0 auto;
+`
+
+const StyledPackOpeningCards = styled(PackOpeningCards)`
+  margin-top: 168px;
 `
 
 interface SoundSwitchProps {
@@ -84,22 +95,31 @@ function PackOpening() {
 
   // open pack mutation
   const [packOpeningMutation] = usePackOpeningMutation()
+  const [cards, setCards] = useState<any[]>([])
 
   // approve pack opening
+  const [txWaiting, setTxWaiting] = useState(false)
   const toggleStarknetSignerModal = useStarknetSignerModalToggle()
   const approvePackOpeningCallback = useCallback(
     (tx: string) => {
+      setTxWaiting(true)
       console.log(`Wait for TX ${tx}`) // TODO
-      console.log('Tx is valid') // TODO
-      packOpeningMutation({ variables: { packId: pack.id } })
-        .then((res: any) => {
-          console.log(res)
-        })
-        .catch((packOpeningError: ApolloError) => {
-          console.error(packOpeningError)
-        })
+
+      setTimeout(() => {
+        console.log('Tx is valid') // TODO
+        packOpeningMutation({ variables: { packId: pack.id } })
+          .then((res: any) => {
+            if (res.data?.openPack?.cards) setCards(res.data.openPack.cards)
+            else console.error(res.data?.openPack?.error) // TODO handle error
+            setTxWaiting(false)
+          })
+          .catch((packOpeningError: ApolloError) => {
+            console.error(packOpeningError)
+            setTxWaiting(false)
+          })
+      }, 100)
     },
-    [pack?.id]
+    [pack?.id, setCards, setTxWaiting]
   )
 
   return (
@@ -108,23 +128,35 @@ function PackOpening() {
         <BackButton onClick={router.back} />
         <SoundSwitch on={soundOn} toggleSound={toggleSound} />
       </ControlsSection>
+
       <MainSection>
-        {!isValid ? (
+        {isLoading ? (
+          <TYPE.body textAlign="center">Loading...</TYPE.body>
+        ) : !isValid ? (
           <TYPE.body textAlign="center">
             <Trans>An error has occured</Trans>
           </TYPE.body>
-        ) : isLoading ? (
-          <TYPE.body textAlign="center">Loading...</TYPE.body>
         ) : (
           <>
             <Trans id={pack.displayName} render={({ translation }) => <Title>{translation}</Title>} />
-            <PackImage src={pack.pictureUrl} />
-            <OpenPackButton onClick={toggleStarknetSignerModal} large>
-              <Trans>Open pack</Trans>
-            </OpenPackButton>
+            {cards?.length ? (
+              <StyledPackOpeningCards cards={cards} />
+            ) : (
+              <Column gap={80}>
+                <PackImage src={pack.pictureUrl} />
+                {txWaiting ? (
+                  <StyledLoader />
+                ) : (
+                  <OpenPackButton onClick={approvePackOpeningCallback} large>
+                    <Trans>Open pack</Trans>
+                  </OpenPackButton>
+                )}
+              </Column>
+            )}
           </>
         )}
       </MainSection>
+
       <StarknetSignerModal
         transaction={{ title: 'Approve pack openning', action: 'Approve' }}
         callback={approvePackOpeningCallback}

@@ -15,6 +15,7 @@ import YoutubeEmbed from '@/components/YoutubeEmbed'
 import { useEtherEURPrice } from '@/hooks/useFiatPrice'
 import CardModel3D from '@/components/CardModel3D'
 import Card from '@/components/Card'
+import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
 
 const MainSection = styled(Section)`
   position: relative;
@@ -52,7 +53,6 @@ const QUERY_CARD_MODEL = gql`
     cardModel(slug: $slug) {
       id
       pictureUrl(derivative: "width=64")
-      backPictureUrl(derivative: "width=512")
       videoUrl
       lowestAsk
       averageSell
@@ -102,6 +102,8 @@ export default function CardModelPage() {
     [etherEURprice, cardModelData?.cardModel]
   )
 
+  const backlPictureUrl = useCardsBackPictureUrl(512)
+
   if (!!error || !!loading) {
     if (!!error) console.error(error)
     return null
@@ -121,7 +123,7 @@ export default function CardModelPage() {
         <CardModel3D
           videoUrl={cardModel.videoUrl}
           pictureUrl={cardModel.pictureUrl}
-          backPictureUrl={cardModel.backPictureUrl}
+          backPictureUrl={backPictureUrl}
         />
         <MainSectionCardsWrapper>
           <Card>

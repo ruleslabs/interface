@@ -10,6 +10,12 @@ const OPEN_PACK_MUTATION = gql`
       }
       cards {
         slug
+        cardModel {
+          videoUrl
+          scarcity {
+            name
+          }
+        }
       }
     }
   }

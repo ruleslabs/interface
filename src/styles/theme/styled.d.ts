@@ -18,6 +18,8 @@ export interface Colors {
 
   gradient1: string
 
+  platinium: string
+
   error: string
 }
 
