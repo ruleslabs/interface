@@ -66,7 +66,7 @@ const StyledLoader = styled(Loader)`
 `
 
 const StyledPackOpeningCards = styled(PackOpeningCards)`
-  margin-top: 168px;
+  margin: 168px auto 0;
 `
 
 interface SoundSwitchProps {
