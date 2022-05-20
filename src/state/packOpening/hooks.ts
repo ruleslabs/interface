@@ -10,10 +10,20 @@ const OPEN_PACK_MUTATION = gql`
       }
       cards {
         slug
+        serialNumber
         cardModel {
           videoUrl
+          season
           scarcity {
             name
+            maxSupply
+          }
+          artist {
+            displayName
+            user {
+              username
+              slug
+            }
           }
         }
       }

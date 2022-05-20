@@ -3,6 +3,10 @@ import styled from 'styled-components'
 import { ScarcityName } from '@rulesorg/sdk-core'
 
 import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
+import CardModelBreakdown from '@/components/CardModelBreakdown'
+import Card from '@/components/Card'
+
+import Close from '@/images/close.svg'
 
 const CARD_WIDTH = 256
 const CARD_RATIO = 1.39
@@ -54,9 +58,9 @@ const StyledCardImage = styled.div<{ position: 'left' | 'center' | 'right'; focu
   ${({ focused }) =>
     focused &&
     `
-      left: calc(50% - 128px);
+      left: calc(50% - ${CARD_WIDTH * 1.5}px);
       z-index: 999;
-      transform: scale(2.3);
+      transform: scale(2);
       transition: left 600ms ease, transform 600ms ease;
     `}
 
@@ -106,6 +110,22 @@ const CardVideo = styled.video`
   width: 100%;
 `
 
+const CardModelBreakdownWrapper = styled(Card)`
+  position: absolute;
+  left: calc(50% + ${CARD_WIDTH / 2}px);
+  top: 406px;
+  width: 300px;
+`
+
+const StyledClose = styled(Close)`
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  top: 178px;
+  left: calc(50% + ${CARD_WIDTH / 2 + 300 - 20}px);
+`
+
 interface CardImageProps {
   cards: any[]
   revealedCardIndex?: number
@@ -116,8 +136,6 @@ interface CardImageProps {
 
 const CardImage = ({ cards, revealedCardIndex, onClick, cardIndexToLoad, focused }: CardImageProps) => {
   const backPictureUrl = useCardsBackPictureUrl(512)
-
-  console.log(revealedCardIndex !== undefined ? cards[revealedCardIndex].cardModel.scarcity.name : ScarcityName[0])
 
   return (
     <StyledCardImage
@@ -154,7 +172,7 @@ interface PackOpeningCardsProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export default function PackOpeningCards({ cards, ...props }: PackOpeningCardsProps) {
   const [revealedCardIndexes, setRevealedCardIndexes] = useState<{ [index: number]: number }>({})
-  const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null)
+  const [focusedCard, setFocusedCard] = useState<any | null>(null)
 
   const sortedCardsByScarcity = useMemo(
     () =>
@@ -165,26 +183,28 @@ export default function PackOpeningCards({ cards, ...props }: PackOpeningCardsPr
   )
 
   const handleReveal = useCallback(
-    (cardIndex: number) => {
-      setRevealedCardIndexes({
-        ...revealedCardIndexes,
-        [cardIndex]: Object.keys(revealedCardIndexes).length,
-      })
+    (cardIndex: number): number => {
+      const revealedCardIndex = Object.keys(revealedCardIndexes).length
+
+      setRevealedCardIndexes({ ...revealedCardIndexes, [cardIndex]: revealedCardIndex })
+      return revealedCardIndex
     },
     [sortedCardsByScarcity, revealedCardIndexes, setRevealedCardIndexes]
   )
 
   const handleCardFocus = useCallback(
     (cardIndex: number) => {
-      if (revealedCardIndexes[cardIndex] === undefined) handleReveal(cardIndex)
-      setFocusedCardIndex(cardIndex)
+      if (revealedCardIndexes[cardIndex] === undefined) {
+        const revealedCardIndex = handleReveal(cardIndex)
+        setFocusedCard(sortedCardsByScarcity[revealedCardIndex])
+      } else setFocusedCard(sortedCardsByScarcity[revealedCardIndexes[cardIndex]])
     },
-    [sortedCardsByScarcity, revealedCardIndexes, setRevealedCardIndexes, setFocusedCardIndex]
+    [sortedCardsByScarcity, revealedCardIndexes, setRevealedCardIndexes, setFocusedCard]
   )
 
   const resetFocus = useCallback(() => {
-    setFocusedCardIndex(null)
-  }, [setFocusedCardIndex])
+    setFocusedCard(null)
+  }, [setFocusedCard])
 
   return (
     <>
@@ -198,11 +218,29 @@ export default function PackOpeningCards({ cards, ...props }: PackOpeningCardsPr
               cardIndexToLoad={index}
               revealedCardIndex={revealedCardIndexes[index]}
               onClick={() => handleCardFocus(index)}
-              focused={focusedCardIndex === index}
+              focused={
+                revealedCardIndexes[index] !== undefined &&
+                focusedCard?.slug === sortedCardsByScarcity[revealedCardIndexes[index]]?.slug
+              }
             />
           ))}
       </StyledPackOpeningCards>
-      <FocusedVeil onClick={resetFocus} active={focusedCardIndex !== null} />
+      <FocusedVeil onClick={resetFocus} active={!!focusedCard}>
+        <CardModelBreakdownWrapper>
+          {!!focusedCard && (
+            <CardModelBreakdown
+              artistName={focusedCard.cardModel.artist.displayName}
+              artistUsername={focusedCard.cardModel.artist.user.username}
+              artistUserSlug={focusedCard.cardModel.artist.user.slug}
+              season={focusedCard.cardModel.season}
+              scarcity={focusedCard.cardModel.scarcity.name}
+              maxSupply={focusedCard.cardModel.scarcity.maxSupply}
+              serial={focusedCard.serialNumber}
+            />
+          )}
+        </CardModelBreakdownWrapper>
+        <StyledClose onClick={resetFocus} />
+      </FocusedVeil>
     </>
   )
 }
