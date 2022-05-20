@@ -48,7 +48,7 @@ export async function decryptWithPassword(password: string, iv: string, salt: st
       key,
       data
     )
-    return arrayToHex(new Uint8Array(decryptedData))
+    return new Uint8Array(decryptedData)
   } catch (e) {
     throw new DecryptionError()
   }

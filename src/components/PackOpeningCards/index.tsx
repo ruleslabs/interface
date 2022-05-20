@@ -33,7 +33,7 @@ const FocusedVeil = styled.div<{ active: boolean }>`
   bottom: 0;
   right: 0;
   transition: opacity ${({ active }) => (active ? 100 : 600)}ms ease,
-    ${({ active }) => active || 'visibility 0s linear 100ms'};
+    ${({ active }) => (active ? '' : 'visibility 0s linear 100ms')};
   opacity: ${({ active }) => (active ? '1' : '0')};
   visibility: ${({ active }) => (active ? 'visible' : 'hidden')};
 `

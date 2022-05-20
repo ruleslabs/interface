@@ -147,7 +147,7 @@ function PackOpening() {
                 {txWaiting ? (
                   <StyledLoader />
                 ) : (
-                  <OpenPackButton onClick={approvePackOpeningCallback} large>
+                  <OpenPackButton onClick={toggleStarknetSignerModal} large>
                     <Trans>Open pack</Trans>
                   </OpenPackButton>
                 )}

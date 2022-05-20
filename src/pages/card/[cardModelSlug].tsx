@@ -102,7 +102,7 @@ export default function CardModelPage() {
     [etherEURprice, cardModelData?.cardModel]
   )
 
-  const backlPictureUrl = useCardsBackPictureUrl(512)
+  const backPictureUrl = useCardsBackPictureUrl(512)
 
   if (!!error || !!loading) {
     if (!!error) console.error(error)
@@ -120,11 +120,7 @@ export default function CardModelPage() {
       </Section>
 
       <MainSection size="sm">
-        <CardModel3D
-          videoUrl={cardModel.videoUrl}
-          pictureUrl={cardModel.pictureUrl}
-          backPictureUrl={backPictureUrl}
-        />
+        <CardModel3D videoUrl={cardModel.videoUrl} pictureUrl={cardModel.pictureUrl} backPictureUrl={backPictureUrl} />
         <MainSectionCardsWrapper>
           <Card>
             <CardModelBreakdown

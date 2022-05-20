@@ -9,7 +9,8 @@ import { useStarknetSignerModalToggle, useModalOpen } from '@/state/application/
 import { ApplicationModal } from '@/state/application/actions'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
-import { DecryptionError, decryptWithPassword } from '@/utils/encryption'
+import { DecryptionError } from '@/utils/encryption'
+import { decryptRulesPrivateKey } from '@/utils/wallet'
 import { PrimaryButton } from '@/components/Button'
 
 const PRIVATE_KEY_QUERY = gql`
@@ -43,7 +44,7 @@ interface Transaction {
 }
 
 interface StarknetSignerModalProps {
-  transaction: string
+  transaction: Transaction
   callback: (tx: string) => void
 }
 
@@ -64,7 +65,7 @@ export default function StarknetSignerModal({ transaction, callback }: StarknetS
     (event) => {
       event.preventDefault()
 
-      decryptWithPassword(password, rulesPrivateKey.iv, rulesPrivateKey.salt, rulesPrivateKey.encryptedPrivateKey)
+      decryptRulesPrivateKey(rulesPrivateKey, password)
         .then((res: string) => {
           console.log(res)
           console.log('sign transaction') // TODO
@@ -79,7 +80,7 @@ export default function StarknetSignerModal({ transaction, callback }: StarknetS
   )
 
   return (
-    <Modal onDismiss={toggleStarknetSignerModal} isOpen={isOpen && transaction}>
+    <Modal onDismiss={toggleStarknetSignerModal} isOpen={isOpen && !!transaction}>
       <StyledStarknetSignerModal gap={26}>
         <Trans
           id={transaction.title}
