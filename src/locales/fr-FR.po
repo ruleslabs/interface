@@ -118,7 +118,7 @@ msgstr "Déjà un compte? <0>Se connecter</0>"
 
 #: src/components/AuthModal/SignUpForm.tsx
 msgid "I agree to Rules <0>terms and conditions</0>"
-msgstr "J’accepte les <0>conditions d’utilisation de Rules</0>"
+msgstr "J’accepte les <0>conditions générales d’utilisation de Rules</0>"
 
 #: src/components/AuthModal/SignUpForm.tsx
 msgid "Please send updates about pack releases and new stuff"

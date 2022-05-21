@@ -6,7 +6,6 @@ import { t } from '@lingui/macro'
 import Modal from '@/components/Modal'
 import { useModalOpen, useDeckInsertionModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
-import { IconButton } from '@/components/Button'
 import Column from '@/components/Column'
 import Row from '@/components/Row'
 import { TYPE } from '@/styles/theme'
@@ -47,6 +46,11 @@ const CardPicture = styled.img`
 
 const CardName = styled(TYPE.body)`
   width: 100%;
+`
+const StyledClose = styled(Close)`
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
 `
 
 interface DeckInsertionModalProps {
@@ -146,9 +150,7 @@ export default function DeckInsertionModal({ userId, cardIndex }: DeckInsertionM
     <Modal onDismiss={onDismiss} isOpen={isOpen}>
       <StyledDeckInsertionModal>
         <Row justify="flex-end">
-          <IconButton onClick={onDismiss}>
-            <Close />
-          </IconButton>
+          <StyledClose onClick={onDismiss} />
         </Row>
         <Section marginTop="16px">
           <Column gap={32}>
