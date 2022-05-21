@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
@@ -17,6 +17,7 @@ const QUERY_USER_PACKS_BALANCES = gql`
   query ($slug: String!) {
     user(slug: $slug) {
       packsBalances {
+        balance
         pack {
           slug
           pictureUrl(derivative: "width=320")
@@ -54,29 +55,38 @@ function Packs({ userId }: { userId: string }) {
   const isValid = !error
   const isLoading = loading
 
+  const packsCount = useMemo(
+    () => (packsBalances ?? []).reduce<number>((acc, packBalance) => acc + packBalance.balance, 0),
+    [packsBalances]
+  )
+
   return (
     <Section>
       <GridHeader sortTexts={['Newest', 'Oldest']} sortValue={increaseSort} onSortUpdate={toggleSort}>
         <TYPE.body>
-          {!isValid ? (
-            t`An error has occured`
-          ) : isLoading ? (
+          {isLoading ? (
             'Loading...'
+          ) : !isValid ? (
+            t`An error has occured`
           ) : (
-            <Plural value={packsBalances.length} _1="{0} pack" other="{0} packs" />
+            <Plural value={packsCount} _1="{packsCount} pack" other="{packsCount} packs" />
           )}
         </TYPE.body>
       </GridHeader>
       <Grid maxWidth={256}>
-        {packsBalances.map((packBalance: any, index: number) => (
-          <StyledPackCard
-            key={`pack-${index}`}
-            slug={packBalance.pack.slug}
-            pictureUrl={packBalance.pack.pictureUrl}
-            soldout={false}
-            open={isCurrentUserProfile}
-          />
-        ))}
+        {packsBalances.map((packBalance: any, index: number) =>
+          Array(packBalance.balance)
+            .fill(0)
+            .map((_, index: number) => (
+              <StyledPackCard
+                key={`pack-${packBalance.pack.slug}-${index}`}
+                slug={packBalance.pack.slug}
+                pictureUrl={packBalance.pack.pictureUrl}
+                soldout={false}
+                open={isCurrentUserProfile}
+              />
+            ))
+        )}
       </Grid>
     </Section>
   )
