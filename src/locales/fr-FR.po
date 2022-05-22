@@ -521,3 +521,7 @@ msgstr "Filtres"
 #: src/pages/pack/[packSlug]/open.tsx
 msgid "Open pack"
 msgstr "Ouvrir le pack"
+
+#: src/components/CardModelSales/index.tsx
+msgid "No cards on sale."
+msgstr "Aucun exemplaire en vente."

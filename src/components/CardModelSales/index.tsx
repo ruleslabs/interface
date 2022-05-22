@@ -5,6 +5,7 @@ import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import Link from '@/components/Link'
+import Placeholder from '@/components/Placeholder'
 
 interface CardModelSalesProps {
   slug: string
@@ -40,11 +41,17 @@ export default function CardModelSales({ slug, lowestAskEUR, averageSellEUR, car
             other="{cardsOnSaleCount} cards on sale"
           />
         </TYPE.body>
-        <Link href={`/card/${slug}/buy`}>
-          <PrimaryButton style={{ width: '100%' }} large>
-            <Trans>Select and buy</Trans>
-          </PrimaryButton>
-        </Link>
+        {cardsOnSaleCount === 0 ? (
+          <Placeholder>
+            <Trans>No cards on sale.</Trans>
+          </Placeholder>
+        ) : (
+          <Link href={`/card/${slug}/buy`}>
+            <PrimaryButton style={{ width: '100%' }} large>
+              <Trans>Select and buy</Trans>
+            </PrimaryButton>
+          </Link>
+        )}
       </Column>
     </Column>
   )
