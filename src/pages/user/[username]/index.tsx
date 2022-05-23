@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 
 import Link from '@/components/Link'
 import DefaultLayout from '@/components/Layout'
-import ProfileLayout from '@/components/Layout/profile'
+import ProfileLayout from '@/components/Layout/Profile'
 import Section from '@/components/Section'
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
@@ -164,7 +164,7 @@ const DeckCards = ({ deck, indexes, onInsertion, onRemove, isCurrentUserProfile 
     <>
       {indexes.map((index: number) =>
         deck[index] ? (
-          <StyledDeckCard id={`card${index}`}>
+          <StyledDeckCard key={`deck-card-${index}`} id={`card${index}`}>
             {isCurrentUserProfile && <RemoveButton onClick={() => onRemove(index)}>delete me</RemoveButton>}
             <Link href={`/card/${deck[index].cardModel.slug}/${deck[index].serialNumber}`}>
               <CardPicture src={deck[index].cardModel.pictureUrl} />

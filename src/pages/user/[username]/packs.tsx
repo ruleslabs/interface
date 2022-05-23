@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { Plural, t } from '@lingui/macro'
 
 import DefaultLayout from '@/components/Layout'
-import ProfileLayout from '@/components/Layout/profile'
+import ProfileLayout from '@/components/Layout/Profile'
 import GridHeader from '@/components/GridHeader'
 import Section from '@/components/Section'
 import Grid from '@/components/Grid'

@@ -318,15 +318,15 @@ msgstr "Solde ETH insuffisant"
 msgid "Balance: {0}"
 msgstr "Solde: {0}"
 
-#: src/components/Layout/profile.tsx
+#: src/components/Layout/Profile.tsx
 msgid "Packs"
 msgstr "Packs"
 
-#: src/components/Layout/profile.tsx
+#: src/components/Layout/Profile.tsx
 msgid "Deck"
 msgstr "Deck"
 
-#: src/components/Layout/profile.tsx
+#: src/components/Layout/Profile.tsx
 msgid "Cards"
 msgstr "Cartes"
 
@@ -525,3 +525,7 @@ msgstr "Ouvrir le pack"
 #: src/components/CardModelSales/index.tsx
 msgid "No cards on sale."
 msgstr "Aucun exemplaire en vente."
+
+#: src/components/User/index.tsx
+msgid "edit"
+msgstr "modifier"

@@ -62,3 +62,7 @@ export function useDepositModalToggle(): () => void {
 export function useStarknetSignerModalToggle(): () => void {
   return useToggleModal(ApplicationModal.STARKNET_SIGNER)
 }
+
+export function useAvatarEditModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.AVATAR_EDIT)
+}

@@ -21,6 +21,7 @@ const CURRENT_USER_QUERY = gql`
         encryptedPrivateKey
       }
       profile {
+        pictureUrl(derivative: "width=320")
         twitterUsername
         instagramUsername
         isDiscordVisible
@@ -36,6 +37,7 @@ const CURRENT_USER_QUERY = gql`
 const SEARCH_USER_CONTENT = `
   id
   username
+  slug
   profile {
     pictureUrl(derivative: "width=320")
     certified
@@ -87,6 +89,14 @@ const SET_DISCORD_ACCOUNT_VISIBILITY_MUTATION = gql`
   mutation ($visible: Boolean!) {
     setDiscordAccountVisibility(visible: $visible) {
       visible
+    }
+  }
+`
+
+const EDIT_AVATAR_MUTATION = gql`
+  mutation ($avatarId: Int!) {
+    setAvatar(avatarId: $avatarId) {
+      pictureUrl
     }
   }
 `
@@ -161,7 +171,7 @@ export function useSearchUser(userSlug?: string) {
         })
   }, [searchUserMutation, setUser, currentUser, userSlug, queryData])
 
-  return currentUser ? { user, loading, error } : { user, queryLoading, queryError }
+  return currentUser ? { searchedUser: user, loading, error } : { user, queryLoading, queryError }
 }
 
 export function useSetSocialLinksMutation() {
@@ -180,6 +190,9 @@ export function useDisconnectDiscordAccountMutation() {
   return useMutation(DISCONNECT_DISCORD_ACCOUNT_MUTATION)
 }
 
+export function useEditAvatarMutation() {
+  return useMutation(EDIT_AVATAR_MUTATION)
+}
 // Locales
 export function useUserLocale(): AppState['user']['userLocale'] {
   return useAppSelector((state) => state.user.userLocale)

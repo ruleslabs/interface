@@ -44,16 +44,12 @@ export default function LanguageSelector(props: LanguageSelectorProps) {
   return (
     <StyledLanguageSelector {...props}>
       {SUPPORTED_LOCALES.map((locale, index) => (
-        <>
-          {index ? (
-            <TYPE.body key={`locale-separator-${index}`} color="text2">
-              -
-            </TYPE.body>
-          ) : null}
-          <LocaleLabel key={locale} active={userLocale === locale} onClick={() => handleLocaleChange(locale)}>
+        <Row key={locale} gap={8}>
+          {index ? <TYPE.body color="text2">-</TYPE.body> : null}
+          <LocaleLabel active={userLocale === locale} onClick={() => handleLocaleChange(locale)}>
             {LOCALE_LABEL[locale]}
           </LocaleLabel>
-        </>
+        </Row>
       ))}
     </StyledLanguageSelector>
   )

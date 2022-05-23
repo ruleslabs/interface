@@ -7,7 +7,7 @@ export default function useCardsBackPictureUrl(width: number) {
   return useMemo(
     () =>
       `https://${IMAGES_DOMAIN}/${btoa(
-        JSON.stringify({ bucket: BUCKET, key: 'card-models/back.png', edits: { width, fit: 'contain' } })
+        JSON.stringify({ bucket: BUCKET, key: 'card-models/back.png', edits: { resize: { width, fit: 'contain' } } })
       )}`,
     [width]
   )

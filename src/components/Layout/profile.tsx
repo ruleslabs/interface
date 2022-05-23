@@ -9,10 +9,9 @@ import Row, { RowCenter } from '@/components/Row'
 import { ColumnCenter } from '@/components/Column'
 import User from '@/components/User'
 import TabLink from '@/components/TabLink'
-import { useSearchUser } from '@/state/user/hooks'
+import { useSearchUser, useCurrentUser } from '@/state/user/hooks'
 
 import Instagram from '@/images/instagram-color.svg'
-// import Twitch from '@/images/twitch-white.svg'
 import Twitter from '@/images/twitter-color.svg'
 
 const StyledSection = styled(Section)`
@@ -66,7 +65,10 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
   const { username } = router.query
   const userSlug = typeof username === 'string' ? username.toLowerCase() : undefined
 
-  const { user, loading, error } = useSearchUser(userSlug)
+  const currentUser = useCurrentUser()
+  const { searchedUser, loading, error } = useSearchUser(userSlug, { skip: currentUser?.slug === userSlug })
+
+  const user = currentUser?.slug === userSlug ? currentUser : searchedUser
 
   if (error || (!user && !loading)) return <TYPE.body>User not found</TYPE.body>
   else if (!user) return null
@@ -84,6 +86,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
               pictureUrl={user.profile.pictureUrl}
               certified={user.profile.certified}
               size="lg"
+              canEdit={userSlug === currentUser?.slug}
             />
             <RowCenter gap={8}>
               {user?.profile?.instagramUsername && (
