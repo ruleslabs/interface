@@ -21,19 +21,14 @@ const StyledSearchBar = styled(SearchBar)`
 
 const SearchResults = styled(Column)`
   border: solid ${({ theme }) => theme.bg3};
-  border-width: 0 1px 1px;
+  border-width: 1px;
   position: absolute;
   background: ${({ theme }) => theme.bg5};
   left: 0;
   right: 0;
   border-radius: 0 0 3px 3px;
-
-  & > div:first-child {
-    height: 1px;
-    width: 100%;
-    background: ${({ theme }) => theme.bg3};
-    margin: 0 auto;
-  }
+  z-index: 99;
+  padding: 12px 0;
 `
 
 const SearchBarWrapper = styled.div<{ focused: boolean }>`
@@ -66,7 +61,8 @@ const UsersHeading = styled.h3`
 const SearchSuggestedUser = styled(RowCenter)`
   padding: 8px 16px;
   cursor: pointer;
-  gap: 16px;
+  gap: 12px;
+  position: relative;
 
   :hover {
     background: ${({ theme }) => theme.bg2};
@@ -84,6 +80,13 @@ const StyledUsersRow = styled(Row)`
   width: 100%;
   overflow: scroll;
   gap: 32px;
+`
+
+const StyledCertified = styled(Certified)`
+  width: 18px;
+  position: absolute;
+  top: 6px;
+  left: 47px;
 `
 
 const USERS_BY_IDS_QUERY = gql`
@@ -195,14 +198,13 @@ export default function Community() {
             onFocus={onSearchBarFocus}
           />
           <SearchResults>
-            <div />
             {searchSuggestedUsers.map((user) => (
               <Link key={`user-${user.username}`} href={`/user/${user.username}`}>
                 <SearchSuggestedUser>
+                  {user.profile.certified && <StyledCertified />}
                   <img src={user.profile.pictureUrl} />
                   <RowCenter gap={4}>
                     <TYPE.body>{user.username}</TYPE.body>
-                    {user.profile.certified && <Certified width="18px" />}
                   </RowCenter>
                 </SearchSuggestedUser>
               </Link>
