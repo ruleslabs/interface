@@ -31,7 +31,7 @@ const StyledPackCard = styled(PackCard)`
   width: 100%;
 `
 
-function Packs({ userId }: { userId: string }) {
+function Packs() {
   const router = useRouter()
   const { username } = router.query
   const userSlug = typeof username === 'string' ? username.toLowerCase() : null
@@ -49,7 +49,7 @@ function Packs({ userId }: { userId: string }) {
     data: packsBalancesData,
     loading,
     error,
-  } = useQuery(QUERY_USER_PACKS_BALANCES, { variables: { slug: userSlug }, skip: !userId })
+  } = useQuery(QUERY_USER_PACKS_BALANCES, { variables: { slug: userSlug }, skip: !userSlug })
 
   const packsBalances = packsBalancesData?.user?.packsBalances ?? []
   const isValid = !error

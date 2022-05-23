@@ -28,8 +28,10 @@ const AvatarsWrapper = styled.div`
 `
 
 const Avatar = styled.div<{ selected: boolean }>`
+  ${({ selected, theme }) => selected && `border: 5px solid ${theme.primary1}`};
+  border-radius: 50%;
+
   img {
-    ${({ selected, theme }) => selected && `border: 5px solid ${theme.primary1}`};
     border-radius: 50%;
     width: 100%;
     height: 100%;
@@ -38,6 +40,34 @@ const Avatar = styled.div<{ selected: boolean }>`
 
   img:hover {
     filter: brightness(0.4);
+  }
+
+  span {
+    ${({ selected }) => !selected && 'display: none;'}
+  }
+`
+
+const Checkmark = styled.span`
+  position: absolute;
+  top: 4px;
+  right: -2px;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  background: ${({ theme }) => theme.primary1};
+
+  &:after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 5px;
+    width: 10px;
+    height: 18px;
+    border: solid white;
+    border-width: 0 5px 5px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
   }
 `
 
@@ -82,7 +112,7 @@ export default function AvatarEditModal({ currentAvatarId }: AvatarEditModalProp
               onClick={() => handleAvatarEdit(index + 1)}
             >
               <img src={avatarUrl} />
-              <div />
+              <Checkmark />
             </Avatar>
           ))}
         </AvatarsWrapper>

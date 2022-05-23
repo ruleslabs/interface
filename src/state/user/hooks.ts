@@ -10,6 +10,7 @@ import { setCurrentUser, updateUserLocale } from './actions'
 const CURRENT_USER_QUERY = gql`
   query {
     currentUser {
+      id
       username
       email
       slug
