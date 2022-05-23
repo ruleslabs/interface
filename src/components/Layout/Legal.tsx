@@ -158,6 +158,7 @@ const StyledLegalLayout = styled(Section)`
   }
 
   td {
+    border: 1px solid white;
     padding: 0.125em 0.5em 0.25em 0.5em;
   }
 

@@ -13,10 +13,7 @@ const linguiConfig = {
   formatOptions: {
     lineNumbers: false,
   },
-  locales: [
-    'en-US',
-    'fr-FR',
-  ],
+  locales: ['en-US', 'fr-FR'],
   orderBy: 'messageId',
   rootDir: '.',
   runtimeConfigModule: ['@lingui/core', 'i18n'],

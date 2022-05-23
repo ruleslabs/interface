@@ -3,12 +3,12 @@ import type { Router } from 'next/dist/client/router'
 
 declare module 'next/app' {
   export declare type AppProps = Pick<CompletePrivateRouteInfo, 'Component' | 'err'> & {
-    router: Router;
+    router: Router
   } & Record<string, any> & {
-    Component: {
-      getLayout?: (page: JSX.Element) => JSX.Element
+      Component: {
+        getLayout?: (page: JSX.Element) => JSX.Element
+      }
     }
-  }
 }
 
 declare module '*.txt' {
