@@ -13,6 +13,7 @@ export const initialState: DeckState = {
 export default createReducer(initialState, (builder) =>
   builder
     .addCase(setDeckCards, (state, { payload: { deckCards } }) => {
+      state.deck = []
       for (const deckCard of deckCards) {
         state.deck[deckCard.cardIndex] = deckCard.card
       }
