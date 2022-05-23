@@ -56,7 +56,7 @@ function Packs({ userId }: { userId: string }) {
   const isLoading = loading
 
   const packsCount = useMemo(
-    () => (packsBalances ?? []).reduce<number>((acc, packBalance) => acc + packBalance.balance, 0),
+    () => ((packsBalances ?? []) as any[]).reduce<number>((acc, packBalance) => acc + packBalance.balance, 0),
     [packsBalances]
   )
 

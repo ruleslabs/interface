@@ -116,7 +116,7 @@ export function useCurrentUser() {
 //   return useCallback((user: any) => dispatch(setCurrentUser({ user })), [dispatch, setCurrentUser])
 // }
 
-export function useQueryCurrentUser(skip = false) {
+export function useQueryCurrentUser() {
   const dispatch = useAppDispatch()
 
   return useCallback(async () => {
@@ -133,7 +133,7 @@ export function useQueryCurrentUser(skip = false) {
   }, [dispatch, setCurrentUser, getApolloClient])
 }
 
-export function useSearchUser(userSlug?: string) {
+export function useSearchUser(userSlug?: string, skip = false) {
   const currentUser = useAppSelector((state) => state.user.currentUser)
 
   const [error, setError] = useState(false)
@@ -151,7 +151,7 @@ export function useSearchUser(userSlug?: string) {
   })
 
   useEffect(() => {
-    if (user) return // no need to fetch user multiple times
+    if (user || skip) return // no need to fetch user multiple times
 
     if (queryData) {
       setUser(queryData?.user ?? null)

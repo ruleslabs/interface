@@ -66,7 +66,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
   const userSlug = typeof username === 'string' ? username.toLowerCase() : undefined
 
   const currentUser = useCurrentUser()
-  const { searchedUser, loading, error } = useSearchUser(userSlug, { skip: currentUser?.slug === userSlug })
+  const { searchedUser, loading, error } = useSearchUser(userSlug, currentUser?.slug === userSlug)
 
   const user = currentUser?.slug === userSlug ? currentUser : searchedUser
 
