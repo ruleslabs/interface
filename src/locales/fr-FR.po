@@ -529,3 +529,7 @@ msgstr "Aucun exemplaire en vente."
 #: src/components/User/index.tsx
 msgid "edit"
 msgstr "modifier"
+
+#: src/components/CardModelBreakdown/index.tsx
+msgid "Official card"
+msgstr "Carte officielle"

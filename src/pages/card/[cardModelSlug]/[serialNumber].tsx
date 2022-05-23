@@ -134,8 +134,7 @@ export default function CardBreakout() {
           <Card>
             <CardModelBreakdown
               artistName={card.cardModel.artist.displayName}
-              artistUsername={card.cardModel.artist.user.username}
-              artistUserSlug={card.cardModel.artist.user.slug}
+              artistUsername={card.cardModel.artist.user?.username}
               season={card.cardModel.season}
               scarcity={card.cardModel.scarcity.name}
               maxSupply={card.cardModel.scarcity.maxSupply}

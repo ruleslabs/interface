@@ -125,8 +125,7 @@ export default function CardModelPage() {
           <Card>
             <CardModelBreakdown
               artistName={cardModel.artist.displayName}
-              artistUsername={cardModel.artist.user.username}
-              artistUserSlug={cardModel.artist.user.slug}
+              artistUsername={cardModel.artist.user?.username}
               season={cardModel.season}
               scarcity={cardModel.scarcity.name}
               maxSupply={cardModel.scarcity.maxSupply}

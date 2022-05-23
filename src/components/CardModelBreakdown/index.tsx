@@ -18,8 +18,7 @@ const UserLogin = styled(RowCenter)`
 
 interface CardModelBreakdownProps {
   artistName: string
-  artistUsername: string
-  artistUserSlug: string
+  artistUsername?: string
   season: number
   scarcity: string
   maxSupply: number
@@ -29,7 +28,6 @@ interface CardModelBreakdownProps {
 export default function CardModelBreakdown({
   artistName,
   artistUsername,
-  artistUserSlug,
   season,
   scarcity,
   maxSupply,
@@ -41,9 +39,15 @@ export default function CardModelBreakdown({
         {artistName}
       </TYPE.medium>
       <UserLogin>
-        <Link href={`/user/${artistUsername}`}>
-          <TYPE.body clickable>{artistUsername}</TYPE.body>
-        </Link>
+        {artistUsername ? (
+          <Link href={`/user/${artistUsername}`}>
+            <TYPE.body clickable>{artistUsername}</TYPE.body>
+          </Link>
+        ) : (
+          <TYPE.body>
+            <Trans>Official card</Trans>
+          </TYPE.body>
+        )}
         <Certified width="18px" />
       </UserLogin>
       <Column gap={8}>
