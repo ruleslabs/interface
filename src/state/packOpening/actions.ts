@@ -9,6 +9,7 @@ export enum FetchingState {
 export enum Sound {
   BEFORE_PACK_OPENING = 'before-pack-opening',
   DURING_PACK_OPENING = 'during-pack-opening',
+  OPENED_PACK = 'opened-pack',
 }
 
 export interface SoundFetchingStatePayload {

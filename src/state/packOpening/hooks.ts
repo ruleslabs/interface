@@ -42,42 +42,50 @@ export function usePackOpeningMutation() {
 
 export function useAudioLoop(src: string) {
   const dispatch = useAppDispatch()
-  const { soundsFetchingState, audioData } = useAppSelector((state: AppState) => state.packOpening)
+  const { soundsFetchingState, audioData, nextLoopSound } = useAppSelector((state: AppState) => state.packOpening)
 
   const [actx, setActx] = useState(null)
-  const [sourceNodes, setSourceNodes] = useState<{ [sound: Sound]: any | undefined }>({})
+  const [sourceNode, setSourceNode] = useState(null)
+  const [currentLoopSound, setCurrentLoopSound] = useState(null)
+
+  const pause = useCallback(() => {
+    sourceNode.stop()
+    setSourceNode(null)
+  }, [sourceNode, setSourceNode, actx])
 
   const playLoop = useCallback(
-    (sound: Sound) => {
-      if (!actx || !audioData[sound]) return
+    (sound?: Sound) => {
+      sound = sound ?? currentLoopSound
+      if (!actx || !sound || !audioData[sound]) return
+
+      if (sourceNode) pause()
 
       const newSourceNode = actx.createBufferSource() // create audio source
       newSourceNode.buffer = audioData[sound] // use decoded buffer
       newSourceNode.connect(actx.destination) // create output
       newSourceNode.loop = true // takes care of perfect looping
       newSourceNode.start()
-      setSourceNodes({ ...sourceNodes, [sound]: newSourceNode })
+      setSourceNode(newSourceNode)
     },
-    [actx, setSourceNodes, audioData, sourceNodes]
+    [actx, setSourceNode, audioData, sourceNode, pause, currentLoopSound, setCurrentLoopSound]
   )
 
-  const play = useCallback(
-    (sound: Sound) => {
-      console.log(audioData)
-      if (!actx) return
+  const play = useCallback(() => {
+    if (!actx) return
 
-      if (actx.state === 'suspended') actx.resume().then(() => playLoop(sound))
-      else playLoop(sound)
-    },
-    [actx, playLoop]
-  )
+    if (actx.state === 'suspended') actx.resume().then(() => playLoop())
+    else playLoop()
+  }, [actx, playLoop])
 
-  const pause = useCallback(
+  const loop = useCallback(
     (sound: Sound) => {
-      sourceNodes[sound]?.stop()
-      setSourceNodes({ ...sourceNodes, [sound]: undefined })
+      setCurrentLoopSound(sound)
+      if (sourceNode) {
+        sourceNode.onended = () => playLoop(sound)
+        sourceNode.loop = false
+      }
     },
-    [sourceNodes, setSourceNodes, actx]
+    [setCurrentLoopSound, sourceNode, playLoop]
   )
 
   const decode = useCallback(
@@ -112,5 +120,5 @@ export function useAudioLoop(src: string) {
     })
   }, [decode, audioData, dispatch, updateSoundFetchingState, soundsFetchingState, actx, setActx])
 
-  return [play, pause]
+  return [play, pause, loop, currentLoopSound]
 }

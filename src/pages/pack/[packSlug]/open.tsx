@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
@@ -98,12 +98,14 @@ function PackOpening() {
   const router = useRouter()
   const { packSlug } = router.query
 
-  // toggle sound
+  // sound mgmt
   const [soundOn, setSoundOn] = useState(false)
-  const [play, pause] = useAudioLoop()
+  const [play, pause, loop, currentLoopSound] = useAudioLoop()
+
+  useEffect(() => loop(Sound.BEFORE_PACK_OPENING), [])
 
   const toggleSound = useCallback(() => {
-    soundOn ? pause(Sound.BEFORE_PACK_OPENING) : play(Sound.BEFORE_PACK_OPENING)
+    soundOn ? pause() : play()
     setSoundOn(!soundOn)
   }, [setSoundOn, soundOn, play, pause])
 
@@ -124,6 +126,7 @@ function PackOpening() {
   const approvePackOpeningCallback = useCallback(
     (tx: string) => {
       setTxWaiting(true)
+      loop(Sound.DURING_PACK_OPENING)
       console.log(`Wait for TX ${tx}`) // TODO
 
       setTimeout(() => {
@@ -138,10 +141,14 @@ function PackOpening() {
             console.error(packOpeningError)
             setTxWaiting(false)
           })
-      }, 100)
+      }, 2000)
     },
-    [pack?.id, setCards, setTxWaiting]
+    [pack?.id, setCards, setTxWaiting, loop]
   )
+
+  useEffect(() => {
+    if (cards && cards?.length > 0 && currentLoopSound === Sound.DURING_PACK_OPENING) loop(Sound.OPENED_PACK)
+  }, [cards?.length, loop, currentLoopSound])
 
   return (
     <>
