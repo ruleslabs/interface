@@ -13,17 +13,12 @@ const StyledLanguageSelector = styled(Row)`
 `
 
 const LocaleLabel = styled(TYPE.body)<{ active: boolean }>`
-  font-size: 20px;
   color: ${({ active, theme }) => (active ? theme.text1 : theme.text2)};
   cursor: pointer;
 
   :hover {
     color: ${({ theme }) => theme.text1};
   }
-
-  ${({ theme }) => theme.media.medium`
-    font-size: 16px;
-  `}
 `
 
 type LanguageSelectorProps = React.HTMLAttributes<HTMLDivElement>

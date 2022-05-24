@@ -557,3 +557,7 @@ msgstr "Session en cours"
 #: src/components/SessionsManager/index.tsx
 msgid "Disconnect this session"
 msgstr "Déconnecter cette session"
+
+#: src/components/Footer/index.tsx
+msgid "(c) Rules 2022 - <0>Terms & Conditions</0>{separator}<1>Confidentiality</1>{separator}<2>Cookies</2>{separator}Support: <3>support@rules.art</3>"
+msgstr "(c) Rules 2022 - <0>CGU</0>{separator}<1>Confidentialité</1>{separator}<2>Cookies</2>{separator}Support: <3>support@rules.art</3>"
