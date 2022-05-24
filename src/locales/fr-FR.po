@@ -48,8 +48,8 @@ msgid "Profile settings"
 msgstr "Gestion du profil"
 
 #: src/components/SettingsModal/Settings.tsx
-msgid "Security"
-msgstr "Sécurité"
+msgid "Sessions"
+msgstr "Sessions"
 
 #: src/components/NavModal/index.tsx
 msgid "Settings"
@@ -533,3 +533,27 @@ msgstr "modifier"
 #: src/components/CardModelBreakdown/index.tsx
 msgid "Official card"
 msgstr "Carte officielle"
+
+#: src/components/SessionsManager/index.tsx
+msgid "You are also connected to Rules with other sessions, on other devices."
+msgstr "Vous êtes aussi connecté à Rules avec d'autres sessions, sur d'autres appareils."
+
+#: src/components/SessionsManager/index.tsx
+msgid "You are connected to Rules with this session."
+msgstr "Vous êtes connecté à Rules avec cette session."
+
+#: src/components/SessionsManager/index.tsx
+msgid "Disconnect from other sessions"
+msgstr "Se déconnecter des autres sessions"
+
+#: src/components/SessionsManager/index.tsx
+msgid "Current active session"
+msgstr "Session active en cours"
+
+#: src/components/SessionsManager/index.tsx
+msgid "Current session"
+msgstr "Session en cours"
+
+#: src/components/SessionsManager/index.tsx
+msgid "Disconnect this session"
+msgstr "Déconnecter cette session"

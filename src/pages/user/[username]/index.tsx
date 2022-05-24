@@ -58,6 +58,7 @@ const StyledEmptyCard = styled(RowCenter)<{ clickable: boolean }>`
 
 const CardPicture = styled.img`
   width: 100%;
+  border-radius: 10px;
 `
 
 const RemoveButton = styled.button`
