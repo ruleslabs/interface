@@ -11,7 +11,7 @@ import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'
 import { useStarknetSignerModalToggle } from '@/state/application/hooks'
 import StarknetSignerModal from '@/components/StarknetSignerModal'
-import { usePackOpeningMutation } from '@/state/packOpening/hooks'
+import { usePackOpeningMutation, useAudioLoop } from '@/state/packOpening/hooks'
 import PackOpeningCards from '@/components/PackOpeningCards'
 import Loader from '@/components/Loader'
 import Column from '@/components/Column'
@@ -48,6 +48,21 @@ const PackImage = styled.img`
   width: 265px;
   margin: 32px auto 0;
   display: block;
+  animation: float 3s ease-in-out infinite;
+
+  @keyframes float {
+    0% {
+      transform: translatey(0px) scale(1);
+    }
+
+    50% {
+      transform: translatey(10px) scale(1.02);
+    }
+
+    100% {
+      transform: translatey(0px) scale(1);
+    }
+  }
 `
 
 const OpenPackButton = styled(PrimaryButton)`
@@ -83,8 +98,13 @@ function PackOpening() {
   const { packSlug } = router.query
 
   // toggle sound
-  const [soundOn, setSoundOn] = useState(true)
-  const toggleSound = useCallback(() => setSoundOn(!soundOn), [setSoundOn, soundOn])
+  const [soundOn, setSoundOn] = useState(false)
+  const [play, pause] = useAudioLoop()
+
+  const toggleSound = useCallback(() => {
+    soundOn ? pause() : play()
+    setSoundOn(!soundOn)
+  }, [setSoundOn, soundOn, play, pause])
 
   // Get pack data
   const packQuery = useQuery(PACK_QUERY, { variables: { slug: packSlug }, skip: !packSlug })
@@ -124,6 +144,10 @@ function PackOpening() {
 
   return (
     <>
+      <audio autoPlay loop>
+        <source src="/sounds/before-pack-opening.wav" type="audio/wav" />
+      </audio>
+
       <ControlsSection>
         <BackButton onClick={router.back} />
         <SoundSwitch on={soundOn} toggleSound={toggleSound} />
