@@ -49,7 +49,7 @@ export default function Footer() {
       <FooterWrapper>
         <LegalText>
           <Trans>
-            (c) Rules 2022 -&nbsp;
+            © Rules 2022 -&nbsp;
             <Link href="/terms" target="_blank" color="text2" underline>
               Terms & Conditions
             </Link>
@@ -62,7 +62,7 @@ export default function Footer() {
               Cookies
             </Link>
             {separator}
-            Support:&nbsp;
+            Contact:&nbsp;
             <Link href="mailto:support@rules.art" color="text2" underline>
               support@rules.art
             </Link>

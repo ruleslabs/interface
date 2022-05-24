@@ -172,7 +172,7 @@ export function useSearchUser(userSlug?: string, skip = false) {
         })
   }, [searchUserMutation, setUser, currentUser, userSlug, queryData])
 
-  return currentUser ? { searchedUser: user, loading, error } : { user, queryLoading, queryError }
+  return currentUser ? { searchedUser: user, loading, error } : { searchedUser: user, queryLoading, queryError }
 }
 
 export function useSetSocialLinksMutation() {

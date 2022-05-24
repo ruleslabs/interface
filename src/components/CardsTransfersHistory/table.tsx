@@ -42,8 +42,6 @@ export default function TransfersTable({
 }: TransfersTableProps) {
   const router = useRouter()
 
-  console.log(router)
-
   const etherEURprice = useEtherEURPrice()
 
   return (

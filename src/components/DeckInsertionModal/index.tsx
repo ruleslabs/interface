@@ -34,7 +34,7 @@ const QUERY_CARDS = gql`
 
 const StyledDeckInsertionModal = styled.div`
   padding: 16px;
-  background: ${({ theme }) => theme.bg2};
+  background: ${({ theme }) => theme.bg1};
   width: 100vw;
   height: 100vh;
 `
@@ -94,7 +94,7 @@ export default function DeckInsertionModal({ userId, cardIndex }: DeckInsertionM
   const dashedDeckCardIds = useMemo(
     () =>
       Object.keys(deck).reduce<string[]>((acc, key: string) => {
-        acc.push(`-${deck[+key].id}`) // dashed to exclude them from the algolia search
+        if (deck[+key]) acc.push(`-${deck[+key].id}`) // dashed to exclude them from the algolia search
         return acc
       }, []),
     [deck]

@@ -211,8 +211,8 @@ msgid "Belongs to <0>{ownerUsername}</0>"
 msgstr "Appartient à <0>{ownerUsername}</0>"
 
 #: src/components/CardOwnership/index.tsx
-msgid "{0, plural, =0 {Place for Sale} other {Buy - {askEur}€}}"
-msgstr "{0, plural, =0 {Mettre en vente} other {Acheter - {askEur}€}}"
+msgid "{0, plural, =0 {Place for Sale} other {Buy - {0}€}}"
+msgstr "{0, plural, =0 {Mettre en vente} other {Acheter - {0}€}}"
 
 #: src/components/CardOwnership/index.tsx
 msgid "Close offer - {askEur}€"
@@ -559,5 +559,5 @@ msgid "Disconnect this session"
 msgstr "Déconnecter cette session"
 
 #: src/components/Footer/index.tsx
-msgid "(c) Rules 2022 - <0>Terms & Conditions</0>{separator}<1>Confidentiality</1>{separator}<2>Cookies</2>{separator}Support: <3>support@rules.art</3>"
-msgstr "(c) Rules 2022 - <0>CGU</0>{separator}<1>Confidentialité</1>{separator}<2>Cookies</2>{separator}Support: <3>support@rules.art</3>"
+msgid "© Rules 2022 - <0>Terms & Conditions</0>{separator}<1>Confidentiality</1>{separator}<2>Cookies</2>{separator}Contact: <3>support@rules.art</3>"
+msgstr "© Rules 2022 - <0>CGU</0>{separator}<1>Confidentialité</1>{separator}<2>Cookies</2>{separator}Contact: <3>support@rules.art</3>"

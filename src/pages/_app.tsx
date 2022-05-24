@@ -42,6 +42,7 @@ function App({ Component, pageProps }: AppProps) {
               <Updaters />
               <Head>
                 <title>Rules</title>
+                <link rel="shortcut icon" href="/assets/favicon.png" />
               </Head>
               <StyledThemeProvider>{getLayout(<Component {...pageProps} />)}</StyledThemeProvider>
             </Web3ReactProvider>

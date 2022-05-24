@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
-import { gql } from '@apollo/client'
-import { getApolloClient } from '@/apollo/apollo'
+import { gql, useMutation, ApolloError } from '@apollo/client'
 
 import { AppState } from '@/state'
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
@@ -47,35 +46,35 @@ export function useDeckActionHandlers(): {
 
   const { deck } = useDeckState()
 
+  const [removeShowcasedDeckCardMutation] = useMutation(REMOVE_SHOWCASED_DECK_CARD)
+  const [addShowcasedDeckCardMutation] = useMutation(ADD_SHOWCASED_DECK_CARD)
+
   const onRemove = useCallback(
     (cardIndex: number) => {
       // update deck on backend
-      getApolloClient()
-        ?.mutate({ mutation: REMOVE_SHOWCASED_DECK_CARD, variables: { cardIndex } })
-        .catch((err) => {
-          console.error(err.message) // TODO push a popover to display the error
-        })
+      removeShowcasedDeckCardMutation({ variables: { cardIndex } }).catch(
+        (removeShowcasedDeckCardError: ApolloError) => {
+          console.error(removeShowcasedDeckCardError) // TODO push a popover to display the error
+        }
+      )
 
       dispatch(removeDeckCard({ cardIndex }))
     },
-    [dispatch]
+    [dispatch, removeShowcasedDeckCardMutation, removeDeckCard]
   )
 
   const onInsertion = useCallback(
     (deckCard: DeckCard) => {
       // update deck on backend
-      getApolloClient()
-        ?.mutate({
-          mutation: ADD_SHOWCASED_DECK_CARD,
-          variables: { cardSlug: deckCard.card.slug, cardIndex: deckCard.cardIndex },
-        })
-        .catch((err) => {
-          console.error(err.message) // TODO push a popover to display the error
-        })
+      addShowcasedDeckCardMutation({
+        variables: { cardSlug: deckCard.card.slug, cardIndex: deckCard.cardIndex },
+      }).catch((addShowcasedDeckCardError: ApolloError) => {
+        console.error(addShowcasedDeckCardError) // TODO push a popover to display the error
+      })
 
       dispatch(addDeckCard({ deckCard }))
     },
-    [dispatch]
+    [dispatch, addShowcasedDeckCardMutation, addDeckCard]
   )
 
   return { onRemove, onInsertion }
