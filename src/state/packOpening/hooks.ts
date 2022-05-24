@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { gql, useMutation } from '@apollo/client'
 
+import { AppState } from '@/state'
+import { updateSoundFetchingState, addSoundAudioData, Sound, FetchingState } from './actions'
+import { useAppDispatch, useAppSelector } from '@/state/hooks'
+
 const OPEN_PACK_MUTATION = gql`
   mutation ($packId: ID!) {
     openPack(input: { packId: $packId }) {
@@ -37,62 +41,76 @@ export function usePackOpeningMutation() {
 }
 
 export function useAudioLoop(src: string) {
-  const [actx, setActx] = useState(null)
-  useEffect(() => setActx(new (window.AudioContext || window.webkitAudioContext)()), [])
+  const dispatch = useAppDispatch()
+  const { soundsFetchingState, audioData } = useAppSelector((state: AppState) => state.packOpening)
 
-  const [fetching, setFetching] = useState(false)
-  const [srcNode, setSrcNode] = useState(null)
-  const [encodedAudioData, setEncodedAudioData] = useState(null)
-  const [audioData, setAudioData] = useState(null)
+  const [actx, setActx] = useState(null)
+  const [sourceNodes, setSourceNodes] = useState<{ [sound: Sound]: any | undefined }>({})
 
   const playLoop = useCallback(
-    (buffer) => {
-      if (!actx || (!audioData && !buffer)) return
+    (sound: Sound) => {
+      if (!actx || !audioData[sound]) return
 
-      if (!audioData) setAudioData(buffer) // create a reference for control buttons
-      const newSrcNode = actx.createBufferSource() // create audio source
-      newSrcNode.buffer = buffer // use decoded buffer
-      newSrcNode.connect(actx.destination) // create output
-      newSrcNode.loop = true // takes care of perfect looping
-      newSrcNode.start()
-      setSrcNode(newSrcNode)
+      const newSourceNode = actx.createBufferSource() // create audio source
+      newSourceNode.buffer = audioData[sound] // use decoded buffer
+      newSourceNode.connect(actx.destination) // create output
+      newSourceNode.loop = true // takes care of perfect looping
+      newSourceNode.start()
+      setSourceNodes({ ...sourceNodes, [sound]: newSourceNode })
     },
-    [actx, setAudioData, setSrcNode]
+    [actx, setSourceNodes, audioData, sourceNodes]
   )
 
-  const play = useCallback(() => {
-    if (!actx || !audioData) return
+  const play = useCallback(
+    (sound: Sound) => {
+      console.log(audioData)
+      if (!actx) return
 
-    if (actx.state === 'suspended') actx.resume().then(() => !srcNode && playLoop(audioData))
-    else playLoop(audioData)
-  }, [actx, audioData, playLoop, srcNode])
+      if (actx.state === 'suspended') actx.resume().then(() => playLoop(sound))
+      else playLoop(sound)
+    },
+    [actx, playLoop]
+  )
 
-  const pause = useCallback(() => {
-    srcNode?.stop()
-    setSrcNode(null)
-    actx.suspend()
-  }, [srcNode, setSrcNode, actx])
+  const pause = useCallback(
+    (sound: Sound) => {
+      sourceNodes[sound]?.stop()
+      setSourceNodes({ ...sourceNodes, [sound]: undefined })
+    },
+    [sourceNodes, setSourceNodes, actx]
+  )
 
   const decode = useCallback(
-    (buffer) => {
-      actx?.decodeAudioData(buffer, playLoop, (err) => console.log(err))
+    (buffer, sound: Sound) => {
+      actx?.decodeAudioData(
+        buffer,
+        (audioBuffer) => {
+          dispatch(addSoundAudioData({ sound, buffer: audioBuffer }))
+        },
+        (error) => console.error(error)
+      )
     },
-    [playLoop, actx]
+    [actx, dispatch, addSoundAudioData]
   )
 
   useEffect(() => {
-    if (encodedAudioData || fetching || !actx) return
+    if (!actx) {
+      setActx(new (window.AudioContext || window.webkitAudioContext)())
+      return
+    }
 
-    setFetching(true)
-
-    fetch('/sounds/before-pack-opening.wav', { mode: 'cors' })
-      .then((res) => res.arrayBuffer())
-      .then((buffer) => {
-        setEncodedAudioData(buffer)
-        decode(buffer)
-        setFetching(false)
-      })
-  }, [setEncodedAudioData, decode, setFetching, fetching, actx])
+    Object.values(Sound).forEach((sound, index: number) => {
+      if (soundsFetchingState[sound] === FetchingState.UNFETCHED) {
+        dispatch(updateSoundFetchingState({ sound, fetchingState: FetchingState.FETCHING }))
+        fetch(`/sounds/${sound}.wav`, { mode: 'cors' })
+          .then((res) => res.arrayBuffer())
+          .then((buffer) => {
+            decode(buffer, sound)
+            dispatch(updateSoundFetchingState({ sound, fetchingState: FetchingState.FETCHED }))
+          })
+      }
+    })
+  }, [decode, audioData, dispatch, updateSoundFetchingState, soundsFetchingState, actx, setActx])
 
   return [play, pause]
 }

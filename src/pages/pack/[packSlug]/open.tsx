@@ -12,6 +12,7 @@ import { BackButton } from '@/components/Button'
 import { useStarknetSignerModalToggle } from '@/state/application/hooks'
 import StarknetSignerModal from '@/components/StarknetSignerModal'
 import { usePackOpeningMutation, useAudioLoop } from '@/state/packOpening/hooks'
+import { Sound } from '@/state/packOpening/actions'
 import PackOpeningCards from '@/components/PackOpeningCards'
 import Loader from '@/components/Loader'
 import Column from '@/components/Column'
@@ -52,15 +53,15 @@ const PackImage = styled.img`
 
   @keyframes float {
     0% {
-      transform: translatey(0px) scale(1);
+      transform: translatey(0px) scale(1.02);
     }
 
     50% {
-      transform: translatey(10px) scale(1.02);
+      transform: translatey(10px) scale(1);
     }
 
     100% {
-      transform: translatey(0px) scale(1);
+      transform: translatey(0px) scale(1.02);
     }
   }
 `
@@ -102,7 +103,7 @@ function PackOpening() {
   const [play, pause] = useAudioLoop()
 
   const toggleSound = useCallback(() => {
-    soundOn ? pause() : play()
+    soundOn ? pause(Sound.BEFORE_PACK_OPENING) : play(Sound.BEFORE_PACK_OPENING)
     setSoundOn(!soundOn)
   }, [setSoundOn, soundOn, play, pause])
 

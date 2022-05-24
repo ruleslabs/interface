@@ -9,6 +9,7 @@ import auth from './auth/reducer'
 import user from './user/reducer'
 import deck from './deck/reducer'
 import onboarding from './onboarding/reducer'
+import packOpening from './packOpening/reducer'
 
 const PERSISTED_KEYS: string[] = ['user']
 
@@ -20,10 +21,13 @@ const store = configureStore({
     user,
     deck,
     onboarding,
+    packOpening,
     multicall: multicall.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ thunk: true }).concat(save({ states: PERSISTED_KEYS, debounce: 1000 })),
+    getDefaultMiddleware({ serializableCheck: false, thunk: true }).concat(
+      save({ states: PERSISTED_KEYS, debounce: 1000 })
+    ),
   preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: process.env.NODE_ENV !== 'production' }),
 })
 
