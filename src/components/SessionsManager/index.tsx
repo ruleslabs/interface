@@ -63,7 +63,7 @@ interface Session {
 
 interface SessionRowProps {
   session?: Session
-  onRevoke: () => void
+  onRevoke: (payload: string) => void
 }
 
 const SessionRow = ({ session, onRevoke }: SessionRowProps) => {
@@ -82,12 +82,7 @@ const SessionRow = ({ session, onRevoke }: SessionRowProps) => {
         )}
       </Column>
       {!session.currentSession && (
-        <TYPE.body
-          color="error"
-          onClick={() => onRevoke(session.payload, session.currentSession)}
-          textAlign="right"
-          clickable
-        >
+        <TYPE.body color="error" onClick={() => onRevoke(session.payload)} textAlign="right" clickable>
           <Trans>Disconnect this session</Trans>
         </TYPE.body>
       )}
@@ -102,14 +97,14 @@ export default function SessionsManager() {
   const [activeSessions, setActiveSessions] = useState<Session[]>([])
 
   const handleSessionRevoke = useCallback(
-    (payload, currentSession) => {
+    (payload) => {
       revokeSessionMutation({ variables: { payload } })
         .then((res: any) => {
           const payload = res?.data?.revokeRefreshToken
           if (payload) setActiveSessions(activeSessions.filter((session) => session.payload !== payload))
         })
         .catch((revokeSessionError: ApolloError) => {
-          console.error(error) // TODO handle error
+          console.error(revokeSessionError) // TODO handle error
         })
     },
     [revokeSessionMutation, setActiveSessions, activeSessions]
