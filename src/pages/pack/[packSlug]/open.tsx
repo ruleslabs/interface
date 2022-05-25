@@ -99,15 +99,13 @@ function PackOpening() {
   const { packSlug } = router.query
 
   // sound mgmt
-  const [soundOn, setSoundOn] = useState(false)
-  const { mute, unmute, loop, fx, latestLoopSound } = useAudioLoop()
+  const { mute, unmute, loop, fx, latestLoopSound, isMute } = useAudioLoop()
 
   useEffect(() => loop(Sound.BEFORE_PACK_OPENING), [])
 
   const toggleSound = useCallback(() => {
-    soundOn ? mute() : unmute()
-    setSoundOn(!soundOn)
-  }, [setSoundOn, soundOn, mute, unmute])
+    isMute ? unmute() : mute()
+  }, [mute, unmute, isMute])
 
   // Get pack data
   const packQuery = useQuery(PACK_QUERY, { variables: { slug: packSlug }, skip: !packSlug })
@@ -155,13 +153,9 @@ function PackOpening() {
 
   return (
     <>
-      <audio autoPlay loop>
-        <source src="/sounds/before-pack-opening.wav" type="audio/wav" />
-      </audio>
-
       <ControlsSection>
         <BackButton onClick={router.back} />
-        <SoundSwitch on={soundOn} toggleSound={toggleSound} />
+        <SoundSwitch on={!isMute} toggleSound={toggleSound} />
       </ControlsSection>
 
       <MainSection>

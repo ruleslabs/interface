@@ -448,6 +448,11 @@ function Terms() {
         Services Annexes.
       </p>
       <p>
+        L’offre de Pack(s) et/ou de Carte(s) entre Clients est réalisée à titre gratuit, à l’exception des frais de
+        transaction sur la blockchain du Pack ou de la Carte objet de l’offre dont devra s’acquitter le Client à
+        l’origine de l’offre. La Société n’est pas responsable du montant de ces frais.
+      </p>
+      <p>
         En cas d&apos;application d&apos;un taux de change, les frais de change applicables à la date de paiement des
         prix sont à la charge du Client. Le cas échéant, il est seul responsable du paiement de tous les frais bancaires
         liés au paiement des prix, à l’exception des frais de la banque de la Société.

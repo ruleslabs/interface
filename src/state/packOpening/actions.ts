@@ -19,7 +19,7 @@ export enum Sound {
 
 export interface SoundFetchingStatePayload {
   sound: Sound
-  FetchingState: FetchingState
+  fetchingState: FetchingState
 }
 
 export interface SoundAudioDataPayload {
@@ -35,6 +35,10 @@ export interface NodePayload {
   node: any | null
 }
 
+export interface GainPayload {
+  gain: number
+}
+
 export interface SoundPayload {
   sound: Sound
 }
@@ -43,5 +47,6 @@ export const updateSoundFetchingState = createAction<SoundFetchingStatePayload>(
 export const addSoundAudioData = createAction<SoundAudioDataPayload>('packOpening/addSoundAudioData')
 export const updateAudioContext = createAction<AudioContextPayload>('packOpening/updateAudioContext')
 export const updateLoopSourceNode = createAction<NodePayload>('packOpening/updateLoopSourceNode')
-export const updateGainNode = createAction<NodePayload>('packOpening/updateGainNode')
+export const updateGainNode = createAction<GainNodePayload>('packOpening/updateGainNode')
 export const updateLatestSound = createAction<SoundPayload>('packOpening/updateLatestSound')
+export const updateGain = createAction<GainPayload>('packOpening/updateGain')

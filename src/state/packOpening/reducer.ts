@@ -7,6 +7,7 @@ import {
   updateLatestSound,
   updateLoopSourceNode,
   updateGainNode,
+  updateGain,
   FetchingState,
   Sound,
   SoundFetchingStatePayload,
@@ -17,12 +18,12 @@ import {
 } from './actions'
 
 export interface SoundsFetchingState {
-  [sound: Sound]: FetchingState
+  [sound: string]: FetchingState
 }
 
 export interface PackOpeningState {
   soundsFetchingState: SoundsFetchingState
-  audioData: { [sound: Sound]: AudioBuffer | undefined }
+  audioData: { [sound: string]: AudioBuffer | undefined }
   audioContext: AudioContext | null
   loopSourceNode: any | null
   gainNode: any | null
@@ -66,5 +67,9 @@ export default createReducer(initialState, (builder) =>
     .addCase(updateLatestSound, (state, action: PayloadAction<SoundPayload>) => {
       const { sound } = action.payload
       state.latestLoopSound = sound
+    })
+    .addCase(updateGain, (state, action: PayloadAction<GainPayload>) => {
+      const { gain } = action.payload
+      if (state.gainNode?.gain) state.gainNode.gain.value = gain
     })
 )

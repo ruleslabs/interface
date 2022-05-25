@@ -193,10 +193,12 @@ export default function PackOpeningCards({ cards, ...props }: PackOpeningCardsPr
 
       switch (sortedCardsByScarcity[revealedCardIndex].cardModel.scarcity.name) {
         case 'Common':
+          loop(Sound.COMMON_FOCUS)
           fx(Sound.FX_COMMON)
           break
 
         case 'Platinium':
+          loop(Sound.PLATINIUM_FOCUS)
           fx(Sound.FX_PLATINIUM)
           break
       }
@@ -204,31 +206,17 @@ export default function PackOpeningCards({ cards, ...props }: PackOpeningCardsPr
       setRevealedCardIndexes({ ...revealedCardIndexes, [cardIndex]: revealedCardIndex })
       return revealedCardIndex
     },
-    [sortedCardsByScarcity, revealedCardIndexes, setRevealedCardIndexes, fx]
+    [sortedCardsByScarcity, revealedCardIndexes, setRevealedCardIndexes, fx, loop]
   )
 
   const handleCardFocus = useCallback(
     (cardIndex: number) => {
-      let cardToFocus: any | undefined
-
       if (revealedCardIndexes[cardIndex] === undefined) {
         const revealedCardIndex = handleReveal(cardIndex)
-        cardToFocus = sortedCardsByScarcity[revealedCardIndex]
-      } else cardToFocus = sortedCardsByScarcity[revealedCardIndexes[cardIndex]]
-
-      switch (cardToFocus?.cardModel.scarcity.name) {
-        case 'Common':
-          loop(Sound.COMMON_FOCUS)
-          break
-
-        case 'Platinium':
-          loop(Sound.PLATINIUM_FOCUS)
-          break
-      }
-
-      setFocusedCard(cardToFocus ?? null)
+        setFocusedCard(sortedCardsByScarcity[revealedCardIndex])
+      } else setFocusedCard(sortedCardsByScarcity[revealedCardIndexes[cardIndex]])
     },
-    [sortedCardsByScarcity, revealedCardIndexes, setRevealedCardIndexes, setFocusedCard, loop]
+    [sortedCardsByScarcity, revealedCardIndexes, setRevealedCardIndexes, setFocusedCard, handleReveal]
   )
 
   const resetFocus = useCallback(() => setFocusedCard(null), [setFocusedCard])

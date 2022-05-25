@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { gql, useMutation } from '@apollo/client'
 
 import { AppState } from '@/state'
@@ -9,6 +9,7 @@ import {
   updateLatestSound,
   updateLoopSourceNode,
   updateGainNode,
+  updateGain,
   Sound,
   FetchingState,
 } from './actions'
@@ -49,29 +50,29 @@ export function usePackOpeningMutation() {
   return useMutation(OPEN_PACK_MUTATION)
 }
 
-export function useAudioLoop(src: string) {
+export function useAudioLoop() {
   const dispatch = useAppDispatch()
   const { soundsFetchingState, audioData, audioContext, loopSourceNode, gainNode, latestLoopSound } = useAppSelector(
     (state: AppState) => state.packOpening
   )
 
+  const [isMute, setIsMute] = useState(true)
+
   const playLoop = useCallback(
-    (sound: Sound) => {
-      sound = sound || latestLoopSound
+    (sound: Sound | null) => {
       if (!audioContext || !gainNode || !sound || !audioData[sound]) return
 
       if (loopSourceNode) loopSourceNode.stop()
 
-      const sourceNode = audioContext.createBufferSource() // create audio source
-      sourceNode.buffer = audioData[sound] // use decoded buffer
-      sourceNode.connect(audioContext.destination) // create output
-      sourceNode.connect(gainNode) // connect to gain node
-      sourceNode.loop = true // takes care of perfect looping
+      const sourceNode = audioContext.createBufferSource()
+      sourceNode.buffer = audioData[sound] ?? null
+      sourceNode.connect(gainNode).connect(audioContext.destination)
+      sourceNode.loop = true
       sourceNode.start()
 
       dispatch(updateLoopSourceNode({ node: sourceNode }))
     },
-    [audioContext, dispatch, updateLoopSourceNode, audioData, gainNode, latestLoopSound, loopSourceNode]
+    [audioContext, dispatch, updateLoopSourceNode, audioData, gainNode, loopSourceNode]
   )
 
   const loop = useCallback(
@@ -88,22 +89,34 @@ export function useAudioLoop(src: string) {
 
   const fx = useCallback(
     (sound: Sound) => {
-      if (!audioContext || !sound || !audioData[sound]) return
+      if (!audioContext || !sound || !gainNode || !audioData[sound]) return
 
-      const fxSourceNode = audioContext.createBufferSource() // create audio source
-      fxSourceNode.buffer = audioData[sound] // use decoded buffer
-      fxSourceNode.connect(audioContext.destination) // create output
-      fxSourceNode.connect(gainNode) // connect to gain node
+      const fxSourceNode = audioContext.createBufferSource()
+      fxSourceNode.buffer = audioData[sound] ?? null
+      fxSourceNode.connect(gainNode).connect(audioContext.destination)
       fxSourceNode.start()
     },
-    [audioContext, audioData]
+    [audioContext, audioData, gainNode]
   )
 
-  const mute = useCallback(() => gainNode?.gain.setValueAtTime(-1, audioContext.currentTime), [audioContext, gainNode])
+  const mute = useCallback(() => {
+    if (!audioContext || !gainNode) return
+
+    console.log(gainNode.gain.value)
+
+    setIsMute(true)
+    dispatch(updateGain({ gain: 0 }))
+  }, [audioContext, gainNode, setIsMute, dispatch, updateGain])
+
   const unmute = useCallback(() => {
-    gainNode?.gain.setValueAtTime(1, audioContext.currentTime)
-    if (audioContext.state === 'suspended') audioContext.resume().then(() => playLoop())
-  }, [audioContext, gainNode, playLoop])
+    if (!audioContext || !gainNode) return
+
+    console.log(gainNode.gain.value)
+
+    setIsMute(false)
+    dispatch(updateGain({ gain: 1 }))
+    if (audioContext.state === 'suspended') audioContext.resume().then(() => playLoop(latestLoopSound))
+  }, [audioContext, gainNode, playLoop, latestLoopSound, setIsMute, dispatch, updateGain])
 
   const decode = useCallback(
     (buffer, sound: Sound) => {
@@ -124,12 +137,16 @@ export function useAudioLoop(src: string) {
       const newAudioContext = new (window.AudioContext || window.webkitAudioContext)()
       const newGainNode = newAudioContext.createGain()
 
-      newGainNode.gain.setValueAtTime(-1, newAudioContext.currentTime)
-      newGainNode.connect(newAudioContext.destination)
-
       dispatch(updateAudioContext({ audioContext: newAudioContext }))
       dispatch(updateGainNode({ node: newGainNode }))
+
+      if (newAudioContext.state === 'running') {
+        setIsMute(false)
+        dispatch(updateGain({ gain: 1 }))
+      } else dispatch(updateGain({ gain: 0 }))
       return
+    } else if (latestLoopSound && !loopSourceNode) {
+      playLoop(latestLoopSound)
     }
 
     // Fetch sounds
@@ -153,7 +170,23 @@ export function useAudioLoop(src: string) {
     dispatch,
     updateAudioContext,
     updateGainNode,
-  ])
+    updateGain,
+    audioData,
+    playLoop,
+    latestLoopSound,
+  ]) // Could be better ^^
 
-  return { mute, unmute, loop, fx, latestLoopSound }
+  useEffect(() => {
+    if (!audioContext) return
+    return () => {
+      if (loopSourceNode) loopSourceNode.stop()
+      if (audioContext.state !== 'closed') audioContext.close()
+      dispatch(updateAudioContext({ audioContext: null }))
+      dispatch(updateGainNode({ node: null }))
+      dispatch(updateLoopSourceNode({ node: null }))
+      dispatch(updateLatestSound({ sound: null }))
+    }
+  }, [audioContext])
+
+  return { mute, unmute, isMute, loop, fx, latestLoopSound }
 }
