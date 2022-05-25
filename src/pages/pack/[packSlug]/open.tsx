@@ -141,7 +141,7 @@ function PackOpening() {
             console.error(packOpeningError)
             setTxWaiting(false)
           })
-      }, 2000)
+      }, 100)
     },
     [pack?.id, setCards, setTxWaiting, loop]
   )
