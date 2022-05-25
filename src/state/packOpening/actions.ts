@@ -10,6 +10,9 @@ export enum Sound {
   BEFORE_PACK_OPENING = 'before-pack-opening',
   DURING_PACK_OPENING = 'during-pack-opening',
   OPENED_PACK = 'opened-pack',
+  FX_PACK_OPENING = 'fx-pack-opening',
+  FX_COMMON = 'fx-common',
+  FX_PLATINIUM = 'fx-platinium',
 }
 
 export interface SoundFetchingStatePayload {

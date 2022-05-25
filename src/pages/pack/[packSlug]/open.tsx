@@ -100,14 +100,14 @@ function PackOpening() {
 
   // sound mgmt
   const [soundOn, setSoundOn] = useState(false)
-  const [play, pause, loop, currentLoopSound] = useAudioLoop()
+  const { mute, unmute, loop, fx, currentLoopSound } = useAudioLoop()
 
   useEffect(() => loop(Sound.BEFORE_PACK_OPENING), [])
 
   const toggleSound = useCallback(() => {
-    soundOn ? pause() : play()
+    soundOn ? mute() : unmute()
     setSoundOn(!soundOn)
-  }, [setSoundOn, soundOn, play, pause])
+  }, [setSoundOn, soundOn, mute, unmute])
 
   // Get pack data
   const packQuery = useQuery(PACK_QUERY, { variables: { slug: packSlug }, skip: !packSlug })
@@ -147,7 +147,10 @@ function PackOpening() {
   )
 
   useEffect(() => {
-    if (cards && cards?.length > 0 && currentLoopSound === Sound.DURING_PACK_OPENING) loop(Sound.OPENED_PACK)
+    if (cards && cards?.length > 0 && currentLoopSound === Sound.DURING_PACK_OPENING) {
+      loop(Sound.OPENED_PACK)
+      fx(Sound.FX_PACK_OPENING)
+    }
   }, [cards?.length, loop, currentLoopSound])
 
   return (

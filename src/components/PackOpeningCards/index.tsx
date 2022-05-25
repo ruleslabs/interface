@@ -5,6 +5,8 @@ import { ScarcityName } from '@rulesorg/sdk-core'
 import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
 import CardModelBreakdown from '@/components/CardModelBreakdown'
 import Card from '@/components/Card'
+import { useAudioLoop } from '@/state/packOpening/hooks'
+import { Sound } from '@/state/packOpening/actions'
 
 import Close from '@/images/close.svg'
 
@@ -174,6 +176,9 @@ export default function PackOpeningCards({ cards, ...props }: PackOpeningCardsPr
   const [revealedCardIndexes, setRevealedCardIndexes] = useState<{ [index: number]: number }>({})
   const [focusedCard, setFocusedCard] = useState<any | null>(null)
 
+  // sound
+  const { fx } = useAudioLoop()
+
   const sortedCardsByScarcity = useMemo(
     () =>
       cards.sort(
@@ -186,10 +191,20 @@ export default function PackOpeningCards({ cards, ...props }: PackOpeningCardsPr
     (cardIndex: number): number => {
       const revealedCardIndex = Object.keys(revealedCardIndexes).length
 
+      switch (sortedCardsByScarcity[revealedCardIndex].cardModel.scarcity.name) {
+        case 'Common':
+          fx(Sound.FX_COMMON)
+          break
+
+        case 'Platinium':
+          fx(Sound.FX_PLATINIUM)
+          break
+      }
+
       setRevealedCardIndexes({ ...revealedCardIndexes, [cardIndex]: revealedCardIndex })
       return revealedCardIndex
     },
-    [sortedCardsByScarcity, revealedCardIndexes, setRevealedCardIndexes]
+    [sortedCardsByScarcity, revealedCardIndexes, setRevealedCardIndexes, fx]
   )
 
   const handleCardFocus = useCallback(

@@ -46,47 +46,58 @@ export function useAudioLoop(src: string) {
 
   const [actx, setActx] = useState(null)
   const [sourceNode, setSourceNode] = useState(null)
+  const [gainNode, setGainNode] = useState(null)
   const [currentLoopSound, setCurrentLoopSound] = useState(null)
 
-  const pause = useCallback(() => {
-    sourceNode.stop()
-    setSourceNode(null)
-  }, [sourceNode, setSourceNode, actx])
-
   const playLoop = useCallback(
-    (sound?: Sound) => {
-      sound = sound ?? currentLoopSound
-      if (!actx || !sound || !audioData[sound]) return
+    (sound: Sound) => {
+      sound = sound || currentLoopSound
+      if (!actx || !gainNode || !sound || !audioData[sound]) return
 
-      if (sourceNode) pause()
+      if (sourceNode) sourceNode.stop()
 
       const newSourceNode = actx.createBufferSource() // create audio source
       newSourceNode.buffer = audioData[sound] // use decoded buffer
       newSourceNode.connect(actx.destination) // create output
+      newSourceNode.connect(gainNode) // connect to gain node
       newSourceNode.loop = true // takes care of perfect looping
       newSourceNode.start()
+
       setSourceNode(newSourceNode)
     },
-    [actx, setSourceNode, audioData, sourceNode, pause, currentLoopSound, setCurrentLoopSound]
+    [actx, setSourceNode, audioData, sourceNode, gainNode, currentLoopSound]
   )
-
-  const play = useCallback(() => {
-    if (!actx) return
-
-    if (actx.state === 'suspended') actx.resume().then(() => playLoop())
-    else playLoop()
-  }, [actx, playLoop])
 
   const loop = useCallback(
     (sound: Sound) => {
       setCurrentLoopSound(sound)
+
       if (sourceNode) {
         sourceNode.onended = () => playLoop(sound)
         sourceNode.loop = false
-      }
+      } else playLoop(sound)
     },
-    [setCurrentLoopSound, sourceNode, playLoop]
+    [sourceNode, playLoop, setCurrentLoopSound]
   )
+
+  const fx = useCallback(
+    (sound: Sound) => {
+      if (!actx || !sound || !audioData[sound]) return
+
+      const fxSourceNode = actx.createBufferSource() // create audio source
+      fxSourceNode.buffer = audioData[sound] // use decoded buffer
+      fxSourceNode.connect(actx.destination) // create output
+      fxSourceNode.connect(gainNode) // connect to gain node
+      fxSourceNode.start()
+    },
+    [actx, audioData]
+  )
+
+  const mute = useCallback(() => gainNode?.gain.setValueAtTime(-1, actx.currentTime), [actx, gainNode])
+  const unmute = useCallback(() => {
+    gainNode?.gain.setValueAtTime(1, actx.currentTime)
+    if (actx.state === 'suspended') actx.resume().then(() => playLoop())
+  }, [actx, gainNode, playLoop])
 
   const decode = useCallback(
     (buffer, sound: Sound) => {
@@ -102,11 +113,20 @@ export function useAudioLoop(src: string) {
   )
 
   useEffect(() => {
+    // Init
     if (!actx) {
-      setActx(new (window.AudioContext || window.webkitAudioContext)())
+      const newActx = new (window.AudioContext || window.webkitAudioContext)()
+      const newGainNode = newActx.createGain()
+
+      newGainNode.gain.setValueAtTime(-1, newActx.currentTime)
+      newGainNode.connect(newActx.destination)
+
+      setGainNode(newGainNode)
+      setActx(newActx)
       return
     }
 
+    // Fetch sounds
     Object.values(Sound).forEach((sound, index: number) => {
       if (soundsFetchingState[sound] === FetchingState.UNFETCHED) {
         dispatch(updateSoundFetchingState({ sound, fetchingState: FetchingState.FETCHING }))
@@ -118,7 +138,7 @@ export function useAudioLoop(src: string) {
           })
       }
     })
-  }, [decode, audioData, dispatch, updateSoundFetchingState, soundsFetchingState, actx, setActx])
+  }, [decode, dispatch, updateSoundFetchingState, soundsFetchingState, actx, setActx, setGainNode])
 
-  return [play, pause, loop, currentLoopSound]
+  return { mute, unmute, loop, fx, currentLoopSound }
 }
