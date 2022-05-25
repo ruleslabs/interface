@@ -100,7 +100,7 @@ function PackOpening() {
 
   // sound mgmt
   const [soundOn, setSoundOn] = useState(false)
-  const { mute, unmute, loop, fx, currentLoopSound } = useAudioLoop()
+  const { mute, unmute, loop, fx, latestLoopSound } = useAudioLoop()
 
   useEffect(() => loop(Sound.BEFORE_PACK_OPENING), [])
 
@@ -147,11 +147,11 @@ function PackOpening() {
   )
 
   useEffect(() => {
-    if (cards && cards?.length > 0 && currentLoopSound === Sound.DURING_PACK_OPENING) {
+    if (cards && cards?.length > 0 && latestLoopSound === Sound.DURING_PACK_OPENING) {
       loop(Sound.OPENED_PACK)
       fx(Sound.FX_PACK_OPENING)
     }
-  }, [cards?.length, loop, currentLoopSound])
+  }, [cards?.length, loop, latestLoopSound])
 
   return (
     <>

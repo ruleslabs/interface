@@ -13,6 +13,8 @@ export enum Sound {
   FX_PACK_OPENING = 'fx-pack-opening',
   FX_COMMON = 'fx-common',
   FX_PLATINIUM = 'fx-platinium',
+  PLATINIUM_FOCUS = 'platinium-focus',
+  COMMON_FOCUS = 'common-focus',
 }
 
 export interface SoundFetchingStatePayload {
@@ -25,5 +27,21 @@ export interface SoundAudioDataPayload {
   buffer: AudioBuffer
 }
 
+export interface AudioContextPayload {
+  audioContext: AudioContext | null
+}
+
+export interface NodePayload {
+  node: any | null
+}
+
+export interface SoundPayload {
+  sound: Sound
+}
+
 export const updateSoundFetchingState = createAction<SoundFetchingStatePayload>('packOpening/updateSoundFetchingState')
 export const addSoundAudioData = createAction<SoundAudioDataPayload>('packOpening/addSoundAudioData')
+export const updateAudioContext = createAction<AudioContextPayload>('packOpening/updateAudioContext')
+export const updateLoopSourceNode = createAction<NodePayload>('packOpening/updateLoopSourceNode')
+export const updateGainNode = createAction<NodePayload>('packOpening/updateGainNode')
+export const updateLatestSound = createAction<SoundPayload>('packOpening/updateLatestSound')

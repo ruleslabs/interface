@@ -177,7 +177,7 @@ export default function PackOpeningCards({ cards, ...props }: PackOpeningCardsPr
   const [focusedCard, setFocusedCard] = useState<any | null>(null)
 
   // sound
-  const { fx } = useAudioLoop()
+  const { fx, loop } = useAudioLoop()
 
   const sortedCardsByScarcity = useMemo(
     () =>
@@ -209,17 +209,29 @@ export default function PackOpeningCards({ cards, ...props }: PackOpeningCardsPr
 
   const handleCardFocus = useCallback(
     (cardIndex: number) => {
+      let cardToFocus: any | undefined
+
       if (revealedCardIndexes[cardIndex] === undefined) {
         const revealedCardIndex = handleReveal(cardIndex)
-        setFocusedCard(sortedCardsByScarcity[revealedCardIndex])
-      } else setFocusedCard(sortedCardsByScarcity[revealedCardIndexes[cardIndex]])
+        cardToFocus = sortedCardsByScarcity[revealedCardIndex]
+      } else cardToFocus = sortedCardsByScarcity[revealedCardIndexes[cardIndex]]
+
+      switch (cardToFocus?.cardModel.scarcity.name) {
+        case 'Common':
+          loop(Sound.COMMON_FOCUS)
+          break
+
+        case 'Platinium':
+          loop(Sound.PLATINIUM_FOCUS)
+          break
+      }
+
+      setFocusedCard(cardToFocus ?? null)
     },
-    [sortedCardsByScarcity, revealedCardIndexes, setRevealedCardIndexes, setFocusedCard]
+    [sortedCardsByScarcity, revealedCardIndexes, setRevealedCardIndexes, setFocusedCard, loop]
   )
 
-  const resetFocus = useCallback(() => {
-    setFocusedCard(null)
-  }, [setFocusedCard])
+  const resetFocus = useCallback(() => setFocusedCard(null), [setFocusedCard])
 
   return (
     <>
