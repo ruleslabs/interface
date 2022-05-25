@@ -15,6 +15,7 @@ import {
   AudioContextPayload,
   NodePayload,
   SoundPayload,
+  GainPayload,
 } from './actions'
 
 export interface SoundsFetchingState {

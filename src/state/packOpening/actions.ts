@@ -40,13 +40,13 @@ export interface GainPayload {
 }
 
 export interface SoundPayload {
-  sound: Sound
+  sound: Sound | null
 }
 
 export const updateSoundFetchingState = createAction<SoundFetchingStatePayload>('packOpening/updateSoundFetchingState')
 export const addSoundAudioData = createAction<SoundAudioDataPayload>('packOpening/addSoundAudioData')
 export const updateAudioContext = createAction<AudioContextPayload>('packOpening/updateAudioContext')
 export const updateLoopSourceNode = createAction<NodePayload>('packOpening/updateLoopSourceNode')
-export const updateGainNode = createAction<GainNodePayload>('packOpening/updateGainNode')
+export const updateGainNode = createAction<NodePayload>('packOpening/updateGainNode')
 export const updateLatestSound = createAction<SoundPayload>('packOpening/updateLatestSound')
 export const updateGain = createAction<GainPayload>('packOpening/updateGain')
