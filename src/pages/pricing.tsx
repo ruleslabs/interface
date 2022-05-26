@@ -19,10 +19,20 @@ const AVAILABLE_PACKS_QUERY = gql`
   }
 `
 
+const ALL_CARD_MODELS_QUERY = gql`
+  query {
+    allCardModels {
+      name
+    }
+  }
+`
+
 function Pricing() {
   const packsQuery = useQuery(AVAILABLE_PACKS_QUERY)
+  const allCardModelsQuery = useQuery(ALL_CARD_MODELS_QUERY)
 
   const packs = useMemo(() => packsQuery.data?.allAvailablePacks ?? [], [packsQuery])
+  const allCardModels = useMemo(() => allCardModelsQuery.data?.allCardModels ?? [], [allCardModelsQuery])
 
   if (packsQuery.loading || packsQuery.error) return null
 
@@ -82,6 +92,30 @@ function Pricing() {
             <strong>
               <u>Cartes</u>
             </strong>
+          </p>
+        </li>
+      </ol>
+
+      <ol start={2} type="1">
+        <li>
+          <p>
+            <strong>2.1 Liste des cartes existantes</strong>
+          </p>
+        </li>
+      </ol>
+
+      <ul>
+        {allCardModels.map((cardModel: any, index: number) => (
+          <li key={`all-card-models-${index}`}>
+            <p>{cardModel.name}</p>
+          </li>
+        ))}
+      </ul>
+
+      <ol start={2} type="1">
+        <li>
+          <p>
+            <strong>2.2 Commissions du marché secondaire</strong>
           </p>
         </li>
       </ol>

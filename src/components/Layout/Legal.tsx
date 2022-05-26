@@ -90,7 +90,7 @@ const StyledLegalLayout = styled(Section)`
   ol,
   ul {
     padding-left: 1rem;
-    margin-top: 1em;
+    margin: 1em 0 1.5em;
   }
 
   li > ol,
