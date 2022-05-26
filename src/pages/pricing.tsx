@@ -9,6 +9,12 @@ const AVAILABLE_PACKS_QUERY = gql`
       displayName
       price
       cardsPerPack
+      season
+      cardModels {
+        cardModel {
+          name
+        }
+      }
     }
   }
 `
@@ -41,10 +47,13 @@ function Pricing() {
               <strong>Nom du Pack</strong>
             </td>
             <td>
-              <strong>Nombre de cartes</strong>
+              <strong>Nombre de cartes par pack</strong>
             </td>
             <td>
               <strong>Prix</strong>
+            </td>
+            <td>
+              <strong>Cartes possibles</strong>
             </td>
           </tr>
           {packs.map((pack: any, index: number) => (
@@ -52,6 +61,16 @@ function Pricing() {
               <td>{pack.displayName}</td>
               <td>{pack.cardsPerPack}</td>
               <td>{(pack.price / 100).toFixed(2)}€</td>
+              <td>
+                {pack.cardModels.length
+                  ? pack.cardModels.map((packCardModel: any, cardIndex: number) => (
+                      <div key={`pack-pricing-card-models-${index}-${cardIndex}`}>
+                        {packCardModel.cardModel.name}
+                        <br />
+                      </div>
+                    ))
+                  : `Toutes les cartes communes de la saison ${pack.season}`}
+              </td>
             </tr>
           ))}
         </tbody>
