@@ -47,7 +47,7 @@ function Pricing() {
               <strong>Prix</strong>
             </td>
           </tr>
-          {packs.map((pack, index: number) => (
+          {packs.map((pack: any, index: number) => (
             <tr key={`pack-princing-${index}`} className="even">
               <td>{pack.displayName}</td>
               <td>{pack.cardsPerPack}</td>
