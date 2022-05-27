@@ -8,7 +8,7 @@ import Table from '@/components/Table'
 import { RadioButton } from '@/components/Button'
 import Caret from '@/components/Caret'
 import Link from '@/components/Link'
-import { useEtherEURPrice } from '@/hooks/useFiatPrice'
+import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 
 const StyledTable = styled(Table)`
   margin-top: 22px;
@@ -34,8 +34,23 @@ const RadioButtonWrapper = styled.td`
   `}
 
   ${({ theme }) => theme.media.small`
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+    padding-left: 12px !important;
+    padding-right: 8px !important;
+  `}
+`
+
+const Price = styled.div`
+  display: flex;
+  gap: 8px;
+
+  div {
+    white-space: nowrap;
+  }
+
+  ${({ theme }) => theme.media.small`
+    flex-direction: column;
+    gap: 4px;
+    padding-right: 12px;
   `}
 `
 
@@ -62,7 +77,7 @@ export default function OffersTable({
 }: OffersTableProps) {
   const { asPath } = useRouter()
 
-  const etherEURprice = useEtherEURPrice()
+  const weiAmountToEURValue = useWeiAmountToEURValue()
 
   return (
     <StyledTable>
@@ -91,11 +106,10 @@ export default function OffersTable({
       <tbody>
         {offers.length && Object.keys(usersTable).length ? (
           offers.map((offer: any, index) => {
-            const price =
-              !!offer.price && etherEURprice
-                ? `${WeiAmount.fromEtherAmount(offer.price).multiply(Math.round(etherEURprice)).toFixed(2)}`
-                : null
-            const offerToSelect = { serialNumber: offer.serialNumber, price }
+            const weiAmount = offer.price ? WeiAmount.fromEtherAmount(offer.price) : null
+            const priceEUR = weiAmount ? weiAmountToEURValue(weiAmount) : null
+            const priceETH = weiAmount ? +weiAmount.toFixed(4) : null
+            const offerToSelect = { serialNumber: offer.serialNumber, priceEUR }
 
             return (
               <tr key={`offer-${index}`}>
@@ -105,10 +119,11 @@ export default function OffersTable({
                     onChange={() => selectOffer(offerToSelect)}
                   />
                 </RadioButtonWrapper>
-                <td>
-                  <TYPE.body fontWeight={700} onClick={() => selectOffer(offerToSelect)}>
-                    {price ? `${price}€` : '-'}
-                  </TYPE.body>
+                <td onClick={() => selectOffer(offerToSelect)}>
+                  <Price>
+                    <TYPE.body fontWeight={700}>{priceETH ? `${priceETH} ETH` : '-'}</TYPE.body>
+                    <TYPE.body color="text2">{priceEUR ? `${priceEUR} €` : null}</TYPE.body>
+                  </Price>
                 </td>
                 <td>
                   <Link href={`${asPath.replace(/buy$/, offer.serialNumber)}`}>

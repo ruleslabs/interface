@@ -7,7 +7,7 @@ import { Trans, t } from '@lingui/macro'
 import { TYPE } from '@/styles/theme'
 import Table from '@/components/Table'
 import Link from '@/components/Link'
-import { useEtherEURPrice } from '@/hooks/useFiatPrice'
+import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 
 const Avatar = styled.img`
   width: 36px;
@@ -42,7 +42,7 @@ export default function TransfersTable({
 }: TransfersTableProps) {
   const router = useRouter()
 
-  const etherEURprice = useEtherEURPrice()
+  const weiAmounToEurValue = useWeiAmountToEURValue()
 
   return (
     <StyledTable>
@@ -114,7 +114,7 @@ export default function TransfersTable({
               <td>
                 <TYPE.body>
                   {!!transfer.price && etherEURprice
-                    ? `${WeiAmount.fromEtherAmount(transfer.price).multiply(Math.round(etherEURprice)).toFixed(2)}€`
+                    ? `${weiAmounToEurValue(WeiAmount.fromEtherAmount(transfer.price))}€`
                     : '-'}
                 </TYPE.body>
               </td>

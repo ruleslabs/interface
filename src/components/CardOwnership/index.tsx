@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Trans, Plural } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 
 import { useCurrentUser } from '@/state/user/hooks'
 import { RowCenter } from '@/components/Row'
@@ -30,14 +30,16 @@ interface RuleOwnershipProps {
   ownerSlug: string
   ownerUsername: string
   ownerProfilePictureUrl: string
-  askEur?: number
+  askEUR?: string
+  askETH?: string
 }
 
-export default function RuleOwnership({
+export default function CardOwnership({
   ownerSlug,
   ownerUsername,
   ownerProfilePictureUrl,
-  askEur,
+  askEUR,
+  askETH,
 }: RuleOwnershipProps) {
   const currentUser = useCurrentUser()
 
@@ -57,18 +59,26 @@ export default function RuleOwnership({
         </TYPE.body>
       </RowCenter>
       <ButtonsWrapper gap={12}>
-        {!!askEur || currentUser?.slug === ownerSlug ? (
+        {askETH || currentUser?.slug === ownerSlug ? (
           <>
-            {currentUser?.slug === ownerSlug && !!askEur ? (
+            {currentUser?.slug === ownerSlug && askEUR ? (
               <PrimaryButton large>
-                <Trans>Close offer - {askEur}€</Trans>
+                <Trans>
+                  Close offer - {askETH} ETH {askEUR ? `(${askEUR}€)` : null}
+                </Trans>
               </PrimaryButton>
             ) : (
               <PrimaryButton large>
-                <Plural value={askEur ?? 0} _0="Place for Sale" other="Buy - {0}€" />
+                {askETH ? (
+                  <Trans>
+                    Buy - {askETH} ETH {askEUR ? `(${askEUR}€)` : null}
+                  </Trans>
+                ) : (
+                  <Trans>Place for Sale</Trans>
+                )}
               </PrimaryButton>
             )}
-            {!askEur && (
+            {!askEUR && (
               <SecondaryButton large>
                 <RowCenter justify="center" gap={4}>
                   <StyledPresent />

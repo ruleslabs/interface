@@ -15,15 +15,15 @@ interface CardSelectorBreakdownProps {
   season: number
   scarcity: string
   pictureUrl: string
-  price?: number
+  priceEUR?: number
 }
 
-export default function CardSelectorBreakdown({
+export default function OffersSelectorBreakdown({
   artistName,
   season,
   scarcity,
   pictureUrl,
-  price,
+  priceEUR,
 }: CardSelectorBreakdownProps) {
   return (
     <Column gap={32}>
@@ -37,8 +37,8 @@ export default function CardSelectorBreakdown({
           <Trans id={scarcity} render={({ translation }) => <TYPE.body>{translation}</TYPE.body>} />
         </Column>
       </Row>
-      <PrimaryButton large disabled={!price}>
-        {price ? t`Acheter - ${price}€` : t`Select a card`}
+      <PrimaryButton large disabled={!priceEUR}>
+        {priceEUR ? t`Acheter - ${priceEUR}€` : t`Select a card`}
       </PrimaryButton>
     </Column>
   )

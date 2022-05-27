@@ -99,7 +99,7 @@ export default function BuyRule() {
                 season={cardModel.season}
                 scarcity={cardModel.scarcity?.name}
                 pictureUrl={cardModel.pictureUrl}
-                price={selectedOffer?.price}
+                priceEUR={selectedOffer?.priceEUR}
               />
             </OffersSelectorBreakdownCard>
           </>

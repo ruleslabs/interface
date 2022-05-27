@@ -211,12 +211,12 @@ msgid "Belongs to <0>{ownerUsername}</0>"
 msgstr "Appartient à <0>{ownerUsername}</0>"
 
 #: src/components/CardOwnership/index.tsx
-msgid "{0, plural, =0 {Place for Sale} other {Buy - {0}€}}"
-msgstr "{0, plural, =0 {Mettre en vente} other {Acheter - {0}€}}"
+msgid "Buy - {askETH} ETH {0}"
+msgstr "Acheter - {askETH} ETH {0}"
 
 #: src/components/CardOwnership/index.tsx
-msgid "Close offer - {askEur}€"
-msgstr "Arrêter la vente - {askEur}€"
+msgid "Close offer - {askETH} ETH {0}"
+msgstr "Arrêter la vente - {askETH} ETH {0}"
 
 #: src/components/CardOwnership/index.tsx
 msgid "Offer"

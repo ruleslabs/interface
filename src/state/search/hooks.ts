@@ -5,7 +5,7 @@ import algoliasearch from 'algoliasearch'
 
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
 import { updateMarketplaceTiersFilter, updateMarketplaceSeasonsFilter } from './actions'
-import { useEtherEURPrice } from '@/hooks/useFiatPrice'
+import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 
 const CARD_MODELS_ON_SALE_QUERY = gql`
   query ($pictureDerivative: String) {
@@ -84,7 +84,7 @@ export function useSeasonsFilterToggler(): (season: number) => void {
 }
 
 export function useCardModelOnSale(pictureDerivative: string) {
-  const etherEURprice = useEtherEURPrice()
+  const weiAmountToEURValue = useWeiAmountToEURValue()
 
   const {
     data: queryData,
@@ -98,18 +98,16 @@ export function useCardModelOnSale(pictureDerivative: string) {
     (Boolean(process.env.NEXT_PUBLIC_DEMO) ? queryData?.allCardModels : queryData?.cardModelsOnSale) ?? []
 
   const cardModels = useMemo(() => {
-    if (!etherEURprice) return cardModelsOnSale
-
     return cardModelsOnSale.map((cardModel: any) => {
       const weiAmount = WeiAmount.fromRawAmount(cardModel.lowestAsk ?? 0)
 
       return {
         ...cardModel,
         lowestAskETH: weiAmount.toFixed(4),
-        lowestAskEUR: weiAmount.multiply(Math.round(etherEURprice)).toFixed(2),
+        lowestAskEUR: weiAmountToEURValue(weiAmount),
       }
     })
-  }, [etherEURprice, cardModelsOnSale])
+  }, [cardModelsOnSale, weiAmountToEURValue])
 
   return { cardModels, loading, error }
 }

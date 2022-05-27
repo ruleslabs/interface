@@ -12,7 +12,7 @@ import CardModelBreakdown from '@/components/CardModelBreakdown'
 import CardModelSales from '@/components/CardModelSales'
 import CardModelTransfersHistory from '@/components/CardsTransfersHistory/cardModel'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
-import { useEtherEURPrice } from '@/hooks/useFiatPrice'
+import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import CardModel3D from '@/components/CardModel3D'
 import Card from '@/components/Card'
 import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
@@ -78,7 +78,7 @@ export default function CardModelPage() {
   const router = useRouter()
   const { cardModelSlug } = router.query
 
-  const etherEURprice = useEtherEURPrice()
+  const weiAmountToEURValue = useWeiAmountToEURValue()
 
   const {
     data: cardModelData,
@@ -88,18 +88,14 @@ export default function CardModelPage() {
 
   const cardModel = useMemo(
     () =>
-      etherEURprice && cardModelData?.cardModel
+      cardModelData?.cardModel
         ? {
             ...cardModelData.cardModel,
-            lowestAskEUR: WeiAmount.fromRawAmount(cardModelData.cardModel.lowestAsk ?? 0)
-              .multiply(Math.round(etherEURprice))
-              .toFixed(2),
-            averageSellEUR: WeiAmount.fromRawAmount(cardModelData.cardModel.averageSell ?? 0)
-              .multiply(Math.round(etherEURprice))
-              .toFixed(2),
+            lowestAskEUR: weiAmountToEURValue(WeiAmount.fromRawAmount(cardModelData.cardModel.lowestAsk ?? 0)),
+            averageSellEUR: weiAmountToEURValue(WeiAmount.fromRawAmount(cardModelData.cardModel.averageSell ?? 0)),
           }
         : cardModelData?.cardModel,
-    [etherEURprice, cardModelData?.cardModel]
+    [cardModelData?.cardModel, weiAmountToEURValue]
   )
 
   const backPictureUrl = useCardsBackPictureUrl(512)

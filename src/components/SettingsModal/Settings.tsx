@@ -9,7 +9,7 @@ import Column from '@/components/Column'
 import Row from '@/components/Row'
 import { TYPE } from '@/styles/theme'
 import Link from '@/components/Link'
-import { useEtherEURPrice } from '@/hooks/useFiatPrice'
+import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import { storeAccessToken } from '@/utils/accessToken'
 import { useRemoveCurrentUser } from '@/state/user/hooks'
 import { useRevokeSessionMutation } from '@/state/auth/hooks'
@@ -50,7 +50,7 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
   const toggleDepositModal = useDepositModalToggle()
 
   // ETH balance
-  const etherEURprice = useEtherEURPrice()
+  const weiAmountToEURValue = useWeiAmountToEURValue()
   const balance = useETHBalances([currentUser?.starknetAddress])[currentUser?.starknetAddress]
 
   // Logout
@@ -74,10 +74,10 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
           <Trans>Current balance</Trans>
         </TYPE.body>
         <Balance>
-          {etherEURprice && balance ? (
+          {balance ? (
             <>
               <TYPE.body fontWeight={700}>{+balance.toFixed(4)} ETH</TYPE.body>
-              <TYPE.body color="text2">{balance.multiply(Math.round(etherEURprice)).toFixed(2)} EUR</TYPE.body>
+              <TYPE.body color="text2">{weiAmountToEURValue(balance) ?? '-'} EUR</TYPE.body>
             </>
           ) : (
             <TYPE.subtitle>Loading...</TYPE.subtitle>

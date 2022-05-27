@@ -14,7 +14,7 @@ import CardOwnership from '@/components/CardOwnership'
 import CardTransfersHistory from '@/components/CardsTransfersHistory/card'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import CardModel3D from '@/components/CardModel3D'
-import { useEtherEURPrice } from '@/hooks/useFiatPrice'
+import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
 
 const MainSection = styled(Section)`
@@ -90,22 +90,16 @@ export default function CardBreakout() {
   const { cardModelSlug, serialNumber } = router.query
   const cardSlug = `${cardModelSlug}-${serialNumber}`
 
-  const etherEURprice = useEtherEURPrice()
+  const weiAmountToEURValue = useWeiAmountToEURValue()
 
   const { data: cardData, loading, error } = useQuery(QUERY_CARD, { variables: { slug: cardSlug }, skip: !cardSlug })
 
-  const card = useMemo(
-    () =>
-      etherEURprice && cardData?.card && cardData?.card.currentOffer?.ask
-        ? {
-            ...cardData.card,
-            askEur: WeiAmount.fromRawAmount(cardData.card.currentOffer.ask)
-              .multiply(Math.round(etherEURprice))
-              .toFixed(2),
-          }
-        : cardData?.card,
-    [cardData?.card, etherEURprice]
-  )
+  const card = useMemo(() => {
+    if (cardData?.card && cardData?.card.currentOffer?.ask) {
+      const ask = WeiAmount.fromRawAmount(cardData.card.currentOffer.ask)
+      return { ...cardData.card, askETH: +ask.toFixed(4), askEUR: weiAmountToEURValue(ask) }
+    } else return cardData?.card
+  }, [cardData?.card, weiAmountToEURValue])
 
   const backPictureUrl = useCardsBackPictureUrl(512)
 
@@ -146,7 +140,8 @@ export default function CardBreakout() {
               ownerSlug={card.owner.user.slug}
               ownerUsername={card.owner.user.username}
               ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
-              askEur={card.askEur}
+              askEUR={card.askEUR}
+              askETH={card.askETH}
             />
           </Card>
         </MainSectionCardsWrapper>

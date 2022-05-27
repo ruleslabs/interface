@@ -99,7 +99,9 @@ export default function Marketplace() {
                   <br />
                   <Row>
                     {+cardModel.lowestAskETH ?? '-'} ETH&nbsp;
-                    <TYPE.body color="text2">({cardModel.lowestAskEUR ?? '-'}€)</TYPE.body>
+                    <TYPE.body color="text2">
+                      {cardModel.lowestAskEUR ? `(${cardModel.lowestAskEUR}€)` : null}
+                    </TYPE.body>
                   </Row>
                 </TYPE.body>
               </ColumnCenter>

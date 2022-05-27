@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
+import { WeiAmount } from '@rulesorg/sdk-core'
 
 const ETH_PRICE_POLLING = 60_000 // 60s
 
@@ -36,4 +37,13 @@ export function useEtherEURPrice(): number | undefined {
   }, [fetchEthPrice])
 
   return price
+}
+
+export function useWeiAmountToEURValue(): (amount: WeiAmount) => string {
+  const etherEURprice = useEtherEURPrice()
+
+  return useCallback(
+    (amount: WeiAmount) => (etherEURprice ? amount.multiply(Math.round(etherEURprice)).toFixed(2) : null),
+    [etherEURprice]
+  )
 }
