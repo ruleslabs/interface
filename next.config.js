@@ -3,7 +3,7 @@
 // Deps
 // -----------------------------------------------------------------------------
 
-import ESLintPlugin from 'eslint-webpack-plugin'
+const ESLintPlugin = require('eslint-webpack-plugin')
 
 // -----------------------------------------------------------------------------
 // Next.js config
@@ -70,4 +70,4 @@ const defaultConfig = {
   },
 }
 
-export default defaultConfig
+module.exports = defaultConfig

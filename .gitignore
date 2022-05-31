@@ -21,11 +21,11 @@ node_modules/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
 .env.local
 
 # Next.js build output
 .next
+out
 
 # MacOS desktop service store
 .DS_Store
@@ -33,3 +33,7 @@ node_modules/
 # generated
 /src/locales/**/*.mjs
 /src/locales/**/en-US.po
+
+#serverless
+.serverless
+.serverless_nextjs

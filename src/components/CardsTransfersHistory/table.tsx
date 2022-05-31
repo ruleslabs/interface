@@ -113,9 +113,7 @@ export default function TransfersTable({
               )}
               <td>
                 <TYPE.body>
-                  {!!transfer.price && etherEURprice
-                    ? `${weiAmounToEurValue(WeiAmount.fromEtherAmount(transfer.price))}€`
-                    : '-'}
+                  {!!transfer.price ? `${weiAmounToEurValue(WeiAmount.fromEtherAmount(transfer.price))}€` : '-'}
                 </TYPE.body>
               </td>
             </tr>

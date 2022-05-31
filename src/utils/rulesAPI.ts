@@ -10,7 +10,7 @@ export default class RulesAPI {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
-        authorization: token ? `Bearer ${token}` : '',
+        Authorization: token ? `Bearer ${token}` : '',
         'Content-Type': 'application/json',
       },
     })

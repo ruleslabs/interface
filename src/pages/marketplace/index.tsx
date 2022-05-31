@@ -56,6 +56,7 @@ const FiltersButton = styled(TYPE.body)`
 `
 
 export default function Marketplace() {
+  console.log('bjr')
   // sort
   const [increaseSort, setIncreaseSort] = useState(true)
 

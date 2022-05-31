@@ -1,10 +1,10 @@
 import '@/styles/global.css'
 import '@/styles/fonts.css'
 
+import React from 'react'
 import { NextPage } from 'next/types'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
-import React from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
 import { Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'

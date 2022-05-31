@@ -39,7 +39,7 @@ export function useEtherEURPrice(): number | undefined {
   return price
 }
 
-export function useWeiAmountToEURValue(): (amount: WeiAmount) => string {
+export function useWeiAmountToEURValue(): (amount: WeiAmount) => string | null {
   const etherEURprice = useEtherEURPrice()
 
   return useCallback(

@@ -74,7 +74,7 @@ export default function User({ username, pictureUrl, certified, size = 'md', can
           {certified && <Certified width="18px" />}
         </Row>
       </ColumnCenter>
-      {canEdit && <AvatarEditModal currentAvatarId={defaultAvatarId} />}
+      {canEdit && <AvatarEditModal currentAvatarId={defaultAvatarId} certifiedAvatarUrl={pictureUrl} />}
     </>
   )
 }

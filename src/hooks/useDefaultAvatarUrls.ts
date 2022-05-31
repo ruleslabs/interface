@@ -6,7 +6,7 @@ const BUCKET = process.env.NEXT_PUBLIC_ASSETS_BUCKET
 export default function useDefaultAvatarUrls(width: number) {
   return useMemo(
     () =>
-      Array(6)
+      Array(5)
         .fill(0)
         .map(
           (_, index: number) =>
