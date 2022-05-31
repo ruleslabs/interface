@@ -14,17 +14,28 @@ const StyledAvatarEditModal = styled.div`
   padding: 26px;
   background: ${({ theme }) => theme.bg2};
   border-radius: 4px;
+
+  ${({ theme }) => theme.media.medium`
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+  `}
 `
 
 const AvatarsWrapper = styled.div`
   margin-top: 26px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  justify-content: space-around;
   gap: 32px;
 
   & > div {
     position: relative;
   }
+
+  ${({ theme }) => theme.media.medium`
+    grid-template-columns: repeat(2, minmax(auto, 256px));
+  `}
 `
 
 const Avatar = styled.div<{ selected: boolean }>`
