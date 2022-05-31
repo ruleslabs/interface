@@ -85,6 +85,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
               username={`${user.username}`}
               pictureUrl={user.profile.pictureUrl}
               certified={user.profile.certified}
+              certifiedPictureUrl={user.profile.certifiedPictureUrl}
               size="lg"
               canEdit={userSlug === currentUser?.slug}
             />

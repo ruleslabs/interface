@@ -127,8 +127,8 @@ export default function AvatarEditModal({ currentAvatarId, certifiedAvatarUrl }:
               <Checkmark />
             </Avatar>
           ))}
-          {!currentAvatarId && (
-            <Avatar selected={!selectedAvatarId} onClick={() => handleAvatarEdit(0)}>
+          {certifiedAvatarUrl && (
+            <Avatar selected={selectedAvatarId === 0} onClick={() => handleAvatarEdit(0)}>
               <img src={certifiedAvatarUrl} />
               <Checkmark />
             </Avatar>

@@ -23,6 +23,7 @@ const CURRENT_USER_QUERY = gql`
       }
       profile {
         pictureUrl(derivative: "width=320")
+        certifiedPictureUrl(derivative: "width=320")
         twitterUsername
         instagramUsername
         isDiscordVisible
