@@ -7,14 +7,8 @@ import { RowCenter } from '@/components/Row'
 import { ColumnCenter } from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 
-export const PackPosterWrapper = styled(RowCenter)`
-  width: 100%;
-  justify-content: center;
-  background-image: url(/assets/nebula.png);
-  background-size: 100% 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-`
+import PackBg from '@/images/pack-bg.svg'
+import LogoOutline from '@/images/logo-outline.svg'
 
 const StyledPackCountdownWrapper = styled(ColumnCenter)<{ released: boolean }>`
   ${({ released, theme }) => (released ? '' : `background-color: ${theme.bg2};`)}
@@ -51,5 +45,61 @@ export function PackCountdownWrapper({ releaseDate, children }: PackCountdownWra
       )}
       {children}
     </StyledPackCountdownWrapper>
+  )
+}
+
+const StyledPackPosterWrapper = styled(RowCenter)`
+  width: 100%;
+  justify-content: center;
+  position: relative;
+
+  ${({ theme }) => theme.media.medium`
+    padding: 32px 0;
+    overflow: hidden;
+    width: 100vw;
+    margin: 0 -16px;
+  `}
+`
+
+const StyledPackBg = styled(PackBg)`
+  position: absolute;
+  height: 100%;
+  z-index: -1;
+  right: 0;
+
+  * {
+    fill: ${({ theme }) => theme.text1}10;
+  }
+
+  ${({ theme }) => theme.media.medium`
+    right: unset;
+  `}
+`
+
+const StyledLogoOutline = styled(LogoOutline)`
+  position: absolute;
+  z-index: -1;
+  width: 80%;
+
+  * {
+    fill: ${({ theme }) => theme.text1}40;
+  }
+
+  ${({ theme }) => theme.media.extraSmall`
+    display: none;
+  `}
+`
+
+interface PackPosterWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode
+}
+
+export function PackPosterWrapper({ children, ...props }: PackPosterWrapperProps) {
+  return (
+    <StyledPackPosterWrapper {...props}>
+      {children}
+      <StyledPackBg />
+      <StyledLogoOutline />
+    </StyledPackPosterWrapper>
   )
 }

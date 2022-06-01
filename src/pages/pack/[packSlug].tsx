@@ -18,7 +18,7 @@ import { PackPosterWrapper } from '@/components/PackWrapper'
 const StyledMainSection = styled(Section)`
   margin-bottom: 84px;
 
-  ${({ theme }) => theme.media.small`
+  ${({ theme }) => theme.media.medium`
     margin-bottom: 48px;
   `}
 `
@@ -45,7 +45,7 @@ const CardsColumn = styled(Column)`
   gap: 32px;
   margin: 0 auto;
 
-  ${({ theme }) => theme.media.small`
+  ${({ theme }) => theme.media.medium`
     min-width: auto;
     width: 100%;
     max-width: 500px;
@@ -123,9 +123,9 @@ export default function Pack() {
       ) : (
         <>
           <StyledMainSection>
-            <Row gap={52} switchDirection="small">
+            <Row gap={52} switchDirection="medium">
               <PackPosterWrapper>
-                <img src={pack.pictureUrl} width="185px" />
+                <img src={pack.pictureUrl} width="256px" />
               </PackPosterWrapper>
               <CardsColumn>
                 <Card>

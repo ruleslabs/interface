@@ -43,9 +43,9 @@ export default function AuthModal() {
       storeAccessToken(accessToken ?? '')
       const currentUser = await queryCurrentUser()
 
-      if (!!currentUser) {
+      if (currentUser) {
         if (onboard) router.push('/onboard')
-        else toggleAuthModal()
+        toggleAuthModal()
       } else window.location.reload()
     },
     [queryCurrentUser, toggleAuthModal, router]
