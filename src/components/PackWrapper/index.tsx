@@ -11,9 +11,18 @@ import PackBg from '@/images/pack-bg.svg'
 import LogoOutline from '@/images/logo-outline.svg'
 
 const StyledPackCountdownWrapper = styled(ColumnCenter)<{ released: boolean }>`
-  ${({ released, theme }) => (released ? '' : `background-color: ${theme.bg2};`)}
-  padding: ${({ released }) => (released ? '0 0 22px' : '22px 44px')};
+  ${({ released, theme }) =>
+    released
+      ? 'padding: 0 22px;'
+      : `
+        background-color: ${theme.bg2};
+        padding: 22px;
+      `}
   gap: 8px;
+
+  & > * {
+    margin: 0 auto;
+  }
 `
 
 const CountdownWrapper = styled.div`

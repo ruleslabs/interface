@@ -41,13 +41,41 @@ const PacksWrapper = styled(Section)`
   align-items: end;
   padding: 0 32px;
   margin: 44px auto 80px;
-  grid-template-columns: repeat(${PACKS_COUNT}, 1fr);
+  grid-template-columns: repeat(${PACKS_COUNT}, auto);
+  justify-content: space-between;
+
+  & > * {
+    margin: 0 auto;
+  }
+
+  ${({ theme }) => theme.media.medium`
+    grid-template-columns: repeat(3, auto);
+
+    & > *:nth-child(-n+3) {
+      display: block;
+    }
+
+    & > * {
+      display: none;
+    }
+  `}
 
   ${({ theme }) => theme.media.small`
-    grid-template-columns: 1fr;
+    margin-bottom: 64px;
+    grid-template-columns: auto;
     flex-direction: column;
     align-items: center;
     padding: 0 16px;
+    justify-content: center;
+    gap: 32px;
+
+    & > *:nth-child(-n+3) {
+      display: block;
+    }
+
+    & > * {
+      display: none;
+    }
   `}
 `
 
@@ -125,7 +153,7 @@ export default function Packs() {
                 slug={pack.slug}
                 pictureUrl={pack.pictureUrl}
                 soldout={pack.maxSupply ? pack.supply >= pack.maxSupply : false}
-                width={185}
+                width={200}
               />
             </PackCountdownWrapper>
           ))

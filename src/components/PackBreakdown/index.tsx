@@ -23,6 +23,7 @@ interface PackBreakdownProps {
   releaseDate?: Date
   availableSupply?: number
   availableQuantity?: number
+  onSuccessfulPackPurchase: (boughtQuantity: number) => void
 }
 
 export default function PackBreakdown({
@@ -34,12 +35,13 @@ export default function PackBreakdown({
   releaseDate,
   availableSupply,
   availableQuantity,
+  onSuccessfulPackPurchase,
 }: PackBreakdownProps) {
-  const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null)
-  const [paymentIntentError, setPaymentIntentError] = useState(false)
+  // modal
   const togglePackPurchaseModal = usePackPurchaseModalToggle()
-  const locale = useActiveLocale()
 
+  // release
+  const locale = useActiveLocale()
   const released = releaseDate ? +releaseDate - +new Date() <= 0 : true
 
   const releaseDateFormatted = useMemo(() => {
@@ -51,6 +53,9 @@ export default function PackBreakdown({
     return releaseMoment.format('dddd D MMMM LT')
   }, [released, releaseDate, locale])
 
+  // stripe
+  const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null)
+  const [paymentIntentError, setPaymentIntentError] = useState(false)
   const createPaymentIntent = useCreatePaymentIntent()
 
   const purchasePack = useCallback(async () => {
@@ -65,6 +70,7 @@ export default function PackBreakdown({
       .then((data) => setStripeClientSecret(data?.clientSecret ?? null))
   }, [id, createPaymentIntent, setPaymentIntentError, setStripeClientSecret])
 
+  // quantity
   const [quantity, setQuantity] = useState(1)
   const incrementQuantity = useCallback(() => setQuantity(quantity + 1), [quantity, setQuantity])
   const decrementQuantity = useCallback(() => setQuantity(quantity - 1), [quantity, setQuantity])
@@ -113,6 +119,7 @@ export default function PackBreakdown({
         paymentIntentError={paymentIntentError}
         price={price}
         quantity={quantity}
+        onSuccessfulPackPurchase={onSuccessfulPackPurchase}
       />
     </>
   )

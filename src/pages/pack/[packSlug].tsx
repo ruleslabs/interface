@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useQuery, gql } from '@apollo/client'
 import styled from 'styled-components'
@@ -109,6 +109,15 @@ export default function Pack() {
   const isValid = !packQuery.error && pack
   const isLoading = packQuery.loading
 
+  // purchase
+  const [availableQuantity, setAvailableQuantity] = useState(0)
+  useEffect(() => setAvailableQuantity(pack?.availableQuantity ?? 0), [pack?.availableQuantity])
+
+  const onSuccessfulPackPurchase = useCallback(
+    (boughtQuantity: number) => setAvailableQuantity(availableQuantity - boughtQuantity),
+    [setAvailableQuantity, availableQuantity]
+  )
+
   return (
     <>
       <Section marginTop="36px">
@@ -137,7 +146,8 @@ export default function Pack() {
                     seasons={seasons}
                     releaseDate={new Date(pack.releaseDate)}
                     availableSupply={pack.maxSupply ? pack.maxSupply - pack.supply : undefined}
-                    availableQuantity={pack.availableQuantity}
+                    availableQuantity={availableQuantity}
+                    onSuccessfulPackPurchase={onSuccessfulPackPurchase}
                   />
                 </Card>
                 <ExplanationsCard>
