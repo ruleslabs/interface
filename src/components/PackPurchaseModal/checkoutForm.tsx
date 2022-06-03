@@ -103,8 +103,6 @@ export default function CheckoutForm({ stripeClientSecret, paymentIntentError, a
   const handleCheckout = useCallback(
     (event) => {
       event.preventDefault()
-      onSuccess()
-      return
       if (!stripeClientSecret || !stripe || !elements) return
 
       setLoading(true)
@@ -138,8 +136,6 @@ export default function CheckoutForm({ stripeClientSecret, paymentIntentError, a
   const handleCardNumberInput = useCallback((event) => {
     setCardBrand(event.brand ?? 'unknown')
   }, [])
-
-  if (loading) return null
 
   return (
     <form onSubmit={handleCheckout}>

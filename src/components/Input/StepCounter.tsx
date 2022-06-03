@@ -7,8 +7,10 @@ const SmallButton = styled(BaseButton)`
   color: ${({ theme }) => theme.text1};
   background: ${({ theme }) => theme.bg5};
   box-shadow: inset 0 4px 4px rgba(255, 255, 255, 0.04);
+  padding: 0;
   width: 46px;
   height: 40px;
+  font-size: 24px;
 
   :disabled {
     cursor: default;

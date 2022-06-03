@@ -53,27 +53,27 @@ export default function PackBreakdown({
     return releaseMoment.format('dddd D MMMM LT')
   }, [released, releaseDate, locale])
 
+  // quantity
+  const [quantity, setQuantity] = useState(1)
+  const incrementQuantity = useCallback(() => setQuantity(quantity + 1), [quantity, setQuantity])
+  const decrementQuantity = useCallback(() => setQuantity(quantity - 1), [quantity, setQuantity])
+
   // stripe
   const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null)
   const [paymentIntentError, setPaymentIntentError] = useState(false)
   const createPaymentIntent = useCreatePaymentIntent()
 
-  const purchasePack = useCallback(async () => {
+  const purchasePack = useCallback(() => {
     setStripeClientSecret(null)
     togglePackPurchaseModal()
 
-    createPaymentIntent(id, 1)
+    createPaymentIntent(id, quantity)
       .catch((err) => {
         setPaymentIntentError(true)
         console.error(err)
       })
       .then((data) => setStripeClientSecret(data?.clientSecret ?? null))
-  }, [id, createPaymentIntent, setPaymentIntentError, setStripeClientSecret])
-
-  // quantity
-  const [quantity, setQuantity] = useState(1)
-  const incrementQuantity = useCallback(() => setQuantity(quantity + 1), [quantity, setQuantity])
-  const decrementQuantity = useCallback(() => setQuantity(quantity - 1), [quantity, setQuantity])
+  }, [id, createPaymentIntent, setPaymentIntentError, setStripeClientSecret, quantity])
 
   return (
     <>
@@ -105,7 +105,7 @@ export default function PackBreakdown({
               max={availableQuantity}
             />
             <PrimaryButton onClick={purchasePack} large>
-              <Trans>Buy - {(price / 100).toFixed(2)}€</Trans>
+              <Trans>Buy - {((price * quantity) / 100).toFixed(2)}€</Trans>
             </PrimaryButton>
           </Column>
         ) : (
