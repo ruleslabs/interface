@@ -95,7 +95,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
                   <Instagram />
                 </SocialLink>
               )}
-              {user?.profile?.instagramUsername && (
+              {user?.profile?.twitterUsername && (
                 <SocialLink target="_blank" href={`https://twitter.com/${user.profile.twitterUsername}`}>
                   <Twitter />
                 </SocialLink>
