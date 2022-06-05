@@ -17,3 +17,10 @@ export function useCreatePaymentIntent(): (packId: string, quantity: number) => 
     []
   )
 }
+
+export function useValidatePaymentMethod(): (paymentMethodId: string) => Promise<PaymentIntent> {
+  return useCallback(
+    async (paymentMethodId) => await RulesAPI.post<PaymentIntent>('validate-payment-method', { paymentMethodId }),
+    []
+  )
+}

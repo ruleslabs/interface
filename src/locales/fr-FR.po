@@ -177,6 +177,11 @@ msgstr "Vous devez accepter les condition générales d'utilisation"
 msgid "Sorry, Rules is not available in your country"
 msgstr "Désolé, Rules n'est pas disponible dans votre pays"
 
+# Payment errors
+
+msgid "Payment method already used by another user"
+msgstr "Cette carte est déjà utilisée par un autre utilisateur"
+
 #: src/components/CardModelBreakdown
 msgid "Limited edition"
 msgstr "Édition limitée"
@@ -572,3 +577,7 @@ msgstr "Votre commande a bien été reçue, vous recevrez un mail de confirmatio
 #: src/components/PackPurchaseModal/index.tsx
 msgid "Checkout"
 msgstr "Paiement"
+
+#: src/components/PackPurchaseModal/checkoutForm.tsx
+msgid "Confirm - {0}€"
+msgstr "Confirmer - {0}€"

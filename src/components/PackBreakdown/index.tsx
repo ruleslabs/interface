@@ -69,7 +69,7 @@ export default function PackBreakdown({
 
     createPaymentIntent(id, quantity)
       .catch((err) => {
-        setPaymentIntentError(true)
+        setPaymentIntentError(true) // TODO handle error
         console.error(err)
       })
       .then((data) => setStripeClientSecret(data?.clientSecret ?? null))

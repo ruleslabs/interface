@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js'
+import { CreatePaymentMethodCardData } from '@stripe/stripe-js'
 import { Trans, t } from '@lingui/macro'
 
 import useTheme from '@/hooks/useTheme'
@@ -8,6 +9,7 @@ import Column from '@/components/Column'
 import Row, { RowCenter } from '@/components/Row'
 import { PrimaryButton } from '@/components/Button'
 import { TYPE } from '@/styles/theme'
+import { useValidatePaymentMethod } from '@/state/stripe/hooks'
 
 import VisaIcon from '@/images/cardBrands/visa.svg'
 import MastercardIcon from '@/images/cardBrands/mastercard.svg'
@@ -65,6 +67,7 @@ interface CheckoutFormProps {
 
 export default function CheckoutForm({ stripeClientSecret, paymentIntentError, amount, onSuccess }: CheckoutFormProps) {
   const [loading, setLoading] = useState(!stripeClientSecret)
+  const [error, setError] = useState<string | null>(null)
   const [stripeElementsReady, setStripeElementsReady] = useState(false)
 
   useEffect(() => setLoading(!stripeClientSecret || !stripeElementsReady), [stripeClientSecret, stripeElementsReady])
@@ -72,6 +75,7 @@ export default function CheckoutForm({ stripeClientSecret, paymentIntentError, a
   // stripe
   const stripe = useStripe()
   const elements = useElements()
+  const validatePaymentMethod = useValidatePaymentMethod()
 
   // style
   const [cardBrand, setCardBrand] = useState<string>('unknown')
@@ -100,24 +104,8 @@ export default function CheckoutForm({ stripeClientSecret, paymentIntentError, a
 
   const handleCardNumberReady = useCallback(() => setStripeElementsReady(true), [setStripeElementsReady])
 
-  const handleCheckout = useCallback(
-    (event) => {
-      event.preventDefault()
-      if (!stripeClientSecret || !stripe || !elements) return
-
-      setLoading(true)
-
-      const cardNumberElement = elements.getElement(CardNumberElement)
-      if (!cardNumberElement) {
-        setLoading(false) // TODO: handle error
-        return
-      }
-
-      stripe.createToken(cardNumberElement)
-      stripe.createPaymentMethod({
-        type: 'card',
-        card: cardNumberElement,
-      })
+  const confirmCardPayment = useCallback(
+    (cardNumberElement: CreatePaymentMethodCardData['card']) => {
       stripe
         .confirmCardPayment(stripeClientSecret, {
           payment_method: {
@@ -130,7 +118,47 @@ export default function CheckoutForm({ stripeClientSecret, paymentIntentError, a
           else onSuccess()
         })
     },
-    [stripe, elements, stripeClientSecret, setLoading]
+    [stripe, stripeClientSecret]
+  )
+
+  const handleCheckout = useCallback(
+    async (event) => {
+      event.preventDefault()
+      if (!stripeClientSecret || !stripe || !elements) return
+
+      setLoading(true)
+
+      const cardNumberElement = elements.getElement(CardNumberElement)
+      if (!cardNumberElement) {
+        setLoading(false) // TODO: handle error
+        return
+      }
+
+      stripe
+        .createPaymentMethod({
+          type: 'card',
+          card: cardNumberElement,
+        })
+        .then((result: any) => {
+          const paymentMethodId = result?.paymentMethod?.id
+          if (!paymentMethodId) {
+            setError('Failed to verify your payment method please try again')
+            setLoading(false)
+            return
+          }
+
+          validatePaymentMethod(paymentMethodId)
+            .catch((err) => {
+              setError(err?.error?.message ?? 'Failed to verify your payment method please try again')
+              setLoading(false)
+            })
+            .then((data) => {
+              if (data?.ok) confirmCardPayment(cardNumberElement)
+              else setLoading(false)
+            })
+        })
+    },
+    [stripe, elements, stripeClientSecret, setLoading, confirmCardPayment, setError]
   )
 
   const handleCardNumberInput = useCallback((event) => {
@@ -166,13 +194,16 @@ export default function CheckoutForm({ stripeClientSecret, paymentIntentError, a
               </StripeInputWrapper>
             </StripeLabel>
           </Row>
+          {error && (
+            <Trans id={error} render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>} />
+          )}
         </Column>
         <PrimaryButton onClick={handleCheckout} disabled={loading || paymentIntentError} large>
           {paymentIntentError
             ? t`An error has occured`
             : loading
             ? 'Loading...'
-            : t`Buy - ${(amount / 100).toFixed(2)}€`}
+            : t`Confirm - ${(amount / 100).toFixed(2)}€`}
         </PrimaryButton>
       </Column>
     </form>

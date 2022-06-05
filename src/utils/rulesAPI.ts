@@ -14,8 +14,9 @@ export default class RulesAPI {
         'Content-Type': 'application/json',
       },
     })
-    if (response.status !== 200) throw response
+    const data = await response.json()
 
-    return (await response.json()) as T
+    if (response.status !== 200) throw data
+    else return data as T
   }
 }
