@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 import Link from '@/components/Link'
 import { TYPE } from '@/styles/theme'
+import { useActiveLocale } from '@/hooks/useActiveLocale'
 
 const StyledPackCard = styled.div<{ width?: number }>`
   position: relative;
@@ -14,8 +15,9 @@ const StyledPackCard = styled.div<{ width?: number }>`
   }
 `
 
-const Card = styled.img`
+const Card = styled.img<{ inDelivery: boolean }>`
   width: 100%;
+  ${({ inDelivery }) => inDelivery && 'opacity: 0.3;'}
 `
 
 const Soldout = styled(TYPE.body)`
@@ -36,19 +38,37 @@ const Soldout = styled(TYPE.body)`
   white-space: nowrap;
 `
 
+const InDelivery = styled.img`
+  position: absolute;
+  left: 15px;
+  width: calc(100% - 30px);
+  top: 40%;
+`
+
 interface PackCardProps {
   slug: string
   pictureUrl: string
   soldout?: boolean
   width?: number
   open?: boolean
+  inDelivery?: boolean
 }
 
-export default function PackCard({ slug, pictureUrl, soldout = false, open = false, width }: PackCardProps) {
+export default function PackCard({
+  slug,
+  pictureUrl,
+  soldout = false,
+  open = false,
+  width,
+  inDelivery = false,
+}: PackCardProps) {
+  const locale = useActiveLocale()
+
   return (
     <StyledPackCard width={width}>
       <Link href={`/pack/${slug}${open ? '/open' : ''}`}>
-        <Card src={pictureUrl} />
+        <Card src={pictureUrl} inDelivery={inDelivery} />
+        {inDelivery && <InDelivery src={`/assets/delivery.${locale}.png`} />}
         {soldout && <Soldout>SOLD OUT</Soldout>}
       </Link>
     </StyledPackCard>

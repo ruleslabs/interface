@@ -164,24 +164,36 @@ export default function Packs() {
         <PacksInfosCard>
           <Column gap={32}>
             <Column gap={16}>
-              <TYPE.body fontWeight={700}>Qu’est-ce qu’un pack ?</TYPE.body>
+              <TYPE.body fontWeight={700}>
+                <Trans>Rules ?</Trans>
+              </TYPE.body>
               <TYPE.body>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+                <Trans>
+                  Rules is a trading card game about rap music. Cards are official, crafted with care, and each purchase
+                  enables independent artists to thrive.
+                </Trans>
               </TYPE.body>
             </Column>
             <Column gap={16}>
-              <TYPE.body fontWeight={700}>Qu’est-ce qu’un pack ?</TYPE.body>
+              <TYPE.body fontWeight={700}>
+                <Trans>Where can I join the community ?</Trans>
+              </TYPE.body>
               <TYPE.body>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+                <Trans>
+                  Rules’ Discord is where conversations and sharing between collectors happens. By connecting your
+                  account, you get access to specific channels linked to the cards you own.
+                </Trans>
               </TYPE.body>
             </Column>
             <Column gap={16}>
-              <TYPE.body fontWeight={700}>Qu’est-ce qu’un pack ?</TYPE.body>
+              <TYPE.body fontWeight={700}>
+                <Trans>Blockchain ?</Trans>
+              </TYPE.body>
               <TYPE.body>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+                <Trans>
+                  Rules’ cards are secured on the Starknet blockchain. It’s a technology based on Ethereum, but that
+                  needs way less energy and ressources.
+                </Trans>
               </TYPE.body>
             </Column>
           </Column>

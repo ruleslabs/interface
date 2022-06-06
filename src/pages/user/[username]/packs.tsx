@@ -23,6 +23,13 @@ const QUERY_USER_PACKS_BALANCES = gql`
           pictureUrl(derivative: "width=320")
         }
       }
+      inDeliveryPacksBalances {
+        balance
+        pack {
+          slug
+          pictureUrl(derivative: "width=320")
+        }
+      }
     }
   }
 `
@@ -39,22 +46,29 @@ function Packs() {
   const currentUser = useCurrentUser()
   const isCurrentUserProfile = currentUser?.slug === userSlug
 
+  // sort
   const [increaseSort, setIncreaseSort] = useState(true)
+  const toggleSort = useCallback(() => setIncreaseSort(!increaseSort), [increaseSort, setIncreaseSort])
 
-  const toggleSort = useCallback(() => {
-    setIncreaseSort(!increaseSort)
-  }, [increaseSort, setIncreaseSort])
+  // query packs
+  const [packsBalance, setPacksBalance] = useState<any[]>([])
+  const packsBalancesQuery = useQuery(QUERY_USER_PACKS_BALANCES, { variables: { slug: userSlug }, skip: !userSlug })
 
-  const {
-    data: packsBalancesData,
-    loading,
-    error,
-  } = useQuery(QUERY_USER_PACKS_BALANCES, { variables: { slug: userSlug }, skip: !userSlug })
+  // aggregate packs
+  const user = packsBalancesQuery.data?.user ?? {}
+  const packsBalances = useMemo(
+    () => [
+      ...(user.inDeliveryPacksBalances ?? []).map((packBalance) => ({ ...packBalance, inDelivery: true })),
+      ...(user?.packsBalances ?? []),
+    ],
+    [user.packsBalances?.length, user.inDeliveryPacksBalances?.length]
+  )
 
-  const packsBalances = packsBalancesData?.user?.packsBalances ?? []
-  const isValid = !error
-  const isLoading = loading
+  // loading / error
+  const isValid = !packsBalancesQuery.error
+  const isLoading = packsBalancesQuery.loading
 
+  // packs count
   const packsCount = useMemo(
     () => ((packsBalances ?? []) as any[]).reduce<number>((acc, packBalance) => acc + packBalance.balance, 0),
     [packsBalances]
@@ -83,6 +97,7 @@ function Packs() {
                 slug={packBalance.pack.slug}
                 pictureUrl={packBalance.pack.pictureUrl}
                 soldout={false}
+                inDelivery={packBalance.inDelivery}
                 open={isCurrentUserProfile}
               />
             ))

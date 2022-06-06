@@ -621,3 +621,27 @@ msgstr "Voir sur Voyager"
 #: src/components/PackPurchaseModal/Confirmation.tsx
 msgid "Copy"
 msgstr "Copier"
+
+#: src/pages/packs/index.tsx
+msgid "Where can I join the community ?"
+msgstr "Où se retrouve la communauté ?"
+
+#: src/pages/packs/index.tsx
+msgid "Rules ?"
+msgstr "Rules ?"
+
+#: src/pages/packs/index.tsx
+msgid "Blockchain ?"
+msgstr "Blockchain ?"
+
+#: src/pages/packs/index.tsx
+msgid "Rules is a trading card game about rap music. Cards are official, crafted with care, and each purchase enables independent artists to thrive."
+msgstr "Rules est un jeu de cartes à collectionner sur l’univers rap. Les cartes sont officielles, créées avec passion, et chaque achat permet de financer les artistes indépendants."
+
+#: src/pages/packs/index.tsx
+msgid "Rules’ Discord is where conversations and sharing between collectors happens. By connecting your account, you get access to specific channels linked to the cards you own."
+msgstr "Le Discord est la place centrale de discussions et de partage des collectionneurs. En connectant ton compte, tu auras accès à des channels spécifiques liés aux cartes que tu possèdes."
+
+#: src/pages/packs/index.tsx
+msgid "Rules’ cards are secured on the Starknet blockchain. It’s a technology based on Ethereum, but that needs way less energy and ressources."
+msgstr "Les cartes Rules sont conservées sur la blockchain Starknet. C’est une technologie basée sur Ethereum, tout en étant beaucoup moins consommatrice d’énergie et de ressources."
