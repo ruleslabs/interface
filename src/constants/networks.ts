@@ -21,27 +21,14 @@ export const ChainIdsNetworksMap: { [network: string]: SupportedChainIds } = {
   [SupportedNetworks.GOERLI]: SupportedChainIds.GOERLI,
 }
 
-// interface BasicChainInformation {
-//   urls: string[]
-//   name: string
-// }
-//
-// export const CHAINS: { [chainId: number]: BasicChainInformation } = {
-//   1: {
-//     urls: [
-//       process.env.NEXT_PUBLIC_INFURA_KEY
-//         ? `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`
-//         : undefined,
-//       'https://cloudflare-eth.com',
-//     ].filter((url) => url !== undefined),
-//     name: 'Mainnet',
-//   },
-//   5: {
-//     urls: [
-//       process.env.NEXT_PUBLIC_INFURA_KEY
-//         ? `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`
-//         : undefined,
-//     ].filter((url) => url !== undefined),
-//     name: 'Görli',
-//   },
-// }
+interface BasicNetworkInformation {
+  name: string
+  explorerBaseUrl: string
+}
+
+export const NETWORKS: { [networkId: string]: BasicNetworkInformation } = {
+  [SupportedNetworks.GOERLI]: {
+    name: 'Alpha Goerli',
+    explorerBaseUrl: 'https://goerli.voyager.online',
+  },
+}

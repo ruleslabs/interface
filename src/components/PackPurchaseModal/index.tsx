@@ -49,9 +49,7 @@ export default function PackPurchaseModal({
 }: PackPurchaseModalProps) {
   // handlers
   const [error, setError] = useState<string | null>(null)
-  const [txHash, setTxHash] = useState<string | null>(
-    '0x6c1ad3e9898e032c9b89eeb92ea57249d37d721cdf12fa2a47cf5c75ea254ae'
-  )
+  const [txHash, setTxHash] = useState<string | null>(null)
 
   const onSuccess = useCallback(
     (txHash: string) => {

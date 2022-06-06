@@ -1,9 +1,13 @@
+import { useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
 import Column from '@/components/Column'
 import { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
+import Link from '@/components/Link'
+import { useStarknet } from '@/lib/starknet'
+import { NETWORKS } from '@/constants/networks'
 
 import Copy from '@/images/copy.svg'
 import ExternalLink from '@/images/external-link.svg'
@@ -39,7 +43,7 @@ const TxHashWrapper = styled(RowCenter)`
   svg {
     cursor: pointer;
     width: 16px;
-    margin: 0 0 -2px 8px;
+    margin: 0 0 -2px 4px;
   }
 
   svg * {
@@ -57,6 +61,13 @@ interface ConfirmationProps {
 }
 
 export default function Confirmation({ txHash, packName }: ConfirmationProps) {
+  const { network } = useStarknet()
+  const explorerBaseUrl = NETWORKS[network]?.explorerBaseUrl
+
+  const onCopyTxHash = useCallback(() => {
+    navigator.clipboard.writeText(txHash)
+  }, [txHash])
+
   return (
     <Column gap={32}>
       <Title>
@@ -73,15 +84,19 @@ export default function Confirmation({ txHash, packName }: ConfirmationProps) {
           ...
           {txHash.substring(txHash.length - 8)}
         </TxHash>
-        <RowCenter gap={8}>
-          <TYPE.body clickable>
+        <RowCenter gap={16}>
+          <TYPE.body onClick={onCopyTxHash} clickable>
             <Trans>Copy</Trans>
             <Copy />
           </TYPE.body>
-          <TYPE.body clickable>
-            <Trans>View on Voyager</Trans>
-            <ExternalLink />
-          </TYPE.body>
+          {explorerBaseUrl && (
+            <Link href={`${explorerBaseUrl}/tx/${txHash}`} target="_blank">
+              <TYPE.body clickable>
+                <Trans>View on Voyager</Trans>
+                <ExternalLink />
+              </TYPE.body>
+            </Link>
+          )}
         </RowCenter>
       </TxHashWrapper>
     </Column>
