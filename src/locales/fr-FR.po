@@ -182,6 +182,18 @@ msgstr "Désolé, Rules n'est pas disponible dans votre pays"
 msgid "Payment method already used by another user"
 msgstr "Cette carte est déjà utilisée par un autre utilisateur"
 
+msgid "Invalid payment method"
+msgstr "Méthode de paiement invalide"
+
+msgid "Failed to verify your payment method please try again"
+msgstr "Échec de la vérification de votre moyen de paiement, veuillez réessayer"
+
+msgid "You must accept the payment provider terms and conditions"
+msgstr "Vous devez accepter les conditions générales d'utilisation du prestataire de paiement"
+
+msgid "You must accept the right to retract policy"
+msgstr "Vous devez accepter la politique de droit de retractation"
+
 #: src/components/CardModelBreakdown
 msgid "Limited edition"
 msgstr "Édition limitée"
@@ -407,8 +419,8 @@ msgid "{0, plural, =1 {Season} other {Seasons}}"
 msgstr "{0, plural, =1 {Saison} other {Saisons}}"
 
 #: Packs names
-msgid "Starter Pack Season 3"
-msgstr "Starter Pack Saison 3"
+msgid "Starter Pack Season 1"
+msgstr "Starter Pack Saison 1"
 
 #: src/components/PackBreakdown/index.tsx
 msgid "Buy - {0}€"
@@ -571,13 +583,41 @@ msgid "© Rules 2022 - <0>Terms & Conditions</0>{separator}<1>Confidentiality</
 msgstr "© Rules 2022 - <0>CGU</0>{separator}<1>Confidentialité</1>{separator}<2>Cookies</2>{separator}Contact: <3>support@rules.art</3>"
 
 #: src/components/PackPurchaseModal/index.tsx
-msgid "Your order has been received, you will receive a confirmation email once payment has been accepted."
-msgstr "Votre commande a bien été reçue, vous recevrez un mail de confirmation une fois le paiement accepté."
+msgid "Payment being processed"
+msgstr "Paiement en cours de traitement"
 
 #: src/components/PackPurchaseModal/index.tsx
-msgid "Checkout"
-msgstr "Paiement"
+msgid "Secured Payment"
+msgstr "Paiement Sécurisé"
 
 #: src/components/PackPurchaseModal/checkoutForm.tsx
 msgid "Confirm - {0}€"
 msgstr "Confirmer - {0}€"
+
+#: src/components/PackPurchaseModal/checkoutForm.tsx
+msgid "I acknowledge having read and accepted the <0>terms and conditions</0><1> </1>of Stripe."
+msgstr "Je reconnais avoir pris connaissance et accepté les <0>conditions générales</0><1> </1>de Stripe."
+
+#: src/components/PackPurchaseModal/checkoutForm.tsx
+msgid "I expressly agree that your services will be provided to me upon my acceptance of the Terms and Conditions and I waive my right of retract."
+msgstr "J’accepte expressément que vos services me soient fournis dès mon acceptation des Conditions Générales et je renonce à mon droit de rétractation."
+
+#: src/components/PackPurchaseModal/checkoutForm.tsx
+msgid "Payment being processed"
+msgstr "Payment en cours de traitement"
+
+#: src/components/PackPurchaseModal/Error.tsx
+msgid "Your payment failed for the following reason:"
+msgstr "Votre paiement a échoué pour la raison suivante:"
+
+#: src/components/PackPurchaseModal/Confirmation.tsx
+msgid "Your <0>{packName} </0>is on its way"
+msgstr "Votre <0>{packName} </0>est en route"
+
+#: src/components/PackPurchaseModal/Confirmation.tsx
+msgid "View on Voyager"
+msgstr "Voir sur Voyager"
+
+#: src/components/PackPurchaseModal/Confirmation.tsx
+msgid "Copy"
+msgstr "Copier"

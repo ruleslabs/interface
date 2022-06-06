@@ -1,0 +1,25 @@
+import { Trans } from '@lingui/macro'
+
+import Row from '@/components/Row'
+import ErrorCard from '@/components/ErrorCard'
+
+interface Error {
+  error: any
+  onRetry: () => void
+}
+
+export default function Error({ error, onRetry }: ErrorProps) {
+  return (
+    <Row>
+      <ErrorCard>
+        <Trans>Your payment failed for the following reason:</Trans>
+        <br />
+        <br />
+        {error}.&nbsp;
+        <span onClick={onRetry}>
+          <Trans>Retry</Trans>
+        </span>
+      </ErrorCard>
+    </Row>
+  )
+}

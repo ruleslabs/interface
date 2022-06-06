@@ -8,7 +8,6 @@ import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import Placeholder from '@/components/Placeholder'
-import { useCreatePaymentIntent } from '@/state/stripe/hooks'
 import PackPurchaseModal from '@/components/PackPurchaseModal'
 import { usePackPurchaseModalToggle } from '@/state/application/hooks'
 import InputStepCounter from '@/components/Input/StepCounter'
@@ -58,23 +57,6 @@ export default function PackBreakdown({
   const incrementQuantity = useCallback(() => setQuantity(quantity + 1), [quantity, setQuantity])
   const decrementQuantity = useCallback(() => setQuantity(quantity - 1), [quantity, setQuantity])
 
-  // stripe
-  const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null)
-  const [paymentIntentError, setPaymentIntentError] = useState(false)
-  const createPaymentIntent = useCreatePaymentIntent()
-
-  const purchasePack = useCallback(() => {
-    setStripeClientSecret(null)
-    togglePackPurchaseModal()
-
-    createPaymentIntent(id, quantity)
-      .catch((err) => {
-        setPaymentIntentError(true) // TODO handle error
-        console.error(err)
-      })
-      .then((data) => setStripeClientSecret(data?.clientSecret ?? null))
-  }, [id, createPaymentIntent, setPaymentIntentError, setStripeClientSecret, quantity])
-
   return (
     <>
       <Column gap={28}>
@@ -104,7 +86,7 @@ export default function PackBreakdown({
               min={1}
               max={availableQuantity}
             />
-            <PrimaryButton onClick={purchasePack} large>
+            <PrimaryButton onClick={togglePackPurchaseModal} large>
               <Trans>Buy - {((price * quantity) / 100).toFixed(2)}€</Trans>
             </PrimaryButton>
           </Column>
@@ -114,12 +96,17 @@ export default function PackBreakdown({
           </Placeholder>
         )}
       </Column>
-      <PackPurchaseModal
-        stripeClientSecret={stripeClientSecret}
-        paymentIntentError={paymentIntentError}
-        price={price}
-        quantity={quantity}
-        onSuccessfulPackPurchase={onSuccessfulPackPurchase}
+      <Trans
+        id={name}
+        render={({ translation }) => (
+          <PackPurchaseModal
+            price={price}
+            quantity={quantity}
+            onSuccessfulPackPurchase={onSuccessfulPackPurchase}
+            packId={id}
+            packName={translation}
+          />
+        )}
       />
     </>
   )

@@ -16,6 +16,7 @@ import Separator from '@/components/Separator'
 import { useEthereumETHBalance } from '@/state/wallet/hooks'
 import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
 import { useEthereumStarkgateContract } from '@/hooks/useContract'
+import ErrorCard from '@/components/ErrorCard'
 
 import RampIcon from '@/images/ramp.svg'
 import MetamaskIcon from '@/images/metamask.svg'
@@ -51,19 +52,6 @@ const StyledSecondaryButton = styled(SecondaryButton)`
 
   :hover {
     background: ${({ theme }) => theme.bg3};
-  }
-`
-
-const WrongNetwork = styled(TYPE.body)`
-  background: ${({ theme }) => theme.error}20;
-  border-radius: 3px;
-  padding: 16px;
-  width: 100%;
-  text-align: center;
-
-  span {
-    text-decoration: underline;
-    cursor: pointer;
   }
 `
 
@@ -185,14 +173,14 @@ export default function DepositModal() {
               )}
             </Column>
           ) : account ? (
-            <WrongNetwork>
+            <ErrorCard>
               <Trans>
                 Metamask connected to the wrong network,
                 <br />
                 please&nbsp;
                 <span onClick={activateMetamask}>switch network</span>
               </Trans>
-            </WrongNetwork>
+            </ErrorCard>
           ) : (
             <CustomButton
               title={t`Connect Metamask`}

@@ -125,6 +125,7 @@ const StyledRadioButton = styled(RowCenter)<{ selected?: boolean }>`
   svg {
     width: 16px;
     height: 16px;
+    stroke: white;
   }
 `
 

@@ -166,7 +166,7 @@ export default function SignUpForm() {
               <TYPE.body>
                 <Trans>
                   I agree to Rules&nbsp;
-                  <Link href="/terms-and-conditions" underline>
+                  <Link href="/terms" underline>
                     terms and conditions
                   </Link>
                 </Trans>
