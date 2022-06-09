@@ -160,7 +160,7 @@ export default function Packs() {
         )}
       </PacksWrapper>
       <SecondarySection>
-        <StyledYoutubeEmbed embedId="EB9dyqYIH-A" />
+        <StyledYoutubeEmbed embedId="7Sqj5vQp0d4" />
         <PacksInfosCard>
           <Column gap={32}>
             <Column gap={16}>
