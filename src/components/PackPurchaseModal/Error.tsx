@@ -3,7 +3,7 @@ import { Trans } from '@lingui/macro'
 import Row from '@/components/Row'
 import ErrorCard from '@/components/ErrorCard'
 
-interface Error {
+interface ErrorProps {
   error: any
   onRetry: () => void
 }

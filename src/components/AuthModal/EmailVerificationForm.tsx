@@ -97,7 +97,7 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
         return
       }
 
-      const { starknetAddress, userKey: rulesPrivateKey, backupKey: rulesPrivateKeyBackup } = newWalletInfos
+      const { starknetAddress, userKey: rulesPrivateKey, backupKey: rulesPrivateKeyBackup, txHash } = newWalletInfos
 
       signUpMutation({
         variables: {
@@ -109,6 +109,7 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
           rulesPrivateKeyBackup,
           emailVerificationCode,
           acceptCommercialEmails,
+          starknetAddressDeploymentTxHash: txHash,
         },
       })
         .then((res: any) => onSuccessfulConnection(res?.data?.signUp?.accessToken, true))

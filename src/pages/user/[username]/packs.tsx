@@ -58,7 +58,7 @@ function Packs() {
   const user = packsBalancesQuery.data?.user ?? {}
   const packsBalances = useMemo(
     () => [
-      ...(user.inDeliveryPacksBalances ?? []).map((packBalance) => ({ ...packBalance, inDelivery: true })),
+      ...(user.inDeliveryPacksBalances ?? []).map((packBalance: any) => ({ ...packBalance, inDelivery: true })),
       ...(user?.packsBalances ?? []),
     ],
     [user.packsBalances?.length, user.inDeliveryPacksBalances?.length]

@@ -104,7 +104,7 @@ export default function PackBreakdown({
             quantity={quantity}
             onSuccessfulPackPurchase={onSuccessfulPackPurchase}
             packId={id}
-            packName={translation}
+            packName={typeof translation === 'string' ? translation : ''}
           />
         )}
       />

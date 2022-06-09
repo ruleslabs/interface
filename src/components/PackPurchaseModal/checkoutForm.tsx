@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js'
 import { CreatePaymentMethodCardData } from '@stripe/stripe-js'
 import { Trans, t } from '@lingui/macro'
-// import { w3cwebsocket as W3CWebSocket } from 'websocket'
 
 import useTheme from '@/hooks/useTheme'
 import Column from '@/components/Column'
@@ -141,6 +140,7 @@ export default function CheckoutForm({
   // stripe handler
   const confirmCardPayment = useCallback(
     (paymentMethodCardData: CreatePaymentMethodCardData['card']) => {
+      if (!stripeClientSecret || !stripe) return
       setConfirming(true)
       stripe
         .confirmCardPayment(stripeClientSecret, {
@@ -152,8 +152,7 @@ export default function CheckoutForm({
           console.log(error)
         })
         .then((result) => {
-          console.log(result)
-          if (result.error) onError(`Stripe error: ${result.error.message}`)
+          if ((result as any).error) onError(`Stripe error: ${(result as any).error.message}`)
         })
     },
     [stripe, stripeClientSecret, setConfirming, onError]
@@ -199,7 +198,7 @@ export default function CheckoutForm({
               setLoading(false)
             })
             .then((data) => {
-              if (data?.ok) confirmCardPayment(cardNumberElement)
+              if ((data as any)?.ok) confirmCardPayment(cardNumberElement)
               else setLoading(false)
             })
         })
@@ -217,16 +216,18 @@ export default function CheckoutForm({
   )
 
   // websocket
-  const [wsClient, setWsClient] = useState<W3CWebSocket | null>(null)
+  const [wsClient, setWsClient] = useState<WebSocket | null>(null)
   useEffect(() => {
-    if (!stripeClientSecret) return
+    if (!stripeClientSecret || !process.env.NEXT_PUBLIC_WS_URI) return
 
     const ws = wsClient ?? new WebSocket(process.env.NEXT_PUBLIC_WS_URI)
     if (!wsClient) setWsClient(ws)
 
     ws.onopen = (event) => {
       console.log('connect')
-      const paymentIntentId = stripeClientSecret.match(/^pi_[a-zA-Z0-9]*/)[0]
+      const paymentIntentId = stripeClientSecret.match(/^pi_[a-zA-Z0-9]*/)?.[0]
+      if (!paymentIntentId) return
+
       ws.send(
         JSON.stringify({
           action: 'subscribePaymentIntent',
@@ -249,7 +250,7 @@ export default function CheckoutForm({
           <TYPE.body>
             <Trans>Payment being processed</Trans>
           </TYPE.body>
-          <StyledSpinner />
+          <StyledSpinner fill="text2" />
         </Confirmation>
       )}
       <Form onSubmit={handleCheckout} $display={!confirming}>

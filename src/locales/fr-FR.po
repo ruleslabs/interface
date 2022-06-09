@@ -645,3 +645,7 @@ msgstr "Le Discord est la place centrale de discussions et de partage des collec
 #: src/pages/packs/index.tsx
 msgid "Rules’ cards are secured on the Starknet blockchain. It’s a technology based on Ethereum, but that needs way less energy and ressources."
 msgstr "Les cartes Rules sont conservées sur la blockchain Starknet. C’est une technologie basée sur Ethereum, tout en étant beaucoup moins consommatrice d’énergie et de ressources."
+
+#: src/components/CardOwnership/index.tsx
+msgid "Place for Sale"
+msgstr "Mettre en vente"

@@ -1,13 +1,18 @@
 service: rules-interface
 
-myNextApp:
+stage: ${env.STAGE}
+cloudfrontId: ${env.CLOUDFRONT_ID}
+cloudfrontCertificateArn: ${env.CLOUDFRONT_CERTIFICATE_ARN}
+cloudfrontAlias: ${env.CLOUDFRONT_ALIAS}
+
+rules-interface:
   component: "@sls-next/serverless-component"
   inputs:
     bucketRegion: eu-west-1
-    bucketName: rules-dev-interface
+    bucketName: 'rules-interface-${stage}'
     cloudfront:
-      distributionId: E2XQ3CS383D9BI
-      aliases: ["dev.rules.art"]
+      distributionId: ${cloudfrontId}
+      aliases: ['${cloudfrontAlias}']
       certificate:
         cloudFrontDefaultCertificate: false
-        acmCertificateArn: "arn:aws:acm:us-east-1:497439399169:certificate/6c7fc260-ccee-4f23-bf3a-0c2e03c48337"
+        acmCertificateArn: ${cloudfrontCertificateArn}

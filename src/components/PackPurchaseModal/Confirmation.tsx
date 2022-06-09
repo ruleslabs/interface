@@ -23,7 +23,7 @@ const Title = styled(TYPE.large)`
   }
 
   svg {
-    margin-right: 8px;
+    margin-right: 16px;
     width: 24px;
     stroke: ${({ theme }) => theme.primary1};
   }
@@ -62,7 +62,7 @@ interface ConfirmationProps {
 
 export default function Confirmation({ txHash, packName }: ConfirmationProps) {
   const { network } = useStarknet()
-  const explorerBaseUrl = NETWORKS[network]?.explorerBaseUrl
+  const explorerBaseUrl = network ? NETWORKS[network]?.explorerBaseUrl : null
 
   const onCopyTxHash = useCallback(() => {
     navigator.clipboard.writeText(txHash)

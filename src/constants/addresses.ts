@@ -16,3 +16,7 @@ export const ETH_ADDRESSES: AddressMap = {
 export const STARKGATE_ADDRESSES: AddressMap = {
   [SupportedChainIds.GOERLI]: '0xc3511006C04EF1d78af4C8E0e74Ec18A6E64Ff9e',
 }
+
+export const ACCOUNT_CLASS_HASH: AddressMap = {
+  [SupportedNetworks.GOERLI]: '0x2ece527e422b77f6f1e45e2ec20d1a48544f43980df7f7e27feab644b3c77e1',
+}

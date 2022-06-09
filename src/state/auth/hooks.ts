@@ -51,6 +51,7 @@ const SIGN_UP_MUTATION = gql`
     $rulesPrivateKeyBackup: String!
     $emailVerificationCode: String!
     $acceptCommercialEmails: Boolean!
+    $starknetAddressDeploymentTxHash: String!
   ) {
     signUp(
       input: {
@@ -62,6 +63,7 @@ const SIGN_UP_MUTATION = gql`
         rulesPrivateKeyBackup: $rulesPrivateKeyBackup
         emailVerificationCode: $emailVerificationCode
         acceptCommercialEmails: $acceptCommercialEmails
+        starknetAddressDeploymentTxHash: $starknetAddressDeploymentTxHash
       }
     ) {
       accessToken
