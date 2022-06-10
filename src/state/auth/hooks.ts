@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useMutation, gql } from '@apollo/client'
+import { useMutation, useQuery, gql } from '@apollo/client'
 
 import { AppState } from '@/state'
 import { useAppDispatch, useAppSelector } from '@/state/hooks'
@@ -63,9 +63,23 @@ const SIGN_UP_MUTATION = gql`
   }
 `
 
-const REQUEST_PASSWORD_UPDATE = gql`
+const REQUEST_PASSWORD_UPDATE_MUTATION = gql`
   mutation ($email: String!) {
     requestPasswordUpdate(email: $email)
+  }
+`
+
+const PREPARE_PASSWORD_UPDATE_QUERY = gql`
+  query ($email: String!, $token: String!) {
+    preparePasswordUpdate(input: { email: $email, token: $token })
+  }
+`
+
+const UPDATE_PASSWORD_MUTATION = gql`
+  mutation ($email: String!, $newPassword: String!) {
+    updatePassword(input: { email: $email, newPassword: $newPassword }) {
+      accessToken
+    }
   }
 `
 
@@ -156,5 +170,13 @@ export function useGoogleAuthMutation() {
 }
 
 export function useRequestPasswordUpdateMutation() {
-  return useMutation(REQUEST_PASSWORD_UPDATE)
+  return useMutation(REQUEST_PASSWORD_UPDATE_MUTATION)
+}
+
+export function useUpdatePasswordMutation() {
+  return useMutation(UPDATE_PASSWORD_MUTATION)
+}
+
+export function usePreparePasswordUpdateQuery(options: any) {
+  return useQuery(PREPARE_PASSWORD_UPDATE_QUERY, options)
 }

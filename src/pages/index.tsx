@@ -74,7 +74,7 @@ const SignUpButton = styled(PrimaryButton)`
 
 export default function Home() {
   const router = useRouter()
-  const { action, token, email } = router.query
+  const { action } = router.query
 
   const currentUser = useCurrentUser()
 
@@ -93,7 +93,7 @@ export default function Home() {
 
   // ?action
   useEffect(() => {
-    switch (action) {
+    switch (router.query.action) {
       case 'update-password':
         togglePasswordUpdateModal()
     }

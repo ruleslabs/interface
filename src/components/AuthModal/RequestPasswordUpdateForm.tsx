@@ -74,14 +74,14 @@ export default function RequestPasswordUpdateForm() {
         .catch((prepareSignUpError: ApolloError) => {
           const error = prepareSignUpError?.graphQLErrors?.[0]
           if (error) setError({ message: error.message, id: error.extensions?.id as string })
-          else if (!loading) setError({})
+          else setError({ message: 'Unknown error' })
 
           console.error(prepareSignUpError)
           setLoading(false)
           setRecipient(null)
         })
     },
-    [email, requestPasswordUpdateMutation, setRecipient]
+    [email, requestPasswordUpdateMutation, setRecipient, setLoading, setError]
   )
 
   return (
