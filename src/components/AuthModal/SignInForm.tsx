@@ -137,7 +137,7 @@ export default function SignInForm({ onSuccessfulConnection }: SignInFormProps) 
               value={password}
               placeholder={t`Password`}
               type="password"
-              autoComplete="password"
+              autoComplete="current-password"
               onUserInput={onPasswordInput}
               $valid={error?.id !== 'password' || loading}
             />
@@ -150,16 +150,14 @@ export default function SignInForm({ onSuccessfulConnection }: SignInFormProps) 
             )}
           </Column>
 
-          <Column gap={12}>
-            <SubmitButton type="submit" large>
-              {loading ? 'Loading ...' : t`Sign in`}
-            </SubmitButton>
-          </Column>
+          <SubmitButton type="submit" large>
+            {loading ? 'Loading ...' : t`Sign in`}
+          </SubmitButton>
         </Column>
       </StyledForm>
 
       <Column gap={12} style={{ padding: '0 8px' }}>
-        <TYPE.subtitle clickable>
+        <TYPE.subtitle onClick={() => setAuthMode(AuthMode.REQUEST_PASSWORD_UPDATE)} clickable>
           <Trans>Forgot your password?</Trans>
         </TYPE.subtitle>
         <TYPE.subtitle>

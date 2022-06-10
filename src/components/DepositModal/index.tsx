@@ -127,70 +127,75 @@ export default function DepositModal() {
     <Modal onDismiss={toggleDepositModal} isOpen={isOpen}>
       <StyledDepositModal gap={26}>
         <ModalHeader onDismiss={toggleDepositModal}>{t`Fund your account`}</ModalHeader>
+        {currentUser?.starknetAddress ? (
+          <Column gap={16}>
+            <TYPE.medium>
+              <Trans>From your bank account</Trans>
+            </TYPE.medium>
+            {rampSdk && (
+              <CustomButton
+                title="Ramp"
+                subtitle={t`Buy ETH with your credit card or a bank transfer`}
+                onClick={rampSdk.show}
+              >
+                <RampIcon />
+              </CustomButton>
+            )}
 
-        <Column gap={16}>
-          <TYPE.medium>
-            <Trans>From your bank account</Trans>
-          </TYPE.medium>
-          {rampSdk && (
-            <CustomButton
-              title="Ramp"
-              subtitle={t`Buy ETH with your credit card or a bank transfer`}
-              onClick={rampSdk.show}
-            >
-              <RampIcon />
-            </CustomButton>
-          )}
+            <Separator>
+              <Trans>or</Trans>
+            </Separator>
 
-          <Separator>
-            <Trans>or</Trans>
-          </Separator>
+            <TYPE.medium>
+              <Trans>From your Ethereum wallet</Trans>
+            </TYPE.medium>
 
-          <TYPE.medium>
-            <Trans>From your Ethereum wallet</Trans>
-          </TYPE.medium>
-
-          {account && chainId === desiredChainId ? (
-            <Column gap={16}>
-              <CurrencyInput
-                value={depositAmount}
-                placeholder="0.0"
-                onUserInput={handleDepositAmountUpdate}
-                balance={balance}
-              />
-              {!+depositAmount || !parsedDepositAmount ? (
-                <PrimaryButton disabled large>
-                  <Trans>Enter an amount</Trans>
-                </PrimaryButton>
-              ) : balance?.lessThan(parsedDepositAmount) ? (
-                <PrimaryButton disabled large>
-                  <Trans>Insufficient ETH balance</Trans>
-                </PrimaryButton>
-              ) : (
-                <PrimaryButton onClick={handleDeposit} large>
-                  <Trans>Deposit</Trans>
-                </PrimaryButton>
-              )}
-            </Column>
-          ) : account ? (
-            <ErrorCard>
-              <Trans>
-                Metamask connected to the wrong network,
-                <br />
-                please&nbsp;
-                <span onClick={activateMetamask}>switch network</span>
-              </Trans>
-            </ErrorCard>
-          ) : (
-            <CustomButton
-              title={t`Connect Metamask`}
-              subtitle={t`Deposit ETH from your wallet`}
-              onClick={activateMetamask}
-            >
-              <MetamaskIcon />
-            </CustomButton>
-          )}
-        </Column>
+            {account && chainId === desiredChainId ? (
+              <Column gap={16}>
+                <CurrencyInput
+                  value={depositAmount}
+                  placeholder="0.0"
+                  onUserInput={handleDepositAmountUpdate}
+                  balance={balance}
+                />
+                {!+depositAmount || !parsedDepositAmount ? (
+                  <PrimaryButton disabled large>
+                    <Trans>Enter an amount</Trans>
+                  </PrimaryButton>
+                ) : balance?.lessThan(parsedDepositAmount) ? (
+                  <PrimaryButton disabled large>
+                    <Trans>Insufficient ETH balance</Trans>
+                  </PrimaryButton>
+                ) : (
+                  <PrimaryButton onClick={handleDeposit} large>
+                    <Trans>Deposit</Trans>
+                  </PrimaryButton>
+                )}
+              </Column>
+            ) : account ? (
+              <ErrorCard>
+                <Trans>
+                  Metamask connected to the wrong network,
+                  <br />
+                  please&nbsp;
+                  <span onClick={activateMetamask}>switch network</span>
+                </Trans>
+              </ErrorCard>
+            ) : (
+              <CustomButton
+                title={t`Connect Metamask`}
+                subtitle={t`Deposit ETH from your wallet`}
+                onClick={activateMetamask}
+              >
+                <MetamaskIcon />
+              </CustomButton>
+            )}
+          </Column>
+        ) : (
+          <TYPE.body>
+            <Trans>ETH deposit will be released very soon</Trans>
+          </TYPE.body>
+        )}
       </StyledDepositModal>
     </Modal>
   )

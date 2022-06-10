@@ -11,6 +11,7 @@ import Column from '@/components/Column'
 import Card from '@/components/Card'
 import PackCard from '@/components/PackCard'
 import { PackCountdownWrapper } from '@/components/PackWrapper'
+import Link from '@/components/Link'
 
 const PACKS_COUNT = 4
 
@@ -112,9 +113,12 @@ export default function Packs() {
     let classicPacks = classicPacksQuery.data?.allClassicPacks?.nodes
     const starterPack = lastStarterPackQuery.data?.lastStarterPack
 
-    if (!classicPacks || !starterPack) return
+    if (!classicPacks || !starterPack) {
+      if (classicPacks) setPacks(classicPacks.slice(0, PACKS_COUNT))
+      return
+    }
     if (currentUser?.boughtStarterPack ?? true) {
-      setPacks(classicPacks)
+      setPacks(classicPacks.slice(0, PACKS_COUNT))
       return
     }
 
@@ -180,8 +184,17 @@ export default function Packs() {
               </TYPE.body>
               <TYPE.body>
                 <Trans>
-                  Rules’ Discord is where conversations and sharing between collectors happens. By connecting your
-                  account, you get access to specific channels linked to the cards you own.
+                  <Link href="https://discord.gg/DrfezKYUhH" target="_blank" underline>
+                    Rules’ Discord
+                  </Link>
+                  <span>&nbsp;</span>
+                  is where conversations and sharing between collectors happens.
+                  <br />
+                  By&nbsp;
+                  <Link href="/settings/profile" target="_blank" underline>
+                    connecting your account
+                  </Link>
+                  , you get access to specific channels linked to the cards you own.
                 </Trans>
               </TYPE.body>
             </Column>
@@ -191,8 +204,16 @@ export default function Packs() {
               </TYPE.body>
               <TYPE.body>
                 <Trans>
-                  Rules’ cards are secured on the Starknet blockchain. It’s a technology based on Ethereum, but that
-                  needs way less energy and ressources.
+                  Rules’ cards are secured on the&nbsp;
+                  <Link href="https://starkware.co/starknet/" target="_blank" underline>
+                    Starknet
+                  </Link>
+                  <span>&nbsp;</span>
+                  blockchain. It’s a technology based on&nbsp;
+                  <Link href="https://ethereum.org/en/" target="_blank" underline>
+                    Ethereum
+                  </Link>
+                  , but that needs way less energy and ressources.
                 </Trans>
               </TYPE.body>
             </Column>

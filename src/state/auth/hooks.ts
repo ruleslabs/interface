@@ -46,28 +46,26 @@ const SIGN_UP_MUTATION = gql`
     $email: String!
     $username: String!
     $password: String!
-    $starknetAddress: String!
-    $rulesPrivateKey: RulesPrivateKeyAttributes!
-    $rulesPrivateKeyBackup: String!
     $emailVerificationCode: String!
     $acceptCommercialEmails: Boolean!
-    $starknetAddressDeploymentTxHash: String!
   ) {
     signUp(
       input: {
         email: $email
         username: $username
         password: $password
-        starknetAddress: $starknetAddress
-        rulesPrivateKey: $rulesPrivateKey
-        rulesPrivateKeyBackup: $rulesPrivateKeyBackup
         emailVerificationCode: $emailVerificationCode
         acceptCommercialEmails: $acceptCommercialEmails
-        starknetAddressDeploymentTxHash: $starknetAddressDeploymentTxHash
       }
     ) {
       accessToken
     }
+  }
+`
+
+const REQUEST_PASSWORD_UPDATE = gql`
+  mutation ($email: String!) {
+    requestPasswordUpdate(email: $email)
   }
 `
 
@@ -155,4 +153,8 @@ export function useSignUpMutation() {
 
 export function useGoogleAuthMutation() {
   return useMutation(GOOGLE_AUTH_MUTATION)
+}
+
+export function useRequestPasswordUpdateMutation() {
+  return useMutation(REQUEST_PASSWORD_UPDATE)
 }

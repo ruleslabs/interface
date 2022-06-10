@@ -19,7 +19,6 @@ import {
   usePrepareSignUpMutation,
 } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
-import useCreateWallet, { WalletInfos } from '@/hooks/useCreateWallet'
 import useCountdown from '@/hooks/useCountdown'
 import { passwordHasher } from '@/utils/password'
 
@@ -35,10 +34,6 @@ interface EmailVerificationFormProps {
 }
 
 export default function EmailVerificationForm({ onSuccessfulConnection }: EmailVerificationFormProps) {
-  // Wallet
-  const createWallet = useCreateWallet()
-  const [walletInfos, setWalletInfos] = useState<WalletInfos | null>(null)
-
   // Loading
   const [loading, setLoading] = useState(false)
 
@@ -82,34 +77,13 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
     const signUp = async () => {
       const hashedPassword = await passwordHasher(password)
 
-      let newWalletInfos = walletInfos
-
-      try {
-        if (!newWalletInfos) {
-          newWalletInfos = await createWallet(password)
-          setWalletInfos(newWalletInfos)
-        }
-      } catch (error: any) {
-        setError({ message: `${error.message}, contact support if the error persist.` })
-
-        console.error(error)
-        setLoading(false)
-        return
-      }
-
-      const { starknetAddress, userKey: rulesPrivateKey, backupKey: rulesPrivateKeyBackup, txHash } = newWalletInfos
-
       signUpMutation({
         variables: {
           email,
           username,
           password: hashedPassword,
-          starknetAddress,
-          rulesPrivateKey,
-          rulesPrivateKeyBackup,
           emailVerificationCode,
           acceptCommercialEmails,
-          starknetAddressDeploymentTxHash: txHash,
         },
       })
         .then((res: any) => onSuccessfulConnection(res?.data?.signUp?.accessToken, true))
@@ -122,7 +96,7 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
         })
     }
     signUp().then(() => setLoading(false))
-  }, [emailVerificationCode, email, username, password, signUpMutation, createWallet, setWalletInfos])
+  }, [emailVerificationCode, email, username, password, signUpMutation])
 
   // new code
   const handleNewCode = useCallback(
@@ -134,7 +108,6 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
 
       prepareSignUpMutation({ variables: { username, email } })
         .then((res: any) => {
-          if (!res?.data?.prepareSignUp?.error) setAuthMode(AuthMode.EMAIL_VERIFICATION)
           setLoading(false)
           refreshNewEmailVerificationCodeTime()
         })
@@ -147,7 +120,7 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
           setLoading(false)
         })
     },
-    [email, username, prepareSignUpMutation, setAuthMode, setEmailVerificationCode]
+    [email, username, prepareSignUpMutation, setEmailVerificationCode]
   )
 
   return (

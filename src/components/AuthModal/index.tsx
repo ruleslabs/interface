@@ -14,6 +14,8 @@ import { useQueryCurrentUser } from '@/state/user/hooks'
 import EmailVerificationForm from './EmailVerificationForm'
 import SignUpForm from './SignUpForm'
 import SignInForm from './SignInForm'
+import UpdatePasswordForm from './UpdatePasswordForm'
+import RequestPasswordUpdateForm from './RequestPasswordUpdateForm'
 
 const StyledAuthModal = styled(Column)`
   width: 546px;
@@ -59,6 +61,10 @@ export default function AuthModal() {
         return <SignUpForm />
       case AuthMode.EMAIL_VERIFICATION:
         return <EmailVerificationForm onSuccessfulConnection={onSuccessfulConnection} />
+      case AuthMode.REQUEST_PASSWORD_UPDATE:
+        return <RequestPasswordUpdateForm />
+      case AuthMode.UPDATE_PASSWORD:
+        return <UpdatePasswordForm onSuccessfulConnection={onSuccessfulConnection} />
     }
     return null
   }

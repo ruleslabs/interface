@@ -15,8 +15,8 @@
     "dev": "env-cmd -f .env.local next dev",
     "build:dev": "env-cmd -f .env.development yarn run build",
     "build:prod": "env-cmd -f .env.production yarn run build",
-    "deploy:dev": "yarn run build:dev && env-cmd -f .env.development components-v1 --component",
-    "deploy:prod": "yarn run build:prod && env-cmd -f .env.production components-v1 --component"
+    "deploy:dev": "yarn run build:dev && rm -rf .serverless .serverless_nextjs && env-cmd -f .env.development components-v1 --component",
+    "deploy:prod": "yarn run build:prod && rm -rf .serverless .serverless_nextjs && env-cmd -f .env.production components-v1 --component"
   },
   "author": "Charles Lanier",
   "license": "ISC",

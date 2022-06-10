@@ -1,6 +1,7 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
+import { useRouter } from 'next/router'
 
 import { useCurrentUser } from '@/state/user/hooks'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
@@ -72,6 +73,9 @@ const SignUpButton = styled(PrimaryButton)`
 `
 
 export default function Home() {
+  const router = useRouter()
+  const { action, token, email } = router.query
+
   const currentUser = useCurrentUser()
 
   const toggleAuthModal = useAuthModalToggle()
@@ -81,6 +85,19 @@ export default function Home() {
     setAuthMode(AuthMode.SIGN_UP)
     toggleAuthModal()
   }, [toggleAuthModal, setAuthMode])
+
+  const togglePasswordUpdateModal = useCallback(() => {
+    setAuthMode(AuthMode.UPDATE_PASSWORD)
+    toggleAuthModal()
+  }, [toggleAuthModal, setAuthMode])
+
+  // ?action
+  useEffect(() => {
+    switch (action) {
+      case 'update-password':
+        togglePasswordUpdateModal()
+    }
+  }, [])
 
   return (
     <>

@@ -135,6 +135,9 @@ msgstr "Email inconnu "
 msgid "Invalid password"
 msgstr "Mot de passe invalide"
 
+msgid "Invalid token"
+msgstr "Token invalide"
+
 msgid "Failed to sign in"
 msgstr "Echec de connexion"
 
@@ -176,6 +179,9 @@ msgstr "Vous devez accepter les condition générales d'utilisation"
 
 msgid "Sorry, Rules is not available in your country"
 msgstr "Désolé, Rules n'est pas disponible dans votre pays"
+
+msgid "Your new password cannot be the same as your old password"
+msgstr "Ton nouveau mot de passe doit être différent de l'ancien"
 
 # Payment errors
 
@@ -518,6 +524,10 @@ msgstr "Selection de cartes possibles"
 msgid "Cards of this pack are created by working closely with the artists.<0/>50% of revenues will be distributed to them directly.<1/>Each card gives access to specific Discord channel and to airdrops of gifts during the year."
 msgstr "Les cartes de ce pack sont créées en étroite collaboration avec les artistes.<0/>50% des revenus leur sont reversés directement.<1/>Chaque carte donne accès à un channel Discord spécifique et à des airdrops de cadeaux tout au long de l’année."
 
+#: src/pages/pack/[packSlug].tsx
+msgid "<0>Estimated delivery on June 29</0><1/>Cards of this pack are created by working closely with the artists.<2/>50% of revenues will be distributed to them directly.<3/>Each card gives access to specific Discord channel and to airdrops of gifts during the year."
+msgstr "<0>Livraison estimée pour le 29 Juin</0><1/>Les cartes de ce pack sont créées en étroite collaboration avec les artistes.<2/>50% des revenus leur sont reversés directement.<3/>Chaque carte donne accès à un channel Discord spécifique et à des airdrops de cadeaux tout au long de l’année."
+
 #: src/pages/user/[username]/cards.tsx
 msgid "Oldest"
 msgstr "Moins récentes"
@@ -639,13 +649,33 @@ msgid "Rules is a trading card game about rap music. Cards are official, crafted
 msgstr "Rules est un jeu de cartes à collectionner sur l’univers rap. Les cartes sont officielles, créées avec passion, et chaque achat permet de financer les artistes indépendants."
 
 #: src/pages/packs/index.tsx
-msgid "Rules’ Discord is where conversations and sharing between collectors happens. By connecting your account, you get access to specific channels linked to the cards you own."
-msgstr "Le Discord est la place centrale de discussions et de partage des collectionneurs. En connectant ton compte, tu auras accès à des channels spécifiques liés aux cartes que tu possèdes."
+msgid "<0>Rules’ Discord</0><1> </1>is where conversations and sharing between collectors happens.<2/>By <3>connecting your account</3>, you get access to specific channels linked to the cards you own."
+msgstr "<0>Le Discord</0><1> </1>est la place centrale de discussions et de partage des collectionneurs.<2/>En <3>connectant ton compte</3>, tu auras accès à des channels spécifiques liés aux cartes que tu possèdes."
 
 #: src/pages/packs/index.tsx
-msgid "Rules’ cards are secured on the Starknet blockchain. It’s a technology based on Ethereum, but that needs way less energy and ressources."
-msgstr "Les cartes Rules sont conservées sur la blockchain Starknet. C’est une technologie basée sur Ethereum, tout en étant beaucoup moins consommatrice d’énergie et de ressources."
+msgid "Rules’ cards are secured on the <0>Starknet</0><1> </1>blockchain. It’s a technology based on <2>Ethereum</2>, but that needs way less energy and ressources."
+msgstr "Les cartes Rules sont conservées sur la blockchain <0>Starknet</0><1></1>. C’est une technologie basée sur <2>Ethereum</2>, tout en étant beaucoup moins consommatrice d’énergie et de ressources."
 
 #: src/components/CardOwnership/index.tsx
 msgid "Place for Sale"
 msgstr "Mettre en vente"
+
+#: src/components/DepositModal/index.tsx
+msgid "ETH deposit will be released very soon"
+msgstr "Le dépôt d'ETH arrive prochainement"
+
+#: src/components/AuthModal/RequestPasswordUpdateForm.tsx
+msgid "Enter your email to request a password update, you will receive a link to that email address to update your password."
+msgstr "Saisi l'email associé à ton compte, tu vas recevoir sur cet email un lien pour changer ton mot de passe."
+
+#: src/components/AuthModal/RequestPasswordUpdateForm.tsx
+msgid "The link has been emailed to {recipient}"
+msgstr "Le lien a été envoyé à {recipient}"
+
+#: src/components/AuthModal/RequestPasswordUpdateForm.tsx
+msgid "Submit"
+msgstr "Envoyer"
+
+#: src/components/AuthModal/RequestPasswordUpdateForm.tsx
+msgid "New link in {0} seconds"
+msgstr "Nouveau lien dans {0} secondes"

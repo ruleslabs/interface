@@ -27,7 +27,7 @@ export default function Onboarding() {
     switch (onboardingPage) {
       default:
       case OnboardingPage.INTRODUCTION:
-        return <IntroductionPage nextPage={OnboardingPage.STARTER_PACK} />
+        return <IntroductionPage nextPage={OnboardingPage.DISCORD} />
       case OnboardingPage.STARTER_PACK:
         return <StarterPackPage nextPage={OnboardingPage.DISCORD} />
       case OnboardingPage.DISCORD:

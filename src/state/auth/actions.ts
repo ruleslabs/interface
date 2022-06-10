@@ -4,6 +4,8 @@ export enum AuthMode {
   SIGN_IN,
   SIGN_UP,
   EMAIL_VERIFICATION,
+  REQUEST_PASSWORD_UPDATE,
+  UPDATE_PASSWORD,
 }
 
 export interface AuthEmailPayload {

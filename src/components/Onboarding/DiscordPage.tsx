@@ -5,6 +5,7 @@ import { Trans } from '@lingui/macro'
 import { TYPE } from '@/styles/theme'
 import Column, { ColumnCenter } from '@/components/Column'
 import { PageBody, SkipButton, MainActionButton } from './SubComponents'
+import Link from '@/components/Link'
 
 const StyledPageBody = styled(PageBody)`
   ${({ theme }) => theme.media.medium`
@@ -72,9 +73,11 @@ export default function DiscordPage() {
           <img src="/assets/discord-screen.png" />
         </DiscordScreenWrapper>
         <PageContent>
-          <MainActionButton large>
-            <Trans>Join</Trans>
-          </MainActionButton>
+          <Link href="https://discord.gg/DrfezKYUhH" target="_blank">
+            <MainActionButton large>
+              <Trans>Join</Trans>
+            </MainActionButton>
+          </Link>
           <SkipButton onClick={() => router.back()}>
             <Trans>Skip</Trans>
           </SkipButton>

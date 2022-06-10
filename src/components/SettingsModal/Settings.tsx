@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
+import { WeiAmount } from '@rulesorg/sdk-core'
 
 import { useCurrentUser } from '@/state/user/hooks'
 import { useETHBalances } from '@/state/wallet/hooks'
@@ -51,7 +52,8 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
 
   // ETH balance
   const weiAmountToEURValue = useWeiAmountToEURValue()
-  const balance = useETHBalances([currentUser?.starknetAddress])[currentUser?.starknetAddress]
+  let balance = useETHBalances([currentUser?.starknetAddress])[currentUser?.starknetAddress]
+  balance = currentUser?.starknetAddress ? balance : WeiAmount.fromRawAmount(0)
 
   // Logout
   const [revokeSessionMutation] = useRevokeSessionMutation()

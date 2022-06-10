@@ -154,6 +154,8 @@ export default function Pack() {
                   <Column gap={32}>
                     <TYPE.body>
                       <Trans>
+                        <strong>Estimated delivery on June 29</strong>
+                        <br />
                         Cards of this pack are created by working closely with the artists.
                         <br />
                         50% of revenues will be distributed to them directly.
