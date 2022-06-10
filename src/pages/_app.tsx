@@ -41,7 +41,24 @@ function App({ Component, pageProps }: AppProps) {
             <Web3ReactProvider connectors={connectors}>
               <Updaters />
               <Head>
-                <title>Rules</title>
+                <title>Rules - Trading Card Game</title>
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:site" content="@ruleslabs" />
+                <meta name="twitter:title" content="Rules - Trading Card Game" />
+                <meta
+                  name="twitter:description"
+                  content="Site officiel de Rules, le jeu de cartes à collectionner sur l'univers rap. Constituez votre deck, soutenez les artistes, luttez pour l'indépendance !"
+                />
+                <meta name="twitter:image" content={`${process.env.NEXT_PUBLIC_APP_URL}/assets/twitter-card.jpg`} />
+
+                <meta property="og:title" content="Rules - Trading Card Game" />
+                <meta
+                  property="og:description"
+                  content="Site officiel de Rules, le jeu de cartes à collectionner sur l'univers rap. Constituez votre deck, soutenez les artistes, luttez pour l'indépendance !"
+                />
+                <meta property="og:description" content="Offering tour packages for individuals or groups." />
+                <meta property="og:image" content={`${process.env.NEXT_PUBLIC_APP_URL}/assets/twitter-card.jpg`} />
+
                 <link rel="shortcut icon" href="/assets/favicon.png" />
               </Head>
               <StyledThemeProvider>{getLayout(<Component {...pageProps} />)}</StyledThemeProvider>
