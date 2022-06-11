@@ -13,6 +13,10 @@ import { usePreparePasswordUpdateQuery, useUpdatePasswordMutation } from '@/stat
 import { useAuthModalToggle } from '@/state/application/hooks'
 import { PrimaryButton } from '@/components/Button'
 
+const StyledForm = styled.form`
+  width: 100%;
+`
+
 const SubmitButton = styled(PrimaryButton)`
   height: 55px;
   margin: 12px 0;
@@ -41,7 +45,15 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePas
   useEffect(() => {
     if (preparePasswordUpdateQuery.error) setError({ message: preparePasswordUpdateQuery.error })
   }, [preparePasswordUpdateQuery.error])
-  const readyToUpdate = !preparePasswordUpdateQuery.error && !preparePasswordUpdateQuery.loading
+  const readyToUpdate =
+    !preparePasswordUpdateQuery.error &&
+    !preparePasswordUpdateQuery.data?.preparePasswordUpdate.error &&
+    !preparePasswordUpdateQuery.loading
+
+  useEffect(() => {
+    if (preparePasswordUpdateQuery.data?.preparePasswordUpdate?.error)
+      setError({ message: preparePasswordUpdateQuery.data?.preparePasswordUpdate?.error })
+  }, [preparePasswordUpdateQuery.data?.preparePasswordUpdate?.error])
 
   // graphql mutations
   const [updatePasswordMutation] = useUpdatePasswordMutation()
@@ -87,40 +99,44 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePas
     <>
       <ModalHeader onDismiss={toggleAuthModal}>{t`Update password`}</ModalHeader>
 
-      <Column gap={26}>
-        <Column gap={12}>
-          <Input
-            id="password"
-            value={password}
-            placeholder={t`New password`}
-            type="password"
-            autoComplete="new-password"
-            onUserInput={onPasswordInput}
-            $valid={error?.id !== 'password' || loading}
-          />
+      <StyledForm key="update-password" onSubmit={handlePasswordUpdate} noValidate>
+        <Column gap={26}>
+          <Column gap={12}>
+            <input id="email" type="text" value={email} style={{ display: 'none' }} readOnly />
 
-          <Input
-            id="password-confirmation"
-            value={confirmPassword}
-            placeholder={t`Confirm password`}
-            type="password"
-            autoComplete="new-password"
-            onUserInput={onConfirmPasswordInput}
-            $valid={error?.id !== 'passwordConfirmation' || loading}
-          />
-
-          {error.message && (
-            <Trans
-              id={error.message}
-              render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
+            <Input
+              id="password"
+              value={password}
+              placeholder={t`New password`}
+              type="password"
+              autoComplete="new-password"
+              onUserInput={onPasswordInput}
+              $valid={error?.id !== 'password' || loading}
             />
-          )}
-        </Column>
 
-        <SubmitButton type="submit" onClick={handlePasswordUpdate} disabled={!readyToUpdate || loading} large>
-          {loading || !readyToUpdate ? 'Loading ...' : t`Submit`}
-        </SubmitButton>
-      </Column>
+            <Input
+              id="password-confirmation"
+              value={confirmPassword}
+              placeholder={t`Confirm password`}
+              type="password"
+              autoComplete="new-password"
+              onUserInput={onConfirmPasswordInput}
+              $valid={error?.id !== 'passwordConfirmation' || loading}
+            />
+
+            {error.message && (
+              <Trans
+                id={error.message}
+                render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
+              />
+            )}
+          </Column>
+
+          <SubmitButton type="submit" onClick={handlePasswordUpdate} disabled={!readyToUpdate || loading} large>
+            {(loading || !readyToUpdate) && !error ? 'Loading ...' : t`Submit`}
+          </SubmitButton>
+        </Column>
+      </StyledForm>
     </>
   )
 }

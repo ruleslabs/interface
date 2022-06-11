@@ -71,7 +71,11 @@ const REQUEST_PASSWORD_UPDATE_MUTATION = gql`
 
 const PREPARE_PASSWORD_UPDATE_QUERY = gql`
   query ($email: String!, $token: String!) {
-    preparePasswordUpdate(input: { email: $email, token: $token })
+    preparePasswordUpdate(input: { email: $email, token: $token }) {
+      error {
+        message
+      }
+    }
   }
 `
 

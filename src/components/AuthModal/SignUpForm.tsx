@@ -136,7 +136,6 @@ export default function SignUpForm() {
               $valid={error?.id !== 'email' || loading}
             />
             <Input
-              id="username"
               value={username}
               placeholder={t`Username`}
               type="text"
