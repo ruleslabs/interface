@@ -27,6 +27,7 @@ const CURRENT_USER_QUERY = gql`
         twitterUsername
         instagramUsername
         isDiscordVisible
+        certified
         discordUser {
           username
           discriminator

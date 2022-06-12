@@ -607,8 +607,8 @@ msgid "I acknowledge having read and accepted the <0>terms and conditions</0><1
 msgstr "Je reconnais avoir pris connaissance et accepté les <0>conditions générales</0><1> </1>de Stripe."
 
 #: src/components/PackPurchaseModal/checkoutForm.tsx
-msgid "I expressly agree that your services will be provided to me upon my acceptance of the Terms and Conditions and I waive my right of retract."
-msgstr "J’accepte expressément que vos services me soient fournis dès mon acceptation des Conditions Générales et je renonce à mon droit de rétractation."
+msgid "I expressly agree that your services will be provided to me upon my acceptance of the <0>Terms and Conditions</0><1> </1>and I waive my right of retract."
+msgstr "J’accepte expressément que vos services me soient fournis dès mon acceptation des <0>Conditions Générales</0><1> </1>et je renonce à mon droit de rétractation."
 
 #: src/components/PackPurchaseModal/checkoutForm.tsx
 msgid "Payment being processed"
@@ -721,3 +721,11 @@ msgstr "50% des revenus leur sont reversés directement."
 #: src/pages/pack/[packSlug].tsx
 msgid "Each card gives access to specific Discord channel and to airdrops of gifts during the year."
 msgstr "Chaque carte donne accès à un channel Discord spécifique et à des airdrops de cadeaux tout au long de l’année."
+
+#: src/pages/marketplace/index.tsx
+msgid "The marketplace will open early July."
+msgstr "Ouverture du marché d’échange début Juillet."
+
+#: src/pages/marketplace/index.tsx
+msgid "Please <0>join our Discord</0><1> </1>for live updates."
+msgstr "Suivez les informations en direct <0>sur le Discord</0>."

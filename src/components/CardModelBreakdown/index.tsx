@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
@@ -61,10 +61,9 @@ export default function CardModelBreakdown({
             <span> /{maxSupply ?? ' +'}</span>
           </TYPE.body>
         ) : (
-          <TYPE.body spanColor="text2">
-            {maxSupply ? `${maxSupply} ex.` : ''}
-            <span>{maxSupply ? t`Limited edition` : t`Unlimited edition`}</span>
-          </TYPE.body>
+          <TYPE.subtitle>
+            <Trans>Limited edition</Trans>
+          </TYPE.subtitle>
         )}
       </Column>
     </>

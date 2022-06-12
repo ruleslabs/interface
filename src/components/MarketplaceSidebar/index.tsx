@@ -31,6 +31,12 @@ const StyledMarketplaceSidebar = styled.div`
   left: 0;
   z-index: 1;
 
+  ${({ theme }) => theme.media.mediumGT`
+    & ~ footer {
+      left: 283px;
+    }
+  `}
+
   ${({ theme }) => theme.media.medium`
     top: 62px;
   `}

@@ -7,6 +7,7 @@ const MEDIA_QUERIES_WIDTH = {
   extraSmall: 'max-width: 481',
   small: 'max-width: 769',
   medium: 'max-width: 1024',
+  mediumGT: 'min-width: 1025',
   large: 'max-width: 1200',
 }
 

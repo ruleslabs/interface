@@ -11,6 +11,25 @@ import { ColumnCenter } from '@/components/Column'
 import Row from '@/components/Row'
 import Grid from '@/components/Grid'
 import { useCardModelOnSale } from '@/state/search/hooks'
+import Link from '@/components/Link'
+
+const ComingSoon = styled(ColumnCenter)`
+  background: ${({ theme }) => theme.primary1};
+  padding: 12px 0;
+  top: 57px;
+  margin-left: 283px;
+  right: 0;
+  z-index: 1;
+  justify-content: center;
+
+  & a {
+    text-decoration: underline;
+  }
+
+  ${({ theme }) => theme.media.medium`
+    margin-left: 0;
+  `}
+`
 
 const MainSection = styled(Section)`
   margin-top: 44px;
@@ -81,6 +100,21 @@ export default function Marketplace() {
   return (
     <>
       <StyledMarketplaceSidebar isOpenOnMobile={isFiltersSidebarOpenOnMobile} dispatch={toggleFiltersOnMobile} />
+      <ComingSoon>
+        <TYPE.medium>
+          <Trans>The marketplace will open early July.</Trans>
+        </TYPE.medium>
+        <TYPE.body>
+          <Trans>
+            Please&nbsp;
+            <Link color="text1" href="https://discord.gg/DrfezKYUhH" target="_blank" underline>
+              join our Discord
+            </Link>
+            <span>&nbsp;</span>
+            for live updates.
+          </Trans>
+        </TYPE.body>
+      </ComingSoon>
       <MainSection size="max">
         <MarketplaceBody>
           <GridHeader

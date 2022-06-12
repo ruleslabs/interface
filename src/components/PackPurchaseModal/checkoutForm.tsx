@@ -294,7 +294,7 @@ export default function CheckoutForm({
               <TYPE.body>
                 <Trans>
                   I acknowledge having read and accepted the&nbsp;
-                  <Link href="https://stripe.com/fr/legal/checkout" underline>
+                  <Link href="https://stripe.com/fr/legal/checkout" target="_blank" underline>
                     terms and conditions
                   </Link>
                   <span>&nbsp;</span>
@@ -305,8 +305,12 @@ export default function CheckoutForm({
             <Checkbox value={acceptRightToRetract} onChange={toggleRightToRetractAgreed}>
               <TYPE.body>
                 <Trans>
-                  I expressly agree that your services will be provided to me upon my acceptance of the Terms and
-                  Conditions and I waive my right of retract.
+                  I expressly agree that your services will be provided to me upon my acceptance of the&nbsp;
+                  <Link href="/terms" target="_blank" underline>
+                    Terms and Conditions
+                  </Link>
+                  <span>&nbsp;</span>
+                  and I waive my right of retract.
                 </Trans>
               </TYPE.body>
             </Checkbox>

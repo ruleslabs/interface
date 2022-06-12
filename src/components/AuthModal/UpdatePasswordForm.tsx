@@ -72,7 +72,7 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePas
       }
 
       // Check password
-      const passwordError = await validatePassword(email, username, password)
+      const passwordError = await validatePassword(email as string, username as string, password)
       if (passwordError !== null) {
         switch (passwordError) {
           case PasswordError.LENGTH:

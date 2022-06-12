@@ -29,6 +29,7 @@ declare module 'styled-components' {
       extraSmall: ThemedCssFunction<DefaultTheme>
       small: ThemedCssFunction<DefaultTheme>
       medium: ThemedCssFunction<DefaultTheme>
+      mediumGT: ThemedCssFunction<DefaultTheme>
       large: ThemedCssFunction<DefaultTheme>
     }
   }
