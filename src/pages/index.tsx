@@ -103,7 +103,7 @@ export default function Home() {
     <>
       <Video src="https://videos.rules.art/mp4/homepage.mp4" playsInline loop autoPlay muted />
       <Section>
-        <StyledYoutubeEmbed embedId="MKjFkXXLbhM" />
+        <StyledYoutubeEmbed embedId="m0lYtWPhJVo" />
       </Section>
       {!currentUser && (
         <SignUpButtonWrapper>

@@ -71,9 +71,10 @@ interface ModalProps {
   isOpen: boolean
   onDismiss: () => void
   sidebar?: boolean
+  autoClose?: boolean
 }
 
-export default function Modal({ children, isOpen, onDismiss, sidebar = false }: ModalProps) {
+export default function Modal({ children, isOpen, onDismiss, sidebar = false, autoClose = true }: ModalProps) {
   const transitionProperties = sidebar
     ? {
         config: { duration: 150 },
@@ -99,13 +100,13 @@ export default function Modal({ children, isOpen, onDismiss, sidebar = false }: 
   useEffect(() => setModalNeedsUpdate(true), [router])
 
   useEffect(() => {
-    if (!modalNeedsUpdate) return
+    if (!modalNeedsUpdate || !autoClose) return
     setModalNeedsUpdate(false)
     if (!isOpen) return
 
     setModalNeedsUpdate(false)
     onDismiss()
-  }, [modalNeedsUpdate, onDismiss, isOpen])
+  }, [modalNeedsUpdate, onDismiss, isOpen, autoClose])
 
   return (
     <>

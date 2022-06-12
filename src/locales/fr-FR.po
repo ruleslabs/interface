@@ -526,14 +526,6 @@ msgstr "Prix décroissant"
 msgid "Selection of possible cards"
 msgstr "Selection de cartes possibles"
 
-#: src/pages/pack/[packSlug].tsx
-msgid "Cards of this pack are created by working closely with the artists.<0/>50% of revenues will be distributed to them directly.<1/>Each card gives access to specific Discord channel and to airdrops of gifts during the year."
-msgstr "Les cartes de ce pack sont créées en étroite collaboration avec les artistes.<0/>50% des revenus leur sont reversés directement.<1/>Chaque carte donne accès à un channel Discord spécifique et à des airdrops de cadeaux tout au long de l’année."
-
-#: src/pages/pack/[packSlug].tsx
-msgid "<0>Estimated delivery on June 29</0><1/>Cards of this pack are created by working closely with the artists.<2/>50% of revenues will be distributed to them directly.<3/>Each card gives access to specific Discord channel and to airdrops of gifts during the year."
-msgstr "<0>Livraison estimée pour le 29 Juin</0><1/>Les cartes de ce pack sont créées en étroite collaboration avec les artistes.<2/>50% des revenus leur sont reversés directement.<3/>Chaque carte donne accès à un channel Discord spécifique et à des airdrops de cadeaux tout au long de l’année."
-
 #: src/pages/user/[username]/cards.tsx
 msgid "Oldest"
 msgstr "Moins récentes"
@@ -713,3 +705,19 @@ msgstr "Merci, votre paiement a été traité avec succès. Un email de confirma
 #: src/components/PackPurchaseModal/Confirmation.tsx
 msgid "Estimated delivery on <0>June 29</0>"
 msgstr "Livraison  estimée pour le <0>29 Juin</0>"
+
+#: src/pages/pack/[packSlug].tsx
+msgid "Estimated delivery on June 29"
+msgstr "Livraison estimée pour le 29 Juin"
+
+#: src/pages/pack/[packSlug].tsx
+msgid "Cards of this pack are created by working closely with the artists."
+msgstr "Les cartes de ce pack sont créées en étroite collaboration avec les artistes."
+
+#: src/pages/pack/[packSlug].tsx
+msgid "50% of revenues will be distributed to them directly."
+msgstr "50% des revenus leur sont reversés directement."
+
+#: src/pages/pack/[packSlug].tsx
+msgid "Each card gives access to specific Discord channel and to airdrops of gifts during the year."
+msgstr "Chaque carte donne accès à un channel Discord spécifique et à des airdrops de cadeaux tout au long de l’année."

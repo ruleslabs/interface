@@ -121,8 +121,8 @@ export default function Pack() {
   }, [packQuery.data?.pack])
 
   const pack = packQuery.data?.pack
-  const isValid = !packQuery.error && pack
-  const isLoading = packQuery.loading
+  const error = packQuery.error
+  const isLoading = packQuery.loading || !pack
 
   // purchase
   const [availableQuantity, setAvailableQuantity] = useState(0)
@@ -138,12 +138,12 @@ export default function Pack() {
       <Section marginTop="36px">
         <BackButton onClick={router.back} />
       </Section>
-      {isLoading ? (
-        <TYPE.body textAlign="center">Loading...</TYPE.body>
-      ) : !isValid ? (
+      {error ? (
         <TYPE.body textAlign="center">
           <Trans>An error has occured</Trans>
         </TYPE.body>
+      ) : isLoading ? (
+        <TYPE.body textAlign="center">Loading...</TYPE.body>
       ) : (
         <>
           <StyledMainSection>
@@ -166,15 +166,20 @@ export default function Pack() {
                   />
                 </Card>
                 <ExplanationsCard>
-                  <Column gap={32}>
+                  <Column gap={28}>
+                    <TYPE.body>
+                      <strong>
+                        <Trans>Estimated delivery on June 29</Trans>
+                      </strong>
+                    </TYPE.body>
+                    <TYPE.body>
+                      <Trans>Cards of this pack are created by working closely with the artists.</Trans>
+                    </TYPE.body>
+                    <TYPE.body>
+                      <Trans>50% of revenues will be distributed to them directly.</Trans>
+                    </TYPE.body>
                     <TYPE.body>
                       <Trans>
-                        <strong>Estimated delivery on June 29</strong>
-                        <br />
-                        Cards of this pack are created by working closely with the artists.
-                        <br />
-                        50% of revenues will be distributed to them directly.
-                        <br />
                         Each card gives access to specific Discord channel and to airdrops of gifts during the year.
                       </Trans>
                     </TYPE.body>

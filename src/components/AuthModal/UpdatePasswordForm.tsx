@@ -4,7 +4,7 @@ import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
-import { passwordHasher } from '@/utils/password'
+import { passwordHasher, validatePassword, PasswordError } from '@/utils/password'
 import { ModalHeader } from '@/components/Modal'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
@@ -32,7 +32,7 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePas
 
   // router
   const router = useRouter()
-  const { token, email } = router.query
+  const { token, email, username } = router.query
 
   // modal
   const toggleAuthModal = useAuthModalToggle()
@@ -71,6 +71,25 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePas
         return
       }
 
+      // Check password
+      const passwordError = await validatePassword(email, username, password)
+      if (passwordError !== null) {
+        switch (passwordError) {
+          case PasswordError.LENGTH:
+            setError({ message: 'Password should be at least 6 characters long' })
+            break
+
+          case PasswordError.LEVENSHTEIN:
+            setError({ message: 'Password too similar to your email or username' })
+            break
+
+          case PasswordError.PWNED:
+            setError({ message: 'This password appears in a public data breach, please choose a stronger password' })
+            break
+        }
+        return
+      }
+
       setLoading(true)
 
       const updatePassword = async () => {
@@ -89,7 +108,7 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePas
       }
       updatePassword()
     },
-    [password, confirmPassword, updatePasswordMutation, setLoading, setError]
+    [password, confirmPassword, updatePasswordMutation, setLoading, setError, username]
   )
 
   return (
