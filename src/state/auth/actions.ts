@@ -36,4 +36,6 @@ export const updateFormCheckboxes = createAction<AuthFormCheckboxPayload>('auth/
 
 export const refreshNewEmailVerificationCodeTime = createAction('auth/refreshNewEmailVerificationCodeTime')
 
+export const refreshNewPasswordUpdateLinkTime = createAction('auth/refreshNewPasswordUpdateLinkTime')
+
 export const setAuthMode = createAction<AuthModePayload>('auth/setAuthMode')

@@ -98,7 +98,7 @@ function Packs() {
                 pictureUrl={packBalance.pack.pictureUrl}
                 soldout={false}
                 inDelivery={packBalance.inDelivery}
-                open={isCurrentUserProfile}
+                open={isCurrentUserProfile && !packBalance.inDelivery}
               />
             ))
         )}

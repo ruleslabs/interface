@@ -42,9 +42,6 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePas
 
   // prepare
   const preparePasswordUpdateQuery = usePreparePasswordUpdateQuery({ variables: { token, email } })
-  useEffect(() => {
-    if (preparePasswordUpdateQuery.error) setError({ message: preparePasswordUpdateQuery.error })
-  }, [preparePasswordUpdateQuery.error])
   const readyToUpdate =
     !preparePasswordUpdateQuery.error &&
     !preparePasswordUpdateQuery.data?.preparePasswordUpdate.error &&
@@ -80,7 +77,7 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePas
         const hashedPassword = await passwordHasher(password)
 
         updatePasswordMutation({ variables: { email, newPassword: hashedPassword } })
-          .then((res: any) => onSuccessfulConnection(res?.data?.updatePassword?.accessToken, true))
+          .then((res: any) => onSuccessfulConnection(res?.data?.updatePassword?.accessToken, false))
           .catch((updatePasswordError: ApolloError) => {
             const error = updatePasswordError?.graphQLErrors?.[0]
             if (error) setError({ message: error.message, id: error.extensions?.id as string })

@@ -13,8 +13,8 @@ import {
   useSetAuthMode,
   useAuthForm,
   useRequestPasswordUpdateMutation,
-  useNewEmailVerificationCodeTime,
-  useRefreshNewEmailVerificationCodeTime,
+  useNewPasswordUpdateLinkTime,
+  useRefreshNewPasswordUpdateLinkTime,
 } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import useCountdown from '@/hooks/useCountdown'
@@ -46,13 +46,13 @@ export default function RequestPasswordUpdateForm() {
   // email
   const { email: emailFromState } = useAuthForm()
   const [email, setEmail] = useState(emailFromState)
-  const [recipient, setRecipient] = useState(null)
+  const [recipient, setRecipient] = useState<string | null>(null)
   const onEmailInput = useCallback((email: string) => setEmail(email), [setEmail])
 
   // Countdown
-  const newEmailVerificationCodeTime = useNewEmailVerificationCodeTime()
-  const refreshNewEmailVerificationCodeTime = useRefreshNewEmailVerificationCodeTime()
-  const countdown = useCountdown(new Date(newEmailVerificationCodeTime ?? 0))
+  const newPasswordUpdateLinkTime = useNewPasswordUpdateLinkTime()
+  const refreshNewPasswordUpdateLinkTime = useRefreshNewPasswordUpdateLinkTime()
+  const countdown = useCountdown(new Date(newPasswordUpdateLinkTime ?? 0))
 
   // errors
   const [error, setError] = useState<{ message?: string; id?: string }>({})
@@ -67,7 +67,7 @@ export default function RequestPasswordUpdateForm() {
       requestPasswordUpdateMutation({ variables: { email } })
         .then((res: any) => {
           setLoading(false)
-          refreshNewEmailVerificationCodeTime()
+          refreshNewPasswordUpdateLinkTime()
           setRecipient(email)
           setError({})
         })

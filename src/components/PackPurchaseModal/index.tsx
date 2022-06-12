@@ -47,17 +47,47 @@ export default function PackPurchaseModal({
   packId,
   packName,
 }: PackPurchaseModalProps) {
+  // modal
+  const isOpen = useModalOpen(ApplicationModal.PACK_PURCHASE)
+  const togglePackPurchaseModal = usePackPurchaseModalToggle()
+
+  // stripe
+  const stripePromise = useStripePromise()
+  const [paymentIntentInitialized, setPaymentIntentInitialized] = useState(false)
+  const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null)
+  const [paymentIntentError, setPaymentIntentError] = useState(false)
+  const createPaymentIntent = useCreatePaymentIntent()
+
+  const refreshPaymentIntent = useCallback(() => {
+    if (!isOpen) return
+
+    setStripeClientSecret(null)
+    setPaymentIntentInitialized(true)
+
+    createPaymentIntent(packId, quantity)
+      .catch((err) => {
+        setPaymentIntentError(true) // TODO handle error
+        console.error(err)
+      })
+      .then((data) => setStripeClientSecret(data?.clientSecret ?? null))
+  }, [packId, createPaymentIntent, setPaymentIntentError, setStripeClientSecret, quantity, isOpen])
+
+  useEffect(() => {
+    if (!paymentIntentInitialized) refreshPaymentIntent()
+  }, [refreshPaymentIntent, paymentIntentInitialized])
+
+  useEffect(() => {
+    if (!isOpen) setPaymentIntentInitialized(false)
+  }, [isOpen, setPaymentIntentInitialized])
+
   // handlers
   const [error, setError] = useState<string | null>(null)
-  const [txHash, setTxHash] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
 
-  const onSuccess = useCallback(
-    (txHash: string) => {
-      setTxHash(txHash)
-      onSuccessfulPackPurchase(quantity)
-    },
-    [onSuccessfulPackPurchase, quantity, setTxHash]
-  )
+  const onSuccess = useCallback(() => {
+    setSuccess(true)
+    onSuccessfulPackPurchase(quantity)
+  }, [onSuccessfulPackPurchase, quantity, setSuccess])
   const onError = useCallback(
     (error: string) => {
       setError(error)
@@ -68,35 +98,7 @@ export default function PackPurchaseModal({
   const onRetry = useCallback(() => {
     setError(null)
     refreshPaymentIntent()
-  }, [setError])
-
-  // stripe
-  const stripePromise = useStripePromise()
-  const [paymentIntentInitialized, setPaymentIntentInitialized] = useState(false)
-  const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null)
-  const [paymentIntentError, setPaymentIntentError] = useState(false)
-  const createPaymentIntent = useCreatePaymentIntent()
-
-  const refreshPaymentIntent = useCallback(() => {
-    setStripeClientSecret(null)
-    setPaymentIntentInitialized(true)
-
-    createPaymentIntent(packId, quantity)
-      .catch((err) => {
-        setPaymentIntentError(true) // TODO handle error
-        console.error(err)
-      })
-      .then((data) => setStripeClientSecret(data?.clientSecret ?? null))
-  }, [packId, createPaymentIntent, setPaymentIntentError, setStripeClientSecret, quantity])
-
-  useEffect(() => {
-    if (paymentIntentInitialized) return
-    refreshPaymentIntent()
-  }, [refreshPaymentIntent, paymentIntentInitialized])
-
-  // modal
-  const isOpen = useModalOpen(ApplicationModal.PACK_PURCHASE)
-  const togglePackPurchaseModal = usePackPurchaseModalToggle()
+  }, [setError, refreshPaymentIntent])
 
   return (
     <Modal onDismiss={togglePackPurchaseModal} isOpen={isOpen}>
@@ -111,8 +113,8 @@ export default function PackPurchaseModal({
         </ModalHeader>
         {error ? (
           <Error error={error} onRetry={onRetry} />
-        ) : txHash ? (
-          <Confirmation txHash={txHash} packName={packName} />
+        ) : success ? (
+          <Confirmation packName={packName} amountPaid={price} />
         ) : (
           <Elements stripe={stripePromise}>
             <CheckoutForm

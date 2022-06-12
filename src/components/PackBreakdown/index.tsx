@@ -1,9 +1,10 @@
 import 'moment/locale/fr'
 
-import { useMemo, useCallback, useState } from 'react'
+import { useMemo, useCallback, useState, useEffect } from 'react'
 import moment from 'moment'
 import { Plural, Trans, t } from '@lingui/macro'
 
+import { useCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
@@ -12,6 +13,9 @@ import PackPurchaseModal from '@/components/PackPurchaseModal'
 import { usePackPurchaseModalToggle } from '@/state/application/hooks'
 import InputStepCounter from '@/components/Input/StepCounter'
 import { useActiveLocale } from '@/hooks/useActiveLocale'
+import { useAuthModalToggle } from '@/state/application/hooks'
+import { useSetAuthMode } from '@/state/auth/hooks'
+import { AuthMode } from '@/state/auth/actions'
 
 interface PackBreakdownProps {
   name: string
@@ -36,8 +40,23 @@ export default function PackBreakdown({
   availableQuantity,
   onSuccessfulPackPurchase,
 }: PackBreakdownProps) {
+  const currentUser = useCurrentUser()
+
   // modal
   const togglePackPurchaseModal = usePackPurchaseModalToggle()
+
+  const toggleAuthModal = useAuthModalToggle()
+  const setAuthMode = useSetAuthMode()
+
+  const toggleSignUpModal = useCallback(() => {
+    setAuthMode(AuthMode.SIGN_UP)
+    toggleAuthModal()
+  }, [toggleAuthModal, setAuthMode])
+
+  const handlePackPurchase = useCallback(() => {
+    if (currentUser) togglePackPurchaseModal()
+    else toggleSignUpModal()
+  }, [!!currentUser, togglePackPurchaseModal, toggleSignUpModal])
 
   // release
   const locale = useActiveLocale()
@@ -56,6 +75,10 @@ export default function PackBreakdown({
   const [quantity, setQuantity] = useState(1)
   const incrementQuantity = useCallback(() => setQuantity(quantity + 1), [quantity, setQuantity])
   const decrementQuantity = useCallback(() => setQuantity(quantity - 1), [quantity, setQuantity])
+
+  useEffect(() => {
+    if (availableQuantity && quantity > availableQuantity) setQuantity(availableQuantity)
+  }, [availableQuantity, quantity, setQuantity])
 
   return (
     <>
@@ -86,7 +109,7 @@ export default function PackBreakdown({
               min={1}
               max={availableQuantity}
             />
-            <PrimaryButton onClick={togglePackPurchaseModal} large>
+            <PrimaryButton onClick={handlePackPurchase} large>
               <Trans>Buy - {((price * quantity) / 100).toFixed(2)}€</Trans>
             </PrimaryButton>
           </Column>

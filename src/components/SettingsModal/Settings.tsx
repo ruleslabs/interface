@@ -90,17 +90,12 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
         <TYPE.body onClick={toggleDepositModal} clickable>
           <Trans>Deposit ETH</Trans>
         </TYPE.body>
-        <Link href="/settings/profile" onClick={dispatch}>
+        <Link href="/settings/profile">
           <TYPE.body clickable>
             <Trans>Profile settings</Trans>
           </TYPE.body>
         </Link>
-        <Link href="/settings/activity" onClick={dispatch}>
-          <TYPE.body clickable>
-            <Trans>Activity</Trans>
-          </TYPE.body>
-        </Link>
-        <Link href="/settings/sessions" onClick={dispatch}>
+        <Link href="/settings/sessions">
           <TYPE.body clickable>
             <Trans>Sessions</Trans>
           </TYPE.body>

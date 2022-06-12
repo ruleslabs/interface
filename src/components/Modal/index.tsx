@@ -1,9 +1,10 @@
 import '@reach/dialog/styles.css'
 
-import React, { useCallback } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { DialogOverlay, DialogContent } from '@reach/dialog'
 import { animated, useTransition } from 'react-spring'
+import { useRouter } from 'next/router'
 
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
@@ -91,6 +92,20 @@ export default function Modal({ children, isOpen, onDismiss, sidebar = false }: 
   const buildDialogContentStyle = useCallback((styles) => {
     return { right: styles.y.to((value: number) => `${value}px`) }
   }, [])
+
+  const router = useRouter()
+  const [modalNeedsUpdate, setModalNeedsUpdate] = useState(false)
+
+  useEffect(() => setModalNeedsUpdate(true), [router])
+
+  useEffect(() => {
+    if (!modalNeedsUpdate) return
+    setModalNeedsUpdate(false)
+    if (!isOpen) return
+
+    setModalNeedsUpdate(false)
+    onDismiss()
+  }, [modalNeedsUpdate, onDismiss, isOpen])
 
   return (
     <>

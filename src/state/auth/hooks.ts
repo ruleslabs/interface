@@ -9,6 +9,7 @@ import {
   updateUsernameField,
   setAuthMode,
   refreshNewEmailVerificationCodeTime,
+  refreshNewPasswordUpdateLinkTime,
   updateFormCheckboxes,
   AuthMode,
 } from './actions'
@@ -100,6 +101,7 @@ export function useAuthForm(): AppState['auth']['form'] {
   return useAppSelector((state: AppState) => state.auth.form)
 }
 
+// email verification code time
 export function useRefreshNewEmailVerificationCodeTime(): () => void {
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(refreshNewEmailVerificationCodeTime()), [dispatch])
@@ -107,6 +109,16 @@ export function useRefreshNewEmailVerificationCodeTime(): () => void {
 
 export function useNewEmailVerificationCodeTime(): AppState['auth']['newEmailVerificationCodeTime'] {
   return useAppSelector((state: AppState) => state.auth.newEmailVerificationCodeTime)
+}
+
+// Pasword update link time
+export function useRefreshNewPasswordUpdateLinkTime(): () => void {
+  const dispatch = useAppDispatch()
+  return useCallback(() => dispatch(refreshNewPasswordUpdateLinkTime()), [dispatch])
+}
+
+export function useNewPasswordUpdateLinkTime(): AppState['auth']['newPasswordUpdateLinkTime'] {
+  return useAppSelector((state: AppState) => state.auth.newPasswordUpdateLinkTime)
 }
 
 export function useAuthActionHanlders(): {

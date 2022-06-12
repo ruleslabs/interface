@@ -201,7 +201,7 @@ msgid "Failed to verify your payment method please try again"
 msgstr "Échec de la vérification de votre moyen de paiement, veuillez réessayer"
 
 msgid "You must accept the payment provider terms and conditions"
-msgstr "Vous devez accepter les conditions générales d'utilisation du prestataire de paiement"
+msgstr "Vous devez accepter les conditions générales d'utilisation de Stripe"
 
 msgid "You must accept the right to retract policy"
 msgstr "Vous devez accepter la politique de droit de retractation"
@@ -697,3 +697,19 @@ msgstr "Nouveau mot de passe"
 #: src/components/AuthModal/UpdatePasswordForm.tsx
 msgid "Update password"
 msgstr "Changer le mot de passe"
+
+#: src/components/SessionsManager/index.tsx
+msgid "You are not connected to Rules on other devices."
+msgstr "Vous n'êtes pas connecté à Rules sur d'autres appareils."
+
+#: src/components/PackPurchaseModal/Confirmation.tsx
+msgid "See my packs"
+msgstr "Voir mes packs"
+
+#: src/components/PackPurchaseModal/Confirmation.tsx
+msgid "Thank you, your payment has been successful. A confirmation email has been sent to <0>{0}</0>"
+msgstr "Merci, votre paiement a été traité avec succès. Un email de confirmation a été envoyé à <0>{0}</0>"
+
+#: src/components/PackPurchaseModal/Confirmation.tsx
+msgid "Estimated delivery on <0>June 29</0>"
+msgstr "Livraison  estimée pour le <0>29 Juin</0>"

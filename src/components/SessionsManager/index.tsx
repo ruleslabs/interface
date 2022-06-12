@@ -146,7 +146,11 @@ export default function SessionsManager() {
             <Trans>Disconnect from other sessions</Trans>
           </TYPE.large>
           <TYPE.subtitle>
-            <Trans>You are also connected to Rules with other sessions, on other devices.</Trans>
+            {activeSessions.length > 1 ? (
+              <Trans>You are also connected to Rules with other sessions, on other devices.</Trans>
+            ) : (
+              <Trans>You are not connected to Rules on other devices.</Trans>
+            )}
           </TYPE.subtitle>
           <Column>
             {activeSessions.map((session, index) =>

@@ -91,13 +91,15 @@ export interface TextProps extends TextWrapperProps {
   fontWeight?: number
   textAlign?: string
   clickable?: boolean
+  underline?: boolean
 }
 
 const Text = styled.div<TextProps>`
   width: fit-content;
-  ${({ fontSize }) => fontSize && `font-size: ${fontSize}px`};
-  ${({ fontWeight }) => fontWeight && `font-weight: ${fontWeight}`};
-  ${({ textAlign }) => textAlign && `text-align: ${textAlign}`};
+  ${({ fontSize }) => fontSize && `font-size: ${fontSize}px;`}
+  ${({ fontWeight }) => fontWeight && `font-weight: ${fontWeight};`};
+  ${({ textAlign }) => textAlign && `text-align: ${textAlign};`}
+  ${({ underline }) => underline && 'text-decoration: underline;'}
   ${({ clickable = false }) =>
     clickable &&
     `

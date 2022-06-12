@@ -17,7 +17,7 @@ import Spinner from '@/components/Spinner'
 
 import VisaIcon from '@/images/cardBrands/visa.svg'
 import MastercardIcon from '@/images/cardBrands/mastercard.svg'
-import UnkownCardIcon from '@/images/cardBrands/unkown.svg'
+import UnknownCardIcon from '@/images/cardBrands/unknown.svg'
 import UnionPayIcon from '@/images/cardBrands/unionpay.svg'
 import DinersIcon from '@/images/cardBrands/diners.svg'
 import AmexIcon from '@/images/cardBrands/amex.svg'
@@ -32,7 +32,7 @@ const cardBrandToIcon = {
   diners: DinersIcon,
   jcb: JcbIcon,
   unionpay: UnionPayIcon,
-  unknown: UnkownCardIcon,
+  unknown: UnknownCardIcon,
 }
 
 const Form = styled.form<{ $display: boolean }>`
@@ -80,7 +80,7 @@ interface CheckoutFormProps {
   stripeClientSecret: string | null
   paymentIntentError: boolean
   amount: number
-  onSuccess: (tsHash: string) => void
+  onSuccess: () => void
   onError: (error: string) => void
 }
 
@@ -150,6 +150,7 @@ export default function CheckoutForm({
         })
         .catch((error) => {
           console.log(error)
+          onError(`Stripe error: ${error.message}`)
         })
         .then((result) => {
           if ((result as any).error) onError(`Stripe error: ${(result as any).error.message}`)
@@ -164,7 +165,7 @@ export default function CheckoutForm({
       if (!stripeClientSecret || !stripe || !elements) return
 
       if (!acceptStripeTos) {
-        setError('You must accept the payment provider terms and conditions')
+        setError("You must accept Stripe's terms and conditions")
         return
       } else if (!acceptRightToRetract) {
         setError('You must accept the right to retract policy')
@@ -238,8 +239,9 @@ export default function CheckoutForm({
 
     ws.onmessage = (event) => {
       const data = event.data ? JSON.parse(event.data) : {}
-      if (data.error || !data.txHash) onError(data.error)
-      else onSuccess(data.txHash)
+      console.log(data)
+      if (data.error || data.success === false) onError(data.error ?? 'Unknown error')
+      else onSuccess()
     }
   }, [setWsClient, wsClient, stripeClientSecret, onSuccess, onError])
 
@@ -262,7 +264,7 @@ export default function CheckoutForm({
               </TYPE.body>
               <StripeInputWrapper>
                 <CardNumberElement options={options} onChange={handleCardNumberInput} onReady={handleCardNumberReady} />
-                {(cardBrandToIcon[cardBrand as keyof typeof cardBrandToIcon] ?? UnkownCardIcon)()}
+                {(cardBrandToIcon[cardBrand as keyof typeof cardBrandToIcon] ?? UnknownCardIcon)()}
               </StripeInputWrapper>
             </StripeLabel>
             <Row gap={16}>

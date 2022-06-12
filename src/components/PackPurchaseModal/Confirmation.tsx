@@ -1,17 +1,19 @@
-import { useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
 import Column from '@/components/Column'
-import { RowCenter } from '@/components/Row'
+import { RowBetween } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
 import Link from '@/components/Link'
-import { useStarknet } from '@/lib/starknet'
-import { NETWORKS } from '@/constants/networks'
+import { useCurrentUser } from '@/state/user/hooks'
 
-import Copy from '@/images/copy.svg'
-import ExternalLink from '@/images/external-link.svg'
 import Checkmark from '@/images/checkmark.svg'
+
+const StyledCheckmark = styled(Checkmark)`
+  width: 64px;
+  margin: 0 auto;
+  stroke: ${({ theme }) => theme.primary1};
+`
 
 const Title = styled(TYPE.large)`
   font-weight: 400;
@@ -21,84 +23,48 @@ const Title = styled(TYPE.large)`
   span {
     font-weight: 700;
   }
-
-  svg {
-    margin-right: 16px;
-    width: 24px;
-    stroke: ${({ theme }) => theme.primary1};
-  }
-`
-
-const TxHash = styled(TYPE.body)`
-  background: ${({ theme }) => theme.bg3};
-  padding: 4px 8px;
-  border-radius: 2px;
-  letter-spacing: 0.5px;
-`
-
-const TxHashWrapper = styled(RowCenter)`
-  gap: 16px;
-  justify-content: center;
-
-  svg {
-    cursor: pointer;
-    width: 16px;
-    margin: 0 0 -2px 4px;
-  }
-
-  svg * {
-    stroke: ${({ theme }) => theme.text1};
-  }
-
-  ${({ theme }) => theme.media.small`
-    flex-direction: column;
-  `}
 `
 
 interface ConfirmationProps {
-  txHash: string
   packName: string
+  amountPaid: number
 }
 
-export default function Confirmation({ txHash, packName }: ConfirmationProps) {
-  const { network } = useStarknet()
-  const explorerBaseUrl = network ? NETWORKS[network]?.explorerBaseUrl : null
-
-  const onCopyTxHash = useCallback(() => {
-    navigator.clipboard.writeText(txHash)
-  }, [txHash])
+export default function Confirmation({ packName, amountPaid }: ConfirmationProps) {
+  const currentUser = useCurrentUser()
 
   return (
     <Column gap={32}>
+      <StyledCheckmark />
+
       <Title>
-        <Checkmark />
         <Trans>
           Your&nbsp;
           <span>{packName}&nbsp;</span>
           is on its way
         </Trans>
       </Title>
-      <TxHashWrapper>
-        <TxHash>
-          {txHash.substring(0, 8)}
-          ...
-          {txHash.substring(txHash.length - 8)}
-        </TxHash>
-        <RowCenter gap={16}>
-          <TYPE.body onClick={onCopyTxHash} clickable>
-            <Trans>Copy</Trans>
-            <Copy />
-          </TYPE.body>
-          {explorerBaseUrl && (
-            <Link href={`${explorerBaseUrl}/tx/${txHash}`} target="_blank">
-              <TYPE.body clickable>
-                <Trans>View on Voyager</Trans>
-                <ExternalLink />
-              </TYPE.body>
-            </Link>
-          )}
-        </RowCenter>
-      </TxHashWrapper>
+
+      <TYPE.body textAlign="center" color="text2" spanColor="text1">
+        <Trans>
+          Thank you, your payment has been successful. A confirmation email has been sent to&nbsp;
+          <span style={{ fontWeight: 700 }}>{currentUser.email}</span>
+        </Trans>
+      </TYPE.body>
+
+      <RowBetween gap={8}>
+        <TYPE.subtitle>
+          <Trans>
+            Estimated delivery on&nbsp;
+            <strong>June 29</strong>
+          </Trans>
+        </TYPE.subtitle>
+        <Link href={`/user/${currentUser.slug}/packs`}>
+          <TYPE.subtitle underline clickable>
+            <Trans>See my packs</Trans>
+          </TYPE.subtitle>
+        </Link>
+      </RowBetween>
     </Column>
   )
 }

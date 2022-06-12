@@ -15,7 +15,7 @@ export default function Error({ error, onRetry }: ErrorProps) {
         <Trans>Your payment failed for the following reason:</Trans>
         <br />
         <br />
-        {error}.&nbsp;
+        <strong>{error}&nbsp;</strong>
         <span onClick={onRetry}>
           <Trans>Retry</Trans>
         </span>

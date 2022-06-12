@@ -6,6 +6,7 @@ import {
   updateUsernameField,
   setAuthMode,
   refreshNewEmailVerificationCodeTime,
+  refreshNewPasswordUpdateLinkTime,
   updateFormCheckboxes,
   AuthMode,
   AuthFormCheckboxPayload,
@@ -27,6 +28,7 @@ export interface AuthState {
     }
   }
   newEmailVerificationCodeTime?: number
+  newPasswordUpdateLinkTime?: number
   authMode: AuthMode | null
 }
 
@@ -41,6 +43,7 @@ export const initialState: AuthState = {
     },
   },
   newEmailVerificationCodeTime: undefined,
+  newPasswordUpdateLinkTime: undefined,
   authMode: null,
 }
 
@@ -64,6 +67,9 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(refreshNewEmailVerificationCodeTime, (state) => {
       state.newEmailVerificationCodeTime = new Date().getTime() + EMAIL_VERIFICATION_INTERVAL
+    })
+    .addCase(refreshNewPasswordUpdateLinkTime, (state) => {
+      state.newPasswordUpdateLinkTime = new Date().getTime() + EMAIL_VERIFICATION_INTERVAL
     })
     .addCase(setAuthMode, (state, action: PayloadAction<AuthModePayload>) => {
       const { authMode } = action.payload
