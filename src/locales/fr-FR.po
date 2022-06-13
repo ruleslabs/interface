@@ -729,3 +729,7 @@ msgstr "Ouverture du marché d’échange début Juillet."
 #: src/pages/marketplace/index.tsx
 msgid "Please <0>join our Discord</0><1> </1>for live updates."
 msgstr "Suivez les informations en direct <0>sur le Discord</0>."
+
+#: src/components/AvatarEditModal/index.tsx
+msgid "Choose an avatar"
+msgstr "Choisi un avatar"
