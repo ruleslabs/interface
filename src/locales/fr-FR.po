@@ -733,3 +733,7 @@ msgstr "Suivez les informations en direct <0>sur le Discord</0>."
 #: src/components/AvatarEditModal/index.tsx
 msgid "Choose an avatar"
 msgstr "Choisi un avatar"
+
+#: src/pages.index.tsx
+msgid "Buy a pack"
+msgstr "Acheter un pack"

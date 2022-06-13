@@ -16,6 +16,9 @@ const CURRENT_USER_QUERY = gql`
       slug
       starknetAddress
       boughtStarterPack
+      nextPackToBuy {
+        slug
+      }
       rulesPrivateKey {
         salt
         iv

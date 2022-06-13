@@ -106,7 +106,7 @@ export default function Marketplace() {
   )
 
   const highestLowestPrice = useMemo(
-    () => cardModels.reduce<number>((acc, cardModel: any) => Math.max(acc, cardModel.lowestAskEUR), 0),
+    () => (cardModels as any[]).reduce<number>((acc, cardModel: any) => Math.max(acc, cardModel.lowestAskEUR), 0),
     [cardModels]
   )
 

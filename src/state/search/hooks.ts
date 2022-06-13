@@ -57,7 +57,7 @@ export function useMarketplaceFilters() {
   return useAppSelector((state) => state.search.filters)
 }
 
-export function useMarketplaceScarcityFilterToggler(): (tier: string) => void {
+export function useMarketplaceScarcityFilterToggler(): (scarcity: string) => void {
   const dispatch = useAppDispatch()
 
   const toggleTierFilter = useCallback(

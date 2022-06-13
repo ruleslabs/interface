@@ -10,6 +10,7 @@ import { useAuthModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
 import Section from '@/components/Section'
+import Link from '@/components/Link'
 
 const Video = styled.video`
   position: absolute;
@@ -45,7 +46,7 @@ const StyledYoutubeEmbed = styled(YoutubeEmbed)`
   `}
 `
 
-const SignUpButtonWrapper = styled.div`
+const ActionButtonWrapper = styled.div`
   position: relative;
   margin: 32px auto 0;
   display: block;
@@ -67,7 +68,7 @@ const SignUpButtonWrapper = styled.div`
   }
 `
 
-const SignUpButton = styled(PrimaryButton)`
+const ActionButton = styled(PrimaryButton)`
   width: 100%;
   height: 55px;
 `
@@ -105,12 +106,22 @@ export default function Home() {
       <Section>
         <StyledYoutubeEmbed embedId="m0lYtWPhJVo" />
       </Section>
-      {!currentUser && (
-        <SignUpButtonWrapper>
-          <SignUpButton onClick={toggleSignUpModal} large>
-            <Trans>Sign up</Trans>
-          </SignUpButton>
-        </SignUpButtonWrapper>
+      {currentUser?.nextPackToBuy?.slug ? (
+        <Link href={`/pack/${currentUser.nextPackToBuy.slug}`}>
+          <ActionButtonWrapper>
+            <ActionButton large>
+              <Trans>Buy a pack</Trans>
+            </ActionButton>
+          </ActionButtonWrapper>
+        </Link>
+      ) : (
+        !currentUser && (
+          <ActionButtonWrapper>
+            <ActionButton onClick={toggleSignUpModal} large>
+              <Trans>Sign up</Trans>
+            </ActionButton>
+          </ActionButtonWrapper>
+        )
       )}
     </>
   )
