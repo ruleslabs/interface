@@ -4,7 +4,11 @@ import { useQuery, gql } from '@apollo/client'
 import algoliasearch from 'algoliasearch'
 
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
-import { updateMarketplaceTiersFilter, updateMarketplaceSeasonsFilter } from './actions'
+import {
+  updateMarketplaceScarcityFilter,
+  updateMarketplaceSeasonsFilter,
+  updateMarketplaceMaximumPrice,
+} from './actions'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import { knuthShuffle } from '@/utils/random'
 
@@ -24,6 +28,10 @@ const CARD_MODELS_QUERY = gql`
       slug
       lowestAsk
       pictureUrl(derivative: $pictureDerivative)
+      season
+      scarcity {
+        name
+      }
     }
   }
 `
@@ -43,27 +51,18 @@ const SEARCHED_USERS_QUERY = gql`
   }
 `
 
-const client = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_ID ?? '', process.env.NEXT_PUBLIC_ALGOLIA_KEY ?? '')
-const algoliaIndexes = {
-  transfersPriceDesc: client.initIndex('transfers-price-desc'),
-  transfersDateDesc: client.initIndex('transfers-date-desc'),
-  cardsDateDesc: client.initIndex('cards-date-desc'),
-  cardsDateAsc: client.initIndex('cards-date-asc'),
-  offersPriceDesc: client.initIndex('offers-price-desc'),
-  offersPriceAsc: client.initIndex('offers-price-asc'),
-  users: client.initIndex('users'),
-}
+// Marketplace
 
 export function useMarketplaceFilters() {
   return useAppSelector((state) => state.search.filters)
 }
 
-export function useTiersFilterToggler(): (tier: string) => void {
+export function useMarketplaceScarcityFilterToggler(): (tier: string) => void {
   const dispatch = useAppDispatch()
 
   const toggleTierFilter = useCallback(
-    (tier: string) => {
-      dispatch(updateMarketplaceTiersFilter({ tier }))
+    (scarcity: string) => {
+      dispatch(updateMarketplaceScarcityFilter({ scarcity }))
     },
     [dispatch]
   )
@@ -71,7 +70,7 @@ export function useTiersFilterToggler(): (tier: string) => void {
   return toggleTierFilter
 }
 
-export function useSeasonsFilterToggler(): (season: number) => void {
+export function useMarketplaceSeasonsFilterToggler(): (season: number) => void {
   const dispatch = useAppDispatch()
 
   const toggleSeasonFilter = useCallback(
@@ -82,6 +81,19 @@ export function useSeasonsFilterToggler(): (season: number) => void {
   )
 
   return toggleSeasonFilter
+}
+
+export function useMarketplaceSetMaximumPrice(): (price: number) => void {
+  const dispatch = useAppDispatch()
+
+  const setMaximumPrice = useCallback(
+    (price: number) => {
+      dispatch(updateMarketplaceMaximumPrice({ price }))
+    },
+    [dispatch]
+  )
+
+  return setMaximumPrice
 }
 
 export function useCardModelOnSale(pictureDerivative: string) {
@@ -112,6 +124,19 @@ export function useCardModelOnSale(pictureDerivative: string) {
   }, [cardModelsOnSale, weiAmountToEURValue])
 
   return { cardModels, loading, error }
+}
+
+// algolia
+
+const client = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_ID ?? '', process.env.NEXT_PUBLIC_ALGOLIA_KEY ?? '')
+const algoliaIndexes = {
+  transfersPriceDesc: client.initIndex('transfers-price-desc'),
+  transfersDateDesc: client.initIndex('transfers-date-desc'),
+  cardsDateDesc: client.initIndex('cards-date-desc'),
+  cardsDateAsc: client.initIndex('cards-date-asc'),
+  offersPriceDesc: client.initIndex('offers-price-desc'),
+  offersPriceAsc: client.initIndex('offers-price-asc'),
+  users: client.initIndex('users'),
 }
 
 export const TransfersSort = {

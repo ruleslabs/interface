@@ -291,8 +291,8 @@ msgid "Date"
 msgstr "Date"
 
 #: src/components/CardsTransfersHistory/table.tsx
-msgid "Price"
-msgstr "Prix"
+msgid "Maximum price"
+msgstr "Prix maximum"
 
 #: src/components/CardsTransfersHistory/table.tsx
 msgid "Offered by Rules"

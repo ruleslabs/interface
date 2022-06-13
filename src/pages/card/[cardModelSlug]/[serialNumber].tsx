@@ -125,7 +125,7 @@ export default function CardBreakout() {
           rotatingVideoUrl={card.cardModel.rotatingVideoUrl}
           pictureUrl={card.cardModel.pictureUrl}
           backPictureUrl={backPictureUrl}
-          scarcity={card.cardModel.scarcity}
+          scarcityName={card.cardModel.scarcity.name}
         />
         <MainSectionCardsWrapper>
           <Card>

@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
 
-export const updateMarketplaceTiersFilter = createAction<{ tier: string }>('search/updateMarketplaceTiersFilter')
+export const updateMarketplaceScarcityFilter = createAction<{ tier: string }>('search/updateMarketplaceScarcityFilter')
 export const updateMarketplaceSeasonsFilter = createAction<{ season: number }>('search/updateMarketplaceSeasonsFilter')
-export const updateMarketplacePriceRange = createAction<{ price: number }>('search/updateMarketplacePriceRange')
+export const updateMarketplaceMaximumPrice = createAction<{ price: number }>('search/updateMarketplaceMaximumPrice')

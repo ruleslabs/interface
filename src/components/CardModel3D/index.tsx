@@ -42,7 +42,7 @@ const DefaultCardVisualWrapperStyle = css`
   `}
 `
 
-const FullscreenCardVisualWrapperStyle = css<{ scarcity: string }>`
+const FullscreenCardVisualWrapperStyle = css<{ scarcityName: string }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -67,7 +67,8 @@ const FullscreenCardVisualWrapperStyle = css<{ scarcity: string }>`
   }
 
   ${CardVideoWrapper} {
-    box-shadow: 0 0 32px ${({ theme, scarcity }) => (scarcity === 'Platinium' ? theme.platinium : theme.primary1)};
+    box-shadow: 0 0 32px
+      ${({ theme, scarcityName }) => (scarcityName === 'Platinium' ? theme.platinium : theme.primary1)};
     border-radius: 4%;
   }
 
@@ -78,7 +79,7 @@ const FullscreenCardVisualWrapperStyle = css<{ scarcity: string }>`
   }
 `
 
-const CardVisualsWrapper = styled.div<{ fullscreen: boolean; scarcity: string }>`
+const CardVisualsWrapper = styled.div<{ fullscreen: boolean; scarcityName: string }>`
   ${({ fullscreen }) => (fullscreen ? FullscreenCardVisualWrapperStyle : DefaultCardVisualWrapperStyle)}
 `
 
@@ -126,7 +127,7 @@ interface CardModel3DProps {
   pictureUrl: string
   rotatingVideoUrl: string
   backPictureUrl: string
-  scarcity: string
+  scarcityName: string
 }
 
 export default function CardModel3D({
@@ -134,7 +135,7 @@ export default function CardModel3D({
   rotatingVideoUrl,
   pictureUrl,
   backPictureUrl,
-  scarcity,
+  scarcityName,
 }: CardModel3DProps) {
   const [cardModelDisplayMode, setCardModelDisplayMode] = useState<'front' | 'back' | 'rotate'>('front')
   const [fullscreen, setFullscreen] = useState(false)
@@ -147,7 +148,7 @@ export default function CardModel3D({
 
   return (
     <>
-      <CardVisualsWrapper fullscreen={fullscreen} scarcity={scarcity.name}>
+      <CardVisualsWrapper fullscreen={fullscreen} scarcityName={scarcityName}>
         {fullscreen && <StyledClose onClick={toggleFullscreen} />}
         <CardVideoWrapper style={{ display: cardModelDisplayMode === 'front' ? 'initial' : 'none' }}>
           <video src={videoUrl} playsInline loop autoPlay muted />

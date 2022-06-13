@@ -3,10 +3,16 @@ import styled from 'styled-components'
 import { Seasons, ScarcityName } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
+import Column from '@/components/Column'
 import Checkbox from '@/components/Checkbox'
 import Slider from '@/components/Slider'
 import { TYPE } from '@/styles/theme'
-import { useMarketplaceFilters, useTiersFilterToggler, useSeasonsFilterToggler } from '@/state/search/hooks'
+import {
+  useMarketplaceFilters,
+  useMarketplaceScarcityFilterToggler,
+  useMarketplaceSeasonsFilterToggler,
+  useMarketplaceSetMaximumPrice,
+} from '@/state/search/hooks'
 
 import Close from '@/images/close.svg'
 
@@ -50,7 +56,7 @@ const SidebarContent = styled.div`
   right: 40px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 32px;
 
   ${({ theme }) => theme.media.medium`
     top: 64px;
@@ -69,21 +75,17 @@ const FilterName = styled(TYPE.body)`
   margin: 0;
 `
 
-const FilterWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-`
-
 interface MarketplaceSidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   dispatch: () => void
+  maximumPriceUpperBound: number
 }
 
-export default function MarketplaceSidebar({ dispatch, ...props }: MarketplaceSidebarProps) {
+export default function MarketplaceSidebar({ dispatch, maximumPriceUpperBound, ...props }: MarketplaceSidebarProps) {
   const filters = useMarketplaceFilters()
 
-  const toggleTierFilter = useTiersFilterToggler()
-  const toggleSeasonFilter = useSeasonsFilterToggler()
+  const toggleTierFilter = useMarketplaceScarcityFilterToggler()
+  const toggleSeasonFilter = useMarketplaceSeasonsFilterToggler()
+  const setMaximumPrice = useMarketplaceSetMaximumPrice()
 
   return (
     <StyledMarketplaceSidebar {...props}>
@@ -93,7 +95,7 @@ export default function MarketplaceSidebar({ dispatch, ...props }: MarketplaceSi
           <Trans>Filters</Trans>
         </SidebarTitle>
 
-        <FilterWrapper>
+        <Column gap={12}>
           <FilterName>
             <Trans>Seasons</Trans>
           </FilterName>
@@ -108,29 +110,34 @@ export default function MarketplaceSidebar({ dispatch, ...props }: MarketplaceSi
               </TYPE.body>
             </Checkbox>
           ))}
-        </FilterWrapper>
+        </Column>
 
-        <FilterWrapper>
+        <Column gap={12}>
           <FilterName>
             <Trans>Scarcities</Trans>
           </FilterName>
           {ScarcityName.map((scarcity: string) => (
             <Checkbox
               key={`checkbox-tier-${scarcity}`}
-              value={filters.tiers.includes(scarcity)}
+              value={filters.scarcities.includes(scarcity)}
               onChange={() => toggleTierFilter(scarcity)}
             >
               <Trans id={scarcity} render={({ translation }) => <TYPE.body>{translation}</TYPE.body>} />
             </Checkbox>
           ))}
-        </FilterWrapper>
+        </Column>
 
-        <FilterWrapper>
+        <Column gap={16}>
           <FilterName>
-            <Trans>Price</Trans>
+            <Trans>Maximum price</Trans>
           </FilterName>
-          <Slider unit="€" max={100_000} />
-        </FilterWrapper>
+          <Slider
+            unit="€"
+            max={maximumPriceUpperBound}
+            onChange={setMaximumPrice}
+            value={filters.maximumPrice ?? maximumPriceUpperBound}
+          />
+        </Column>
       </SidebarContent>
     </StyledMarketplaceSidebar>
   )

@@ -122,7 +122,7 @@ export default function CardModelPage() {
           rotatingVideoUrl={cardModel.rotatingVideoUrl}
           pictureUrl={cardModel.pictureUrl}
           backPictureUrl={backPictureUrl}
-          scarcity={cardModel.scarcity}
+          scarcityName={cardModel.scarcity.name}
         />
         <MainSectionCardsWrapper>
           <Card>

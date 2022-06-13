@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
@@ -10,7 +10,7 @@ import { TYPE } from '@/styles/theme'
 import { ColumnCenter } from '@/components/Column'
 import Row from '@/components/Row'
 import Grid from '@/components/Grid'
-import { useCardModelOnSale } from '@/state/search/hooks'
+import { useCardModelOnSale, useMarketplaceFilters } from '@/state/search/hooks'
 import Link from '@/components/Link'
 
 const ComingSoon = styled(ColumnCenter)`
@@ -75,6 +75,9 @@ const FiltersButton = styled(TYPE.body)`
 `
 
 export default function Marketplace() {
+  // filters
+  const filters = useMarketplaceFilters()
+
   // sort
   const [increaseSort, setIncreaseSort] = useState(true)
 
@@ -89,17 +92,36 @@ export default function Marketplace() {
     setIsFiltersSidebarOpenOnMobile(!isFiltersSidebarOpenOnMobile)
   }, [isFiltersSidebarOpenOnMobile, setIsFiltersSidebarOpenOnMobile])
 
-  const { cardModels, loading, error } = useCardModelOnSale('width=720')
+  const cardModelsQuery = useCardModelOnSale('width=720')
 
-  if (!!error || !!loading) {
-    if (!!error) console.error(error)
+  const cardModels = useMemo(
+    () =>
+      cardModelsQuery.cardModels.filter((cardModel: any) => {
+        if (filters.seasons.length && !filters.seasons.includes(cardModel.season)) return false
+        if (filters.scarcities.length && !filters.scarcities.includes(cardModel.scarcity.name)) return false
+        if (filters.maximumPrice !== null && filters.maximumPrice < cardModel.lowestAskEUR) return false
+        return true
+      }),
+    [filters, cardModelsQuery.cardModels]
+  )
 
+  const highestLowestPrice = useMemo(
+    () => cardModels.reduce<number>((acc, cardModel: any) => Math.max(acc, cardModel.lowestAskEUR), 0),
+    [cardModels]
+  )
+
+  if (!!cardModelsQuery.error || !!cardModelsQuery.loading) {
+    if (!!cardModelsQuery.error) console.error(cardModelsQuery.error)
     return null
   }
 
   return (
     <>
-      <StyledMarketplaceSidebar isOpenOnMobile={isFiltersSidebarOpenOnMobile} dispatch={toggleFiltersOnMobile} />
+      <StyledMarketplaceSidebar
+        maximumPriceUpperBound={highestLowestPrice}
+        isOpenOnMobile={isFiltersSidebarOpenOnMobile}
+        dispatch={toggleFiltersOnMobile}
+      />
       <ComingSoon>
         <TYPE.medium>
           <Trans>The marketplace will open early July.</Trans>

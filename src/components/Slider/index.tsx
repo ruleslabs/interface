@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
 import useTheme from '@/hooks/useTheme'
@@ -50,13 +50,14 @@ const SliderInput = styled.input`
 const inputRegex = RegExp(`^[0-9]*$`)
 
 interface SliderProps {
+  value: number
   unit?: string
   min?: number
   max: number
+  onChange: (value: number) => void
 }
 
-export default function Slider({ unit = '', min = 0, max }: SliderProps) {
-  const [value, setValue] = useState((min + max) / 2)
+export default function Slider({ value, unit = '', min = 0, max, onChange }: SliderProps) {
   const theme = useTheme()
 
   const sliderStyle = {
@@ -70,10 +71,10 @@ export default function Slider({ unit = '', min = 0, max }: SliderProps) {
       const newValue = event.target.value.replace(/^0*/, '')
 
       if (inputRegex.test(newValue)) {
-        setValue(newValue.length > 0 ? Math.min(+newValue, max) : 0)
+        onChange(newValue.length > 0 ? Math.min(+newValue, max) : 0)
       }
     },
-    [setValue, max]
+    [max, onChange]
   )
 
   return (
