@@ -67,6 +67,7 @@ const QUERY_CARD = gql`
       cardModel {
         id
         videoUrl
+        rotatingVideoUrl
         pictureUrl(derivative: "width=64")
         season
         youtubePreviewId
@@ -121,8 +122,10 @@ export default function CardBreakout() {
       <MainSection size="sm">
         <CardModel3D
           videoUrl={card.cardModel.videoUrl}
+          rotatingVideoUrl={card.cardModel.rotatingVideoUrl}
           pictureUrl={card.cardModel.pictureUrl}
           backPictureUrl={backPictureUrl}
+          scarcity={card.cardModel.scarcity}
         />
         <MainSectionCardsWrapper>
           <Card>

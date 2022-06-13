@@ -5,6 +5,7 @@ import Column from '@/components/Column'
 import { RowCenter } from '@/components/Row'
 
 import Spin from '@/images/spin.svg'
+import Expand from '@/images/expand.svg'
 
 const StyledCardDisplaySelector = styled(Column)`
   gap: 12px;
@@ -30,13 +31,15 @@ interface CardDisplaySelectorProps extends React.HTMLAttributes<HTMLDivElement> 
   backPictureUrl: string
   onFrontSelected: () => void
   onBackSelected: () => void
+  onRotateSelected: () => void
 }
 
-export default function CardDisplaySelector({
+export function CardDisplaySelector({
   pictureUrl,
   backPictureUrl,
   onFrontSelected,
   onBackSelected,
+  onRotateSelected,
   ...props
 }: CardDisplaySelectorProps) {
   return (
@@ -47,8 +50,22 @@ export default function CardDisplaySelector({
       <div onClick={onBackSelected}>
         <img src={backPictureUrl} />
       </div>
-      <RowCenter justify="center">
+      <RowCenter onClick={onRotateSelected} justify="center">
         <Spin />
+      </RowCenter>
+    </StyledCardDisplaySelector>
+  )
+}
+
+interface CardFullscreenSelectorProps extends React.HTMLAttributes<HTMLDivElement> {
+  toggleFullscreen: () => void
+}
+
+export function CardFullscreenSelector({ toggleFullscreen, ...props }: CardFullscreenSelectorProps) {
+  return (
+    <StyledCardDisplaySelector {...props}>
+      <RowCenter onClick={toggleFullscreen} justify="center">
+        <Expand />
       </RowCenter>
     </StyledCardDisplaySelector>
   )

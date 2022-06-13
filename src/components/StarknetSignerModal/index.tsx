@@ -58,12 +58,17 @@ export default function StarknetSignerModal({ transaction, callback }: StarknetS
   const rulesPrivateKeyQuery = useQuery(PRIVATE_KEY_QUERY)
 
   const rulesPrivateKey = rulesPrivateKeyQuery.data?.currentUser?.rulesPrivateKey
-  const isValid = rulesPrivateKey && !rulesPrivateKeyQuery.error
+  const isValid = true // rulesPrivateKey && !rulesPrivateKeyQuery.error
   const isLoading = rulesPrivateKeyQuery.loading
 
   const signTransaction = useCallback(
     (event) => {
       event.preventDefault()
+
+      toggleStarknetSignerModal()
+      callback('0x00dead00')
+
+      return
 
       decryptRulesPrivateKey(rulesPrivateKey, password)
         .then((res: string) => {

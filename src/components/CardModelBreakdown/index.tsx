@@ -58,7 +58,7 @@ export default function CardModelBreakdown({
         {serial ? (
           <TYPE.body spanColor="text2">
             #{serial}
-            <span> /{maxSupply ?? ' +'}</span>
+            <span> / {maxSupply ?? '4000'}</span>
           </TYPE.body>
         ) : (
           <TYPE.subtitle>

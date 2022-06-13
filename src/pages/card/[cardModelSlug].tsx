@@ -54,6 +54,7 @@ const QUERY_CARD_MODEL = gql`
       id
       pictureUrl(derivative: "width=64")
       videoUrl
+      rotatingVideoUrl
       lowestAsk
       averageSell
       youtubePreviewId
@@ -116,7 +117,13 @@ export default function CardModelPage() {
       </Section>
 
       <MainSection size="sm">
-        <CardModel3D videoUrl={cardModel.videoUrl} pictureUrl={cardModel.pictureUrl} backPictureUrl={backPictureUrl} />
+        <CardModel3D
+          videoUrl={cardModel.videoUrl}
+          rotatingVideoUrl={cardModel.rotatingVideoUrl}
+          pictureUrl={cardModel.pictureUrl}
+          backPictureUrl={backPictureUrl}
+          scarcity={cardModel.scarcity}
+        />
         <MainSectionCardsWrapper>
           <Card>
             <CardModelBreakdown
