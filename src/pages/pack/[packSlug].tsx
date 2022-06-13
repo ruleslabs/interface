@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { gql } from '@apollo/client'
 import styled from 'styled-components'
@@ -76,7 +76,8 @@ const QUERY_PACK = gql`
       maxSupply
       supply
       season
-      cardModels {
+      seasons
+      cardModelsOverview {
         cardModel {
           slug
           pictureUrl(derivative: "width=512")
@@ -105,20 +106,6 @@ export default function Pack() {
         setPackQuery({ error })
       })
   }, [!!currentUser])
-
-  // get seasons from pack cardModels
-  const seasons = useMemo(() => {
-    if (packQuery.data?.pack?.season) return [packQuery.data?.pack?.season]
-    const seasons = ((packQuery.data?.pack?.cardModels ?? []) as any[]).reduce<number[]>(
-      (acc, { cardModel }: { cardModel: any }) => {
-        if (!acc.includes(cardModel.season)) acc.push(cardModel.season)
-        return acc
-      },
-      []
-    )
-
-    return seasons.sort()
-  }, [packQuery.data?.pack])
 
   const pack = packQuery.data?.pack
   const error = packQuery.error
@@ -158,7 +145,7 @@ export default function Pack() {
                     id={pack.id}
                     price={pack.price}
                     cardsPerPack={pack.cardsPerPack}
-                    seasons={seasons}
+                    seasons={pack.seasons}
                     releaseDate={new Date(pack.releaseDate)}
                     availableSupply={pack.maxSupply ? pack.maxSupply - pack.supply : undefined}
                     availableQuantity={availableQuantity}
@@ -193,7 +180,7 @@ export default function Pack() {
               <Trans>Selection of possible cards</Trans>
             </CardModelsSelectionTitle>
             <StyledGrid gap={44}>
-              {(pack.cardModels ?? []).map(({ cardModel }: { cardModel: any }, index: number) => (
+              {(pack.cardModelsOverview ?? []).map(({ cardModel }: { cardModel: any }, index: number) => (
                 <CardModel
                   key={`pack-rules-${index}`}
                   cardModelSlug={cardModel.slug}

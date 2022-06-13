@@ -130,8 +130,8 @@ export default function NavModal() {
                 <>
                   <div style={{ margin: 'auto' }} />
                   <Column gap={18}>
-                    <PrimaryButton onClick={toggleSignInModal}>Sign In</PrimaryButton>
-                    <SecondaryButton onClick={toggleSignUpModal}>Sign Up</SecondaryButton>
+                    <PrimaryButton onClick={toggleSignInModal}>Sign in</PrimaryButton>
+                    <SecondaryButton onClick={toggleSignUpModal}>Sign up</SecondaryButton>
                   </Column>
                 </>
               )}

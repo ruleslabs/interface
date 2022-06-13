@@ -6,6 +6,7 @@ import algoliasearch from 'algoliasearch'
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
 import { updateMarketplaceTiersFilter, updateMarketplaceSeasonsFilter } from './actions'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
+import { knuthShuffle } from '@/utils/random'
 
 const CARD_MODELS_ON_SALE_QUERY = gql`
   query ($pictureDerivative: String) {
@@ -94,8 +95,9 @@ export function useCardModelOnSale(pictureDerivative: string) {
     variables: { pictureDerivative },
   })
 
-  const cardModelsOnSale =
-    (Boolean(process.env.NEXT_PUBLIC_DEMO) ? queryData?.allCardModels : queryData?.cardModelsOnSale) ?? []
+  const cardModelsOnSale = Boolean(process.env.NEXT_PUBLIC_DEMO)
+    ? knuthShuffle(queryData?.allCardModels ?? [])
+    : queryData?.cardModelsOnSale ?? []
 
   const cardModels = useMemo(() => {
     return cardModelsOnSale.map((cardModel: any) => {

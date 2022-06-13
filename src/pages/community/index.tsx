@@ -104,7 +104,7 @@ const USERS_BY_IDS_QUERY = gql`
 
 const CERTIFIED_USERS_QUERY = gql`
   query {
-    allCertifiedUsers {
+    certifiedUsersOverview {
       slug
       username
       profile {
@@ -142,7 +142,7 @@ export default function Community() {
 
   // certified
   const { data: certifiedUsersData, loading: certifiedUsersLoading } = useQuery(CERTIFIED_USERS_QUERY)
-  const certifiedUsers = certifiedUsersData?.allCertifiedUsers ?? []
+  const certifiedUsers = certifiedUsersData?.certifiedUsersOverview ?? []
 
   // search history
   const { searchedUsers, loading: searchedUsersLoading } = useSearchedUsers()
