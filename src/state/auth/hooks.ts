@@ -47,6 +47,9 @@ const SIGN_UP_MUTATION = gql`
     $email: String!
     $username: String!
     $password: String!
+    $starknetPub: String!
+    $rulesPrivateKey: RulesPrivateKeyAttributes!
+    $rulesPrivateKeyBackup: String!
     $emailVerificationCode: String!
     $acceptCommercialEmails: Boolean!
   ) {
@@ -55,6 +58,9 @@ const SIGN_UP_MUTATION = gql`
         email: $email
         username: $username
         password: $password
+        starknetPub: $starknetPub
+        rulesPrivateKey: $rulesPrivateKey
+        rulesPrivateKeyBackup: $rulesPrivateKeyBackup
         emailVerificationCode: $emailVerificationCode
         acceptCommercialEmails: $acceptCommercialEmails
       }

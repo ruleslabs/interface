@@ -21,6 +21,7 @@ import {
 import { useAuthModalToggle } from '@/state/application/hooks'
 import useCountdown from '@/hooks/useCountdown'
 import { passwordHasher } from '@/utils/password'
+import useCreateWallet, { WalletInfos } from '@/hooks/useCreateWallet'
 
 const ResendCode = styled(TYPE.subtitle)`
   display: inline;
@@ -34,6 +35,10 @@ interface EmailVerificationFormProps {
 }
 
 export default function EmailVerificationForm({ onSuccessfulConnection }: EmailVerificationFormProps) {
+  // Wallet
+  const createWallet = useCreateWallet()
+  const [walletInfos, setWalletInfos] = useState<WalletInfos | null>(null)
+
   // Loading
   const [loading, setLoading] = useState(false)
 
@@ -77,11 +82,31 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
     const signUp = async () => {
       const hashedPassword = await passwordHasher(password)
 
+      let newWalletInfos = walletInfos
+
+      try {
+        if (!newWalletInfos) {
+          newWalletInfos = await createWallet(password)
+          setWalletInfos(newWalletInfos)
+        }
+      } catch (error: any) {
+        setError({ message: `${error.message}, contact support if the error persist.` })
+
+        console.error(error)
+        setLoading(false)
+        return
+      }
+
+      const { starkPub: starknetPub, userKey: rulesPrivateKey, backupKey: rulesPrivateKeyBackup } = newWalletInfos
+
       signUpMutation({
         variables: {
           email,
           username,
           password: hashedPassword,
+          starknetPub,
+          rulesPrivateKey,
+          rulesPrivateKeyBackup,
           emailVerificationCode,
           acceptCommercialEmails,
         },
@@ -96,7 +121,7 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
         })
     }
     signUp().then(() => setLoading(false))
-  }, [emailVerificationCode, email, username, password, signUpMutation])
+  }, [emailVerificationCode, email, username, password, signUpMutation, createWallet, setWalletInfos])
 
   // new code
   const handleNewCode = useCallback(

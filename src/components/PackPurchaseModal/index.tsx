@@ -76,10 +76,6 @@ export default function PackPurchaseModal({
     if (!paymentIntentInitialized) refreshPaymentIntent()
   }, [refreshPaymentIntent, paymentIntentInitialized])
 
-  useEffect(() => {
-    if (!isOpen) setPaymentIntentInitialized(false)
-  }, [isOpen, setPaymentIntentInitialized])
-
   // handlers
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -99,6 +95,15 @@ export default function PackPurchaseModal({
     setError(null)
     refreshPaymentIntent()
   }, [setError, refreshPaymentIntent])
+
+  // on close modal
+  useEffect(() => {
+    if (!isOpen) {
+      setPaymentIntentInitialized(false)
+    } else {
+      setSuccess(false)
+    }
+  }, [isOpen])
 
   return (
     <Modal onDismiss={togglePackPurchaseModal} isOpen={isOpen}>
