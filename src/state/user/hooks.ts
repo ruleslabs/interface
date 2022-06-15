@@ -74,8 +74,8 @@ const SET_SOCIAL_LINKS_MUTATION = gql`
 `
 
 const CONNECT_DISCORD_ACCOUNT_MUTATION = gql`
-  mutation ($code: String!) {
-    connectDiscordAccount(code: $code) {
+  mutation ($code: String!, $redirectPath: String!) {
+    connectDiscordAccount(input: { code: $code, redirectPath: $redirectPath }) {
       id
       username
       discriminator

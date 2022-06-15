@@ -1,6 +1,5 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-import { useRouter } from 'next/router'
 import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
 
@@ -8,18 +7,15 @@ import Card from '@/components/Card'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import Column from '@/components/Column'
-import Row from '@/components/Row'
 import Input from '@/components/Input'
 import {
   useCurrentUser,
   useQueryCurrentUser,
   useSetSocialLinksMutation,
-  useConnectDiscordAccountMutation,
-  useDisconnectDiscordAccountMutation,
   useSetDiscordVisibilityMutation,
 } from '@/state/user/hooks'
-import Link from '@/components/Link'
 import Checkbox from '@/components/Checkbox'
+import DiscordStatus from '@/components/DiscordStatus'
 
 const StyledProfileEditor = styled(Card)`
   margin: 0;
@@ -38,26 +34,17 @@ const SocialLinksWrapper = styled(Column)`
 `
 
 const DiscordStatusWrapper = styled(Column)`
-  width: 100%;
   height: 100px;
   gap: 16px;
-`
 
-const DiscordConnect = styled(PrimaryButton)`
-  width: 300px;
-`
-
-const DiscordDisconnect = styled(TYPE.body)`
-  color: ${({ theme }) => theme.error};
-  font-weight: 700;
+  button {
+    width: 300px;
+  }
 `
 
 export default function ProfileEditor() {
   const currentUser = useCurrentUser()
   const queryCurrentUser = useQueryCurrentUser()
-
-  const router = useRouter()
-  const discordCode = router?.query?.code
 
   // modified
   const [socialLinksModified, setSocialLinksModified] = useState(false)
@@ -83,57 +70,11 @@ export default function ProfileEditor() {
   )
 
   // discord
-  const [discordLoading, setDiscordLoading] = useState(!!discordCode || !!currentUser?.profile?.discordId)
-  const [connectDiscordAccountMutation] = useConnectDiscordAccountMutation()
-  const [disconnectDiscordAccountMutation] = useDisconnectDiscordAccountMutation()
   const [setDiscordVisibilityMutation] = useSetDiscordVisibilityMutation()
 
-  const [discordUser, setDiscordUser] = useState<any | null>(currentUser?.profile?.discordUser)
   const [isDiscordVisible, setIsDiscordVisible] = useState<boolean>(currentUser?.profile?.isDiscordVisible ?? false)
 
   const toggleDiscordVisibility = useCallback(() => setIsDiscordVisible(!isDiscordVisible), [isDiscordVisible])
-
-  useEffect(() => {
-    if (!discordCode) return
-
-    setDiscordLoading(true)
-
-    router.replace('/settings/profile', undefined, { shallow: true })
-    connectDiscordAccountMutation({ variables: { code: discordCode } })
-      .then((res: any) => {
-        setDiscordUser(res?.data?.connectDiscordAccount ?? null)
-
-        queryCurrentUser()
-        setDiscordLoading(false)
-      })
-      .catch((connectDiscordAccountError: ApolloError) => {
-        console.error(connectDiscordAccountError) // TODO: handle error
-        setDiscordLoading(false)
-      })
-  }, [discordCode, router, connectDiscordAccountMutation, queryCurrentUser, setDiscordLoading, setDiscordUser])
-
-  const handleDiscordDisconnect = useCallback(() => {
-    setDiscordLoading(true)
-
-    disconnectDiscordAccountMutation()
-      .then((res: any) => {
-        setDiscordUser(null)
-        queryCurrentUser()
-        setDiscordLoading(false)
-      })
-      .catch((disconnectDiscordAccountError: ApolloError) => {
-        console.error(disconnectDiscordAccountError) // TODO: handle error
-        setDiscordLoading(false)
-      })
-  }, [disconnectDiscordAccountMutation, queryCurrentUser])
-
-  const discordOAuthRedirectUrl = useMemo(
-    () =>
-      `https://discord.com/api/oauth2/authorize?client_id=975024307044499456&redirect_uri=${encodeURIComponent(
-        `${process.env.NEXT_PUBLIC_APP_URL}/settings/profile`
-      )}&response_type=code&scope=identify`,
-    []
-  )
 
   // save changes
   const [setDiscordVisibilityLoading, setSetDiscordVisibilityLoading] = useState(false)
@@ -210,33 +151,13 @@ export default function ProfileEditor() {
         <Column gap={16}>
           <TYPE.large>Discord</TYPE.large>
           <DiscordStatusWrapper>
-            {discordUser?.username && discordUser?.discriminator ? (
-              <>
-                <Row gap={24}>
-                  <TYPE.body spanColor="text2">
-                    <Trans>Connected as {discordUser.username}</Trans>
-                    <span>#{discordUser.discriminator}</span>
-                  </TYPE.body>
-                  {discordLoading ? (
-                    <TYPE.subtitle>Loading ...</TYPE.subtitle>
-                  ) : (
-                    <DiscordDisconnect onClick={handleDiscordDisconnect} clickable>
-                      <Trans>Disconnect</Trans>
-                    </DiscordDisconnect>
-                  )}
-                </Row>
-                <Checkbox value={isDiscordVisible} onChange={toggleDiscordVisibility}>
-                  <TYPE.body>
-                    <Trans>Public</Trans>
-                  </TYPE.body>
-                </Checkbox>
-              </>
-            ) : (
-              <Link href={discordOAuthRedirectUrl}>
-                <DiscordConnect disabled={discordLoading} large>
-                  {discordLoading ? 'Loading ...' : t`Connect my account`}
-                </DiscordConnect>
-              </Link>
+            <DiscordStatus redirectPath="/settings/profile" />
+            {currentUser?.profile?.discordUser && (
+              <Checkbox value={isDiscordVisible} onChange={toggleDiscordVisibility}>
+                <TYPE.body>
+                  <Trans>Public</Trans>
+                </TYPE.body>
+              </Checkbox>
             )}
           </DiscordStatusWrapper>
         </Column>

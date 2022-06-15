@@ -612,7 +612,7 @@ msgstr "J’accepte expressément que vos services me soient fournis dès mon ac
 
 #: src/components/PackPurchaseModal/checkoutForm.tsx
 msgid "Payment being processed"
-msgstr "Payment en cours de traitement"
+msgstr "Paiement en cours de traitement"
 
 #: src/components/PackPurchaseModal/Error.tsx
 msgid "Your payment failed for the following reason:"

@@ -1,11 +1,13 @@
+import { useCallback } from 'react'
 import styled from 'styled-components'
-import { useRouter } from 'next/router'
 import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
 import Column, { ColumnCenter } from '@/components/Column'
 import { PageBody, SkipButton, MainActionButton } from './SubComponents'
 import Link from '@/components/Link'
+import { useSetOnboardingPage } from '@/state/onboarding/hooks'
+import { OnboardingPage } from '@/state/onboarding/actions'
 
 const StyledPageBody = styled(PageBody)`
   ${({ theme }) => theme.media.medium`
@@ -60,8 +62,13 @@ const PageContent = styled(Column)`
   `}
 `
 
-export default function DiscordPage() {
-  const router = useRouter()
+interface DiscordJoinPageProps {
+  nextPage: OnboardingPage
+}
+
+export default function DiscordJoinPage({ nextPage }: DiscordJoinPageProps) {
+  const setOnboardingPage = useSetOnboardingPage()
+  const handleNextPage = useCallback(() => setOnboardingPage(nextPage), [setOnboardingPage, nextPage])
 
   return (
     <StyledPageBody>
@@ -78,7 +85,7 @@ export default function DiscordPage() {
               <Trans>Join</Trans>
             </MainActionButton>
           </Link>
-          <SkipButton onClick={() => router.back()}>
+          <SkipButton onClick={handleNextPage}>
             <Trans>Skip</Trans>
           </SkipButton>
         </PageContent>

@@ -3,7 +3,8 @@ import { createAction } from '@reduxjs/toolkit'
 export enum OnboardingPage {
   INTRODUCTION,
   STARTER_PACK,
-  DISCORD,
+  DISCORD_JOIN,
+  DISCORD_CONNECT,
 }
 
 export interface OnboardingPagePayload {
