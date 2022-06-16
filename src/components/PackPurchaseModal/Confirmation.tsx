@@ -1,27 +1,52 @@
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
-import Column from '@/components/Column'
-import { RowBetween } from '@/components/Row'
+import Column, { ColumnCenter } from '@/components/Column'
 import { TYPE } from '@/styles/theme'
-import Link from '@/components/Link'
 import { useCurrentUser } from '@/state/user/hooks'
+import { PrimaryButton } from '@/components/Button'
+import Link from '@/components/Link'
 
 import Checkmark from '@/images/checkmark.svg'
 
 const StyledCheckmark = styled(Checkmark)`
-  width: 64px;
+  border-radius: 50%;
+  overflow: visible;
+  background: ${({ theme }) => theme.primary1};
+  width: 108px;
+  height: 108px;
+  padding: 24px;
   margin: 0 auto;
-  stroke: ${({ theme }) => theme.primary1};
+  stroke: ${({ theme }) => theme.text1};
 `
 
 const Title = styled(TYPE.large)`
-  font-weight: 400;
   text-align: center;
   width: 100%;
+`
+
+const Subtitle = styled(TYPE.body)`
+  text-align: center;
+  width: 100%;
+  max-width: 420px;
 
   span {
     font-weight: 700;
+  }
+`
+
+const SeeMyPacksButton = styled(PrimaryButton)`
+  height: 50px;
+  width: 100%;
+`
+
+const SeeMyPacksButtonWrapper = styled(ColumnCenter)`
+  width: 100%;
+  gap: 16px;
+
+  a {
+    max-width: 380px;
+    width: 100%;
   }
 `
 
@@ -34,37 +59,39 @@ export default function Confirmation({ packName, amountPaid }: ConfirmationProps
   const currentUser = useCurrentUser()
 
   return (
-    <Column gap={32}>
-      <StyledCheckmark />
+    <ColumnCenter gap={32}>
+      <Column gap={24}>
+        <StyledCheckmark />
 
-      <Title>
-        <Trans>
-          Your&nbsp;
-          <span>{packName}&nbsp;</span>
-          is on its way
-        </Trans>
-      </Title>
+        <Column gap={8}>
+          <Title>
+            <Trans>Your {packName} is on its way</Trans>
+          </Title>
 
-      <TYPE.body textAlign="center" color="text2" spanColor="text1">
-        <Trans>
-          Thank you, your payment has been successful. A confirmation email has been sent to&nbsp;
-          <span style={{ fontWeight: 700 }}>{currentUser.email}</span>
-        </Trans>
-      </TYPE.body>
+          <Subtitle>
+            <Trans>
+              Thank you, your payment has been successful.
+              <br />A confirmation email has been sent to&nbsp;
+              <span style={{ fontWeight: 700 }}>{currentUser.email}</span>
+            </Trans>
+          </Subtitle>
+        </Column>
+      </Column>
 
-      <RowBetween gap={8}>
+      <SeeMyPacksButtonWrapper>
+        <Link href={`/user/${currentUser.slug}/packs`}>
+          <SeeMyPacksButton large>
+            <Trans>See my packs</Trans>
+          </SeeMyPacksButton>
+        </Link>
+
         <TYPE.subtitle>
           <Trans>
             Estimated delivery on&nbsp;
             <strong>June 29</strong>
           </Trans>
         </TYPE.subtitle>
-        <Link href={`/user/${currentUser.slug}/packs`}>
-          <TYPE.subtitle underline clickable>
-            <Trans>See my packs</Trans>
-          </TYPE.subtitle>
-        </Link>
-      </RowBetween>
-    </Column>
+      </SeeMyPacksButtonWrapper>
+    </ColumnCenter>
   )
 }

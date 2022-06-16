@@ -76,7 +76,7 @@ export default function PackPurchaseModal({
     if (!paymentIntentInitialized) refreshPaymentIntent()
   }, [refreshPaymentIntent, paymentIntentInitialized])
 
-  // handlers
+  // error/success handlers
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
@@ -152,12 +152,16 @@ export default function PackPurchaseModal({
     <Modal onDismiss={togglePackPurchaseModal} isOpen={isOpen}>
       <StyledPackPurchaseModal gap={26}>
         <ModalHeader onDismiss={togglePackPurchaseModal}>
-          <RowCenter gap={16}>
-            <TYPE.large>
-              <Trans>Secured Payment</Trans>
-            </TYPE.large>
-            <StyeldLock />
-          </RowCenter>
+          {success ? (
+            <div />
+          ) : (
+            <RowCenter gap={16}>
+              <TYPE.large>
+                <Trans>Secured Payment</Trans>
+              </TYPE.large>
+              <StyeldLock />
+            </RowCenter>
+          )}
         </ModalHeader>
         {error ? (
           <Error error={error} onRetry={onRetry} />
