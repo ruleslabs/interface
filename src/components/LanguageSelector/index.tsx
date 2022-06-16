@@ -15,6 +15,7 @@ const StyledLanguageSelector = styled(Row)`
 const LocaleLabel = styled(TYPE.body)<{ active: boolean }>`
   color: ${({ active, theme }) => (active ? theme.text1 : theme.text2)};
   cursor: pointer;
+  pointer-events: auto;
 
   :hover {
     color: ${({ theme }) => theme.text1};
@@ -29,8 +30,12 @@ export default function LanguageSelector(props: LanguageSelectorProps) {
 
   const handleLocaleChange = useCallback(
     (locale: SupportedLocale) => {
-      const regex = new RegExp(`(?<=\\?|\\&)lng=${userLocale}`, 'g')
-      router.replace(router.asPath.replace(regex, ''), undefined, { shallow: true })
+      try {
+        const regex = new RegExp(`(?<=\\?|\\&)lng=${userLocale}`, 'g')
+        router.replace(router.asPath.replace(regex, ''), undefined, { shallow: true })
+      } catch (err) {
+        console.error(err)
+      }
       setUserLocale(locale)
     },
     [router, setUserLocale, userLocale]
