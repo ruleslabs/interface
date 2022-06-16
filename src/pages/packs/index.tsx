@@ -164,7 +164,7 @@ export default function Packs() {
         )}
       </PacksWrapper>
       <SecondarySection>
-        <StyledYoutubeEmbed embedId="7Sqj5vQp0d4" />
+        <StyledYoutubeEmbed embedId="wyYopaStt60" />
         <PacksInfosCard>
           <Column gap={32}>
             <Column gap={16}>
@@ -173,8 +173,8 @@ export default function Packs() {
               </TYPE.body>
               <TYPE.body>
                 <Trans>
-                  Rules is a trading card game about rap music. Cards are official, crafted with care, and each purchase
-                  enables independent artists to thrive.
+                  Rules is a trading card game about rap music. All cards are official, crafted by our illustrators
+                  team, and each purchase enables independent artists to thrive.
                 </Trans>
               </TYPE.body>
             </Column>

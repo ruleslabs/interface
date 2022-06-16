@@ -647,12 +647,12 @@ msgid "Blockchain ?"
 msgstr "Blockchain ?"
 
 #: src/pages/packs/index.tsx
-msgid "Rules is a trading card game about rap music. Cards are official, crafted with care, and each purchase enables independent artists to thrive."
-msgstr "Rules est un jeu de cartes à collectionner sur l’univers rap. Les cartes sont officielles, créées avec passion, et chaque achat permet de financer les artistes indépendants."
+msgid "Rules is a trading card game about rap music. All cards are official, crafted by our illustrators team, and each purchase enables independent artists to thrive."
+msgstr "Rules est un jeu de cartes à collectionner sur l’univers rap. Toutes les cartes sont officielles, dessinées par notre équipe d’illustrateurs, et chaque achat permet de financer les artistes indépendants."
 
 #: src/pages/packs/index.tsx
 msgid "<0>Rules’ Discord</0><1> </1>is where conversations and sharing between collectors happens.<2/>By <3>connecting your account</3>, you get access to specific channels linked to the cards you own."
-msgstr "<0>Le Discord</0><1> </1>est la place centrale de discussions et de partage des collectionneurs.<2/>En <3>connectant ton compte</3>, tu auras accès à des channels spécifiques liés aux cartes que tu possèdes."
+msgstr "<0>Le Discord</0><1> </1>est la place centrale de discussion et de partage des collectionneurs.<2/>En <3>connectant ton compte</3>, tu auras accès à des channels spécifiques liés aux cartes que tu possèdes."
 
 #: src/pages/packs/index.tsx
 msgid "Rules’ cards are secured on the <0>Starknet</0><1> </1>blockchain. It’s a technology based on <2>Ethereum</2>, but that needs way less energy and ressources."
