@@ -753,3 +753,11 @@ msgstr "Connecter"
 #: src/components/Onboarding/DiscordJoinPage.tsx
 msgid "Connect your Discord account"
 msgstr "Connecte ton Discord"
+
+#: src/pages/user/[username]/packs.tsx
+msgid "No packs"
+msgstr "Pas des packs"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "No cards"
+msgstr "Pas de cartes"

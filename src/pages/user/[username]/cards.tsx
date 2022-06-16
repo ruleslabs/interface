@@ -10,6 +10,7 @@ import CardModel from '@/components/CardModel'
 import Grid from '@/components/Grid'
 import { useSearchCards } from '@/state/search/hooks'
 import { TYPE } from '@/styles/theme'
+import EmptyTab from '@/components/EmptyTab'
 
 const QUERY_CARDS = gql`
   query ($ids: [ID!]!) {
@@ -70,7 +71,7 @@ function Cards({ userId }: { userId: string }) {
           )}
         </TYPE.body>
       </GridHeader>
-      {isValid && !isLoading && (
+      {isValid && !isLoading && cards.length > 0 ? (
         <Grid gap={64}>
           {cards.map((card: any, index: number) => (
             <CardModel
@@ -82,6 +83,8 @@ function Cards({ userId }: { userId: string }) {
             />
           ))}
         </Grid>
+      ) : (
+        isValid && !isLoading && <EmptyTab emptyText={t`No cards`} />
       )}
     </Section>
   )

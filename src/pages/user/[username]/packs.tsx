@@ -12,6 +12,7 @@ import Grid from '@/components/Grid'
 import PackCard from '@/components/PackCard'
 import { TYPE } from '@/styles/theme'
 import { useCurrentUser } from '@/state/user/hooks'
+import EmptyTab from '@/components/EmptyTab'
 
 const QUERY_USER_PACKS_BALANCES = gql`
   query ($slug: String!) {
@@ -87,22 +88,26 @@ function Packs() {
           )}
         </TYPE.body>
       </GridHeader>
-      <Grid maxWidth={256}>
-        {packsBalances.map((packBalance: any, index: number) =>
-          Array(packBalance.balance)
-            .fill(0)
-            .map((_, index: number) => (
-              <StyledPackCard
-                key={`pack-${packBalance.pack.slug}-${index}`}
-                slug={packBalance.pack.slug}
-                pictureUrl={packBalance.pack.pictureUrl}
-                soldout={false}
-                inDelivery={packBalance.inDelivery}
-                open={isCurrentUserProfile && !packBalance.inDelivery}
-              />
-            ))
-        )}
-      </Grid>
+      {isValid && !isLoading && packsBalances.length > 0 ? (
+        <Grid maxWidth={256}>
+          {packsBalances.map((packBalance: any, index: number) =>
+            Array(packBalance.balance)
+              .fill(0)
+              .map((_, index: number) => (
+                <StyledPackCard
+                  key={`pack-${packBalance.pack.slug}-${index}`}
+                  slug={packBalance.pack.slug}
+                  pictureUrl={packBalance.pack.pictureUrl}
+                  soldout={false}
+                  inDelivery={packBalance.inDelivery}
+                  open={isCurrentUserProfile && !packBalance.inDelivery}
+                />
+              ))
+          )}
+        </Grid>
+      ) : (
+        isValid && !isLoading && <EmptyTab emptyText={t`No packs`} />
+      )}
     </Section>
   )
 }
