@@ -1,51 +1,45 @@
 import { useCallback } from 'react'
 import styled from 'styled-components'
-import { Trans } from '@lingui/macro'
+import { Trans, t } from '@lingui/macro'
+import { useRouter } from 'next/router'
 
 import { TYPE } from '@/styles/theme'
 import Column, { ColumnCenter } from '@/components/Column'
-import { PageBody, SkipButton, MainActionButton } from './SubComponents'
-import Link from '@/components/Link'
-import { useSetOnboardingPage } from '@/state/onboarding/hooks'
-import { OnboardingPage } from '@/state/onboarding/actions'
+import { PageBody, SkipButton } from './SubComponents'
+import DiscordStatus from '@/components/DiscordStatus'
 
 const StyledPageBody = styled(PageBody)`
   ${({ theme }) => theme.media.medium`
     padding: 48px 32px 0;
   `}
+
+  ${({ theme }) => theme.media.small`
+    padding: 0;
+  `}
 `
 
-const DiscordScreenWrapper = styled.div`
-  position: relative;
+const DiscordScreenWrapper = styled(ColumnCenter)`
   flex: 1;
-  width: 100%;
+  justify-content: center;
 
   img {
-    left: 0;
-    right: 0;
-    height: 100%;
+    max-width: 512px;
     width: 100%;
-    position: absolute;
     object-fit: contain;
   }
-
-  ${({ theme }) => theme.media.medium`
-    img {
-      position: initial;
-    }
-  `}
 `
 
 const PageWrapper = styled(ColumnCenter)`
   gap: 24px;
   position: absolute;
-  top: 48px;
+  top: 120px;
   left: 0;
   right: 0;
-  bottom: 38px;
+  bottom: 100px;
 
   ${({ theme }) => theme.media.medium`
     position: initial;
+    gap: 64px;
   `}
 `
 
@@ -62,30 +56,22 @@ const PageContent = styled(Column)`
   `}
 `
 
-interface DiscordJoinPageProps {
-  nextPage: OnboardingPage
-}
-
-export default function DiscordJoinPage({ nextPage }: DiscordJoinPageProps) {
-  const setOnboardingPage = useSetOnboardingPage()
-  const handleNextPage = useCallback(() => setOnboardingPage(nextPage), [setOnboardingPage, nextPage])
+export default function DiscordJoinPage() {
+  const router = useRouter()
+  const handleNext = useCallback(() => router.replace('/'), [router])
 
   return (
     <StyledPageBody>
       <PageWrapper>
         <TYPE.large textAlign="center">
-          <Trans>Join the Discord</Trans>
+          <Trans>Connect your Discord account</Trans>
         </TYPE.large>
         <DiscordScreenWrapper>
-          <img src="/assets/discord-screen.png" />
+          <img src="/assets/discord-connect.png" />
         </DiscordScreenWrapper>
         <PageContent>
-          <Link href="https://discord.gg/DrfezKYUhH" target="_blank">
-            <MainActionButton large>
-              <Trans>Join</Trans>
-            </MainActionButton>
-          </Link>
-          <SkipButton onClick={handleNextPage}>
+          <DiscordStatus redirectPath="/onboard" connectionText={t`Connect`} onConnect={handleNext} />
+          <SkipButton onClick={handleNext}>
             <Trans>Skip</Trans>
           </SkipButton>
         </PageContent>

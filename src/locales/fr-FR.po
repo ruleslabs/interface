@@ -222,6 +222,10 @@ msgstr "Saison {season}"
 msgid "Common card"
 msgstr "Carte commune"
 
+#: src/components/CardModelBreakdown
+msgid "Platinium card"
+msgstr "Carte platine"
+
 #: src/components/CardModelSales
 msgid "Average sale"
 msgstr "Vente moyenne"
@@ -737,3 +741,11 @@ msgstr "Choisi un avatar"
 #: src/pages.index.tsx
 msgid "Buy a pack"
 msgstr "Acheter un pack"
+
+#: src/components/Onboarding/DiscordJoinPage.tsx
+msgid "Connect"
+msgstr "Connecter"
+
+#: src/components/Onboarding/DiscordJoinPage.tsx
+msgid "Connect your Discord account"
+msgstr "Connecte ton Discord"

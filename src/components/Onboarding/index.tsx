@@ -7,7 +7,6 @@ import { useOnboardingPage } from '@/state/onboarding/hooks'
 import { OnboardingPage } from '@/state/onboarding/actions'
 
 import DiscordJoinPage from './DiscordJoinPage'
-import DiscordConnectPage from './DiscordConnectPage'
 import IntroductionPage from './IntroductionPage'
 import StarterPackPage from './StarterPackPage'
 
@@ -30,7 +29,7 @@ export default function Onboarding() {
 
   const renderModal = useCallback(
     (onboardingPage: OnboardingPage | null) => {
-      if (!onboardingPage && router.query.code) onboardingPage = OnboardingPage.DISCORD_CONNECT
+      if (!onboardingPage && router.query.code) onboardingPage = OnboardingPage.DISCORD_JOIN
 
       switch (onboardingPage) {
         default:
@@ -40,9 +39,7 @@ export default function Onboarding() {
         case OnboardingPage.STARTER_PACK:
           return <StarterPackPage nextPage={OnboardingPage.DISCORD_JOIN} />
         case OnboardingPage.DISCORD_JOIN:
-          return <DiscordJoinPage nextPage={OnboardingPage.DISCORD_CONNECT} />
-        case OnboardingPage.DISCORD_CONNECT:
-          return <DiscordConnectPage />
+          return <DiscordJoinPage />
       }
       return null
     },

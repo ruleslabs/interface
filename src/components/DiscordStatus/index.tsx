@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
 import { ApolloError } from '@apollo/client'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 
 import Link from '@/components/Link'
 import { PrimaryButton } from '@/components/Button'
@@ -32,9 +32,11 @@ const DiscordDisconnectWrapper = styled(Row)`
 
 interface DiscordStatusProps {
   redirectPath: string
+  connectionText: string
+  onConnect?: () => void
 }
 
-export default function DiscordStatus({ redirectPath }: DiscordStatusProps) {
+export default function DiscordStatus({ redirectPath, connectionText, onConnect }: DiscordStatusProps) {
   const currentUser = useCurrentUser()
   const queryCurrentUser = useQueryCurrentUser()
 
@@ -52,7 +54,7 @@ export default function DiscordStatus({ redirectPath }: DiscordStatusProps) {
     () =>
       `https://discord.com/api/oauth2/authorize?client_id=975024307044499456&redirect_uri=${encodeURIComponent(
         `${process.env.NEXT_PUBLIC_APP_URL}${redirectPath}`
-      )}&response_type=code&scope=identify`,
+      )}&response_type=code&scope=guilds.join%20identify`,
     [redirectPath]
   )
 
@@ -70,6 +72,7 @@ export default function DiscordStatus({ redirectPath }: DiscordStatusProps) {
 
         queryCurrentUser()
         setDiscordLoading(false)
+        if (onConnect) onConnect()
       })
       .catch((connectDiscordAccountError: ApolloError) => {
         console.error(connectDiscordAccountError) // TODO: handle error
@@ -83,6 +86,7 @@ export default function DiscordStatus({ redirectPath }: DiscordStatusProps) {
     setDiscordLoading,
     setDiscordUser,
     redirectPath,
+    onConnect,
   ])
 
   const handleDiscordDisconnect = useCallback(() => {
@@ -121,7 +125,7 @@ export default function DiscordStatus({ redirectPath }: DiscordStatusProps) {
       ) : (
         <Link href={discordOAuthRedirectUrl}>
           <DiscordConnect disabled={discordLoading} large>
-            {discordLoading ? 'Loading ...' : t`Connect my account`}
+            {discordLoading ? 'Loading ...' : connectionText}
           </DiscordConnect>
         </Link>
       )}
