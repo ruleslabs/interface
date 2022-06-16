@@ -91,15 +91,58 @@ export default function PackPurchaseModal({
     },
     [setError]
   )
+
+  // websocket
+  const [wsClient, setWsClient] = useState<WebSocket | null>(null)
+  useEffect(() => {
+    if (!isOpen && wsClient) {
+      wsClient.close()
+      setWsClient(null)
+    }
+
+    if (!stripeClientSecret || !process.env.NEXT_PUBLIC_WS_URI || !isOpen) return
+
+    const ws = wsClient ?? new WebSocket(process.env.NEXT_PUBLIC_WS_URI)
+    if (!wsClient) setWsClient(ws)
+
+    ws.onopen = () => {
+      console.log('hey ws')
+      const paymentIntentId = stripeClientSecret.match(/^pi_[a-zA-Z0-9]*/)?.[0]
+      if (!paymentIntentId) return
+
+      ws.send(
+        JSON.stringify({
+          action: 'subscribePaymentIntent',
+          paymentIntentId,
+        })
+      )
+    }
+
+    ws.onmessage = (event) => {
+      const data = event.data ? JSON.parse(event.data) : {}
+      console.log(data)
+      if (data.error || data.success === false) onError(data.error ?? 'Unknown error')
+      else onSuccess()
+    }
+
+    ws.onclose = (event) => {
+      console.log('bye ws')
+      setWsClient(null)
+    }
+  }, [setWsClient, wsClient, stripeClientSecret, onSuccess, onError, isOpen])
+
+  // on retry
   const onRetry = useCallback(() => {
+    wsClient?.close()
     setError(null)
     refreshPaymentIntent()
-  }, [setError, refreshPaymentIntent])
+  }, [setError, refreshPaymentIntent, wsClient])
 
   // on close modal
   useEffect(() => {
     if (!isOpen) {
       setPaymentIntentInitialized(false)
+      setStripeClientSecret(null)
     } else {
       setSuccess(false)
     }
@@ -126,7 +169,6 @@ export default function PackPurchaseModal({
               stripeClientSecret={stripeClientSecret}
               paymentIntentError={paymentIntentError}
               amount={price * quantity}
-              onSuccess={onSuccess}
               onError={onError}
             />
           </Elements>

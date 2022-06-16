@@ -80,17 +80,10 @@ interface CheckoutFormProps {
   stripeClientSecret: string | null
   paymentIntentError: boolean
   amount: number
-  onSuccess: () => void
   onError: (error: string) => void
 }
 
-export default function CheckoutForm({
-  stripeClientSecret,
-  paymentIntentError,
-  amount,
-  onSuccess,
-  onError,
-}: CheckoutFormProps) {
+export default function CheckoutForm({ stripeClientSecret, paymentIntentError, amount, onError }: CheckoutFormProps) {
   const [loading, setLoading] = useState(!stripeClientSecret)
   const [error, setError] = useState<string | null>(null)
   const [confirming, setConfirming] = useState(false)
@@ -137,35 +130,6 @@ export default function CheckoutForm({
     []
   )
 
-  // websocket
-  const [wsClient, setWsClient] = useState<WebSocket | null>(null)
-  const startWsConnection = useCallback(() => {
-    if (!stripeClientSecret || !process.env.NEXT_PUBLIC_WS_URI) return
-
-    const ws = wsClient ?? new WebSocket(process.env.NEXT_PUBLIC_WS_URI)
-    if (!wsClient) setWsClient(ws)
-
-    ws.onopen = (event) => {
-      console.log('connect')
-      const paymentIntentId = stripeClientSecret.match(/^pi_[a-zA-Z0-9]*/)?.[0]
-      if (!paymentIntentId) return
-
-      ws.send(
-        JSON.stringify({
-          action: 'subscribePaymentIntent',
-          paymentIntentId,
-        })
-      )
-    }
-
-    ws.onmessage = (event) => {
-      const data = event.data ? JSON.parse(event.data) : {}
-      console.log(data)
-      if (data.error || data.success === false) onError(data.error ?? 'Unknown error')
-      else onSuccess()
-    }
-  }, [setWsClient, wsClient, stripeClientSecret, onSuccess, onError])
-
   // stripe handler
   const confirmCardPayment = useCallback(
     (paymentMethodCardData: CreatePaymentMethodCardData['card']) => {
@@ -183,10 +147,9 @@ export default function CheckoutForm({
         })
         .then((result) => {
           if ((result as any).error) onError(`Stripe error: ${(result as any).error.message}`)
-          startWsConnection()
         })
     },
-    [stripe, stripeClientSecret, setConfirming, onError, startWsConnection]
+    [stripe, stripeClientSecret, setConfirming, onError]
   )
 
   const handleCheckout = useCallback(

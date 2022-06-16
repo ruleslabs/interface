@@ -38,6 +38,7 @@ const UserSection = styled(Section)`
 
   ${({ theme }) => theme.media.small`
     width: fit-content;
+    flex-direction: column;
   `}
 `
 
@@ -65,6 +66,11 @@ const TabBar = styled(Row)`
 
 const StyledDiscordUser = styled(DiscordUser)`
   margin-top: 128px; // 208px / 2 + 24px
+
+  ${({ theme }) => theme.media.small`
+    margin: 16px auto;
+    width: fit-content;
+  `}
 `
 
 export default function ProfileLayout({ children }: { children: React.ReactElement }) {
