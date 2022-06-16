@@ -49,6 +49,10 @@ const SEARCH_USER_CONTENT = `
     certified
     twitterUsername
     instagramUsername
+    discordUser {
+      username
+      discriminator
+    }
   }
 `
 

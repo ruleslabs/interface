@@ -10,6 +10,7 @@ import { ColumnCenter } from '@/components/Column'
 import User from '@/components/User'
 import TabLink from '@/components/TabLink'
 import { useSearchUser, useCurrentUser } from '@/state/user/hooks'
+import DiscordUser from '@/components/DiscordStatus/DiscordUser'
 
 import Instagram from '@/images/instagram-color.svg'
 import Twitter from '@/images/twitter-color.svg'
@@ -32,6 +33,8 @@ const StyledSection = styled(Section)`
 const UserSection = styled(Section)`
   z-index: 2;
   margin-top: -104px;
+  display: flex;
+  justify-content: space-between;
 
   ${({ theme }) => theme.media.small`
     width: fit-content;
@@ -58,6 +61,10 @@ const TabBar = styled(Row)`
   left: 0;
   right: 0;
   gap: 32px;
+`
+
+const StyledDiscordUser = styled(DiscordUser)`
+  margin-top: 128px; // 208px / 2 + 24px
 `
 
 export default function ProfileLayout({ children }: { children: React.ReactElement }) {
@@ -102,6 +109,12 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
               )}
             </RowCenter>
           </ColumnCenter>
+          {user.profile.discordUser && user.profile.isDiscordVisible && (
+            <StyledDiscordUser
+              username={user.profile.discordUser.username}
+              discriminator={user.profile.discordUser.discriminator}
+            />
+          )}
         </UserSection>
         <TabBar>
           <TabLink href={`/user/${userSlug}`}>
