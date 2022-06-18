@@ -54,24 +54,6 @@ export async function decryptWithPassword(password: string, iv: string, salt: st
   }
 }
 
-// RSA-OAEP
-
-export async function encryptWithPublicKey(spki: string, message: Uint8Array) {
-  const encryptionKey = Buffer.from(spki, 'base64')
-
-  const key = await crypto.subtle.importKey(
-    'spki',
-    encryptionKey,
-    { name: 'RSA-OAEP', hash: { name: 'SHA-256' } },
-    false,
-    ['encrypt']
-  )
-
-  const cipher = await crypto.subtle.encrypt({ name: 'RSA-OAEP' }, key, message)
-
-  return Buffer.from(new Uint8Array(cipher)).toString('base64')
-}
-
 // Utils
 
 export function generateIV() {

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
@@ -12,6 +12,7 @@ import { TYPE } from '@/styles/theme'
 import { usePreparePasswordUpdateQuery, useUpdatePasswordMutation } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import { PrimaryButton } from '@/components/Button'
+import useCreateWallet, { WalletInfos } from '@/hooks/useCreateWallet'
 
 const StyledForm = styled.form`
   width: 100%;
@@ -27,12 +28,17 @@ interface UpdatePasswordFormProps {
 }
 
 export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePasswordFormProps) {
+  // Wallet
+  const createWallet = useCreateWallet()
+  const [walletInfos, setWalletInfos] = useState<WalletInfos | null>(null)
+
   // Loading
   const [loading, setLoading] = useState(false)
 
   // router
   const router = useRouter()
-  const { token, email, username } = router.query
+  const { token, email: encodedEmail, username } = router.query
+  const email = useMemo(() => decodeURIComponent(encodedEmail), [encodedEmail])
 
   // modal
   const toggleAuthModal = useAuthModalToggle()
@@ -95,7 +101,31 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePas
       const updatePassword = async () => {
         const hashedPassword = await passwordHasher(password)
 
-        updatePasswordMutation({ variables: { email, newPassword: hashedPassword } })
+        let newWalletInfos = walletInfos
+
+        try {
+          if (!newWalletInfos) {
+            newWalletInfos = await createWallet(password)
+            setWalletInfos(newWalletInfos)
+          }
+        } catch (error: any) {
+          setError({ message: `${error.message}, contact support if the error persist.` })
+
+          console.error(error)
+          setLoading(false)
+          return
+        }
+
+        const { starkPub: starknetPub, userKey: rulesPrivateKey } = newWalletInfos
+
+        updatePasswordMutation({
+          variables: {
+            email,
+            newPassword: hashedPassword,
+            starknetPub,
+            rulesPrivateKey,
+          },
+        })
           .then((res: any) => onSuccessfulConnection(res?.data?.updatePassword?.accessToken, false))
           .catch((updatePasswordError: ApolloError) => {
             const error = updatePasswordError?.graphQLErrors?.[0]

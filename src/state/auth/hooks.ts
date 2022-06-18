@@ -49,7 +49,6 @@ const SIGN_UP_MUTATION = gql`
     $password: String!
     $starknetPub: String!
     $rulesPrivateKey: RulesPrivateKeyAttributes!
-    $rulesPrivateKeyBackup: String!
     $emailVerificationCode: String!
     $acceptCommercialEmails: Boolean!
   ) {
@@ -60,7 +59,6 @@ const SIGN_UP_MUTATION = gql`
         password: $password
         starknetPub: $starknetPub
         rulesPrivateKey: $rulesPrivateKey
-        rulesPrivateKeyBackup: $rulesPrivateKeyBackup
         emailVerificationCode: $emailVerificationCode
         acceptCommercialEmails: $acceptCommercialEmails
       }
@@ -87,8 +85,15 @@ const PREPARE_PASSWORD_UPDATE_QUERY = gql`
 `
 
 const UPDATE_PASSWORD_MUTATION = gql`
-  mutation ($email: String!, $newPassword: String!) {
-    updatePassword(input: { email: $email, newPassword: $newPassword }) {
+  mutation (
+    $email: String!
+    $newPassword: String!
+    $starknetPub: String!
+    $rulesPrivateKey: RulesPrivateKeyAttributes!
+  ) {
+    updatePassword(
+      input: { email: $email, newPassword: $newPassword, starknetPub: $starknetPub, rulesPrivateKey: $rulesPrivateKey }
+    ) {
       accessToken
     }
   }

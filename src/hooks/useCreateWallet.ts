@@ -1,9 +1,7 @@
 import { useCallback } from 'react'
 import { stark, ec } from 'starknet'
 
-import { encryptWithPassword, encryptWithPublicKey, encodeKey, generateSalt, generateIV } from '@/utils/encryption'
-
-const spki = process.env.NEXT_PUBLIC_SPKI ?? ''
+import { encryptWithPassword, encodeKey, generateSalt, generateIV } from '@/utils/encryption'
 
 export interface WalletInfos {
   starkPub: string
@@ -26,12 +24,10 @@ export default function useCreateWallet(): (password: string) => Promise<WalletI
     const encodedPrivateKey = encodeKey(starkPair.priv.toString(16))
 
     const encryptedPrivateKey = await encryptWithPassword(password, iv, salt, encodedPrivateKey)
-    const encryptedPrivateKeyBackup = await encryptWithPublicKey(spki, encodedPrivateKey)
 
     return {
       starkPub,
       userKey: { encryptedPrivateKey, salt, iv },
-      backupKey: encryptedPrivateKeyBackup,
     }
   }, [])
 }
