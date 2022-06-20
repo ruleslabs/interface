@@ -38,7 +38,7 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePas
   // router
   const router = useRouter()
   const { token, email: encodedEmail, username } = router.query
-  const email = useMemo(() => decodeURIComponent(encodedEmail), [encodedEmail])
+  const email = useMemo(() => (encodedEmail ? decodeURIComponent(encodedEmail as string) : undefined), [encodedEmail])
 
   // modal
   const toggleAuthModal = useAuthModalToggle()

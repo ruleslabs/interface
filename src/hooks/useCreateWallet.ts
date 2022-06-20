@@ -10,7 +10,6 @@ export interface WalletInfos {
     salt: string
     iv: string
   }
-  backupKey: string
 }
 
 export default function useCreateWallet(): (password: string) => Promise<WalletInfos> {
