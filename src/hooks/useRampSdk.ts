@@ -1,6 +1,8 @@
 import { useState, useCallback, useEffect } from 'react'
 import { RampInstantSDK, RampInstantEventTypes } from '@ramp-network/ramp-instant-sdk'
 
+const url = process.env.NEXT_PUBLIC_RAMP_URL
+
 interface RampSdkProps {
   email?: string
   key?: string
@@ -10,8 +12,7 @@ export default function useRampSdk({ email, key }: RampSdkProps): RampInstantSDK
   const [rampSdk, setRampSdk] = useState<RampInstantSDK | null>(null)
 
   const newRampSdk = useCallback(() => {
-    if (!email || !key) return null
-
+    if (!email || !key || !url) return null
     return new RampInstantSDK({
       fiatValue: '100',
       swapAsset: 'ETH',
@@ -19,7 +20,7 @@ export default function useRampSdk({ email, key }: RampSdkProps): RampInstantSDK
       hostAppName: 'RULES',
       hostLogoUrl: process.env.NEXT_PUBLIC_APP_URL ? `${process.env.NEXT_PUBLIC_APP_URL}/assets/logo.svg` : '',
       userEmailAddress: email,
-      url: process.env.NODE_ENV === 'development' ? 'https://ri-widget-staging-goerli2.firebaseapp.com/' : undefined,
+      url,
       // userAddress: key,
     }).on('WIDGET_CLOSE' as RampInstantEventTypes, () => {
       setRampSdk(newRampSdk())

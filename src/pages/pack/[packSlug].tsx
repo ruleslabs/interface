@@ -177,7 +177,7 @@ export default function Pack() {
           </StyledMainSection>
           <Section>
             <CardModelsSelectionTitle>
-              <Trans>Selection of possible cards</Trans>
+              <Trans>Example of possible cards</Trans>
             </CardModelsSelectionTitle>
             <StyledGrid gap={44}>
               {(pack.cardModelsOverview ?? []).map(({ cardModel }: { cardModel: any }, index: number) => (

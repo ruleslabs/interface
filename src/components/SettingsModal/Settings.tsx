@@ -24,10 +24,6 @@ const Balance = styled(Row)`
   background: ${({ theme }) => theme.bg5};
   flex-wrap: wrap;
 
-  div {
-    font-size: 25px;
-  }
-
   ${({ theme }) => theme.media.medium`
     gap: 8px 12px;
     padding: 12px;
@@ -76,10 +72,18 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
           <Trans>Current balance</Trans>
         </TYPE.body>
         <Balance>
-          {balance ? (
+          {!currentUser?.starknetAddress ? (
+            <TYPE.subtitle>
+              <Trans>Creating wallet...</Trans>
+            </TYPE.subtitle>
+          ) : balance ? (
             <>
-              <TYPE.body fontWeight={700}>{+balance.toFixed(4)} ETH</TYPE.body>
-              <TYPE.body color="text2">{weiAmountToEURValue(balance) ?? '-'} EUR</TYPE.body>
+              <TYPE.body fontSize={24} fontWeight={700}>
+                {+balance.toFixed(4)} ETH
+              </TYPE.body>
+              <TYPE.body fontSize={24} color="text2">
+                {weiAmountToEURValue(balance) ?? '-'} EUR
+              </TYPE.body>
             </>
           ) : (
             <TYPE.subtitle>Loading...</TYPE.subtitle>
@@ -87,9 +91,11 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
         </Balance>
       </Column>
       <Column gap={26}>
-        <TYPE.body onClick={toggleDepositModal} clickable>
-          <Trans>Deposit ETH</Trans>
-        </TYPE.body>
+        {currentUser?.starknetAddress && (
+          <TYPE.body onClick={toggleDepositModal} clickable>
+            <Trans>Deposit ETH</Trans>
+          </TYPE.body>
+        )}
         <Link href="/settings/profile">
           <TYPE.body clickable>
             <Trans>Profile settings</Trans>

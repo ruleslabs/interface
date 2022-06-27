@@ -35,7 +35,7 @@ const StyledDepositModal = styled(Column)`
   `}
 `
 
-const StyledSecondaryButton = styled(SecondaryButton)`
+const StyledSecondaryButton = styled(SecondaryButton)<{ active: boolean }>`
   display: flex;
   text-align: initial;
   align-items: center;
@@ -50,9 +50,17 @@ const StyledSecondaryButton = styled(SecondaryButton)`
     width: 32px;
   }
 
-  :hover {
-    background: ${({ theme }) => theme.bg3};
-  }
+  ${({ active, theme }) =>
+    active
+      ? `
+        :hover {
+          background: ${theme.bg3};
+        }
+      `
+      : `
+        opacity: 0.3;
+        cursor: default;
+      `}
 `
 
 interface CustomButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
@@ -63,7 +71,7 @@ interface CustomButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 
 const CustomButton = ({ title, subtitle, children, ...props }: CustomButtonProps) => {
   return (
-    <StyledSecondaryButton {...props}>
+    <StyledSecondaryButton active={!!props.onClick} {...props}>
       {children}
       <Column gap={4}>
         <TYPE.body>{title}</TYPE.body>
@@ -127,75 +135,69 @@ export default function DepositModal() {
     <Modal onDismiss={toggleDepositModal} isOpen={isOpen}>
       <StyledDepositModal gap={26}>
         <ModalHeader onDismiss={toggleDepositModal}>{t`Fund your account`}</ModalHeader>
-        {currentUser?.starknetAddress ? (
-          <Column gap={16}>
-            <TYPE.medium>
-              <Trans>From your bank account</Trans>
-            </TYPE.medium>
-            {rampSdk && (
-              <CustomButton
-                title="Ramp"
-                subtitle={t`Buy ETH with your credit card or a bank transfer`}
-                onClick={rampSdk.show}
-              >
-                <RampIcon />
-              </CustomButton>
-            )}
+        <Column gap={16}>
+          <TYPE.medium>
+            <Trans>From your bank account</Trans>
+            &nbsp;
+            {!rampSdk && <Trans>(unavailable)</Trans>}
+          </TYPE.medium>
+          <CustomButton
+            title="Ramp"
+            subtitle={t`Buy ETH with your credit card or a bank transfer`}
+            onClick={rampSdk?.show}
+          >
+            <RampIcon />
+          </CustomButton>
 
-            <Separator>
-              <Trans>or</Trans>
-            </Separator>
+          <Separator>
+            <Trans>or</Trans>
+          </Separator>
 
-            <TYPE.medium>
-              <Trans>From your Ethereum wallet</Trans>
-            </TYPE.medium>
+          <TYPE.medium>
+            <Trans>From your Ethereum wallet</Trans>
+          </TYPE.medium>
 
-            {account && chainId === desiredChainId ? (
-              <Column gap={16}>
-                <CurrencyInput
-                  value={depositAmount}
-                  placeholder="0.0"
-                  onUserInput={handleDepositAmountUpdate}
-                  balance={balance}
-                />
-                {!+depositAmount || !parsedDepositAmount ? (
-                  <PrimaryButton disabled large>
-                    <Trans>Enter an amount</Trans>
-                  </PrimaryButton>
-                ) : balance?.lessThan(parsedDepositAmount) ? (
-                  <PrimaryButton disabled large>
-                    <Trans>Insufficient ETH balance</Trans>
-                  </PrimaryButton>
-                ) : (
-                  <PrimaryButton onClick={handleDeposit} large>
-                    <Trans>Deposit</Trans>
-                  </PrimaryButton>
-                )}
-              </Column>
-            ) : account ? (
-              <ErrorCard>
-                <Trans>
-                  Metamask connected to the wrong network,
-                  <br />
-                  please&nbsp;
-                  <span onClick={activateMetamask}>switch network</span>
-                </Trans>
-              </ErrorCard>
-            ) : (
-              <CustomButton
-                title={t`Connect Metamask`}
-                subtitle={t`Deposit ETH from your wallet`}
-                onClick={activateMetamask}
-              >
-                <MetamaskIcon />
-              </CustomButton>
-            )}
-          </Column>
-        ) : (
-          <TYPE.body>
-            <Trans>ETH deposit will be released very soon</Trans>
-          </TYPE.body>
-        )}
+          {account && chainId === desiredChainId ? (
+            <Column gap={16}>
+              <CurrencyInput
+                value={depositAmount}
+                placeholder="0.0"
+                onUserInput={handleDepositAmountUpdate}
+                balance={balance}
+              />
+              {!+depositAmount || !parsedDepositAmount ? (
+                <PrimaryButton disabled large>
+                  <Trans>Enter an amount</Trans>
+                </PrimaryButton>
+              ) : balance?.lessThan(parsedDepositAmount) ? (
+                <PrimaryButton disabled large>
+                  <Trans>Insufficient ETH balance</Trans>
+                </PrimaryButton>
+              ) : (
+                <PrimaryButton onClick={handleDeposit} large>
+                  <Trans>Deposit</Trans>
+                </PrimaryButton>
+              )}
+            </Column>
+          ) : account ? (
+            <ErrorCard>
+              <Trans>
+                Metamask connected to the wrong network,
+                <br />
+                please&nbsp;
+                <span onClick={activateMetamask}>switch network</span>
+              </Trans>
+            </ErrorCard>
+          ) : (
+            <CustomButton
+              title={t`Connect Metamask`}
+              subtitle={t`Deposit ETH from your wallet`}
+              onClick={activateMetamask}
+            >
+              <MetamaskIcon />
+            </CustomButton>
+          )}
+        </Column>
       </StyledDepositModal>
     </Modal>
   )

@@ -350,6 +350,10 @@ msgstr "Déposer"
 msgid "Insufficient ETH balance"
 msgstr "Solde ETH insuffisant"
 
+#: src/components/DepositModal/index.tsx
+msgid "(unavailable)"
+msgstr "(indisponible)"
+
 #: src/components/Input/CurrencyInput.tsx
 msgid "Balance: {0}"
 msgstr "Solde: {0}"
@@ -527,8 +531,8 @@ msgid "Price: high to low"
 msgstr "Prix décroissant"
 
 #: src/pages/pack/[packSlug].tsx
-msgid "Selection of possible cards"
-msgstr "Selection de cartes possibles"
+msgid "Example of possible cards"
+msgstr "Exemple de cartes possibles"
 
 #: src/pages/user/[username]/cards.tsx
 msgid "Oldest"
@@ -761,3 +765,12 @@ msgstr "Pas des packs"
 #: src/pages/user/[username]/cards.tsx
 msgid "No cards"
 msgstr "Pas de cartes"
+
+#: src/components/CardsTransfersHistory/table.tsx
+#: src/components/OffersSelector/table.tsx
+msgid "Price"
+msgstr "Prix"
+
+#: src/components/SettingsModal/Settings.tsx
+msgid "Creating wallet..."
+msgstr "Wallet en cours de création..."
