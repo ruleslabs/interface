@@ -66,3 +66,7 @@ export function useStarknetSignerModalToggle(): () => void {
 export function useAvatarEditModalToggle(): () => void {
   return useToggleModal(ApplicationModal.AVATAR_EDIT)
 }
+
+export function usePackOpeningPreparationModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.PACK_OPENING_PREPARATION)
+}

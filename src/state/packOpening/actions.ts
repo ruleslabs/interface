@@ -17,6 +17,10 @@ export enum Sound {
   COMMON_FOCUS = 'common-focus',
 }
 
+export interface PackPayload {
+  pack: any
+}
+
 export interface SoundFetchingStatePayload {
   sound: Sound
   fetchingState: FetchingState
@@ -42,6 +46,8 @@ export interface GainPayload {
 export interface SoundPayload {
   sound: Sound | null
 }
+
+export const setPackToPrepare = createAction<PackPayload>('packOpening/setPackToPrepare')
 
 export const updateSoundFetchingState = createAction<SoundFetchingStatePayload>('packOpening/updateSoundFetchingState')
 export const addSoundAudioData = createAction<SoundAudioDataPayload>('packOpening/addSoundAudioData')

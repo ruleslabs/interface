@@ -56,7 +56,6 @@ function App({ Component, pageProps }: AppProps) {
                   property="og:description"
                   content="Site officiel de Rules, le jeu de cartes à collectionner sur l'univers rap. Constituez votre deck, soutenez les artistes, luttez pour l'indépendance !"
                 />
-                <meta property="og:description" content="Offering tour packages for individuals or groups." />
                 <meta property="og:image" content={`${process.env.NEXT_PUBLIC_APP_URL}/assets/twitter-card.jpg`} />
 
                 <link rel="shortcut icon" href="/assets/favicon.png" />

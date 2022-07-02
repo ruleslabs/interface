@@ -1,6 +1,7 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 
 import {
+  setPackToPrepare,
   updateSoundFetchingState,
   addSoundAudioData,
   updateAudioContext,
@@ -8,6 +9,7 @@ import {
   updateLoopSourceNode,
   updateGainNode,
   updateGain,
+  PackPayload,
   FetchingState,
   Sound,
   SoundFetchingStatePayload,
@@ -23,6 +25,7 @@ export interface SoundsFetchingState {
 }
 
 export interface PackOpeningState {
+  packToPrepare: any | null
   soundsFetchingState: SoundsFetchingState
   audioData: { [sound: string]: AudioBuffer | undefined }
   audioContext: AudioContext | null
@@ -32,6 +35,7 @@ export interface PackOpeningState {
 }
 
 export const initialState: PackOpeningState = {
+  packToPrepare: null,
   soundsFetchingState: Object.values(Sound).reduce<SoundsFetchingState>((acc, sound: Sound) => {
     acc[sound] = FetchingState.UNFETCHED
     return acc
@@ -45,6 +49,10 @@ export const initialState: PackOpeningState = {
 
 export default createReducer(initialState, (builder) =>
   builder
+    .addCase(setPackToPrepare, (state, action: PayloadAction<PackPayload>) => {
+      const { pack } = action.payload
+      state.packToPrepare = pack
+    })
     .addCase(updateSoundFetchingState, (state, action: PayloadAction<SoundFetchingStatePayload>) => {
       const { sound, fetchingState } = action.payload
       state.soundsFetchingState[sound] = fetchingState

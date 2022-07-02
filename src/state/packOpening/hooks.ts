@@ -3,6 +3,7 @@ import { gql, useMutation } from '@apollo/client'
 
 import { AppState } from '@/state'
 import {
+  setPackToPrepare,
   updateSoundFetchingState,
   addSoundAudioData,
   updateAudioContext,
@@ -14,6 +15,18 @@ import {
   FetchingState,
 } from './actions'
 import { useAppDispatch, useAppSelector } from '@/state/hooks'
+
+const PREPARE_PACK_OPENING_MUTATION = gql`
+  mutation ($packId: ID!) {
+    preparePackOpening(input: { packId: $packId }) {
+      error {
+        code
+        message
+        path
+      }
+    }
+  }
+`
 
 const OPEN_PACK_MUTATION = gql`
   mutation ($packId: ID!) {
@@ -46,8 +59,21 @@ const OPEN_PACK_MUTATION = gql`
   }
 `
 
+export function usePackOpeningPreparationMutation() {
+  return useMutation(PREPARE_PACK_OPENING_MUTATION)
+}
+
 export function usePackOpeningMutation() {
   return useMutation(OPEN_PACK_MUTATION)
+}
+
+export function usePackToPrepare(): AppState['packOpening']['packToPrepare'] {
+  return useAppSelector((state: AppState) => state.packOpening.packToPrepare)
+}
+
+export function useSetPackToPrepare(): (pack: any) => void {
+  const dispatch = useAppDispatch()
+  return useCallback((pack: any) => dispatch(setPackToPrepare({ pack })), [dispatch])
 }
 
 export function useAudioLoop() {

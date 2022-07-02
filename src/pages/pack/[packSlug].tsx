@@ -73,7 +73,7 @@ const QUERY_PACK = gql`
       cardsPerPack
       pictureUrl(derivative: "width=512")
       releaseDate
-      maxSupply
+      maxBuyableSupply
       supply
       season
       seasons
@@ -147,7 +147,7 @@ export default function Pack() {
                     cardsPerPack={pack.cardsPerPack}
                     seasons={pack.seasons}
                     releaseDate={new Date(pack.releaseDate)}
-                    availableSupply={pack.maxSupply ? pack.maxSupply - pack.supply : undefined}
+                    availableSupply={pack.maxBuyableSupply ? pack.maxBuyableSupply - pack.supply : undefined}
                     availableQuantity={availableQuantity}
                     onSuccessfulPackPurchase={onSuccessfulPackPurchase}
                   />

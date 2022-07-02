@@ -18,7 +18,7 @@ const PACKS_COUNT = 4
 const PACK_CONTENT = `
   pictureUrl(derivative: "width=320")
   slug
-  maxSupply
+  maxBuyableSupply
   supply
   releaseDate
 `
@@ -156,7 +156,7 @@ export default function Packs() {
               <PackCard
                 slug={pack.slug}
                 pictureUrl={pack.pictureUrl}
-                soldout={pack.maxSupply ? pack.supply >= pack.maxSupply : false}
+                soldout={pack.maxBuyableSupply ? pack.supply >= pack.maxBuyableSupply : false}
                 width={200}
               />
             </PackCountdownWrapper>

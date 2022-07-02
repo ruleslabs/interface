@@ -9,6 +9,7 @@ export enum ApplicationModal {
   DEPOSIT,
   STARKNET_SIGNER,
   AVATAR_EDIT,
+  PACK_OPENING_PREPARATION,
 }
 
 export const setOpenModal = createAction<{ modal: ApplicationModal | null }>('application/setOpenModal')
