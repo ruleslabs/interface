@@ -180,11 +180,11 @@ export default function Pack() {
               <Trans>Example of possible cards</Trans>
             </CardModelsSelectionTitle>
             <StyledGrid gap={44}>
-              {(pack.cardModelsOverview ?? []).map(({ cardModel }: { cardModel: any }, index: number) => (
+              {(pack.cardModelsOverview ?? []).map((packCardModel: any, index: number) => (
                 <CardModel
                   key={`pack-rules-${index}`}
-                  cardModelSlug={cardModel.slug}
-                  pictureUrl={cardModel.pictureUrl}
+                  cardModelSlug={packCardModel.cardModel.slug}
+                  pictureUrl={packCardModel.cardModel.pictureUrl}
                 />
               ))}
             </StyledGrid>

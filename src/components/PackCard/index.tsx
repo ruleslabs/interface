@@ -21,9 +21,8 @@ const Card = styled.img<{ state: boolean }>`
   ${({ state }) => {
     switch (state) {
       case 'inDelivery':
-        return 'opacity: 0.3;'
       case 'delivered':
-        return 'opacity: 0.5;'
+        return 'opacity: 0.3;'
       case 'preparingOpening':
         return `
           animation: float 1.2s ease-in-out infinite;
@@ -100,13 +99,14 @@ export default function PackCard({
 
     switch (state) {
       case 'inDelivery':
+      case 'buyable':
         return { href: `/pack/${slug}` }
       case 'delivered':
         return { onClick }
       case 'preparingOpening':
         return {}
       case 'readyToOpen':
-        return { href: `open` }
+        return { href: `/pack/${slug}/open` }
     }
   }, [state, onClick])
 

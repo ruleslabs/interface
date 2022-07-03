@@ -158,6 +158,7 @@ export default function Packs() {
                 pictureUrl={pack.pictureUrl}
                 soldout={pack.maxBuyableSupply ? pack.supply >= pack.maxBuyableSupply : false}
                 width={200}
+                state="buyable"
               />
             </PackCountdownWrapper>
           ))

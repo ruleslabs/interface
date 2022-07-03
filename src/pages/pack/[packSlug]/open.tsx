@@ -9,8 +9,6 @@ import PackOpeningLayout from '@/components/Layout/PackOpening'
 import { TYPE } from '@/styles/theme'
 import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'
-import { useStarknetSignerModalToggle } from '@/state/application/hooks'
-import StarknetSignerModal from '@/components/StarknetSignerModal'
 import { usePackOpeningMutation, useAudioLoop } from '@/state/packOpening/hooks'
 import { Sound } from '@/state/packOpening/actions'
 import PackOpeningCards from '@/components/PackOpeningCards'
@@ -119,30 +117,24 @@ function PackOpening() {
   const [cards, setCards] = useState<any[]>([])
 
   // approve pack opening
-  const [txWaiting, setTxWaiting] = useState(false)
-  const toggleStarknetSignerModal = useStarknetSignerModalToggle()
-  const approvePackOpeningCallback = useCallback(
-    (tx: string) => {
-      setTxWaiting(true)
-      loop(Sound.DURING_PACK_OPENING)
-      console.log(`Wait for TX ${tx}`) // TODO
+  const [waiting, setWaiting] = useState(false)
+  const openPack = useCallback(() => {
+    setWaiting(true)
+    loop(Sound.DURING_PACK_OPENING)
 
-      setTimeout(() => {
-        console.log('Tx is valid') // TODO
-        packOpeningMutation({ variables: { packId: pack.id } })
-          .then((res: any) => {
-            if (res.data?.openPack?.cards) setCards(res.data.openPack.cards)
-            else console.error(res.data?.openPack?.error) // TODO handle error
-            setTxWaiting(false)
-          })
-          .catch((packOpeningError: ApolloError) => {
-            console.error(packOpeningError)
-            setTxWaiting(false)
-          })
-      }, 5000)
-    },
-    [pack?.id, setCards, setTxWaiting, loop]
-  )
+    setTimeout(() => {
+      packOpeningMutation({ variables: { packId: pack.id } })
+        .then((res: any) => {
+          if (res.data?.openPack?.cards) setCards(res.data.openPack.cards)
+          else console.error(res.data?.openPack?.error) // TODO handle error
+          setWaiting(false)
+        })
+        .catch((packOpeningError: ApolloError) => {
+          console.error(packOpeningError)
+          setWaiting(false)
+        })
+    }, 5000) // dopamine optimization è_é
+  }, [pack?.id, setCards, setWaiting, loop])
 
   useEffect(() => {
     if (cards && cards?.length > 0 && latestLoopSound === Sound.DURING_PACK_OPENING) {
@@ -173,10 +165,10 @@ function PackOpening() {
             ) : (
               <Column gap={80}>
                 <PackImage src={pack.pictureUrl} />
-                {txWaiting ? (
+                {waiting ? (
                   <StyledLoader />
                 ) : (
-                  <OpenPackButton onClick={toggleStarknetSignerModal} large>
+                  <OpenPackButton onClick={openPack} large>
                     <Trans>Open pack</Trans>
                   </OpenPackButton>
                 )}
@@ -185,11 +177,6 @@ function PackOpening() {
           </>
         )}
       </MainSection>
-
-      <StarknetSignerModal
-        transaction={{ title: 'Approve pack openning', action: 'Approve' }}
-        callback={approvePackOpeningCallback}
-      />
     </>
   )
 }

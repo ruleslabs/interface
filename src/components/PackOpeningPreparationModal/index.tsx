@@ -38,7 +38,8 @@ export default function PackOpeningPreparationModal({ onSuccess }: PackOpeningPr
 
     packOpeningPreparationMutation({ variables: { packId: pack.id } })
       .then((res: any) => {
-        if (res.error) console.error(preparePackOpeningError) // TODO: handle error
+        // TODO: handle error
+        if (res?.data?.preparePackOpening?.error) console.error(res?.data?.preparePackOpening?.error)
         else {
           onSuccess()
           togglePackOpeningPreparationModal()
