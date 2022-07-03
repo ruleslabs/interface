@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
@@ -6,7 +7,7 @@ import { useModalOpen, usePackOpeningPreparationModalToggle } from '@/state/appl
 import { ApplicationModal } from '@/state/application/actions'
 import Column from '@/components/Column'
 import { PrimaryButton } from '@/components/Button'
-import { usePackToPrepare } from '@/state/packOpening/hooks'
+import { usePackToPrepare, usePackOpeningPreparationMutation } from '@/state/packOpening/hooks'
 
 const StyledPackOpeningPreparationModal = styled(Column)`
   width: 546px;
@@ -20,22 +21,40 @@ const StyledPackOpeningPreparationModal = styled(Column)`
   `}
 `
 
-interface DepositModalProps {
-  pack: any
+interface PackOpeningPreparationModalProps {
+  onSuccess: () => void
 }
 
-export default function DepositModal() {
+export default function PackOpeningPreparationModal({ onSuccess }: PackOpeningPreparationModalProps) {
   // modal
   const isOpen = useModalOpen(ApplicationModal.PACK_OPENING_PREPARATION)
   const togglePackOpeningPreparationModal = usePackOpeningPreparationModalToggle()
 
   const pack = usePackToPrepare()
 
+  const [packOpeningPreparationMutation] = usePackOpeningPreparationMutation()
+  const preparePackOpening = useCallback(() => {
+    if (!pack) return
+
+    packOpeningPreparationMutation({ variables: { packId: pack.id } })
+      .then((res: any) => {
+        if (res.error) console.error(preparePackOpeningError) // TODO: handle error
+        else {
+          onSuccess()
+          togglePackOpeningPreparationModal()
+        }
+      })
+      .catch((preparePackOpeningError: ApolloError) => {
+        const error = preparePackOpeningError?.graphQLErrors?.[0]
+        console.error(preparePackOpeningError) // TODO: handle error
+      })
+  }, [onSuccess, togglePackOpeningPreparationModal, packOpeningPreparationMutation, pack?.id])
+
   return (
     <Modal onDismiss={togglePackOpeningPreparationModal} isOpen={isOpen}>
       <StyledPackOpeningPreparationModal gap={26}>
         <ModalHeader onDismiss={togglePackOpeningPreparationModal}>{pack?.displayName}</ModalHeader>
-        <PrimaryButton large>
+        <PrimaryButton onClick={preparePackOpening} large>
           <Trans>Open pack</Trans>
         </PrimaryButton>
       </StyledPackOpeningPreparationModal>

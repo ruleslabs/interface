@@ -80,7 +80,6 @@ function Packs() {
   const toggleSort = useCallback(() => setIncreaseSort(!increaseSort), [increaseSort, setIncreaseSort])
 
   // query packs
-  const [packsBalance, setPacksBalance] = useState<any[]>([])
   const packsBalancesQuery = useQuery(QUERY_USER_PACKS_BALANCES, { variables: { slug: userSlug }, skip: !userSlug })
 
   // aggregate packs
@@ -151,7 +150,7 @@ function Packs() {
           isValid && !isLoading && <EmptyTab emptyText={t`No packs`} />
         )}
       </Section>
-      <PackOpeningPreparationModal />
+      <PackOpeningPreparationModal onSuccess={packsBalancesQuery.refetch} />
     </>
   )
 }
