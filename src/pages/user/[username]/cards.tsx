@@ -12,16 +12,19 @@ import { useSearchCards } from '@/state/search/hooks'
 import { TYPE } from '@/styles/theme'
 import EmptyTab from '@/components/EmptyTab'
 
+const CARD_CONTENT = `
+  serialNumber
+  onSale
+  cardModel {
+    slug
+    pictureUrl(derivative: "width=1024")
+  }
+`
+
 const QUERY_CARDS = gql`
-  query ($ids: [ID!]!) {
-    cardsByIds(ids: $ids) {
-      serialNumber
-      onSale
-      cardModel {
-        slug
-        pictureUrl(derivative: "width=512")
-      }
-    }
+  query ($ids: [ID!]!, $userId: ID!) {
+    cardsInDeliveryForUser(userId: $userId) { ${CARD_CONTENT} }
+    cardsByIds(ids: $ids) { ${CARD_CONTENT} }
   }
 `
 
@@ -48,15 +51,20 @@ function Cards({ userId }: { userId: string }) {
     [cardsHits]
   )
 
-  const {
-    data: cardsData,
-    loading: cardsLoading,
-    error: cardsError,
-  } = useQuery(QUERY_CARDS, { variables: { ids: cardIds }, skip: !cardIds.length })
+  // Query cards
+  const cardsQuery = useQuery(QUERY_CARDS, { variables: { ids: cardIds, userId }, skip: !cardIds.length && !userId })
 
-  const cards = cardsData?.cardsByIds ?? []
-  const isValid = !cardsHitsError && !cardsError
-  const isLoading = cardsHitsLoading || cardsLoading
+  // Aggregate cards
+  const deliveredCards = cardsQuery.data?.cardsByIds ?? []
+  const inDeliveryCards = cardsQuery.data?.cardsInDeliveryForUser ?? []
+  const cards = useMemo(
+    () => [...inDeliveryCards.map((card: any) => ({ ...card, inDelivery: true })), ...deliveredCards],
+    [deliveredCards.length, inDeliveryCards.length]
+  )
+
+  // loading / error
+  const isValid = !cardsQuery.error
+  const isLoading = cardsQuery.loading
 
   return (
     <Section>
@@ -80,6 +88,7 @@ function Cards({ userId }: { userId: string }) {
               pictureUrl={card.cardModel.pictureUrl}
               onSale={card.onSale}
               serialNumber={card.serialNumber}
+              inDelivery={card.inDelivery}
             />
           ))}
         </Grid>

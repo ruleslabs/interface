@@ -1,6 +1,7 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/macro'
 
+import { useActiveLocale } from '@/hooks/useActiveLocale'
 import Link from '@/components/Link'
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
@@ -16,8 +17,9 @@ const StyledCardModel = styled.div<{ width?: number }>`
   }
 `
 
-const Card = styled.img`
+const Card = styled.img<{ inDelivery: boolean }>`
   width: 100%;
+  ${({ inDelivery }) => inDelivery && 'opacity: 0.3;'}
 `
 
 const OnSale = styled(RowCenter)`
@@ -32,19 +34,41 @@ const OnSale = styled(RowCenter)`
   justify-content: center;
 `
 
+const StatusStyle = css`
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 37.2%;
+`
+
+const InDelivery = styled.img`
+  ${StatusStyle}
+`
+
 interface CardModelProps {
   cardModelSlug: string
   pictureUrl: string
-  onSale?: boolean
   width?: number
   serialNumber?: number
+  inDelivery?: boolean
+  onSale?: boolean
 }
 
-export default function CardModel({ cardModelSlug, pictureUrl, onSale = false, width, serialNumber }: CardModelProps) {
+export default function CardModel({
+  cardModelSlug,
+  pictureUrl,
+  width,
+  serialNumber,
+  onSale = false,
+  inDelivery = false,
+}: CardModelProps) {
+  const locale = useActiveLocale()
+
   return (
     <StyledCardModel width={width}>
       <Link href={`/card/${cardModelSlug}${!!serialNumber ? `/${serialNumber}` : ''}`}>
-        <Card src={pictureUrl} />
+        <Card src={pictureUrl} inDelivery={inDelivery} />
+        {inDelivery && <InDelivery src={`/assets/delivery.${locale}.png`} />}
         {onSale && (
           <OnSale>
             <TYPE.medium>

@@ -119,7 +119,7 @@ function Packs() {
             )}
           </TYPE.body>
         </GridHeader>
-        {isValid && !isLoading && packsBalances.length > 0 ? (
+        {isValid && !isLoading && packsCount ? (
           <Grid maxWidth={256}>
             {packsBalances.map((packBalance: any, index: number) => (
               <>
