@@ -95,6 +95,12 @@ const DISCONNECT_DISCORD_ACCOUNT_MUTATION = gql`
   }
 `
 
+const REFRESH_DISCORD_ROLES_MUTATION = gql`
+  mutation {
+    refreshDiscordRoles
+  }
+`
+
 const SET_DISCORD_ACCOUNT_VISIBILITY_MUTATION = gql`
   mutation ($visible: Boolean!) {
     setDiscordAccountVisibility(visible: $visible) {
@@ -198,6 +204,10 @@ export function useConnectDiscordAccountMutation() {
 
 export function useDisconnectDiscordAccountMutation() {
   return useMutation(DISCONNECT_DISCORD_ACCOUNT_MUTATION)
+}
+
+export function useRefreshDiscordRolesMutation() {
+  return useMutation(REFRESH_DISCORD_ROLES_MUTATION)
 }
 
 export function useEditAvatarMutation() {

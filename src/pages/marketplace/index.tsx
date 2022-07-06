@@ -124,7 +124,7 @@ export default function Marketplace() {
       />
       <ComingSoon>
         <TYPE.medium>
-          <Trans>The marketplace will open early July.</Trans>
+          <Trans>The marketplace is opening soon.</Trans>
         </TYPE.medium>
         <TYPE.body>
           <Trans>

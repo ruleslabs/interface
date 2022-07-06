@@ -735,8 +735,8 @@ msgid "Each card gives access to specific Discord channel and to airdrops of gif
 msgstr "Chaque carte donne accès à un channel Discord spécifique et à des airdrops de cadeaux tout au long de l’année."
 
 #: src/pages/marketplace/index.tsx
-msgid "The marketplace will open early July."
-msgstr "Ouverture du marché d’échange début Juillet."
+msgid "The marketplace is opening soon."
+msgstr "Ouverture du marché d’échange prochainement."
 
 #: src/pages/marketplace/index.tsx
 msgid "Please <0>join our Discord</0><1> </1>for live updates."
@@ -782,3 +782,7 @@ msgstr "Ouverture Indisponible"
 #: src/components/PackOpeningPreparationModal/index.tsx
 msgid "This step may take a few hours to complete, thanks for your patience."
 msgstr "Cette étape peut prendre quelques heures, merci de votre patience."
+
+#: src/components/ProfileEditor/index.tsx
+msgid "Refresh channels access"
+msgstr "Rafraîchir l'accès aux salons"

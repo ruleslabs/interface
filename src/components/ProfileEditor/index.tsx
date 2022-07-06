@@ -13,6 +13,7 @@ import {
   useQueryCurrentUser,
   useSetSocialLinksMutation,
   useSetDiscordVisibilityMutation,
+  useRefreshDiscordRolesMutation,
 } from '@/state/user/hooks'
 import Checkbox from '@/components/Checkbox'
 import DiscordStatus from '@/components/DiscordStatus'
@@ -34,12 +35,16 @@ const SocialLinksWrapper = styled(Column)`
 `
 
 const DiscordStatusWrapper = styled(Column)`
-  height: 100px;
+  height: 140px;
   gap: 16px;
 
   button {
     width: 300px;
   }
+`
+
+const DiscordRefresh = styled(PrimaryButton)`
+  margin-bottom: 16px;
 `
 
 export default function ProfileEditor() {
@@ -70,11 +75,26 @@ export default function ProfileEditor() {
   )
 
   // discord
+  const [discordLoading, setDiscordLoading] = useState(false)
+  const [refreshDiscordRolesMutation] = useRefreshDiscordRolesMutation()
   const [setDiscordVisibilityMutation] = useSetDiscordVisibilityMutation()
 
   const [isDiscordVisible, setIsDiscordVisible] = useState<boolean>(currentUser?.profile?.isDiscordVisible ?? false)
 
   const toggleDiscordVisibility = useCallback(() => setIsDiscordVisible(!isDiscordVisible), [isDiscordVisible])
+
+  const handleDiscordRefresh = useCallback(() => {
+    setDiscordLoading(true)
+
+    refreshDiscordRolesMutation()
+      .then((res: any) => {
+        setDiscordLoading(false)
+      })
+      .catch((refreshDiscordAccountError: ApolloError) => {
+        console.error(refreshDiscordAccountError) // TODO: handle error
+        setDiscordLoading(false)
+      })
+  }, [refreshDiscordRolesMutation, setDiscordLoading])
 
   // save changes
   const [setDiscordVisibilityLoading, setSetDiscordVisibilityLoading] = useState(false)
@@ -153,11 +173,16 @@ export default function ProfileEditor() {
           <DiscordStatusWrapper>
             <DiscordStatus redirectPath="/settings/profile" connectionText={t`Connect my account`} />
             {currentUser?.profile?.discordUser && (
-              <Checkbox value={isDiscordVisible} onChange={toggleDiscordVisibility}>
-                <TYPE.body>
-                  <Trans>Public</Trans>
-                </TYPE.body>
-              </Checkbox>
+              <Column gap={24}>
+                <Checkbox value={isDiscordVisible} onChange={toggleDiscordVisibility}>
+                  <TYPE.body>
+                    <Trans>Public</Trans>
+                  </TYPE.body>
+                </Checkbox>
+                <DiscordRefresh onClick={handleDiscordRefresh} disabled={discordLoading} large>
+                  {discordLoading ? 'Loading ...' : t`Refresh channels access`}
+                </DiscordRefresh>
+              </Column>
             )}
           </DiscordStatusWrapper>
         </Column>
