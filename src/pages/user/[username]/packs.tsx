@@ -93,7 +93,7 @@ function Packs() {
   // packs count
   const packsCount = useMemo(
     () =>
-      packsBalances.reduce<number>(
+      (packsBalances as any[]).reduce<number>(
         (acc, packBalance) =>
           acc +
           packBalance.balance +

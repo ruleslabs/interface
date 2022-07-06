@@ -15,7 +15,7 @@ const StyledPackCard = styled.div<{ width?: number }>`
   }
 `
 
-const Card = styled.img<{ state: boolean }>`
+const Card = styled.img<{ state: string }>`
   width: 100%;
 
   ${({ state }) => {
@@ -45,6 +45,7 @@ const Card = styled.img<{ state: boolean }>`
           }
         `
     }
+    return
   }}
 `
 
@@ -69,8 +70,8 @@ interface CustomPackCardProps {
   onClick?: () => void
 }
 
-const CustomPackCard = (props: CustomPackCardProps) => {
-  return props.href ? <Link {...props} /> : <div {...props} />
+const CustomPackCard = ({ href, ...props }: CustomPackCardProps) => {
+  return href ? <Link href={href} {...props} /> : <div {...props} />
 }
 
 interface PackCardProps {
@@ -108,6 +109,8 @@ export default function PackCard({
       case 'readyToOpen':
         return { href: `/pack/${slug}/open` }
     }
+
+    return {}
   }, [state, onClick])
 
   return (

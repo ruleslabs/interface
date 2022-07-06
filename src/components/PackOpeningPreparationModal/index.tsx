@@ -1,7 +1,9 @@
 import { useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
+import { ApolloError } from '@apollo/client'
 
+import { TYPE } from '@/styles/theme'
 import Modal, { ModalHeader } from '@/components/Modal'
 import { useModalOpen, usePackOpeningPreparationModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
@@ -55,6 +57,9 @@ export default function PackOpeningPreparationModal({ onSuccess }: PackOpeningPr
     <Modal onDismiss={togglePackOpeningPreparationModal} isOpen={isOpen}>
       <StyledPackOpeningPreparationModal gap={26}>
         <ModalHeader onDismiss={togglePackOpeningPreparationModal}>{pack?.displayName}</ModalHeader>
+        <TYPE.body>
+          <Trans>This step may take a few hours to complete, thanks for your patience.</Trans>
+        </TYPE.body>
         <PrimaryButton onClick={preparePackOpening} large>
           <Trans>Open pack</Trans>
         </PrimaryButton>

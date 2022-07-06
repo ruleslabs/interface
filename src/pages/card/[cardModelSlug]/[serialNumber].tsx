@@ -36,6 +36,10 @@ const MainSectionCardsWrapper = styled(Column)`
   gap: 24px;
   width: 350px;
 
+  & > div:last-child {
+    min-height: 215px;
+  }
+
   ${({ theme }) => theme.media.small`
     gap: 16px;
     width: 100%;
@@ -139,13 +143,15 @@ export default function CardBreakout() {
             />
           </Card>
           <Card>
-            <CardOwnership
-              ownerSlug={card.owner.user.slug}
-              ownerUsername={card.owner.user.username}
-              ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
-              askEUR={card.askEUR}
-              askETH={card.askETH}
-            />
+            {card.owner && (
+              <CardOwnership
+                ownerSlug={card.owner.user.slug}
+                ownerUsername={card.owner.user.username}
+                ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
+                askEUR={card.askEUR}
+                askETH={card.askETH}
+              />
+            )}
           </Card>
         </MainSectionCardsWrapper>
       </MainSection>

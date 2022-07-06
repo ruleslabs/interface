@@ -774,3 +774,11 @@ msgstr "Prix"
 #: src/components/SettingsModal/Settings.tsx
 msgid "Creating wallet..."
 msgstr "Wallet en cours de création..."
+
+#: src/components/PackOpeningPreparationModal/index.tsx
+msgid "Opening unavailable"
+msgstr "Ouverture Indisponible"
+
+#: src/components/PackOpeningPreparationModal/index.tsx
+msgid "This step may take a few hours to complete, thanks for your patience."
+msgstr "Cette étape peut prendre quelques heures, merci de votre patience."
