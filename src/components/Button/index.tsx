@@ -30,6 +30,7 @@ export const PrimaryButton = styled(BaseButton)`
   &[disabled] {
     background: ${({ theme }) => theme.bg3};
     color: ${({ theme }) => theme.text2};
+    cursor: default;
   }
 `
 
@@ -39,6 +40,13 @@ export const SecondaryButton = styled(BaseButton)`
 
   &:active {
     background: ${({ theme }) => theme.bg3}e0;
+  }
+
+  &:disabled,
+  &[disabled] {
+    background: ${({ theme }) => theme.bg3};
+    color: ${({ theme }) => theme.text2};
+    cursor: default;
   }
 `
 

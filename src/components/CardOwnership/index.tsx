@@ -6,9 +6,10 @@ import { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton, SecondaryButton } from '@/components/Button'
-import Present from '@/images/present.svg'
 import Link from '@/components/Link'
 import Placeholder from '@/components/Placeholder'
+
+import Present from '@/images/present.svg'
 
 const Avatar = styled.img`
   width: 50px;
@@ -24,6 +25,7 @@ const ButtonsWrapper = styled(Column)`
 
 const StyledPresent = styled(Present)`
   width: 16px;
+  fill: ${({ theme }) => theme.text2};
 `
 
 interface RuleOwnershipProps {
@@ -46,7 +48,7 @@ export default function CardOwnership({
   return (
     <Column gap={16}>
       <RowCenter gap={12}>
-        <Link href={`/${ownerSlug}`}>
+        <Link href={`/user/${ownerSlug}`}>
           <Avatar src={ownerProfilePictureUrl} />
         </Link>
         <TYPE.body>
@@ -68,7 +70,7 @@ export default function CardOwnership({
                 </Trans>
               </PrimaryButton>
             ) : (
-              <PrimaryButton large>
+              <PrimaryButton disabled large>
                 {askETH ? (
                   <Trans>
                     Buy - {askETH} ETH {askEUR ? `(${askEUR}€)` : null}
@@ -79,7 +81,7 @@ export default function CardOwnership({
               </PrimaryButton>
             )}
             {!askEUR && (
-              <SecondaryButton large>
+              <SecondaryButton disabled large>
                 <RowCenter justify="center" gap={4}>
                   <StyledPresent />
                   <Trans>Offer</Trans>

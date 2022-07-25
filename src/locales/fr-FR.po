@@ -760,7 +760,7 @@ msgstr "Connecte ton Discord"
 
 #: src/pages/user/[username]/packs.tsx
 msgid "No packs"
-msgstr "Pas des packs"
+msgstr "Pas de packs"
 
 #: src/pages/user/[username]/cards.tsx
 msgid "No cards"
