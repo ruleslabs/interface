@@ -13,7 +13,7 @@ import LogoOutline from '@/images/logo-outline.svg'
 const StyledPackCountdownWrapper = styled(ColumnCenter)<{ released: boolean }>`
   ${({ released, theme }) =>
     released
-      ? 'padding: 0 22px;'
+      ? 'padding: 64px 22px 22px;'
       : `
         background-color: ${theme.bg2};
         padding: 22px;
@@ -23,6 +23,10 @@ const StyledPackCountdownWrapper = styled(ColumnCenter)<{ released: boolean }>`
   & > * {
     margin: 0 auto;
   }
+
+  ${({ released, theme }) => theme.media.small`
+    ${released && 'padding: 0 22px;'}
+  `}
 `
 
 const CountdownWrapper = styled.div`

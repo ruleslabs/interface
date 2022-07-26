@@ -8,10 +8,13 @@ import Section from '@/components/Section'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import { TYPE } from '@/styles/theme'
 import Column from '@/components/Column'
+import { RowCenter } from '@/components/Row'
 import Card from '@/components/Card'
 import PackCard from '@/components/PackCard'
 import { PackCountdownWrapper } from '@/components/PackWrapper'
 import Link from '@/components/Link'
+import { SecondaryButton } from '@/components/Button'
+import Caret from '@/components/Caret'
 
 const PACKS_COUNT = 4
 
@@ -38,6 +41,7 @@ const LAST_STARTER_PACK_QUERY = gql`
 `
 
 const PacksWrapper = styled(Section)`
+  position: relative;
   display: grid;
   align-items: end;
   padding: 0 32px;
@@ -52,11 +56,11 @@ const PacksWrapper = styled(Section)`
   ${({ theme }) => theme.media.medium`
     grid-template-columns: repeat(3, auto);
 
-    & > *:nth-child(-n+3) {
+    & > div:nth-child(-n+3) {
       display: block;
     }
 
-    & > * {
+    & > div {
       display: none;
     }
   `}
@@ -69,14 +73,23 @@ const PacksWrapper = styled(Section)`
     padding: 0 16px;
     justify-content: center;
     gap: 32px;
+  `}
+`
 
-    & > *:nth-child(-n+3) {
-      display: block;
-    }
+const SeeMyPacksLink = styled(Link)`
+  position: absolute;
+  right: 32px;
+  top: 0;
 
-    & > * {
-      display: none;
-    }
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  ${({ theme }) => theme.media.small`
+    position: relative;
+    right: unset;
+    top: unset;
   `}
 `
 
@@ -162,6 +175,16 @@ export default function Packs() {
               />
             </PackCountdownWrapper>
           ))
+        )}
+        {currentUser && (
+          <SeeMyPacksLink href={`/user/${currentUser.slug}/packs`}>
+            <SecondaryButton>
+              <RowCenter gap={8}>
+                <Trans>See my packs</Trans>
+                <Caret direction="right" />
+              </RowCenter>
+            </SecondaryButton>
+          </SeeMyPacksLink>
         )}
       </PacksWrapper>
       <SecondarySection>
