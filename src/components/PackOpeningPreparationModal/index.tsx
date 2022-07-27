@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 import { ApolloError } from '@apollo/client'
@@ -32,11 +32,22 @@ export default function PackOpeningPreparationModal({ onSuccess }: PackOpeningPr
   const isOpen = useModalOpen(ApplicationModal.PACK_OPENING_PREPARATION)
   const togglePackOpeningPreparationModal = usePackOpeningPreparationModalToggle()
 
+  // modal state
+  const [loading, setLoading] = useState(false)
+  const [needsConfirmation, setNeedsConfirmation] = useState(false)
+
   const pack = usePackToPrepare()
 
   const [packOpeningPreparationMutation] = usePackOpeningPreparationMutation()
   const preparePackOpening = useCallback(() => {
+    if (!needsConfirmation) {
+      setNeedsConfirmation(true)
+      return
+    }
+
     if (!pack) return
+
+    setLoading(true)
 
     packOpeningPreparationMutation({ variables: { packId: pack.id } })
       .then((res: any) => {
@@ -48,20 +59,24 @@ export default function PackOpeningPreparationModal({ onSuccess }: PackOpeningPr
         }
       })
       .catch((preparePackOpeningError: ApolloError) => {
+        setLoading(false)
         const error = preparePackOpeningError?.graphQLErrors?.[0]
         console.error(preparePackOpeningError) // TODO: handle error
       })
-  }, [onSuccess, togglePackOpeningPreparationModal, packOpeningPreparationMutation, pack?.id])
+  }, [onSuccess, togglePackOpeningPreparationModal, packOpeningPreparationMutation, pack?.id, needsConfirmation])
 
   return (
     <Modal onDismiss={togglePackOpeningPreparationModal} isOpen={isOpen}>
       <StyledPackOpeningPreparationModal gap={26}>
         <ModalHeader onDismiss={togglePackOpeningPreparationModal}>{pack?.displayName}</ModalHeader>
         <TYPE.body>
-          <Trans>This step may take a few hours to complete, thanks for your patience.</Trans>
+          <Trans>
+            Please, note that this action cannot be canceled and may take a few hours to complete, thanks for your
+            patience.
+          </Trans>
         </TYPE.body>
-        <PrimaryButton onClick={preparePackOpening} large>
-          <Trans>Open pack</Trans>
+        <PrimaryButton onClick={preparePackOpening} disabled={loading} large>
+          {needsConfirmation ? <Trans>Confirm</Trans> : <Trans>Open pack</Trans>}
         </PrimaryButton>
       </StyledPackOpeningPreparationModal>
     </Modal>

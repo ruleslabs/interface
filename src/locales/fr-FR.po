@@ -780,8 +780,8 @@ msgid "Opening unavailable"
 msgstr "Ouverture Indisponible"
 
 #: src/components/PackOpeningPreparationModal/index.tsx
-msgid "This step may take a few hours to complete, thanks for your patience."
-msgstr "Cette étape peut prendre quelques heures, merci de votre patience."
+msgid "Please, note that this action cannot be canceled and may take a few hours to complete, thanks for your patience."
+msgstr "Notez que cette action ne peut pas être annulée et peut prendre quelques heures, merci pour votre patience."
 
 #: src/components/ProfileEditor/index.tsx
 msgid "Refresh channels access"
