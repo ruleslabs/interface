@@ -790,3 +790,7 @@ msgstr "Rafraîchir l'accès aux salons"
 #: src/pages/packs/index.tsx
 msgid "See my packs"
 msgstr "Voir mes packs"
+
+#: src/components/PackOpeningPreparationModal/index.tsx
+msgid "Confirm"
+msgstr "Confirmer"

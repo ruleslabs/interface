@@ -47,6 +47,7 @@ export default function CardModelHistory({ cardModelId, ...props }: CardModelHis
 
   const [transfers, setTransfers] = useState<any[]>([])
   const [usersTable, setUsersTable] = useState<{ [key: string]: string }>({})
+  const [usersTableLoading, setUsersTableLoading] = useState(false)
 
   const {
     hits: transfersHits,
@@ -54,25 +55,26 @@ export default function CardModelHistory({ cardModelId, ...props }: CardModelHis
     error: transfersError,
   } = useSearchTransfers({ facets: { cardModelId }, sortKey: transfersSort })
 
-  const userIds = useMemo(
-    () =>
-      (transfersHits ?? []).reduce<string[]>((acc, hit: any) => {
-        if (hit.fromUserId) acc.push(hit.fromUserId)
-        if (hit.toUserId) acc.push(hit.toUserId)
+  const userIds = useMemo(() => {
+    setUsersTableLoading(true)
+    return (transfersHits ?? []).reduce<string[]>((acc, hit: any) => {
+      if (hit.fromUserId) acc.push(hit.fromUserId)
+      if (hit.toUserId) acc.push(hit.toUserId)
 
-        return acc
-      }, []),
-    [transfersHits]
-  )
+      return acc
+    }, [])
+  }, [JSON.stringify(transfersHits)])
 
   useEffect(() => setTransfers(transfersHits ?? []), [transfersHits, setTransfers])
 
+  // usersData
   const {
     data: usersData,
     loading: usersLoading,
     error: usersError,
   } = useQuery(QUERY_TRANSFERS_USERS, { variables: { ids: userIds }, skip: !userIds.length })
 
+  // usersTable
   useEffect(() => {
     if (!usersData?.usersByIds) return
 
@@ -82,6 +84,7 @@ export default function CardModelHistory({ cardModelId, ...props }: CardModelHis
         return acc
       }, {})
     )
+    setUsersTableLoading(false)
   }, [usersData, setUsersTable])
 
   return (
@@ -109,7 +112,7 @@ export default function CardModelHistory({ cardModelId, ...props }: CardModelHis
       <TransfersTable
         transfers={transfers}
         usersTable={usersTable}
-        loading={usersLoading || transfersLoading}
+        loading={usersLoading || transfersLoading || usersTableLoading}
         error={!!usersError || !!usersError}
         showSerialNumber={true}
       />

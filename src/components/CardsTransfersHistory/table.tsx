@@ -79,7 +79,7 @@ export default function TransfersTable({
         </tr>
       </thead>
       <tbody>
-        {transfers.length && Object.keys(usersTable).length ? (
+        {!loading && !error && transfers.length && Object.keys(usersTable).length ? (
           transfers.map((transfer, index) => (
             <tr key={`rule-nft-history-${index}`}>
               <td>

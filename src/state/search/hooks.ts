@@ -198,7 +198,7 @@ export function useSearchTransfers({
     setTransfersSearch({ ...transfersSearch, loading: true, error: null })
 
     TransfersSort[sortKey].index
-      .search('', { facetFilters })
+      .search('', { facetFilters, page: 0, hitsPerPage: 32 })
       .then((res) => setTransfersSearch({ hits: res.hits, loading: false, error: null }))
       .catch((err) => {
         setTransfersSearch({ hits: null, loading: false, error: err })

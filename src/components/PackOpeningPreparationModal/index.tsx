@@ -40,10 +40,10 @@ export default function PackOpeningPreparationModal({ onSuccess }: PackOpeningPr
 
   const [packOpeningPreparationMutation] = usePackOpeningPreparationMutation()
   const preparePackOpening = useCallback(() => {
-    if (!needsConfirmation) {
-      setNeedsConfirmation(true)
-      return
-    }
+    // if (!needsConfirmation) {
+    //   setNeedsConfirmation(true)
+    //   return
+    // }
 
     if (!pack) return
 

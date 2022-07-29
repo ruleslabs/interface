@@ -20,9 +20,6 @@ node_modules/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env.local
-
 # Next.js build output
 .next
 out
