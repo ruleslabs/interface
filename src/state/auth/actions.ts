@@ -6,6 +6,7 @@ export enum AuthMode {
   EMAIL_VERIFICATION,
   REQUEST_PASSWORD_UPDATE,
   UPDATE_PASSWORD,
+  TWO_FACTOR_AUTH,
 }
 
 export interface AuthEmailPayload {
@@ -29,6 +30,10 @@ export interface AuthModePayload {
   authMode: AuthMode | null
 }
 
+export interface TokenPayload {
+  token: string
+}
+
 export const updateEmailField = createAction<AuthEmailPayload>('auth/updateEmailField')
 export const updatePasswordField = createAction<AuthPasswordPayload>('auth/updatePasswordField')
 export const updateUsernameField = createAction<AuthUsernamePayload>('auth/updateUsernameField')
@@ -39,3 +44,4 @@ export const refreshNewEmailVerificationCodeTime = createAction('auth/refreshNew
 export const refreshNewPasswordUpdateLinkTime = createAction('auth/refreshNewPasswordUpdateLinkTime')
 
 export const setAuthMode = createAction<AuthModePayload>('auth/setAuthMode')
+export const setTwoFactorAuthToken = createAction<TokenPayload>('auth/setTwoFactorAuthToken')

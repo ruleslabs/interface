@@ -16,6 +16,7 @@ import {
   useSetAuthMode,
   useSignInMutation,
   useGoogleAuthMutation,
+  useSetTwoFactorAuthToken,
 } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import Separator from '@/components/Separator'
@@ -57,6 +58,9 @@ export default function SignInForm({ onSuccessfulConnection }: SignInFormProps) 
   const toggleAuthModal = useAuthModalToggle()
   const setAuthMode = useSetAuthMode()
 
+  // actions
+  const setTwoFactorAuthToken = useSetTwoFactorAuthToken()
+
   // google oauth
   const handleGoogleLogin = useCallback(
     async (googleData) => {
@@ -88,7 +92,12 @@ export default function SignInForm({ onSuccessfulConnection }: SignInFormProps) 
       setLoading(true)
 
       signInMutation({ variables: { email, password: hashedPassword } })
-        .then((res: any) => onSuccessfulConnection(res?.data?.signIn?.accessToken))
+        .then((res: any) => {
+          if (res?.data?.signIn?.twoFactorAuthToken) {
+            setTwoFactorAuthToken(res?.data?.signIn?.twoFactorAuthToken)
+            setAuthMode(AuthMode.TWO_FACTOR_AUTH)
+          } else onSuccessfulConnection(res?.data?.signIn?.accessToken)
+        })
         .catch((signInError: ApolloError) => {
           const error = signInError?.graphQLErrors?.[0]
           if (error) setError({ message: error.message, id: error.extensions?.id as string })

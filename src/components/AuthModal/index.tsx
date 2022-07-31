@@ -16,6 +16,7 @@ import SignUpForm from './SignUpForm'
 import SignInForm from './SignInForm'
 import UpdatePasswordForm from './UpdatePasswordForm'
 import RequestPasswordUpdateForm from './RequestPasswordUpdateForm'
+import TwoFactorAuthForm from './TwoFactorAuthForm'
 
 const StyledAuthModal = styled(Column)`
   width: 546px;
@@ -65,6 +66,8 @@ export default function AuthModal() {
         return <RequestPasswordUpdateForm />
       case AuthMode.UPDATE_PASSWORD:
         return <UpdatePasswordForm onSuccessfulConnection={onSuccessfulConnection} />
+      case AuthMode.TWO_FACTOR_AUTH:
+        return <TwoFactorAuthForm onSuccessfulConnection={onSuccessfulConnection} />
     }
     return null
   }

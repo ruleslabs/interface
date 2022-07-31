@@ -112,6 +112,12 @@ export function useAuthForm(): AppState['auth']['form'] {
   return useAppSelector((state: AppState) => state.auth.form)
 }
 
+// 2FA
+export function useSetTwoFactorAuthToken(): (token: string) => void {
+  const dispatch = useAppDispatch()
+  return useCallback((token: string) => dispatch(setTwoFactorAuthToken({ token })), [dispatch])
+}
+
 // email verification code time
 export function useRefreshNewEmailVerificationCodeTime(): () => void {
   const dispatch = useAppDispatch()

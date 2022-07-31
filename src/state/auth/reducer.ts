@@ -8,12 +8,14 @@ import {
   refreshNewEmailVerificationCodeTime,
   refreshNewPasswordUpdateLinkTime,
   updateFormCheckboxes,
+  setTwoFactorAuthToken,
   AuthMode,
   AuthFormCheckboxPayload,
   AuthEmailPayload,
   AuthUsernamePayload,
   AuthPasswordPayload,
   AuthModePayload,
+  TokenPayload,
 } from './actions'
 import { EMAIL_VERIFICATION_INTERVAL } from '@/constants/misc'
 
@@ -30,6 +32,7 @@ export interface AuthState {
   newEmailVerificationCodeTime?: number
   newPasswordUpdateLinkTime?: number
   authMode: AuthMode | null
+  twoFactorAuthToken: string | null
 }
 
 export const initialState: AuthState = {
@@ -45,6 +48,7 @@ export const initialState: AuthState = {
   newEmailVerificationCodeTime: undefined,
   newPasswordUpdateLinkTime: undefined,
   authMode: null,
+  twoFactorAuthToken: null,
 }
 
 export default createReducer(initialState, (builder) =>
@@ -74,5 +78,9 @@ export default createReducer(initialState, (builder) =>
     .addCase(setAuthMode, (state, action: PayloadAction<AuthModePayload>) => {
       const { authMode } = action.payload
       return { ...state, authMode }
+    })
+    .addCase(setTwoFactorAuthToken, (state, action: PayloadAction<TokenPayload>) => {
+      const { token } = action.payload
+      return { ...state, twoFactorAuthToken: token }
     })
 )
