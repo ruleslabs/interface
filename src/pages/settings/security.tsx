@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 
 import Section from '@/components/Section'
+import Column from '@/components/Column'
+import TwoFactorAuthManager from '@/components/TwoFactorAuthManager'
 import SessionsManager from '@/components/SessionsManager'
 
 const StyledSection = styled(Section)`
@@ -14,7 +16,10 @@ const StyledSection = styled(Section)`
 export default function Sessions() {
   return (
     <StyledSection>
-      <SessionsManager />
+      <Column gap={32}>
+        <TwoFactorAuthManager />
+        <SessionsManager />
+      </Column>
     </StyledSection>
   )
 }

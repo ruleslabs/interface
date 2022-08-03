@@ -48,8 +48,8 @@ msgid "Profile settings"
 msgstr "Gestion du profil"
 
 #: src/components/SettingsModal/Settings.tsx
-msgid "Sessions"
-msgstr "Sessions"
+msgid "Security"
+msgstr "Sécurité"
 
 #: src/components/NavModal/index.tsx
 msgid "Settings"

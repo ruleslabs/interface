@@ -99,6 +99,12 @@ const UPDATE_PASSWORD_MUTATION = gql`
   }
 `
 
+const SET_TWO_FACTOR_AUTH_SECRET = gql`
+  mutation ($secret: String!, $code: String!) {
+    setTwoFactorAuthSecret(input: { secret: $secret, code: $code })
+  }
+`
+
 export function useAuthMode(): AppState['auth']['authMode'] {
   return useAppSelector((state: AppState) => state.auth.authMode)
 }
@@ -208,6 +214,10 @@ export function useRequestPasswordUpdateMutation() {
 
 export function useUpdatePasswordMutation() {
   return useMutation(UPDATE_PASSWORD_MUTATION)
+}
+
+export function useSetTwoFactorAuthSecretMutation() {
+  return useMutation(SET_TWO_FACTOR_AUTH_SECRET)
 }
 
 export function usePreparePasswordUpdateQuery(options: any) {

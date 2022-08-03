@@ -101,9 +101,9 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
             <Trans>Profile settings</Trans>
           </TYPE.body>
         </Link>
-        <Link href="/settings/sessions">
+        <Link href="/settings/security">
           <TYPE.body clickable>
-            <Trans>Sessions</Trans>
+            <Trans>Security</Trans>
           </TYPE.body>
         </Link>
         <TYPE.body clickable onClick={logout}>

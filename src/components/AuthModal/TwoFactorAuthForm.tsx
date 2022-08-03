@@ -1,6 +1,4 @@
 import { useState, useCallback } from 'react'
-// import styled from 'styled-components'
-// import { ApolloError } from '@apollo/client'
 import { Trans } from '@lingui/macro'
 
 import { ModalHeader } from '@/components/Modal'
@@ -11,6 +9,7 @@ import { BackButton } from '@/components/Button'
 import { AuthMode } from '@/state/auth/actions'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
+import { TWO_FACTOR_AUTH_CODE_LENGTH } from '@/constants/misc'
 
 interface TwoFactorAuthFormProps {
   onSuccessfulConnection: (accessToken?: string, onboard?: boolean) => void
@@ -24,7 +23,7 @@ export default function TwoFactorAuthForm({ onSuccessfulConnection }: EmailVerif
   const [twoFactorAuthCode, setTwoFactorAuthCode] = useState('')
   const onTwoFactorAuthInput = useCallback(
     (code: string) => {
-      if (/^[\d]*$/.test(code) && code.length <= 6) setTwoFactorAuthCode(code)
+      if (/^[\d]*$/.test(code) && code.length <= TWO_FACTOR_AUTH_CODE_LENGTH) setTwoFactorAuthCode(code)
     },
     [setTwoFactorAuthCode]
   )

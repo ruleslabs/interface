@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
 import { Trans } from '@lingui/macro'
@@ -46,20 +46,75 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
   const [signUpMutation] = useSignUpMutation()
   const [prepareSignUpMutation] = usePrepareSignUpMutation()
 
-  // fields
-  const [emailVerificationCode, setEmailVerificationCode] = useState('')
-  const onEmailVerificationCodeInput = useCallback(
-    (code: string) => {
-      if (/^[\d]*$/.test(code) && code.length <= EMAIL_VERIFICATION_CODE_LENGTH) setEmailVerificationCode(code)
-    },
-    [setEmailVerificationCode]
-  )
+  // form data
   const {
     email,
     username,
     password,
     checkboxes: { acceptCommercialEmails },
   } = useAuthForm()
+
+  // signUp
+  const signUp = useCallback(
+    (code: string) => {
+      setLoading(true)
+
+      const signUp = async () => {
+        const hashedPassword = await passwordHasher(password)
+
+        let newWalletInfos = walletInfos
+
+        try {
+          if (!newWalletInfos) {
+            newWalletInfos = await createWallet(password)
+            setWalletInfos(newWalletInfos)
+          }
+        } catch (error: any) {
+          setError({ message: `${error.message}, contact support if the error persist.` })
+
+          console.error(error)
+          setLoading(false)
+          return
+        }
+
+        const { starkPub: starknetPub, userKey: rulesPrivateKey } = newWalletInfos
+
+        signUpMutation({
+          variables: {
+            email,
+            username,
+            password: hashedPassword,
+            starknetPub,
+            rulesPrivateKey,
+            emailVerificationCode: code,
+            acceptCommercialEmails,
+          },
+        })
+          .then((res: any) => onSuccessfulConnection(res?.data?.signUp?.accessToken, true))
+          .catch((signUpError: ApolloError) => {
+            const error = signUpError?.graphQLErrors?.[0]
+            if (error) setError({ message: error.message, id: 'emailVerificationCode' })
+            else setError({})
+
+            console.error(signUpError)
+          })
+      }
+      signUp().then(() => setLoading(false))
+    },
+    [email, username, password, signUpMutation, createWallet, setWalletInfos]
+  )
+
+  // fields
+  const [emailVerificationCode, setEmailVerificationCode] = useState('')
+  const onEmailVerificationCodeInput = useCallback(
+    (code: string) => {
+      if (/^[\d]*$/.test(code) && code.length <= EMAIL_VERIFICATION_CODE_LENGTH) {
+        setEmailVerificationCode(code)
+        if (code.length === EMAIL_VERIFICATION_CODE_LENGTH) signUp(code)
+      }
+    },
+    [setEmailVerificationCode, signUp]
+  )
 
   // modal
   const toggleAuthModal = useAuthModalToggle()
@@ -72,55 +127,6 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
 
   // errors
   const [error, setError] = useState<{ message?: string; id?: string }>({})
-
-  // signUp
-  useEffect(() => {
-    if (emailVerificationCode.length !== EMAIL_VERIFICATION_CODE_LENGTH) return
-
-    setLoading(true)
-
-    const signUp = async () => {
-      const hashedPassword = await passwordHasher(password)
-
-      let newWalletInfos = walletInfos
-
-      try {
-        if (!newWalletInfos) {
-          newWalletInfos = await createWallet(password)
-          setWalletInfos(newWalletInfos)
-        }
-      } catch (error: any) {
-        setError({ message: `${error.message}, contact support if the error persist.` })
-
-        console.error(error)
-        setLoading(false)
-        return
-      }
-
-      const { starkPub: starknetPub, userKey: rulesPrivateKey } = newWalletInfos
-
-      signUpMutation({
-        variables: {
-          email,
-          username,
-          password: hashedPassword,
-          starknetPub,
-          rulesPrivateKey,
-          emailVerificationCode,
-          acceptCommercialEmails,
-        },
-      })
-        .then((res: any) => onSuccessfulConnection(res?.data?.signUp?.accessToken, true))
-        .catch((signUpError: ApolloError) => {
-          const error = signUpError?.graphQLErrors?.[0]
-          if (error) setError({ message: error.message, id: 'emailVerificationCode' })
-          else setError({})
-
-          console.error(signUpError)
-        })
-    }
-    signUp().then(() => setLoading(false))
-  }, [emailVerificationCode, email, username, password, signUpMutation, createWallet, setWalletInfos])
 
   // new code
   const handleNewCode = useCallback(
