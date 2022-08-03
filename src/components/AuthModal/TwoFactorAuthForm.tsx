@@ -8,7 +8,7 @@ import { TYPE } from '@/styles/theme'
 import { BackButton } from '@/components/Button'
 import { AuthMode } from '@/state/auth/actions'
 import { useAuthModalToggle } from '@/state/application/hooks'
-import { useSetAuthMode } from '@/state/auth/hooks'
+import { useSetAuthMode, useTwoFactorAuthSignInMutation, useTwoFactorAuthToken } from '@/state/auth/hooks'
 import { TWO_FACTOR_AUTH_CODE_LENGTH } from '@/constants/misc'
 
 interface TwoFactorAuthFormProps {
@@ -19,14 +19,11 @@ export default function TwoFactorAuthForm({ onSuccessfulConnection }: EmailVerif
   // Loading
   const [loading, setLoading] = useState(false)
 
-  // fields
-  const [twoFactorAuthCode, setTwoFactorAuthCode] = useState('')
-  const onTwoFactorAuthInput = useCallback(
-    (code: string) => {
-      if (/^[\d]*$/.test(code) && code.length <= TWO_FACTOR_AUTH_CODE_LENGTH) setTwoFactorAuthCode(code)
-    },
-    [setTwoFactorAuthCode]
-  )
+  // graphql
+  const [twoFactorAuthSignInMutation] = useTwoFactorAuthSignInMutation()
+
+  // form data
+  const twoFactorAuthToken = useTwoFactorAuthToken()
 
   // modal
   const toggleAuthModal = useAuthModalToggle()
@@ -34,6 +31,37 @@ export default function TwoFactorAuthForm({ onSuccessfulConnection }: EmailVerif
 
   // errors
   const [error, setError] = useState<{ message?: string; id?: string }>({})
+
+  // signin
+  const handleTwoFactorAuthSignIn = useCallback(
+    async (code: string) => {
+      setLoading(true)
+
+      twoFactorAuthSignInMutation({ variables: { token: twoFactorAuthToken, code } })
+        .then((res: any) => onSuccessfulConnection(res?.data?.signUp?.accessToken))
+        .catch((twoFactorAuthSignInError: ApolloError) => {
+          const error = twoFactorAuthSignInError?.graphQLErrors?.[0]
+          if (error) setError({ message: error.message, id: error.extensions?.id as string })
+          else if (!loading) setError({})
+
+          console.error(twoFactorAuthSignInError)
+          setLoading(false)
+        })
+    },
+    [twoFactorAuthToken, twoFactorAuthSignInMutation, onSuccessfulConnection, setLoading]
+  )
+
+  // fields
+  const [twoFactorAuthCode, setTwoFactorAuthCode] = useState('')
+  const onTwoFactorAuthInput = useCallback(
+    (code: string) => {
+      if (/^[\d]*$/.test(code) && code.length <= TWO_FACTOR_AUTH_CODE_LENGTH) {
+        setTwoFactorAuthCode(code)
+        if (code.length === TWO_FACTOR_AUTH_CODE_LENGTH) handleTwoFactorAuthSignIn(code)
+      }
+    },
+    [setTwoFactorAuthCode]
+  )
 
   return (
     <>

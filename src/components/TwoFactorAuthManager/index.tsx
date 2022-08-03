@@ -75,7 +75,7 @@ export default function TwoFactorAuthManager() {
   const [setTwoFactorAuthSecretMutation] = useSetTwoFactorAuthSecretMutation()
 
   // set 2fa secret
-  const setTwoFactorAuthSecretToAccount = useCallback(
+  const handleSetTwoFactorAuthSecret = useCallback(
     (code: string) => {
       if (!twoFactorAuthSecret) return
 
@@ -104,10 +104,10 @@ export default function TwoFactorAuthManager() {
     (code: string) => {
       if (/^[\d]*$/.test(code) && code.length <= TWO_FACTOR_AUTH_CODE_LENGTH) {
         setTwoFactorAuthCode(code)
-        if (code.length === TWO_FACTOR_AUTH_CODE_LENGTH) setTwoFactorAuthSecretToAccount(code)
+        if (code.length === TWO_FACTOR_AUTH_CODE_LENGTH) handleSetTwoFactorAuthSecret(code)
       }
     },
-    [setTwoFactorAuthCode, setTwoFactorAuthSecretToAccount]
+    [setTwoFactorAuthCode, handleSetTwoFactorAuthSecret]
   )
 
   return (

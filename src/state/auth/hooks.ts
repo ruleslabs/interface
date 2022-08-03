@@ -11,6 +11,7 @@ import {
   refreshNewEmailVerificationCodeTime,
   refreshNewPasswordUpdateLinkTime,
   updateFormCheckboxes,
+  setTwoFactorAuthToken,
   AuthMode,
 } from './actions'
 
@@ -30,6 +31,7 @@ const SIGN_IN_MUTATION = gql`
   mutation ($email: String!, $password: String!) {
     signIn(input: { email: $email, password: $password }) {
       accessToken
+      twoFactorAuthToken
     }
   }
 `
@@ -99,9 +101,17 @@ const UPDATE_PASSWORD_MUTATION = gql`
   }
 `
 
-const SET_TWO_FACTOR_AUTH_SECRET = gql`
+const SET_TWO_FACTOR_AUTH_SECRET_MUTATION = gql`
   mutation ($secret: String!, $code: String!) {
     setTwoFactorAuthSecret(input: { secret: $secret, code: $code })
+  }
+`
+
+const TWO_FACTOR_AUTH_SIGN_IN_MUTATION = gql`
+  mutation ($token: String!, $code: String!) {
+    twoFactorAuthSignIn(input: { token: $token, code: $code }) {
+      accessToken
+    }
   }
 `
 
@@ -119,6 +129,10 @@ export function useAuthForm(): AppState['auth']['form'] {
 }
 
 // 2FA
+export function useTwoFactorAuthToken(): AppState['auth']['twoFactorAuthToken'] {
+  return useAppSelector((state: AppState) => state.auth.twoFactorAuthToken)
+}
+
 export function useSetTwoFactorAuthToken(): (token: string) => void {
   const dispatch = useAppDispatch()
   return useCallback((token: string) => dispatch(setTwoFactorAuthToken({ token })), [dispatch])
@@ -217,7 +231,11 @@ export function useUpdatePasswordMutation() {
 }
 
 export function useSetTwoFactorAuthSecretMutation() {
-  return useMutation(SET_TWO_FACTOR_AUTH_SECRET)
+  return useMutation(SET_TWO_FACTOR_AUTH_SECRET_MUTATION)
+}
+
+export function useTwoFactorAuthSignInMutation() {
+  return useMutation(TWO_FACTOR_AUTH_SIGN_IN_MUTATION)
 }
 
 export function usePreparePasswordUpdateQuery(options: any) {

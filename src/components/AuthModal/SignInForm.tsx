@@ -107,7 +107,7 @@ export default function SignInForm({ onSuccessfulConnection }: SignInFormProps) 
           setLoading(false)
         })
     },
-    [email, password, signInMutation, onSuccessfulConnection, setLoading]
+    [email, password, signInMutation, onSuccessfulConnection, setLoading, setTwoFactorAuthToken, setAuthMode]
   )
 
   return (
