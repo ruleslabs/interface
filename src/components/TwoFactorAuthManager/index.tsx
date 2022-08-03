@@ -8,12 +8,12 @@ import Card from '@/components/Card'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import Input from '@/components/Input'
-import { RowCenter } from '@/components/Row'
 import useNewTwoFactorAuthSecret from '@/hooks/useNewTwoFactorAuthSecret'
 import { TWO_FACTOR_AUTH_CODE_LENGTH } from '@/constants/misc'
 import { useSetTwoFactorAuthSecretMutation } from '@/state/auth/hooks'
+import { useCurrentUser, useQueryCurrentUser } from '@/state/user/hooks'
 
-const StyledSessionsManager = styled(Card)`
+const StyledTwoFactorAuthManager = styled(Card)`
   margin: 0;
   padding: 64px;
   width: 100%;
@@ -24,7 +24,35 @@ const StyledSessionsManager = styled(Card)`
   `}
 `
 
-export default function SessionsManager() {
+const TwoFactorAuthSetter = styled(Column)`
+  max-width: 350px;
+  margin: 16px auto 0;
+`
+
+const QRCodeWrapper = styled.div`
+  background: ${({ theme }) => theme.bg3}80;
+  padding: 24px 0;
+  border: 1px solid ${({ theme }) => theme.bg3};
+  border-radius: 4px;
+
+  & > svg {
+    margin: 0 auto;
+    display: block;
+  }
+`
+
+const Enabled = styled(TYPE.body)`
+  background: ${({ theme }) => theme.primary1};
+  padding: 0 8px;
+  border-radius: 2px;
+  font-weight: 400;
+`
+
+export default function TwoFactorAuthManager() {
+  // currentUser
+  const currentUser = useCurrentUser()
+  const queryCurrentUser = useQueryCurrentUser()
+
   // theme
   const theme = useTheme()
 
@@ -33,7 +61,7 @@ export default function SessionsManager() {
   const [twoFactorAuthSecret, setTwoFactorAuthSecret] = useState()
 
   useEffect(() => {
-    if (twoFactorAuthSecret) return
+    if (twoFactorAuthSecret || currentUser.hasTwoFactorAuthActivated) return
     setTwoFactorAuthSecret(newTwoFactorAuthSecret())
   }, [twoFactorAuthSecret])
 
@@ -54,9 +82,9 @@ export default function SessionsManager() {
       setLoading(true)
 
       setTwoFactorAuthSecretMutation({ variables: { secret: twoFactorAuthSecret.raw, code } })
-        .then((res: any) => {
+        .then(() => {
           setLoading(false)
-          console.log(res)
+          queryCurrentUser()
         })
         .catch((setTwoFactorAuthSecretError: ApolloError) => {
           const error = setTwoFactorAuthSecretError?.graphQLErrors?.[0]
@@ -83,33 +111,55 @@ export default function SessionsManager() {
   )
 
   return (
-    <StyledSessionsManager>
+    <StyledTwoFactorAuthManager>
       <Column gap={32}>
         <Column gap={16}>
           <TYPE.large>
             <Trans>Two-Factor Authentication</Trans>
           </TYPE.large>
-          <TYPE.subtitle>
+          <TYPE.body>
             <Trans>
-              Scan this QR Code with your authenticator app and enter the verification code below to setup the
-              two-factor authentication on your Rules account
+              Two-factor authentication adds an additional layer of security to your account by requiring more than just
+              a password to sign in.
             </Trans>
-          </TYPE.subtitle>
+          </TYPE.body>
+          {currentUser.hasTwoFactorAuthActivated ? (
+            <Enabled>
+              <Trans>Enabled</Trans>
+            </Enabled>
+          ) : (
+            <TwoFactorAuthSetter gap={16}>
+              <TYPE.subtitle>
+                <Trans>
+                  Scan this QR Code with your authenticator app and enter the verification code below to setup the
+                  two-factor authentication on your Rules account
+                </Trans>
+              </TYPE.subtitle>
 
-          <RowCenter>
-            <QRCodeSVG value={twoFactorAuthSecret?.url ?? ''} bgColor={theme.bg2} fgColor={theme.text1} />
-            <Input
-              id="twoFactorAuthCode"
-              value={twoFactorAuthCode}
-              placeholder="Code"
-              type="text"
-              onUserInput={onTwoFactorAuthInput}
-              loading={(twoFactorAuthCode.length > 0 && loading) || !twoFactorAuthSecret}
-              $valid={error.id !== 'twoFactorAuthCode' || loading}
-            />
-          </RowCenter>
+              <QRCodeWrapper>
+                <QRCodeSVG value={twoFactorAuthSecret?.url ?? ''} bgColor={`${theme.bg3}80`} fgColor={theme.text1} />
+              </QRCodeWrapper>
+
+              <Input
+                id="twoFactorAuthCode"
+                value={twoFactorAuthCode}
+                placeholder="Code"
+                type="text"
+                onUserInput={onTwoFactorAuthInput}
+                loading={(twoFactorAuthCode.length > 0 && loading) || !twoFactorAuthSecret}
+                $valid={error.id !== 'twoFactorAuthCode' || loading}
+              />
+
+              {error.message && (
+                <Trans
+                  id={error.message}
+                  render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
+                />
+              )}
+            </TwoFactorAuthSetter>
+          )}
         </Column>
       </Column>
-    </StyledSessionsManager>
+    </StyledTwoFactorAuthManager>
   )
 }

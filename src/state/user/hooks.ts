@@ -24,6 +24,7 @@ const CURRENT_USER_QUERY = gql`
         iv
         encryptedPrivateKey
       }
+      hasTwoFactorAuthActivated
       profile {
         pictureUrl(derivative: "width=320")
         certifiedPictureUrl(derivative: "width=320")
