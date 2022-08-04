@@ -55,7 +55,7 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
   } = useAuthForm()
 
   // signUp
-  const signUp = useCallback(
+  const handleSignUp = useCallback(
     (code: string) => {
       setLoading(true)
 
@@ -110,10 +110,10 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
     (code: string) => {
       if (/^[\d]*$/.test(code) && code.length <= EMAIL_VERIFICATION_CODE_LENGTH) {
         setEmailVerificationCode(code)
-        if (code.length === EMAIL_VERIFICATION_CODE_LENGTH) signUp(code)
+        if (code.length === EMAIL_VERIFICATION_CODE_LENGTH) handleSignUp(code)
       }
     },
-    [setEmailVerificationCode, signUp]
+    [setEmailVerificationCode, handleSignUp]
   )
 
   // modal

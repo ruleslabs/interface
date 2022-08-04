@@ -2,6 +2,7 @@ import { useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 import { QRCodeSVG } from 'qrcode.react'
+import { ApolloError } from '@apollo/client'
 
 import useTheme from '@/hooks/useTheme'
 import Card from '@/components/Card'
@@ -58,7 +59,7 @@ export default function TwoFactorAuthManager() {
 
   // otp secret
   const newTwoFactorAuthSecret = useNewTwoFactorAuthSecret()
-  const [twoFactorAuthSecret, setTwoFactorAuthSecret] = useState()
+  const [twoFactorAuthSecret, setTwoFactorAuthSecret] = useState<any | null>(null)
 
   useEffect(() => {
     if (twoFactorAuthSecret || currentUser.hasTwoFactorAuthActivated) return
@@ -123,7 +124,7 @@ export default function TwoFactorAuthManager() {
               a password to sign in.
             </Trans>
           </TYPE.body>
-          {currentUser.hasTwoFactorAuthActivated ? (
+          {currentUser?.hasTwoFactorAuthActivated ? (
             <Enabled>
               <Trans>Enabled</Trans>
             </Enabled>

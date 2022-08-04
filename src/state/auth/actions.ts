@@ -5,7 +5,9 @@ export enum AuthMode {
   SIGN_UP,
   EMAIL_VERIFICATION,
   REQUEST_PASSWORD_UPDATE,
+  REQUEST_TWO_FACTOR_AUTH_UPDATE,
   UPDATE_PASSWORD,
+  REMOVE_TWO_FACTOR_AUTH_SECRET,
   TWO_FACTOR_AUTH,
 }
 
@@ -41,7 +43,7 @@ export const updateFormCheckboxes = createAction<AuthFormCheckboxPayload>('auth/
 
 export const refreshNewEmailVerificationCodeTime = createAction('auth/refreshNewEmailVerificationCodeTime')
 
-export const refreshNewPasswordUpdateLinkTime = createAction('auth/refreshNewPasswordUpdateLinkTime')
+export const refreshNewAuthUpdateLinkTime = createAction('auth/refreshNewAuthUpdateLinkTime')
 
 export const setAuthMode = createAction<AuthModePayload>('auth/setAuthMode')
 export const setTwoFactorAuthToken = createAction<TokenPayload>('auth/setTwoFactorAuthToken')

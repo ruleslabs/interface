@@ -15,7 +15,9 @@ import EmailVerificationForm from './EmailVerificationForm'
 import SignUpForm from './SignUpForm'
 import SignInForm from './SignInForm'
 import UpdatePasswordForm from './UpdatePasswordForm'
+import RemoveTwoFactorAuthSecret from './RemoveTwoFactorAuthSecret'
 import RequestPasswordUpdateForm from './RequestPasswordUpdateForm'
+import RequestTwoFactorAuthSecretUpdateForm from './RequestTwoFactorAuthSecretUpdateForm'
 import TwoFactorAuthForm from './TwoFactorAuthForm'
 
 const StyledAuthModal = styled(Column)`
@@ -42,13 +44,13 @@ export default function AuthModal() {
   // Current user
   const queryCurrentUser = useQueryCurrentUser()
   const onSuccessfulConnection = useCallback(
-    async (accessToken?: string, onboard?: boolean) => {
+    async (accessToken?: string, onboard = false, toggleModal = true) => {
       storeAccessToken(accessToken ?? '')
       const currentUser = await queryCurrentUser()
 
       if (currentUser) {
         if (onboard) router.push('/onboard')
-        toggleAuthModal()
+        if (toggleModal) toggleAuthModal()
       } else window.location.reload()
     },
     [queryCurrentUser, toggleAuthModal, router]
@@ -64,8 +66,12 @@ export default function AuthModal() {
         return <EmailVerificationForm onSuccessfulConnection={onSuccessfulConnection} />
       case AuthMode.REQUEST_PASSWORD_UPDATE:
         return <RequestPasswordUpdateForm />
+      case AuthMode.REQUEST_TWO_FACTOR_AUTH_UPDATE:
+        return <RequestTwoFactorAuthSecretUpdateForm />
       case AuthMode.UPDATE_PASSWORD:
         return <UpdatePasswordForm onSuccessfulConnection={onSuccessfulConnection} />
+      case AuthMode.REMOVE_TWO_FACTOR_AUTH_SECRET:
+        return <RemoveTwoFactorAuthSecret onSuccessfulConnection={onSuccessfulConnection} />
       case AuthMode.TWO_FACTOR_AUTH:
         return <TwoFactorAuthForm onSuccessfulConnection={onSuccessfulConnection} />
     }

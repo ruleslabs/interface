@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { Trans } from '@lingui/macro'
+import { ApolloError } from '@apollo/client'
 
 import { ModalHeader } from '@/components/Modal'
 import Column from '@/components/Column'
@@ -15,7 +16,7 @@ interface TwoFactorAuthFormProps {
   onSuccessfulConnection: (accessToken?: string, onboard?: boolean) => void
 }
 
-export default function TwoFactorAuthForm({ onSuccessfulConnection }: EmailVerificationFormProps) {
+export default function TwoFactorAuthForm({ onSuccessfulConnection }: TwoFactorAuthFormProps) {
   // Loading
   const [loading, setLoading] = useState(false)
 
@@ -92,6 +93,12 @@ export default function TwoFactorAuthForm({ onSuccessfulConnection }: EmailVerif
             />
           )}
         </Column>
+      </Column>
+
+      <Column gap={12} style={{ padding: '0 8px' }}>
+        <TYPE.subtitle onClick={() => setAuthMode(AuthMode.REQUEST_TWO_FACTOR_AUTH_UPDATE)} clickable>
+          <Trans>Lost your 2FA access?</Trans>
+        </TYPE.subtitle>
       </Column>
     </>
   )

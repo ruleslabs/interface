@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useMutation, useQuery, gql } from '@apollo/client'
+import { useMutation, gql } from '@apollo/client'
 
 import { AppState } from '@/state'
 import { useAppDispatch, useAppSelector } from '@/state/hooks'
@@ -9,7 +9,7 @@ import {
   updateUsernameField,
   setAuthMode,
   refreshNewEmailVerificationCodeTime,
-  refreshNewPasswordUpdateLinkTime,
+  refreshNewAuthUpdateLinkTime,
   updateFormCheckboxes,
   setTwoFactorAuthToken,
   AuthMode,
@@ -76,13 +76,9 @@ const REQUEST_PASSWORD_UPDATE_MUTATION = gql`
   }
 `
 
-const PREPARE_PASSWORD_UPDATE_QUERY = gql`
-  query ($email: String!, $token: String!) {
-    preparePasswordUpdate(input: { email: $email, token: $token }) {
-      error {
-        message
-      }
-    }
+const REQUEST_TWO_FACTOR_AUTH_SECRET_REMOVAL_MUTATION = gql`
+  mutation ($email: String!) {
+    requestTwoFactorAuthSecretRemoval(email: $email)
   }
 `
 
@@ -92,10 +88,25 @@ const UPDATE_PASSWORD_MUTATION = gql`
     $newPassword: String!
     $starknetPub: String!
     $rulesPrivateKey: RulesPrivateKeyAttributes!
+    $token: String!
   ) {
     updatePassword(
-      input: { email: $email, newPassword: $newPassword, starknetPub: $starknetPub, rulesPrivateKey: $rulesPrivateKey }
+      input: {
+        email: $email
+        newPassword: $newPassword
+        starknetPub: $starknetPub
+        rulesPrivateKey: $rulesPrivateKey
+        token: $token
+      }
     ) {
+      accessToken
+    }
+  }
+`
+
+const REMOVE_TWO_FACTOR_AUTH_SECRET_MUTATION = gql`
+  mutation ($email: String!, $token: String!) {
+    removeTwoFactorAuthSecret(input: { email: $email, token: $token }) {
       accessToken
     }
   }
@@ -149,13 +160,13 @@ export function useNewEmailVerificationCodeTime(): AppState['auth']['newEmailVer
 }
 
 // Pasword update link time
-export function useRefreshNewPasswordUpdateLinkTime(): () => void {
+export function useRefreshNewAuthUpdateLinkTime(): () => void {
   const dispatch = useAppDispatch()
-  return useCallback(() => dispatch(refreshNewPasswordUpdateLinkTime()), [dispatch])
+  return useCallback(() => dispatch(refreshNewAuthUpdateLinkTime()), [dispatch])
 }
 
-export function useNewPasswordUpdateLinkTime(): AppState['auth']['newPasswordUpdateLinkTime'] {
-  return useAppSelector((state: AppState) => state.auth.newPasswordUpdateLinkTime)
+export function useNewAuthUpdateLinkTime(): AppState['auth']['newAuthUpdateLinkTime'] {
+  return useAppSelector((state: AppState) => state.auth.newAuthUpdateLinkTime)
 }
 
 export function useAuthActionHanlders(): {
@@ -238,6 +249,10 @@ export function useTwoFactorAuthSignInMutation() {
   return useMutation(TWO_FACTOR_AUTH_SIGN_IN_MUTATION)
 }
 
-export function usePreparePasswordUpdateQuery(options: any) {
-  return useQuery(PREPARE_PASSWORD_UPDATE_QUERY, options)
+export function useRequestTwoFactorAuthSecretRemovalMutation() {
+  return useMutation(REQUEST_TWO_FACTOR_AUTH_SECRET_REMOVAL_MUTATION)
+}
+
+export function useRemoveTwoFactorAuthSecretMutation() {
+  return useMutation(REMOVE_TWO_FACTOR_AUTH_SECRET_MUTATION)
 }

@@ -73,11 +73,6 @@ function Privacy() {
             <td>Rafraîchir le token d&apos;identification de la session en cours lorsque ce dernier expire.</td>
             <td>7 jours</td>
           </tr>
-          <tr className="even">
-            <td>UPDATE_PASSWORD_TOKEN</td>
-            <td>Autoriser la mise à jour du mot de passe d&apos;un compte Rules.</td>
-            <td>1 heure</td>
-          </tr>
         </tbody>
       </table>
       <ol start={3} type="1">

@@ -92,11 +92,18 @@ export default function Home() {
     toggleAuthModal()
   }, [toggleAuthModal, setAuthMode])
 
+  const toggleTwoFactorAuthSecretRemovalModal = useCallback(() => {
+    setAuthMode(AuthMode.REMOVE_TWO_FACTOR_AUTH_SECRET)
+    toggleAuthModal()
+  }, [toggleAuthModal, setAuthMode])
+
   // ?action
   useEffect(() => {
     switch (router.query.action) {
       case 'update-password':
         togglePasswordUpdateModal()
+      case 'remove-2fa':
+        toggleTwoFactorAuthSecretRemovalModal()
     }
   }, [])
 

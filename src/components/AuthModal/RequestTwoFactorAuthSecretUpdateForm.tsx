@@ -1,18 +1,17 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
 
 import { ModalHeader } from '@/components/Modal'
 import Column from '@/components/Column'
-import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'
 import { BackButton } from '@/components/Button'
 import { AuthMode } from '@/state/auth/actions'
 import {
   useSetAuthMode,
   useAuthForm,
-  useRequestPasswordUpdateMutation,
+  useRequestTwoFactorAuthSecretRemovalMutation,
   useNewAuthUpdateLinkTime,
   useRefreshNewAuthUpdateLinkTime,
 } from '@/state/auth/hooks'
@@ -41,7 +40,7 @@ export default function RequestPasswordUpdateForm() {
   const setAuthMode = useSetAuthMode()
 
   // graphql mutations
-  const [requestPasswordUpdateMutation] = useRequestPasswordUpdateMutation()
+  const [requestTwoFactorAuthSecretRemovalMutation] = useRequestTwoFactorAuthSecretRemovalMutation()
 
   // email
   const { email: emailFromState } = useAuthForm()
@@ -60,11 +59,11 @@ export default function RequestPasswordUpdateForm() {
   // new code
   const handleNewLink = useCallback(
     async (event) => {
-      event.preventDefault()
+      event?.preventDefault()
 
       setLoading(true)
 
-      requestPasswordUpdateMutation({ variables: { email } })
+      requestTwoFactorAuthSecretRemovalMutation({ variables: { email } })
         .then((res: any) => {
           setLoading(false)
           refreshNewAuthUpdateLinkTime()
@@ -81,41 +80,30 @@ export default function RequestPasswordUpdateForm() {
           setRecipient(null)
         })
     },
-    [email, requestPasswordUpdateMutation, setRecipient, setLoading, setError]
+    [email, requestTwoFactorAuthSecretRemovalMutation, setRecipient, setLoading, setError]
   )
+
+  useEffect(() => {
+    handleNewLink()
+  }, [])
 
   return (
     <>
       <ModalHeader onDismiss={toggleAuthModal}>
-        <BackButton onClick={() => setAuthMode(AuthMode.SIGN_IN)} />
+        <BackButton onClick={() => setAuthMode(AuthMode.TWO_FACTOR_AUTH)} />
       </ModalHeader>
 
       <Column gap={26}>
         <TYPE.body>
           <Trans>
-            Enter your email to request a password update, you will receive a link to that email address to update your
-            password.
+            You will receive a link to the email address associated to your rules account to remove the Two-Factor
+            Authentatication.
           </Trans>
         </TYPE.body>
 
-        <Column gap={12}>
-          <Input
-            id="email"
-            value={email}
-            placeholder="E-mail"
-            type="email"
-            autoComplete="email"
-            onUserInput={onEmailInput}
-            $valid={error?.id !== 'email' || loading}
-          />
-
-          {error.message && (
-            <Trans
-              id={error.message}
-              render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
-            />
-          )}
-        </Column>
+        {error.message && (
+          <Trans id={error.message} render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>} />
+        )}
 
         <Column gap={8}>
           {recipient && (
@@ -130,7 +118,7 @@ export default function RequestPasswordUpdateForm() {
             </TYPE.subtitle>
           )}
 
-          <SubmitButton type="submit" onClick={handleNewLink} disabled={!!countdown?.seconds} large>
+          <SubmitButton type="submit" onClick={handleNewLink} disabled={!!countdown?.seconds || loading} large>
             {loading ? 'Loading ...' : t`Submit`}
           </SubmitButton>
         </Column>

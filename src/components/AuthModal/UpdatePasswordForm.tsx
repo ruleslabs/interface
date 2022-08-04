@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
@@ -9,7 +9,7 @@ import { ModalHeader } from '@/components/Modal'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'
-import { usePreparePasswordUpdateQuery, useUpdatePasswordMutation } from '@/state/auth/hooks'
+import { useUpdatePasswordMutation } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import { PrimaryButton } from '@/components/Button'
 import useCreateWallet, { WalletInfos } from '@/hooks/useCreateWallet'
@@ -45,18 +45,6 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePas
 
   // errors
   const [error, setError] = useState<{ message?: string; id?: string }>({})
-
-  // prepare
-  const preparePasswordUpdateQuery = usePreparePasswordUpdateQuery({ variables: { token, email } })
-  const readyToUpdate =
-    !preparePasswordUpdateQuery.error &&
-    !preparePasswordUpdateQuery.data?.preparePasswordUpdate.error &&
-    !preparePasswordUpdateQuery.loading
-
-  useEffect(() => {
-    if (preparePasswordUpdateQuery.data?.preparePasswordUpdate?.error)
-      setError({ message: preparePasswordUpdateQuery.data?.preparePasswordUpdate?.error })
-  }, [preparePasswordUpdateQuery.data?.preparePasswordUpdate?.error])
 
   // graphql mutations
   const [updatePasswordMutation] = useUpdatePasswordMutation()
@@ -124,6 +112,7 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePas
             newPassword: hashedPassword,
             starknetPub,
             rulesPrivateKey,
+            token,
           },
         })
           .then((res: any) => onSuccessfulConnection(res?.data?.updatePassword?.accessToken, false))
@@ -178,8 +167,8 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePas
             )}
           </Column>
 
-          <SubmitButton type="submit" onClick={handlePasswordUpdate} disabled={!readyToUpdate || loading} large>
-            {(loading || !readyToUpdate) && !error ? 'Loading ...' : t`Submit`}
+          <SubmitButton type="submit" onClick={handlePasswordUpdate} disabled={loading} large>
+            {loading && !error ? 'Loading ...' : t`Submit`}
           </SubmitButton>
         </Column>
       </StyledForm>
