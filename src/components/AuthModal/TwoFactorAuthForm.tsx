@@ -13,7 +13,7 @@ import { useSetAuthMode, useTwoFactorAuthSignInMutation, useTwoFactorAuthToken }
 import { TWO_FACTOR_AUTH_CODE_LENGTH } from '@/constants/misc'
 
 interface TwoFactorAuthFormProps {
-  onSuccessfulConnection: (accessToken?: string, onboard?: boolean) => void
+  onSuccessfulConnection: (accessToken?: string, onboard?: boolean, toggleModal?: boolean) => void
 }
 
 export default function TwoFactorAuthForm({ onSuccessfulConnection }: TwoFactorAuthFormProps) {

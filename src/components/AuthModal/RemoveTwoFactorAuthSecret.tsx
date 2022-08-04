@@ -1,16 +1,57 @@
 import { useState, useMemo, useEffect } from 'react'
+import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
 import { ModalHeader } from '@/components/Modal'
-import Column from '@/components/Column'
+import Column, { ColumnCenter } from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { useRemoveTwoFactorAuthSecretMutation } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
+import Link from '@/components/Link'
+import { PrimaryButton } from '@/components/Button'
+
+import Checkmark from '@/images/checkmark.svg'
+
+const StyledCheckmark = styled(Checkmark)`
+  border-radius: 50%;
+  overflow: visible;
+  background: ${({ theme }) => theme.primary1};
+  width: 108px;
+  height: 108px;
+  padding: 24px;
+  margin: 0 auto;
+  stroke: ${({ theme }) => theme.text1};
+`
+
+const Subtitle = styled(TYPE.body)`
+  text-align: center;
+  width: 100%;
+  max-width: 420px;
+
+  span {
+    font-weight: 700;
+  }
+`
+
+const ConfigureTwoFactorAuthButtonWrapper = styled(ColumnCenter)`
+  width: 100%;
+  gap: 16px;
+
+  a {
+    max-width: 380px;
+    width: 100%;
+  }
+
+  button {
+    height: 50px;
+    width: 100%;
+  }
+`
 
 interface RemoveTwoFactorAuthSecretFormProps {
-  onSuccessfulConnection: (accessToken?: string, onboard?: boolean) => void
+  onSuccessfulConnection: (accessToken?: string, onboard?: boolean, toggleModal?: boolean) => void
 }
 
 export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }: RemoveTwoFactorAuthSecretFormProps) {
@@ -50,15 +91,33 @@ export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }
 
   return (
     <>
-      <ModalHeader onDismiss={toggleAuthModal}>{t`Remove Two-Factor Authentication`}</ModalHeader>
+      <ModalHeader onDismiss={toggleAuthModal}>{t`Two-Factor Authentication Removal`}</ModalHeader>
 
-      <Column gap={26}>
-        {error.message && (
-          <Trans id={error.message} render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>} />
-        )}
+      {error.message && (
+        <Trans id={error.message} render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>} />
+      )}
 
-        {!error.message && !loading && <TYPE.body>Bravo ! (Je vais afficher un meilleur truc plus tard)</TYPE.body>}
-      </Column>
+      {!error.message && !loading && (
+        <ColumnCenter gap={32}>
+          <Column gap={24}>
+            <StyledCheckmark />
+
+            <Column gap={8}>
+              <Subtitle>
+                <Trans>The Two-Factor Authentication has been successfuly removed.</Trans>
+              </Subtitle>
+            </Column>
+          </Column>
+
+          <ConfigureTwoFactorAuthButtonWrapper>
+            <Link href="/settings/security">
+              <PrimaryButton large>
+                <Trans>Reconfigure it</Trans>
+              </PrimaryButton>
+            </Link>
+          </ConfigureTwoFactorAuthButtonWrapper>
+        </ColumnCenter>
+      )}
     </>
   )
 }

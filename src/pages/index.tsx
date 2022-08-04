@@ -102,6 +102,8 @@ export default function Home() {
     switch (router.query.action) {
       case 'update-password':
         togglePasswordUpdateModal()
+        break
+
       case 'remove-2fa':
         toggleTwoFactorAuthSecretRemovalModal()
     }

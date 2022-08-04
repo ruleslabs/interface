@@ -58,7 +58,7 @@ export default function RequestPasswordUpdateForm() {
 
   // new code
   const handleNewLink = useCallback(
-    async (event) => {
+    async (event?: any) => {
       event?.preventDefault()
 
       setLoading(true)

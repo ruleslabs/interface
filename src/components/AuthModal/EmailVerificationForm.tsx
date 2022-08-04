@@ -31,7 +31,7 @@ const ResendCode = styled(TYPE.subtitle)`
 `
 
 interface EmailVerificationFormProps {
-  onSuccessfulConnection: (accessToken?: string, onboard?: boolean) => void
+  onSuccessfulConnection: (accessToken?: string, onboard?: boolean, toggleModal?: boolean) => void
 }
 
 export default function EmailVerificationForm({ onSuccessfulConnection }: EmailVerificationFormProps) {

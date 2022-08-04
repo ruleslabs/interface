@@ -35,17 +35,17 @@ const Subtitle = styled(TYPE.body)`
   }
 `
 
-const SeeMyPacksButton = styled(PrimaryButton)`
-  height: 50px;
-  width: 100%;
-`
-
 const SeeMyPacksButtonWrapper = styled(ColumnCenter)`
   width: 100%;
   gap: 16px;
 
   a {
     max-width: 380px;
+    width: 100%;
+  }
+
+  button {
+    height: 50px;
     width: 100%;
   }
 `
@@ -80,9 +80,9 @@ export default function Confirmation({ packName, amountPaid }: ConfirmationProps
 
       <SeeMyPacksButtonWrapper>
         <Link href={`/user/${currentUser.slug}/packs`}>
-          <SeeMyPacksButton large>
+          <PrimaryButton large>
             <Trans>See my packs</Trans>
-          </SeeMyPacksButton>
+          </PrimaryButton>
         </Link>
 
         <TYPE.subtitle>
