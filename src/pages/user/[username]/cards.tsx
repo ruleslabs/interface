@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import { useQuery, gql } from '@apollo/client'
 import { Plural, t } from '@lingui/macro'
+import { useRouter } from 'next/router'
 
 import DefaultLayout from '@/components/Layout'
 import ProfileLayout from '@/components/Layout/Profile'
@@ -10,7 +11,8 @@ import CardModel from '@/components/CardModel'
 import Grid from '@/components/Grid'
 import { useSearchCards } from '@/state/search/hooks'
 import { TYPE } from '@/styles/theme'
-import EmptyTab from '@/components/EmptyTab'
+import EmptyTab, { EmptyCardsTabOfCurrentUser } from '@/components/EmptyTab'
+import { useCurrentUser } from '@/state/user/hooks'
 
 const CARD_CONTENT = `
   serialNumber
@@ -29,6 +31,15 @@ const QUERY_CARDS = gql`
 `
 
 function Cards({ userId }: { userId: string }) {
+  // current user
+  const router = useRouter()
+  const { username } = router.query
+  const userSlug = typeof username === 'string' ? username.toLowerCase() : null
+
+  const currentUser = useCurrentUser()
+  const isCurrentUserProfile = currentUser?.slug === userSlug
+
+  // sort
   const [sortDesc, setSortDesc] = useState(true)
 
   const toggleSort = useCallback(() => {
@@ -93,7 +104,9 @@ function Cards({ userId }: { userId: string }) {
           ))}
         </Grid>
       ) : (
-        isValid && !isLoading && <EmptyTab emptyText={t`No cards`} />
+        isValid &&
+        !isLoading &&
+        (isCurrentUserProfile ? <EmptyCardsTabOfCurrentUser /> : <EmptyTab emptyText={t`No cards`} />)
       )}
     </Section>
   )

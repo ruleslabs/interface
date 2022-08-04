@@ -12,7 +12,7 @@ import Grid from '@/components/Grid'
 import PackCard from '@/components/PackCard'
 import { TYPE } from '@/styles/theme'
 import { useCurrentUser } from '@/state/user/hooks'
-import EmptyTab from '@/components/EmptyTab'
+import EmptyTab, { EmptyPacksTabOfCurrentUser } from '@/components/EmptyTab'
 import PackOpeningPreparationModal from '@/components/PackOpeningPreparationModal'
 import { usePackOpeningPreparationModalToggle } from '@/state/application/hooks'
 import { useSetPackToPrepare } from '@/state/packOpening/hooks'
@@ -68,12 +68,13 @@ const CustomPackCard = ({ packBalance, state, isOwner }: CustomPackCardProps) =>
 }
 
 function Packs() {
+  // current user
   const router = useRouter()
   const { username } = router.query
   const userSlug = typeof username === 'string' ? username.toLowerCase() : null
 
   const currentUser = useCurrentUser()
-  const isOwner = currentUser?.slug === userSlug
+  const isCurrentUserProfile = currentUser?.slug === userSlug
 
   // sort
   const [increaseSort, setIncreaseSort] = useState(true)
@@ -126,28 +127,50 @@ function Packs() {
                 {Array(packBalance.readyToOpenBalance)
                   .fill(0)
                   .map((_, index: number) => (
-                    <CustomPackCard key={index} packBalance={packBalance} state="readyToOpen" isOwner={isOwner} />
+                    <CustomPackCard
+                      key={index}
+                      packBalance={packBalance}
+                      state="readyToOpen"
+                      isOwner={isCurrentUserProfile}
+                    />
                   ))}
                 {Array(packBalance.preparingOpeningBalance)
                   .fill(0)
                   .map((_, index: number) => (
-                    <CustomPackCard key={index} packBalance={packBalance} state="preparingOpening" isOwner={isOwner} />
+                    <CustomPackCard
+                      key={index}
+                      packBalance={packBalance}
+                      state="preparingOpening"
+                      isOwner={isCurrentUserProfile}
+                    />
                   ))}
                 {Array(packBalance.balance)
                   .fill(0)
                   .map((_, index: number) => (
-                    <CustomPackCard key={index} packBalance={packBalance} state="delivered" isOwner={isOwner} />
+                    <CustomPackCard
+                      key={index}
+                      packBalance={packBalance}
+                      state="delivered"
+                      isOwner={isCurrentUserProfile}
+                    />
                   ))}
                 {Array(packBalance.inDeliveryBalance)
                   .fill(0)
                   .map((_, index: number) => (
-                    <CustomPackCard key={index} packBalance={packBalance} state="inDelivery" isOwner={isOwner} />
+                    <CustomPackCard
+                      key={index}
+                      packBalance={packBalance}
+                      state="inDelivery"
+                      isOwner={isCurrentUserProfile}
+                    />
                   ))}
               </>
             ))}
           </Grid>
         ) : (
-          isValid && !isLoading && <EmptyTab emptyText={t`No packs`} />
+          isValid &&
+          !isLoading &&
+          (isCurrentUserProfile ? <EmptyPacksTabOfCurrentUser /> : <EmptyTab emptyText={t`No packs`} />)
         )}
       </Section>
       <PackOpeningPreparationModal onSuccess={packsBalancesQuery.refetch} />
