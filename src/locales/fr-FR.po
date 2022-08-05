@@ -796,12 +796,12 @@ msgid "Confirm"
 msgstr "Confirmer"
 
 #: src/components/EmptyTab/index.tsx
-msgid "No packs for the moment"
-msgstr "Pas de packs pour le moment"
+msgid "No packs right now..."
+msgstr "Pas de packs pour le moment..."
 
 #: src/components/EmptyTab/index.tsx
-msgid "No cards for the moment"
-msgstr "Pas de cartes pour le moment"
+msgid "No cards right now..."
+msgstr "Pas de cartes pour le moment..."
 
 #: src/components/EmptyTab/index.tsx
 msgid "Go to the marketplace"

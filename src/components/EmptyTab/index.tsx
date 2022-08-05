@@ -92,10 +92,13 @@ export function EmptyCardsTabOfCurrentUser() {
   return (
     <Card>
       <StyledEmptyTabOfCurrentUser>
-        <img src="/assets/no-cards-1.png" />
+        <ImageWrapper>
+          <img src="/assets/no-cards-1.png" />
+        </ImageWrapper>
+
         <ActionsWrapper>
           <TYPE.body>
-            <Trans>No cards for the moment</Trans>
+            <Trans>No cards right now...</Trans>
           </TYPE.body>
           <Link href="/marketplace">
             <PrimaryButton large>
@@ -103,7 +106,10 @@ export function EmptyCardsTabOfCurrentUser() {
             </PrimaryButton>
           </Link>
         </ActionsWrapper>
-        <img src="/assets/no-cards-2.png" />
+
+        <ImageWrapper>
+          <img src="/assets/no-cards-2.png" />
+        </ImageWrapper>
       </StyledEmptyTabOfCurrentUser>
     </Card>
   )
@@ -116,9 +122,10 @@ export function EmptyPacksTabOfCurrentUser() {
         <ImageWrapper>
           <img src="/assets/no-packs-1.png" />
         </ImageWrapper>
+
         <ActionsWrapper>
           <TYPE.body>
-            <Trans>No packs for the moment</Trans>
+            <Trans>No packs right now...</Trans>
           </TYPE.body>
           <Link href="/packs">
             <PrimaryButton large>
@@ -126,6 +133,7 @@ export function EmptyPacksTabOfCurrentUser() {
             </PrimaryButton>
           </Link>
         </ActionsWrapper>
+
         <ImageWrapper>
           <img src="/assets/no-packs-2.png" />
         </ImageWrapper>
