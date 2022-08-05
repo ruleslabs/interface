@@ -1,6 +1,6 @@
 import '@reach/dialog/styles.css'
 
-import React, { useEffect, useCallback, useState } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import { DialogOverlay, DialogContent } from '@reach/dialog'
 import { animated, useTransition } from 'react-spring'
@@ -95,18 +95,11 @@ export default function Modal({ children, isOpen, onDismiss, sidebar = false, au
   }, [])
 
   const router = useRouter()
-  const [modalNeedsUpdate, setModalNeedsUpdate] = useState(false)
-
-  useEffect(() => setModalNeedsUpdate(true), [router])
 
   useEffect(() => {
-    if (!modalNeedsUpdate || !autoClose) return
-    setModalNeedsUpdate(false)
-    if (!isOpen) return
-
-    setModalNeedsUpdate(false)
+    if (!autoClose || !isOpen) return
     onDismiss()
-  }, [modalNeedsUpdate, onDismiss, isOpen, autoClose])
+  }, [router])
 
   return (
     <>

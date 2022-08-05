@@ -79,7 +79,7 @@ export default function AuthModal() {
   }
 
   return (
-    <Modal onDismiss={toggleAuthModal} isOpen={isOpen} autoClose={false}>
+    <Modal onDismiss={toggleAuthModal} isOpen={isOpen}>
       <StyledAuthModal gap={26}>{renderModal(authMode)}</StyledAuthModal>
     </Modal>
   )
