@@ -97,7 +97,7 @@ export default function TwoFactorAuthForm({ onSuccessfulConnection }: TwoFactorA
 
       <Column gap={12} style={{ padding: '0 8px' }}>
         <TYPE.subtitle onClick={() => setAuthMode(AuthMode.REQUEST_TWO_FACTOR_AUTH_UPDATE)} clickable>
-          <Trans>Lost your 2FA access?</Trans>
+          <Trans>Lost your 2FA access ?</Trans>
         </TYPE.subtitle>
       </Column>
     </>

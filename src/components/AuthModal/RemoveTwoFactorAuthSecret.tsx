@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
 import { ModalHeader } from '@/components/Modal'
@@ -13,11 +13,23 @@ import Link from '@/components/Link'
 import { PrimaryButton } from '@/components/Button'
 
 import Checkmark from '@/images/checkmark.svg'
+import Close from '@/images/close.svg'
 
 const StyledCheckmark = styled(Checkmark)`
   border-radius: 50%;
   overflow: visible;
   background: ${({ theme }) => theme.primary1};
+  width: 108px;
+  height: 108px;
+  padding: 24px;
+  margin: 0 auto;
+  stroke: ${({ theme }) => theme.text1};
+`
+
+const StyledFail = styled(Close)`
+  border-radius: 50%;
+  overflow: visible;
+  background: ${({ theme }) => theme.error};
   width: 108px;
   height: 108px;
   padding: 24px;
@@ -91,33 +103,46 @@ export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }
 
   return (
     <>
-      <ModalHeader onDismiss={toggleAuthModal}>{t`Two-Factor Authentication Removal`}</ModalHeader>
+      <ModalHeader onDismiss={toggleAuthModal}>{''}</ModalHeader>
 
-      {error.message && (
-        <Trans id={error.message} render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>} />
-      )}
-
-      {!error.message && !loading && (
-        <ColumnCenter gap={32}>
+      <ColumnCenter gap={32}>
+        {error.message && (
           <Column gap={24}>
-            <StyledCheckmark />
+            <StyledFail />
 
             <Column gap={8}>
               <Subtitle>
-                <Trans>The Two-Factor Authentication has been successfuly removed.</Trans>
+                <Trans>The Two-Factor Authentication has not been removed.</Trans>
               </Subtitle>
+              <Trans
+                id={error.message}
+                render={({ translation }) => <Subtitle color="error">{translation}</Subtitle>}
+              />
             </Column>
           </Column>
+        )}
+        {!error.message && !loading && (
+          <>
+            <Column gap={24}>
+              <StyledCheckmark />
 
-          <ConfigureTwoFactorAuthButtonWrapper>
-            <Link href="/settings/security">
-              <PrimaryButton large>
-                <Trans>Reconfigure it</Trans>
-              </PrimaryButton>
-            </Link>
-          </ConfigureTwoFactorAuthButtonWrapper>
-        </ColumnCenter>
-      )}
+              <Column gap={8}>
+                <Subtitle>
+                  <Trans>The Two-Factor Authentication has been successfully removed.</Trans>
+                </Subtitle>
+              </Column>
+            </Column>
+
+            <ConfigureTwoFactorAuthButtonWrapper>
+              <Link href="/settings/security">
+                <PrimaryButton large>
+                  <Trans>Setup a new one</Trans>
+                </PrimaryButton>
+              </Link>
+            </ConfigureTwoFactorAuthButtonWrapper>
+          </>
+        )}
+      </ColumnCenter>
     </>
   )
 }

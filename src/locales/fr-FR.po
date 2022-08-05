@@ -683,8 +683,8 @@ msgid "Submit"
 msgstr "Envoyer"
 
 #: src/components/AuthModal/RequestPasswordUpdateForm.tsx
-msgid "New link in {0} seconds"
-msgstr "Nouveau lien dans {0} secondes"
+msgid "New link available in {0} seconds"
+msgstr "Nouveau lien disponible dans {0} secondes"
 
 #: src/components/AuthModal/UpdatePasswordForm.tsx
 msgid "Confirm password"
@@ -806,3 +806,39 @@ msgstr "Pas de cartes pour le moment..."
 #: src/components/EmptyTab/index.tsx
 msgid "Go to the marketplace"
 msgstr "Aller sur le marché d'échange"
+
+#: src/components/TwoFactorAuthManager/index.tsx
+msgid "Two-Factor Authentication (2FA)"
+msgstr "Authentification à 2 Facteurs (2FA)"
+
+#: src/components/TwoFactorAuthManager/index.tsx
+msgid "Two-Factor Authentication adds an additional layer of security to your account by requiring a code when you sign in."
+msgstr "L’Authentification à 2 Facteurs permet de sécuriser votre compte en demandant un code supplémentaire au moment de la connexion."
+
+#: src/components/TwoFactorAuthManager/index.tsx
+msgid "Scan this QR Code with your authenticator app and enter the verification code below to setup the Two-Factor Authentication on your Rules account."
+msgstr "Scannez ce QR Code avec votre app d’authentification et entrez le code vérification pour mettre en place l’Authentification à 2 Facteurs sur votre compte Rules."
+
+#: src/components/TwoFactorAuthManager/index.tsx
+msgid "2FA Enabled"
+msgstr "2FA Activé"
+
+#: src/components/AuthModal/TwoFactorAuthForm.tsx
+msgid "Enter the 2FA code to sign in"
+msgstr "Entrez le code 2FA pour vous connecter"
+
+#: src/components/AuthModal/TwoFactorAuthForm.tsx
+msgid "Lost your 2FA access ?"
+msgstr "Accès 2FA perdu ?"
+
+#: src/components/AuthModal/RequestTwoFactorAuthSecretUpdateForm.tsx
+msgid "Send"
+msgstr "Envoyer"
+
+#: src/components/AuthModal/RequestTwoFactorAuthSecretUpdateForm.tsx
+msgid "We sent you a link to the email address associated with your Rules account (<0>{email}</0>) to remove the Two-Factor Authentication."
+msgstr "Nous avons envoyé un lien à l’adresse email associée à votre compte Rules (<0>{email}</0>) pour supprimer l’Authentification à 2 Facteurs."
+
+#: src/components/AuthModal/RemoveTwoFactorAuthSecret.tsx
+msgid "The Two-Factor Authentication has not been removed."
+msgstr "Erreur dans la suppression de votre Authentification à 2 Facteurs."

@@ -96,8 +96,8 @@ export default function RequestPasswordUpdateForm() {
       <Column gap={26}>
         <TYPE.body>
           <Trans>
-            You will receive a link to the email address associated to your rules account to remove the Two-Factor
-            Authentatication.
+            We sent you a link to the email address associated with your Rules account (<strong>{email}</strong>) to
+            remove the Two-Factor Authentication.
           </Trans>
         </TYPE.body>
 
@@ -106,20 +106,14 @@ export default function RequestPasswordUpdateForm() {
         )}
 
         <Column gap={8}>
-          {recipient && (
-            <TYPE.body>
-              <Trans>The link has been emailed to {recipient}</Trans>
-            </TYPE.body>
-          )}
-
           {!!countdown?.seconds && (
             <TYPE.subtitle>
-              <Trans>New link in {countdown.seconds} seconds</Trans>
+              <Trans>New link available in {countdown.seconds} seconds</Trans>
             </TYPE.subtitle>
           )}
 
           <SubmitButton type="submit" onClick={handleNewLink} disabled={!!countdown?.seconds || loading} large>
-            {loading ? 'Loading ...' : t`Submit`}
+            {loading ? 'Loading ...' : t`Send`}
           </SubmitButton>
         </Column>
       </Column>

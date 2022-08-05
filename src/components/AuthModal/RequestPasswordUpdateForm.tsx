@@ -126,12 +126,12 @@ export default function RequestPasswordUpdateForm() {
 
           {!!countdown?.seconds && (
             <TYPE.subtitle>
-              <Trans>New link in {countdown.seconds} seconds</Trans>
+              <Trans>New link available in {countdown.seconds} seconds</Trans>
             </TYPE.subtitle>
           )}
 
           <SubmitButton type="submit" onClick={handleNewLink} disabled={!!countdown?.seconds} large>
-            {loading ? 'Loading ...' : t`Submit`}
+            {loading ? 'Loading ...' : t`Send`}
           </SubmitButton>
         </Column>
       </Column>

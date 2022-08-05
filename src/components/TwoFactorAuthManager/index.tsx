@@ -116,24 +116,24 @@ export default function TwoFactorAuthManager() {
       <Column gap={32}>
         <Column gap={16}>
           <TYPE.large>
-            <Trans>Two-Factor Authentication</Trans>
+            <Trans>Two-Factor Authentication (2FA)</Trans>
           </TYPE.large>
           <TYPE.body>
             <Trans>
-              Two-factor authentication adds an additional layer of security to your account by requiring more than just
-              a password to sign in.
+              Two-Factor Authentication adds an additional layer of security to your account by requiring a code when
+              you sign in.
             </Trans>
           </TYPE.body>
           {currentUser?.hasTwoFactorAuthActivated ? (
             <Enabled>
-              <Trans>Enabled</Trans>
+              <Trans>2FA Enabled</Trans>
             </Enabled>
           ) : (
             <TwoFactorAuthSetter gap={16}>
               <TYPE.subtitle>
                 <Trans>
                   Scan this QR Code with your authenticator app and enter the verification code below to setup the
-                  two-factor authentication on your Rules account
+                  Two-Factor Authentication on your Rules account.
                 </Trans>
               </TYPE.subtitle>
 
