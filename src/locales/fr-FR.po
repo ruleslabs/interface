@@ -878,3 +878,7 @@ msgstr "Cliquez pour dévoiler les cartes"
 #: src/pages/pack/[packSlug]/open.tsx
 msgid "See my cards"
 msgstr "Dévoiler les cartes"
+
+#: src/pages/user/[username]/index.tsx
+msgid "Remove from deck"
+msgstr "Retirer du deck"

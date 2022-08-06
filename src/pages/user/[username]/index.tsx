@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
+import { Trans } from '@lingui/macro'
 
 import Link from '@/components/Link'
 import DefaultLayout from '@/components/Layout'
@@ -14,6 +15,7 @@ import { useDeckState, useSetDeckCards, useDeckActionHandlers } from '@/state/de
 import { Deck } from '@/state/deck/actions'
 import { useCurrentUser } from '@/state/user/hooks'
 import { useDeckInsertionModalToggle } from '@/state/application/hooks'
+import { SecondaryButton } from '@/components/Button'
 
 const SHOWCASED_DECK_MAX_COUNT = 5
 const DECK_CARDS_GAP = 32
@@ -61,12 +63,20 @@ const CardPicture = styled.img`
   border-radius: 10px;
 `
 
-const RemoveButton = styled.button`
+const RemoveButton = styled(SecondaryButton)`
   position: absolute;
-  bottom: 0;
+  left: 0;
+  right: 0;
+  bottom: 3px;
   opacity: 0;
   transition: opacity 100ms ease-out;
   cursor: pointer;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0px -4px 4px #00000040;
+
+  ${({ theme }) => theme.media.extraSmall`
+    font-size: 12px;
+  `}
 `
 
 const StyledDeckCard = styled.div`
@@ -166,7 +176,11 @@ const DeckCards = ({ deck, indexes, onInsertion, onRemove, isCurrentUserProfile 
       {indexes.map((index: number) =>
         deck[index] ? (
           <StyledDeckCard key={`deck-card-${index}`} id={`card${index}`}>
-            {isCurrentUserProfile && <RemoveButton onClick={() => onRemove(index)}>delete me</RemoveButton>}
+            {isCurrentUserProfile && (
+              <RemoveButton onClick={() => onRemove(index)} large>
+                <Trans>Remove from deck</Trans>
+              </RemoveButton>
+            )}
             <Link href={`/card/${deck[index].cardModel.slug}/${deck[index].serialNumber}`}>
               <CardPicture src={deck[index].cardModel.pictureUrl} />
             </Link>
