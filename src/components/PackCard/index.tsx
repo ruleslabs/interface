@@ -19,10 +19,8 @@ const StyledPackCard = styled(ColumnCenter)<{ width?: number }>`
   ${({ width }) => width && `width: ${width}px;`}
 `
 
-const Card = styled.img<{ state: string }>`
+const Card = styled.img`
   width: 100%;
-
-  ${({ state }) => state === 'preparingOpening' && 'opacity: 0.3;'}
 `
 
 const StatusStyle = css`
@@ -61,22 +59,34 @@ const CustomPackCard = ({ href, ...props }: CustomPackCardProps) => {
   return href ? <Link href={href} {...props} /> : <div {...props} />
 }
 
-const StyledCustomPackCard = styled(CustomPackCard)<{ state: string }>`
+const StyledCustomPackCard = styled(CustomPackCard)<{ state: string; isOwner: boolean }>`
   cursor: pointer;
+  transition: transform 100ms, opacity 100ms;
 
   &:hover button {
     display: block;
   }
 
-  ${({ state }) =>
-    state === 'delivered' &&
-    `
-      cursor: default;
+  ${({ state, isOwner }) =>
+    state === 'delivered' && isOwner
+      ? `
+        cursor: default;
 
-      &:hover img {
-        opacity: 0.3;
-      }
-    `}
+        &:hover img {
+          opacity: 0.3;
+        }
+      `
+      : state !== 'preparingOpening' || !isOwner
+      ? `
+        &:hover {
+          transform: perspective(400px) rotateY(10deg);
+        }
+      `
+      : `
+        & ${Card} {
+          opacity: 0.3;
+        }
+      `}
 `
 
 interface PackCardProps {
@@ -131,8 +141,8 @@ export default function PackCard({
 
   return (
     <StyledPackCard width={width}>
-      <StyledCustomPackCard {...actionProps} state={state}>
-        <Card src={pictureUrl} state={state} />
+      <StyledCustomPackCard {...actionProps} state={state} isOwner={isOwner}>
+        <Card src={pictureUrl} />
         {state === 'inDelivery' && <InDelivery src={`/assets/delivery.${locale}.png`} />}
         {soldout && <Soldout src={`/assets/soldout.png`} />}
         {isOwner && state === 'preparingOpening' && <StyledLargeSpinner />}
@@ -166,7 +176,7 @@ export default function PackCard({
                 <Trans>Opening ready.</Trans>
               </TYPE.body>
               <TYPE.subtitle>
-                <Trans>Click to see your cards.</Trans>
+                <Trans>Click to see your cards</Trans>
               </TYPE.subtitle>
             </>
           )}

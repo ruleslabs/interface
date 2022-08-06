@@ -858,3 +858,19 @@ msgstr "Cette action ne peut être annulée. Le processus d’ouverture peut pre
 #: src/components/PackOpeningPreparationModal/index.tsx
 msgid "Open this {0} ?"
 msgstr "Ouvrir ce {0} ?"
+
+#: src/components/PackCard/index.tsx
+msgid "Please come back later."
+msgstr "Merci de revenir plus tard."
+
+#: src/components/PackCard/index.tsx
+msgid "Opening the pack..."
+msgstr "Ouverture en cours..."
+
+#: src/components/PackCard/index.tsx
+msgid "Opening ready."
+msgstr "Ouverture prête."
+
+#: src/components/PackCard/index.tsx
+msgid "Click to see your cards"
+msgstr "Cliquez pour dévoiler les cartes"
