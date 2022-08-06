@@ -50,3 +50,19 @@ const Spinner = ({ fill, ...props }: SpinnerProps) => (
 )
 
 export default Spinner
+
+const StyledLargeSpinner = styled.img`
+  animation: rotate 2s linear infinite;
+  width: 64px;
+  height: 64px;
+
+  @keyframes rotate {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`
+
+export const LargeSpinner = (props: React.HTMLAttributes<HTMLImageElement>) => (
+  <StyledLargeSpinner src="/assets/spinner.png" {...props} />
+)

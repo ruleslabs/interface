@@ -29,6 +29,7 @@ const QUERY_USER_PACKS_BALANCES = gql`
           id
           slug
           displayName
+          releaseDate
           pictureUrl(derivative: "width=320")
         }
       }
@@ -58,11 +59,13 @@ const CustomPackCard = ({ packBalance, state, isOwner }: CustomPackCardProps) =>
   return (
     <StyledPackCard
       slug={packBalance.pack.slug}
+      name={packBalance.pack.displayName}
+      releaseDate={packBalance.pack.releaseDate}
       pictureUrl={packBalance.pack.pictureUrl}
       soldout={false}
       state={state}
       isOwner={isOwner}
-      onClick={onClick}
+      onOpeningPreparation={onClick}
     />
   )
 }

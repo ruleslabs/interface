@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { Trans } from '@lingui/macro'
+import { Trans, t } from '@lingui/macro'
 import { ApolloError } from '@apollo/client'
 
 import { TYPE } from '@/styles/theme'
@@ -34,17 +34,11 @@ export default function PackOpeningPreparationModal({ onSuccess }: PackOpeningPr
 
   // modal state
   const [loading, setLoading] = useState(false)
-  const [needsConfirmation, setNeedsConfirmation] = useState(false)
 
   const pack = usePackToPrepare()
 
   const [packOpeningPreparationMutation] = usePackOpeningPreparationMutation()
   const preparePackOpening = useCallback(() => {
-    // if (!needsConfirmation) {
-    //   setNeedsConfirmation(true)
-    //   return
-    // }
-
     if (!pack) return
 
     setLoading(true)
@@ -63,20 +57,17 @@ export default function PackOpeningPreparationModal({ onSuccess }: PackOpeningPr
         const error = preparePackOpeningError?.graphQLErrors?.[0]
         console.error(preparePackOpeningError) // TODO: handle error
       })
-  }, [onSuccess, togglePackOpeningPreparationModal, packOpeningPreparationMutation, pack?.id, needsConfirmation])
+  }, [onSuccess, togglePackOpeningPreparationModal, packOpeningPreparationMutation, pack?.id])
 
   return (
     <Modal onDismiss={togglePackOpeningPreparationModal} isOpen={isOpen}>
       <StyledPackOpeningPreparationModal gap={26}>
-        <ModalHeader onDismiss={togglePackOpeningPreparationModal}>{pack?.displayName}</ModalHeader>
+        <ModalHeader onDismiss={togglePackOpeningPreparationModal}>{t`Open this ${pack?.displayName} ?`}</ModalHeader>
         <TYPE.body>
-          <Trans>
-            Please, note that this action cannot be canceled and may take a few hours to complete, thanks for your
-            patience.
-          </Trans>
+          <Trans>This action can&apos;t be canceled. The opening process might take a few hours.</Trans>
         </TYPE.body>
         <PrimaryButton onClick={preparePackOpening} disabled={loading} large>
-          {needsConfirmation ? <Trans>Confirm</Trans> : <Trans>Open pack</Trans>}
+          <Trans>Confirm Opening</Trans>
         </PrimaryButton>
       </StyledPackOpeningPreparationModal>
     </Modal>

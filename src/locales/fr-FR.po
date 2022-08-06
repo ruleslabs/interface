@@ -842,3 +842,19 @@ msgstr "Nous avons envoyé un lien à l’adresse email associée à votre compt
 #: src/components/AuthModal/RemoveTwoFactorAuthSecret.tsx
 msgid "The Two-Factor Authentication has not been removed."
 msgstr "Erreur dans la suppression de votre Authentification à 2 Facteurs."
+
+#: src/components/PackCard/index.tsx
+msgid "Edited in {releaseDateFormatted}"
+msgstr "Édité en {releaseDateFormatted}"
+
+#: src/components/PackOpeningPreparationModal/index.tsx
+msgid "Confirm Opening"
+msgstr "Confirmer l’ouverture"
+
+#: src/components/PackOpeningPreparationModal/index.tsx
+msgid "This action can't be canceled. The opening process might take a few hours."
+msgstr "Cette action ne peut être annulée. Le processus d’ouverture peut prendre plusieurs heures."
+
+#: src/components/PackOpeningPreparationModal/index.tsx
+msgid "Open this {0} ?"
+msgstr "Ouvrir ce {0} ?"
