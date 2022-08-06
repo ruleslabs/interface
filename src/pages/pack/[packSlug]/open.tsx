@@ -12,8 +12,9 @@ import { BackButton } from '@/components/Button'
 import { usePackOpeningMutation, useAudioLoop } from '@/state/packOpening/hooks'
 import { Sound } from '@/state/packOpening/actions'
 import PackOpeningCards from '@/components/PackOpeningCards'
-import Loader from '@/components/Loader'
-import Column from '@/components/Column'
+import Column, { ColumnCenter } from '@/components/Column'
+import { PACK_OPENING_DURATION, PACK_OPENING_FLASH_DURATION } from '@/constants/misc'
+import ProgressBar from '@/components/ProgressBar'
 
 import SoundOn from '@/images/sound-on.svg'
 import SoundOff from '@/images/sound-off.svg'
@@ -43,11 +44,12 @@ const Title = styled(TYPE.large)`
   text-align: center;
 `
 
-const PackImage = styled.img`
+const PackImage = styled.img<{ opened: boolean }>`
   width: 265px;
   margin: 32px auto 0;
   display: block;
-  animation: float 3s ease-in-out infinite;
+  animation: ${({ opened }) =>
+    opened ? `flash ${PACK_OPENING_FLASH_DURATION}ms linear` : 'float 3s ease-in-out infinite'};
 
   @keyframes float {
     0% {
@@ -62,6 +64,18 @@ const PackImage = styled.img`
       transform: translatey(0px) scale(1.02);
     }
   }
+
+  @keyframes flash {
+    50% {
+      transform: scale(8);
+      opacity: 0.05;
+    }
+
+    100% {
+      transform: scale(10);
+      opacity: 0;
+    }
+  }
 `
 
 const OpenPackButton = styled(PrimaryButton)`
@@ -73,10 +87,6 @@ const OpenPackButton = styled(PrimaryButton)`
 
 const StyledSoundSwitch = styled.div`
   cursor: pointer;
-`
-
-const StyledLoader = styled(Loader)`
-  margin: 0 auto;
 `
 
 const StyledPackOpeningCards = styled(PackOpeningCards)`
@@ -116,8 +126,11 @@ function PackOpening() {
   const [packOpeningMutation] = usePackOpeningMutation()
   const [cards, setCards] = useState<any[]>([])
 
-  // approve pack opening
+  // opening state
   const [waiting, setWaiting] = useState(false)
+  const [opened, setOpened] = useState(false)
+
+  // approve pack opening
   const openPack = useCallback(() => {
     setWaiting(true)
     loop(Sound.DURING_PACK_OPENING)
@@ -125,23 +138,29 @@ function PackOpening() {
     setTimeout(() => {
       packOpeningMutation({ variables: { packId: pack.id } })
         .then((res: any) => {
-          if (res.data?.openPack?.cards) setCards(res.data.openPack.cards)
-          else console.error(res.data?.openPack?.error) // TODO handle error
-          setWaiting(false)
+          if (res.data?.openPack?.cards) {
+            setTimeout(() => {
+              setCards(res.data.openPack.cards)
+            }, PACK_OPENING_FLASH_DURATION)
+            setOpened(true)
+          } else {
+            console.error(res.data?.openPack?.error) // TODO handle error
+            setWaiting(false)
+          }
         })
         .catch((packOpeningError: ApolloError) => {
           console.error(packOpeningError)
           setWaiting(false)
         })
-    }, 5000) // dopamine optimization è_é
-  }, [pack?.id, setCards, setWaiting, loop])
+    }, PACK_OPENING_DURATION) // dopamine optimization è_é
+  }, [pack?.id, setCards, setWaiting, setOpened, loop])
 
   useEffect(() => {
-    if (cards && cards?.length > 0 && latestLoopSound === Sound.DURING_PACK_OPENING) {
+    if (opened && latestLoopSound === Sound.DURING_PACK_OPENING) {
       loop(Sound.OPENED_PACK)
       fx(Sound.FX_PACK_OPENING)
     }
-  }, [cards?.length, loop, latestLoopSound])
+  }, [opened, loop, latestLoopSound])
 
   return (
     <>
@@ -164,12 +183,17 @@ function PackOpening() {
               <StyledPackOpeningCards cards={cards} />
             ) : (
               <Column gap={80}>
-                <PackImage src={pack.pictureUrl} />
+                <PackImage src={pack.pictureUrl} opened={opened} />
                 {waiting ? (
-                  <StyledLoader />
+                  <ColumnCenter gap={12}>
+                    <TYPE.body>
+                      <Trans>Creating cards</Trans>
+                    </TYPE.body>
+                    <ProgressBar duration={PACK_OPENING_DURATION} maxWidth={200} />
+                  </ColumnCenter>
                 ) : (
                   <OpenPackButton onClick={openPack} large>
-                    <Trans>Open pack</Trans>
+                    <Trans>See my cards</Trans>
                   </OpenPackButton>
                 )}
               </Column>

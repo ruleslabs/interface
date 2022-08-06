@@ -874,3 +874,7 @@ msgstr "Ouverture prête."
 #: src/components/PackCard/index.tsx
 msgid "Click to see your cards"
 msgstr "Cliquez pour dévoiler les cartes"
+
+#: src/pages/pack/[packSlug]/open.tsx
+msgid "See my cards"
+msgstr "Dévoiler les cartes"
