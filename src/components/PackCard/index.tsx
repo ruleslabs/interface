@@ -92,7 +92,7 @@ const StyledCustomPackCard = styled(CustomPackCard)<{ state: string; isOwner: bo
 interface PackCardProps {
   slug: string
   name?: string
-  releaseDate: Date
+  releaseDate?: Date
   pictureUrl: string
   soldout?: boolean
   width?: number
@@ -119,7 +119,8 @@ export default function PackCard({
     releaseMoment.locale(locale)
     console.log(locale)
 
-    return releaseMoment.format('MMMM YYYY')
+    const lowerCasedDate = releaseMoment.format('MMMM YYYY')
+    return lowerCasedDate.charAt(0).toUpperCase() + lowerCasedDate.slice(1)
   }, [releaseDate, locale])
 
   const actionProps = useMemo(() => {

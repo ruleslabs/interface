@@ -5,12 +5,11 @@ export enum SupportedNetworks {
 
 export const ProviderUrlNetworksMap: { [network: string]: string } = {
   [SupportedNetworks.GOERLI]: 'https://alpha4.starknet.io',
+  [SupportedNetworks.MAINNET]: 'https://alpha-mainnet.starknet.io',
 }
 
 export const defaultNetwork = SupportedNetworks.GOERLI
-export const networkId = process.env.STARKNET_NETWORK_ID ?? defaultNetwork
-
-export const DEFAULT_NETWORK = SupportedNetworks.GOERLI
+export const networkId = process.env.NEXT_PUBLIC_STARKNET_NETWORK_ID ?? defaultNetwork
 
 export enum SupportedChainIds {
   MAINNET = 1,
@@ -19,6 +18,7 @@ export enum SupportedChainIds {
 
 export const ChainIdsNetworksMap: { [network: string]: SupportedChainIds } = {
   [SupportedNetworks.GOERLI]: SupportedChainIds.GOERLI,
+  [SupportedNetworks.MAINNET]: SupportedChainIds.MAINNET,
 }
 
 interface BasicNetworkInformation {
@@ -30,5 +30,9 @@ export const NETWORKS: { [networkId: string]: BasicNetworkInformation } = {
   [SupportedNetworks.GOERLI]: {
     name: 'Alpha Goerli',
     explorerBaseUrl: 'https://goerli.voyager.online',
+  },
+  [SupportedNetworks.MAINNET]: {
+    name: 'Alpha Mainnet',
+    explorerBaseUrl: 'https://voyager.online',
   },
 }

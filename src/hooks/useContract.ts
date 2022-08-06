@@ -8,25 +8,25 @@ import MulticallABI from '@/abis/multicall.json'
 import EthereumStarkgateABI from '@/abis/ethereum/starkgate.json'
 
 import { useStarknet } from '@/lib/starknet'
-import { AddressMap, MULTICALL_ADDRESSES, STARKGATE_ADDRESSES } from '@/constants/addresses'
+import { AddressesMap, MULTICALL_ADDRESSES, STARKGATE_ADDRESSES } from '@/constants/addresses'
 
 //
 // Starknet
 //
 
-export function useContract(addressOrAddressMap: string | AddressMap, abi: Abi): Contract | null {
+export function useContract(addressOrAddressesMap: string | AddressesMap, abi: Abi): Contract | null {
   const { network, provider } = useStarknet()
 
   return useMemo(() => {
     if (!network || !provider || !abi) return null
 
     let address: string | undefined
-    if (typeof addressOrAddressMap === 'string') address = addressOrAddressMap
-    else address = addressOrAddressMap[network]
+    if (typeof addressOrAddressesMap === 'string') address = addressOrAddressesMap
+    else address = addressOrAddressesMap[network]
     if (!address) return null
 
     return new Contract(abi, address, provider)
-  }, [addressOrAddressMap, network, provider])
+  }, [addressOrAddressesMap, network, provider])
 }
 
 export function useMulticallContract(): Contract | null {
@@ -46,7 +46,7 @@ function getProviderOrSigner(provider: Web3Provider, account?: string): Web3Prov
 }
 
 export function useEthereumContract(
-  addressOrAddressMap: string | AddressMap,
+  addressOrAddressesMap: string | AddressesMap,
   abi: any,
   withSignerIfPossible = true
 ): EthereumContract | null {
@@ -56,8 +56,8 @@ export function useEthereumContract(
     if (!chainId || !provider || !abi) return null
 
     let address: string | undefined
-    if (typeof addressOrAddressMap === 'string') address = addressOrAddressMap
-    else address = addressOrAddressMap[chainId]
+    if (typeof addressOrAddressesMap === 'string') address = addressOrAddressesMap
+    else address = addressOrAddressesMap[chainId]
     if (!address) return null
 
     try {
@@ -70,7 +70,7 @@ export function useEthereumContract(
       console.error('Failed to get contract', error)
       return null
     }
-  }, [addressOrAddressMap, chainId, provider])
+  }, [addressOrAddressesMap, chainId, provider])
 }
 
 export function useEthereumStarkgateContract(): EthereumContract | null {
