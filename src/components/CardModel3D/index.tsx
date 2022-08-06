@@ -118,7 +118,8 @@ const StyledCardFullscreenSelector = styled(CardFullscreenSelector)`
 `
 
 const StyledClose = styled(Close)`
-  widht: 32px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
 `
 

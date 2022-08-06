@@ -17,6 +17,8 @@ import {
 import Close from '@/images/close.svg'
 
 const StyledClose = styled(Close)`
+  width: 20px;
+  height: 20px;
   display: none;
   right: 18px;
   top: 24px;
