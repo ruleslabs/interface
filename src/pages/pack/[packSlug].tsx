@@ -156,7 +156,7 @@ export default function Pack() {
                   <Column gap={28}>
                     <TYPE.body>
                       <strong>
-                        <Trans>Estimated delivery on June 29</Trans>
+                        <Trans>Estimated delivery in a few hours</Trans>
                       </strong>
                     </TYPE.body>
                     <TYPE.body>

@@ -39,6 +39,7 @@ const StyledDialogContent = styled(AnimatedDialogContent)<{ $sidebar: boolean }>
   width: fit-content;
   padding: 0;
   margin: 0;
+  position: fixed;
 
   ${({ $sidebar, theme }) =>
     $sidebar
@@ -145,7 +146,7 @@ interface ModalHeaderProps {
 
 export const ModalHeader = ({ children, onDismiss }: ModalHeaderProps) => {
   return (
-    <RowCenter justify="space-between" style={{ padding: '0 8px' }}>
+    <RowCenter justify="space-between">
       {typeof children === 'string' ? <ModalTitle>{children}</ModalTitle> : children}
       <StyledClose onClick={onDismiss} />
     </RowCenter>

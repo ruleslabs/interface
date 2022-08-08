@@ -86,10 +86,7 @@ export default function Confirmation({ packName, amountPaid }: ConfirmationProps
         </Link>
 
         <TYPE.subtitle>
-          <Trans>
-            Estimated delivery on&nbsp;
-            <strong>June 29</strong>
-          </Trans>
+          <Trans>Estimated delivery in a few hours</Trans>
         </TYPE.subtitle>
       </SeeMyPacksButtonWrapper>
     </ColumnCenter>

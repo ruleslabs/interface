@@ -27,7 +27,7 @@ const StatusStyle = css`
   position: absolute;
   left: 6.25%;
   width: 87.5%;
-  top: 40%;
+  top: 34.1%;
 `
 
 const InDelivery = styled.img`
@@ -61,7 +61,10 @@ const CustomPackCard = ({ href, ...props }: CustomPackCardProps) => {
 
 const StyledCustomPackCard = styled(CustomPackCard)<{ state: string; isOwner: boolean }>`
   cursor: pointer;
-  transition: transform 100ms, opacity 100ms;
+
+  & img {
+    transition: transform 100ms, opacity 100ms;
+  }
 
   &:hover button {
     display: block;
@@ -78,7 +81,7 @@ const StyledCustomPackCard = styled(CustomPackCard)<{ state: string; isOwner: bo
       `
       : state !== 'preparingOpening' || !isOwner
       ? `
-        &:hover {
+        &:hover img {
           transform: perspective(400px) rotateY(10deg);
         }
       `
@@ -117,7 +120,6 @@ export default function PackCard({
   const releaseDateFormatted = useMemo(() => {
     const releaseMoment = moment(releaseDate)
     releaseMoment.locale(locale)
-    console.log(locale)
 
     const lowerCasedDate = releaseMoment.format('MMMM YYYY')
     return lowerCasedDate.charAt(0).toUpperCase() + lowerCasedDate.slice(1)

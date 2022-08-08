@@ -37,6 +37,7 @@ const StyledDeckInsertionModal = styled.div`
   background: ${({ theme }) => theme.bg1};
   width: 100vw;
   height: 100vh;
+  overflow: scroll;
 `
 
 const CardPicture = styled.img`

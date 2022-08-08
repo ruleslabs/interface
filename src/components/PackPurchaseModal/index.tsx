@@ -120,7 +120,7 @@ export default function PackPurchaseModal({
 
     ws.onmessage = (event) => {
       const data = event.data ? JSON.parse(event.data) : {}
-      console.log(data)
+      console.log('ws', data)
       if (data.error || data.success === false) onError(data.error ?? 'Unknown error')
       else onSuccess()
     }

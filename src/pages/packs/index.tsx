@@ -46,7 +46,7 @@ const PacksWrapper = styled(Section)`
   align-items: end;
   padding: 0 32px;
   margin: 44px auto 80px;
-  grid-template-columns: repeat(${PACKS_COUNT}, auto);
+  grid-template-columns: repeat(${PACKS_COUNT}, 1fr);
   justify-content: space-between;
 
   & > * {
@@ -130,7 +130,7 @@ export default function Packs() {
       if (classicPacks) setPacks(classicPacks.slice(0, PACKS_COUNT))
       return
     }
-    if (currentUser?.boughtStarterPack ?? true) {
+    if (currentUser?.boughtStarterPack) {
       setPacks(classicPacks.slice(0, PACKS_COUNT))
       return
     }

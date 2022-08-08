@@ -65,9 +65,9 @@ const CardPicture = styled.img`
 
 const RemoveButton = styled(SecondaryButton)`
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 3px;
+  left: -2px;
+  right: -2px;
+  bottom: 0;
   opacity: 0;
   transition: opacity 100ms ease-out;
   cursor: pointer;

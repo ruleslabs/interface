@@ -715,12 +715,12 @@ msgid "Thank you, your payment has been successful.<0/>A confirmation email has 
 msgstr "Merci, votre paiement a été traité avec succès.<0/>Un email de confirmation a été envoyé à <1>{0}</1>"
 
 #: src/components/PackPurchaseModal/Confirmation.tsx
-msgid "Estimated delivery on <0>June 29</0>"
-msgstr "Livraison  estimée pour le <0>29 Juin</0>"
+msgid "Estimated delivery in a few hours"
+msgstr "Livraison  estimée dans quelques heures"
 
 #: src/pages/pack/[packSlug].tsx
-msgid "Estimated delivery on June 29"
-msgstr "Livraison estimée pour le 29 Juin"
+msgid "Estimated delivery in a few hours"
+msgstr "Livraison estimée dans quelques heures"
 
 #: src/pages/pack/[packSlug].tsx
 msgid "Cards of this pack are created by working closely with the artists."
