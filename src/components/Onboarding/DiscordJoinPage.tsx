@@ -58,7 +58,7 @@ const PageContent = styled(Column)`
 
 export default function DiscordJoinPage() {
   const router = useRouter()
-  const handleNext = useCallback(() => router.replace('/pack/launch-pack'), [router])
+  const handleNext = useCallback(() => router.replace('/pack/starter-pack-s1'), [router])
 
   return (
     <StyledPageBody>

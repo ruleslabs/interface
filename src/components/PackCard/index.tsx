@@ -27,15 +27,16 @@ const StatusStyle = css`
   position: absolute;
   left: 6.25%;
   width: 87.5%;
-  top: 34.1%;
 `
 
 const InDelivery = styled.img`
   ${StatusStyle}
+  top: 34.1%;
 `
 
 const Soldout = styled.img`
   ${StatusStyle}
+  top: 39.6%;
 `
 
 const StyledLargeSpinner = styled(LargeSpinner)`

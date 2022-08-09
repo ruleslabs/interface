@@ -69,6 +69,7 @@ const QUERY_PACK = gql`
       id
       availableQuantity
       displayName
+      description
       price
       cardsPerPack
       pictureUrl(derivative: "width=512")
@@ -155,9 +156,7 @@ export default function Pack() {
                 <ExplanationsCard>
                   <Column gap={28}>
                     <TYPE.body>
-                      <strong>
-                        <Trans>Estimated delivery in a few hours</Trans>
-                      </strong>
+                      <Trans id={pack.description} render={({ translation }) => <strong>{translation}</strong>} />
                     </TYPE.body>
                     <TYPE.body>
                       <Trans>Cards of this pack are created by working closely with the artists.</Trans>

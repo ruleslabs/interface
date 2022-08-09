@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { useQuery, gql } from '@apollo/client'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
@@ -26,16 +26,11 @@ const PACK_CONTENT = `
   releaseDate
 `
 
-const CLASSIC_PACKS_QUERY = gql`
+const PACKS_QUERY = gql`
   query {
     allClassicPacks(first: ${PACKS_COUNT}) {
       nodes { ${PACK_CONTENT} }
     }
-  }
-`
-
-const LAST_STARTER_PACK_QUERY = gql`
-  query {
     lastStarterPack { ${PACK_CONTENT} }
   }
 `
@@ -117,42 +112,30 @@ const PacksInfosCard = styled(Card)`
 export default function Packs() {
   const currentUser = useCurrentUser()
 
-  const classicPacksQuery = useQuery(CLASSIC_PACKS_QUERY)
-  const lastStarterPackQuery = useQuery(LAST_STARTER_PACK_QUERY)
+  const packsQuery = useQuery(PACKS_QUERY)
 
-  const [packs, setPacks] = useState([])
+  const packs = useMemo(() => {
+    if (!packsQuery.data) return []
 
-  useEffect(() => {
-    let classicPacks = classicPacksQuery.data?.allClassicPacks?.nodes
-    const starterPack = lastStarterPackQuery.data?.lastStarterPack
+    let classicPacks = packsQuery.data?.allClassicPacks?.nodes
+    const starterPack = packsQuery.data?.lastStarterPack
 
-    if (!classicPacks || !starterPack) {
-      if (classicPacks) setPacks(classicPacks.slice(0, PACKS_COUNT))
-      return
-    }
-    if (currentUser?.boughtStarterPack) {
-      setPacks(classicPacks.slice(0, PACKS_COUNT))
-      return
-    }
+    if (!classicPacks || !starterPack) return classicPacks?.slice(0, PACKS_COUNT) ?? []
+    if (currentUser?.boughtStarterPack) return classicPacks.slice(0, PACKS_COUNT)
 
     classicPacks = [...classicPacks]
     let index = 0
 
-    for (const l = classicPacks.length; index < l; ++index) {
+    for (const l = classicPacks.length; index < l; ++index)
       if (+new Date(classicPacks[index].releaseDate) - +new Date() <= 0) break
-    }
+
     classicPacks.splice(index, 0, starterPack)
 
-    setPacks(classicPacks.slice(0, PACKS_COUNT))
-  }, [
-    classicPacksQuery.data?.allClassicPacks?.nodes,
-    lastStarterPackQuery.data?.lastStarterPack,
-    currentUser?.boughtStarterPack,
-    setPacks,
-  ])
+    return classicPacks.slice(0, PACKS_COUNT)
+  }, [packsQuery.data, currentUser?.boughtStarterPack])
 
-  const isValid = !classicPacksQuery.error && !lastStarterPackQuery.error
-  const isLoading = classicPacksQuery.loading || lastStarterPackQuery.loading
+  const isValid = !packsQuery.error
+  const isLoading = packsQuery.loading
 
   return (
     <>
