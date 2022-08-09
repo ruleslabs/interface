@@ -1,12 +1,13 @@
 import { useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
-import { useRouter } from 'next/router'
 
 import { TYPE } from '@/styles/theme'
 import Column, { ColumnCenter } from '@/components/Column'
 import { PageBody, SkipButton } from './SubComponents'
 import DiscordStatus from '@/components/DiscordStatus'
+import { useSetOnboardingPage } from '@/state/onboarding/hooks'
+import { OnboardingPage } from '@/state/onboarding/actions'
 
 const StyledPageBody = styled(PageBody)`
   ${({ theme }) => theme.media.medium`
@@ -56,9 +57,13 @@ const PageContent = styled(Column)`
   `}
 `
 
-export default function DiscordJoinPage() {
-  const router = useRouter()
-  const handleNext = useCallback(() => router.replace('/pack/starter-pack-s1'), [router])
+interface DiscordJoinPageProps {
+  nextPage: OnboardingPage
+}
+
+export default function DiscordJoinPage({ nextPage }: DiscordJoinPageProps) {
+  const setOnboardingPage = useSetOnboardingPage()
+  const handleNextPage = useCallback(() => setOnboardingPage(nextPage), [setOnboardingPage, nextPage])
 
   return (
     <StyledPageBody>
@@ -70,8 +75,8 @@ export default function DiscordJoinPage() {
           <img src="/assets/discord-connect.png" />
         </DiscordScreenWrapper>
         <PageContent>
-          <DiscordStatus redirectPath="/onboard" connectionText={t`Connect`} onConnect={handleNext} />
-          <SkipButton onClick={handleNext}>
+          <DiscordStatus redirectPath="/onboard" connectionText={t`Connect`} onConnect={handleNextPage} />
+          <SkipButton onClick={handleNextPage}>
             <Trans>Skip</Trans>
           </SkipButton>
         </PageContent>

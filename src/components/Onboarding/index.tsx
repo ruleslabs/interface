@@ -33,13 +33,12 @@ export default function Onboarding() {
 
       switch (onboardingPage) {
         default:
-          return <IntroductionPage nextPage={OnboardingPage.DISCORD_JOIN} />
         case OnboardingPage.INTRODUCTION:
           return <IntroductionPage nextPage={OnboardingPage.DISCORD_JOIN} />
         case OnboardingPage.STARTER_PACK:
-          return <StarterPackPage nextPage={OnboardingPage.DISCORD_JOIN} />
+          return <StarterPackPage />
         case OnboardingPage.DISCORD_JOIN:
-          return <DiscordJoinPage />
+          return <DiscordJoinPage nextPage={OnboardingPage.STARTER_PACK} />
       }
       return null
     },
