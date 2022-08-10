@@ -9,10 +9,11 @@ import { RowCenter } from '@/components/Row'
 const StyledCardModel = styled.div<{ width?: number }>`
   position: relative;
   cursor: pointer;
-  transition: transform 100ms;
   ${({ width }) => width && `width: ${width}px;`}
+  transform: perspective(0);
 
-  &:hover {
+  &:hover img {
+    transition: transform 100ms;
     transform: perspective(400px) rotateY(10deg);
   }
 `

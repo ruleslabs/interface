@@ -62,6 +62,7 @@ const CustomPackCard = ({ href, ...props }: CustomPackCardProps) => {
 
 const StyledCustomPackCard = styled(CustomPackCard)<{ state: string; isOwner: boolean }>`
   cursor: pointer;
+  transform: perspective(0);
 
   & img {
     transition: transform 100ms, opacity 100ms;
@@ -160,26 +161,26 @@ export default function PackCard({
         <ColumnCenter gap={4}>
           {!isOwner || state === 'delivered' || state === 'inDelivery' ? (
             <>
-              <TYPE.body>{name}</TYPE.body>
-              <TYPE.subtitle>
+              <TYPE.body textAlign="center">{name}</TYPE.body>
+              <TYPE.subtitle textAlign="center">
                 <Trans>Edited in {releaseDateFormatted}</Trans>
               </TYPE.subtitle>
             </>
           ) : state === 'preparingOpening' ? (
             <>
-              <TYPE.body>
+              <TYPE.body textAlign="center">
                 <Trans>Opening the pack...</Trans>
               </TYPE.body>
-              <TYPE.subtitle>
+              <TYPE.subtitle textAlign="center">
                 <Trans>Please come back later.</Trans>
               </TYPE.subtitle>
             </>
           ) : (
             <>
-              <TYPE.body>
+              <TYPE.body textAlign="center">
                 <Trans>Opening ready.</Trans>
               </TYPE.body>
-              <TYPE.subtitle>
+              <TYPE.subtitle textAlign="center">
                 <Trans>Click to see your cards</Trans>
               </TYPE.subtitle>
             </>
