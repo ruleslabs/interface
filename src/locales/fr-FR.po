@@ -779,10 +779,6 @@ msgstr "Wallet en cours de création..."
 msgid "Opening unavailable"
 msgstr "Ouverture Indisponible"
 
-#: src/components/PackOpeningPreparationModal/index.tsx
-msgid "Please, note that this action cannot be canceled and may take a few hours to complete, thanks for your patience."
-msgstr "Notez que cette action ne peut pas être annulée et peut prendre quelques heures, merci pour votre patience."
-
 #: src/components/ProfileEditor/index.tsx
 msgid "Refresh channels access"
 msgstr "Rafraîchir l'accès aux salons"

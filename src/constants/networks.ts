@@ -36,3 +36,14 @@ export const NETWORKS: { [networkId: string]: BasicNetworkInformation } = {
     explorerBaseUrl: 'https://voyager.online',
   },
 }
+
+export const CHAINS: { [networkId: string]: BasicNetworkInformation } = {
+  [SupportedChainIds.GOERLI]: {
+    name: 'Goerli',
+    explorerBaseUrl: 'https://goerli.etherscan.io',
+  },
+  [SupportedChainIds.MAINNET]: {
+    name: 'Mainnet',
+    explorerBaseUrl: 'https://etherscan.io',
+  },
+}

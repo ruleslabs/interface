@@ -1,35 +1,33 @@
 import { useState, useCallback, useEffect } from 'react'
 import { RampInstantSDK, RampInstantEventTypes } from '@ramp-network/ramp-instant-sdk'
 
-const url = process.env.NEXT_PUBLIC_RAMP_URL
-
 interface RampSdkProps {
   email?: string
-  key?: string
+  address?: string
 }
 
-export default function useRampSdk({ email, key }: RampSdkProps): RampInstantSDK | null {
+export default function useRampSdk({ email, address }: RampSdkProps): RampInstantSDK | null {
   const [rampSdk, setRampSdk] = useState<RampInstantSDK | null>(null)
 
   const newRampSdk = useCallback(() => {
-    if (!email || !key || !url) return null
+    if (!email || !address || email !== 'clanier.dev@gmail.com') return null
     return new RampInstantSDK({
       fiatValue: '100',
-      swapAsset: 'ETH',
+      swapAsset: 'STARKNET_ETH',
       fiatCurrency: 'EUR',
       hostAppName: 'RULES',
       hostLogoUrl: process.env.NEXT_PUBLIC_APP_URL ? `${process.env.NEXT_PUBLIC_APP_URL}/assets/logo.svg` : '',
       userEmailAddress: email,
-      url,
-      // userAddress: key,
+      hostApiKey: process.env.NEXT_PUBLIC_RAMP_API_KEY ?? undefined,
+      userAddress: address,
     }).on('WIDGET_CLOSE' as RampInstantEventTypes, () => {
       setRampSdk(newRampSdk())
     })
-  }, [setRampSdk, email, key])
+  }, [setRampSdk, email, address])
 
   useEffect(() => {
     setRampSdk(newRampSdk())
-  }, [setRampSdk, email, key])
+  }, [setRampSdk, email, address])
 
   return rampSdk
 }
