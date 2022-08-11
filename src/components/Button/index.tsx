@@ -50,7 +50,7 @@ export const SecondaryButton = styled(BaseButton)`
   }
 `
 
-export const IconButton = styled.button`
+export const IconButton = styled.button<{ alert?: boolean }>`
   width: 32px;
   height: 32px;
   background-color: ${({ theme }) => theme.bg3};
@@ -66,6 +66,8 @@ export const IconButton = styled.button`
     width: 18px;
     height: 18px;
   }
+
+  ${({ theme, alert = false }) => alert && theme.before.alert}
 `
 
 const StyledRowButton = styled.button`

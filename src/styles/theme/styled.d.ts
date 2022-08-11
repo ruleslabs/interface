@@ -32,5 +32,9 @@ declare module 'styled-components' {
       mediumGT: ThemedCssFunction<DefaultTheme>
       large: ThemedCssFunction<DefaultTheme>
     }
+
+    before: {
+      alert: ThemedCssFunction<DefaultTheme>
+    }
   }
 }

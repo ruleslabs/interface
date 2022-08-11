@@ -22,6 +22,28 @@ const mediaWidth: { [breakpoint in keyof typeof MEDIA_QUERIES_WIDTH]: typeof css
   return acc
 }, {}) as any
 
+// BEFORE
+
+const Alert = css`
+  position: relative;
+  text-align: center;
+
+  ::before {
+    width: 20px;
+    height: 20px;
+    background: ${({ theme }) => theme.error};
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    border-radius: 50%;
+    font-weight: 700;
+    content: '!';
+    color: ${({ theme }) => theme.text1};
+    font-size: 16px;
+    font-weight: 700;
+  }
+`
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function colors(darkMode: boolean): Colors {
   return {
@@ -53,6 +75,10 @@ function theme(darkMode: boolean) {
     ...colors(darkMode),
 
     media: mediaWidth,
+
+    before: {
+      alert: Alert,
+    },
   }
 }
 

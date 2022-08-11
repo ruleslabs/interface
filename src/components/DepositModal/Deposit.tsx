@@ -74,7 +74,7 @@ const CustomButton = ({ title, subtitle, children, ...props }: CustomButtonProps
 }
 
 interface DepositFormProps {
-  onDeposit(amount: number): void
+  onDeposit(amount: string): void
   onError(error: Error): void
   onConfirmation(hash: string): void
 }
@@ -106,7 +106,9 @@ export default function DepositForm({ onDeposit, onError, onConfirmation }: Depo
   const handleDeposit = useCallback(() => {
     if (!ethereumStarkgateContract || !parsedDepositAmount || !currentUser?.starknetAddress) return
 
-    onDeposit(+parsedDepositAmount.toFixed(4))
+    console.log(parsedDepositAmount.toSignificant(6))
+
+    onDeposit(parsedDepositAmount.toSignificant(6))
 
     const estimate = ethereumStarkgateContract.estimateGas.deposit
     const method = ethereumStarkgateContract.deposit

@@ -78,7 +78,7 @@ const EtherscanButtonWrapper = styled(ColumnCenter)`
 `
 
 interface ConfirmationProps {
-  amountDeposited: number
+  amountDeposited?: string
   txHash?: string
   error?: Error
 }

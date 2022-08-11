@@ -1,8 +1,9 @@
-import { useCallback } from 'react'
+import JSBI from 'jsbi'
+import { useCallback, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
-import { WeiAmount } from '@rulesorg/sdk-core'
+import { WeiAmount, MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER } from '@rulesorg/sdk-core'
 
 import { useCurrentUser } from '@/state/user/hooks'
 import { useETHBalances } from '@/state/wallet/hooks'
@@ -23,6 +24,7 @@ const Balance = styled(Row)`
   padding: 18px 12px;
   background: ${({ theme }) => theme.bg5};
   flex-wrap: wrap;
+  border-radius: 3px;
 
   ${({ theme }) => theme.media.medium`
     gap: 8px 12px;
@@ -33,6 +35,8 @@ const Balance = styled(Row)`
       font-weight: 400;
     }
   `}
+
+  ${({ theme, alert = false }) => alert && theme.before.alert}
 `
 
 interface SettingsProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -65,13 +69,23 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
       })
   }, [storeAccessToken, dispatch, removeCurrentUser, revokeSessionMutation, router])
 
+  const alert = useMemo(
+    () =>
+      currentUser?.needsSignerPublicKeyUpdate &&
+      balance &&
+      JSBI.lessThan(balance.quotient, MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER),
+    [currentUser?.needsSignerPublicKeyUpdate, balance]
+  )
+
+  console.log()
+
   return (
     <Column gap={20} {...props}>
       <Column gap={12}>
         <TYPE.body>
           <Trans>Current balance</Trans>
         </TYPE.body>
-        <Balance>
+        <Balance alert={alert}>
           {!currentUser?.starknetAddress ? (
             <TYPE.subtitle>
               <Trans>Creating wallet...</Trans>
@@ -79,7 +93,7 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
           ) : balance ? (
             <>
               <TYPE.body fontSize={24} fontWeight={700}>
-                {+balance.toFixed(4)} ETH
+                {+balance.toFixed(4, 0)} ETH
               </TYPE.body>
               <TYPE.body fontSize={24} color="text2">
                 {weiAmountToEURValue(balance) ?? '-'} EUR

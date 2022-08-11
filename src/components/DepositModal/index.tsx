@@ -27,8 +27,8 @@ export default function PackPurchaseModal() {
   const toggleDepositModal = useDepositModalToggle()
 
   // deposit
-  const [amountDeposited, setAmountDeposited] = useState(0)
-  const onDeposit = useCallback((amount: number) => setAmountDeposited(amount), [])
+  const [amountDeposited, setAmountDeposited] = useState(null)
+  const onDeposit = useCallback((amount: string) => setAmountDeposited(amount), [])
 
   // confirmation
   const [txHash, setTxHash] = useState(null)
@@ -52,7 +52,11 @@ export default function PackPurchaseModal() {
       <StyledDepositModal gap={26}>
         <ModalHeader onDismiss={toggleDepositModal}>{amountDeposited ? <div /> : t`Fund your account`}</ModalHeader>
         {amountDeposited ? (
-          <Confirmation amountDeposited={amountDeposited} txHash={txHash ?? undefined} error={error ?? undefined} />
+          <Confirmation
+            amountDeposited={amountDeposited ?? undefined}
+            txHash={txHash ?? undefined}
+            error={error ?? undefined}
+          />
         ) : (
           <Deposit onDeposit={onDeposit} onError={onError} onConfirmation={onConfirmation} />
         )}
