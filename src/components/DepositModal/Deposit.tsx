@@ -20,11 +20,6 @@ import MetamaskIcon from '@/images/metamask.svg'
 
 const { useAccount, useChainId } = metaMaskHooks
 
-export interface Error {
-  code: number
-  message: string
-}
-
 const StyledSecondaryButton = styled(SecondaryButton)<{ active: boolean }>`
   display: flex;
   text-align: initial;
@@ -75,7 +70,7 @@ const CustomButton = ({ title, subtitle, children, ...props }: CustomButtonProps
 
 interface DepositFormProps {
   onDeposit(amount: string): void
-  onError(error: Error): void
+  onError(error: string): void
   onConfirmation(hash: string): void
 }
 
@@ -122,7 +117,7 @@ export default function DepositForm({ onDeposit, onError, onConfirmation }: Depo
         })
       )
       .catch((error: any) => {
-        onError(error)
+        onError(error.message)
         // we only care if the error is something _other_ than the user rejected the tx
         if (error?.code !== 4001) console.error(error)
       })

@@ -6,13 +6,17 @@ import { TYPE } from '@/styles/theme'
 import { useCurrentUser } from '@/state/user/hooks'
 import { PrimaryButton } from '@/components/Button'
 import Link from '@/components/Link'
-import { Error } from './Deposit'
 import Spinner from '@/components/Spinner'
 import { desiredChainId } from '@/constants/connectors'
 import { CHAINS } from '@/constants/networks'
 
 import Checkmark from '@/images/checkmark.svg'
 import Close from '@/images/close.svg'
+
+const StyledConfirmation = styled(ColumnCenter)`
+  padding-bottom: 8px;
+  gap: 32px;
+`
 
 const StyledCheckmark = styled(Checkmark)`
   border-radius: 50%;
@@ -38,10 +42,6 @@ const StyledFail = styled(Close)`
 
 const StyledSpinner = styled(Spinner)`
   margin: 0 auto;
-
-  & * {
-    stroke: ${({ theme }) => theme.primary1} !important;
-  }
 `
 
 const Title = styled(TYPE.large)`
@@ -80,16 +80,16 @@ const EtherscanButtonWrapper = styled(ColumnCenter)`
 interface ConfirmationProps {
   amountDeposited?: string
   txHash?: string
-  error?: Error
+  error?: string
 }
 
 export default function Confirmation({ amountDeposited, txHash, error }: ConfirmationProps) {
   const currentUser = useCurrentUser()
 
   return (
-    <ColumnCenter gap={32}>
+    <StyledConfirmation>
       <Column gap={24}>
-        {error ? <StyledFail /> : txHash ? <StyledCheckmark /> : <StyledSpinner />}
+        {error ? <StyledFail /> : txHash ? <StyledCheckmark /> : <StyledSpinner fill="primary1" />}
 
         {txHash ? (
           <Column gap={8}>
@@ -108,7 +108,7 @@ export default function Confirmation({ amountDeposited, txHash, error }: Confirm
             </Title>
 
             <ErrorMessage>
-              <Trans>{error.message}</Trans>
+              <Trans>{error}</Trans>
             </ErrorMessage>
           </Column>
         ) : (
@@ -133,6 +133,6 @@ export default function Confirmation({ amountDeposited, txHash, error }: Confirm
           </Link>
         </EtherscanButtonWrapper>
       )}
-    </ColumnCenter>
+    </StyledConfirmation>
   )
 }

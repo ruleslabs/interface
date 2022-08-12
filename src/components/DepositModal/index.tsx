@@ -6,7 +6,7 @@ import Modal, { ModalHeader } from '@/components/Modal'
 import { useModalOpen, useDepositModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import Column from '@/components/Column'
-import Deposit, { Error } from './Deposit'
+import Deposit from './Deposit'
 import Confirmation from './Confirmation'
 
 const StyledDepositModal = styled(Column)`
@@ -27,21 +27,21 @@ export default function PackPurchaseModal() {
   const toggleDepositModal = useDepositModalToggle()
 
   // deposit
-  const [amountDeposited, setAmountDeposited] = useState(null)
+  const [amountDeposited, setAmountDeposited] = useState<string | null>(null)
   const onDeposit = useCallback((amount: string) => setAmountDeposited(amount), [])
 
   // confirmation
-  const [txHash, setTxHash] = useState(null)
+  const [txHash, setTxHash] = useState<string | null>(null)
   const onConfirmation = useCallback((hash: string) => setTxHash(hash), [])
 
   // error
-  const [error, setError] = useState<Error | null>(null)
-  const onError = useCallback((error: Error) => setError(error), [])
+  const [error, setError] = useState<string | null>(null)
+  const onError = useCallback((error: string) => setError(error), [])
 
   // on close modal
   useEffect(() => {
     if (isOpen) {
-      setAmountDeposited(0)
+      setAmountDeposited(null)
       setError(null)
       setTxHash(null)
     }

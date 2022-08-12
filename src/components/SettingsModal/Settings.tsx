@@ -17,7 +17,7 @@ import { useRemoveCurrentUser } from '@/state/user/hooks'
 import { useRevokeSessionMutation } from '@/state/auth/hooks'
 import { useDepositModalToggle } from '@/state/application/hooks'
 
-const Balance = styled(Row)`
+const Balance = styled(Row)<{ alert?: boolean }>`
   align-items: center;
   gap: 8px 20px;
   width: 100%;
