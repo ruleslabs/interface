@@ -1,8 +1,6 @@
-import React, { useCallback, useMemo } from 'react'
-import JSBI from 'jsbi'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
-import { MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER } from '@rulesorg/sdk-core'
 
 import { useCurrentUser } from '@/state/user/hooks'
 import { NavLink } from '@/components/NavLink'
@@ -14,7 +12,6 @@ import SettingsModal from '@/components/SettingsModal'
 import AuthModal from '@/components/AuthModal'
 import { PrimaryButton, SecondaryButton, IconButton } from '@/components/Button'
 import DepositModal from '@/components/DepositModal'
-import { useETHBalances } from '@/state/wallet/hooks'
 
 const StyledAccountStatus = styled.div`
   display: flex;
@@ -42,23 +39,13 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
   const toggleSignInModal = () => toggleAuthModalWithMode(AuthMode.SIGN_IN)
   const toggleSignUpModal = () => toggleAuthModalWithMode(AuthMode.SIGN_UP)
 
-  // alert
-  const balance = useETHBalances([currentUser?.starknetAddress])[currentUser?.starknetAddress]
-  const alert = useMemo(
-    () =>
-      currentUser?.needsSignerPublicKeyUpdate &&
-      balance &&
-      JSBI.lessThan(balance.quotient, MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER),
-    [currentUser?.needsSignerPublicKeyUpdate, balance]
-  )
-
   return (
     <>
       <StyledAccountStatus {...props}>
         {!!currentUser ? (
           <>
             <NavLink href={`/user/${currentUser.slug}`}>{currentUser.username}</NavLink>
-            <IconButton onClick={toggleSettingsModal} alert={alert}>
+            <IconButton onClick={toggleSettingsModal} alert={currentUser?.needsSignerPublicKeyUpdate}>
               <Settings />
             </IconButton>
           </>

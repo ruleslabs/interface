@@ -11,7 +11,7 @@ interface ErrorProps {
 export default function Error({ error, onRetry }: ErrorProps) {
   return (
     <Row>
-      <ErrorCard>
+      <ErrorCard textAlign="center">
         <Trans>Your payment failed for the following reason:</Trans>
         <br />
         <br />

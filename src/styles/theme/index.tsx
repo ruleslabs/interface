@@ -29,7 +29,6 @@ const Alert = css`
   text-align: center;
 
   ::before {
-    display: none;
     width: 20px;
     height: 20px;
     background: ${({ theme }) => theme.error};

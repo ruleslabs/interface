@@ -25,6 +25,7 @@ const CURRENT_USER_QUERY = gql`
         encryptedPrivateKey
       }
       needsSignerPublicKeyUpdate
+      signerEscapeTriggeredAt
       hasTwoFactorAuthActivated
       profile {
         pictureUrl(derivative: "width=320")

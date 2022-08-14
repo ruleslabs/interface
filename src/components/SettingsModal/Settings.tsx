@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
-import { WeiAmount, MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER } from '@rulesorg/sdk-core'
+import { WeiAmount, MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER, ESCAPE_SECURITY_PERIOD } from '@rulesorg/sdk-core'
 
 import { useCurrentUser } from '@/state/user/hooks'
 import { useETHBalances } from '@/state/wallet/hooks'
@@ -16,6 +16,7 @@ import { storeAccessToken } from '@/utils/accessToken'
 import { useRemoveCurrentUser } from '@/state/user/hooks'
 import { useRevokeSessionMutation } from '@/state/auth/hooks'
 import { useDepositModalToggle } from '@/state/application/hooks'
+import ErrorCard from '@/components/ErrorCard'
 
 const Balance = styled(Row)<{ alert?: boolean }>`
   align-items: center;
@@ -69,15 +70,24 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
       })
   }, [storeAccessToken, dispatch, removeCurrentUser, revokeSessionMutation, router])
 
-  const alert = useMemo(
+  // signer escape
+  const needsDeposit = useMemo(
     () =>
       currentUser?.needsSignerPublicKeyUpdate &&
       balance &&
       JSBI.lessThan(balance.quotient, MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER),
     [currentUser?.needsSignerPublicKeyUpdate, balance]
   )
+  const minimumWeiAmountToEscapeSigner = useMemo(
+    () => WeiAmount.fromRawAmount(MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER),
+    []
+  )
+  const daysBeforeEscape = useMemo(() => {
+    if (!currentUser?.signerEscapeTriggeredAt) return ESCAPE_SECURITY_PERIOD / 24 / 60 / 60 // nb of days
 
-  console.log()
+    const difference = +new Date() - +new Date(currentUser.signerEscapeTriggeredAt)
+    return Math.max(Math.ceil((ESCAPE_SECURITY_PERIOD - difference / 1000) / 24 / 60 / 60), 1)
+  }, [currentUser?.signerEscapeTriggeredAt])
 
   return (
     <Column gap={20} {...props}>
@@ -85,7 +95,7 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
         <TYPE.body>
           <Trans>Current balance</Trans>
         </TYPE.body>
-        <Balance alert={alert}>
+        <Balance alert={currentUser?.needsSignerPublicKeyUpdate}>
           {!currentUser?.starknetAddress ? (
             <TYPE.subtitle>
               <Trans>Creating wallet...</Trans>
@@ -103,6 +113,28 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
             <TYPE.subtitle>Loading...</TYPE.subtitle>
           )}
         </Balance>
+        {currentUser?.needsSignerPublicKeyUpdate && (
+          <ErrorCard>
+            {needsDeposit ? (
+              <Trans>
+                Your wallet is locked. This happens when you reset your password. In order to recover your wallet, you
+                need to deposit at least
+                <br />
+                <strong>
+                  {minimumWeiAmountToEscapeSigner.toSignificant(18)} ETH (
+                  {weiAmountToEURValue(minimumWeiAmountToEscapeSigner)}€)
+                </strong>
+              </Trans>
+            ) : (
+              <Trans>
+                Your wallet is locked. This happens when you reset your password. For security reasons, your wallet will
+                be recovered
+                <br />
+                <strong>in {daysBeforeEscape} days.</strong>
+              </Trans>
+            )}
+          </ErrorCard>
+        )}
       </Column>
       <Column gap={26}>
         {currentUser?.starknetAddress && (

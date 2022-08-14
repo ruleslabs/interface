@@ -163,7 +163,7 @@ export default function DepositForm({ onDeposit, onError, onConfirmation }: Depo
           )}
         </Column>
       ) : account ? (
-        <ErrorCard>
+        <ErrorCard textAlign="center">
           <Trans>
             Metamask connected to the wrong network,
             <br />

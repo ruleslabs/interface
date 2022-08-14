@@ -7,7 +7,6 @@ const ErrorCard = styled(TYPE.body)`
   border-radius: 3px;
   padding: 16px;
   width: 100%;
-  text-align: center;
 
   span {
     text-decoration: underline;
