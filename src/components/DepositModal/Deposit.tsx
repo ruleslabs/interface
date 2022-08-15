@@ -68,13 +68,13 @@ const CustomButton = ({ title, subtitle, children, ...props }: CustomButtonProps
   )
 }
 
-interface DepositFormProps {
+interface DepositProps {
   onDeposit(amount: string): void
   onError(error: string): void
   onConfirmation(hash: string): void
 }
 
-export default function DepositForm({ onDeposit, onError, onConfirmation }: DepositFormProps) {
+export default function Deposit({ onDeposit, onError, onConfirmation }: DepositProps) {
   const currentUser = useCurrentUser()
 
   // Ramp

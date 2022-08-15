@@ -9,13 +9,13 @@ import { useAvatarEditModalToggle } from '@/state/application/hooks'
 import AvatarEditModal from '@/components/AvatarEditModal'
 import { useDefaultAvatarIdFromUrl } from '@/hooks/useDefaultAvatarUrls'
 
-type Size = 'md' | 'lg'
+type Size = 'sm' | 'md' | 'lg'
 
 const UserAvatarWrapper = styled.div<{ size: Size }>`
   position: relative;
-  margin-bottom: ${({ size }) => (size === 'md' && '10px') || (size === 'lg' && '12px')};
-  width: ${({ size }) => (size === 'md' && '150px') || (size === 'lg' && '208px')};
-  height: ${({ size }) => (size === 'md' && '150px') || (size === 'lg' && '208px')};
+  margin-bottom: ${({ size }) => (size === 'sm' && '8px') || (size === 'md' && '10px') || (size === 'lg' && '12px')};
+  width: ${({ size }) => (size === 'sm' && '64px') || (size === 'md' && '150px') || (size === 'lg' && '208px')};
+  height: ${({ size }) => (size === 'sm' && '64px') || (size === 'md' && '150px') || (size === 'lg' && '208px')};
   border-radius: 50%;
   overflow: hidden;
 

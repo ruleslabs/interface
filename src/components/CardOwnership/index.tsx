@@ -8,6 +8,7 @@ import { TYPE } from '@/styles/theme'
 import { PrimaryButton, SecondaryButton } from '@/components/Button'
 import Link from '@/components/Link'
 import Placeholder from '@/components/Placeholder'
+import { useOfferModalToggle } from '@/state/application/hooks'
 
 import Present from '@/images/present.svg'
 
@@ -45,6 +46,8 @@ export default function CardOwnership({
 }: RuleOwnershipProps) {
   const currentUser = useCurrentUser()
 
+  const toggleOfferModal = useOfferModalToggle()
+
   return (
     <Column gap={16}>
       <RowCenter gap={12}>
@@ -81,7 +84,7 @@ export default function CardOwnership({
               </PrimaryButton>
             )}
             {!askEUR && (
-              <SecondaryButton disabled large>
+              <SecondaryButton onClick={toggleOfferModal} large>
                 <RowCenter justify="center" gap={4}>
                   <StyledPresent />
                   <Trans>Offer</Trans>

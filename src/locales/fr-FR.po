@@ -885,3 +885,11 @@ msgstr "Le pack de lancement de la Saison 1."
 
 msgid "Contains 3 common cards to start your journey."
 msgstr "Contient 3 cartes communes pour commencer sa collection."
+
+#: src/components/OfferModal/index.tsx
+msgid "Offer this {artistName}"
+msgstr "Offrir cette {artistName}"
+
+#: src/components/OfferModal/index.tsx
+msgid "season"
+msgstr "saison"

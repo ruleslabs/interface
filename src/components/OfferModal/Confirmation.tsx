@@ -82,7 +82,7 @@ interface ConfirmationProps {
   error?: string
 }
 
-export default function Confirmation({ amountDeposited, txHash, error }: ConfirmationProps) {
+export default function Confirmation({ txHash, error }: ConfirmationProps) {
   return (
     <StyledConfirmation>
       <Column gap={24}>
@@ -91,32 +91,22 @@ export default function Confirmation({ amountDeposited, txHash, error }: Confirm
         {txHash ? (
           <Column gap={8}>
             <Title>
-              <Trans>Your {amountDeposited} ETH deposit is on its way</Trans>
+              <Trans>Your card-name is on its way</Trans>
             </Title>
 
             <Subtitle>
               <Trans>The deposit might take a few hours to arrive on your Rules wallet.</Trans>
             </Subtitle>
           </Column>
-        ) : error ? (
+        ) : (
           <Column gap={8}>
             <Title>
-              <Trans>Your deposit has been rejected</Trans>
+              <Trans>Your transaction has been rejected</Trans>
             </Title>
 
             <ErrorMessage>
               <Trans>{error}</Trans>
             </ErrorMessage>
-          </Column>
-        ) : (
-          <Column gap={8}>
-            <Title>
-              <Trans>Waiting for confirmation</Trans>
-            </Title>
-
-            <Subtitle>
-              <Trans>{amountDeposited} ETH deposit on your Rules wallet</Trans>
-            </Subtitle>
           </Column>
         )}
       </Column>

@@ -21,7 +21,7 @@ const StyledDepositModal = styled(Column)`
   `}
 `
 
-export default function PackPurchaseModal() {
+export default function DepositModal() {
   // modal
   const isOpen = useModalOpen(ApplicationModal.DEPOSIT)
   const toggleDepositModal = useDepositModalToggle()

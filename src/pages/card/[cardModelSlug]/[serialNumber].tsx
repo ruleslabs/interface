@@ -16,6 +16,7 @@ import YoutubeEmbed from '@/components/YoutubeEmbed'
 import CardModel3D from '@/components/CardModel3D'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
+import OfferModal from '@/components/OfferModal'
 
 const MainSection = styled(Section)`
   position: relative;
@@ -83,7 +84,6 @@ const QUERY_CARD = gql`
         }
         scarcity {
           name
-          maxSupply
         }
       }
     }
@@ -164,6 +164,13 @@ export default function CardBreakout() {
           <YoutubeEmbed embedId={card.cardModel.youtubePreviewId} style={{ minWidth: '100%' }} />
         </Column>
       </Section>
+
+      <OfferModal
+        artistName={card.cardModel.artist.displayName}
+        scarcityName={card.cardModel.scarcity.name}
+        season={card.cardModel.season}
+        serialNumber={card.serialNumber}
+      />
     </>
   )
 }

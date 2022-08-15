@@ -2,7 +2,7 @@ export const DECRYPTION_ERROR = 'DecryptionError'
 
 export class DecryptionError extends Error {
   constructor(message?: string) {
-    super(message || 'invalid password')
+    super(message || 'Invalid password')
     this.name = DECRYPTION_ERROR
   }
 }
