@@ -6,8 +6,8 @@ import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import Link from '@/components/Link'
 import Spinner from '@/components/Spinner'
-import { desiredChainId } from '@/constants/connectors'
-import { CHAINS } from '@/constants/networks'
+import { NETWORKS } from '@/constants/networks'
+import { useStarknet } from '@/lib/starknet'
 
 import Checkmark from '@/images/checkmark.svg'
 import Close from '@/images/close.svg'
@@ -83,6 +83,8 @@ interface ConfirmationProps {
 }
 
 export default function Confirmation({ txHash, error }: ConfirmationProps) {
+  const { network } = useStarknet()
+
   return (
     <StyledConfirmation>
       <Column gap={24}>
@@ -95,10 +97,10 @@ export default function Confirmation({ txHash, error }: ConfirmationProps) {
             </Title>
 
             <Subtitle>
-              <Trans>The deposit might take a few hours to arrive on your Rules wallet.</Trans>
+              <Trans>The transfer might take a few hours to succeed.</Trans>
             </Subtitle>
           </Column>
-        ) : (
+        ) : error ? (
           <Column gap={8}>
             <Title>
               <Trans>Your transaction has been rejected</Trans>
@@ -108,14 +110,24 @@ export default function Confirmation({ txHash, error }: ConfirmationProps) {
               <Trans>{error}</Trans>
             </ErrorMessage>
           </Column>
+        ) : (
+          <Column gap={8}>
+            <Title>
+              <Trans>Waiting for confirmation</Trans>
+            </Title>
+
+            <Subtitle>
+              <Trans>Card transfer.</Trans>
+            </Subtitle>
+          </Column>
         )}
       </Column>
 
       {txHash && (
         <EtherscanButtonWrapper>
-          <Link target="_blank" href={`${CHAINS[desiredChainId].explorerBaseUrl}/tx/${txHash}`}>
+          <Link target="_blank" href={`${NETWORKS[network].explorerBaseUrl}/tx/${txHash}`}>
             <PrimaryButton large>
-              <Trans>See on Etherscan</Trans>
+              <Trans>See on Voyager</Trans>
             </PrimaryButton>
           </Link>
         </EtherscanButtonWrapper>

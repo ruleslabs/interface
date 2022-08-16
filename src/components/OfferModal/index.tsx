@@ -1,6 +1,8 @@
 import { useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
+import { Call } from 'starknet'
+import { uint256HexFromStrHex } from '@rulesorg/sdk-core'
 
 import Modal, { ModalHeader } from '@/components/Modal'
 import { useModalOpen, useOfferModalToggle } from '@/state/application/hooks'
@@ -10,6 +12,9 @@ import Offer from './Offer'
 import Confirmation from './Confirmation'
 import { TYPE } from '@/styles/theme'
 import StarknetSigner from '@/components/StarknetSigner'
+import { useCurrentUser } from '@/state/user/hooks'
+import { RULES_TOKENS_ADDRESSES } from '@/constants/addresses'
+import { useStarknet } from '@/lib/starknet'
 
 const DummyFocusInput = styled.input`
   max-height: 0;
@@ -35,16 +40,49 @@ interface OfferModalProps {
   season: number
   scarcityName: string
   serialNumber: number
+  tokenId: string
 }
 
-export default function OfferModal({ artistName, season, scarcityName, serialNumber }: OfferModalProps) {
+export default function OfferModal({ artistName, season, scarcityName, serialNumber, tokenId }: OfferModalProps) {
+  // currentUser
+  const currentUser = useCurrentUser()
+
+  // starknet
+  const { network } = useStarknet()
+
   // modal
   const isOpen = useModalOpen(ApplicationModal.OFFER)
   const toggleOfferModal = useOfferModalToggle()
 
-  // recipient
-  const [recipientAddress, setRecipientAddress] = useState<string | null>(null)
-  const onConfirmation = useCallback((address: string) => setRecipientAddress(address), [])
+  // call
+  const [call, setCall] = useState<Call | null>(null)
+  const onRecipientSelected = useCallback(
+    (address: string) => {
+      if (!currentUser.starknetAddress) return // to enforce recipient typing
+
+      const uint256TokenId = uint256HexFromStrHex(tokenId)
+
+      setCall({
+        contractAddress: RULES_TOKENS_ADDRESSES[network],
+        entrypoint: 'safeTransferFrom',
+        calldata: [
+          currentUser.starknetAddress,
+          address,
+          uint256TokenId.low,
+          uint256TokenId.high,
+          1, // amount.low
+          0, // amount.high
+          0, // data len
+          0, // data
+        ],
+      })
+    },
+    [tokenId, currentUser.starknetAddress]
+  )
+
+  // transaction waiting
+  const [waitingForTx, setWaitingForTx] = useState(false)
+  const onConfirmation = useCallback(() => setWaitingForTx(true), [])
 
   // hash
   const [txHash, setTxHash] = useState<string | null>(null)
@@ -57,7 +95,7 @@ export default function OfferModal({ artistName, season, scarcityName, serialNum
   // on close modal
   useEffect(() => {
     if (isOpen) {
-      setRecipientAddress(null)
+      setCall(null)
       setError(null)
       setTxHash(null)
     }
@@ -68,7 +106,7 @@ export default function OfferModal({ artistName, season, scarcityName, serialNum
       <DummyFocusInput type="text" />
       <StyledOfferModal gap={26}>
         <ModalHeader onDismiss={toggleOfferModal}>
-          {txHash ? (
+          {txHash || waitingForTx ? (
             <div />
           ) : (
             <TYPE.large>
@@ -83,12 +121,12 @@ export default function OfferModal({ artistName, season, scarcityName, serialNum
             </TYPE.large>
           )}
         </ModalHeader>
-        {txHash ? (
+        {txHash || waitingForTx ? (
           <Confirmation txHash={txHash ?? undefined} error={error ?? undefined} />
-        ) : recipientAddress ? (
-          <StarknetSigner onTransaction={onTransaction} call={{}} />
+        ) : call ? (
+          <StarknetSigner onConfirmation={onConfirmation} onTransaction={onTransaction} onError={onError} call={call} />
         ) : (
-          <Offer onError={onError} onConfirmation={onConfirmation} />
+          <Offer onError={onError} onRecipientSelected={onRecipientSelected} />
         )}
       </StyledOfferModal>
     </Modal>

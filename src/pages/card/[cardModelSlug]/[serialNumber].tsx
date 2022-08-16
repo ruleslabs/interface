@@ -57,6 +57,7 @@ const QUERY_CARD = gql`
   query ($slug: String!) {
     card(slug: $slug) {
       serialNumber
+      starknetTokenId
       currentOffer {
         ask
       }
@@ -170,6 +171,7 @@ export default function CardBreakout() {
         scarcityName={card.cardModel.scarcity.name}
         season={card.cardModel.season}
         serialNumber={card.serialNumber}
+        tokenId={card.starknetTokenId}
       />
     </>
   )

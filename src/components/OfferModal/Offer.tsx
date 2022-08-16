@@ -21,17 +21,16 @@ const TransferSummary = styled(ColumnCenter)`
 `
 
 interface OfferProps {
-  onError(error: string): void
-  onConfirmation(recipientAddress: string): void
+  onRecipientSelected(recipientAddress: string): void
 }
 
-export default function Offer({ onError, onConfirmation }: OfferProps) {
+export default function Offer({ onRecipientSelected }: OfferProps) {
   const currentUser = useCurrentUser()
 
   const [recipient, setRecipient] = useState<any | null>(null)
   const handleConfirmation = useCallback(() => {
     if (!recipient) return // to enforce recipient typing
-    onConfirmation(recipient.starknetAddress)
+    onRecipientSelected(recipient.starknetAddress)
   }, [recipient])
 
   return (

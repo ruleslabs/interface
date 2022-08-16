@@ -37,7 +37,7 @@ export const NETWORKS: { [networkId: string]: BasicNetworkInformation } = {
   },
 }
 
-export const CHAINS: { [networkId: string]: BasicNetworkInformation } = {
+export const CHAINS: { [chainId: number]: BasicNetworkInformation } = {
   [SupportedChainIds.GOERLI]: {
     name: 'Goerli',
     explorerBaseUrl: 'https://goerli.etherscan.io',
