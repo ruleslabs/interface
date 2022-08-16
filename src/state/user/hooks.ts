@@ -14,18 +14,19 @@ const CURRENT_USER_QUERY = gql`
       username
       email
       slug
-      starknetAddress
       boughtStarterPack
       nextPackToBuy {
         slug
       }
-      rulesPrivateKey {
-        salt
-        iv
-        encryptedPrivateKey
+      starknetWallet {
+        address
+        signerEscapeTriggeredAt
+        rulesPrivateKey {
+          salt
+          iv
+          encryptedPrivateKey
+        }
       }
-      needsSignerPublicKeyUpdate
-      signerEscapeTriggeredAt
       hasTwoFactorAuthActivated
       profile {
         pictureUrl(derivative: "width=320")

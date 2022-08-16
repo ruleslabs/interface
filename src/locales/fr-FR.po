@@ -893,3 +893,7 @@ msgstr "Offrir cette {artistName}"
 #: src/components/OfferModal/index.tsx
 msgid "season"
 msgstr "saison"
+
+#: src/components/OfferModal/Confirmation.tsx
+msgid "Your transaction has been rejected"
+msgstr "Votre transaction a été rejetée"

@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react'
 import styled from 'styled-components'
-import { useQuery, gql } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
 import { ec, Account, Call } from 'starknet'
 
@@ -10,19 +9,7 @@ import { TYPE } from '@/styles/theme'
 import { decryptRulesPrivateKey } from '@/utils/wallet'
 import { PrimaryButton } from '@/components/Button'
 import { useStarknet } from '@/lib/starknet'
-
-const WALLET_QUERY = gql`
-  query {
-    currentUser {
-      starknetAddress
-      rulesPrivateKey {
-        encryptedPrivateKey
-        iv
-        salt
-      }
-    }
-  }
-`
+import { useCurrentUser } from '@/state/user/hooks'
 
 const StyledStarknetSigner = styled(ColumnCenter)`
   padding-bottom: 8px;
@@ -43,7 +30,7 @@ interface StarknetSignerProps {
   call: Call
   onTransaction(tx: string): void
   onConfirmation(): void
-  onError(): void
+  onError(error: string): void
 }
 
 export default function StarknetSigner({ call, onTransaction, onConfirmation, onError }: StarknetSignerProps) {
@@ -52,12 +39,9 @@ export default function StarknetSigner({ call, onTransaction, onConfirmation, on
   const onPasswordInput = useCallback((value: string) => setPassword(value), [setPassword])
 
   // wallet
-  const rulesPrivateKeyQuery = useQuery(WALLET_QUERY)
-
-  const rulesPrivateKey = rulesPrivateKeyQuery.data?.currentUser?.rulesPrivateKey
-  const address = rulesPrivateKeyQuery.data?.currentUser?.starknetAddress
-  const isValid = rulesPrivateKey && address && !rulesPrivateKeyQuery.error
-  const loading = rulesPrivateKeyQuery.loading
+  const currentUser = useCurrentUser()
+  const rulesPrivateKey = currentUser.starknetWallet.rulesPrivateKey
+  const address = currentUser.starknetWallet.address
 
   // errors
   const [error, setError] = useState<string | null>(null)
@@ -81,7 +65,7 @@ export default function StarknetSigner({ call, onTransaction, onConfirmation, on
           onConfirmation()
 
           const keyPair = ec.getKeyPair(res)
-          if (!keyPair) {
+          if (!keyPair || !provider) {
             setError('Failed to sign transaction')
             return
           }

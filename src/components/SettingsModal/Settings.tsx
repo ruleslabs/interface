@@ -53,8 +53,8 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
 
   // ETH balance
   const weiAmountToEURValue = useWeiAmountToEURValue()
-  let balance = useETHBalances([currentUser?.starknetAddress])[currentUser?.starknetAddress]
-  balance = currentUser?.starknetAddress ? balance : WeiAmount.fromRawAmount(0)
+  let balance = useETHBalances([currentUser?.starknetWallet.address])[currentUser?.starknetWallet.address]
+  balance = currentUser?.starknetWallet.address ? balance : WeiAmount.fromRawAmount(0)
 
   // Logout
   const [revokeSessionMutation] = useRevokeSessionMutation()
@@ -73,21 +73,21 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
   // signer escape
   const needsDeposit = useMemo(
     () =>
-      currentUser?.needsSignerPublicKeyUpdate &&
+      currentUser?.starknetWallet.needsSignerPublicKeyUpdate &&
       balance &&
       JSBI.lessThan(balance.quotient, MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER),
-    [currentUser?.needsSignerPublicKeyUpdate, balance]
+    [currentUser?.starknetWallet.needsSignerPublicKeyUpdate, balance]
   )
   const minimumWeiAmountToEscapeSigner = useMemo(
     () => WeiAmount.fromRawAmount(MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER),
     []
   )
   const daysBeforeEscape = useMemo(() => {
-    if (!currentUser?.signerEscapeTriggeredAt) return ESCAPE_SECURITY_PERIOD / 24 / 60 / 60 // nb of days
+    if (!currentUser?.starknetWallet.signerEscapeTriggeredAt) return ESCAPE_SECURITY_PERIOD / 24 / 60 / 60 // nb of days
 
-    const difference = +new Date() - +new Date(currentUser.signerEscapeTriggeredAt)
+    const difference = +new Date() - +new Date(currentUser.starknetWallet.signerEscapeTriggeredAt)
     return Math.max(Math.ceil((ESCAPE_SECURITY_PERIOD - difference / 1000) / 24 / 60 / 60), 1)
-  }, [currentUser?.signerEscapeTriggeredAt])
+  }, [currentUser?.starknetWallet.signerEscapeTriggeredAt])
 
   return (
     <Column gap={20} {...props}>
@@ -95,8 +95,8 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
         <TYPE.body>
           <Trans>Current balance</Trans>
         </TYPE.body>
-        <Balance alert={currentUser?.needsSignerPublicKeyUpdate}>
-          {!currentUser?.starknetAddress ? (
+        <Balance alert={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}>
+          {!currentUser?.starknetWallet.address ? (
             <TYPE.subtitle>
               <Trans>Creating wallet...</Trans>
             </TYPE.subtitle>
@@ -113,7 +113,7 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
             <TYPE.subtitle>Loading...</TYPE.subtitle>
           )}
         </Balance>
-        {currentUser?.needsSignerPublicKeyUpdate && (
+        {currentUser?.starknetWallet.needsSignerPublicKeyUpdate && (
           <ErrorCard>
             {needsDeposit ? (
               <Trans>
@@ -137,7 +137,7 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
         )}
       </Column>
       <Column gap={26}>
-        {currentUser?.starknetAddress && (
+        {currentUser?.starknetWallet.address && (
           <TYPE.body onClick={toggleDepositModal} clickable>
             <Trans>Deposit ETH</Trans>
           </TYPE.body>

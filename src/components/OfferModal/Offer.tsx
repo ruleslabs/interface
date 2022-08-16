@@ -30,7 +30,7 @@ export default function Offer({ onRecipientSelected }: OfferProps) {
   const [recipient, setRecipient] = useState<any | null>(null)
   const handleConfirmation = useCallback(() => {
     if (!recipient) return // to enforce recipient typing
-    onRecipientSelected(recipient.starknetAddress)
+    onRecipientSelected(recipient.starknetWallet.address)
   }, [recipient])
 
   return (
@@ -54,7 +54,7 @@ export default function Offer({ onRecipientSelected }: OfferProps) {
         </TransferSummary>
       )}
 
-      <PrimaryButton onClick={handleConfirmation} disabled={!recipient?.starknetAddress} large>
+      <PrimaryButton onClick={handleConfirmation} disabled={!recipient?.starknetWallet.address} large>
         <Trans>Offer</Trans>
       </PrimaryButton>
     </Column>

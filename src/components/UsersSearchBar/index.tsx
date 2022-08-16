@@ -79,7 +79,9 @@ const USERS_BY_IDS_QUERY = gql`
     usersByIds(ids: $ids) {
       slug
       username
-      starknetAddress
+      starknetWallet {
+        address
+      }
       profile {
         pictureUrl(derivative: "width=128")
         certified

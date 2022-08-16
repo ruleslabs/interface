@@ -6,8 +6,7 @@ import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import Link from '@/components/Link'
 import Spinner from '@/components/Spinner'
-import { NETWORKS } from '@/constants/networks'
-import { useStarknet } from '@/lib/starknet'
+import { NETWORKS, networkId } from '@/constants/networks'
 
 import Checkmark from '@/images/checkmark.svg'
 import Close from '@/images/close.svg'
@@ -83,8 +82,6 @@ interface ConfirmationProps {
 }
 
 export default function Confirmation({ txHash, error }: ConfirmationProps) {
-  const { network } = useStarknet()
-
   return (
     <StyledConfirmation>
       <Column gap={24}>
@@ -125,7 +122,7 @@ export default function Confirmation({ txHash, error }: ConfirmationProps) {
 
       {txHash && (
         <EtherscanButtonWrapper>
-          <Link target="_blank" href={`${NETWORKS[network].explorerBaseUrl}/tx/${txHash}`}>
+          <Link target="_blank" href={`${NETWORKS[networkId].explorerBaseUrl}/tx/${txHash}`}>
             <PrimaryButton large>
               <Trans>See on Voyager</Trans>
             </PrimaryButton>

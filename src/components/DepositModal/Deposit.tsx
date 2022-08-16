@@ -78,7 +78,7 @@ export default function Deposit({ onDeposit, onError, onConfirmation }: DepositP
   const currentUser = useCurrentUser()
 
   // Ramp
-  const rampSdk = useRampSdk({ email: currentUser?.email, address: currentUser?.starknetAddress })
+  const rampSdk = useRampSdk({ email: currentUser?.email, address: currentUser?.starknetWallet.address })
 
   // metamask
   const account = useAccount()
@@ -99,7 +99,7 @@ export default function Deposit({ onDeposit, onError, onConfirmation }: DepositP
 
   const ethereumStarkgateContract = useEthereumStarkgateContract()
   const handleDeposit = useCallback(() => {
-    if (!ethereumStarkgateContract || !parsedDepositAmount || !currentUser?.starknetAddress) return
+    if (!ethereumStarkgateContract || !parsedDepositAmount || !currentUser?.starknetWallet.address) return
 
     console.log(parsedDepositAmount.toSignificant(6))
 
@@ -107,7 +107,7 @@ export default function Deposit({ onDeposit, onError, onConfirmation }: DepositP
 
     const estimate = ethereumStarkgateContract.estimateGas.deposit
     const method = ethereumStarkgateContract.deposit
-    const args: Array<string | string[] | number> = [currentUser.starknetAddress]
+    const args: Array<string | string[] | number> = [currentUser.starknetWallet.address]
     const value = parsedDepositAmount.quotient.toString()
 
     estimate(...args, value ? { value } : {})

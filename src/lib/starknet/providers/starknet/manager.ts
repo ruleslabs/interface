@@ -1,11 +1,11 @@
 import { useReducer } from 'react'
-import { Provider, ProviderInterface } from 'starknet'
+import { Provider } from 'starknet'
 
 import { networkId, ProviderUrlNetworksMap } from '@/constants/networks'
 import { StarknetState } from './model'
 
 interface StarknetStateManager {
-  provider: ProviderInterface
+  provider: Provider
   network: string
 }
 

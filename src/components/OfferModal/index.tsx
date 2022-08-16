@@ -14,7 +14,7 @@ import { TYPE } from '@/styles/theme'
 import StarknetSigner from '@/components/StarknetSigner'
 import { useCurrentUser } from '@/state/user/hooks'
 import { RULES_TOKENS_ADDRESSES } from '@/constants/addresses'
-import { useStarknet } from '@/lib/starknet'
+import { networkId } from '@/constants/networks'
 
 const DummyFocusInput = styled.input`
   max-height: 0;
@@ -47,9 +47,6 @@ export default function OfferModal({ artistName, season, scarcityName, serialNum
   // currentUser
   const currentUser = useCurrentUser()
 
-  // starknet
-  const { network } = useStarknet()
-
   // modal
   const isOpen = useModalOpen(ApplicationModal.OFFER)
   const toggleOfferModal = useOfferModalToggle()
@@ -58,15 +55,15 @@ export default function OfferModal({ artistName, season, scarcityName, serialNum
   const [call, setCall] = useState<Call | null>(null)
   const onRecipientSelected = useCallback(
     (address: string) => {
-      if (!currentUser.starknetAddress) return // to enforce recipient typing
+      if (!currentUser.starknetWallet.address) return // to enforce recipient typing
 
       const uint256TokenId = uint256HexFromStrHex(tokenId)
 
       setCall({
-        contractAddress: RULES_TOKENS_ADDRESSES[network],
+        contractAddress: RULES_TOKENS_ADDRESSES[networkId],
         entrypoint: 'safeTransferFrom',
         calldata: [
-          currentUser.starknetAddress,
+          currentUser.starknetWallet.address,
           address,
           uint256TokenId.low,
           uint256TokenId.high,
@@ -77,7 +74,7 @@ export default function OfferModal({ artistName, season, scarcityName, serialNum
         ],
       })
     },
-    [tokenId, currentUser.starknetAddress]
+    [tokenId, currentUser?.starknetWallet.address]
   )
 
   // transaction waiting
@@ -98,6 +95,7 @@ export default function OfferModal({ artistName, season, scarcityName, serialNum
       setCall(null)
       setError(null)
       setTxHash(null)
+      setWaitingForTx(false)
     }
   }, [isOpen])
 
@@ -116,7 +114,7 @@ export default function OfferModal({ artistName, season, scarcityName, serialNum
               <span> </span>
               {season}
               <span> </span>
-              <Trans id={scarcityName} render={({ translation }) => translation} />
+              <Trans id={scarcityName} render={({ translation }) => <>translation</>} />
               <span> </span>#{serialNumber}
             </TYPE.large>
           )}
@@ -126,7 +124,7 @@ export default function OfferModal({ artistName, season, scarcityName, serialNum
         ) : call ? (
           <StarknetSigner onConfirmation={onConfirmation} onTransaction={onTransaction} onError={onError} call={call} />
         ) : (
-          <Offer onError={onError} onRecipientSelected={onRecipientSelected} />
+          <Offer onRecipientSelected={onRecipientSelected} />
         )}
       </StyledOfferModal>
     </Modal>
