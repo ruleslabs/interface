@@ -8,7 +8,6 @@ import GridHeader from '@/components/GridHeader'
 import CardModel from '@/components/CardModel'
 import { TYPE } from '@/styles/theme'
 import { ColumnCenter } from '@/components/Column'
-import Row from '@/components/Row'
 import Grid from '@/components/Grid'
 import { useCardModelOnSale, useMarketplaceFilters } from '@/state/search/hooks'
 import Link from '@/components/Link'
@@ -149,17 +148,12 @@ export default function Marketplace() {
           <StyledGrid>
             {cardModels.map((cardModel: any, index: number) => (
               <ColumnCenter gap={12} key={`mktp-card-${index}`}>
-                <CardModel pictureUrl={cardModel.pictureUrl} cardModelSlug={cardModel.slug} />
-                <TYPE.body textAlign="center">
-                  <Trans>starting from</Trans>
-                  <br />
-                  <Row>
-                    {+cardModel.lowestAskETH ?? '-'} ETH&nbsp;
-                    <TYPE.body color="text2">
-                      {cardModel.lowestAskEUR ? `(${cardModel.lowestAskEUR}€)` : null}
-                    </TYPE.body>
-                  </Row>
-                </TYPE.body>
+                <CardModel
+                  pictureUrl={cardModel.pictureUrl}
+                  cardModelSlug={cardModel.slug}
+                  lowestAskETH={cardModel.lowestAskETH}
+                  lowestAskEUR={cardModel.lowestAskEUR}
+                />
               </ColumnCenter>
             ))}
           </StyledGrid>

@@ -23,7 +23,7 @@ export default function useRampSdk({ email, address }: RampSdkProps): RampInstan
       hostApiKey: '3ra8mwuvbgkcreuwhe6q3zth8uwhytfudxcm9b4k',
       userAddress: address,
       url: 'https://ri-widget-staging.firebaseapp.com/',
-      hostAppName: 'Rules'
+      hostAppName: 'Rules',
     }).on('WIDGET_CLOSE' as RampInstantEventTypes, () => {
       setRampSdk(newRampSdk())
     })

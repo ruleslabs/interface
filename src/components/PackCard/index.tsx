@@ -14,7 +14,6 @@ import { PrimaryButton } from '@/components/Button'
 
 const StyledPackCard = styled(ColumnCenter)<{ width?: number }>`
   position: relative;
-  transition: transform 100ms;
   gap: 16px;
   ${({ width }) => width && `width: ${width}px;`}
 `

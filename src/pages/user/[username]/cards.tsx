@@ -20,6 +20,10 @@ const CARD_CONTENT = `
   cardModel {
     slug
     pictureUrl(derivative: "width=1024")
+    season
+    artist {
+      displayName
+    }
   }
 `
 
@@ -100,6 +104,8 @@ function Cards({ userId }: { userId: string }) {
               onSale={card.onSale}
               serialNumber={card.serialNumber}
               inDelivery={card.inDelivery}
+              season={card.cardModel.season}
+              artistName={card.cardModel.artist.displayName}
             />
           ))}
         </Grid>

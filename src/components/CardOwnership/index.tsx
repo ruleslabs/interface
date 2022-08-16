@@ -84,7 +84,7 @@ export default function CardOwnership({
               </PrimaryButton>
             )}
             {!askEUR && (
-              <SecondaryButton disabled onClick={toggleOfferModal} large>
+              <SecondaryButton onClick={toggleOfferModal} disabled large>
                 <RowCenter justify="center" gap={4}>
                   <StyledPresent />
                   <Trans>Offer</Trans>

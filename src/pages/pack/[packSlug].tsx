@@ -83,6 +83,9 @@ const QUERY_PACK = gql`
           slug
           pictureUrl(derivative: "width=512")
           season
+          artist {
+            displayName
+          }
         }
       }
     }
@@ -184,6 +187,8 @@ export default function Pack() {
                   key={`pack-rules-${index}`}
                   cardModelSlug={packCardModel.cardModel.slug}
                   pictureUrl={packCardModel.cardModel.pictureUrl}
+                  artistName={packCardModel.cardModel.artist.displayName}
+                  season={packCardModel.cardModel.season}
                 />
               ))}
             </StyledGrid>
