@@ -69,13 +69,17 @@ export default function OfferModal({ artistName, season, scarcityName, serialNum
           uint256TokenId.high,
           1, // amount.low
           0, // amount.high
-          0, // data len
+          1, // data len
           0, // data
         ],
       })
     },
     [tokenId, currentUser?.starknetWallet.address]
   )
+
+  // fee estimation waiting
+  const [waitingForFees, setWaitingForFees] = useState(false)
+  const onWaitingForFees = useCallback((waiting: boolean) => setWaitingForFees(waiting), [])
 
   // transaction waiting
   const [waitingForTx, setWaitingForTx] = useState(false)
@@ -104,7 +108,7 @@ export default function OfferModal({ artistName, season, scarcityName, serialNum
       <DummyFocusInput type="text" />
       <StyledOfferModal gap={26}>
         <ModalHeader onDismiss={toggleOfferModal}>
-          {txHash || waitingForTx ? (
+          {txHash || waitingForTx || waitingForFees ? (
             <div />
           ) : (
             <TYPE.large>
@@ -114,18 +118,25 @@ export default function OfferModal({ artistName, season, scarcityName, serialNum
               <span> </span>
               {season}
               <span> </span>
-              <Trans id={scarcityName} render={({ translation }) => <>translation</>} />
+              <Trans id={scarcityName} render={({ translation }) => <>{translation}</>} />
               <span> </span>#{serialNumber}
             </TYPE.large>
           )}
         </ModalHeader>
-        {txHash || waitingForTx ? (
-          <Confirmation txHash={txHash ?? undefined} error={error ?? undefined} />
-        ) : call ? (
-          <StarknetSigner onConfirmation={onConfirmation} onTransaction={onTransaction} onError={onError} call={call} />
+        {txHash || waitingForTx || waitingForFees ? (
+          <Confirmation txHash={txHash ?? undefined} error={error ?? undefined} waitingForFees={waitingForFees} />
         ) : (
-          <Offer onRecipientSelected={onRecipientSelected} />
+          !call && <Offer onRecipientSelected={onRecipientSelected} />
         )}
+
+        <StarknetSigner
+          isOpen={!txHash && !waitingForTx && !waitingForFees && call}
+          onWaitingForFees={onWaitingForFees}
+          onConfirmation={onConfirmation}
+          onTransaction={onTransaction}
+          onError={onError}
+          call={call}
+        />
       </StyledOfferModal>
     </Modal>
   )

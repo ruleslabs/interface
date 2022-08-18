@@ -12,20 +12,23 @@ export default function useRampSdk({ email, address }: RampSdkProps): RampInstan
   const [rampSdk, setRampSdk] = useState<RampInstantSDK | null>(null)
 
   const newRampSdk = useCallback(() => {
-    if (!email || !address || !apiKey || email !== 'clanier.dev@gmail.com') return null
+    if (!email || !address || !apiKey) return null
 
     return new RampInstantSDK({
+      variant: 'auto',
       fiatValue: '100',
       swapAsset: 'STARKNET_ETH',
       fiatCurrency: 'EUR',
       hostLogoUrl: process.env.NEXT_PUBLIC_APP_URL ? `${process.env.NEXT_PUBLIC_APP_URL}/assets/ramp-logo.svg` : '',
       userEmailAddress: email,
-      hostApiKey: '3ra8mwuvbgkcreuwhe6q3zth8uwhytfudxcm9b4k',
+      hostApiKey: apiKey,
       userAddress: address,
-      url: 'https://ri-widget-staging.firebaseapp.com/',
       hostAppName: 'Rules',
-    }).on('WIDGET_CLOSE' as RampInstantEventTypes, () => {
-      setRampSdk(newRampSdk())
+    }).on('*' as RampInstantEventTypes, (event) => {
+      switch (event.type) {
+        case RampInstantEventTypes.WIDGET_CLOSE:
+          setRampSdk(newRampSdk())
+      }
     })
   }, [setRampSdk, email, address])
 

@@ -89,7 +89,7 @@ export default function Confirmation({ amountDeposited, txHash, error }: Confirm
         {error ? <StyledFail /> : txHash ? <StyledCheckmark /> : <StyledSpinner fill="primary1" />}
 
         {txHash ? (
-          <Column gap={8}>
+          <ColumnCenter gap={8}>
             <Title>
               <Trans>Your {amountDeposited} ETH deposit is on its way</Trans>
             </Title>
@@ -97,9 +97,9 @@ export default function Confirmation({ amountDeposited, txHash, error }: Confirm
             <Subtitle>
               <Trans>The deposit might take a few hours to arrive on your Rules wallet.</Trans>
             </Subtitle>
-          </Column>
+          </ColumnCenter>
         ) : error ? (
-          <Column gap={8}>
+          <ColumnCenter gap={8}>
             <Title>
               <Trans>Your deposit has been rejected</Trans>
             </Title>
@@ -107,9 +107,9 @@ export default function Confirmation({ amountDeposited, txHash, error }: Confirm
             <ErrorMessage>
               <Trans>{error}</Trans>
             </ErrorMessage>
-          </Column>
+          </ColumnCenter>
         ) : (
-          <Column gap={8}>
+          <ColumnCenter gap={8}>
             <Title>
               <Trans>Waiting for confirmation</Trans>
             </Title>
@@ -117,7 +117,7 @@ export default function Confirmation({ amountDeposited, txHash, error }: Confirm
             <Subtitle>
               <Trans>{amountDeposited} ETH deposit on your Rules wallet</Trans>
             </Subtitle>
-          </Column>
+          </ColumnCenter>
         )}
       </Column>
 

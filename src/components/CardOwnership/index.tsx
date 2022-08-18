@@ -26,10 +26,10 @@ const ButtonsWrapper = styled(Column)`
 
 const StyledPresent = styled(Present)`
   width: 16px;
-  fill: ${({ theme }) => theme.text2};
+  fill: ${({ theme }) => theme.text1};
 `
 
-interface RuleOwnershipProps {
+interface CardOwnershipProps {
   ownerSlug: string
   ownerUsername: string
   ownerProfilePictureUrl: string
@@ -43,7 +43,7 @@ export default function CardOwnership({
   ownerProfilePictureUrl,
   askEUR,
   askETH,
-}: RuleOwnershipProps) {
+}: CardOwnershipProps) {
   const currentUser = useCurrentUser()
 
   const toggleOfferModal = useOfferModalToggle()
@@ -84,7 +84,7 @@ export default function CardOwnership({
               </PrimaryButton>
             )}
             {!askEUR && (
-              <SecondaryButton onClick={toggleOfferModal} disabled large>
+              <SecondaryButton onClick={toggleOfferModal} large>
                 <RowCenter justify="center" gap={4}>
                   <StyledPresent />
                   <Trans>Offer</Trans>

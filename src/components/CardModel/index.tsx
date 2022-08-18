@@ -105,9 +105,7 @@ export default function CardModel({
       {season && artistName && (
         <ColumnCenter gap={4}>
           <TYPE.body textAlign="center">
-            <Trans>
-              {artistName} {serialNumber && `#${serialNumber}`}
-            </Trans>
+            {artistName} {serialNumber && `#${serialNumber}`}
           </TYPE.body>
           <TYPE.subtitle textAlign="center">
             <Trans>Season {season}</Trans>
