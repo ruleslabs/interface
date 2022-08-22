@@ -66,7 +66,7 @@ export function colors(darkMode: boolean): Colors {
 
     platinium: '#B2A4D8',
 
-    error: '#FF2F3B',
+    error: '#CB222C',
   }
 }
 

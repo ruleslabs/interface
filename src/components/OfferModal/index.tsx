@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/macro'
 import { Call } from 'starknet'
 import { uint256HexFromStrHex } from '@rulesorg/sdk-core'
 
@@ -10,7 +10,6 @@ import { ApplicationModal } from '@/state/application/actions'
 import Column from '@/components/Column'
 import Offer from './Offer'
 import Confirmation from './Confirmation'
-import { TYPE } from '@/styles/theme'
 import StarknetSigner from '@/components/StarknetSigner'
 import { useCurrentUser } from '@/state/user/hooks'
 import { RULES_TOKENS_ADDRESSES } from '@/constants/addresses'
@@ -39,11 +38,21 @@ interface OfferModalProps {
   artistName: string
   season: number
   scarcityName: string
+  scarcityMaxSupply?: number
   serialNumber: number
+  pictureUrl: string
   tokenId: string
 }
 
-export default function OfferModal({ artistName, season, scarcityName, serialNumber, tokenId }: OfferModalProps) {
+export default function OfferModal({
+  artistName,
+  season,
+  scarcityName,
+  scarcityMaxSupply,
+  serialNumber,
+  tokenId,
+  pictureUrl,
+}: OfferModalProps) {
   // currentUser
   const currentUser = useCurrentUser()
 
@@ -108,34 +117,31 @@ export default function OfferModal({ artistName, season, scarcityName, serialNum
       <DummyFocusInput type="text" />
       <StyledOfferModal gap={26}>
         <ModalHeader onDismiss={toggleOfferModal}>
-          {txHash || waitingForTx || waitingForFees ? (
-            <div />
-          ) : (
-            <TYPE.large>
-              <Trans>Offer this {artistName}</Trans>
-              <span> </span>
-              <Trans>season</Trans>
-              <span> </span>
-              {season}
-              <span> </span>
-              <Trans id={scarcityName} render={({ translation }) => <>{translation}</>} />
-              <span> </span>#{serialNumber}
-            </TYPE.large>
-          )}
+          {txHash || waitingForTx || waitingForFees ? <div /> : t`Offer this card`}
         </ModalHeader>
         {txHash || waitingForTx || waitingForFees ? (
           <Confirmation txHash={txHash ?? undefined} error={error ?? undefined} waitingForFees={waitingForFees} />
         ) : (
-          !call && <Offer onRecipientSelected={onRecipientSelected} />
+          !call && (
+            <Offer
+              onRecipientSelected={onRecipientSelected}
+              artistName={artistName}
+              season={season}
+              scarcityName={scarcityName}
+              scarcityMaxSupply={scarcityMaxSupply}
+              serialNumber={serialNumber}
+              pictureUrl={pictureUrl}
+            />
+          )
         )}
 
         <StarknetSigner
-          isOpen={!txHash && !waitingForTx && !waitingForFees && call}
+          isOpen={!txHash && !waitingForTx && !waitingForFees && !!call}
           onWaitingForFees={onWaitingForFees}
           onConfirmation={onConfirmation}
           onTransaction={onTransaction}
           onError={onError}
-          call={call}
+          call={call ?? undefined}
         />
       </StyledOfferModal>
     </Modal>

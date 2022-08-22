@@ -1,10 +1,14 @@
-import { useState, useCallback } from 'react'
+import JSBI from 'jsbi'
+import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
-import { ec, Account, Call, EstimateFee } from 'starknet'
+import { ec, Account, Call, EstimateFee, AddTransactionResponse } from 'starknet'
 import { WeiAmount } from '@rulesorg/sdk-core'
+import { ApolloError } from '@apollo/client'
 
+import { useConsumeNonceMutation } from '@/state/wallet/hooks'
 import Input from '@/components/Input'
+import { useETHBalances } from '@/state/wallet/hooks'
 import Column, { ColumnCenter } from '@/components/Column'
 import { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
@@ -13,6 +17,8 @@ import { PrimaryButton } from '@/components/Button'
 import { useStarknet } from '@/lib/starknet'
 import { useCurrentUser } from '@/state/user/hooks'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
+import ErrorCard from '@/components/ErrorCard'
+import { useDepositModalToggle } from '@/state/application/hooks'
 
 const StyledStarknetSigner = styled(ColumnCenter)`
   padding-bottom: 8px;
@@ -32,7 +38,7 @@ const SubmitButton = styled(PrimaryButton)`
 const NetworkFeeWrapper = styled(RowCenter)`
   justify-content: space-between;
   padding: 24px;
-  background: ${({ theme }) => theme.bg3};
+  background: ${({ theme }) => theme.bg5};
   border-radius: 4px;
 
   ${({ theme }) => theme.media.extraSmall`
@@ -42,7 +48,7 @@ const NetworkFeeWrapper = styled(RowCenter)`
 
 interface StarknetSignerProps {
   isOpen: boolean
-  call: Call
+  call?: Call
   onTransaction(tx: string): void
   onWaitingForFees(estimating: boolean): void
   onConfirmation(): void
@@ -57,6 +63,9 @@ export default function StarknetSigner({
   onConfirmation,
   onError,
 }: StarknetSignerProps) {
+  // deposit modal
+  const toggleDepositModal = useDepositModalToggle()
+
   // password
   const [password, setPassword] = useState('')
   const onPasswordInput = useCallback((value: string) => setPassword(value), [setPassword])
@@ -72,9 +81,18 @@ export default function StarknetSigner({
   // starknet account
   const [account, setAccount] = useState<Account | null>(null)
 
+  // balance
+  const balance =
+    useETHBalances([currentUser?.starknetWallet.address])[currentUser?.starknetWallet.address] ??
+    WeiAmount.fromRawAmount(0)
+
   // network fee
   const [networkFee, setNetworkFee] = useState<{ fee: WeiAmount; maxFee: WeiAmount } | null>(null)
   const weiAmountToEURValue = useWeiAmountToEURValue()
+  const canPayFee = useMemo(() => {
+    if (!networkFee?.maxFee) return false
+    return JSBI.greaterThanOrEqual(balance.quotient, networkFee.maxFee.quotient)
+  }, [networkFee?.maxFee, balance.quotient])
 
   // tx
   const { provider } = useStarknet()
@@ -84,6 +102,8 @@ export default function StarknetSigner({
   const prepareTransaction = useCallback(
     (event) => {
       event.preventDefault()
+
+      if (!call) return
 
       decryptRulesPrivateKey(rulesPrivateKey, password)
         .catch((error: Error) => {
@@ -114,7 +134,6 @@ export default function StarknetSigner({
 
           onWaitingForFees(false)
           setNetworkFee({ maxFee: WeiAmount.fromRawAmount(maxFee), fee: WeiAmount.fromRawAmount(fee) })
-          console.log('hey')
         })
         .catch((error?: Error) => {
           if (!error) return
@@ -126,12 +145,53 @@ export default function StarknetSigner({
     [password, rulesPrivateKey, address, provider, onTransaction, call, onError, onWaitingForFees]
   )
 
-  // sign transaction
-  const signTransaction = useCallback((event) => {
-    event.preventDefault()
+  // nonce mgmt
+  const [consumeNonceMutation] = useConsumeNonceMutation()
 
-    console.log('TODO: sign')
-  }, [])
+  // sign transaction
+  const signTransaction = useCallback(
+    (event) => {
+      event.preventDefault()
+
+      if (!account || !networkFee?.maxFee || !call) return
+
+      onConfirmation()
+
+      consumeNonceMutation()
+        .catch((error: ApolloError) => {
+          console.error(error)
+
+          onError('Failed to consume nonce')
+          return Promise.reject()
+        })
+        .then((res: any) => {
+          const nextNonce = res?.data?.consumeNonce
+          if (nextNonce !== 0 && !nextNonce) {
+            onError('Failed to consume nonce')
+            return
+          }
+
+          console.log('yo')
+
+          return account.execute(call, undefined, { nonce: nextNonce, maxFee: networkFee.maxFee.quotient.toString() })
+        })
+        .then((transaction?: AddTransactionResponse) => {
+          if (transaction?.code !== 'TRANSACTION_RECEIVED') {
+            onError('Transaction not received')
+            return
+          }
+
+          onTransaction(transaction.transaction_hash)
+        })
+        .catch((error: Error) => {
+          if (!error) return
+          console.error(error)
+
+          onError(error.message)
+        })
+    },
+    [onTransaction, consumeNonceMutation, onError, call, account, networkFee?.maxFee, onConfirmation]
+  )
 
   if (!isOpen) return null
 
@@ -154,7 +214,17 @@ export default function StarknetSigner({
               </Column>
             </NetworkFeeWrapper>
 
-            <SubmitButton type="submit" large>
+            {!canPayFee && (
+              <ErrorCard textAlign="center">
+                <Trans>
+                  You do not have enough ETH in your Rules wallet to pay for network fees on Starknet.
+                  <br />
+                  <span onClick={toggleDepositModal}>Buy ETH or deposit from another wallet</span>
+                </Trans>
+              </ErrorCard>
+            )}
+
+            <SubmitButton type="submit" disabled={!canPayFee} large>
               <Trans>Confirm</Trans>
             </SubmitButton>
           </Column>

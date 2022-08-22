@@ -4,11 +4,24 @@ import { Trans } from '@lingui/macro'
 
 import UsersSearchBar from '@/components/UsersSearchBar'
 import { useCurrentUser } from '@/state/user/hooks'
-import Column, { ColumnCenter } from '@/components/Column'
+import Column from '@/components/Column'
 import { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
-import User from '@/components/User'
+
+import Arrow from '@/images/arrow.svg'
+
+const CardBreakdown = styled(RowCenter)`
+  gap: 16px;
+  background: ${({ theme }) => theme.bg5};
+  width: 100%;
+  padding: 12px;
+
+  & img {
+    width: 64px;
+    border-radius: 4px;
+  }
+`
 
 const Avatar = styled.img`
   width: 44px;
@@ -16,15 +29,79 @@ const Avatar = styled.img`
   border-radius: 50%;
 `
 
-const TransferSummary = styled(ColumnCenter)`
+const TransferSummary = styled(RowCenter)`
+  background: ${({ theme }) => theme.bg5};
+  padding: 16px 12px;
   gap: 16px;
+
+  & img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+
+  & > div:first-child,
+  & > div:last-child {
+    flex: 1;
+  }
+`
+
+const ArrowWrapper = styled(Column)`
+  width: 26px;
+  height: 26px;
+  background: ${({ theme }) => theme.bg5};
+  box-shadow: 0px 0px 5px ${({ theme }) => theme.bg1};
+  justify-content: center;
+  border-radius: 50%;
+  position: relative;
+
+  & svg {
+    margin: 0 auto;
+    width: 16px;
+    height: 16px;
+    fill: ${({ theme }) => theme.text1};
+  }
+
+  ::before,
+  ::after {
+    content: '';
+    width: 1px;
+    background: ${({ theme }) => theme.text1}20;
+    left: 13px;
+    position: absolute;
+    display: block;
+  }
+
+  ::before {
+    top: -16px;
+    bottom: 26px;
+  }
+
+  ::after {
+    top: 26px;
+    bottom: -16px;
+  }
 `
 
 interface OfferProps {
   onRecipientSelected(recipientAddress: string): void
+  artistName: string
+  season: number
+  scarcityName: string
+  scarcityMaxSupply?: number
+  serialNumber: number
+  pictureUrl: string
 }
 
-export default function Offer({ onRecipientSelected }: OfferProps) {
+export default function Offer({
+  onRecipientSelected,
+  artistName,
+  season,
+  scarcityName,
+  scarcityMaxSupply,
+  serialNumber,
+  pictureUrl,
+}: OfferProps) {
   const currentUser = useCurrentUser()
 
   const [recipient, setRecipient] = useState<any | null>(null)
@@ -35,6 +112,19 @@ export default function Offer({ onRecipientSelected }: OfferProps) {
 
   return (
     <Column gap={24}>
+      <CardBreakdown>
+        <img src={pictureUrl} />
+        <Column gap={4}>
+          <TYPE.body spanColor="text2">
+            {artistName} S{season}&nbsp;
+            <Trans id={scarcityName} render={({ translation }) => <>{translation}</>} />
+          </TYPE.body>
+          <TYPE.subtitle>
+            #{serialNumber} / {scarcityMaxSupply ?? '4000'}
+          </TYPE.subtitle>
+        </Column>
+      </CardBreakdown>
+
       <RowCenter gap={16}>
         <TYPE.body style={{ whiteSpace: 'nowrap' }}>
           <Trans>Send to</Trans>
@@ -42,20 +132,30 @@ export default function Offer({ onRecipientSelected }: OfferProps) {
         <UsersSearchBar onSelect={setRecipient} />
       </RowCenter>
 
-      {recipient && (
-        <TransferSummary>
-          <TYPE.body textAlign="center">Your card will be offered to</TYPE.body>
-          <User
-            username={recipient.username}
-            pictureUrl={recipient.profile.pictureUrl}
-            certified={recipient.profile.certified}
-            size="sm"
-          />
-        </TransferSummary>
-      )}
+      <TransferSummary>
+        <RowCenter gap={12}>
+          <img src={currentUser.profile.pictureUrl} />
+          <TYPE.body fontSize={14}>
+            <Trans>Your account</Trans>
+          </TYPE.body>
+        </RowCenter>
+
+        <ArrowWrapper>
+          <Arrow />
+        </ArrowWrapper>
+
+        <RowCenter gap={12}>
+          {recipient && (
+            <>
+              <img src={recipient.profile.pictureUrl} />
+              <TYPE.body fontSize={14}>{recipient.username}</TYPE.body>
+            </>
+          )}
+        </RowCenter>
+      </TransferSummary>
 
       <PrimaryButton onClick={handleConfirmation} disabled={!recipient?.starknetWallet.address} large>
-        <Trans>Offer</Trans>
+        <Trans>Next</Trans>
       </PrimaryButton>
     </Column>
   )

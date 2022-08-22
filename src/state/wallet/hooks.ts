@@ -3,6 +3,7 @@ import JSBI from 'jsbi'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { Abi } from 'starknet'
 import { useWeb3React } from '@web3-react/core'
+import { gql, useMutation } from '@apollo/client'
 
 import ERC20ABI from '@/abis/ERC20.json'
 
@@ -11,6 +12,12 @@ import { useStarknet } from '@/lib/starknet'
 import { ETH_ADDRESSES } from '@/constants/addresses'
 import { useMultipleContractSingleData } from '@/lib/hooks/multicall'
 import { useEthereumBlockNumber } from '@/state/application/hooks'
+
+const CONSUME_NONCE_MUTATION = gql`
+  mutation {
+    consumeNonce
+  }
+`
 
 interface Balance {
   low?: string
@@ -55,4 +62,8 @@ export function useEthereumETHBalance(address?: string): WeiAmount | undefined {
   }, [provider, address, setBalance, blockNumber])
 
   return balance
+}
+
+export function useConsumeNonceMutation() {
+  return useMutation(CONSUME_NONCE_MUTATION)
 }

@@ -74,7 +74,7 @@ const QUERY_CARD = gql`
         id
         videoUrl
         rotatingVideoUrl
-        pictureUrl(derivative: "width=64")
+        pictureUrl(derivative: "width=128")
         season
         youtubePreviewId
         artist {
@@ -85,6 +85,7 @@ const QUERY_CARD = gql`
         }
         scarcity {
           name
+          maxSupply
         }
       }
     }
@@ -169,8 +170,10 @@ export default function CardBreakout() {
       <OfferModal
         artistName={card.cardModel.artist.displayName}
         scarcityName={card.cardModel.scarcity.name}
+        scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
         season={card.cardModel.season}
         serialNumber={card.serialNumber}
+        pictureUrl={card.cardModel.pictureUrl}
         tokenId={card.starknetTokenId}
       />
     </>

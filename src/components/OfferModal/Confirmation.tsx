@@ -90,7 +90,7 @@ export default function Confirmation({ txHash, error, waitingForFees }: Confirma
         {txHash ? (
           <ColumnCenter gap={8}>
             <Title>
-              <Trans>Your card-name is on its way</Trans>
+              <Trans>Your card is on its way</Trans>
             </Title>
 
             <Subtitle>

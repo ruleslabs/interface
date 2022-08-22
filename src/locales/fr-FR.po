@@ -897,3 +897,11 @@ msgstr "saison"
 #: src/components/OfferModal/Confirmation.tsx
 msgid "Your transaction has been rejected"
 msgstr "Votre transaction a été rejetée"
+
+#: src/components/OfferModal/Offer.tsx
+msgid "Send to"
+msgstr "Envoyer à"
+
+#: src/components/OfferModal/Offer.tsx
+msgid "Your account"
+msgstr "Votre compte"
