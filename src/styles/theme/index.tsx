@@ -36,7 +36,6 @@ const Alert = css`
     top: -8px;
     right: -8px;
     border-radius: 50%;
-    font-weight: 700;
     content: '!';
     color: ${({ theme }) => theme.text1};
     font-size: 16px;

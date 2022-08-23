@@ -903,5 +903,21 @@ msgid "Send to"
 msgstr "Envoyer à"
 
 #: src/components/OfferModal/Offer.tsx
-msgid "Your account"
-msgstr "Votre compte"
+msgid "My account"
+msgstr "Mon compte"
+
+#: src/components/SettingsModal/Settings.tsx
+msgid "Your wallet is locked. This happens when you reset your password. For security reasons, your wallet will be recovered <0>in {daysBeforeEscape} days.</0>"
+msgstr "Ton portefeuille est verrouillé car tu as réinitialisé ton mot de passe. Pour des raisons de sécurité, tu retrouveras l'accès à ton wallet <0>d'ici {daysBeforeEscape} jours.</0>"
+
+#: src/components/SettingsModal/Settings.tsx
+msgid "Your wallet is locked. This happens when you reset your password. In order to recover your wallet, you need to deposit at least<0/><1>{0} ETH ({1}€)</1>"
+msgstr "Ton portefeuille est verrouillé car tu as réinitialisé ton mot de passe. Afin d'y retrouver l'accès tu dois y faire un dépôt d'au moins<0/><1>{0} ETH ({1}€)</1>"
+
+#: src/components/DepositModal/Confirmation.tsx
+msgid "Your {amountDeposited} ETH deposit is on its way"
+msgstr "Ton dépôt de {amountDeposited} ETH est en route"
+
+#: src/components/DepositModal/Confirmation.tsx
+msgid "{amountDeposited} ETH deposit on your Rules wallet"
+msgstr "Dépôt de {amountDeposited} ETH sur votre portefeuille Rules"

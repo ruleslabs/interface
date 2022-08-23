@@ -21,6 +21,7 @@ const CURRENT_USER_QUERY = gql`
       starknetWallet {
         address
         signerEscapeTriggeredAt
+        needsSignerPublicKeyUpdate
         rulesPrivateKey {
           salt
           iv

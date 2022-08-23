@@ -43,8 +43,10 @@ const StyledNavLink = styled(NavLink)`
   ${NavLinkButtonStyle}
 `
 
-const StyledNavButton = styled(NavButton)`
+const StyledNavButton = styled(NavButton)<{ alert?: boolean }>`
   ${NavLinkButtonStyle}
+
+  ${({ theme, alert = false }) => alert && theme.before.alert}
 `
 
 const StyledLanguageSelector = styled(LanguageSelector)`
@@ -123,7 +125,10 @@ export default function NavModal() {
               ))}
 
               {currentUser ? (
-                <StyledNavButton onClick={toggleSettings}>
+                <StyledNavButton
+                  onClick={toggleSettings}
+                  alert={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
+                >
                   <Trans>Settings</Trans>
                 </StyledNavButton>
               ) : (

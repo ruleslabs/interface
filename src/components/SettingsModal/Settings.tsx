@@ -128,8 +128,7 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
             ) : (
               <Trans>
                 Your wallet is locked. This happens when you reset your password. For security reasons, your wallet will
-                be recovered
-                <br />
+                be recovered&nbsp;
                 <strong>in {daysBeforeEscape} days.</strong>
               </Trans>
             )}

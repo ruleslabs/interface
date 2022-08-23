@@ -136,7 +136,7 @@ export default function Offer({
         <RowCenter gap={12}>
           <img src={currentUser.profile.pictureUrl} />
           <TYPE.body fontSize={14}>
-            <Trans>Your account</Trans>
+            <Trans>My account</Trans>
           </TYPE.body>
         </RowCenter>
 
