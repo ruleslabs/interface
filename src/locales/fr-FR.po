@@ -937,3 +937,7 @@ msgstr "Frais de transaction"
 #: src/components/OfferModal/index.tsx
 msgid "Offer this card"
 msgstr "Offrir cette carte"
+
+#: src/components/OfferModal/Offer.tsx
+msgid "This user does not have a wallet yet, please try again in a few hours."
+msgstr "Cet utilisateur n'a pas encore de portefeuille, veuillez réessayer dans quelques heures."

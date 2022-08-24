@@ -140,27 +140,35 @@ export default function Offer({
             <UsersSearchBar onSelect={setRecipient} selfSearchAllowed={false} />
           </RowCenter>
 
-          <TransferSummary>
-            <RowCenter gap={12}>
-              <img src={currentUser.profile.pictureUrl} />
-              <TYPE.body fontSize={14}>
-                <Trans>My account</Trans>
+          <Column gap={12}>
+            <TransferSummary>
+              <RowCenter gap={12}>
+                <img src={currentUser.profile.pictureUrl} />
+                <TYPE.body fontSize={14}>
+                  <Trans>My account</Trans>
+                </TYPE.body>
+              </RowCenter>
+
+              <ArrowWrapper>
+                <Arrow />
+              </ArrowWrapper>
+
+              <RowCenter gap={12}>
+                {recipient && (
+                  <>
+                    <img src={recipient.profile.pictureUrl} />
+                    <TYPE.body fontSize={14}>{recipient.username}</TYPE.body>
+                  </>
+                )}
+              </RowCenter>
+            </TransferSummary>
+
+            {recipient && !recipient.starknetWallet.address && (
+              <TYPE.body color="error">
+                <Trans>This user does not have a wallet yet, please try again in a few hours.</Trans>
               </TYPE.body>
-            </RowCenter>
-
-            <ArrowWrapper>
-              <Arrow />
-            </ArrowWrapper>
-
-            <RowCenter gap={12}>
-              {recipient && (
-                <>
-                  <img src={recipient.profile.pictureUrl} />
-                  <TYPE.body fontSize={14}>{recipient.username}</TYPE.body>
-                </>
-              )}
-            </RowCenter>
-          </TransferSummary>
+            )}
+          </Column>
         </>
       )}
 
