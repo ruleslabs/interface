@@ -921,3 +921,19 @@ msgstr "Ton dépôt de {amountDeposited} ETH est en route"
 #: src/components/DepositModal/Confirmation.tsx
 msgid "{amountDeposited} ETH deposit on your Rules wallet"
 msgstr "Dépôt de {amountDeposited} ETH sur votre portefeuille Rules"
+
+#: src/components/OfferModal/Confirmation.tsx
+msgid "Card transfer."
+msgstr "Transfert de carte."
+
+#: src/components/OfferModal/Confirmation.tsx
+msgid "Estimating network fee"
+msgstr "Estimation des frais de transaction"
+
+#: src/components/StarknetSigner/index.tsx
+msgid "Network fee"
+msgstr "Frais de transaction"
+
+#: src/components/OfferModal/index.tsx
+msgid "Offer this card"
+msgstr "Offrir cette carte"

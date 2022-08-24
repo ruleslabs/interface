@@ -8,6 +8,8 @@ import Column from '@/components/Column'
 import { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
+import ErrorCard from '@/components/ErrorCard'
+import LockedWallet from '@/components/LockedWallet'
 
 import Arrow from '@/images/arrow.svg'
 
@@ -125,34 +127,42 @@ export default function Offer({
         </Column>
       </CardBreakdown>
 
-      <RowCenter gap={16}>
-        <TYPE.body style={{ whiteSpace: 'nowrap' }}>
-          <Trans>Send to</Trans>
-        </TYPE.body>
-        <UsersSearchBar onSelect={setRecipient} />
-      </RowCenter>
+      {currentUser?.starknetWallet.needsSignerPublicKeyUpdate ? (
+        <ErrorCard>
+          <LockedWallet />
+        </ErrorCard>
+      ) : (
+        <>
+          <RowCenter gap={16}>
+            <TYPE.body style={{ whiteSpace: 'nowrap' }}>
+              <Trans>Send to</Trans>
+            </TYPE.body>
+            <UsersSearchBar onSelect={setRecipient} />
+          </RowCenter>
 
-      <TransferSummary>
-        <RowCenter gap={12}>
-          <img src={currentUser.profile.pictureUrl} />
-          <TYPE.body fontSize={14}>
-            <Trans>My account</Trans>
-          </TYPE.body>
-        </RowCenter>
+          <TransferSummary>
+            <RowCenter gap={12}>
+              <img src={currentUser.profile.pictureUrl} />
+              <TYPE.body fontSize={14}>
+                <Trans>My account</Trans>
+              </TYPE.body>
+            </RowCenter>
 
-        <ArrowWrapper>
-          <Arrow />
-        </ArrowWrapper>
+            <ArrowWrapper>
+              <Arrow />
+            </ArrowWrapper>
 
-        <RowCenter gap={12}>
-          {recipient && (
-            <>
-              <img src={recipient.profile.pictureUrl} />
-              <TYPE.body fontSize={14}>{recipient.username}</TYPE.body>
-            </>
-          )}
-        </RowCenter>
-      </TransferSummary>
+            <RowCenter gap={12}>
+              {recipient && (
+                <>
+                  <img src={recipient.profile.pictureUrl} />
+                  <TYPE.body fontSize={14}>{recipient.username}</TYPE.body>
+                </>
+              )}
+            </RowCenter>
+          </TransferSummary>
+        </>
+      )}
 
       <PrimaryButton onClick={handleConfirmation} disabled={!recipient?.starknetWallet.address} large>
         <Trans>Next</Trans>
