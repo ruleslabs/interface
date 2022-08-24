@@ -282,22 +282,29 @@ export function useSearchOffers({ facets, priceDesc = true, skip = false }: Sear
   return offersSearch
 }
 
-interface SearchUsersProps {
-  search?: string
+interface SearchUsersFacets {
+  username?: string
 }
 
-export function useSearchUsers({ search = '' }: SearchUsersProps) {
+interface SearchUsersProps {
+  search?: string
+  facets: SearchUsersFacets
+}
+
+export function useSearchUsers({ search = '', facets }: SearchUsersProps) {
   const [usersSearch, setUsersSearch] = useState<Search>({ hits: null, loading: true, error: null })
+
+  const facetFilters = useFacetFilters(facets)
 
   useEffect(() => {
     algoliaIndexes.users
-      .search(search, { page: 0, hitsPerPage: 10 })
+      .search(search, { facetFilters, page: 0, hitsPerPage: 10 })
       .then((res) => setUsersSearch({ hits: res.hits, loading: false, error: null }))
       .catch((err) => {
         setUsersSearch({ hits: null, loading: false, error: err })
         console.error(err)
       })
-  }, [search, setUsersSearch])
+  }, [facetFilters, search, setUsersSearch])
 
   return usersSearch
 }

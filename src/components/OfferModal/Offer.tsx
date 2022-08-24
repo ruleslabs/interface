@@ -137,7 +137,7 @@ export default function Offer({
             <TYPE.body style={{ whiteSpace: 'nowrap' }}>
               <Trans>Send to</Trans>
             </TYPE.body>
-            <UsersSearchBar onSelect={setRecipient} />
+            <UsersSearchBar onSelect={setRecipient} selfSearchAllowed={false} />
           </RowCenter>
 
           <TransferSummary>

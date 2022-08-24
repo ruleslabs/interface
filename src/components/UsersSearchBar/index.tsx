@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { t } from '@lingui/macro'
@@ -9,6 +9,7 @@ import { RowCenter } from '@/components/Row'
 import { useSearchUsers } from '@/state/search/hooks'
 import useDebounce from '@/hooks/useDebounce'
 import { TYPE } from '@/styles/theme'
+import { useCurrentUser } from '@/state/user/hooks'
 
 import Certified from '@/images/certified.svg'
 
@@ -92,9 +93,13 @@ const USERS_BY_IDS_QUERY = gql`
 
 interface UsersSearchBarProps {
   onSelect(user: any): void
+  selfSearchAllowed: boolean
 }
 
-export default function UsersSearchBar({ onSelect }: UsersSearchBarProps) {
+export default function UsersSearchBar({ onSelect, selfSearchAllowed = true }: UsersSearchBarProps) {
+  // current user
+  const currentUser = useCurrentUser()
+
   // search bar
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 200)
@@ -121,11 +126,17 @@ export default function UsersSearchBar({ onSelect }: UsersSearchBarProps) {
 
   const onSearchBarFocus = useCallback(() => setIsSearchBarFocused(true), [setIsSearchBarFocused])
 
+  // algolia search
+  const facets = useMemo(
+    () => ({ username: selfSearchAllowed ? undefined : `-${currentUser.username}` }),
+    [selfSearchAllowed, currentUser.username]
+  )
+
   const {
     hits: usersHits,
     loading: usersHitsLoading,
     error: usersHitsError,
-  } = useSearchUsers({ search: debouncedSearch })
+  } = useSearchUsers({ search: debouncedSearch, facets })
 
   useEffect(() => {
     setSearchSuggestedUserIds((usersHits ?? []).map((hit: any) => hit.userId))
