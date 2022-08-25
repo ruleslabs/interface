@@ -6,18 +6,12 @@ import Link from '@/components/Link'
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
 import { ColumnCenter } from '@/components/Column'
+import { LargeSpinner } from '@/components/Spinner'
 
 const StyledCardModel = styled(ColumnCenter)<{ width?: number }>`
   position: relative;
-  cursor: pointer;
+  gap: 16px;
   ${({ width }) => width && `width: ${width}px;`}
-  transform: perspective(0);
-  gap: 12px;
-
-  &:hover img {
-    transition: transform 100ms;
-    transform: perspective(400px) rotateY(10deg);
-  }
 `
 
 const StyledCustomCardModel = styled(Link)`
@@ -25,17 +19,17 @@ const StyledCustomCardModel = styled(Link)`
   transform: perspective(0);
 
   & img {
-    transition: transform 100ms, opacity 100ms;
+    transition: transform 100ms;
   }
 
-  &:hover img {
+  &:hover img:not(.spinner) {
     transform: perspective(400px) rotateY(10deg);
   }
 `
 
-const Card = styled.img<{ inDelivery: boolean }>`
+const Card = styled.img<{ inDelivery: boolean; inTransfer: boolean }>`
   width: 100%;
-  ${({ inDelivery }) => inDelivery && 'opacity: 0.3;'}
+  ${({ inDelivery, inTransfer }) => (inDelivery || inTransfer) && 'opacity: 0.3;'}
 `
 
 const OnSale = styled(RowCenter)`
@@ -61,6 +55,12 @@ const InDelivery = styled.img`
   ${StatusStyle}
 `
 
+const StyledLargeSpinner = styled(LargeSpinner)`
+  position: absolute;
+  left: 40.1%;
+  top: 41.5%;
+`
+
 interface CardModelProps {
   cardModelSlug: string
   pictureUrl: string
@@ -68,6 +68,7 @@ interface CardModelProps {
   serialNumber?: number
   inDelivery?: boolean
   onSale?: boolean
+  inTransfer?: boolean
   season?: number
   artistName?: string
   lowestAskETH?: string
@@ -80,6 +81,7 @@ export default function CardModel({
   width,
   serialNumber,
   onSale = false,
+  inTransfer = false,
   inDelivery = false,
   season,
   artistName,
@@ -91,8 +93,9 @@ export default function CardModel({
   return (
     <StyledCardModel width={width}>
       <StyledCustomCardModel href={`/card/${cardModelSlug}${!!serialNumber ? `/${serialNumber}` : ''}`}>
-        <Card src={pictureUrl} inDelivery={inDelivery} />
+        <Card src={pictureUrl} inDelivery={inDelivery} inTransfer={inTransfer} />
         {inDelivery && <InDelivery src={`/assets/delivery.${locale}.png`} />}
+        {inTransfer && <StyledLargeSpinner className="spinner" />}
         {onSale && (
           <OnSale>
             <TYPE.medium>
@@ -102,7 +105,18 @@ export default function CardModel({
         )}
       </StyledCustomCardModel>
 
-      {season && artistName && (
+      {inTransfer && (
+        <ColumnCenter gap={4}>
+          <TYPE.body textAlign="center">
+            <Trans>Transfering the card...</Trans>
+          </TYPE.body>
+          <TYPE.subtitle textAlign="center">
+            <Trans>Please come back later.</Trans>
+          </TYPE.subtitle>
+        </ColumnCenter>
+      )}
+
+      {season && artistName && !inTransfer && (
         <ColumnCenter gap={4}>
           <TYPE.body textAlign="center">
             {artistName} {serialNumber && `#${serialNumber}`}

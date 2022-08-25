@@ -33,6 +33,7 @@ interface CardOwnershipProps {
   ownerSlug: string
   ownerUsername: string
   ownerProfilePictureUrl: string
+  inTransfer: boolean
   askEUR?: string
   askETH?: string
 }
@@ -41,6 +42,7 @@ export default function CardOwnership({
   ownerSlug,
   ownerUsername,
   ownerProfilePictureUrl,
+  inTransfer,
   askEUR,
   askETH,
 }: CardOwnershipProps) {
@@ -64,7 +66,7 @@ export default function CardOwnership({
         </TYPE.body>
       </RowCenter>
       <ButtonsWrapper gap={12}>
-        {askETH || currentUser?.slug === ownerSlug ? (
+        {!inTransfer && (askETH || currentUser?.slug === ownerSlug) ? (
           <>
             {currentUser?.slug === ownerSlug && askEUR ? (
               <PrimaryButton large>
@@ -94,7 +96,7 @@ export default function CardOwnership({
           </>
         ) : (
           <Placeholder>
-            <Trans>This card is not on sale.</Trans>
+            {inTransfer ? <Trans>Transfering the card...</Trans> : <Trans>This card is not on sale.</Trans>}
           </Placeholder>
         )}
       </ButtonsWrapper>

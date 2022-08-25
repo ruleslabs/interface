@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
@@ -58,6 +58,7 @@ const QUERY_CARD = gql`
     card(slug: $slug) {
       serialNumber
       starknetTokenId
+      inTransfer
       currentOffer {
         ask
       }
@@ -110,6 +111,10 @@ export default function CardBreakout() {
 
   const backPictureUrl = useCardsBackPictureUrl(512)
 
+  // offer callback
+  const [inTransfer, setInTransfer] = useState(false)
+  const onSuccessfulOffer = useCallback(() => setInTransfer(true), [])
+
   if (!!error || !!loading) {
     if (!!error) console.error(error)
     return null
@@ -150,6 +155,7 @@ export default function CardBreakout() {
                 ownerSlug={card.owner.user.slug}
                 ownerUsername={card.owner.user.username}
                 ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
+                inTransfer={card.inTransfer || inTransfer}
                 askEUR={card.askEUR}
                 askETH={card.askETH}
               />
@@ -175,6 +181,7 @@ export default function CardBreakout() {
         serialNumber={card.serialNumber}
         pictureUrl={card.cardModel.pictureUrl}
         tokenId={card.starknetTokenId}
+        onSuccess={onSuccessfulOffer}
       />
     </>
   )

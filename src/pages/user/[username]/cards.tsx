@@ -17,6 +17,7 @@ import { useCurrentUser } from '@/state/user/hooks'
 const CARD_CONTENT = `
   serialNumber
   onSale
+  inTransfer
   cardModel {
     slug
     pictureUrl(derivative: "width=1024")
@@ -102,6 +103,7 @@ function Cards({ userId }: { userId: string }) {
               cardModelSlug={card.cardModel.slug}
               pictureUrl={card.cardModel.pictureUrl}
               onSale={card.onSale}
+              inTransfer={card.inTransfer}
               serialNumber={card.serialNumber}
               inDelivery={card.inDelivery}
               season={card.cardModel.season}

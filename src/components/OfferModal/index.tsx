@@ -44,6 +44,7 @@ interface OfferModalProps {
   serialNumber: number
   pictureUrl: string
   tokenId: string
+  onSuccess(): void
 }
 
 export default function OfferModal({
@@ -54,6 +55,7 @@ export default function OfferModal({
   serialNumber,
   tokenId,
   pictureUrl,
+  onSuccess,
 }: OfferModalProps) {
   // currentUser
   const currentUser = useCurrentUser()
@@ -118,6 +120,7 @@ export default function OfferModal({
           }
 
           setTxHash(hash)
+          onSuccess()
         })
         .catch((transferCardError: ApolloError) => {
           const error = transferCardError?.graphQLErrors?.[0]
@@ -126,7 +129,7 @@ export default function OfferModal({
           console.error(error)
         })
     },
-    [call?.calldata?.[1], tokenId]
+    [call?.calldata?.[1], tokenId, onSuccess]
   )
 
   // error

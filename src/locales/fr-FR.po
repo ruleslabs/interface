@@ -716,7 +716,7 @@ msgstr "Merci, votre paiement a été traité avec succès.<0/>Un email de confi
 
 #: src/components/PackPurchaseModal/Confirmation.tsx
 msgid "Estimated delivery in a few hours"
-msgstr "Livraison  estimée dans quelques heures"
+msgstr "Livraison estimée dans quelques heures"
 
 #: src/pages/pack/[packSlug].tsx
 msgid "Estimated delivery in a few hours"
@@ -953,3 +953,20 @@ msgstr "Voir sur Etherscan"
 #: src/components/OfferModal/Confirmation.tsx
 msgid "See on Voyager"
 msgstr "Voir sur Voyager"
+
+#: src/components/CardModel/index.tsx
+msgid "Transfering the card..."
+msgstr "Transfert de la carte..."
+
+#: src/components/DepositModal/Confirmation.tsx
+#: src/components/OfferModal/Confirmation.tsx
+msgid "Waiting for confirmation"
+msgstr "Confirmation en attente"
+
+#: src/components/OfferModal/Confirmation.tsx
+msgid "Your card is on its way"
+msgstr "Votre carte est en route"
+
+#: src/components/OfferModal/Confirmation.tsx
+msgid "The transfer might take a few hours to succeed."
+msgstr "Le transfert peut prendre quelques heures."
