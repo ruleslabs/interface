@@ -1,8 +1,9 @@
 import { useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { Call } from 'starknet'
+import { Signature, Call } from 'starknet'
 import { uint256HexFromStrHex } from '@rulesorg/sdk-core'
+import { ApolloError } from '@apollo/client'
 
 import Modal, { ModalHeader } from '@/components/Modal'
 import { useModalOpen, useOfferModalToggle } from '@/state/application/hooks'
@@ -14,6 +15,7 @@ import StarknetSigner from '@/components/StarknetSigner'
 import { useCurrentUser } from '@/state/user/hooks'
 import { RULES_TOKENS_ADDRESSES } from '@/constants/addresses'
 import { networkId } from '@/constants/networks'
+import { useTransferCardMutation } from '@/state/wallet/hooks'
 
 const DummyFocusInput = styled.input`
   max-height: 0;
@@ -94,9 +96,38 @@ export default function OfferModal({
   const [waitingForTx, setWaitingForTx] = useState(false)
   const onConfirmation = useCallback(() => setWaitingForTx(true), [])
 
-  // hash
+  // signature
+  const [transferCardMutation] = useTransferCardMutation()
   const [txHash, setTxHash] = useState<string | null>(null)
-  const onTransaction = useCallback((hash: string) => setTxHash(hash), [])
+
+  const onSignature = useCallback(
+    (signature: Signature, maxFee: string) => {
+      transferCardMutation({
+        variables: {
+          tokenId,
+          recipientAddress: call.calldata[1],
+          maxFee,
+          signature: JSON.stringify(signature),
+        },
+      })
+        .then((res?: any) => {
+          const hash = res?.data?.transferCard?.hash
+          if (!hash) {
+            onError('Transaction not received')
+            return
+          }
+
+          setTxHash(hash)
+        })
+        .catch((transferCardError: ApolloError) => {
+          const error = transferCardError?.graphQLErrors?.[0]
+          onError(error?.message ?? 'Transaction not received')
+
+          console.error(error)
+        })
+    },
+    [call?.calldata?.[1], tokenId]
+  )
 
   // error
   const [error, setError] = useState<string | null>(null)
@@ -107,8 +138,8 @@ export default function OfferModal({
     if (isOpen) {
       setCall(null)
       setError(null)
-      setTxHash(null)
       setWaitingForTx(false)
+      setTxHash(null)
     }
   }, [isOpen])
 
@@ -139,7 +170,7 @@ export default function OfferModal({
           isOpen={!txHash && !waitingForTx && !waitingForFees && !!call}
           onWaitingForFees={onWaitingForFees}
           onConfirmation={onConfirmation}
-          onTransaction={onTransaction}
+          onSignature={onSignature}
           onError={onError}
           call={call ?? undefined}
         />

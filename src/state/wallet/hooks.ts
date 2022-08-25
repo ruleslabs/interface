@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from 'react'
+import { useMemo, useEffect, useState, useCallback } from 'react'
 import JSBI from 'jsbi'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { Abi } from 'starknet'
@@ -12,10 +12,31 @@ import { useStarknet } from '@/lib/starknet'
 import { ETH_ADDRESSES } from '@/constants/addresses'
 import { useMultipleContractSingleData } from '@/lib/hooks/multicall'
 import { useEthereumBlockNumber } from '@/state/application/hooks'
+import { getApolloClient } from '@/apollo/apollo'
 
-const CONSUME_NONCE_MUTATION = gql`
-  mutation {
-    consumeNonce
+const CURRENT_USER_NEXT_NONCE_QUERY = gql`
+  query {
+    currentUser {
+      starknetWallet {
+        nextNonce
+      }
+    }
+  }
+`
+
+const TRANSFER_CARD_MUTATION = gql`
+  mutation ($tokenId: String!, $recipientAddress: String!, $maxFee: String!, $signature: String!) {
+    transferCard(
+      input: {
+        tokenId: $tokenId
+        recipientAddress: $recipientAddress
+        quantity: 1
+        maxFee: $maxFee
+        signature: $signature
+      }
+    ) {
+      hash
+    }
   }
 `
 
@@ -64,6 +85,12 @@ export function useEthereumETHBalance(address?: string): WeiAmount | undefined {
   return balance
 }
 
-export function useConsumeNonceMutation() {
-  return useMutation(CONSUME_NONCE_MUTATION)
+export function useCurrentUserNextNonceQuery() {
+  return useCallback(async () => {
+    return getApolloClient()?.query({ query: CURRENT_USER_NEXT_NONCE_QUERY })
+  }, [getApolloClient])
+}
+
+export function useTransferCardMutation() {
+  return useMutation(TRANSFER_CARD_MUTATION)
 }

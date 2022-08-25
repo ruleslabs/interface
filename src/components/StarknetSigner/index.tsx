@@ -2,11 +2,9 @@ import JSBI from 'jsbi'
 import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
-import { ec, Account, Call, EstimateFee, AddTransactionResponse } from 'starknet'
+import { ec, number, hash, Account, Call, EstimateFee, Signature } from 'starknet'
 import { WeiAmount } from '@rulesorg/sdk-core'
-import { ApolloError } from '@apollo/client'
 
-import { useConsumeNonceMutation } from '@/state/wallet/hooks'
 import Input from '@/components/Input'
 import { useETHBalances } from '@/state/wallet/hooks'
 import Column, { ColumnCenter } from '@/components/Column'
@@ -19,6 +17,7 @@ import { useCurrentUser } from '@/state/user/hooks'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import ErrorCard from '@/components/ErrorCard'
 import { useDepositModalToggle } from '@/state/application/hooks'
+import { useCurrentUserNextNonceQuery } from '@/state/wallet/hooks'
 
 const StyledStarknetSigner = styled(ColumnCenter)`
   padding-bottom: 8px;
@@ -49,18 +48,18 @@ const NetworkFeeWrapper = styled(RowCenter)`
 interface StarknetSignerProps {
   isOpen: boolean
   call?: Call
-  onTransaction(tx: string): void
   onWaitingForFees(estimating: boolean): void
   onConfirmation(): void
+  onSignature(signature: Signature, maxFee: string): void
   onError(error: string): void
 }
 
 export default function StarknetSigner({
   isOpen,
   call,
-  onTransaction,
   onWaitingForFees,
   onConfirmation,
+  onSignature,
   onError,
 }: StarknetSignerProps) {
   // deposit modal
@@ -142,13 +141,13 @@ export default function StarknetSigner({
           onError(error.message)
         })
     },
-    [password, rulesPrivateKey, address, provider, onTransaction, call, onError, onWaitingForFees]
+    [password, rulesPrivateKey, address, provider, call, onError, onWaitingForFees]
   )
 
   // nonce mgmt
-  const [consumeNonceMutation] = useConsumeNonceMutation()
+  const currentUserNextNonceQuery = useCurrentUserNextNonceQuery()
 
-  // sign transaction
+  // tx signature
   const signTransaction = useCallback(
     (event) => {
       event.preventDefault()
@@ -157,40 +156,41 @@ export default function StarknetSigner({
 
       onConfirmation()
 
-      consumeNonceMutation()
-        .catch((error: ApolloError) => {
+      currentUserNextNonceQuery()
+        .catch((error: Error) => {
           console.error(error)
 
-          onError('Failed to consume nonce')
+          onError('Failed to get next nonce')
           return Promise.reject()
         })
         .then((res: any) => {
-          const nextNonce = res?.data?.consumeNonce
+          const nextNonce = res?.data?.currentUser?.starknetWallet?.nextNonce
           if (nextNonce !== 0 && !nextNonce) {
             onError('Failed to consume nonce')
             return
           }
 
-          console.log('yo')
-
-          return account.execute(call, undefined, { nonce: nextNonce, maxFee: networkFee.maxFee.quotient.toString() })
-        })
-        .then((transaction?: AddTransactionResponse) => {
-          if (transaction?.code !== 'TRANSACTION_RECEIVED') {
-            onError('Transaction not received')
-            return
+          const signerDetails = {
+            walletAddress: account.address,
+            nonce: nextNonce,
+            maxFee: networkFee.maxFee.quotient.toString(),
+            version: number.toBN(hash.transactionVersion),
+            chainId: account.chainId,
           }
 
-          onTransaction(transaction.transaction_hash)
+          return account.signer.signTransaction([call], signerDetails)
+        })
+        .then((signature: Signature) => {
+          onSignature(signature, networkFee.maxFee.quotient.toString())
         })
         .catch((error: Error) => {
           if (!error) return
           console.error(error)
 
-          onError(error.message)
+          onError('Failed to sign transaction:', error.message)
         })
     },
-    [onTransaction, consumeNonceMutation, onError, call, account, networkFee?.maxFee, onConfirmation]
+    [currentUserNextNonceQuery, onError, call, account, networkFee?.maxFee, onSignature]
   )
 
   if (!isOpen) return null

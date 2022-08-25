@@ -941,3 +941,15 @@ msgstr "Offrir cette carte"
 #: src/components/OfferModal/Offer.tsx
 msgid "This user does not have a wallet yet, please try again in a few hours."
 msgstr "Cet utilisateur n'a pas encore de portefeuille, veuillez réessayer dans quelques heures."
+
+#: src/components/DepositModal/Confirmation.tsx
+msgid "The deposit might take a few hours to arrive on your Rules wallet."
+msgstr "Le dépôt peut prendre quelques heures pour arriver sur ton portefeuille Rules."
+
+#: src/components/DepositModal/Confirmation.tsx
+msgid "See on Etherscan"
+msgstr "Voir sur Etherscan"
+
+#: src/components/OfferModal/Confirmation.tsx
+msgid "See on Voyager"
+msgstr "Voir sur Voyager"

@@ -93,7 +93,7 @@ const USERS_BY_IDS_QUERY = gql`
 
 interface UsersSearchBarProps {
   onSelect(user: any): void
-  selfSearchAllowed: boolean
+  selfSearchAllowed?: boolean
 }
 
 export default function UsersSearchBar({ onSelect, selfSearchAllowed = true }: UsersSearchBarProps) {
