@@ -103,9 +103,7 @@ export default function Confirmation({ txHash, error, waitingForFees }: Confirma
               <Trans>Your transaction has been rejected</Trans>
             </Title>
 
-            <ErrorMessage>
-              <Trans>{error}</Trans>
-            </ErrorMessage>
+            <ErrorMessage>{error}</ErrorMessage>
           </ColumnCenter>
         ) : (
           <ColumnCenter gap={8}>

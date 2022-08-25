@@ -40,6 +40,8 @@ const Soldout = styled.img`
 
 const StyledLargeSpinner = styled(LargeSpinner)`
   position: absolute;
+  width: 26.8%;
+  height: auto;
   left: 35.6%;
   top: 34.7%;
 `

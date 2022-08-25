@@ -86,7 +86,11 @@ export default function CardOwnership({
               </PrimaryButton>
             )}
             {!askEUR && (
-              <SecondaryButton onClick={toggleOfferModal} large>
+              <SecondaryButton
+                onClick={toggleOfferModal}
+                disabled={currentUser.slug !== 'clanier' && currentUser.slug !== 'heloise' && false}
+                large
+              >
                 <RowCenter justify="center" gap={4}>
                   <StyledPresent />
                   <Trans>Offer</Trans>

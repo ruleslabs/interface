@@ -180,14 +180,19 @@ export default function StarknetSigner({
 
           return account.signer.signTransaction([call], signerDetails)
         })
-        .then((signature: Signature) => {
+        .then((signature?: Signature) => {
+          if (!signature) {
+            onError('Failed to sign transaction')
+            return
+          }
+
           onSignature(signature, networkFee.maxFee.quotient.toString())
         })
         .catch((error: Error) => {
           if (!error) return
           console.error(error)
 
-          onError('Failed to sign transaction:', error.message)
+          onError(`Failed to sign transaction: ${error.message}`)
         })
     },
     [currentUserNextNonceQuery, onError, call, account, networkFee?.maxFee, onSignature]

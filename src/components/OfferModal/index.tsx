@@ -104,6 +104,8 @@ export default function OfferModal({
 
   const onSignature = useCallback(
     (signature: Signature, maxFee: string) => {
+      if (!call?.calldata?.[1]) return
+
       transferCardMutation({
         variables: {
           tokenId,

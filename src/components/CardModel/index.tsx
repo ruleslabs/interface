@@ -57,7 +57,9 @@ const InDelivery = styled.img`
 
 const StyledLargeSpinner = styled(LargeSpinner)`
   position: absolute;
-  left: 40.1%;
+  width: 20%;
+  height: auto;
+  left: 40%;
   top: 41.5%;
 `
 
