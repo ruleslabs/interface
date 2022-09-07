@@ -8,7 +8,7 @@ import Column from '@/components/Column'
 import { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
-import ErrorCard from '@/components/ErrorCard'
+import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
 
 import Arrow from '@/images/arrow.svg'

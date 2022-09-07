@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
+import { getChecksumAddress } from 'starknet'
 import { RampInstantSDK, RampInstantEventTypes } from '@ramp-network/ramp-instant-sdk'
 
 const apiKey = process.env.NEXT_PUBLIC_RAMP_API_KEY
@@ -22,7 +23,7 @@ export default function useRampSdk({ email, address }: RampSdkProps): RampInstan
       hostLogoUrl: process.env.NEXT_PUBLIC_APP_URL ? `${process.env.NEXT_PUBLIC_APP_URL}/assets/ramp-logo.svg` : '',
       userEmailAddress: email,
       hostApiKey: apiKey,
-      userAddress: address,
+      userAddress: getChecksumAddress(address),
       hostAppName: 'Rules',
     }).on('*' as RampInstantEventTypes, (event) => {
       switch (event.type) {

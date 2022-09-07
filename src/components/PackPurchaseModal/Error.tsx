@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 
 import Row from '@/components/Row'
-import ErrorCard from '@/components/ErrorCard'
+import { ErrorCard } from '@/components/Card'
 
 interface ErrorProps {
   error: any

@@ -13,7 +13,8 @@ import Separator from '@/components/Separator'
 import { useEthereumETHBalance } from '@/state/wallet/hooks'
 import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
 import { useEthereumStarkgateContract } from '@/hooks/useContract'
-import ErrorCard from '@/components/ErrorCard'
+import { ErrorCard, InfoCard } from '@/components/Card'
+import Link from '@/components/Link'
 
 import RampIcon from '@/images/ramp.svg'
 import MetamaskIcon from '@/images/metamask.svg'
@@ -84,10 +85,14 @@ export default function Deposit({ onDeposit, onError, onConfirmation }: DepositP
   const account = useAccount()
   const chainId = useChainId()
   const activateMetamask = useCallback(() => metaMask.activate(desiredChainId), [metaMask, desiredChainId])
+  const [metamaskFound, setMetamaskFound] = useState(false)
 
   // attempt to connect eagerly on mount
   useEffect(() => {
     metaMask.connectEagerly()
+    if (typeof window.ethereum !== 'undefined') {
+      setMetamaskFound(true)
+    }
   }, [])
 
   // Deposit
@@ -171,10 +176,21 @@ export default function Deposit({ onDeposit, onError, onConfirmation }: DepositP
             <span onClick={activateMetamask}>switch network</span>
           </Trans>
         </ErrorCard>
-      ) : (
+      ) : metamaskFound ? (
         <CustomButton title={t`Connect Metamask`} subtitle={t`Deposit ETH from your wallet`} onClick={activateMetamask}>
           <MetamaskIcon />
         </CustomButton>
+      ) : (
+        <InfoCard textAlign="center">
+          <Trans>
+            Haven’t got an Ethereum wallet yet?
+            <br />
+            Learn how to create one with&nbsp;
+            <Link href="https://metamask.io/" target="_blank" color="text1" underline>
+              Metamask
+            </Link>
+          </Trans>
+        </InfoCard>
       )}
     </Column>
   )

@@ -970,3 +970,11 @@ msgstr "Votre carte est en route"
 #: src/components/OfferModal/Confirmation.tsx
 msgid "The transfer might take a few hours to succeed."
 msgstr "Le transfert peut prendre quelques heures."
+
+#: src/components/StarknetSigner/index.tsx
+msgid "You do not have enough ETH in your Rules wallet to pay for network fees on Starknet.<0/><1>Buy ETH or deposit from another wallet.</1>"
+msgstr "Vous n'avez pas assez d'ETH sur votre Wallet pour payer les frais de réseau Starknet.<0/><1>Achetez de l'ETH ou déposez-en depuis un autre Wallet.</1>"
+
+#: src/components/DepositModal/Deposit.tsx
+msgid "Haven’t got an Ethereum wallet yet?<0/>Learn how to create one with <1>Metamask</1>"
+msgstr "Vous n'avez pas encore de portefeuille Ethereum?<0/>Apprenez à en créer un avec <1>Metamask</1>"

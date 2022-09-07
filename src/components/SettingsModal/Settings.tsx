@@ -15,7 +15,7 @@ import { storeAccessToken } from '@/utils/accessToken'
 import { useRemoveCurrentUser } from '@/state/user/hooks'
 import { useRevokeSessionMutation } from '@/state/auth/hooks'
 import { useDepositModalToggle } from '@/state/application/hooks'
-import ErrorCard from '@/components/ErrorCard'
+import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
 
 const Balance = styled(Row)<{ alert?: boolean }>`

@@ -15,7 +15,7 @@ import { PrimaryButton } from '@/components/Button'
 import { useStarknet } from '@/lib/starknet'
 import { useCurrentUser } from '@/state/user/hooks'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-import ErrorCard from '@/components/ErrorCard'
+import { ErrorCard } from '@/components/Card'
 import { useDepositModalToggle } from '@/state/application/hooks'
 import { useCurrentUserNextNonceQuery } from '@/state/wallet/hooks'
 
@@ -224,7 +224,7 @@ export default function StarknetSigner({
                 <Trans>
                   You do not have enough ETH in your Rules wallet to pay for network fees on Starknet.
                   <br />
-                  <span onClick={toggleDepositModal}>Buy ETH or deposit from another wallet</span>
+                  <span onClick={toggleDepositModal}>Buy ETH or deposit from another wallet.</span>
                 </Trans>
               </ErrorCard>
             )}
