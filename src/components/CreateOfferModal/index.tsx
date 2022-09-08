@@ -18,6 +18,7 @@ import StarknetSigner from '@/components/StarknetSigner'
 import { MARKETPLACE_ADDRESSES } from '@/constants/addresses'
 import { useCreateOfferMutation } from '@/state/wallet/hooks'
 import { networkId } from '@/constants/networks'
+import EtherInput from '@/components/Input/EtherInput'
 
 const CardBreakdown = styled(RowCenter)`
   gap: 16px;
@@ -59,12 +60,14 @@ export default function CreateOfferModal({
   const isOpen = useModalOpen(ApplicationModal.CREATE_OFFER)
   const toggleCreateOfferModal = useCreateOfferModalToggle()
 
-  // generate call
-  const [price, setPrice] = useState<any | null>(null)
-  const [call, setCall] = useState<Call | null>(null)
+  // price
+  const [price, setPrice] = useState<string>('')
+  const onPriceInput = useCallback((value: string) => setPrice(value), [])
 
+  // call
+  const [call, setCall] = useState<Call | null>(null)
   const handleConfirmation = useCallback(() => {
-    if (!price) return
+    if (!price || !+price) return
 
     const uint256TokenId = uint256HexFromStrHex(tokenId)
 
@@ -114,7 +117,7 @@ export default function CreateOfferModal({
       setCall(null)
       setTxHash(null)
       setError(null)
-      setPrice(null)
+      setPrice('')
     }
   }, [isOpen])
 
@@ -151,7 +154,7 @@ export default function CreateOfferModal({
             </ErrorCard>
           ) : (
             <Column gap={12}>
-              <TYPE.body>working on it</TYPE.body>
+              <EtherInput onUserInput={onPriceInput} value={price} placeholder="0.0" />
             </Column>
           )}
 
