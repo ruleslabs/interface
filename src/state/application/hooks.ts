@@ -70,3 +70,7 @@ export function usePackOpeningPreparationModalToggle(): () => void {
 export function useOfferModalToggle(): () => void {
   return useToggleModal(ApplicationModal.OFFER)
 }
+
+export function useCreateOfferModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.CREATE_OFFER)
+}

@@ -10,6 +10,7 @@ export enum ApplicationModal {
   AVATAR_EDIT,
   PACK_OPENING_PREPARATION,
   OFFER,
+  CREATE_OFFER,
 }
 
 export const setOpenModal = createAction<{ modal: ApplicationModal | null }>('application/setOpenModal')

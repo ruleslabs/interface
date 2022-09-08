@@ -10,7 +10,6 @@ import {
   updateMarketplaceMaximumPrice,
 } from './actions'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-import { knuthShuffle } from '@/utils/random'
 
 const CARD_MODELS_ON_SALE_QUERY = gql`
   query ($pictureDerivative: String) {
@@ -18,20 +17,6 @@ const CARD_MODELS_ON_SALE_QUERY = gql`
       slug
       lowestAsk
       pictureUrl(derivative: $pictureDerivative)
-    }
-  }
-`
-
-const CARD_MODELS_QUERY = gql`
-  query ($pictureDerivative: String) {
-    allCardModels {
-      slug
-      lowestAsk
-      pictureUrl(derivative: $pictureDerivative)
-      season
-      scarcity {
-        name
-      }
     }
   }
 `
@@ -99,17 +84,9 @@ export function useMarketplaceSetMaximumPrice(): (price: number) => void {
 export function useCardModelOnSale(pictureDerivative: string) {
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
-  const {
-    data: queryData,
-    loading,
-    error,
-  } = useQuery(Boolean(process.env.NEXT_PUBLIC_DEMO) ? CARD_MODELS_QUERY : CARD_MODELS_ON_SALE_QUERY, {
-    variables: { pictureDerivative },
-  })
+  const { data: queryData, loading, error } = useQuery(CARD_MODELS_ON_SALE_QUERY, { variables: { pictureDerivative } })
 
-  const cardModelsOnSale = Boolean(process.env.NEXT_PUBLIC_DEMO)
-    ? knuthShuffle(queryData?.allCardModels ?? [])
-    : queryData?.cardModelsOnSale ?? []
+  const cardModelsOnSale = queryData?.cardModelsOnSale ?? []
 
   const cardModels = useMemo(() => {
     return cardModelsOnSale.map((cardModel: any) => {

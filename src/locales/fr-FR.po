@@ -968,8 +968,8 @@ msgid "Your card is on its way"
 msgstr "Votre carte est en route"
 
 #: src/components/OfferModal/Confirmation.tsx
-msgid "The transfer might take a few hours to succeed."
-msgstr "Le transfert peut prendre quelques heures."
+msgid "The transaction might take a few hours to succeed."
+msgstr "La transaction peut prendre quelques heures."
 
 #: src/components/StarknetSigner/index.tsx
 msgid "You do not have enough ETH in your Rules wallet to pay for network fees on Starknet.<0/><1>Buy ETH or deposit from another wallet.</1>"

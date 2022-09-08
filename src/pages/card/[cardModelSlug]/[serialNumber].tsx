@@ -17,6 +17,7 @@ import CardModel3D from '@/components/CardModel3D'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
 import OfferModal from '@/components/OfferModal'
+import CreateOfferModal from '@/components/CreateOfferModal'
 
 const MainSection = styled(Section)`
   position: relative;
@@ -174,6 +175,17 @@ export default function CardBreakout() {
       </Section>
 
       <OfferModal
+        artistName={card.cardModel.artist.displayName}
+        scarcityName={card.cardModel.scarcity.name}
+        scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
+        season={card.cardModel.season}
+        serialNumber={card.serialNumber}
+        pictureUrl={card.cardModel.pictureUrl}
+        tokenId={card.starknetTokenId}
+        onSuccess={onSuccessfulOffer}
+      />
+
+      <CreateOfferModal
         artistName={card.cardModel.artist.displayName}
         scarcityName={card.cardModel.scarcity.name}
         scarcityMaxSupply={card.cardModel.scarcity.maxSupply}

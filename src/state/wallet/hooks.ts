@@ -40,6 +40,14 @@ const TRANSFER_CARD_MUTATION = gql`
   }
 `
 
+const CREATE_OFFER_MUTATION = gql`
+  mutation ($tokenId: String!, $price: String!, $maxFee: String!, $signature: String!) {
+    createOffer(input: { tokenId: $tokenId, price: $price, maxFee: $maxFee, signature: $signature }) {
+      hash
+    }
+  }
+`
+
 interface Balance {
   low?: string
   high?: string
@@ -93,4 +101,8 @@ export function useCurrentUserNextNonceQuery() {
 
 export function useTransferCardMutation() {
   return useMutation(TRANSFER_CARD_MUTATION)
+}
+
+export function useCreateOfferMutation() {
+  return useMutation(CREATE_OFFER_MUTATION)
 }

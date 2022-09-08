@@ -8,7 +8,7 @@ import { TYPE } from '@/styles/theme'
 import { PrimaryButton, SecondaryButton } from '@/components/Button'
 import Link from '@/components/Link'
 import Placeholder from '@/components/Placeholder'
-import { useOfferModalToggle } from '@/state/application/hooks'
+import { useOfferModalToggle, useCreateOfferModalToggle } from '@/state/application/hooks'
 
 import Present from '@/images/present.svg'
 
@@ -49,6 +49,7 @@ export default function CardOwnership({
   const currentUser = useCurrentUser()
 
   const toggleOfferModal = useOfferModalToggle()
+  const toggleCreateOfferModal = useCreateOfferModalToggle()
 
   return (
     <Column gap={16}>
@@ -74,15 +75,15 @@ export default function CardOwnership({
                   Close offer - {askETH} ETH {askEUR ? `(${askEUR}€)` : null}
                 </Trans>
               </PrimaryButton>
+            ) : askETH ? (
+              <PrimaryButton large>
+                <Trans>
+                  Buy - {askETH} ETH {askEUR ? `(${askEUR}€)` : null}
+                </Trans>
+              </PrimaryButton>
             ) : (
-              <PrimaryButton disabled large>
-                {askETH ? (
-                  <Trans>
-                    Buy - {askETH} ETH {askEUR ? `(${askEUR}€)` : null}
-                  </Trans>
-                ) : (
-                  <Trans>Place for Sale</Trans>
-                )}
+              <PrimaryButton onClick={toggleCreateOfferModal} large>
+                <Trans>Place for Sale</Trans>
               </PrimaryButton>
             )}
             {!askEUR && (

@@ -1,39 +1,97 @@
-import { useCallback, useState, useEffect } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
-import { Signature, Call } from 'starknet'
+import { t, Trans } from '@lingui/macro'
 import { uint256HexFromStrHex } from '@rulesorg/sdk-core'
 import { ApolloError } from '@apollo/client'
 
-import Modal, { ModalHeader } from '@/components/Modal'
+import Modal from '@/components/Modal'
 import { useModalOpen, useOfferModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
-import Column from '@/components/Column'
-import Offer from './Offer'
-import Confirmation from './Confirmation'
-import StarknetSigner from '@/components/StarknetSigner'
+import UsersSearchBar from '@/components/UsersSearchBar'
 import { useCurrentUser } from '@/state/user/hooks'
+import Column from '@/components/Column'
+import { RowCenter } from '@/components/Row'
+import { TYPE } from '@/styles/theme'
+import { PrimaryButton } from '@/components/Button'
+import { ErrorCard } from '@/components/Card'
+import LockedWallet from '@/components/LockedWallet'
+import StarknetSigner from '@/components/StarknetSigner'
 import { RULES_TOKENS_ADDRESSES } from '@/constants/addresses'
-import { networkId } from '@/constants/networks'
 import { useTransferCardMutation } from '@/state/wallet/hooks'
+import { networkId } from '@/constants/networks'
 
-const DummyFocusInput = styled.input`
-  max-height: 0;
-  max-width: 0;
-  position: fixed;
-  left: 99999px;
+import Arrow from '@/images/arrow.svg'
+
+const CardBreakdown = styled(RowCenter)`
+  gap: 16px;
+  background: ${({ theme }) => theme.bg5};
+  width: 100%;
+  padding: 12px;
+
+  & img {
+    width: 64px;
+    border-radius: 4px;
+  }
 `
 
-const StyledOfferModal = styled(Column)`
-  width: 546px;
-  padding: 26px;
-  background: ${({ theme }) => theme.bg2};
-  border-radius: 4px;
+const Avatar = styled.img`
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+`
 
-  ${({ theme }) => theme.media.medium`
-    width: 100%;
-    height: 100%;
-  `}
+const TransferSummary = styled(RowCenter)`
+  background: ${({ theme }) => theme.bg5};
+  padding: 16px 12px;
+  gap: 16px;
+
+  & img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+
+  & > div:first-child,
+  & > div:last-child {
+    flex: 1;
+  }
+`
+
+const ArrowWrapper = styled(Column)`
+  width: 26px;
+  height: 26px;
+  background: ${({ theme }) => theme.bg5};
+  box-shadow: 0px 0px 5px ${({ theme }) => theme.bg1};
+  justify-content: center;
+  border-radius: 50%;
+  position: relative;
+
+  & svg {
+    margin: 0 auto;
+    width: 16px;
+    height: 16px;
+    fill: ${({ theme }) => theme.text1};
+  }
+
+  ::before,
+  ::after {
+    content: '';
+    width: 1px;
+    background: ${({ theme }) => theme.text1}20;
+    left: 13px;
+    position: absolute;
+    display: block;
+  }
+
+  ::before {
+    top: -16px;
+    bottom: 26px;
+  }
+
+  ::after {
+    top: 26px;
+    bottom: -16px;
+  }
 `
 
 interface OfferModalProps {
@@ -57,46 +115,41 @@ export default function OfferModal({
   pictureUrl,
   onSuccess,
 }: OfferModalProps) {
-  // currentUser
+  // current user
   const currentUser = useCurrentUser()
 
   // modal
   const isOpen = useModalOpen(ApplicationModal.OFFER)
   const toggleOfferModal = useOfferModalToggle()
 
-  // call
+  // generate call
+  const [recipient, setRecipient] = useState<any | null>(null)
   const [call, setCall] = useState<Call | null>(null)
-  const onRecipientSelected = useCallback(
-    (address: string) => {
-      if (!currentUser.starknetWallet.address) return // to enforce recipient typing
 
-      const uint256TokenId = uint256HexFromStrHex(tokenId)
+  const handleConfirmation = useCallback(() => {
+    if (!currentUser.starknetWallet.address || !recipient?.starknetWallet.address) return
 
-      setCall({
-        contractAddress: RULES_TOKENS_ADDRESSES[networkId],
-        entrypoint: 'safeTransferFrom',
-        calldata: [
-          currentUser.starknetWallet.address,
-          address,
-          uint256TokenId.low,
-          uint256TokenId.high,
-          1, // amount.low
-          0, // amount.high
-          1, // data len
-          0, // data
-        ],
-      })
-    },
-    [tokenId, currentUser?.starknetWallet.address]
-  )
+    const uint256TokenId = uint256HexFromStrHex(tokenId)
 
-  // fee estimation waiting
-  const [waitingForFees, setWaitingForFees] = useState(false)
-  const onWaitingForFees = useCallback((waiting: boolean) => setWaitingForFees(waiting), [])
+    setCall({
+      contractAddress: RULES_TOKENS_ADDRESSES[networkId],
+      entrypoint: 'safeTransferFrom',
+      calldata: [
+        currentUser.starknetWallet.address,
+        recipient.starknetWallet.address,
+        uint256TokenId.low,
+        uint256TokenId.high,
+        1, // amount.low
+        0, // amount.high
+        1, // data len
+        0, // data
+      ],
+    })
+  }, [tokenId, currentUser?.starknetWallet.address, recipient?.starknetWallet.address])
 
-  // transaction waiting
-  const [waitingForTx, setWaitingForTx] = useState(false)
-  const onConfirmation = useCallback(() => setWaitingForTx(true), [])
+  // error
+  const [error, setError] = useState<string | null>(null)
+  const onError = useCallback((error: string) => setError(error), [])
 
   // signature
   const [transferCardMutation] = useTransferCardMutation()
@@ -104,12 +157,12 @@ export default function OfferModal({
 
   const onSignature = useCallback(
     (signature: Signature, maxFee: string) => {
-      if (!call?.calldata?.[1]) return
+      if (!recipient?.starknetWallet.address) return
 
       transferCardMutation({
         variables: {
           tokenId,
-          recipientAddress: call.calldata[1],
+          recipientAddress: recipient.starknetWallet.address,
           maxFee,
           signature: JSON.stringify(signature),
         },
@@ -131,55 +184,96 @@ export default function OfferModal({
           console.error(error)
         })
     },
-    [call?.calldata?.[1], tokenId, onSuccess]
+    [recipient?.starknetWallet.address, tokenId, onSuccess]
   )
-
-  // error
-  const [error, setError] = useState<string | null>(null)
-  const onError = useCallback((error: string) => setError(error), [])
 
   // on close modal
   useEffect(() => {
     if (isOpen) {
       setCall(null)
-      setError(null)
-      setWaitingForTx(false)
       setTxHash(null)
+      setError(null)
+      setRecipient(null)
     }
   }, [isOpen])
 
   return (
     <Modal onDismiss={toggleOfferModal} isOpen={isOpen}>
-      <DummyFocusInput type="text" />
-      <StyledOfferModal gap={26}>
-        <ModalHeader onDismiss={toggleOfferModal}>
-          {txHash || waitingForTx || waitingForFees ? <div /> : t`Offer this card`}
-        </ModalHeader>
-        {txHash || waitingForTx || waitingForFees ? (
-          <Confirmation txHash={txHash ?? undefined} error={error ?? undefined} waitingForFees={waitingForFees} />
-        ) : (
-          !call && (
-            <Offer
-              onRecipientSelected={onRecipientSelected}
-              artistName={artistName}
-              season={season}
-              scarcityName={scarcityName}
-              scarcityMaxSupply={scarcityMaxSupply}
-              serialNumber={serialNumber}
-              pictureUrl={pictureUrl}
-            />
-          )
-        )}
+      <StarknetSigner
+        modalHeaderText={t`Offer this card`}
+        confirmationText={t`Your card is on its way`}
+        transactionText={t`card transfer.`}
+        call={call}
+        txHash={txHash}
+        error={error}
+        onDismiss={toggleOfferModal}
+        onSignature={onSignature}
+        onError={onError}
+      >
+        <Column gap={24}>
+          <CardBreakdown>
+            <img src={pictureUrl} />
+            <Column gap={4}>
+              <TYPE.body spanColor="text2">
+                {artistName} S{season}&nbsp;
+                <Trans id={scarcityName} render={({ translation }) => <>{translation}</>} />
+              </TYPE.body>
+              <TYPE.subtitle>
+                #{serialNumber} / {scarcityMaxSupply ?? '4000'}
+              </TYPE.subtitle>
+            </Column>
+          </CardBreakdown>
 
-        <StarknetSigner
-          isOpen={!txHash && !waitingForTx && !waitingForFees && !!call}
-          onWaitingForFees={onWaitingForFees}
-          onConfirmation={onConfirmation}
-          onSignature={onSignature}
-          onError={onError}
-          call={call ?? undefined}
-        />
-      </StyledOfferModal>
+          {currentUser?.starknetWallet.needsSignerPublicKeyUpdate ? (
+            <ErrorCard>
+              <LockedWallet />
+            </ErrorCard>
+          ) : (
+            <>
+              <RowCenter gap={16}>
+                <TYPE.body style={{ whiteSpace: 'nowrap' }}>
+                  <Trans>Send to</Trans>
+                </TYPE.body>
+                <UsersSearchBar onSelect={setRecipient} selfSearchAllowed={false} />
+              </RowCenter>
+
+              <Column gap={12}>
+                <TransferSummary>
+                  <RowCenter gap={12}>
+                    <img src={currentUser.profile.pictureUrl} />
+                    <TYPE.body fontSize={14}>
+                      <Trans>My account</Trans>
+                    </TYPE.body>
+                  </RowCenter>
+
+                  <ArrowWrapper>
+                    <Arrow />
+                  </ArrowWrapper>
+
+                  <RowCenter gap={12}>
+                    {recipient && (
+                      <>
+                        <img src={recipient.profile.pictureUrl} />
+                        <TYPE.body fontSize={14}>{recipient.username}</TYPE.body>
+                      </>
+                    )}
+                  </RowCenter>
+                </TransferSummary>
+
+                {recipient && !recipient.starknetWallet.address && (
+                  <TYPE.body color="error">
+                    <Trans>This user does not have a wallet yet, please try again in a few hours.</Trans>
+                  </TYPE.body>
+                )}
+              </Column>
+            </>
+          )}
+
+          <PrimaryButton onClick={handleConfirmation} disabled={!recipient?.starknetWallet.address} large>
+            <Trans>Next</Trans>
+          </PrimaryButton>
+        </Column>
+      </StarknetSigner>
     </Modal>
   )
 }

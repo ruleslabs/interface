@@ -76,12 +76,20 @@ const EtherscanButtonWrapper = styled(ColumnCenter)`
 `
 
 interface ConfirmationProps {
+  confirmationText: string
+  transactionText: string
   txHash?: string
   error?: string
   waitingForFees: boolean
 }
 
-export default function Confirmation({ txHash, error, waitingForFees }: ConfirmationProps) {
+export default function Confirmation({
+  confirmationText,
+  transactionText,
+  txHash,
+  error,
+  waitingForFees,
+}: ConfirmationProps) {
   return (
     <StyledConfirmation>
       <Column gap={24}>
@@ -89,12 +97,10 @@ export default function Confirmation({ txHash, error, waitingForFees }: Confirma
 
         {txHash ? (
           <ColumnCenter gap={8}>
-            <Title>
-              <Trans>Your card is on its way</Trans>
-            </Title>
+            <Title>{confirmationText}</Title>
 
             <Subtitle>
-              <Trans>The transfer might take a few hours to succeed.</Trans>
+              <Trans>The transaction might take a few hours to succeed.</Trans>
             </Subtitle>
           </ColumnCenter>
         ) : error ? (
@@ -111,9 +117,7 @@ export default function Confirmation({ txHash, error, waitingForFees }: Confirma
               {waitingForFees ? <Trans>Estimating network fee</Trans> : <Trans>Waiting for confirmation</Trans>}
             </Title>
 
-            <Subtitle>
-              <Trans>Card transfer.</Trans>
-            </Subtitle>
+            <Subtitle>{transactionText}</Subtitle>
           </ColumnCenter>
         )}
       </Column>
