@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
 import { uint256HexFromStrHex } from '@rulesorg/sdk-core'
 import { ApolloError } from '@apollo/client'
+import { Call, Signature } from 'starknet'
 
 import Modal from '@/components/Modal'
 import { useModalOpen, useCreateOfferModalToggle } from '@/state/application/hooks'
@@ -52,7 +53,7 @@ export default function CreateOfferModal({
   tokenId,
   pictureUrl,
   onSuccess,
-}: OfferModalProps) {
+}: CreateOfferModalProps) {
   // current user
   const currentUser = useCurrentUser()
 
@@ -127,9 +128,9 @@ export default function CreateOfferModal({
         modalHeaderText={t`Choose a selling price`}
         confirmationText={t`Your offer will be created`}
         transactionText={t`offer creation.`}
-        call={call}
-        txHash={txHash}
-        error={error}
+        call={call ?? undefined}
+        txHash={txHash ?? undefined}
+        error={error ?? undefined}
         onDismiss={toggleCreateOfferModal}
         onSignature={onSignature}
         onError={onError}

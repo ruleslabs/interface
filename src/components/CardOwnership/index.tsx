@@ -82,7 +82,7 @@ export default function CardOwnership({
                 </Trans>
               </PrimaryButton>
             ) : (
-              <PrimaryButton onClick={toggleCreateOfferModal} large>
+              <PrimaryButton onClick={toggleCreateOfferModal} disabled large>
                 <Trans>Place for Sale</Trans>
               </PrimaryButton>
             )}

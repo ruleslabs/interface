@@ -78,6 +78,11 @@ function theme(darkMode: boolean) {
     before: {
       alert: Alert,
     },
+
+    size: {
+      headerHeight: '121px', // 57px
+      headerHeightMedium: '126px', // 62px
+    },
   }
 }
 

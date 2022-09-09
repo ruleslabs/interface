@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
 import { uint256HexFromStrHex } from '@rulesorg/sdk-core'
 import { ApolloError } from '@apollo/client'
+import { Call, Signature } from 'starknet'
 
 import Modal from '@/components/Modal'
 import { useModalOpen, useOfferModalToggle } from '@/state/application/hooks'
@@ -203,9 +204,9 @@ export default function OfferModal({
         modalHeaderText={t`Offer this card`}
         confirmationText={t`Your card is on its way`}
         transactionText={t`card transfer.`}
-        call={call}
-        txHash={txHash}
-        error={error}
+        call={call ?? undefined}
+        txHash={txHash ?? undefined}
+        error={error ?? undefined}
         onDismiss={toggleOfferModal}
         onSignature={onSignature}
         onError={onError}

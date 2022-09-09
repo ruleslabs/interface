@@ -17,8 +17,8 @@ import { SecondaryButton, PrimaryButton } from '@/components/Button'
 import { menuLinks } from '@/components/Header'
 
 const StyledNavModal = styled.div`
-  margin-top: 62px;
-  height: calc(100% - 62px);
+  margin-top: ${({ theme }) => theme.size.headerHeightMedium};
+  height: calc(100% - ${({ theme }) => theme.size.headerHeightMedium});
   width: 280px;
   background: ${({ theme }) => theme.bg2};
   position: relative;

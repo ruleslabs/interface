@@ -14,15 +14,15 @@ import Link from '@/components/Link'
 
 const Video = styled.video`
   position: absolute;
-  top: 57px;
-  height: calc(100% - 57px + 128px); // 100% - header + footer
+  top: ${({ theme }) => theme.size.headerHeight};
+  height: calc(100% - ${({ theme }) => theme.size.headerHeight} + 128px); // 100% - header + footer
   width: 100%;
   object-fit: cover;
   z-index: -1;
 
   ${({ theme }) => theme.media.medium`
-    top: 62px;
-    height: calc(100% - 62px + 128px);
+    top: ${theme.size.headerHeightMedium};
+    height: calc(100% - ${theme.size.headerHeightMedium} + 128px);
     object-position: left;
   `}
 `

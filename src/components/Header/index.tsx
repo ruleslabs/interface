@@ -8,6 +8,8 @@ import { useOpenModal, useCloseModal, useModalOpen } from '@/state/application/h
 import { ApplicationModal } from '@/state/application/actions'
 import NavModal from '@/components/NavModal'
 import { useCurrentUser } from '@/state/user/hooks'
+import { ColumnCenter } from '@/components/Column'
+import { TYPE } from '@/styles/theme'
 
 import Logo from '@/public/assets/logo.svg'
 import Hamburger from '@/images/hamburger.svg'
@@ -22,7 +24,7 @@ const MobileNavWrapper = styled.div`
 `
 
 const StyledHeader = styled.header`
-  height: 57px;
+  height: ${({ theme }) => theme.size.headerHeight};
   background-color: ${({ theme }) => theme.bg2};
   display: flex;
   align-items: center;
@@ -33,12 +35,12 @@ const StyledHeader = styled.header`
   left: 0;
   right: 0;
   z-index: 3;
-  padding: 0 100px;
+  padding: 64px 100px 0;
 
   ${({ theme }) => theme.media.medium`
-    padding: 0 1rem;
+    padding: 64px 1rem 0;
     justify-content: space-between;
-    height: 62px;
+    height: ${theme.size.headerHeightMedium};
     z-index: 999;
   `}
 `
@@ -75,6 +77,22 @@ const HamburgerWrapper = styled.div<{ alert?: boolean }>`
   ${({ theme, alert = false }) => alert && theme.before.alert}
 `
 
+const ComingSoon = styled(ColumnCenter)`
+  background: ${({ theme }) => theme.primary1};
+  padding: 12px 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  position: absolute;
+  z-index: 1;
+  justify-content: center;
+
+  & a {
+    text-decoration: underline;
+  }
+`
+
 interface MenuLink {
   name: string
   link: string
@@ -94,6 +112,19 @@ export default function Header() {
 
   return (
     <StyledHeader>
+      <ComingSoon>
+        <TYPE.medium textAlign="center">Rules participe au ZEvent Place</TYPE.medium>
+        <TYPE.body textAlign="center">
+          <Trans>
+            Place ton pixel pour représenter la commu en suivant&nbsp;
+            <Link color="text1" href="/place" target="_blank" underline>
+              ce dessin
+            </Link>
+            .
+          </Trans>
+        </TYPE.body>
+      </ComingSoon>
+
       <Link href="/">
         <StyledLogo />
       </Link>

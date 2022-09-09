@@ -59,7 +59,7 @@ const StyledDialogContent = styled(AnimatedDialogContent)<{ $sidebar: boolean }>
       !$sidebar &&
       `
         position: fixed;
-        top: 62px;
+        top: ${theme.size.headerHeightMedium};
         bottom: 0;
         width: 100%;
       `

@@ -1,6 +1,6 @@
-import { useCallback, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { Call } from 'starknet'
+import { Call, Signature } from 'starknet'
 
 import { ModalHeader } from '@/components/Modal'
 import Column from '@/components/Column'
@@ -27,14 +27,14 @@ const StyledStarknetSignerModal = styled(Column)`
 `
 
 interface StarknetSignerProps {
-  children: string
+  children: React.ReactNode
   modalHeaderText: string
   confirmationText: string
   transactionText: string
   call?: Call
   txHash?: string
-  error: string
-  onSignature(): void
+  error?: string
+  onSignature(signature: Signature, maxFee: string): void
   onDismiss(): void
   onError(error: string): void
 }

@@ -15,7 +15,7 @@ import Link from '@/components/Link'
 const ComingSoon = styled(ColumnCenter)`
   background: ${({ theme }) => theme.primary1};
   padding: 12px 0;
-  top: 57px;
+  top: ${({ theme }) => theme.size.headerHeight};
   margin-left: 283px;
   right: 0;
   z-index: 1;
@@ -122,10 +122,10 @@ export default function Marketplace() {
         dispatch={toggleFiltersOnMobile}
       />
       <ComingSoon>
-        <TYPE.medium>
+        <TYPE.medium textAlign="center">
           <Trans>The marketplace is opening soon.</Trans>
         </TYPE.medium>
-        <TYPE.body>
+        <TYPE.body textAlign="center">
           <Trans>
             Please&nbsp;
             <Link color="text1" href="https://discord.gg/DrfezKYUhH" target="_blank" underline>

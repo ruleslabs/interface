@@ -36,5 +36,10 @@ declare module 'styled-components' {
     before: {
       alert: FlattenSimpleInterpolation<DefaultTheme>
     }
+
+    size: {
+      headerHeight: string
+      headerHeightMedium: string
+    }
   }
 }
