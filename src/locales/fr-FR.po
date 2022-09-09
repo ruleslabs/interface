@@ -255,7 +255,7 @@ msgid "Close offer - {askETH} ETH {0}"
 msgstr "Arrêter la vente - {askETH} ETH {0}"
 
 #: src/components/CardOwnership/index.tsx
-msgid "Offer"
+msgid "Gift"
 msgstr "Offrir"
 
 #: src/components/CardOwnership/index.tsx
@@ -978,3 +978,31 @@ msgstr "Vous n'avez pas assez d'ETH sur votre Wallet pour payer les frais de ré
 #: src/components/DepositModal/Deposit.tsx
 msgid "Haven’t got an Ethereum wallet yet?<0/>Learn how to create one with <1>Metamask</1>"
 msgstr "Vous n'avez pas encore de portefeuille Ethereum?<0/>Apprenez à en créer un avec <1>Metamask</1>"
+
+#: src/components/CreateOfferModal/index.tsx
+msgid "This fee will help Rules' further development."
+msgstr "Ces frais permettront de financer le développement de Rules."
+
+#: src/components/CreateOfferModal/index.tsx
+msgid "This fee will go to {artistName} and his team."
+msgstr "Cette comission sera versée à {artistName} et son équipe."
+
+#: src/components/DepositModal/Confirmation.tsx
+msgid "{error}"
+msgstr "{error}"
+
+#: src/components/CreateOfferModal/index.tsx
+msgid "Enter an asking price"
+msgstr "Choisis un prix de vente"
+
+#: src/components/CreateOfferModal/index.tsx
+msgid "Artist fee ({0}%)"
+msgstr "Commission artiste ({0}%)"
+
+#: src/components/CreateOfferModal/index.tsx
+msgid "Marketplace fee ({0}%)"
+msgstr "Frais de service ({0}%)"
+
+#: src/components/CreateOfferModal/index.tsx
+msgid "Total payout"
+msgstr "Récupéré en cas de vente"

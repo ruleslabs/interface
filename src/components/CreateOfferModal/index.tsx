@@ -22,12 +22,13 @@ import { networkId } from '@/constants/networks'
 import EtherInput from '@/components/Input/EtherInput'
 import Row from '@/components/Row'
 import {
-  ARTIST_COMMSSION_PERCENTAGE,
-  SERVICE_FEE_PERCENTAGE,
+  ARTIST_FEE_PERCENTAGE,
+  MARKETPLACE_FEE_PERCENTAGE,
   BIG_INT_MIN_MARKETPLACE_OFFER_PRICE,
   BIG_INT_MAX_MARKETPLACE_OFFER_PRICE,
 } from '@/constants/misc'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
+import Tooltip from '@/components/Tooltip'
 
 const CardBreakdown = styled(RowCenter)`
   gap: 16px;
@@ -43,6 +44,7 @@ const CardBreakdown = styled(RowCenter)`
 
 const SaleBreakdownLine = styled(Row)`
   width: 100%;
+  gap: 8px;
 
   & > div:last-child {
     margin-left: auto;
@@ -97,13 +99,13 @@ export default function CreateOfferModal({
   }, [price])
 
   // price breakdown
-  const { artistCommssion, serviceFee, earned } = useMemo(() => {
+  const { artistFee, marketplaceFee, payout } = useMemo(() => {
     const total = WeiAmount.fromEtherAmount(price.length ? price : 0)
 
     return {
-      artistCommssion: total.multiply(new Fraction(ARTIST_COMMSSION_PERCENTAGE, 1_000_000)),
-      serviceFee: total.multiply(new Fraction(SERVICE_FEE_PERCENTAGE, 1_000_000)),
-      earned: total.multiply(new Fraction(1_000_000 - SERVICE_FEE_PERCENTAGE - ARTIST_COMMSSION_PERCENTAGE, 1_000_000)),
+      artistFee: total.multiply(new Fraction(ARTIST_FEE_PERCENTAGE, 1_000_000)),
+      marketplaceFee: total.multiply(new Fraction(MARKETPLACE_FEE_PERCENTAGE, 1_000_000)),
+      payout: total.multiply(new Fraction(1_000_000 - MARKETPLACE_FEE_PERCENTAGE - ARTIST_FEE_PERCENTAGE, 1_000_000)),
     }
   }, [price])
 
@@ -170,7 +172,7 @@ export default function CreateOfferModal({
   return (
     <Modal onDismiss={toggleCreateOfferModal} isOpen={isOpen}>
       <StarknetSigner
-        modalHeaderText={t`Choose a selling price`}
+        modalHeaderText={t`Enter an asking price`}
         confirmationText={t`Your offer will be created`}
         transactionText={t`offer creation.`}
         call={call ?? undefined}
@@ -204,23 +206,27 @@ export default function CreateOfferModal({
               <Column gap={12}>
                 <SaleBreakdownLine>
                   <TYPE.body>
-                    <Trans>Artist commission ({ARTIST_COMMSSION_PERCENTAGE / 10_000}%)</Trans>
+                    <Trans>Artist fee ({ARTIST_FEE_PERCENTAGE / 10_000}%)</Trans>
                   </TYPE.body>
 
+                  <Tooltip text={t`This fee will go to ${artistName} and his team.`} />
+
                   <Row gap={8}>
-                    <TYPE.subtitle>{weiAmounToEurValue(artistCommssion)} EUR</TYPE.subtitle>
-                    <TYPE.body>{artistCommssion.toSignificant(6)} ETH</TYPE.body>
+                    <TYPE.subtitle>{weiAmounToEurValue(artistFee)} EUR</TYPE.subtitle>
+                    <TYPE.body>{artistFee.toSignificant(6)} ETH</TYPE.body>
                   </Row>
                 </SaleBreakdownLine>
 
                 <SaleBreakdownLine>
                   <TYPE.body>
-                    <Trans>Service fee ({SERVICE_FEE_PERCENTAGE / 10_000}%)</Trans>
+                    <Trans>Marketplace fee ({MARKETPLACE_FEE_PERCENTAGE / 10_000}%)</Trans>
                   </TYPE.body>
 
+                  <Tooltip text={t`This fee will help Rules' further development.`} />
+
                   <Row gap={8}>
-                    <TYPE.subtitle>{weiAmounToEurValue(serviceFee)} EUR</TYPE.subtitle>
-                    <TYPE.body>{serviceFee.toSignificant(6)} ETH</TYPE.body>
+                    <TYPE.subtitle>{weiAmounToEurValue(marketplaceFee)} EUR</TYPE.subtitle>
+                    <TYPE.body>{marketplaceFee.toSignificant(6)} ETH</TYPE.body>
                   </Row>
                 </SaleBreakdownLine>
 
@@ -228,12 +234,12 @@ export default function CreateOfferModal({
 
                 <SaleBreakdownLine>
                   <TYPE.body>
-                    <Trans>Earn if sold</Trans>
+                    <Trans>Total payout</Trans>
                   </TYPE.body>
 
                   <Row gap={8}>
-                    <TYPE.subtitle>{weiAmounToEurValue(earned)} EUR</TYPE.subtitle>
-                    <TYPE.body>{earned.toSignificant(6)} ETH</TYPE.body>
+                    <TYPE.subtitle>{weiAmounToEurValue(payout)} EUR</TYPE.subtitle>
+                    <TYPE.body>{payout.toSignificant(6)} ETH</TYPE.body>
                   </Row>
                 </SaleBreakdownLine>
               </Column>

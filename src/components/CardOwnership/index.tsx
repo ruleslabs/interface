@@ -90,7 +90,7 @@ export default function CardOwnership({
               <SecondaryButton onClick={toggleOfferModal} large>
                 <RowCenter justify="center" gap={4}>
                   <StyledPresent />
-                  <Trans>Offer</Trans>
+                  <Trans>Gift</Trans>
                 </RowCenter>
               </SecondaryButton>
             )}
