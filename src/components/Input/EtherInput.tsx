@@ -22,7 +22,7 @@ const StyledEtherInput = styled(RowCenter)`
   }
 
   & * {
-    font-weight: normal;
+    font-weight: 400;
   }
 
   & > div:first-child {
@@ -33,8 +33,7 @@ const StyledEtherInput = styled(RowCenter)`
 const Input = styled.input`
   background: transparent;
   border: none;
-  font-size: 24px;
-  font-family: 'Roboto Mono', monospace;
+  font-size: 26px;
   outline: none;
   width: 100%;
   text-align: right;
@@ -66,7 +65,7 @@ export default function EtherInput({ onUserInput, ...props }: EtherInputProps) {
   const handleInput = useCallback(
     (event) => {
       const value = event?.target?.value?.replace(',', '.')
-      if (value === '' || /^([0-9]+\.?[0-9]*|\.[0-9]+)$/.test(value)) onUserInput(value)
+      if (value === '' || /^([0-9]{1,10}\.[0-9]{0,18}|[0-9]{1,10}\.?)$/.test(value)) onUserInput(value)
     },
     [onUserInput]
   )
@@ -78,11 +77,10 @@ export default function EtherInput({ onUserInput, ...props }: EtherInputProps) {
   // fiat
   const weiAmounToEurValue = useWeiAmountToEURValue()
 
-  // TODO: WeiAmount.fromEtherAmount(props?.value?.length ? props.value : 0)
   return (
     <StyledEtherInput onClick={setInputFocus}>
       <TYPE.large color="text2">
-        <Trans>{weiAmounToEurValue(WeiAmount.fromEtherAmount(+(props?.value ?? 0)))} EUR</Trans>
+        <Trans>{weiAmounToEurValue(WeiAmount.fromEtherAmount(props?.value?.length ? props.value : 0))} EUR</Trans>
       </TYPE.large>
       <Input onChange={handleInput} ref={inputRef} {...props} />
       <TYPE.large>ETH</TYPE.large>
