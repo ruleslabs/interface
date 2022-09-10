@@ -31,7 +31,7 @@ interface StarknetSignerProps {
   modalHeaderText: string
   confirmationText: string
   transactionText: string
-  call?: Call
+  calls?: Call[]
   txHash?: string
   error?: string
   onSignature(signature: Signature, maxFee: string): void
@@ -43,7 +43,7 @@ export default function StarknetSigner({
   modalHeaderText,
   confirmationText,
   transactionText,
-  call,
+  calls,
   txHash,
   error,
   onSignature,
@@ -75,16 +75,16 @@ export default function StarknetSigner({
             transactionText={transactionText}
           />
         ) : (
-          !call && children
+          !calls && children
         )}
 
         <Signer
-          isOpen={!txHash && !waitingForTx && !waitingForFees && !!call}
+          isOpen={!txHash && !waitingForTx && !waitingForFees && !!calls}
           onWaitingForFees={onWaitingForFees}
           onConfirmation={onConfirmation}
           onSignature={onSignature}
           onError={onError}
-          call={call ?? undefined}
+          calls={calls ?? undefined}
         />
       </StyledStarknetSignerModal>
     </>

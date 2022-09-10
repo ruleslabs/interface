@@ -16,7 +16,7 @@ import YoutubeEmbed from '@/components/YoutubeEmbed'
 import CardModel3D from '@/components/CardModel3D'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
-import OfferModal from '@/components/OfferModal'
+import GiftModal from '@/components/GiftModal'
 import CreateOfferModal from '@/components/CreateOfferModal'
 
 const MainSection = styled(Section)`
@@ -174,7 +174,7 @@ export default function CardBreakout() {
         </Column>
       </Section>
 
-      <OfferModal
+      <GiftModal
         artistName={card.cardModel.artist.displayName}
         scarcityName={card.cardModel.scarcity.name}
         scarcityMaxSupply={card.cardModel.scarcity.maxSupply}

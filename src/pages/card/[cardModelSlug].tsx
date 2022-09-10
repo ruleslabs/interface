@@ -56,7 +56,7 @@ const QUERY_CARD_MODEL = gql`
       videoUrl
       rotatingVideoUrl
       lowestAsk
-      averageSell
+      averageSale
       youtubePreviewId
       season
       scarcity {
@@ -93,7 +93,7 @@ export default function CardModelPage() {
         ? {
             ...cardModelData.cardModel,
             lowestAskEUR: weiAmountToEURValue(WeiAmount.fromRawAmount(cardModelData.cardModel.lowestAsk ?? 0)),
-            averageSellEUR: weiAmountToEURValue(WeiAmount.fromRawAmount(cardModelData.cardModel.averageSell ?? 0)),
+            averageSaleEUR: weiAmountToEURValue(WeiAmount.fromRawAmount(cardModelData.cardModel.averageSale ?? 0)),
           }
         : cardModelData?.cardModel,
     [cardModelData?.cardModel, weiAmountToEURValue]
@@ -138,7 +138,7 @@ export default function CardModelPage() {
             <CardModelSales
               slug={`${cardModelSlug}`}
               lowestAskEUR={cardModel.lowestAskEUR}
-              averageSellEUR={cardModel.averageSellEUR}
+              averageSaleEUR={cardModel.averageSaleEUR}
               cardsOnSaleCount={cardModel.cardsOnSaleCount}
             />
           </Card>

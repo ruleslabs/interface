@@ -47,14 +47,14 @@ const NetworkFeeWrapper = styled(RowCenter)`
 
 interface SignerProps {
   isOpen: boolean
-  call?: Call
+  calls?: Call[]
   onWaitingForFees(estimating: boolean): void
   onConfirmation(): void
   onSignature(signature: Signature, maxFee: string): void
   onError(error: string): void
 }
 
-export default function Signer({ isOpen, call, onWaitingForFees, onConfirmation, onSignature, onError }: SignerProps) {
+export default function Signer({ isOpen, calls, onWaitingForFees, onConfirmation, onSignature, onError }: SignerProps) {
   // deposit modal
   const toggleDepositModal = useDepositModalToggle()
 
@@ -95,7 +95,7 @@ export default function Signer({ isOpen, call, onWaitingForFees, onConfirmation,
     (event) => {
       event.preventDefault()
 
-      if (!call) return
+      if (!calls) return
 
       decryptRulesPrivateKey(rulesPrivateKey, password)
         .catch((error: Error) => {
@@ -114,7 +114,7 @@ export default function Signer({ isOpen, call, onWaitingForFees, onConfirmation,
 
           setAccount(account)
           onWaitingForFees(true)
-          return account.estimateFee([call])
+          return account.estimateFee(calls)
         })
         .then((estimatedFees?: EstimateFee) => {
           const maxFee = estimatedFees?.suggestedMaxFee.toString() ?? '0'
@@ -134,7 +134,7 @@ export default function Signer({ isOpen, call, onWaitingForFees, onConfirmation,
           onError(error.message)
         })
     },
-    [password, rulesPrivateKey, address, provider, call, onError, onWaitingForFees]
+    [password, rulesPrivateKey, address, provider, calls, onError, onWaitingForFees]
   )
 
   // nonce mgmt
@@ -145,7 +145,7 @@ export default function Signer({ isOpen, call, onWaitingForFees, onConfirmation,
     (event) => {
       event.preventDefault()
 
-      if (!account || !networkFee?.maxFee || !call) return
+      if (!account || !networkFee?.maxFee || !calls) return
 
       onConfirmation()
 
@@ -171,7 +171,7 @@ export default function Signer({ isOpen, call, onWaitingForFees, onConfirmation,
             chainId: account.chainId,
           }
 
-          return account.signer.signTransaction([call], signerDetails)
+          return account.signer.signTransaction(calls, signerDetails)
         })
         .then((signature?: Signature) => {
           if (!signature) {
@@ -188,7 +188,7 @@ export default function Signer({ isOpen, call, onWaitingForFees, onConfirmation,
           onError(`Failed to sign transaction: ${error.message}`)
         })
     },
-    [currentUserNextNonceQuery, onError, call, account, networkFee?.maxFee, onSignature]
+    [currentUserNextNonceQuery, onError, calls, account, networkFee?.maxFee, onSignature]
   )
 
   if (!isOpen) return null

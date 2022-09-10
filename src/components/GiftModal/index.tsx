@@ -95,7 +95,7 @@ const ArrowWrapper = styled(Column)`
   }
 `
 
-interface OfferModalProps {
+interface GiftModalProps {
   artistName: string
   season: number
   scarcityName: string
@@ -106,7 +106,7 @@ interface OfferModalProps {
   onSuccess(): void
 }
 
-export default function OfferModal({
+export default function GiftModal({
   artistName,
   season,
   scarcityName,
@@ -115,7 +115,7 @@ export default function OfferModal({
   tokenId,
   pictureUrl,
   onSuccess,
-}: OfferModalProps) {
+}: GiftModalProps) {
   // current user
   const currentUser = useCurrentUser()
 
@@ -123,29 +123,31 @@ export default function OfferModal({
   const isOpen = useModalOpen(ApplicationModal.OFFER)
   const toggleOfferModal = useOfferModalToggle()
 
-  // generate call
+  // generate calls
   const [recipient, setRecipient] = useState<any | null>(null)
-  const [call, setCall] = useState<Call | null>(null)
+  const [calls, setCalls] = useState<Call[] | null>(null)
 
   const handleConfirmation = useCallback(() => {
     if (!currentUser.starknetWallet.address || !recipient?.starknetWallet.address) return
 
     const uint256TokenId = uint256HexFromStrHex(tokenId)
 
-    setCall({
-      contractAddress: RULES_TOKENS_ADDRESSES[networkId],
-      entrypoint: 'safeTransferFrom',
-      calldata: [
-        currentUser.starknetWallet.address,
-        recipient.starknetWallet.address,
-        uint256TokenId.low,
-        uint256TokenId.high,
-        1, // amount.low
-        0, // amount.high
-        1, // data len
-        0, // data
-      ],
-    })
+    setCalls([
+      {
+        contractAddress: RULES_TOKENS_ADDRESSES[networkId],
+        entrypoint: 'safeTransferFrom',
+        calldata: [
+          currentUser.starknetWallet.address,
+          recipient.starknetWallet.address,
+          uint256TokenId.low,
+          uint256TokenId.high,
+          1, // amount.low
+          0, // amount.high
+          1, // data len
+          0, // data
+        ],
+      },
+    ])
   }, [tokenId, currentUser?.starknetWallet.address, recipient?.starknetWallet.address])
 
   // error
@@ -191,7 +193,7 @@ export default function OfferModal({
   // on close modal
   useEffect(() => {
     if (isOpen) {
-      setCall(null)
+      setCalls(null)
       setTxHash(null)
       setError(null)
       setRecipient(null)
@@ -204,7 +206,7 @@ export default function OfferModal({
         modalHeaderText={t`Offer this card`}
         confirmationText={t`Your card is on its way`}
         transactionText={t`card transfer.`}
-        call={call ?? undefined}
+        calls={calls ?? undefined}
         txHash={txHash ?? undefined}
         error={error ?? undefined}
         onDismiss={toggleOfferModal}

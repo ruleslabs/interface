@@ -21,7 +21,7 @@ export const RULES_TOKENS_ADDRESSES: AddressesMap = {
 }
 
 export const MARKETPLACE_ADDRESSES: AddressesMap = {
-  [SupportedNetworks.GOERLI]: '0x1',
+  [SupportedNetworks.GOERLI]: '0x16a025e8c1f35f42e841cd8bff56f22ce706173cd044fffafdef5a355335219',
   [SupportedNetworks.MAINNET]: '0x1',
 }
 

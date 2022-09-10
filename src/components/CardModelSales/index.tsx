@@ -10,11 +10,11 @@ import Placeholder from '@/components/Placeholder'
 interface CardModelSalesProps {
   slug: string
   lowestAskEUR?: string
-  averageSellEUR?: string
+  averageSaleEUR?: string
   cardsOnSaleCount: number
 }
 
-export default function CardModelSales({ slug, lowestAskEUR, averageSellEUR, cardsOnSaleCount }: CardModelSalesProps) {
+export default function CardModelSales({ slug, lowestAskEUR, averageSaleEUR, cardsOnSaleCount }: CardModelSalesProps) {
   return (
     <Column gap={50}>
       <RowCenter gap={12} justify="space-between">
@@ -26,7 +26,7 @@ export default function CardModelSales({ slug, lowestAskEUR, averageSellEUR, car
           </TYPE.body>
         </TYPE.body>
         <TYPE.body fontWeight={700} fontSize={26}>
-          {averageSellEUR ?? '- '}€
+          {averageSaleEUR ?? '- '}€
           <br />
           <TYPE.body>
             <Trans>Average sale</Trans>

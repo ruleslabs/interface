@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
-import { WeiAmount, Fraction, uint256HexFromStrHex } from '@rulesorg/sdk-core'
+import { Fraction, uint256HexFromStrHex } from '@rulesorg/sdk-core'
 import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
@@ -16,7 +16,7 @@ import { PrimaryButton } from '@/components/Button'
 import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
 import StarknetSigner from '@/components/StarknetSigner'
-import { MARKETPLACE_ADDRESSES } from '@/constants/addresses'
+import { MARKETPLACE_ADDRESSES, RULES_TOKENS_ADDRESSES } from '@/constants/addresses'
 import { useCreateOfferMutation } from '@/state/wallet/hooks'
 import { networkId } from '@/constants/networks'
 import EtherInput from '@/components/Input/EtherInput'
@@ -29,6 +29,7 @@ import {
 } from '@/constants/misc'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import Tooltip from '@/components/Tooltip'
+import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
 
 const CardBreakdown = styled(RowCenter)`
   gap: 16px;
@@ -88,42 +89,51 @@ export default function CreateOfferModal({
 
   // price
   const [price, setPrice] = useState<string>('')
+  const parsedPrice = useMemo(() => tryParseWeiAmount(price), [price])
+
   const onPriceInput = useCallback((value: string) => setPrice(value), [])
   const isPriceValid = useMemo(() => {
-    const weiAmountPrice = WeiAmount.fromEtherAmount(price.length ? price : 0)
+    if (!parsedPrice) return false
 
     return (
-      !weiAmountPrice.lessThan(BIG_INT_MIN_MARKETPLACE_OFFER_PRICE) &&
-      !weiAmountPrice.greaterThan(BIG_INT_MAX_MARKETPLACE_OFFER_PRICE)
+      !parsedPrice.lessThan(BIG_INT_MIN_MARKETPLACE_OFFER_PRICE) &&
+      !parsedPrice.greaterThan(BIG_INT_MAX_MARKETPLACE_OFFER_PRICE)
     )
-  }, [price])
+  }, [parsedPrice])
 
   // price breakdown
   const { artistFee, marketplaceFee, payout } = useMemo(() => {
-    const total = WeiAmount.fromEtherAmount(price.length ? price : 0)
-
     return {
-      artistFee: total.multiply(new Fraction(ARTIST_FEE_PERCENTAGE, 1_000_000)),
-      marketplaceFee: total.multiply(new Fraction(MARKETPLACE_FEE_PERCENTAGE, 1_000_000)),
-      payout: total.multiply(new Fraction(1_000_000 - MARKETPLACE_FEE_PERCENTAGE - ARTIST_FEE_PERCENTAGE, 1_000_000)),
+      artistFee: parsedPrice?.multiply(new Fraction(ARTIST_FEE_PERCENTAGE, 1_000_000)),
+      marketplaceFee: parsedPrice?.multiply(new Fraction(MARKETPLACE_FEE_PERCENTAGE, 1_000_000)),
+      payout: parsedPrice?.multiply(
+        new Fraction(1_000_000 - MARKETPLACE_FEE_PERCENTAGE - ARTIST_FEE_PERCENTAGE, 1_000_000)
+      ),
     }
-  }, [price])
+  }, [parsedPrice])
 
   // fiat
   const weiAmounToEurValue = useWeiAmountToEURValue()
 
   // call
-  const [call, setCall] = useState<Call | null>(null)
+  const [calls, setCalls] = useState<Call[] | null>(null)
   const handleConfirmation = useCallback(() => {
-    if (!price || !+price) return
+    if (!parsedPrice) return
 
     const uint256TokenId = uint256HexFromStrHex(tokenId)
 
-    setCall({
-      contractAddress: MARKETPLACE_ADDRESSES[networkId],
-      entrypoint: 'createOffer',
-      calldata: [uint256TokenId.low, uint256TokenId.high, price],
-    })
+    setCalls([
+      {
+        contractAddress: RULES_TOKENS_ADDRESSES[networkId],
+        entrypoint: 'approve',
+        calldata: [MARKETPLACE_ADDRESSES[networkId], uint256TokenId.low, uint256TokenId.high, 1, 0],
+      },
+      {
+        contractAddress: MARKETPLACE_ADDRESSES[networkId],
+        entrypoint: 'createOffer',
+        calldata: [uint256TokenId.low, uint256TokenId.high, parsedPrice.quotient.toString()],
+      },
+    ])
   }, [tokenId, price])
 
   // error
@@ -136,9 +146,11 @@ export default function CreateOfferModal({
 
   const onSignature = useCallback(
     (signature: Signature, maxFee: string) => {
-      if (!price) return
+      if (!parsedPrice) return
 
-      createOfferMutation({ variables: { tokenId, price, maxFee, signature: JSON.stringify(signature) } })
+      createOfferMutation({
+        variables: { tokenId, price: parsedPrice.quotient.toString(), maxFee, signature: JSON.stringify(signature) },
+      })
         .then((res?: any) => {
           const hash = res?.data?.createOffer?.hash
           if (!hash) {
@@ -156,13 +168,13 @@ export default function CreateOfferModal({
           console.error(error)
         })
     },
-    [price, tokenId, onSuccess]
+    [parsedPrice, tokenId, onSuccess]
   )
 
   // on close modal
   useEffect(() => {
     if (isOpen) {
-      setCall(null)
+      setCalls(null)
       setTxHash(null)
       setError(null)
       setPrice('')
@@ -175,7 +187,7 @@ export default function CreateOfferModal({
         modalHeaderText={t`Enter an asking price`}
         confirmationText={t`Your offer will be created`}
         transactionText={t`offer creation.`}
-        call={call ?? undefined}
+        calls={calls ?? undefined}
         txHash={txHash ?? undefined}
         error={error ?? undefined}
         onDismiss={toggleCreateOfferModal}
@@ -212,8 +224,8 @@ export default function CreateOfferModal({
                   <Tooltip text={t`This fee will go to ${artistName} and his team.`} />
 
                   <Row gap={8}>
-                    <TYPE.subtitle>{weiAmounToEurValue(artistFee)} EUR</TYPE.subtitle>
-                    <TYPE.body>{artistFee.toSignificant(6)} ETH</TYPE.body>
+                    <TYPE.subtitle>{weiAmounToEurValue(artistFee) ?? 0} EUR</TYPE.subtitle>
+                    <TYPE.body>{artistFee?.toSignificant(6) ?? 0} ETH</TYPE.body>
                   </Row>
                 </SaleBreakdownLine>
 
@@ -225,8 +237,8 @@ export default function CreateOfferModal({
                   <Tooltip text={t`This fee will help Rules' further development.`} />
 
                   <Row gap={8}>
-                    <TYPE.subtitle>{weiAmounToEurValue(marketplaceFee)} EUR</TYPE.subtitle>
-                    <TYPE.body>{marketplaceFee.toSignificant(6)} ETH</TYPE.body>
+                    <TYPE.subtitle>{weiAmounToEurValue(marketplaceFee) ?? 0} EUR</TYPE.subtitle>
+                    <TYPE.body>{marketplaceFee?.toSignificant(6) ?? 0} ETH</TYPE.body>
                   </Row>
                 </SaleBreakdownLine>
 
@@ -238,8 +250,8 @@ export default function CreateOfferModal({
                   </TYPE.body>
 
                   <Row gap={8}>
-                    <TYPE.subtitle>{weiAmounToEurValue(payout)} EUR</TYPE.subtitle>
-                    <TYPE.body>{payout.toSignificant(6)} ETH</TYPE.body>
+                    <TYPE.subtitle>{weiAmounToEurValue(payout) ?? 0} EUR</TYPE.subtitle>
+                    <TYPE.body>{payout?.toSignificant(6) ?? 0} ETH</TYPE.body>
                   </Row>
                 </SaleBreakdownLine>
               </Column>
