@@ -1,5 +1,7 @@
+import { useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
+import { WeiAmount } from '@rulesorg/sdk-core'
 
 import { useCurrentUser } from '@/state/user/hooks'
 import { RowCenter } from '@/components/Row'
@@ -9,6 +11,7 @@ import { PrimaryButton, SecondaryButton } from '@/components/Button'
 import Link from '@/components/Link'
 import Placeholder from '@/components/Placeholder'
 import { useOfferModalToggle, useCreateOfferModalToggle } from '@/state/application/hooks'
+import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 
 import Present from '@/images/present.svg'
 
@@ -34,8 +37,7 @@ interface CardOwnershipProps {
   ownerUsername: string
   ownerProfilePictureUrl: string
   inTransfer: boolean
-  askEUR?: string
-  askETH?: string
+  price?: string
 }
 
 export default function CardOwnership({
@@ -43,13 +45,20 @@ export default function CardOwnership({
   ownerUsername,
   ownerProfilePictureUrl,
   inTransfer,
-  askEUR,
-  askETH,
+  price,
 }: CardOwnershipProps) {
+  // current user
   const currentUser = useCurrentUser()
 
+  // modal
   const toggleOfferModal = useOfferModalToggle()
   const toggleCreateOfferModal = useCreateOfferModalToggle()
+
+  // price parsing
+  const parsedPrice = useMemo(() => (price ? WeiAmount.fromRawAmount(price) : null), [price])
+
+  // fiat
+  const weiAmounToEurValue = useWeiAmountToEURValue()
 
   return (
     <Column gap={16}>
@@ -67,18 +76,18 @@ export default function CardOwnership({
         </TYPE.body>
       </RowCenter>
       <ButtonsWrapper gap={12}>
-        {!inTransfer && (askETH || currentUser?.slug === ownerSlug) ? (
+        {!inTransfer && (parsedPrice || currentUser?.slug === ownerSlug) ? (
           <>
-            {currentUser?.slug === ownerSlug && askEUR ? (
+            {currentUser?.slug === ownerSlug && parsedPrice ? (
               <PrimaryButton large>
                 <Trans>
-                  Close offer - {askETH} ETH {askEUR ? `(${askEUR}€)` : null}
+                  Close offer - {parsedPrice.toSignificant(6)} ETH ({weiAmounToEurValue(parsedPrice)}€)
                 </Trans>
               </PrimaryButton>
-            ) : askETH ? (
+            ) : parsedPrice ? (
               <PrimaryButton large>
                 <Trans>
-                  Buy - {askETH} ETH {askEUR ? `(${askEUR}€)` : null}
+                  Buy - {parsedPrice.toSignificant(6)} ETH ({weiAmounToEurValue(parsedPrice)}€)
                 </Trans>
               </PrimaryButton>
             ) : (
@@ -86,7 +95,7 @@ export default function CardOwnership({
                 <Trans>Place for Sale</Trans>
               </PrimaryButton>
             )}
-            {!askEUR && (
+            {!parsedPrice && (
               <SecondaryButton onClick={toggleOfferModal} large>
                 <RowCenter justify="center" gap={4}>
                   <StyledPresent />

@@ -128,7 +128,7 @@ export default function GiftModal({
   const [calls, setCalls] = useState<Call[] | null>(null)
 
   const handleConfirmation = useCallback(() => {
-    if (!currentUser.starknetWallet.address || !recipient?.starknetWallet.address) return
+    if (!currentUser?.starknetWallet.address || !recipient?.starknetWallet.address) return
 
     const uint256TokenId = uint256HexFromStrHex(tokenId)
 
@@ -243,7 +243,7 @@ export default function GiftModal({
               <Column gap={12}>
                 <TransferSummary>
                   <RowCenter gap={12}>
-                    <img src={currentUser.profile.pictureUrl} />
+                    <img src={currentUser?.profile.pictureUrl} />
                     <TYPE.body fontSize={14}>
                       <Trans>My account</Trans>
                     </TYPE.body>

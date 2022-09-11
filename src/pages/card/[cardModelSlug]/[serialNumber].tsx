@@ -1,8 +1,7 @@
-import { useMemo, useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
-import { WeiAmount } from '@rulesorg/sdk-core'
 
 import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'
@@ -14,7 +13,6 @@ import CardOwnership from '@/components/CardOwnership'
 import CardTransfersHistory from '@/components/CardsTransfersHistory/card'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import CardModel3D from '@/components/CardModel3D'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
 import GiftModal from '@/components/GiftModal'
 import CreateOfferModal from '@/components/CreateOfferModal'
@@ -61,7 +59,7 @@ const QUERY_CARD = gql`
       starknetTokenId
       inTransfer
       currentOffer {
-        ask
+        price
       }
       owner {
         user {
@@ -99,16 +97,8 @@ export default function CardBreakout() {
   const { cardModelSlug, serialNumber } = router.query
   const cardSlug = `${cardModelSlug}-${serialNumber}`
 
-  const weiAmountToEURValue = useWeiAmountToEURValue()
-
-  const { data: cardData, loading, error } = useQuery(QUERY_CARD, { variables: { slug: cardSlug }, skip: !cardSlug })
-
-  const card = useMemo(() => {
-    if (cardData?.card && cardData?.card.currentOffer?.ask) {
-      const ask = WeiAmount.fromRawAmount(cardData.card.currentOffer.ask)
-      return { ...cardData.card, askETH: +ask.toFixed(4), askEUR: weiAmountToEURValue(ask) }
-    } else return cardData?.card
-  }, [cardData?.card, weiAmountToEURValue])
+  const cardQuery = useQuery(QUERY_CARD, { variables: { slug: cardSlug }, skip: !cardSlug })
+  const card = cardQuery.data?.card
 
   const backPictureUrl = useCardsBackPictureUrl(512)
 
@@ -116,8 +106,8 @@ export default function CardBreakout() {
   const [inTransfer, setInTransfer] = useState(false)
   const onSuccessfulOffer = useCallback(() => setInTransfer(true), [])
 
-  if (!!error || !!loading) {
-    if (!!error) console.error(error)
+  if (cardQuery.error || cardQuery.loading) {
+    if (cardQuery.error) console.error(cardQuery.error)
     return null
   }
 
@@ -150,18 +140,19 @@ export default function CardBreakout() {
               serial={card.serialNumber}
             />
           </Card>
-          <Card>
+          <div>
             {card.owner && (
-              <CardOwnership
-                ownerSlug={card.owner.user.slug}
-                ownerUsername={card.owner.user.username}
-                ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
-                inTransfer={card.inTransfer || inTransfer}
-                askEUR={card.askEUR}
-                askETH={card.askETH}
-              />
+              <Card>
+                <CardOwnership
+                  ownerSlug={card.owner.user.slug}
+                  ownerUsername={card.owner.user.username}
+                  ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
+                  inTransfer={card.inTransfer || inTransfer}
+                  price={card.currentOffer?.price}
+                />
+              </Card>
             )}
-          </Card>
+          </div>
         </MainSectionCardsWrapper>
       </MainSection>
 

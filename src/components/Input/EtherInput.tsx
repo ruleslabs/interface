@@ -57,6 +57,7 @@ const Input = styled.input`
 `
 
 interface EtherInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  value: string // avoid string[] | number value
   onUserInput: (value: string) => void
 }
 

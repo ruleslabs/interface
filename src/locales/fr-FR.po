@@ -247,12 +247,12 @@ msgid "Belongs to <0>{ownerUsername}</0>"
 msgstr "Appartient à <0>{ownerUsername}</0>"
 
 #: src/components/CardOwnership/index.tsx
-msgid "Buy - {askETH} ETH {0}"
-msgstr "Acheter - {askETH} ETH {0}"
+msgid "Buy - {0} ETH ({1}€)"
+msgstr "Acheter - {0} ETH ({1}€)"
 
 #: src/components/CardOwnership/index.tsx
-msgid "Close offer - {askETH} ETH {0}"
-msgstr "Arrêter la vente - {askETH} ETH {0}"
+msgid "Close offer - {0} ETH ({1}€)"
+msgstr "Arrêter la vente - {0} ETH ({1}€)"
 
 #: src/components/CardOwnership/index.tsx
 msgid "Gift"

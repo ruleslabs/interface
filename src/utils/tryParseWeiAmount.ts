@@ -15,7 +15,7 @@ export default function tryParseWeiAmount(value?: string): WeiAmount | undefined
     }
   } catch (error) {
     // fails if the user specifies too many decimal places of precision (or maybe exceed max uint?)
-    console.debug(`Failed to parse input amount: "${value}"`, error)
+    console.error(`Failed to parse input amount: "${value}"`, error)
   }
   return undefined
 }
