@@ -1,8 +1,6 @@
-import { useMemo } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
-import { WeiAmount } from '@rulesorg/sdk-core'
 
 import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'
@@ -12,7 +10,6 @@ import CardModelBreakdown from '@/components/CardModelBreakdown'
 import CardModelSales from '@/components/CardModelSales'
 import CardModelTransfersHistory from '@/components/CardsTransfersHistory/cardModel'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import CardModel3D from '@/components/CardModel3D'
 import Card from '@/components/Card'
 import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
@@ -79,30 +76,13 @@ export default function CardModelPage() {
   const router = useRouter()
   const { cardModelSlug } = router.query
 
-  const weiAmountToEURValue = useWeiAmountToEURValue()
-
-  const {
-    data: cardModelData,
-    loading,
-    error,
-  } = useQuery(QUERY_CARD_MODEL, { variables: { slug: cardModelSlug }, skip: !cardModelSlug })
-
-  const cardModel = useMemo(
-    () =>
-      cardModelData?.cardModel
-        ? {
-            ...cardModelData.cardModel,
-            lowestAskEUR: weiAmountToEURValue(WeiAmount.fromRawAmount(cardModelData.cardModel.lowestAsk ?? 0)),
-            averageSaleEUR: weiAmountToEURValue(WeiAmount.fromRawAmount(cardModelData.cardModel.averageSale ?? 0)),
-          }
-        : cardModelData?.cardModel,
-    [cardModelData?.cardModel, weiAmountToEURValue]
-  )
+  const cardModelQuery = useQuery(QUERY_CARD_MODEL, { variables: { slug: cardModelSlug }, skip: !cardModelSlug })
+  const cardModel = cardModelQuery?.data?.cardModel
 
   const backPictureUrl = useCardsBackPictureUrl(512)
 
-  if (!!error || !!loading) {
-    if (!!error) console.error(error)
+  if (cardModelQuery.error || cardModelQuery.loading) {
+    if (cardModelQuery.error) console.error(cardModelQuery.error)
     return null
   }
 
@@ -137,8 +117,8 @@ export default function CardModelPage() {
           <Card>
             <CardModelSales
               slug={`${cardModelSlug}`}
-              lowestAskEUR={cardModel.lowestAskEUR}
-              averageSaleEUR={cardModel.averageSaleEUR}
+              lowestAsk={cardModel.lowestAsk}
+              averageSale={cardModel.averageSale}
               cardsOnSaleCount={cardModel.cardsOnSaleCount}
             />
           </Card>
