@@ -61,37 +61,29 @@ export default function OffersSelector({
     setSortDesc(!sortDesc)
   }, [setSortDesc, sortDesc])
 
-  const {
-    hits: offersHits,
-    loading: offersLoading,
-    error: offersError,
-  } = useSearchOffers({ facets: { cardModelId }, priceDesc: sortDesc })
+  const offersSearch = useSearchOffers({ facets: { cardModelId }, priceDesc: sortDesc })
 
   useEffect(() => {
     setUserIds(
-      ((offersHits ?? []) as any[]).reduce<string[]>((acc, hit: any) => {
-        if (hit.fromUserId) acc.push(hit.fromUserId)
+      ((offersSearch?.hits ?? []) as any[]).reduce<string[]>((acc, hit: any) => {
+        if (hit.sellerUserId) acc.push(hit.sellerUserId)
         return acc
       }, [])
     )
 
-    setOffers(offersHits ?? [])
-  }, [offersHits, setUserIds])
+    setOffers(offersSearch?.hits ?? [])
+  }, [offersSearch?.hits])
 
-  const {
-    data: usersData,
-    loading: usersLoading,
-    error: usersError,
-  } = useQuery(QUERY_OFFERS_USERS, { variables: { ids: userIds }, skip: !userIds.length })
+  const offersUsersQuery = useQuery(QUERY_OFFERS_USERS, { variables: { ids: userIds }, skip: !userIds.length })
 
   useEffect(() => {
     setUsersTable(
-      ((usersData?.usersByIds ?? []) as any[]).reduce<{ [key: string]: string }>((acc, user: any) => {
+      ((offersUsersQuery?.data?.usersByIds ?? []) as any[]).reduce<{ [key: string]: string }>((acc, user: any) => {
         acc[user.id] = user
         return acc
       }, {})
     )
-  }, [usersData, setUsersTable])
+  }, [offersUsersQuery?.data?.usersByIds])
 
   return (
     <StyledOffersSelector {...props}>
@@ -106,8 +98,8 @@ export default function OffersSelector({
       <OffersTable
         offers={offers}
         usersTable={usersTable}
-        loading={usersLoading || offersLoading}
-        error={!!usersError || !!offersError}
+        loading={offersSearch?.loading || offersUsersQuery?.loading}
+        error={!!offersSearch?.error || !!offersUsersQuery?.error}
         selectedOffer={selectedOffer}
         selectOffer={selectOffer}
         sortDesc={sortDesc}

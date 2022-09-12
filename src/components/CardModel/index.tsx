@@ -1,5 +1,7 @@
+import { useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/macro'
+import { WeiAmount } from '@rulesorg/sdk-core'
 
 import { useActiveLocale } from '@/hooks/useActiveLocale'
 import Link from '@/components/Link'
@@ -7,6 +9,7 @@ import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
 import { ColumnCenter } from '@/components/Column'
 import { LargeSpinner } from '@/components/Spinner'
+import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 
 const StyledCardModel = styled(ColumnCenter)<{ width?: number }>`
   position: relative;
@@ -73,8 +76,7 @@ interface CardModelProps {
   inTransfer?: boolean
   season?: number
   artistName?: string
-  lowestAskETH?: string
-  lowestAskEUR?: string
+  lowestAsk?: string
 }
 
 export default function CardModel({
@@ -87,10 +89,16 @@ export default function CardModel({
   inDelivery = false,
   season,
   artistName,
-  lowestAskETH,
-  lowestAskEUR,
+  lowestAsk,
 }: CardModelProps) {
+  // locale
   const locale = useActiveLocale()
+
+  // lowest ask / average sale
+  const parsedLowestAsk = useMemo(() => (lowestAsk ? WeiAmount.fromRawAmount(lowestAsk) : null), [lowestAsk])
+
+  // fiat
+  const weiAmountToEURValue = useWeiAmountToEURValue()
 
   return (
     <StyledCardModel width={width}>
@@ -129,14 +137,14 @@ export default function CardModel({
         </ColumnCenter>
       )}
 
-      {lowestAskETH && (
+      {parsedLowestAsk && (
         <ColumnCenter gap={4}>
           <TYPE.body textAlign="center">
             <Trans>starting from</Trans>
           </TYPE.body>
           <TYPE.body spanColor="text2">
-            {+lowestAskETH ?? '-'} ETH&nbsp;
-            <span>{lowestAskEUR ? `(${lowestAskEUR}€)` : null}</span>
+            {parsedLowestAsk.toSignificant(6)} ETH&nbsp;
+            <span>{weiAmountToEURValue(parsedLowestAsk ?? undefined) ?? '0'}€</span>
           </TYPE.body>
         </ColumnCenter>
       )}

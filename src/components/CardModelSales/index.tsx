@@ -16,19 +16,19 @@ import EthereumPlainIcon from '@/images/ethereum-plain.svg'
 
 const CurrencySwitch = styled(SecondaryButton)`
   min-width: 26px;
-  height: 48px;
+  height: 52px;
   border: 1px solid ${({ theme }) => theme.bg3};
   border-radius: 3px;
   background: transparent;
   padding: 0;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   display: flex;
   justify-content: center;
   align-items: center;
 
   & > svg {
-    width: 16px;
+    width: 14px;
     fill: ${({ theme }) => theme.text1};
   }
 
@@ -77,7 +77,7 @@ export default function CardModelSales({ slug, lowestAsk, averageSale, cardsOnSa
           </TYPE.body>
           <TYPE.large fontSize={fiatMode ? 26 : 22}>
             {fiatMode
-              ? `${weiAmountToEURValue(parsedLowestAsk) ?? '0'}€`
+              ? `${weiAmountToEURValue(parsedLowestAsk ?? undefined) ?? '0'}€`
               : `${parsedLowestAsk?.toSignificant(6) ?? '0'}Ξ`}
           </TYPE.large>
         </PriceInfo>
@@ -88,12 +88,12 @@ export default function CardModelSales({ slug, lowestAsk, averageSale, cardsOnSa
           </TYPE.body>
           <TYPE.large fontSize={fiatMode ? 26 : 22}>
             {fiatMode
-              ? `${weiAmountToEURValue(parsedAverageSale) ?? '0'}€`
+              ? `${weiAmountToEURValue(parsedAverageSale ?? undefined) ?? '0'}€`
               : `${parsedAverageSale?.toSignificant(6) ?? '0'}Ξ`}
           </TYPE.large>
         </PriceInfo>
 
-        <CurrencySwitch onClick={toggleFiatMode}>{fiatMode ? '€' : <EthereumPlainIcon />}</CurrencySwitch>
+        <CurrencySwitch onClick={toggleFiatMode}>{fiatMode ? <EthereumPlainIcon /> : '€'}</CurrencySwitch>
       </Row>
 
       {cardsOnSaleCount === 0 ? (

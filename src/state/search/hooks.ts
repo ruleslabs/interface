@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
-import { WeiAmount } from '@rulesorg/sdk-core'
 import { useQuery, gql } from '@apollo/client'
 import algoliasearch from 'algoliasearch'
 
@@ -9,17 +8,6 @@ import {
   updateMarketplaceSeasonsFilter,
   updateMarketplaceMaximumPrice,
 } from './actions'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-
-const CARD_MODELS_ON_SALE_QUERY = gql`
-  query ($pictureDerivative: String) {
-    cardModelsOnSale {
-      slug
-      lowestAsk
-      pictureUrl(derivative: $pictureDerivative)
-    }
-  }
-`
 
 const SEARCHED_USERS_QUERY = gql`
   query {
@@ -79,28 +67,6 @@ export function useMarketplaceSetMaximumPrice(): (price: number) => void {
   )
 
   return setMaximumPrice
-}
-
-export function useCardModelOnSale(pictureDerivative: string) {
-  const weiAmountToEURValue = useWeiAmountToEURValue()
-
-  const { data: queryData, loading, error } = useQuery(CARD_MODELS_ON_SALE_QUERY, { variables: { pictureDerivative } })
-
-  const cardModelsOnSale = queryData?.cardModelsOnSale ?? []
-
-  const cardModels = useMemo(() => {
-    return cardModelsOnSale.map((cardModel: any) => {
-      const weiAmount = WeiAmount.fromRawAmount(cardModel.lowestAsk ?? 0)
-
-      return {
-        ...cardModel,
-        lowestAskETH: weiAmount.toFixed(4),
-        lowestAskEUR: weiAmountToEURValue(weiAmount),
-      }
-    })
-  }, [cardModelsOnSale, weiAmountToEURValue])
-
-  return { cardModels, loading, error }
 }
 
 // algolia

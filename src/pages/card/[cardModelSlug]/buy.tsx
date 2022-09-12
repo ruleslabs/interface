@@ -68,16 +68,12 @@ export default function BuyRule() {
   const [selectedOffer, setSelectedOffer] = useState<any | null>(null)
   const selectOffer = useCallback((offer: any | null) => setSelectedOffer(offer), [setSelectedOffer])
 
-  const {
-    data: cardModelData,
-    loading: cardModelLoading,
-    error: cardModelError,
-  } = useQuery(QUERY_CARD_MODEL, { variables: { slug: cardModelSlug }, skip: !cardModelSlug })
+  const cardModelQuery = useQuery(QUERY_CARD_MODEL, { variables: { slug: cardModelSlug }, skip: !cardModelSlug })
 
-  const cardModel = cardModelData?.cardModel
+  const cardModel = cardModelQuery?.data?.cardModel
 
-  const isValid = !cardModelError
-  const isLoading = cardModelLoading
+  const isValid = !cardModelQuery.error
+  const isLoading = cardModelQuery.loading
 
   return (
     <>

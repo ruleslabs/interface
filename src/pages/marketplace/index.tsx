@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import { Trans } from '@lingui/macro'
+import { useQuery, gql } from '@apollo/client'
+import { WeiAmount } from '@rulesorg/sdk-core'
 
 import MarketplaceSidebar from '@/components/MarketplaceSidebar'
 import Section from '@/components/Section'
@@ -9,26 +10,8 @@ import CardModel from '@/components/CardModel'
 import { TYPE } from '@/styles/theme'
 import { ColumnCenter } from '@/components/Column'
 import Grid from '@/components/Grid'
-import { useCardModelOnSale, useMarketplaceFilters } from '@/state/search/hooks'
-import Link from '@/components/Link'
-
-const ComingSoon = styled(ColumnCenter)`
-  background: ${({ theme }) => theme.primary1};
-  padding: 12px 0;
-  top: ${({ theme }) => theme.size.headerHeight};
-  margin-left: 283px;
-  right: 0;
-  z-index: 1;
-  justify-content: center;
-
-  & a {
-    text-decoration: underline;
-  }
-
-  ${({ theme }) => theme.media.medium`
-    margin-left: 0;
-  `}
-`
+import { useMarketplaceFilters, useMarketplaceSetMaximumPrice } from '@/state/search/hooks'
+import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 
 const MainSection = styled(Section)`
   margin-top: 44px;
@@ -73,9 +56,26 @@ const FiltersButton = styled(TYPE.body)`
   `}
 `
 
+const CARD_MODELS_ON_SALE_QUERY = gql`
+  query {
+    cardModelsOnSale {
+      slug
+      lowestAsk
+      pictureUrl(derivative: "width=720")
+      season
+      scarcity {
+        name
+      }
+    }
+  }
+`
+
 export default function Marketplace() {
   // filters
   const filters = useMarketplaceFilters()
+
+  // fiat
+  const weiAmountToEURValue = useWeiAmountToEURValue()
 
   // sort
   const [increaseSort, setIncreaseSort] = useState(true)
@@ -84,58 +84,62 @@ export default function Marketplace() {
     setIncreaseSort(!increaseSort)
   }, [increaseSort, setIncreaseSort])
 
+  // filters
+  const setMaximumPrice = useMarketplaceSetMaximumPrice()
+
   // filters sidebar
   const [isFiltersSidebarOpenOnMobile, setIsFiltersSidebarOpenOnMobile] = useState(false)
-
   const toggleFiltersOnMobile = useCallback(() => {
     setIsFiltersSidebarOpenOnMobile(!isFiltersSidebarOpenOnMobile)
   }, [isFiltersSidebarOpenOnMobile, setIsFiltersSidebarOpenOnMobile])
 
-  const cardModelsQuery = useCardModelOnSale('width=720')
+  // query
+  const cardModelsQuery = useQuery(CARD_MODELS_ON_SALE_QUERY)
 
-  const cardModels = useMemo(
-    () =>
-      cardModelsQuery.cardModels.filter((cardModel: any) => {
-        if (filters.seasons.length && !filters.seasons.includes(cardModel.season)) return false
-        if (filters.scarcities.length && !filters.scarcities.includes(cardModel.scarcity.name)) return false
-        if (filters.maximumPrice !== null && filters.maximumPrice < cardModel.lowestAskEUR) return false
-        return true
-      }),
-    [filters, cardModelsQuery.cardModels]
-  )
+  const { cardModels, highestLowestAsk, lowestLowestAsk } = useMemo(() => {
+    let highestLowestAsk: WeiAmount | undefined
+    let lowestLowestAsk: WeiAmount | undefined
 
-  const highestLowestPrice = useMemo(
-    () => (cardModels as any[]).reduce<number>((acc, cardModel: any) => Math.max(acc, cardModel.lowestAskEUR), 0),
-    [cardModels]
-  )
+    const cardModels = (cardModelsQuery?.data?.cardModelsOnSale ?? []).filter((cardModel: any) => {
+      const parsedLowestAsk = WeiAmount.fromRawAmount(cardModel.lowestAsk)
 
-  if (!!cardModelsQuery.error || !!cardModelsQuery.loading) {
-    if (!!cardModelsQuery.error) console.error(cardModelsQuery.error)
+      if (filters.seasons.length && !filters.seasons.includes(cardModel.season)) return false
+      if (filters.scarcities.length && !filters.scarcities.includes(cardModel.scarcity.name)) return false
+
+      // get highest lowest ask before filtering by price
+      highestLowestAsk =
+        !highestLowestAsk || parsedLowestAsk.greaterThan(highestLowestAsk) ? parsedLowestAsk : highestLowestAsk
+      lowestLowestAsk =
+        !lowestLowestAsk || parsedLowestAsk.lessThan(lowestLowestAsk) ? parsedLowestAsk : lowestLowestAsk
+
+      if (filters.maximumPrice !== null && filters.maximumPrice < weiAmountToEURValue(parsedLowestAsk)) return false
+      return true
+    })
+
+    const [highestLowestAskFiat, lowestLowestAskFiat] = [
+      Math.ceil(weiAmountToEURValue(highestLowestAsk)),
+      Math.ceil(weiAmountToEURValue(lowestLowestAsk)),
+    ]
+
+    if (!filters.maximumPrice || filters.maximumPrice > highestLowestAskFiat) setMaximumPrice(highestLowestAskFiat)
+    else if (filters.maximumPrice < lowestLowestAskFiat) setMaximumPrice(lowestLowestAskFiat)
+
+    return { cardModels, highestLowestAsk, lowestLowestAsk }
+  }, [filters, cardModelsQuery?.data?.cardModelsOnSale, weiAmountToEURValue, setMaximumPrice])
+
+  if (cardModelsQuery.error || cardModelsQuery.loading) {
+    if (cardModelsQuery.error) console.error(cardModelsQuery.error)
     return null
   }
 
   return (
     <>
       <StyledMarketplaceSidebar
-        maximumPriceUpperBound={highestLowestPrice}
+        maximumPriceLowerBound={Math.ceil(weiAmountToEURValue(lowestLowestAsk))}
+        maximumPriceUpperBound={Math.ceil(weiAmountToEURValue(highestLowestAsk))}
         isOpenOnMobile={isFiltersSidebarOpenOnMobile}
         dispatch={toggleFiltersOnMobile}
       />
-      <ComingSoon>
-        <TYPE.medium textAlign="center">
-          <Trans>The marketplace is opening soon.</Trans>
-        </TYPE.medium>
-        <TYPE.body textAlign="center">
-          <Trans>
-            Please&nbsp;
-            <Link color="text1" href="https://discord.gg/DrfezKYUhH" target="_blank" underline>
-              join our Discord
-            </Link>
-            <span>&nbsp;</span>
-            for live updates.
-          </Trans>
-        </TYPE.body>
-      </ComingSoon>
       <MainSection size="max">
         <MarketplaceBody>
           <GridHeader
@@ -151,8 +155,7 @@ export default function Marketplace() {
                 <CardModel
                   pictureUrl={cardModel.pictureUrl}
                   cardModelSlug={cardModel.slug}
-                  lowestAskETH={cardModel.lowestAskETH}
-                  lowestAskEUR={cardModel.lowestAskEUR}
+                  lowestAsk={cardModel.lowestAsk}
                 />
               </ColumnCenter>
             ))}

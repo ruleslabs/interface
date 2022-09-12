@@ -92,7 +92,7 @@ export default function CurrencyInput({ onUserInput, balance, ...props }: Curren
         </Currency>
       </Row>
       <TYPE.subtitle textAlign="right">
-        <Trans>Balance: {balance?.toFixed(4) ?? 0}</Trans>
+        <Trans>Balance: {balance?.toSignificant(6) ?? 0}</Trans>
       </TYPE.subtitle>
     </StyledCurrencyInput>
   )
