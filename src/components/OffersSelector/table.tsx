@@ -1,6 +1,6 @@
+import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
-import { WeiAmount } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
@@ -9,6 +9,7 @@ import { RadioButton } from '@/components/Button'
 import Caret from '@/components/Caret'
 import Link from '@/components/Link'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
+import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
 
 const StyledTable = styled(Table)`
   margin-top: 22px;
@@ -77,6 +78,10 @@ export default function OffersTable({
 }: OffersTableProps) {
   const { asPath } = useRouter()
 
+  // parsed price
+  const parsedPrices = useMemo(() => offers.map((offer: any) => tryParseWeiAmount(offer.price.toString())), [offers])
+
+  // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
   return (
@@ -105,39 +110,34 @@ export default function OffersTable({
       </thead>
       <tbody>
         {offers.length && Object.keys(usersTable).length ? (
-          offers.map((offer: any, index) => {
-            const weiAmount = offer.price ? WeiAmount.fromEtherAmount(offer.price) : null
-            const priceEUR = weiAmount ? weiAmountToEURValue(weiAmount) : null
-            const priceETH = weiAmount ? +weiAmount.toFixed(4) : null
-            const offerToSelect = { serialNumber: offer.serialNumber, priceEUR }
-
-            return (
-              <tr key={`offer-${index}`}>
-                <RadioButtonWrapper>
-                  <RadioButton
-                    selected={offer.serialNumber === selectedOffer?.serialNumber}
-                    onChange={() => selectOffer(offerToSelect)}
-                  />
-                </RadioButtonWrapper>
-                <td onClick={() => selectOffer(offerToSelect)}>
-                  <Price>
-                    <TYPE.body fontWeight={700}>{priceETH ? `${priceETH} ETH` : '-'}</TYPE.body>
-                    <TYPE.body color="text2">{priceEUR ? `${priceEUR} €` : null}</TYPE.body>
-                  </Price>
-                </td>
-                <td>
-                  <Link href={`${asPath.replace(/buy$/, offer.serialNumber)}`}>
-                    <TYPE.body clickable>#{offer.serialNumber}</TYPE.body>
-                  </Link>
-                </td>
-                <td>
-                  <Link href={`/user/${usersTable[offer.sellerUserId].slug}`}>
-                    <TYPE.body clickable>{usersTable[offer.sellerUserId].username}</TYPE.body>
-                  </Link>
-                </td>
-              </tr>
-            )
-          })
+          offers.map((offer: any, index) => (
+            <tr key={`offer-${index}`}>
+              <RadioButtonWrapper>
+                <RadioButton
+                  selected={offer.serialNumber === selectedOffer?.serialNumber}
+                  onChange={() => selectOffer({ serialNumber: offer.serialNumber, parsedPrice: parsedPrices[index] })}
+                />
+              </RadioButtonWrapper>
+              <td onClick={() => selectOffer({ serialNumber: offer.serialNumber, parsedPrice: parsedPrices[index] })}>
+                <Price>
+                  <TYPE.body fontWeight={700}>{`${parsedPrices[index]?.toSignificant(6) ?? 0} ETH`}</TYPE.body>
+                  <TYPE.body color="text2">
+                    {`${(parsedPrices[index] && weiAmountToEURValue(parsedPrices[index])) ?? 0}€`}
+                  </TYPE.body>
+                </Price>
+              </td>
+              <td>
+                <Link href={`${asPath.replace(/buy$/, offer.serialNumber)}`}>
+                  <TYPE.body clickable>#{offer.serialNumber}</TYPE.body>
+                </Link>
+              </td>
+              <td>
+                <Link href={`/user/${usersTable[offer.sellerUserId].slug}`}>
+                  <TYPE.body clickable>{usersTable[offer.sellerUserId].username}</TYPE.body>
+                </Link>
+              </td>
+            </tr>
+          ))
         ) : (
           <tr>
             <td>

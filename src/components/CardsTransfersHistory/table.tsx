@@ -42,7 +42,7 @@ export default function TransfersTable({
 }: TransfersTableProps) {
   const router = useRouter()
 
-  const weiAmounToEurValue = useWeiAmountToEURValue()
+  const weiAmountToEURValue = useWeiAmountToEURValue()
 
   return (
     <StyledTable>
@@ -113,7 +113,7 @@ export default function TransfersTable({
               )}
               <td>
                 <TYPE.body>
-                  {!!transfer.price ? `${weiAmounToEurValue(WeiAmount.fromEtherAmount(transfer.price))}€` : '-'}
+                  {!!transfer.price ? `${weiAmountToEURValue(WeiAmount.fromEtherAmount(transfer.price))}€` : '-'}
                 </TYPE.body>
               </td>
             </tr>

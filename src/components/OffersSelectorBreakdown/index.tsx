@@ -5,17 +5,18 @@ import { TYPE } from '@/styles/theme'
 import Row from '@/components/Row'
 import Column from '@/components/Column'
 import { PrimaryButton } from '@/components/Button'
+import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 
 const CardModelImage = styled.img`
   width: 84px;
 `
 
-interface CardSelectorBreakdownProps {
+interface OffersSelectorBreakdownProps {
   artistName: string
   season: number
   scarcity: string
   pictureUrl: string
-  priceEUR?: number
+  parsedPrice?: number
 }
 
 export default function OffersSelectorBreakdown({
@@ -23,8 +24,11 @@ export default function OffersSelectorBreakdown({
   season,
   scarcity,
   pictureUrl,
-  priceEUR,
+  parsedPrice,
 }: CardSelectorBreakdownProps) {
+  // fiat
+  const weiAmountToEURValue = useWeiAmountToEURValue()
+
   return (
     <Column gap={32}>
       <Row gap={12}>
@@ -37,8 +41,10 @@ export default function OffersSelectorBreakdown({
           <Trans id={scarcity} render={({ translation }) => <TYPE.body>{translation}</TYPE.body>} />
         </Column>
       </Row>
-      <PrimaryButton large disabled={!priceEUR}>
-        {priceEUR ? t`Acheter - ${priceEUR}€` : t`Select a card`}
+      <PrimaryButton large disabled={!parsedPrice}>
+        {parsedPrice
+          ? t`Buy - ${parsedPrice.toSignificant(6)} ETH (${weiAmountToEURValue(parsedPrice) ?? 0}€)`
+          : t`Select a card`}
       </PrimaryButton>
     </Column>
   )

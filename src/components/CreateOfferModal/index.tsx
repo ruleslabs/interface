@@ -113,7 +113,7 @@ export default function CreateOfferModal({
   }, [parsedPrice])
 
   // fiat
-  const weiAmounToEurValue = useWeiAmountToEURValue()
+  const weiAmountToEURValue = useWeiAmountToEURValue()
 
   // call
   const [calls, setCalls] = useState<Call[] | null>(null)
@@ -224,7 +224,7 @@ export default function CreateOfferModal({
                   <Tooltip text={t`This fee will go to ${artistName} and his team.`} />
 
                   <Row gap={8}>
-                    <TYPE.subtitle>{weiAmounToEurValue(artistFee) ?? 0} EUR</TYPE.subtitle>
+                    <TYPE.subtitle>{weiAmountToEURValue(artistFee) ?? 0} EUR</TYPE.subtitle>
                     <TYPE.body>{artistFee?.toSignificant(6) ?? 0} ETH</TYPE.body>
                   </Row>
                 </SaleBreakdownLine>
@@ -237,7 +237,7 @@ export default function CreateOfferModal({
                   <Tooltip text={t`This fee will help Rules' further development.`} />
 
                   <Row gap={8}>
-                    <TYPE.subtitle>{weiAmounToEurValue(marketplaceFee) ?? 0} EUR</TYPE.subtitle>
+                    <TYPE.subtitle>{weiAmountToEURValue(marketplaceFee) ?? 0} EUR</TYPE.subtitle>
                     <TYPE.body>{marketplaceFee?.toSignificant(6) ?? 0} ETH</TYPE.body>
                   </Row>
                 </SaleBreakdownLine>
@@ -250,7 +250,7 @@ export default function CreateOfferModal({
                   </TYPE.body>
 
                   <Row gap={8}>
-                    <TYPE.subtitle>{weiAmounToEurValue(payout) ?? 0} EUR</TYPE.subtitle>
+                    <TYPE.subtitle>{weiAmountToEURValue(payout) ?? 0} EUR</TYPE.subtitle>
                     <TYPE.body>{payout?.toSignificant(6) ?? 0} ETH</TYPE.body>
                   </Row>
                 </SaleBreakdownLine>

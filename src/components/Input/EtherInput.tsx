@@ -76,12 +76,12 @@ export default function EtherInput({ onUserInput, ...props }: EtherInputProps) {
   const setInputFocus = useCallback(() => inputRef.current?.focus(), [inputRef])
 
   // fiat
-  const weiAmounToEurValue = useWeiAmountToEURValue()
+  const weiAmountToEURValue = useWeiAmountToEURValue()
 
   return (
     <StyledEtherInput onClick={setInputFocus}>
       <TYPE.large color="text2">
-        <Trans>{weiAmounToEurValue(WeiAmount.fromEtherAmount(props?.value?.length ? props.value : 0))} EUR</Trans>
+        <Trans>{weiAmountToEURValue(WeiAmount.fromEtherAmount(props?.value?.length ? props.value : 0))} EUR</Trans>
       </TYPE.large>
       <Input onChange={handleInput} ref={inputRef} {...props} />
       <TYPE.large>ETH</TYPE.large>

@@ -58,7 +58,7 @@ export default function CardOwnership({
   const parsedPrice = useMemo(() => (price ? WeiAmount.fromRawAmount(price) : null), [price])
 
   // fiat
-  const weiAmounToEurValue = useWeiAmountToEURValue()
+  const weiAmountToEURValue = useWeiAmountToEURValue()
 
   return (
     <Column gap={16}>
@@ -81,13 +81,13 @@ export default function CardOwnership({
             {currentUser?.slug === ownerSlug && parsedPrice ? (
               <PrimaryButton large>
                 <Trans>
-                  Close offer - {parsedPrice.toSignificant(6)} ETH ({weiAmounToEurValue(parsedPrice)}€)
+                  Close offer - {parsedPrice.toSignificant(6)} ETH ({weiAmountToEURValue(parsedPrice)}€)
                 </Trans>
               </PrimaryButton>
             ) : parsedPrice ? (
               <PrimaryButton large>
                 <Trans>
-                  Buy - {parsedPrice.toSignificant(6)} ETH ({weiAmounToEurValue(parsedPrice)}€)
+                  Buy - {parsedPrice.toSignificant(6)} ETH ({weiAmountToEURValue(parsedPrice)}€)
                 </Trans>
               </PrimaryButton>
             ) : (

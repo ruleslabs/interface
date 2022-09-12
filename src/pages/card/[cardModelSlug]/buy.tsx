@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
+import { WeiAmount } from '@rulesorg/sdk-core'
 
 import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'
@@ -18,7 +19,7 @@ const MainSection = styled(Section)`
   `}
 
   ${({ theme }) => theme.media.small`
-    flex-direction: column;
+    flex-direction: column-reverse;
     gap: 16px;
   `}
 `
@@ -61,11 +62,11 @@ const QUERY_CARD_MODEL = gql`
   }
 `
 
-export default function BuyRule() {
+export default function Buy() {
   const router = useRouter()
   const { cardModelSlug } = router.query
 
-  const [selectedOffer, setSelectedOffer] = useState<any | null>(null)
+  const [selectedOffer, setSelectedOffer] = useState<{ serialNumber: number; parsedPrice?: WeiAmount } | null>(null)
   const selectOffer = useCallback((offer: any | null) => setSelectedOffer(offer), [setSelectedOffer])
 
   const cardModelQuery = useQuery(QUERY_CARD_MODEL, { variables: { slug: cardModelSlug }, skip: !cardModelSlug })
@@ -95,7 +96,7 @@ export default function BuyRule() {
                 season={cardModel.season}
                 scarcity={cardModel.scarcity?.name}
                 pictureUrl={cardModel.pictureUrl}
-                priceEUR={selectedOffer?.priceEUR}
+                parsedPrice={selectedOffer?.parsedPrice}
               />
             </OffersSelectorBreakdownCard>
           </>
