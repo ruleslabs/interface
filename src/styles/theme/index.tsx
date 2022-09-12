@@ -80,8 +80,8 @@ function theme(darkMode: boolean) {
     },
 
     size: {
-      headerHeight: '121px', // 57px
-      headerHeightMedium: '126px', // 62px
+      headerHeight: '57px',
+      headerHeightMedium: '62px',
     },
   }
 }

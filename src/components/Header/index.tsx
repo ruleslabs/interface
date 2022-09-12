@@ -8,8 +8,6 @@ import { useOpenModal, useCloseModal, useModalOpen } from '@/state/application/h
 import { ApplicationModal } from '@/state/application/actions'
 import NavModal from '@/components/NavModal'
 import { useCurrentUser } from '@/state/user/hooks'
-import { ColumnCenter } from '@/components/Column'
-import { TYPE } from '@/styles/theme'
 
 import Logo from '@/public/assets/logo.svg'
 import Hamburger from '@/images/hamburger.svg'
@@ -35,10 +33,10 @@ const StyledHeader = styled.header`
   left: 0;
   right: 0;
   z-index: 3;
-  padding: 64px 100px 0;
+  padding: 0 100px;
 
   ${({ theme }) => theme.media.medium`
-    padding: 64px 1rem 0;
+    padding: 0 1rem;
     justify-content: space-between;
     height: ${theme.size.headerHeightMedium};
     z-index: 999;
@@ -77,22 +75,6 @@ const HamburgerWrapper = styled.div<{ alert?: boolean }>`
   ${({ theme, alert = false }) => alert && theme.before.alert}
 `
 
-const ComingSoon = styled(ColumnCenter)`
-  background: ${({ theme }) => theme.primary1};
-  padding: 12px 0;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 64px;
-  position: absolute;
-  z-index: 1;
-  justify-content: center;
-
-  & a {
-    text-decoration: underline;
-  }
-`
-
 interface MenuLink {
   name: string
   link: string
@@ -112,19 +94,6 @@ export default function Header() {
 
   return (
     <StyledHeader>
-      <ComingSoon>
-        <TYPE.medium textAlign="center">Rules participe au ZEvent Place</TYPE.medium>
-        <TYPE.body textAlign="center">
-          <Trans>
-            Place ton pixel pour représenter la commu en suivant&nbsp;
-            <Link color="text1" href="/place" target="_blank" underline>
-              ce dessin
-            </Link>
-            .
-          </Trans>
-        </TYPE.body>
-      </ComingSoon>
-
       <Link href="/">
         <StyledLogo />
       </Link>
