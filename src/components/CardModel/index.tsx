@@ -1,12 +1,11 @@
 import { useMemo } from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
 import { useActiveLocale } from '@/hooks/useActiveLocale'
 import Link from '@/components/Link'
 import { TYPE } from '@/styles/theme'
-import { RowCenter } from '@/components/Row'
 import { ColumnCenter } from '@/components/Column'
 import { LargeSpinner } from '@/components/Spinner'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
@@ -35,27 +34,18 @@ const Card = styled.img<{ inDelivery: boolean; inTransfer: boolean }>`
   ${({ inDelivery, inTransfer }) => (inDelivery || inTransfer) && 'opacity: 0.3;'}
 `
 
-const OnSale = styled(RowCenter)`
-  width: 130px;
-  height: 35px;
-  border-radius: 4px;
-  background: #52a05f;
-  position: absolute;
-  bottom: 24px;
-  right: -24px;
-  font-style: italic;
-  justify-content: center;
-`
-
-const StatusStyle = css`
+const InDelivery = styled.img`
   position: absolute;
   left: 0;
   width: 100%;
   top: 37.2%;
 `
 
-const InDelivery = styled.img`
-  ${StatusStyle}
+const OnSale = styled.img`
+  position: absolute;
+  left: 0;
+  width: 100%;
+  bottom: 0;
 `
 
 const StyledLargeSpinner = styled(LargeSpinner)`
@@ -105,14 +95,8 @@ export default function CardModel({
       <StyledCustomCardModel href={`/card/${cardModelSlug}${!!serialNumber ? `/${serialNumber}` : ''}`}>
         <Card src={pictureUrl} inDelivery={inDelivery} inTransfer={inTransfer} />
         {inDelivery && <InDelivery src={`/assets/delivery.${locale}.png`} />}
+        {onSale && <OnSale src={`/assets/onsale.${locale}.png`} />}
         {inTransfer && <StyledLargeSpinner className="spinner" />}
-        {onSale && (
-          <OnSale>
-            <TYPE.medium>
-              <Trans>ON SALE</Trans>
-            </TYPE.medium>
-          </OnSale>
-        )}
       </StyledCustomCardModel>
 
       {inTransfer && (
