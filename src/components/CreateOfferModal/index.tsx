@@ -10,7 +10,7 @@ import { useModalOpen, useCreateOfferModalToggle } from '@/state/application/hoo
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
-import { RowCenter } from '@/components/Row'
+import Row, { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import { ErrorCard } from '@/components/Card'
@@ -20,7 +20,6 @@ import { MARKETPLACE_ADDRESSES, RULES_TOKENS_ADDRESSES } from '@/constants/addre
 import { useCreateOfferMutation } from '@/state/wallet/hooks'
 import { networkId } from '@/constants/networks'
 import EtherInput from '@/components/Input/EtherInput'
-import Row from '@/components/Row'
 import {
   ARTIST_FEE_PERCENTAGE,
   MARKETPLACE_FEE_PERCENTAGE,
@@ -134,7 +133,7 @@ export default function CreateOfferModal({
         calldata: [uint256TokenId.low, uint256TokenId.high, parsedPrice.quotient.toString()],
       },
     ])
-  }, [tokenId, price])
+  }, [tokenId, parsedPrice])
 
   // error
   const [error, setError] = useState<string | null>(null)

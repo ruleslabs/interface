@@ -44,6 +44,9 @@ export default function TransfersTable({
 
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
+  console.log(usersTable)
+  console.log(transfers)
+
   return (
     <StyledTable>
       <thead>

@@ -16,6 +16,7 @@ import CardModel3D from '@/components/CardModel3D'
 import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
 import GiftModal from '@/components/GiftModal'
 import CreateOfferModal from '@/components/CreateOfferModal'
+import CancelOfferModal from '@/components/CancelOfferModal'
 
 const MainSection = styled(Section)`
   position: relative;
@@ -59,6 +60,8 @@ const QUERY_CARD = gql`
       starknetTokenId
       inTransfer
       inOfferCreation
+      inOfferCancelation
+      inOfferAcceptance
       currentOffer {
         price
       }
@@ -112,9 +115,13 @@ export default function CardBreakout() {
         ? CardOwnershipPendingStatus.IN_TRANSFER
         : card?.inOfferCreation
         ? CardOwnershipPendingStatus.IN_OFFER_CREATION
+        : card?.inOfferCancelation
+        ? CardOwnershipPendingStatus.IN_OFFER_CANCELATION
+        : card?.inOfferAcceptance
+        ? CardOwnershipPendingStatus.IN_OFFER_ACCEPTANCE
         : null
     )
-  }, [card?.inTransfer, card?.inOfferCreation])
+  }, [card?.inTransfer, card?.inOfferCreation, card?.inOfferCancelation, card?.inOfferAcceptance])
 
   // actions callbacks
   const onSuccessfulGift = useCallback(() => setPendingStatus(CardOwnershipPendingStatus.IN_TRANSFER), [])
@@ -122,6 +129,14 @@ export default function CardBreakout() {
     () => setPendingStatus(CardOwnershipPendingStatus.IN_OFFER_CREATION),
     []
   )
+  const onSuccessfulOfferCancelation = useCallback(
+    () => setPendingStatus(CardOwnershipPendingStatus.IN_OFFER_CANCELATION),
+    []
+  )
+  // const onSuccessfulOfferAcceptance = useCallback(
+  //   () => setPendingStatus(CardOwnershipPendingStatus.IN_OFFER_ACCEPTANCE),
+  //   []
+  // )
 
   if (cardQuery.error || cardQuery.loading) {
     if (cardQuery.error) console.error(cardQuery.error)
@@ -202,6 +217,17 @@ export default function CardBreakout() {
         pictureUrl={card.cardModel.pictureUrl}
         tokenId={card.starknetTokenId}
         onSuccess={onSuccessfulOfferCreation}
+      />
+
+      <CancelOfferModal
+        artistName={card.cardModel.artist.displayName}
+        scarcityName={card.cardModel.scarcity.name}
+        scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
+        season={card.cardModel.season}
+        serialNumber={card.serialNumber}
+        pictureUrl={card.cardModel.pictureUrl}
+        tokenId={card.starknetTokenId}
+        onSuccess={onSuccessfulOfferCancelation}
       />
     </>
   )

@@ -954,10 +954,6 @@ msgstr "Voir sur Etherscan"
 msgid "See on Voyager"
 msgstr "Voir sur Voyager"
 
-#: src/components/CardModel/index.tsx
-msgid "Transfering the card..."
-msgstr "Transfert de la carte..."
-
 #: src/components/DepositModal/Confirmation.tsx
 #: src/components/OfferModal/Confirmation.tsx
 msgid "Waiting for confirmation"
@@ -1006,3 +1002,19 @@ msgstr "Frais de service ({0}%)"
 #: src/components/CreateOfferModal/index.tsx
 msgid "Total payout"
 msgstr "Récupéré en cas de vente"
+
+#: src/components/CardModel/index.tsx
+msgid "Transfering the card..."
+msgstr "Transfert de la carte..."
+
+#: src/components/CardOwnership/index.tsx
+msgid "Putting the card on sale..."
+msgstr "Mise en vente de la carte..."
+
+#: src/components/CardOwnership/index.tsx
+msgid "Canceling the card sale..."
+msgstr "Annulation de la mise en vente de la carte..."
+
+#: src/components/CardOwnership/index.tsx
+msgid "Selling the card..."
+msgstr "Vente de la carte..."

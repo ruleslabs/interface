@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
 import { ApolloError } from '@apollo/client'
@@ -58,6 +58,10 @@ export default function PackOpeningPreparationModal({ onSuccess }: PackOpeningPr
         console.error(preparePackOpeningError) // TODO: handle error
       })
   }, [onSuccess, togglePackOpeningPreparationModal, packOpeningPreparationMutation, pack?.id])
+
+  useEffect(() => {
+    setLoading(false)
+  }, [isOpen])
 
   return (
     <Modal onDismiss={togglePackOpeningPreparationModal} isOpen={isOpen}>

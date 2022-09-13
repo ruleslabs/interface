@@ -12,8 +12,8 @@ export const BaseButton = styled.button<{ large?: boolean }>`
   border: none;
   border-radius: ${({ large = false }) => (large ? '4px' : '3px')};
   font-size: 16px;
-  height: ${({ large = false }) => (large ? '44px' : '35px')};
-  padding: 0 20px;
+  min-height: ${({ large = false }) => (large ? '44px' : '35px')};
+  padding: 8px 20px;
   cursor: pointer;
   font-weight: 500;
 `

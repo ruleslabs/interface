@@ -48,6 +48,14 @@ const CREATE_OFFER_MUTATION = gql`
   }
 `
 
+const CANCEL_OFFER_MUTATION = gql`
+  mutation ($tokenId: String!, $maxFee: String!, $signature: String!) {
+    cancelOffer(input: { tokenId: $tokenId, maxFee: $maxFee, signature: $signature }) {
+      hash
+    }
+  }
+`
+
 interface Balance {
   low?: string
   high?: string
@@ -105,4 +113,8 @@ export function useTransferCardMutation() {
 
 export function useCreateOfferMutation() {
   return useMutation(CREATE_OFFER_MUTATION)
+}
+
+export function useCancelOfferMutation() {
+  return useMutation(CANCEL_OFFER_MUTATION)
 }
