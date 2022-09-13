@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
@@ -9,7 +9,7 @@ import Column from '@/components/Column'
 import Card from '@/components/Card'
 import { TYPE } from '@/styles/theme'
 import CardModelBreakdown from '@/components/CardModelBreakdown'
-import CardOwnership from '@/components/CardOwnership'
+import CardOwnership, { CardOwnershipPendingStatus } from '@/components/CardOwnership'
 import CardTransfersHistory from '@/components/CardsTransfersHistory/card'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import CardModel3D from '@/components/CardModel3D'
@@ -58,6 +58,7 @@ const QUERY_CARD = gql`
       serialNumber
       starknetTokenId
       inTransfer
+      inOfferCreation
       currentOffer {
         price
       }
@@ -102,9 +103,25 @@ export default function CardBreakout() {
 
   const backPictureUrl = useCardsBackPictureUrl(512)
 
-  // offer callback
-  const [inTransfer, setInTransfer] = useState(false)
-  const onSuccessfulOffer = useCallback(() => setInTransfer(true), [])
+  // pending status
+  const [pendingStatus, setPendingStatus] = useState<CardOwnershipPendingStatus | null>(null)
+
+  useEffect(() => {
+    setPendingStatus(
+      card?.inTransfer
+        ? CardOwnershipPendingStatus.IN_TRANSFER
+        : card?.inOfferCreation
+        ? CardOwnershipPendingStatus.IN_OFFER_CREATION
+        : null
+    )
+  }, [card?.inTransfer, card?.inOfferCreation])
+
+  // actions callbacks
+  const onSuccessfulGift = useCallback(() => setPendingStatus(CardOwnershipPendingStatus.IN_TRANSFER), [])
+  const onSuccessfulOfferCreation = useCallback(
+    () => setPendingStatus(CardOwnershipPendingStatus.IN_OFFER_CREATION),
+    []
+  )
 
   if (cardQuery.error || cardQuery.loading) {
     if (cardQuery.error) console.error(cardQuery.error)
@@ -147,7 +164,7 @@ export default function CardBreakout() {
                   ownerSlug={card.owner.user.slug}
                   ownerUsername={card.owner.user.username}
                   ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
-                  inTransfer={card.inTransfer || inTransfer}
+                  pendingStatus={pendingStatus ?? undefined}
                   price={card.currentOffer?.price}
                 />
               </Card>
@@ -173,7 +190,7 @@ export default function CardBreakout() {
         serialNumber={card.serialNumber}
         pictureUrl={card.cardModel.pictureUrl}
         tokenId={card.starknetTokenId}
-        onSuccess={onSuccessfulOffer}
+        onSuccess={onSuccessfulGift}
       />
 
       <CreateOfferModal
@@ -184,7 +201,7 @@ export default function CardBreakout() {
         serialNumber={card.serialNumber}
         pictureUrl={card.cardModel.pictureUrl}
         tokenId={card.starknetTokenId}
-        onSuccess={onSuccessfulOffer}
+        onSuccess={onSuccessfulOfferCreation}
       />
     </>
   )

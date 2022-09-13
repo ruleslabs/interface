@@ -51,20 +51,16 @@ function Cards({ userId }: { userId: string }) {
     setSortDesc(!sortDesc)
   }, [sortDesc, setSortDesc])
 
-  const {
-    hits: cardsHits,
-    loading: cardsHitsLoading,
-    error: cardsHitsError,
-  } = useSearchCards({ facets: { ownerUserId: userId }, dateDesc: sortDesc })
+  const cardsSearch = useSearchCards({ facets: { ownerUserId: userId }, dateDesc: sortDesc })
 
   const cardIds = useMemo(
     () =>
-      (cardsHits ?? []).reduce<string[]>((acc, hit: any) => {
+      (cardsSearch?.hits ?? []).reduce<string[]>((acc, hit: any) => {
         acc.push(hit.cardId)
 
         return acc
       }, []),
-    [cardsHits]
+    [cardsSearch?.hits]
   )
 
   // Query cards
@@ -79,8 +75,8 @@ function Cards({ userId }: { userId: string }) {
   )
 
   // loading / error
-  const isValid = !cardsQuery.error
-  const isLoading = cardsQuery.loading
+  const isValid = !cardsQuery.error && !cardsSearch.error
+  const isLoading = cardsQuery.loading || cardsSearch.loading
 
   return (
     <Section>

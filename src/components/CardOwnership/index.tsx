@@ -15,6 +15,13 @@ import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 
 import Present from '@/images/present.svg'
 
+export enum CardOwnershipPendingStatus {
+  IN_TRANSFER,
+  IN_OFFER_CREATION,
+  IN_OFFER_CANCELATION,
+  IN_OFFER_ACCEPTANCE,
+}
+
 const Avatar = styled.img`
   width: 50px;
   height: 50px;
@@ -36,7 +43,7 @@ interface CardOwnershipProps {
   ownerSlug: string
   ownerUsername: string
   ownerProfilePictureUrl: string
-  inTransfer: boolean
+  pendingStatus?: CardOwnershipPendingStatus
   price?: string
 }
 
@@ -44,7 +51,7 @@ export default function CardOwnership({
   ownerSlug,
   ownerUsername,
   ownerProfilePictureUrl,
-  inTransfer,
+  pendingStatus,
   price,
 }: CardOwnershipProps) {
   // current user
@@ -76,7 +83,7 @@ export default function CardOwnership({
         </TYPE.body>
       </RowCenter>
       <ButtonsWrapper gap={12}>
-        {!inTransfer && (parsedPrice || currentUser?.slug === ownerSlug) ? (
+        {!pendingStatus && (parsedPrice || currentUser?.slug === ownerSlug) ? (
           <>
             {currentUser?.slug === ownerSlug && parsedPrice ? (
               <PrimaryButton large>
@@ -106,7 +113,17 @@ export default function CardOwnership({
           </>
         ) : (
           <Placeholder>
-            {inTransfer ? <Trans>Transfering the card...</Trans> : <Trans>This card is not on sale.</Trans>}
+            {pendingStatus === CardOwnershipPendingStatus.IN_TRANSFER ? (
+              <Trans>Transfering the card...</Trans>
+            ) : pendingStatus === CardOwnershipPendingStatus.IN_OFFER_CREATION ? (
+              <Trans>Putting the card on sale...</Trans>
+            ) : pendingStatus === CardOwnershipPendingStatus.IN_OFFER_CANCELATION ? (
+              <Trans>Canceling the card sale...</Trans>
+            ) : pendingStatus === CardOwnershipPendingStatus.IN_OFFER_ACCEPTANCE ? (
+              <Trans>Selling the card...</Trans>
+            ) : (
+              <Trans>This card is not on sale.</Trans>
+            )}
           </Placeholder>
         )}
       </ButtonsWrapper>
