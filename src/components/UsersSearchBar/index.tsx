@@ -128,8 +128,8 @@ export default function UsersSearchBar({ onSelect, selfSearchAllowed = true }: U
 
   // algolia search
   const facets = useMemo(
-    () => ({ username: selfSearchAllowed ? undefined : `-${currentUser.username}` }),
-    [selfSearchAllowed, currentUser.username]
+    () => ({ username: selfSearchAllowed || !currentUser?.username ? undefined : `-${currentUser.username}` }),
+    [selfSearchAllowed, currentUser?.username]
   )
 
   const {

@@ -114,11 +114,11 @@ export default function OffersTable({
             <tr key={`offer-${index}`}>
               <RadioButtonWrapper>
                 <RadioButton
-                  selected={offer.serialNumber === selectedOffer?.serialNumber}
-                  onChange={() => selectOffer({ serialNumber: offer.serialNumber, parsedPrice: parsedPrices[index] })}
+                  selected={offer.objectID === selectedOffer?.id}
+                  onChange={() => selectOffer({ id: offer.objectID, serialNumber: offer.serialNumber })}
                 />
               </RadioButtonWrapper>
-              <td onClick={() => selectOffer({ serialNumber: offer.serialNumber, parsedPrice: parsedPrices[index] })}>
+              <td onClick={() => selectOffer({ id: offer.objectID, serialNumber: offer.serialNumber })}>
                 <Price>
                   <TYPE.body fontWeight={700}>{`${parsedPrices[index]?.toSignificant(6) ?? 0} ETH`}</TYPE.body>
                   <TYPE.body color="text2">

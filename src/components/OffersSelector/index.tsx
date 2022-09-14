@@ -41,7 +41,7 @@ interface OffersSelectorProps extends React.HTMLAttributes<HTMLDivElement> {
   cardModelId: string
   cardsOnSaleCount: number
   selectedOffer: any | null
-  selectOffer: (offer: any) => void
+  selectOffer: (offerId: string) => void
 }
 
 export default function OffersSelector({
@@ -74,6 +74,7 @@ export default function OffersSelector({
     setOffers(offersSearch?.hits ?? [])
   }, [offersSearch?.hits])
 
+  // query
   const offersUsersQuery = useQuery(QUERY_OFFERS_USERS, { variables: { ids: userIds }, skip: !userIds.length })
 
   useEffect(() => {

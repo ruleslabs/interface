@@ -1,3 +1,4 @@
+import JSBI from 'jsbi'
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
@@ -6,7 +7,7 @@ import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
 import Modal from '@/components/Modal'
-import { useModalOpen, useCancelOfferModalToggle } from '@/state/application/hooks'
+import { useModalOpen, useAcceptOfferModalToggle, useDepositModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
@@ -16,9 +17,10 @@ import { PrimaryButton } from '@/components/Button'
 import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
 import StarknetSigner from '@/components/StarknetSigner'
-import { MARKETPLACE_ADDRESSES } from '@/constants/addresses'
-import { useCancelOfferMutation } from '@/state/wallet/hooks'
+import { ETH_ADDRESSES, MARKETPLACE_ADDRESSES } from '@/constants/addresses'
+import { useAcceptOfferMutation } from '@/state/wallet/hooks'
 import { networkId } from '@/constants/networks'
+import { useETHBalances } from '@/state/wallet/hooks'
 
 const CardBreakdown = styled(RowCenter)`
   gap: 16px;
@@ -32,25 +34,27 @@ const CardBreakdown = styled(RowCenter)`
   }
 `
 
-interface CancelOfferModalProps {
+interface AcceptOfferModalProps {
   artistName: string
   season: number
   scarcityName: string
   scarcityMaxSupply?: number
   serialNumber: number
   pictureUrl: string
+  price: string
   onSuccess(): void
 }
 
-export default function CancelOfferModal({
+export default function AcceptOfferModal({
   artistName,
   season,
   scarcityName,
   scarcityMaxSupply,
   serialNumber,
   pictureUrl,
+  price,
   onSuccess,
-}: CancelOfferModalProps) {
+}: AcceptOfferModalProps) {
   // current user
   const currentUser = useCurrentUser()
 
@@ -61,8 +65,19 @@ export default function CancelOfferModal({
   )
 
   // modal
-  const isOpen = useModalOpen(ApplicationModal.CANCEL_OFFER)
-  const toggleCancelOfferModal = useCancelOfferModalToggle()
+  const isOpen = useModalOpen(ApplicationModal.ACCEPT_OFFER)
+  const toggleAcceptOfferModal = useAcceptOfferModalToggle()
+  const toggleDepositModal = useDepositModalToggle()
+
+  // balance
+  const balance = useETHBalances([currentUser?.starknetWallet.address])[currentUser?.starknetWallet.address]
+
+  // can pay for card
+  const canPayForCard = useMemo(() => {
+    if (!balance) return false
+
+    return JSBI.greaterThanOrEqual(balance.quotient, JSBI.BigInt(price))
+  }, [balance, price])
 
   // call
   const [calls, setCalls] = useState<Call[] | null>(null)
@@ -71,8 +86,13 @@ export default function CancelOfferModal({
 
     setCalls([
       {
+        contractAddress: ETH_ADDRESSES[networkId],
+        entrypoint: 'increaseAllowance',
+        calldata: [MARKETPLACE_ADDRESSES[networkId], price, 0],
+      },
+      {
         contractAddress: MARKETPLACE_ADDRESSES[networkId],
-        entrypoint: 'cancelOffer',
+        entrypoint: 'acceptOffer',
         calldata: [uint256TokenId.low, uint256TokenId.high],
       },
     ])
@@ -83,16 +103,16 @@ export default function CancelOfferModal({
   const onError = useCallback((error: string) => setError(error), [])
 
   // signature
-  const [cancelOfferMutation] = useCancelOfferMutation()
+  const [acceptOfferMutation] = useAcceptOfferMutation()
   const [txHash, setTxHash] = useState<string | null>(null)
 
   const onSignature = useCallback(
     (signature: Signature, maxFee: string) => {
-      cancelOfferMutation({
+      acceptOfferMutation({
         variables: { tokenId, maxFee, signature: JSON.stringify(signature) },
       })
         .then((res?: any) => {
-          const hash = res?.data?.cancelOffer?.hash
+          const hash = res?.data?.acceptOffer?.hash
           if (!hash) {
             onError('Transaction not received')
             return
@@ -101,8 +121,8 @@ export default function CancelOfferModal({
           setTxHash(hash)
           onSuccess()
         })
-        .catch((cancelOfferError: ApolloError) => {
-          const error = cancelOfferError?.graphQLErrors?.[0]
+        .catch((acceptOfferError: ApolloError) => {
+          const error = acceptOfferError?.graphQLErrors?.[0]
           onError(error?.message ?? 'Transaction not received')
 
           console.error(error)
@@ -121,15 +141,16 @@ export default function CancelOfferModal({
   }, [isOpen])
 
   return (
-    <Modal onDismiss={toggleCancelOfferModal} isOpen={isOpen}>
+    <Modal onDismiss={toggleAcceptOfferModal} isOpen={isOpen}>
       <StarknetSigner
-        modalHeaderText={t`Confirm offer cancelation`}
-        confirmationText={t`Your offer will be canceled`}
-        transactionText={t`offer cancelation.`}
+        modalHeaderText={t`Confirm offer acceptance`}
+        confirmationText={t`Your offer will be accepted`}
+        transactionText={t`offer acceptance.`}
+        transactionValue={price}
         calls={calls ?? undefined}
         txHash={txHash ?? undefined}
         error={error ?? undefined}
-        onDismiss={toggleCancelOfferModal}
+        onDismiss={toggleAcceptOfferModal}
         onSignature={onSignature}
         onError={onError}
       >
@@ -153,9 +174,19 @@ export default function CancelOfferModal({
             </ErrorCard>
           )}
 
+          {!canPayForCard && balance && (
+            <ErrorCard textAlign="center">
+              <Trans>
+                You do not have enough ETH in your Rules wallet to pay for the card.
+                <br />
+                <span onClick={toggleDepositModal}>Buy ETH or deposit from another wallet.</span>
+              </Trans>
+            </ErrorCard>
+          )}
+
           <PrimaryButton
             onClick={handleConfirmation}
-            disabled={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
+            disabled={currentUser?.starknetWallet.needsSignerPublicKeyUpdate || !canPayForCard}
             large
           >
             <Trans>Next</Trans>

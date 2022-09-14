@@ -10,7 +10,12 @@ import { TYPE } from '@/styles/theme'
 import { PrimaryButton, SecondaryButton } from '@/components/Button'
 import Link from '@/components/Link'
 import Placeholder from '@/components/Placeholder'
-import { useOfferModalToggle, useCreateOfferModalToggle, useCancelOfferModalToggle } from '@/state/application/hooks'
+import {
+  useOfferModalToggle,
+  useCreateOfferModalToggle,
+  useCancelOfferModalToggle,
+  useAcceptOfferModalToggle,
+} from '@/state/application/hooks'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 
 import Present from '@/images/present.svg'
@@ -61,6 +66,7 @@ export default function CardOwnership({
   const toggleOfferModal = useOfferModalToggle()
   const toggleCreateOfferModal = useCreateOfferModalToggle()
   const toggleCancelOfferModal = useCancelOfferModalToggle()
+  const toggleAcceptOfferModal = useAcceptOfferModalToggle()
 
   // price parsing
   const parsedPrice = useMemo(() => (price ? WeiAmount.fromRawAmount(price) : null), [price])
@@ -93,7 +99,7 @@ export default function CardOwnership({
                 </Trans>
               </PrimaryButton>
             ) : parsedPrice ? (
-              <PrimaryButton large>
+              <PrimaryButton onClick={toggleAcceptOfferModal} large>
                 <Trans>
                   Buy - {parsedPrice.toSignificant(6)} ETH ({weiAmountToEURValue(parsedPrice)}€)
                 </Trans>

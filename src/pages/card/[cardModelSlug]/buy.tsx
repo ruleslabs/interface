@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
-import { WeiAmount } from '@rulesorg/sdk-core'
 
 import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'
@@ -49,10 +48,11 @@ const QUERY_CARD_MODEL = gql`
   query ($slug: String!) {
     cardModel(slug: $slug) {
       id
-      pictureUrl(derivative: "width=128")
+      pictureUrl(derivative: "width=256")
       season
       scarcity {
         name
+        maxSupply
       }
       cardsOnSaleCount
       artist {
@@ -63,12 +63,15 @@ const QUERY_CARD_MODEL = gql`
 `
 
 export default function Buy() {
+  // router
   const router = useRouter()
   const { cardModelSlug } = router.query
 
-  const [selectedOffer, setSelectedOffer] = useState<{ serialNumber: number; parsedPrice?: WeiAmount } | null>(null)
+  // offer selection
+  const [selectedOffer, setSelectedOffer] = useState<{ id: string; serialNumber: number } | null>(null)
   const selectOffer = useCallback((offer: any | null) => setSelectedOffer(offer), [setSelectedOffer])
 
+  // query
   const cardModelQuery = useQuery(QUERY_CARD_MODEL, { variables: { slug: cardModelSlug }, skip: !cardModelSlug })
 
   const cardModel = cardModelQuery?.data?.cardModel
@@ -81,6 +84,7 @@ export default function Buy() {
       <Section marginTop="32px">
         <BackButton onClick={router.back} />
       </Section>
+
       <MainSection>
         {isValid && !isLoading && cardModel && (
           <>
@@ -92,11 +96,13 @@ export default function Buy() {
             />
             <OffersSelectorBreakdownCard>
               <OffersSelectorBreakdown
-                artistName={cardModel.artist?.displayName}
+                artistName={cardModel.artist.displayName}
                 season={cardModel.season}
-                scarcity={cardModel.scarcity?.name}
+                scarcityName={cardModel.scarcity.name}
+                scarcityMaxSupply={cardModel.scarcity.maxSupply}
                 pictureUrl={cardModel.pictureUrl}
-                parsedPrice={selectedOffer?.parsedPrice}
+                serialNumber={selectedOffer?.serialNumber}
+                offerId={selectedOffer?.id}
               />
             </OffersSelectorBreakdownCard>
           </>

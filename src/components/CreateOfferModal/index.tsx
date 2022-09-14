@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
-import { Fraction, uint256HexFromStrHex } from '@rulesorg/sdk-core'
+import { uint256HexFromStrHex, getStarknetCardId, Fraction, ScarcityName } from '@rulesorg/sdk-core'
 import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
@@ -65,7 +65,6 @@ interface CreateOfferModalProps {
   scarcityMaxSupply?: number
   serialNumber: number
   pictureUrl: string
-  tokenId: string
   onSuccess(): void
 }
 
@@ -75,12 +74,17 @@ export default function CreateOfferModal({
   scarcityName,
   scarcityMaxSupply,
   serialNumber,
-  tokenId,
   pictureUrl,
   onSuccess,
 }: CreateOfferModalProps) {
   // current user
   const currentUser = useCurrentUser()
+
+  // token id
+  const tokenId: string = useMemo(
+    () => getStarknetCardId(artistName, season, ScarcityName.indexOf(scarcityName), serialNumber),
+    [artistName, season, scarcityName, serialNumber]
+  )
 
   // modal
   const isOpen = useModalOpen(ApplicationModal.CREATE_OFFER)

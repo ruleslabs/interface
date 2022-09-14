@@ -34,7 +34,7 @@ const SubmitButton = styled(PrimaryButton)`
   margin-top: 12px;
 `
 
-const NetworkFeeWrapper = styled(RowCenter)`
+const FeeWrapper = styled(RowCenter)`
   justify-content: space-between;
   padding: 24px;
   background: ${({ theme }) => theme.bg5};
@@ -48,13 +48,22 @@ const NetworkFeeWrapper = styled(RowCenter)`
 interface SignerProps {
   isOpen: boolean
   calls?: Call[]
+  transactionValue?: string
   onWaitingForFees(estimating: boolean): void
   onConfirmation(): void
   onSignature(signature: Signature, maxFee: string): void
   onError(error: string): void
 }
 
-export default function Signer({ isOpen, calls, onWaitingForFees, onConfirmation, onSignature, onError }: SignerProps) {
+export default function Signer({
+  isOpen,
+  calls,
+  transactionValue,
+  onWaitingForFees,
+  onConfirmation,
+  onSignature,
+  onError,
+}: SignerProps) {
   // deposit modal
   const toggleDepositModal = useDepositModalToggle()
 
@@ -79,12 +88,26 @@ export default function Signer({ isOpen, calls, onWaitingForFees, onConfirmation
     WeiAmount.fromRawAmount(0)
 
   // network fee
-  const [networkFee, setNetworkFee] = useState<{ fee: WeiAmount; maxFee: WeiAmount } | null>(null)
+  const [parsedNetworkFee, setNetworkFee] = useState<{ fee: WeiAmount; maxFee: WeiAmount } | null>(null)
   const weiAmountToEURValue = useWeiAmountToEURValue()
-  const canPayFee = useMemo(() => {
-    if (!networkFee?.maxFee) return false
-    return JSBI.greaterThanOrEqual(balance.quotient, networkFee.maxFee.quotient)
-  }, [networkFee?.maxFee, balance.quotient])
+
+  // total cost
+  const parsedTotalCost: { cost: WeiAmount; maxCost: WeiAmount } | null = useMemo(() => {
+    console.log(transactionValue, parsedNetworkFee?.maxFee)
+    if (!parsedNetworkFee?.maxFee) return null
+
+    return {
+      cost: WeiAmount.fromRawAmount(transactionValue).add(parsedNetworkFee.fee),
+      maxCost: WeiAmount.fromRawAmount(transactionValue).add(parsedNetworkFee.maxFee),
+    }
+  }, [transactionValue, parsedNetworkFee?.maxFee])
+
+  // can pay
+  const canPayTransaction = useMemo(() => {
+    if (!parsedTotalCost?.maxCost) return false
+
+    return JSBI.greaterThanOrEqual(balance.quotient, parsedTotalCost.maxCost.quotient)
+  }, [parsedTotalCost?.maxCost.quotient, balance.quotient])
 
   // tx
   const { provider } = useStarknet()
@@ -145,7 +168,7 @@ export default function Signer({ isOpen, calls, onWaitingForFees, onConfirmation
     (event) => {
       event.preventDefault()
 
-      if (!account || !networkFee?.maxFee || !calls) return
+      if (!account || !parsedNetworkFee?.maxFee || !calls) return
 
       onConfirmation()
 
@@ -166,7 +189,7 @@ export default function Signer({ isOpen, calls, onWaitingForFees, onConfirmation
           const signerDetails = {
             walletAddress: account.address,
             nonce: nextNonce,
-            maxFee: networkFee.maxFee.quotient.toString(),
+            maxFee: parsedNetworkFee.maxFee.quotient.toString(),
             version: number.toBN(hash.transactionVersion),
             chainId: account.chainId,
           }
@@ -179,7 +202,7 @@ export default function Signer({ isOpen, calls, onWaitingForFees, onConfirmation
             return
           }
 
-          onSignature(signature, networkFee.maxFee.quotient.toString())
+          onSignature(signature, parsedNetworkFee.maxFee.quotient.toString())
         })
         .catch((error: Error) => {
           if (!error) return
@@ -188,31 +211,49 @@ export default function Signer({ isOpen, calls, onWaitingForFees, onConfirmation
           onError(`Failed to sign transaction: ${error.message}`)
         })
     },
-    [currentUserNextNonceQuery, onError, calls, account, networkFee?.maxFee, onSignature]
+    [currentUserNextNonceQuery, onError, calls, account, parsedNetworkFee?.maxFee, onSignature]
   )
 
   if (!isOpen) return null
 
   return (
     <StyledSigner gap={26}>
-      {networkFee ? (
+      {parsedNetworkFee ? (
         <StyledForm onSubmit={signTransaction}>
           <Column gap={20}>
-            <NetworkFeeWrapper>
-              <TYPE.body fontWeight={700}>
-                <Trans>Network fee</Trans>
-              </TYPE.body>
-              <Column gap={8} alignItems="end">
-                <TYPE.body>
-                  {networkFee.fee.toSignificant(4)} ETH ({weiAmountToEURValue(networkFee.fee)}€)
+            <Column gap={12}>
+              <FeeWrapper>
+                <TYPE.body fontWeight={700}>
+                  <Trans>Network fee</Trans>
                 </TYPE.body>
-                <TYPE.subtitle fontSize={12}>
-                  Max {networkFee.maxFee.toSignificant(4)} ETH ({weiAmountToEURValue(networkFee.maxFee)}€)
-                </TYPE.subtitle>
-              </Column>
-            </NetworkFeeWrapper>
+                <Column gap={8} alignItems="end">
+                  <TYPE.body>
+                    {parsedNetworkFee.fee.toSignificant(4)} ETH ({weiAmountToEURValue(parsedNetworkFee.fee)}€)
+                  </TYPE.body>
+                  <TYPE.subtitle fontSize={12}>
+                    Max {parsedNetworkFee.maxFee.toSignificant(4)} ETH ({weiAmountToEURValue(parsedNetworkFee.maxFee)}€)
+                  </TYPE.subtitle>
+                </Column>
+              </FeeWrapper>
+            </Column>
 
-            {!canPayFee && (
+            {parsedTotalCost && transactionValue && (
+              <FeeWrapper>
+                <TYPE.body fontWeight={700}>
+                  <Trans>Total</Trans>
+                </TYPE.body>
+                <Column gap={8} alignItems="end">
+                  <TYPE.body>
+                    {parsedTotalCost.cost.toSignificant(4)} ETH ({weiAmountToEURValue(parsedTotalCost.cost)}€)
+                  </TYPE.body>
+                  <TYPE.subtitle fontSize={12}>
+                    Max {parsedTotalCost.maxCost.toSignificant(4)} ETH ({weiAmountToEURValue(parsedTotalCost.maxCost)}€)
+                  </TYPE.subtitle>
+                </Column>
+              </FeeWrapper>
+            )}
+
+            {!canPayTransaction && (
               <ErrorCard textAlign="center">
                 <Trans>
                   You do not have enough ETH in your Rules wallet to pay for network fees on Starknet.
@@ -222,7 +263,7 @@ export default function Signer({ isOpen, calls, onWaitingForFees, onConfirmation
               </ErrorCard>
             )}
 
-            <SubmitButton type="submit" disabled={!canPayFee} large>
+            <SubmitButton type="submit" disabled={!canPayTransaction} large>
               <Trans>Confirm</Trans>
             </SubmitButton>
           </Column>

@@ -17,6 +17,7 @@ import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
 import GiftModal from '@/components/GiftModal'
 import CreateOfferModal from '@/components/CreateOfferModal'
 import CancelOfferModal from '@/components/CancelOfferModal'
+import AcceptOfferModal from '@/components/AcceptOfferModal'
 
 const MainSection = styled(Section)`
   position: relative;
@@ -57,7 +58,6 @@ const QUERY_CARD = gql`
   query ($slug: String!) {
     card(slug: $slug) {
       serialNumber
-      starknetTokenId
       inTransfer
       inOfferCreation
       inOfferCancelation
@@ -133,10 +133,10 @@ export default function CardBreakout() {
     () => setPendingStatus(CardOwnershipPendingStatus.IN_OFFER_CANCELATION),
     []
   )
-  // const onSuccessfulOfferAcceptance = useCallback(
-  //   () => setPendingStatus(CardOwnershipPendingStatus.IN_OFFER_ACCEPTANCE),
-  //   []
-  // )
+  const onSuccessfulOfferAcceptance = useCallback(
+    () => setPendingStatus(CardOwnershipPendingStatus.IN_OFFER_ACCEPTANCE),
+    []
+  )
 
   if (cardQuery.error || cardQuery.loading) {
     if (cardQuery.error) console.error(cardQuery.error)
@@ -204,7 +204,6 @@ export default function CardBreakout() {
         season={card.cardModel.season}
         serialNumber={card.serialNumber}
         pictureUrl={card.cardModel.pictureUrl}
-        tokenId={card.starknetTokenId}
         onSuccess={onSuccessfulGift}
       />
 
@@ -215,20 +214,33 @@ export default function CardBreakout() {
         season={card.cardModel.season}
         serialNumber={card.serialNumber}
         pictureUrl={card.cardModel.pictureUrl}
-        tokenId={card.starknetTokenId}
         onSuccess={onSuccessfulOfferCreation}
       />
 
-      <CancelOfferModal
-        artistName={card.cardModel.artist.displayName}
-        scarcityName={card.cardModel.scarcity.name}
-        scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
-        season={card.cardModel.season}
-        serialNumber={card.serialNumber}
-        pictureUrl={card.cardModel.pictureUrl}
-        tokenId={card.starknetTokenId}
-        onSuccess={onSuccessfulOfferCancelation}
-      />
+      {card.currentOffer.price && (
+        <>
+          <CancelOfferModal
+            artistName={card.cardModel.artist.displayName}
+            scarcityName={card.cardModel.scarcity.name}
+            scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
+            season={card.cardModel.season}
+            serialNumber={card.serialNumber}
+            pictureUrl={card.cardModel.pictureUrl}
+            onSuccess={onSuccessfulOfferCancelation}
+          />
+
+          <AcceptOfferModal
+            artistName={card.cardModel.artist.displayName}
+            scarcityName={card.cardModel.scarcity.name}
+            scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
+            season={card.cardModel.season}
+            serialNumber={card.serialNumber}
+            pictureUrl={card.cardModel.pictureUrl}
+            price={card.currentOffer.price}
+            onSuccess={onSuccessfulOfferAcceptance}
+          />
+        </>
+      )}
     </>
   )
 }
