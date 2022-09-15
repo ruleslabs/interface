@@ -1018,3 +1018,15 @@ msgstr "Annulation de la mise en vente de la carte..."
 #: src/components/CardOwnership/index.tsx
 msgid "Selling the card..."
 msgstr "Vente de la carte..."
+
+#: src/components/MarketplaceModal/AcceptOffer.tsx
+msgid "You do not have enough ETH in your Rules wallet to purchase this card.<0/><1>Buy ETH or deposit from another wallet.</1>"
+msgstr "Vous n'avez pas assez d'ETH sur votre Wallet pour acheter cette carte.<0/><1>Achetez de l'ETH ou déposez-en depuis un autre Wallet.</1>"
+
+#: src/components/MarketplaceModal/AcceptOffer.tsx
+msgid "Confirm purchase"
+msgstr "Confirmer l'achat"
+
+#: src/components/MarketplaceModal/PriceBreakdown.tsx
+msgid "You Pay"
+msgstr "Paiement"

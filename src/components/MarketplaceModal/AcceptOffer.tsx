@@ -21,6 +21,7 @@ import { ETH_ADDRESSES, MARKETPLACE_ADDRESSES } from '@/constants/addresses'
 import { useAcceptOfferMutation } from '@/state/wallet/hooks'
 import { networkId } from '@/constants/networks'
 import { useETHBalances } from '@/state/wallet/hooks'
+import { PurchaseBreakdown } from './PriceBreakdown'
 
 const CardBreakdown = styled(RowCenter)`
   gap: 16px;
@@ -143,7 +144,7 @@ export default function AcceptOfferModal({
   return (
     <Modal onDismiss={toggleAcceptOfferModal} isOpen={isOpen}>
       <StarknetSigner
-        modalHeaderText={t`Confirm offer acceptance`}
+        modalHeaderText={t`Confirm purchase`}
         confirmationText={t`Your offer will be accepted`}
         transactionText={t`offer acceptance.`}
         transactionValue={price}
@@ -168,6 +169,8 @@ export default function AcceptOfferModal({
             </Column>
           </CardBreakdown>
 
+          <PurchaseBreakdown price={price} />
+
           {currentUser?.starknetWallet.needsSignerPublicKeyUpdate && (
             <ErrorCard>
               <LockedWallet />
@@ -177,7 +180,7 @@ export default function AcceptOfferModal({
           {!canPayForCard && balance && (
             <ErrorCard textAlign="center">
               <Trans>
-                You do not have enough ETH in your Rules wallet to pay for the card.
+                You do not have enough ETH in your Rules wallet to purchase this card.
                 <br />
                 <span onClick={toggleDepositModal}>Buy ETH or deposit from another wallet.</span>
               </Trans>

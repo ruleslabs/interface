@@ -15,9 +15,9 @@ import YoutubeEmbed from '@/components/YoutubeEmbed'
 import CardModel3D from '@/components/CardModel3D'
 import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
 import GiftModal from '@/components/GiftModal'
-import CreateOfferModal from '@/components/CreateOfferModal'
-import CancelOfferModal from '@/components/CancelOfferModal'
-import AcceptOfferModal from '@/components/AcceptOfferModal'
+import CreateOfferModal from '@/components/MarketplaceModal/CreateOffer'
+import CancelOfferModal from '@/components/MarketplaceModal/CancelOffer'
+import AcceptOfferModal from '@/components/MarketplaceModal/AcceptOffer'
 
 const MainSection = styled(Section)`
   position: relative;
@@ -217,7 +217,7 @@ export default function CardBreakout() {
         onSuccess={onSuccessfulOfferCreation}
       />
 
-      {card.currentOffer.price && (
+      {card.currentOffer?.price && (
         <>
           <CancelOfferModal
             artistName={card.cardModel.artist.displayName}

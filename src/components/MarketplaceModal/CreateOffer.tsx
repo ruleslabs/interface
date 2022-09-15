@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
-import { uint256HexFromStrHex, getStarknetCardId, Fraction, ScarcityName } from '@rulesorg/sdk-core'
+import { uint256HexFromStrHex, getStarknetCardId, ScarcityName } from '@rulesorg/sdk-core'
 import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
@@ -10,7 +10,7 @@ import { useModalOpen, useCreateOfferModalToggle } from '@/state/application/hoo
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
-import Row, { RowCenter } from '@/components/Row'
+import { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import { ErrorCard } from '@/components/Card'
@@ -20,15 +20,9 @@ import { MARKETPLACE_ADDRESSES, RULES_TOKENS_ADDRESSES } from '@/constants/addre
 import { useCreateOfferMutation } from '@/state/wallet/hooks'
 import { networkId } from '@/constants/networks'
 import EtherInput from '@/components/Input/EtherInput'
-import {
-  ARTIST_FEE_PERCENTAGE,
-  MARKETPLACE_FEE_PERCENTAGE,
-  BIG_INT_MIN_MARKETPLACE_OFFER_PRICE,
-  BIG_INT_MAX_MARKETPLACE_OFFER_PRICE,
-} from '@/constants/misc'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-import Tooltip from '@/components/Tooltip'
 import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
+import { SaleBreakdown } from './PriceBreakdown'
+import { BIG_INT_MIN_MARKETPLACE_OFFER_PRICE, BIG_INT_MAX_MARKETPLACE_OFFER_PRICE } from '@/constants/misc'
 
 const CardBreakdown = styled(RowCenter)`
   gap: 16px;
@@ -40,22 +34,6 @@ const CardBreakdown = styled(RowCenter)`
     width: 64px;
     border-radius: 4px;
   }
-`
-
-const SaleBreakdownLine = styled(Row)`
-  width: 100%;
-  gap: 8px;
-
-  & > div:last-child {
-    margin-left: auto;
-  }
-`
-
-const Separator = styled.div`
-  background: ${({ theme }) => theme.bg3};
-  margin: 8px 0;
-  width: 100%;
-  height: 3px;
 `
 
 interface CreateOfferModalProps {
@@ -103,20 +81,6 @@ export default function CreateOfferModal({
       !parsedPrice.greaterThan(BIG_INT_MAX_MARKETPLACE_OFFER_PRICE)
     )
   }, [parsedPrice])
-
-  // price breakdown
-  const { artistFee, marketplaceFee, payout } = useMemo(() => {
-    return {
-      artistFee: parsedPrice?.multiply(new Fraction(ARTIST_FEE_PERCENTAGE, 1_000_000)),
-      marketplaceFee: parsedPrice?.multiply(new Fraction(MARKETPLACE_FEE_PERCENTAGE, 1_000_000)),
-      payout: parsedPrice?.multiply(
-        new Fraction(1_000_000 - MARKETPLACE_FEE_PERCENTAGE - ARTIST_FEE_PERCENTAGE, 1_000_000)
-      ),
-    }
-  }, [parsedPrice])
-
-  // fiat
-  const weiAmountToEURValue = useWeiAmountToEURValue()
 
   // call
   const [calls, setCalls] = useState<Call[] | null>(null)
@@ -218,46 +182,7 @@ export default function CreateOfferModal({
           ) : (
             <Column gap={32}>
               <EtherInput onUserInput={onPriceInput} value={price} placeholder="0.0" />
-              <Column gap={12}>
-                <SaleBreakdownLine>
-                  <TYPE.body>
-                    <Trans>Artist fee ({ARTIST_FEE_PERCENTAGE / 10_000}%)</Trans>
-                  </TYPE.body>
-
-                  <Tooltip text={t`This fee will go to ${artistName} and his team.`} />
-
-                  <Row gap={8}>
-                    <TYPE.subtitle>{weiAmountToEURValue(artistFee) ?? 0} EUR</TYPE.subtitle>
-                    <TYPE.body>{artistFee?.toSignificant(6) ?? 0} ETH</TYPE.body>
-                  </Row>
-                </SaleBreakdownLine>
-
-                <SaleBreakdownLine>
-                  <TYPE.body>
-                    <Trans>Marketplace fee ({MARKETPLACE_FEE_PERCENTAGE / 10_000}%)</Trans>
-                  </TYPE.body>
-
-                  <Tooltip text={t`This fee will help Rules' further development.`} />
-
-                  <Row gap={8}>
-                    <TYPE.subtitle>{weiAmountToEURValue(marketplaceFee) ?? 0} EUR</TYPE.subtitle>
-                    <TYPE.body>{marketplaceFee?.toSignificant(6) ?? 0} ETH</TYPE.body>
-                  </Row>
-                </SaleBreakdownLine>
-
-                <Separator />
-
-                <SaleBreakdownLine>
-                  <TYPE.body>
-                    <Trans>Total payout</Trans>
-                  </TYPE.body>
-
-                  <Row gap={8}>
-                    <TYPE.subtitle>{weiAmountToEURValue(payout) ?? 0} EUR</TYPE.subtitle>
-                    <TYPE.body>{payout?.toSignificant(6) ?? 0} ETH</TYPE.body>
-                  </Row>
-                </SaleBreakdownLine>
-              </Column>
+              {parsedPrice && <SaleBreakdown price={parsedPrice.quotient.toString()} artistName={artistName} />}
             </Column>
           )}
 

@@ -9,7 +9,7 @@ import Row from '@/components/Row'
 import Column from '@/components/Column'
 import { PrimaryButton } from '@/components/Button'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-import AcceptOfferModal from '@/components/AcceptOfferModal'
+import AcceptOfferModal from '@/components/MarketplaceModal/AcceptOffer'
 import { useAcceptOfferModalToggle } from '@/state/application/hooks'
 
 const CardModelImage = styled.img`
