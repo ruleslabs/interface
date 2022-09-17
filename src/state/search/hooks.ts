@@ -178,7 +178,7 @@ export function useSearchCards({ facets, dateDesc = true, search = '', skip = fa
 
     // prettier-ignore
     (dateDesc ? algoliaIndexes.cardsDateDesc : algoliaIndexes.cardsDateAsc)
-      .search(search, { facetFilters, page: 0, hitsPerPage: 32 })
+      .search(search, { facetFilters, page: 0, hitsPerPage: 128 })
       .then((res) => setCardsSearch({ hits: res.hits, loading: false, error: null }))
       .catch((err) => {
         setCardsSearch({ hits: null, loading: false, error: err })

@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { stark, ec } from 'starknet'
+import { stark, ec, getChecksumAddress } from 'starknet'
 
 import { encryptWithPassword, encodeKey, generateSalt, generateIV } from '@/utils/encryption'
 
@@ -20,7 +20,7 @@ export default function useCreateWallet(): (password: string) => Promise<WalletI
 
     const salt = generateSalt()
     const iv = generateIV()
-    const encodedPrivateKey = encodeKey(starkPair.priv.toString(16))
+    const encodedPrivateKey = encodeKey(getChecksumAddress(`0x${starkPair.priv.toString(16)}`))
 
     const encryptedPrivateKey = await encryptWithPassword(password, iv, salt, encodedPrivateKey)
 

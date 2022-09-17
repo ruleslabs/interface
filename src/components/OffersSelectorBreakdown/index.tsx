@@ -43,7 +43,7 @@ export default function OffersSelectorBreakdown({
   pictureUrl,
   serialNumber,
   offerId,
-}: CardSelectorBreakdownProps) {
+}: OffersSelectorBreakdownProps) {
   // modal
   const toggleAcceptOfferModal = useAcceptOfferModalToggle()
 
@@ -83,7 +83,7 @@ export default function OffersSelectorBreakdown({
         </PrimaryButton>
       </Column>
 
-      {offer?.price && (
+      {offer?.price && serialNumber && (
         <AcceptOfferModal
           artistName={artistName}
           scarcityName={scarcityName}

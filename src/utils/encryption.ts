@@ -65,15 +65,13 @@ export function generateSalt() {
 }
 
 export function encodeKey(key: string): Uint8Array {
-  return hexToArray(key)
+  return hexToArray(key.substring(2))
 }
 
 export function decodeKey(key: Uint8Array): string {
   return `0x${arrayToHex(key)}`
 }
 
-export const hexToArray = (hex: string): Uint8Array => new Uint8Array(Buffer.from(padOddLengthHex(hex), 'hex'))
+export const hexToArray = (hex: string): Uint8Array => new Uint8Array(Buffer.from(hex, 'hex'))
 
 export const arrayToHex = (array: Uint8Array): string => Buffer.from(array).toString('hex')
-
-export const padOddLengthHex = (hex: string) => (hex.length % 2 ? '0' : '') + hex

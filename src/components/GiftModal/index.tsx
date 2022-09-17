@@ -1,7 +1,7 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
-import { uint256HexFromStrHex } from '@rulesorg/sdk-core'
+import { uint256HexFromStrHex, getStarknetCardId, ScarcityName } from '@rulesorg/sdk-core'
 import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
@@ -102,7 +102,6 @@ interface GiftModalProps {
   scarcityMaxSupply?: number
   serialNumber: number
   pictureUrl: string
-  tokenId: string
   onSuccess(): void
 }
 
@@ -112,12 +111,17 @@ export default function GiftModal({
   scarcityName,
   scarcityMaxSupply,
   serialNumber,
-  tokenId,
   pictureUrl,
   onSuccess,
 }: GiftModalProps) {
   // current user
   const currentUser = useCurrentUser()
+
+  // token id
+  const tokenId: string = useMemo(
+    () => getStarknetCardId(artistName, season, ScarcityName.indexOf(scarcityName), serialNumber),
+    [artistName, season, scarcityName, serialNumber]
+  )
 
   // modal
   const isOpen = useModalOpen(ApplicationModal.OFFER)

@@ -93,8 +93,7 @@ export default function Signer({
 
   // total cost
   const parsedTotalCost: { cost: WeiAmount; maxCost: WeiAmount } | null = useMemo(() => {
-    console.log(transactionValue, parsedNetworkFee?.maxFee)
-    if (!parsedNetworkFee?.maxFee) return null
+    if (!parsedNetworkFee?.maxFee || !transactionValue) return null
 
     return {
       cost: WeiAmount.fromRawAmount(transactionValue).add(parsedNetworkFee.fee),
@@ -104,10 +103,10 @@ export default function Signer({
 
   // can pay
   const canPayTransaction = useMemo(() => {
-    if (!parsedTotalCost?.maxCost) return false
+    if (!parsedTotalCost?.maxCost && !parsedNetworkFee?.maxFee) return false
 
-    return JSBI.greaterThanOrEqual(balance.quotient, parsedTotalCost.maxCost.quotient)
-  }, [parsedTotalCost?.maxCost.quotient, balance.quotient])
+    return JSBI.greaterThanOrEqual(balance.quotient, (parsedTotalCost?.maxCost ?? parsedNetworkFee?.maxFee)!.quotient)
+  }, [parsedTotalCost?.maxCost.quotient, parsedNetworkFee?.maxFee.quotient, balance.quotient])
 
   // tx
   const { provider } = useStarknet()
