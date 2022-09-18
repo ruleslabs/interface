@@ -11,6 +11,7 @@ import Link from '@/components/Link'
 import Placeholder from '@/components/Placeholder'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import { SecondaryButton } from '@/components/Button'
+import { useSearchOffers } from '@/state/search/hooks'
 
 import EthereumPlainIcon from '@/images/ethereum-plain.svg'
 
@@ -52,12 +53,12 @@ const CardsOnSaleCount = styled(TYPE.body)`
 
 interface CardModelSalesProps {
   slug: string
+  cardModelId?: string
   lowestAsk?: string
   averageSale?: string
-  cardsOnSaleCount: number
 }
 
-export default function CardModelSales({ slug, lowestAsk, averageSale, cardsOnSaleCount }: CardModelSalesProps) {
+export default function CardModelSales({ slug, cardModelId, lowestAsk, averageSale }: CardModelSalesProps) {
   // lowest ask / average sale
   const parsedLowestAsk = useMemo(() => (lowestAsk ? WeiAmount.fromRawAmount(lowestAsk) : null), [lowestAsk])
   const parsedAverageSale = useMemo(() => (averageSale ? WeiAmount.fromRawAmount(averageSale) : null), [averageSale])
@@ -67,6 +68,9 @@ export default function CardModelSales({ slug, lowestAsk, averageSale, cardsOnSa
 
   const [fiatMode, setFiatMode] = useState(false)
   const toggleFiatMode = useCallback(() => setFiatMode(!fiatMode), [fiatMode])
+
+  // get cards on sale count
+  const offersSearch = useSearchOffers({ facets: { cardModelId }, skip: !cardModelId })
 
   return (
     <Column gap={36}>
@@ -96,11 +100,7 @@ export default function CardModelSales({ slug, lowestAsk, averageSale, cardsOnSa
         <CurrencySwitch onClick={toggleFiatMode}>{fiatMode ? <EthereumPlainIcon /> : '€'}</CurrencySwitch>
       </Row>
 
-      {cardsOnSaleCount === 0 ? (
-        <Placeholder>
-          <Trans>No cards on sale.</Trans>
-        </Placeholder>
-      ) : (
+      {offersSearch?.nbHits ? (
         <Column gap={12}>
           <Link href={`/card/${slug}/buy`}>
             <PrimaryButton style={{ width: '100%' }} large>
@@ -109,13 +109,13 @@ export default function CardModelSales({ slug, lowestAsk, averageSale, cardsOnSa
           </Link>
 
           <CardsOnSaleCount textAlign="center">
-            <Plural
-              value={cardsOnSaleCount}
-              _1="{cardsOnSaleCount} card on sale"
-              other="{cardsOnSaleCount} cards on sale"
-            />
+            <Plural value={offersSearch?.nbHits} _1="{0} card on sale" other="{0} cards on sale" />
           </CardsOnSaleCount>
         </Column>
+      ) : (
+        <Placeholder>
+          <Trans>No cards on sale.</Trans>
+        </Placeholder>
       )}
     </Column>
   )

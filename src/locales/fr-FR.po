@@ -238,9 +238,9 @@ msgstr "Prix minimum"
 msgid "Select and buy"
 msgstr "Selectionner et acheter"
 
-#: src/components/CardModelSales
-msgid "{cardsOnSaleCount, plural, =1 {{cardsOnSaleCount} card on sale} other {{cardsOnSaleCount} cards on sale}}"
-msgstr "{cardsOnSaleCount, plural, =1 {{cardsOnSaleCount} carte en vente} other {{cardsOnSaleCount} cartes en vente}}"
+#: src/components/CardModelSales/index.tsx
+msgid "{0, plural, =1 {{0} card on sale} other {{0} cards on sale}}"
+msgstr "{0, plural, =1 {{0} carte en vente} other {{0} cartes en vente}}"
 
 #: src/components/CardOwnership/index.tsx
 msgid "Belongs to <0>{ownerUsername}</0>"

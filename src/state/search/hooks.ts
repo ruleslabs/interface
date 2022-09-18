@@ -199,9 +199,15 @@ interface SearchOffersProps {
   facets: SearchOffersFacets
   priceDesc?: boolean
   skip?: boolean
+  hitsPerPage?: number
 }
 
-export function useSearchOffers({ facets, priceDesc = true, skip = false }: SearchOffersProps): Search {
+export function useSearchOffers({
+  facets,
+  priceDesc = true,
+  skip = false,
+  hitsPerPage = 32,
+}: SearchOffersProps): Search {
   const [offersSearch, setOffersSearch] = useState<Search>({ hits: null, loading: true, error: null })
 
   const facetFilters = useFacetFilters({ ...facets, available: '-false' })
@@ -214,14 +220,14 @@ export function useSearchOffers({ facets, priceDesc = true, skip = false }: Sear
 
     // prettier-ignore
     (priceDesc ? algoliaIndexes.offersPriceDesc : algoliaIndexes.offersPriceAsc)
-      .search('', { facetFilters, page: 0, hitsPerPage: 32 })
-      .then((res) => setOffersSearch({ hits: res.hits, loading: false, error: null }))
+      .search('', { facetFilters, page: 0, hitsPerPage })
+      .then((res) => setOffersSearch({ ...res, loading: false, error: null }))
       .catch((err) => {
         setOffersSearch({ hits: null, loading: false, error: err })
         console.error(err)
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [facetFilters, setOffersSearch, priceDesc, skip])
+  }, [facetFilters, setOffersSearch, priceDesc, skip, hitsPerPage])
 
   return offersSearch
 }

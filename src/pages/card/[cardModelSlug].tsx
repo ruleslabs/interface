@@ -117,9 +117,9 @@ export default function CardModelPage() {
           <Card>
             <CardModelSales
               slug={`${cardModelSlug}`}
+              cardModelId={cardModel.id}
               lowestAsk={cardModel.lowestAsk}
               averageSale={cardModel.averageSale}
-              cardsOnSaleCount={cardModel.cardsOnSaleCount}
             />
           </Card>
         </MainSectionCardsWrapper>
