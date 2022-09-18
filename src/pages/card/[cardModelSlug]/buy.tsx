@@ -76,6 +76,14 @@ export default function Buy() {
 
   const cardModel = cardModelQuery?.data?.cardModel
 
+  // on successful offer acceptance
+  const [acceptedOfferIds, setAcceptedOfferIds] = useState([])
+  const onSuccessfulOfferAcceptance = useCallback(() => {
+    setAcceptedOfferIds([...acceptedOfferIds, selectedOffer?.id])
+    setSelectedOffer(null)
+    if (cardModel?.cardsOnSaleCount) cardModel.cardsOnSaleCount -= 1
+  }, [acceptedOfferIds, selectedOffer?.id, cardModel?.cardsOnSaleCount])
+
   const isValid = !cardModelQuery.error
   const isLoading = cardModelQuery.loading
 
@@ -91,6 +99,7 @@ export default function Buy() {
             <StyledOffersSelector
               cardModelId={cardModel.id}
               cardsOnSaleCount={cardModel.cardsOnSaleCount}
+              acceptedOfferIds={acceptedOfferIds}
               selectedOffer={selectedOffer}
               selectOffer={selectOffer}
             />
@@ -103,6 +112,7 @@ export default function Buy() {
                 pictureUrl={cardModel.pictureUrl}
                 serialNumber={selectedOffer?.serialNumber}
                 offerId={selectedOffer?.id}
+                onSuccessfulOfferAcceptance={onSuccessfulOfferAcceptance}
               />
             </OffersSelectorBreakdownCard>
           </>

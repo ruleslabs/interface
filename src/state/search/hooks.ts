@@ -192,6 +192,7 @@ export function useSearchCards({ facets, dateDesc = true, search = '', skip = fa
 
 interface SearchOffersFacets {
   cardModelId?: string
+  objectID?: string[]
 }
 
 interface SearchOffersProps {
@@ -203,7 +204,7 @@ interface SearchOffersProps {
 export function useSearchOffers({ facets, priceDesc = true, skip = false }: SearchOffersProps): Search {
   const [offersSearch, setOffersSearch] = useState<Search>({ hits: null, loading: true, error: null })
 
-  const facetFilters = useFacetFilters(facets)
+  const facetFilters = useFacetFilters({ ...facets, available: '-false' })
 
   useEffect(() => {
     if (skip) return

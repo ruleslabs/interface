@@ -391,8 +391,8 @@ msgid "Platinium"
 msgstr "Platine"
 
 #: src/components/OffersSelector/index.tsx
-msgid "{cardsOnSaleCount, plural, =1 {{cardsOnSaleCount} available} other {{cardsOnSaleCount} availables}}"
-msgstr "{cardsOnSaleCount, plural, =1 {{cardsOnSaleCount} disponible} other {{cardsOnSaleCount} disponibles}}"
+msgid "{0, plural, =1 {{0} available} other {{0} availables}}"
+msgstr "{0, plural, =1 {{0} disponible} other {{0} disponibles}}"
 
 #: src/components/OffersSelector/index.tsx
 msgid "Select a card"

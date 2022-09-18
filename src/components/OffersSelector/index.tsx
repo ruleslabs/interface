@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { Plural, Trans } from '@lingui/macro'
@@ -40,6 +40,7 @@ const TableTitle = styled(TYPE.large)`
 interface OffersSelectorProps extends React.HTMLAttributes<HTMLDivElement> {
   cardModelId: string
   cardsOnSaleCount: number
+  acceptedOfferIds: string[]
   selectedOffer: any | null
   selectOffer: (offerId: string) => void
 }
@@ -47,6 +48,7 @@ interface OffersSelectorProps extends React.HTMLAttributes<HTMLDivElement> {
 export default function OffersSelector({
   cardModelId,
   cardsOnSaleCount,
+  acceptedOfferIds,
   selectedOffer,
   selectOffer,
   ...props
@@ -61,7 +63,10 @@ export default function OffersSelector({
     setSortDesc(!sortDesc)
   }, [setSortDesc, sortDesc])
 
-  const offersSearch = useSearchOffers({ facets: { cardModelId }, priceDesc: sortDesc })
+  // exclude accepted offers
+  const dashedObjectIds = useMemo(() => acceptedOfferIds.map((offerId: string) => `-${offerId}`), [acceptedOfferIds])
+
+  const offersSearch = useSearchOffers({ facets: { cardModelId, objectID: dashedObjectIds }, priceDesc: sortDesc })
 
   useEffect(() => {
     setUserIds(
@@ -93,7 +98,7 @@ export default function OffersSelector({
           <Trans>Select a card</Trans>
         </TableTitle>
         <AvailabilityCount>
-          <Plural value={cardsOnSaleCount} _1="{cardsOnSaleCount} available" other="{cardsOnSaleCount} availables" />
+          <Plural value={offersSearch?.nbHits ?? 0} _1="{0} available" other="{0} availables" />
         </AvailabilityCount>
       </RowBetween>
       <OffersTable

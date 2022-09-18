@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
@@ -33,6 +33,7 @@ interface OffersSelectorBreakdownProps {
   pictureUrl: string
   serialNumber?: number
   offerId?: string
+  onSuccessfulOfferAcceptance(): void
 }
 
 export default function OffersSelectorBreakdown({
@@ -43,17 +44,13 @@ export default function OffersSelectorBreakdown({
   pictureUrl,
   serialNumber,
   offerId,
+  onSuccessfulOfferAcceptance,
 }: OffersSelectorBreakdownProps) {
   // modal
   const toggleAcceptOfferModal = useAcceptOfferModalToggle()
 
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
-
-  // on successful offer acceptance
-  const onSuccessfulOfferAcceptance = useCallback(() => {
-    console.log('done')
-  }, [])
 
   // query offer
   const offerQuery = useQuery(OFFER_QUERY, { variables: { id: offerId }, skip: !offerId })
