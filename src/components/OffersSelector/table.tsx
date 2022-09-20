@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
+import { WeiAmount } from '@rulesorg/sdk-core'
 
 import { TYPE } from '@/styles/theme'
 import Table from '@/components/Table'
@@ -9,7 +10,6 @@ import { RadioButton } from '@/components/Button'
 import Caret from '@/components/Caret'
 import Link from '@/components/Link'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
 
 const StyledTable = styled(Table)`
   margin-top: 22px;
@@ -79,7 +79,7 @@ export default function OffersTable({
   const { asPath } = useRouter()
 
   // parsed price
-  const parsedPrices = useMemo(() => offers.map((offer: any) => tryParseWeiAmount(offer.price.toString())), [offers])
+  const parsedPrices = useMemo(() => offers.map((offer: any) => WeiAmount.fromRawAmount(`0x${offer.price}`)), [offers])
 
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()

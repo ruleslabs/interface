@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react'
+import { useCallback, useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
@@ -18,6 +18,7 @@ import GiftModal from '@/components/GiftModal'
 import CreateOfferModal from '@/components/MarketplaceModal/CreateOffer'
 import CancelOfferModal from '@/components/MarketplaceModal/CancelOffer'
 import AcceptOfferModal from '@/components/MarketplaceModal/AcceptOffer'
+import { useSearchOffers } from '@/state/search/hooks'
 
 const MainSection = styled(Section)`
   position: relative;
@@ -57,14 +58,12 @@ const CardTransfersHistoryWrapper = styled(Card)`
 const QUERY_CARD = gql`
   query ($slug: String!) {
     card(slug: $slug) {
+      id
       serialNumber
       inTransfer
       inOfferCreation
       inOfferCancelation
       inOfferAcceptance
-      currentOffer {
-        price
-      }
       owner {
         user {
           slug
@@ -138,14 +137,19 @@ export default function CardBreakout() {
     []
   )
 
+  // card price
+  const offerSearch = useSearchOffers({ facets: { cardId: card?.id }, skip: !card?.id })
+  const cardPrice = useMemo(
+    () => (offerSearch?.hits?.[0]?.price ? `0x${offerSearch?.hits?.[0]?.price}` : null),
+    [offerSearch?.hits?.[0]?.price]
+  )
+
   if (cardQuery.error || cardQuery.loading) {
     if (cardQuery.error) console.error(cardQuery.error)
     return null
   }
 
-  if (!card) {
-    return <TYPE.body>Card not found</TYPE.body>
-  }
+  if (!card) return <TYPE.body>Card not found</TYPE.body>
 
   return (
     <>
@@ -180,7 +184,7 @@ export default function CardBreakout() {
                   ownerUsername={card.owner.user.username}
                   ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
                   pendingStatus={pendingStatus ?? undefined}
-                  price={card.currentOffer?.price}
+                  price={cardPrice}
                 />
               </Card>
             )}
@@ -217,7 +221,7 @@ export default function CardBreakout() {
         onSuccess={onSuccessfulOfferCreation}
       />
 
-      {card.currentOffer?.price && (
+      {cardPrice && (
         <>
           <CancelOfferModal
             artistName={card.cardModel.artist.displayName}
@@ -236,7 +240,7 @@ export default function CardBreakout() {
             season={card.cardModel.season}
             serialNumber={card.serialNumber}
             pictureUrl={card.cardModel.pictureUrl}
-            price={card.currentOffer.price}
+            price={cardPrice}
             onSuccess={onSuccessfulOfferAcceptance}
           />
         </>

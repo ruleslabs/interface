@@ -192,6 +192,7 @@ export function useSearchCards({ facets, dateDesc = true, search = '', skip = fa
 
 interface SearchOffersFacets {
   cardModelId?: string
+  cardId?: string
   objectID?: string[]
 }
 

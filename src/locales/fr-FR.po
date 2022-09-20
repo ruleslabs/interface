@@ -1030,3 +1030,15 @@ msgstr "Confirmer l'achat"
 #: src/components/MarketplaceModal/PriceBreakdown.tsx
 msgid "You Pay"
 msgstr "Paiement"
+
+#: src/components/MarketplaceModal/AcceptOffer.tsx
+msgid "offer acceptance."
+msgstr "acceptation de l'offre."
+
+#: src/components/MarketplaceModal/CancelOffer.tsx
+msgid "offer cancelation."
+msgstr "annulation de l'offre."
+
+#: src/components/MarketplaceModal/CreateOffer.tsx
+msgid "offer creation."
+msgstr "création de l'offre."
