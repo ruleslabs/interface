@@ -9,6 +9,8 @@ import { TYPE } from '@/styles/theme'
 import { ColumnCenter } from '@/components/Column'
 import { LargeSpinner } from '@/components/Spinner'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
+import CardPendingStatusText from '@/components/CardPendingStatusText'
+import { CardPendingStatus } from '@/hooks/useCardsPendingStatus'
 
 const StyledCardModel = styled(ColumnCenter)<{ width?: number }>`
   position: relative;
@@ -29,9 +31,9 @@ const StyledCustomCardModel = styled(Link)`
   }
 `
 
-const Card = styled.img<{ inDelivery: boolean; inTransfer: boolean }>`
+const Card = styled.img<{ inDelivery: boolean; pendingStatus: boolean }>`
   width: 100%;
-  ${({ inDelivery, inTransfer }) => (inDelivery || inTransfer) && 'opacity: 0.3;'}
+  ${({ inDelivery, pendingStatus }) => (inDelivery || pendingStatus) && 'opacity: 0.3;'}
 `
 
 const InDelivery = styled.img`
@@ -63,7 +65,7 @@ interface CardModelProps {
   serialNumber?: number
   inDelivery?: boolean
   onSale?: boolean
-  inTransfer?: boolean
+  pendingStatus?: CardPendingStatus
   season?: number
   artistName?: string
   lowestAsk?: string
@@ -75,7 +77,7 @@ export default function CardModel({
   width,
   serialNumber,
   onSale = false,
-  inTransfer = false,
+  pendingStatus,
   inDelivery = false,
   season,
   artistName,
@@ -93,16 +95,16 @@ export default function CardModel({
   return (
     <StyledCardModel width={width}>
       <StyledCustomCardModel href={`/card/${cardModelSlug}${!!serialNumber ? `/${serialNumber}` : ''}`}>
-        <Card src={pictureUrl} inDelivery={inDelivery} inTransfer={inTransfer} />
+        <Card src={pictureUrl} inDelivery={inDelivery} pendingStatus={!!pendingStatus} />
         {inDelivery && <InDelivery src={`/assets/delivery.${locale}.png`} />}
-        {onSale && <OnSale src={`/assets/onsale.${locale}.png`} />}
-        {inTransfer && <StyledLargeSpinner className="spinner" />}
+        {onSale && !pendingStatus && <OnSale src={`/assets/onsale.${locale}.png`} />}
+        {pendingStatus && <StyledLargeSpinner className="spinner" />}
       </StyledCustomCardModel>
 
-      {inTransfer && (
+      {pendingStatus && (
         <ColumnCenter gap={4}>
           <TYPE.body textAlign="center">
-            <Trans>Transfering the card...</Trans>
+            <CardPendingStatusText pendingStatus={pendingStatus} />
           </TYPE.body>
           <TYPE.subtitle textAlign="center">
             <Trans>Please come back later.</Trans>
@@ -110,7 +112,7 @@ export default function CardModel({
         </ColumnCenter>
       )}
 
-      {season && artistName && !inTransfer && (
+      {season && artistName && !pendingStatus && (
         <ColumnCenter gap={4}>
           <TYPE.body textAlign="center">
             {artistName} {serialNumber && `#${serialNumber}`}

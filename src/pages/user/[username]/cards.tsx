@@ -13,11 +13,15 @@ import { useSearchCards } from '@/state/search/hooks'
 import { TYPE } from '@/styles/theme'
 import EmptyTab, { EmptyCardsTabOfCurrentUser } from '@/components/EmptyTab'
 import { useCurrentUser } from '@/state/user/hooks'
+import useCardsPendingStatus from '@/hooks/useCardsPendingStatus'
 
 const CARD_CONTENT = `
   serialNumber
   onSale
   inTransfer
+  inOfferCreation
+  inOfferCancelation
+  inOfferAcceptance
   cardModel {
     slug
     pictureUrl(derivative: "width=1024")
@@ -78,6 +82,9 @@ function Cards({ userId }: { userId: string }) {
   const isValid = !cardsQuery.error && !cardsSearch.error
   const isLoading = cardsQuery.loading || cardsSearch.loading
 
+  // pending status
+  const pendingsStatus = useCardsPendingStatus(cards)
+
   return (
     <Section>
       <GridHeader sortTexts={['Newest', 'Oldest']} sortValue={sortDesc} onSortUpdate={toggleSort}>
@@ -99,7 +106,7 @@ function Cards({ userId }: { userId: string }) {
               cardModelSlug={card.cardModel.slug}
               pictureUrl={card.cardModel.pictureUrl}
               onSale={card.onSale}
-              inTransfer={card.inTransfer}
+              pendingStatus={pendingsStatus[index] ?? undefined}
               serialNumber={card.serialNumber}
               inDelivery={card.inDelivery}
               season={card.cardModel.season}

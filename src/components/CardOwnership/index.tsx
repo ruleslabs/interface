@@ -17,15 +17,10 @@ import {
   useAcceptOfferModalToggle,
 } from '@/state/application/hooks'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
+import CardPendingStatusText from '@/components/CardPendingStatusText'
+import { CardPendingStatus } from '@/hooks/useCardsPendingStatus'
 
 import Present from '@/images/present.svg'
-
-export enum CardOwnershipPendingStatus {
-  IN_TRANSFER,
-  IN_OFFER_CREATION,
-  IN_OFFER_CANCELATION,
-  IN_OFFER_ACCEPTANCE,
-}
 
 const Avatar = styled.img`
   width: 50px;
@@ -48,7 +43,7 @@ interface CardOwnershipProps {
   ownerSlug: string
   ownerUsername: string
   ownerProfilePictureUrl: string
-  pendingStatus?: CardOwnershipPendingStatus
+  pendingStatus?: CardPendingStatus
   price?: string
 }
 
@@ -120,14 +115,8 @@ export default function CardOwnership({
           </>
         ) : (
           <Placeholder>
-            {pendingStatus === CardOwnershipPendingStatus.IN_TRANSFER ? (
-              <Trans>Transfering the card...</Trans>
-            ) : pendingStatus === CardOwnershipPendingStatus.IN_OFFER_CREATION ? (
-              <Trans>Putting the card on sale...</Trans>
-            ) : pendingStatus === CardOwnershipPendingStatus.IN_OFFER_CANCELATION ? (
-              <Trans>Canceling the card sale...</Trans>
-            ) : pendingStatus === CardOwnershipPendingStatus.IN_OFFER_ACCEPTANCE ? (
-              <Trans>Selling the card...</Trans>
+            {pendingStatus ? (
+              <CardPendingStatusText pendingStatus={pendingStatus} />
             ) : (
               <Trans>This card is not on sale.</Trans>
             )}

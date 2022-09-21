@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useMemo } from 'react'
+import { useCallback, useMemo, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
@@ -9,7 +9,7 @@ import Column from '@/components/Column'
 import Card from '@/components/Card'
 import { TYPE } from '@/styles/theme'
 import CardModelBreakdown from '@/components/CardModelBreakdown'
-import CardOwnership, { CardOwnershipPendingStatus } from '@/components/CardOwnership'
+import CardOwnership from '@/components/CardOwnership'
 import CardTransfersHistory from '@/components/CardsTransfersHistory/card'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import CardModel3D from '@/components/CardModel3D'
@@ -19,6 +19,7 @@ import CreateOfferModal from '@/components/MarketplaceModal/CreateOffer'
 import CancelOfferModal from '@/components/MarketplaceModal/CancelOffer'
 import AcceptOfferModal from '@/components/MarketplaceModal/AcceptOffer'
 import { useSearchOffers } from '@/state/search/hooks'
+import useCardsPendingStatus, { CardPendingStatus } from '@/hooks/useCardsPendingStatus'
 
 const MainSection = styled(Section)`
   position: relative;
@@ -106,36 +107,15 @@ export default function CardBreakout() {
   const backPictureUrl = useCardsBackPictureUrl(512)
 
   // pending status
-  const [pendingStatus, setPendingStatus] = useState<CardOwnershipPendingStatus | null>(null)
-
-  useEffect(() => {
-    setPendingStatus(
-      card?.inTransfer
-        ? CardOwnershipPendingStatus.IN_TRANSFER
-        : card?.inOfferCreation
-        ? CardOwnershipPendingStatus.IN_OFFER_CREATION
-        : card?.inOfferCancelation
-        ? CardOwnershipPendingStatus.IN_OFFER_CANCELATION
-        : card?.inOfferAcceptance
-        ? CardOwnershipPendingStatus.IN_OFFER_ACCEPTANCE
-        : null
-    )
-  }, [card?.inTransfer, card?.inOfferCreation, card?.inOfferCancelation, card?.inOfferAcceptance])
+  const [pendingStatus, setPendingStatus] = useState<CardPendingStatus | null>(null)
+  const pendingsStatus = useCardsPendingStatus([card])
+  useEffect(() => setPendingStatus(pendingsStatus[0] ?? null), [pendingsStatus[0]])
 
   // actions callbacks
-  const onSuccessfulGift = useCallback(() => setPendingStatus(CardOwnershipPendingStatus.IN_TRANSFER), [])
-  const onSuccessfulOfferCreation = useCallback(
-    () => setPendingStatus(CardOwnershipPendingStatus.IN_OFFER_CREATION),
-    []
-  )
-  const onSuccessfulOfferCancelation = useCallback(
-    () => setPendingStatus(CardOwnershipPendingStatus.IN_OFFER_CANCELATION),
-    []
-  )
-  const onSuccessfulOfferAcceptance = useCallback(
-    () => setPendingStatus(CardOwnershipPendingStatus.IN_OFFER_ACCEPTANCE),
-    []
-  )
+  const onSuccessfulGift = useCallback(() => setPendingStatus(CardPendingStatus.IN_TRANSFER), [])
+  const onSuccessfulOfferCreation = useCallback(() => setPendingStatus(CardPendingStatus.IN_OFFER_CREATION), [])
+  const onSuccessfulOfferCancelation = useCallback(() => setPendingStatus(CardPendingStatus.IN_OFFER_CANCELATION), [])
+  const onSuccessfulOfferAcceptance = useCallback(() => setPendingStatus(CardPendingStatus.IN_OFFER_ACCEPTANCE), [])
 
   // card price
   const offerSearch = useSearchOffers({ facets: { cardId: card?.id }, skip: !card?.id })

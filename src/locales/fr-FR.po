@@ -1003,22 +1003,6 @@ msgstr "Frais de service ({0}%)"
 msgid "Total payout"
 msgstr "Récupéré en cas de vente"
 
-#: src/components/CardModel/index.tsx
-msgid "Transfering the card..."
-msgstr "Transfert de la carte..."
-
-#: src/components/CardOwnership/index.tsx
-msgid "Putting the card on sale..."
-msgstr "Mise en vente de la carte..."
-
-#: src/components/CardOwnership/index.tsx
-msgid "Canceling the card sale..."
-msgstr "Annulation de la mise en vente de la carte..."
-
-#: src/components/CardOwnership/index.tsx
-msgid "Selling the card..."
-msgstr "Vente de la carte..."
-
 #: src/components/MarketplaceModal/AcceptOffer.tsx
 msgid "You do not have enough ETH in your Rules wallet to purchase this card.<0/><1>Buy ETH or deposit from another wallet.</1>"
 msgstr "Vous n'avez pas assez d'ETH sur votre Wallet pour acheter cette carte.<0/><1>Achetez de l'ETH ou déposez-en depuis un autre Wallet.</1>"
@@ -1066,3 +1050,15 @@ msgstr "Ton offre va être créée"
 #: src/components/MarketplaceModal/CreateOffer.tsx
 msgid "Confirm offer creation"
 msgstr "Confirmer la mise en vente"
+
+#: src/components/CardPendingStatusText/index.tsx
+msgid "Transfer in progress..."
+msgstr "Transfert en cours..."
+
+#: src/components/CardPendingStatusText/index.tsx
+msgid "Sale canceling in progress..."
+msgstr "Annulation de la vente en cours..."
+
+#: src/components/CardPendingStatusText/index.tsx
+msgid "Sale in progress..."
+msgstr "Mise en vente en cours..."

@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import moment from 'moment'
@@ -42,6 +43,13 @@ export default function TransfersTable({
 }: TransfersTableProps) {
   const router = useRouter()
 
+  // parsed price
+  const parsedPrices = useMemo(
+    () => transfers.map((transfer: any) => (transfer.price ? WeiAmount.fromRawAmount(`0x${transfer.price}`) : null)),
+    [transfers]
+  )
+
+  // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
   return (
@@ -113,7 +121,7 @@ export default function TransfersTable({
               )}
               <td>
                 <TYPE.body>
-                  {!!transfer.price ? `${weiAmountToEURValue(WeiAmount.fromEtherAmount(transfer.price))}€` : '-'}
+                  {parsedPrices[index] ? `${weiAmountToEURValue(parsedPrices[index] ?? undefined)}€` : '-'}
                 </TYPE.body>
               </td>
             </tr>

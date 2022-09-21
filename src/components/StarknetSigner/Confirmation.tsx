@@ -90,10 +90,11 @@ export default function Confirmation({
   error,
   waitingForFees,
 }: ConfirmationProps) {
+  console.log(error)
   return (
     <StyledConfirmation>
       <Column gap={24}>
-        {error ? <StyledFail /> : txHash ? <StyledCheckmark /> : <StyledSpinner fill="primary1" />}
+        {txHash ? <StyledCheckmark /> : error ? <StyledFail /> : <StyledSpinner fill="primary1" />}
 
         {txHash ? (
           <ColumnCenter gap={8}>
