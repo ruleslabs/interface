@@ -184,7 +184,7 @@ export default function CardBreakout() {
                   ownerUsername={card.owner.user.username}
                   ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
                   pendingStatus={pendingStatus ?? undefined}
-                  price={cardPrice}
+                  price={cardPrice ?? undefined}
                 />
               </Card>
             )}

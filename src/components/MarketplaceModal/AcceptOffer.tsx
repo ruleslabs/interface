@@ -22,6 +22,7 @@ import { useAcceptOfferMutation } from '@/state/wallet/hooks'
 import { networkId } from '@/constants/networks'
 import { useETHBalances } from '@/state/wallet/hooks'
 import { PurchaseBreakdown } from './PriceBreakdown'
+import ComingSoon, { WHITELIST } from './ComingSoon'
 
 const CardBreakdown = styled(RowCenter)`
   gap: 16px;
@@ -141,11 +142,14 @@ export default function AcceptOfferModal({
     }
   }, [isOpen])
 
+  if (!WHITELIST.includes(currentUser.slug)) return <ComingSoon onDismiss={toggleAcceptOfferModal} isOpen={isOpen} />
+
   return (
     <Modal onDismiss={toggleAcceptOfferModal} isOpen={isOpen}>
       <StarknetSigner
         modalHeaderText={t`Confirm purchase`}
-        confirmationText={t`Your offer will be accepted`}
+        confirmationText={t`Your purchase will be accepted`}
+        confirmationActionText={t`Confirm purchase`}
         transactionText={t`offer acceptance.`}
         transactionValue={price}
         calls={calls ?? undefined}

@@ -30,6 +30,7 @@ interface StarknetSignerProps {
   children: React.ReactNode
   modalHeaderText: string
   confirmationText: string
+  confirmationActionText?: string
   transactionText: string
   transactionValue?: string
   calls?: Call[]
@@ -43,6 +44,7 @@ interface StarknetSignerProps {
 export default function StarknetSigner({
   modalHeaderText,
   confirmationText,
+  confirmationActionText,
   transactionText,
   transactionValue,
   calls,
@@ -81,6 +83,7 @@ export default function StarknetSigner({
         )}
 
         <Signer
+          confirmationActionText={confirmationActionText}
           isOpen={!txHash && !waitingForTx && !waitingForFees && !!calls}
           transactionValue={transactionValue}
           onWaitingForFees={onWaitingForFees}

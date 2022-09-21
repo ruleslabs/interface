@@ -23,6 +23,7 @@ import EtherInput from '@/components/Input/EtherInput'
 import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
 import { SaleBreakdown } from './PriceBreakdown'
 import { BIG_INT_MIN_MARKETPLACE_OFFER_PRICE, BIG_INT_MAX_MARKETPLACE_OFFER_PRICE } from '@/constants/misc'
+import ComingSoon, { WHITELIST } from './ComingSoon'
 
 const CardBreakdown = styled(RowCenter)`
   gap: 16px;
@@ -148,11 +149,14 @@ export default function CreateOfferModal({
     }
   }, [isOpen])
 
+  if (!WHITELIST.includes(currentUser.slug)) return <ComingSoon onDismiss={toggleCreateOfferModal} isOpen={isOpen} />
+
   return (
     <Modal onDismiss={toggleCreateOfferModal} isOpen={isOpen}>
       <StarknetSigner
         modalHeaderText={t`Enter an asking price`}
         confirmationText={t`Your offer will be created`}
+        confirmationActionText={t`Confirm offer creation`}
         transactionText={t`offer creation.`}
         calls={calls ?? undefined}
         txHash={txHash ?? undefined}

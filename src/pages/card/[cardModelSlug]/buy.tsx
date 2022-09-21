@@ -77,9 +77,9 @@ export default function Buy() {
   const cardModel = cardModelQuery?.data?.cardModel
 
   // on successful offer acceptance
-  const [acceptedOfferIds, setAcceptedOfferIds] = useState([])
+  const [acceptedOfferIds, setAcceptedOfferIds] = useState<string[]>([])
   const onSuccessfulOfferAcceptance = useCallback(() => {
-    setAcceptedOfferIds([...acceptedOfferIds, selectedOffer?.id])
+    if (selectedOffer?.id) setAcceptedOfferIds([...acceptedOfferIds, selectedOffer.id])
     setSelectedOffer(null)
     if (cardModel?.cardsOnSaleCount) cardModel.cardsOnSaleCount -= 1
   }, [acceptedOfferIds, selectedOffer?.id, cardModel?.cardsOnSaleCount])

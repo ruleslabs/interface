@@ -94,7 +94,8 @@ export const TransfersSort = {
 }
 
 interface Search {
-  hits: any[] | null
+  hits?: any[]
+  nbHits?: number
   loading: boolean
   error: string | null
 }
@@ -133,7 +134,7 @@ export function useSearchTransfers({
   facets,
   sortKey = Object.keys(TransfersSort)[0] as keyof typeof TransfersSort,
 }: SearchTransfersProps): Search {
-  const [transfersSearch, setTransfersSearch] = useState<Search>({ hits: null, loading: true, error: null })
+  const [transfersSearch, setTransfersSearch] = useState<Search>({ loading: true, error: null })
 
   const facetFilters = useFacetFilters(facets)
 
@@ -144,7 +145,7 @@ export function useSearchTransfers({
       .search('', { facetFilters, page: 0, hitsPerPage: 32 })
       .then((res) => setTransfersSearch({ hits: res.hits, loading: false, error: null }))
       .catch((err) => {
-        setTransfersSearch({ hits: null, loading: false, error: err })
+        setTransfersSearch({ loading: false, error: err })
         console.error(err)
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -166,7 +167,7 @@ interface SearchCardsProps {
 }
 
 export function useSearchCards({ facets, dateDesc = true, search = '', skip = false }: SearchCardsProps): Search {
-  const [cardsSearch, setCardsSearch] = useState<Search>({ hits: null, loading: true, error: null })
+  const [cardsSearch, setCardsSearch] = useState<Search>({ loading: true, error: null })
 
   const facetFilters = useFacetFilters(facets)
 
@@ -181,7 +182,7 @@ export function useSearchCards({ facets, dateDesc = true, search = '', skip = fa
       .search(search, { facetFilters, page: 0, hitsPerPage: 128 })
       .then((res) => setCardsSearch({ hits: res.hits, loading: false, error: null }))
       .catch((err) => {
-        setCardsSearch({ hits: null, loading: false, error: err })
+        setCardsSearch({ loading: false, error: err })
         console.error(err)
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -209,7 +210,7 @@ export function useSearchOffers({
   skip = false,
   hitsPerPage = 32,
 }: SearchOffersProps): Search {
-  const [offersSearch, setOffersSearch] = useState<Search>({ hits: null, loading: true, error: null })
+  const [offersSearch, setOffersSearch] = useState<Search>({ loading: true, error: null })
 
   const facetFilters = useFacetFilters({ ...facets, available: '-false' })
 
@@ -224,7 +225,7 @@ export function useSearchOffers({
       .search('', { facetFilters, page: 0, hitsPerPage })
       .then((res) => setOffersSearch({ ...res, loading: false, error: null }))
       .catch((err) => {
-        setOffersSearch({ hits: null, loading: false, error: err })
+        setOffersSearch({ loading: false, error: err })
         console.error(err)
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -243,7 +244,7 @@ interface SearchUsersProps {
 }
 
 export function useSearchUsers({ search = '', facets }: SearchUsersProps) {
-  const [usersSearch, setUsersSearch] = useState<Search>({ hits: null, loading: true, error: null })
+  const [usersSearch, setUsersSearch] = useState<Search>({ loading: true, error: null })
 
   const facetFilters = useFacetFilters(facets)
 
@@ -252,7 +253,7 @@ export function useSearchUsers({ search = '', facets }: SearchUsersProps) {
       .search(search, { facetFilters, page: 0, hitsPerPage: 10 })
       .then((res) => setUsersSearch({ hits: res.hits, loading: false, error: null }))
       .catch((err) => {
-        setUsersSearch({ hits: null, loading: false, error: err })
+        setUsersSearch({ loading: false, error: err })
         console.error(err)
       })
   }, [facetFilters, search, setUsersSearch])

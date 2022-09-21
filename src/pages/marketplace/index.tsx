@@ -118,9 +118,8 @@ export default function Marketplace() {
         return true
       })
       .sort((a: any, b: any) => {
-        return WeiAmount.fromRawAmount(a.lowestAsk).greaterThan(WeiAmount.fromRawAmount(b.lowestAsk)) && increaseSort
-          ? 1
-          : -1
+        if (!increaseSort) [a, b] = [b, a]
+        return a.lowestAsk.padStart(32, '0').localeCompare(b.lowestAsk.padStart(32, '0'))
       })
 
     const [highestLowestAskFiat, lowestLowestAskFiat] = [

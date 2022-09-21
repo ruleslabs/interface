@@ -43,9 +43,9 @@ const InDelivery = styled.img`
 
 const OnSale = styled.img`
   position: absolute;
-  left: 0;
-  width: 100%;
-  bottom: 0;
+  top: 22.2%;
+  right: 0;
+  width: 80%;
 `
 
 const StyledLargeSpinner = styled(LargeSpinner)`
@@ -127,7 +127,7 @@ export default function CardModel({
             <Trans>starting from</Trans>
           </TYPE.body>
           <TYPE.body spanColor="text2">
-            {parsedLowestAsk.toSignificant(6)} ETH&nbsp;
+            {+parsedLowestAsk.toFixed(6)} ETH&nbsp;
             <span>{weiAmountToEURValue(parsedLowestAsk ?? undefined) ?? '0'}€</span>
           </TYPE.body>
         </ColumnCenter>

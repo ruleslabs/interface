@@ -1,7 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { WeiAmount } from '@rulesorg/sdk-core'
-import { Trans } from '@lingui/macro'
 
 import { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
@@ -81,7 +80,7 @@ export default function EtherInput({ onUserInput, ...props }: EtherInputProps) {
   return (
     <StyledEtherInput onClick={setInputFocus}>
       <TYPE.large color="text2">
-        <Trans>{weiAmountToEURValue(WeiAmount.fromEtherAmount(props?.value?.length ? props.value : 0))} EUR</Trans>
+        {weiAmountToEURValue(WeiAmount.fromEtherAmount(props?.value?.length ? props.value : 0))} EUR
       </TYPE.large>
       <Input onChange={handleInput} ref={inputRef} {...props} />
       <TYPE.large>ETH</TYPE.large>

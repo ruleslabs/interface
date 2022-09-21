@@ -46,6 +46,7 @@ const FeeWrapper = styled(RowCenter)`
 `
 
 interface SignerProps {
+  confirmationActionText?: string
   isOpen: boolean
   calls?: Call[]
   transactionValue?: string
@@ -56,6 +57,7 @@ interface SignerProps {
 }
 
 export default function Signer({
+  confirmationActionText,
   isOpen,
   calls,
   transactionValue,
@@ -263,7 +265,7 @@ export default function Signer({
             )}
 
             <SubmitButton type="submit" disabled={!canPayTransaction} large>
-              <Trans>Confirm</Trans>
+              {confirmationActionText ? confirmationActionText : <Trans>Confirm</Trans>}
             </SubmitButton>
           </Column>
         </StyledForm>
@@ -287,7 +289,7 @@ export default function Signer({
             </Column>
 
             <SubmitButton type="submit" large>
-              <Trans>Confirm</Trans>
+              {confirmationActionText ? confirmationActionText : <Trans>Confirm</Trans>}
             </SubmitButton>
           </Column>
         </StyledForm>

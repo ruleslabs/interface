@@ -1042,3 +1042,27 @@ msgstr "annulation de l'offre."
 #: src/components/MarketplaceModal/CreateOffer.tsx
 msgid "offer creation."
 msgstr "création de l'offre."
+
+#: src/components/MarketplaceModal/ComingSoon.tsx
+msgid "Coming Soon"
+msgstr "Bientôt disponible"
+
+#: src/components/MarketplaceModal/CancelOffer.tsx
+msgid "Confirm offer cancelation"
+msgstr "Confirmer l'annulation de l'offre"
+
+#: src/components/MarketplaceModal/AcceptOffer.tsx
+msgid "Your purchase will be accepted"
+msgstr "Ton achat va être traité"
+
+#: src/components/MarketplaceModal/CancelOffer.tsx
+msgid "Your offer will be canceled"
+msgstr "Ton offre va être annulée"
+
+#: src/components/MarketplaceModal/CreateOffer.tsx
+msgid "Your offer will be created"
+msgstr "Ton offre va être créée"
+
+#: src/components/MarketplaceModal/CreateOffer.tsx
+msgid "Confirm offer creation"
+msgstr "Confirmer la mise en vente"
