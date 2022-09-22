@@ -119,7 +119,7 @@ export default function Marketplace() {
       })
       .sort((a: any, b: any) => {
         if (!increaseSort) [a, b] = [b, a]
-        return a.lowestAsk.padStart(32, '0').localeCompare(b.lowestAsk.padStart(32, '0'))
+        return a.lowestAsk.localeCompare(b.lowestAsk)
       })
 
     const [highestLowestAskFiat, lowestLowestAskFiat] = [

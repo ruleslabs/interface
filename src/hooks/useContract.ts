@@ -8,7 +8,7 @@ import MulticallABI from '@/abis/multicall.json'
 import EthereumStarkgateABI from '@/abis/ethereum/starkgate.json'
 
 import { useStarknet } from '@/lib/starknet'
-import { AddressesMap, MULTICALL_ADDRESSES, STARKGATE_ADDRESSES } from '@/constants/addresses'
+import { AddressesMap, MULTICALL_ADDRESSES, L1_STARKGATE_ADDRESSES } from '@/constants/addresses'
 
 //
 // Starknet
@@ -74,5 +74,5 @@ export function useEthereumContract(
 }
 
 export function useEthereumStarkgateContract(): EthereumContract | null {
-  return useEthereumContract(STARKGATE_ADDRESSES, EthereumStarkgateABI as Abi)
+  return useEthereumContract(L1_STARKGATE_ADDRESSES, EthereumStarkgateABI as Abi)
 }

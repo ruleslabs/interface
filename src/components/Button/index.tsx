@@ -4,6 +4,7 @@ import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
+import Column from '@/components/Column'
 import Caret from '@/components/Caret'
 import Checkmark from '@/images/checkmark.svg'
 import GoogleLogo from '@/images/google-logo.svg'
@@ -190,5 +191,53 @@ export const CustomGoogleLogin = (props: CustomGoogleLoginProps) => {
       <GoogleLogo />
       <Trans>Connect with google</Trans>
     </StyledCustomGoogleLogin>
+  )
+}
+
+const StyledThirdPartyButton = styled(SecondaryButton)<{ active: boolean }>`
+  display: flex;
+  text-align: initial;
+  align-items: center;
+  padding: 8px 12px 8px 16px;
+  border: 1px solid ${({ theme }) => theme.bg3};
+  background: ${({ theme }) => theme.bg5};
+  gap: 16px;
+  height: 60px;
+  transition: background 100ms ease;
+
+  svg {
+    width: 32px;
+  }
+
+  ${({ active, theme }) =>
+    active
+      ? `
+        :hover {
+          background: ${theme.bg3};
+        }
+      `
+      : `
+        opacity: 0.3;
+        cursor: default;
+      `}
+`
+
+interface ThirdPartyButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
+  title: string
+  subtitle: string
+  children: React.ReactNode
+}
+
+export const ThirdPartyButton = ({ title, subtitle, children, ...props }: ThirdPartyButtonProps) => {
+  return (
+    <StyledThirdPartyButton active={!!props.onClick} {...props}>
+      {children}
+      <Column gap={4}>
+        <TYPE.body>{title}</TYPE.body>
+        <TYPE.subtitle fontWeight={400} fontSize={12}>
+          {subtitle}
+        </TYPE.subtitle>
+      </Column>
+    </StyledThirdPartyButton>
   )
 }

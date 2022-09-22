@@ -25,7 +25,12 @@ export const MARKETPLACE_ADDRESSES: AddressesMap = {
   [SupportedNetworks.MAINNET]: '0x63a4b3b0122cdaa6ba244739add94aed1d31e3330458cda833a8d119f28cbe8',
 }
 
-export const STARKGATE_ADDRESSES: AddressesMap = {
+export const L1_STARKGATE_ADDRESSES: AddressesMap = {
   [SupportedChainIds.GOERLI]: '0xc3511006C04EF1d78af4C8E0e74Ec18A6E64Ff9e',
   [SupportedChainIds.MAINNET]: '0xae0Ee0A63A2cE6BaeEFFE56e7714FB4EFE48D419',
+}
+
+export const L2_STARKGATE_ADDRESSES: AddressesMap = {
+  [SupportedNetworks.GOERLI]: '0x073314940630fd6dcda0d772d4c972c4e0a9946bef9dabf4ef84eda8ef542b82',
+  [SupportedNetworks.MAINNET]: '0x073314940630fd6dcda0d772d4c972c4e0a9946bef9dabf4ef84eda8ef542b82',
 }
