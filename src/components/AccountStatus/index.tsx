@@ -12,6 +12,7 @@ import SettingsModal from '@/components/SettingsModal'
 import AuthModal from '@/components/AuthModal'
 import { PrimaryButton, SecondaryButton, IconButton } from '@/components/Button'
 import DepositModal from '@/components/DepositModal'
+import WithdrawModal from '@/components/WithdrawModal'
 
 const StyledAccountStatus = styled.div`
   display: flex;
@@ -60,8 +61,10 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
           </>
         )}
       </StyledAccountStatus>
+
       <SettingsModal currentUser={currentUser} />
       <DepositModal />
+      <WithdrawModal />
       <AuthModal />
     </>
   )

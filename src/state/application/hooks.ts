@@ -59,6 +59,10 @@ export function useDepositModalToggle(): () => void {
   return useToggleModal(ApplicationModal.DEPOSIT)
 }
 
+export function useWithdrawModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.WITHDRAW)
+}
+
 export function useAvatarEditModalToggle(): () => void {
   return useToggleModal(ApplicationModal.AVATAR_EDIT)
 }

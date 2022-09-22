@@ -14,7 +14,7 @@ import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import { storeAccessToken } from '@/utils/accessToken'
 import { useRemoveCurrentUser } from '@/state/user/hooks'
 import { useRevokeSessionMutation } from '@/state/auth/hooks'
-import { useDepositModalToggle } from '@/state/application/hooks'
+import { useDepositModalToggle, useWithdrawModalToggle } from '@/state/application/hooks'
 import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
 
@@ -50,6 +50,7 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
 
   // Deposit ETH
   const toggleDepositModal = useDepositModalToggle()
+  const toggleWithdrawModal = useWithdrawModalToggle()
 
   // ETH balance
   const weiAmountToEURValue = useWeiAmountToEURValue()
@@ -104,6 +105,11 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
         {currentUser?.starknetWallet.address && (
           <TYPE.body onClick={toggleDepositModal} clickable>
             <Trans>Deposit ETH</Trans>
+          </TYPE.body>
+        )}
+        {currentUser?.starknetWallet.address && (
+          <TYPE.body onClick={toggleWithdrawModal} clickable>
+            <Trans>Withdraw ETH</Trans>
           </TYPE.body>
         )}
         <Link href="/settings/profile">
