@@ -145,7 +145,7 @@ msgid "Failed to sign in"
 msgstr "Echec de connexion"
 
 msgid "Too many requests, wait a few moments"
-msgstr "Trop de requêtes, attendez un moment"
+msgstr "Trop de requêtes, merci d'attendre un moment"
 
 msgid "Email verification code has expired"
 msgstr "Le code de verification a expiré"
@@ -172,16 +172,16 @@ msgid "Password should be at least 6 characters long"
 msgstr "Le mot de passe doit comporter au moins 6 caractères"
 
 msgid "Password too similar to your email or username"
-msgstr "Mot de passe trop similaire à votre email ou nom d'utilisateur"
+msgstr "Mot de passe trop similaire à ton email ou nom d'utilisateur"
 
 msgid "This password appears in a public data breach, please choose a stronger password"
-msgstr "Ce mot de passe apparaît dans une base de données de mot de passe volés, veuillez choisir un mot de passe plus fort"
+msgstr "Ce mot de passe apparaît dans une base de données de mot de passe volés, merci de choisir un mot de passe plus fort"
 
 msgid "You must accept the terms and conditions"
-msgstr "Vous devez accepter les condition générales d'utilisation"
+msgstr "Tu dois accepter les condition générales d'utilisation"
 
 msgid "Sorry, Rules is not available in your country"
-msgstr "Désolé, Rules n'est pas disponible dans votre pays"
+msgstr "Désolé, Rules n'est pas disponible dans ton pays"
 
 msgid "Your new password cannot be the same as your old password"
 msgstr "Ton nouveau mot de passe doit être différent de l'ancien"
@@ -198,13 +198,13 @@ msgid "Invalid payment method"
 msgstr "Méthode de paiement invalide"
 
 msgid "Failed to verify your payment method please try again"
-msgstr "Échec de la vérification de votre moyen de paiement, veuillez réessayer"
+msgstr "Échec de la vérification de ton moyen de paiement, merci de réessayer"
 
 msgid "You must accept the payment provider terms and conditions"
-msgstr "Vous devez accepter les conditions générales d'utilisation de Stripe"
+msgstr "tu dois accepter les conditions générales d'utilisation de Stripe"
 
 msgid "You must accept the right to retract policy"
-msgstr "Vous devez accepter la politique de droit de retractation"
+msgstr "Tu dois accepter la politique de droit de retractation"
 
 #: src/components/CardModelBreakdown
 msgid "Limited edition"
@@ -312,7 +312,7 @@ msgstr "Chercher une carte..."
 
 #: src/components/DepositModal/index.tsx
 msgid "Buy ETH with your credit card or a bank transfer"
-msgstr "Achetez de l'ETH avec votre carte de crédit ou un virement bancaire"
+msgstr "Achete de l'ETH avec ta carte de crédit ou un virement bancaire"
 
 #: src/components/DepositModal/index.tsx
 msgid "Connect Metamask"
@@ -320,27 +320,27 @@ msgstr "Connecter Metamask"
 
 #: src/components/DepositModal/index.tsx
 msgid "From your bank account"
-msgstr "Depuis votre compte bancaire"
+msgstr "Depuis ton compte bancaire"
 
 #: src/components/DepositModal/index.tsx
 msgid "From your Ethereum wallet"
-msgstr "Depuis votre portefeuille Ethereum"
+msgstr "Depuis ton portefeuille Ethereum"
 
 #: src/components/DepositModal/index.tsx
 msgid "Deposit ETH from your wallet"
-msgstr "Déposez de l'ETH depuis votre portefeuille"
+msgstr "Dépose de l'ETH depuis ton portefeuille"
 
 #: src/components/DepositModal/index.tsx
 msgid "Fund your account"
-msgstr "Alimenter votre compte"
+msgstr "Alimente ton compte"
 
 #: src/components/DepositModal/index.tsx
 msgid "Metamask connected to the wrong network,<0/>please <1>switch network</1>"
-msgstr "Metamask n'est pas connecté au bon réseau,<0/>veuillez <1>changer de réseau</1>"
+msgstr "Metamask n'est pas connecté au bon réseau,<0/>merci de <1>changer de réseau</1>"
 
 #: src/components/DepositModal/index.tsx
 msgid "Enter an amount"
-msgstr "Entrez un montant"
+msgstr "Entre un montant"
 
 #: src/components/DepositModal/index.tsx
 msgid "Deposit"
@@ -396,7 +396,7 @@ msgstr "{0, plural, =1 {{0} disponible} other {{0} disponibles}}"
 
 #: src/components/OffersSelector/index.tsx
 msgid "Select a card"
-msgstr "Selectionnez une carte"
+msgstr "Selectionne une carte"
 
 #: src/components/Onboarding/IntroductionPage.tsx
 msgid "RULES is a community of passionate collectors. We support artists and fight for independence. You're now part of the family. Welcome!"
@@ -572,11 +572,11 @@ msgstr "Carte officielle"
 
 #: src/components/SessionsManager/index.tsx
 msgid "You are also connected to Rules with other sessions, on other devices."
-msgstr "Vous êtes aussi connecté à Rules avec d'autres sessions, sur d'autres appareils."
+msgstr "Tu es aussi connecté à Rules avec d'autres sessions, sur d'autres appareils."
 
 #: src/components/SessionsManager/index.tsx
 msgid "You are connected to Rules with this session."
-msgstr "Vous êtes connecté à Rules avec cette session."
+msgstr "Tu es connecté à Rules avec cette session."
 
 #: src/components/SessionsManager/index.tsx
 msgid "Disconnect from other sessions"
@@ -700,19 +700,15 @@ msgstr "Changer le mot de passe"
 
 #: src/components/SessionsManager/index.tsx
 msgid "You are not connected to Rules on other devices."
-msgstr "Vous n'êtes pas connecté à Rules sur d'autres appareils."
+msgstr "Tu n'es pas connecté à Rules sur d'autres appareils."
 
 #: src/components/PackPurchaseModal/Confirmation.tsx
 msgid "See my packs"
 msgstr "Voir mes packs"
 
 #: src/components/PackPurchaseModal/Confirmation.tsx
-msgid "Thank you, your payment has been successful. A confirmation email has been sent to <0>{0}</0>"
-msgstr "Merci, votre paiement a été traité avec succès. Un email de confirmation a été envoyé à <0>{0}</0>"
-
-#: src/components/PackPurchaseModal/Confirmation.tsx
 msgid "Thank you, your payment has been successful.<0/>A confirmation email has been sent to <1>{0}</1>"
-msgstr "Merci, votre paiement a été traité avec succès.<0/>Un email de confirmation a été envoyé à <1>{0}</1>"
+msgstr "Merci, ton paiement a été traité avec succès.<0/>Un email de confirmation a été envoyé à <1>{0}</1>"
 
 #: src/components/PackPurchaseModal/Confirmation.tsx
 msgid "Estimated delivery in a few hours"
@@ -733,14 +729,6 @@ msgstr "50% des revenus leur sont reversés directement."
 #: src/pages/pack/[packSlug].tsx
 msgid "Each card gives access to specific Discord channel and to airdrops of gifts during the year."
 msgstr "Chaque carte donne accès à un channel Discord spécifique et à des airdrops de cadeaux tout au long de l’année."
-
-#: src/pages/marketplace/index.tsx
-msgid "The marketplace is opening soon."
-msgstr "Ouverture du marché d’échange prochainement."
-
-#: src/pages/marketplace/index.tsx
-msgid "Please <0>join our Discord</0><1> </1>for live updates."
-msgstr "Suivez les informations en direct <0>sur le Discord</0>."
 
 #: src/components/AvatarEditModal/index.tsx
 msgid "Choose an avatar"
@@ -809,11 +797,11 @@ msgstr "Authentification à 2 Facteurs (2FA)"
 
 #: src/components/TwoFactorAuthManager/index.tsx
 msgid "Two-Factor Authentication adds an additional layer of security to your account by requiring a code when you sign in."
-msgstr "L’Authentification à 2 Facteurs permet de sécuriser votre compte en demandant un code supplémentaire au moment de la connexion."
+msgstr "L’Authentification à 2 Facteurs permet de sécuriser ton compte en demandant un code supplémentaire au moment de la connexion."
 
 #: src/components/TwoFactorAuthManager/index.tsx
 msgid "Scan this QR Code with your authenticator app and enter the verification code below to setup the Two-Factor Authentication on your Rules account."
-msgstr "Scannez ce QR Code avec votre app d’authentification et entrez le code vérification pour mettre en place l’Authentification à 2 Facteurs sur votre compte Rules."
+msgstr "Scanne ce QR Code avec ton app d’authentification et entre le code vérification pour mettre en place l’Authentification à 2 Facteurs sur ton compte Rules."
 
 #: src/components/TwoFactorAuthManager/index.tsx
 msgid "2FA Enabled"
@@ -821,7 +809,7 @@ msgstr "2FA Activé"
 
 #: src/components/AuthModal/TwoFactorAuthForm.tsx
 msgid "Enter the 2FA code to sign in"
-msgstr "Entrez le code 2FA pour vous connecter"
+msgstr "Entre le code 2FA pour te connecter"
 
 #: src/components/AuthModal/TwoFactorAuthForm.tsx
 msgid "Lost your 2FA access ?"
@@ -833,11 +821,11 @@ msgstr "Envoyer"
 
 #: src/components/AuthModal/RequestTwoFactorAuthSecretUpdateForm.tsx
 msgid "We sent you a link to the email address associated with your Rules account (<0>{email}</0>) to remove the Two-Factor Authentication."
-msgstr "Nous avons envoyé un lien à l’adresse email associée à votre compte Rules (<0>{email}</0>) pour supprimer l’Authentification à 2 Facteurs."
+msgstr "Nous avons envoyé un lien à l’adresse email associée à ton compte Rules (<0>{email}</0>) pour supprimer l’Authentification à 2 Facteurs."
 
 #: src/components/AuthModal/RemoveTwoFactorAuthSecret.tsx
 msgid "The Two-Factor Authentication has not been removed."
-msgstr "Erreur dans la suppression de votre Authentification à 2 Facteurs."
+msgstr "Erreur dans la suppression de ton Authentification à 2 Facteurs."
 
 #: src/components/PackCard/index.tsx
 msgid "Edited in {releaseDateFormatted}"
@@ -869,7 +857,7 @@ msgstr "Ouverture prête."
 
 #: src/components/PackCard/index.tsx
 msgid "Click to see your cards"
-msgstr "Cliquez pour dévoiler les cartes"
+msgstr "Clique pour dévoiler les cartes"
 
 #: src/pages/pack/[packSlug]/open.tsx
 msgid "See my cards"
@@ -920,7 +908,7 @@ msgstr "Ton dépôt de {amountDeposited} ETH est en route"
 
 #: src/components/DepositModal/Confirmation.tsx
 msgid "{amountDeposited} ETH deposit on your Rules wallet"
-msgstr "Dépôt de {amountDeposited} ETH sur votre portefeuille Rules"
+msgstr "Dépôt de {amountDeposited} ETH sur ton portefeuille Rules"
 
 #: src/components/OfferModal/Confirmation.tsx
 msgid "Card transfer."
@@ -940,7 +928,7 @@ msgstr "Offrir cette carte"
 
 #: src/components/OfferModal/Offer.tsx
 msgid "This user does not have a wallet yet, please try again in a few hours."
-msgstr "Cet utilisateur n'a pas encore de portefeuille, veuillez réessayer dans quelques heures."
+msgstr "Cet utilisateur n'a pas encore de portefeuille, merci de réessayer dans quelques heures."
 
 #: src/components/DepositModal/Confirmation.tsx
 msgid "The deposit might take a few hours to arrive on your Rules wallet."
@@ -969,11 +957,11 @@ msgstr "La transaction peut prendre quelques heures."
 
 #: src/components/StarknetSigner/index.tsx
 msgid "You do not have enough ETH in your Rules wallet to pay for network fees on Starknet.<0/><1>Buy ETH or deposit from another wallet.</1>"
-msgstr "Vous n'avez pas assez d'ETH sur votre Wallet pour payer les frais de réseau Starknet.<0/><1>Achetez de l'ETH ou déposez-en depuis un autre Wallet.</1>"
+msgstr "Tu n'as pas assez d'ETH sur ton Wallet pour payer les frais de réseau Starknet.<0/><1>Achete de l'ETH ou dépose-en depuis un autre Wallet.</1>"
 
 #: src/components/DepositModal/Deposit.tsx
 msgid "Haven’t got an Ethereum wallet yet?<0/>Learn how to create one with <1>Metamask</1>"
-msgstr "Vous n'avez pas encore de portefeuille Ethereum?<0/>Apprenez à en créer un avec <1>Metamask</1>"
+msgstr "Tu n'as pas encore de portefeuille Ethereum?<0/>Apprend à en créer un avec <1>Metamask</1>"
 
 #: src/components/CreateOfferModal/index.tsx
 msgid "This fee will help Rules' further development."
@@ -1005,7 +993,7 @@ msgstr "Récupéré en cas de vente"
 
 #: src/components/MarketplaceModal/AcceptOffer.tsx
 msgid "You do not have enough ETH in your Rules wallet to purchase this card.<0/><1>Buy ETH or deposit from another wallet.</1>"
-msgstr "Vous n'avez pas assez d'ETH sur votre Wallet pour acheter cette carte.<0/><1>Achetez de l'ETH ou déposez-en depuis un autre Wallet.</1>"
+msgstr "Tu n'as pas assez d'ETH sur ton Wallet pour acheter cette carte.<0/><1>Achete de l'ETH ou dépose-en depuis un autre Wallet.</1>"
 
 #: src/components/MarketplaceModal/AcceptOffer.tsx
 msgid "Confirm purchase"
@@ -1062,3 +1050,47 @@ msgstr "Annulation de la vente en cours..."
 #: src/components/CardPendingStatusText/index.tsx
 msgid "Sale in progress..."
 msgstr "Mise en vente en cours..."
+
+#: src/components/WithdrawModal/index.tsx
+msgid "Confirm withdraw"
+msgstr "Confirmer le retrait"
+
+#: src/components/WithdrawModal/index.tsx
+msgid "Move your ETH directly to an exchange (e.g. Binance, Coinbase, Kraken...)"
+msgstr "Transfère tes ETH directement sur une plateforme d'échange (ex. Binance, Coinbase, Kraken...)"
+
+#: src/components/WithdrawModal/index.tsx
+msgid "To an exchange (coming soon)"
+msgstr "Vers une plateforme d'échange (bientôt disponible)"
+
+#: src/components/WithdrawModal/index.tsx
+msgid "To your Ethereum wallet"
+msgstr "Vers ton portefeuille Ethereum"
+
+#: src/components/WithdrawModal/index.tsx
+msgid "{withdrawAmount} ETH withdraw to your Ethereum wallet"
+msgstr "retrait de {withdrawAmount} ETH vers ton portefeuille Ethereum"
+
+#: src/components/WithdrawModal/index.tsx
+msgid "Your {withdrawAmount} ETH withdraw is on its way"
+msgstr "Ton retrait de {withdrawAmount} ETH est en route"
+
+#: src/components/SettingsModal/Settings.tsx
+msgid "Withdraw ETH"
+msgstr "Retirer de l'ETH"
+
+#: src/components/WithdrawModal/index.tsx
+msgid "Withdraw ETH to your wallet"
+msgstr "Retire de l'ETH vers ton portefeuille wallet"
+
+#: src/components/WithdrawModal/index.tsx
+msgid "Withdraw your balance"
+msgstr "Retire ton solde"
+
+#: src/components/Wallet/index.tsx
+msgid "Your Ethereum Wallet"
+msgstr "Ton Portefeuille Ethereum"
+
+#: src/components/Wallet/index.tsx
+msgid "Your Rules Wallet"
+msgstr "Ton Portefeuille Rules"

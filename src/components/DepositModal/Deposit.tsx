@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
 
 import { useCurrentUser } from '@/state/user/hooks'
@@ -14,11 +15,32 @@ import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
 import { useEthereumStarkgateContract } from '@/hooks/useContract'
 import { ErrorCard, InfoCard } from '@/components/Card'
 import Link from '@/components/Link'
+import Wallet from '@/components/Wallet'
 
+import Arrow from '@/images/arrow.svg'
 import RampIcon from '@/images/ramp.svg'
 import MetamaskIcon from '@/images/metamask.svg'
 
 const { useAccount, useChainId } = metaMaskHooks
+
+const ArrowWrapper = styled(Column)`
+  width: 36px;
+  height: 36px;
+  background: ${({ theme }) => theme.bg5};
+  box-shadow: 0px 0px 5px ${({ theme }) => theme.bg1};
+  justify-content: center;
+  border-radius: 50%;
+  position: relative;
+  margin: -6px auto;
+
+  & svg {
+    margin: 0 auto;
+    width: 22px;
+    height: 22px;
+    fill: ${({ theme }) => theme.text1};
+    transform: rotate(90deg);
+  }
+`
 
 interface DepositProps {
   onDeposit(amount: string): void
@@ -78,6 +100,12 @@ export default function Deposit({ onDeposit, onError, onConfirmation }: DepositP
       })
   }, [depositAmount])
 
+  // next step check
+  const canDeposit = useMemo(
+    () => +depositAmount && parsedDepositAmount && balance && !balance.lessThan(parsedDepositAmount),
+    [depositAmount, parsedDepositAmount, balance]
+  )
+
   return (
     <Column gap={16}>
       <TYPE.medium>
@@ -101,25 +129,30 @@ export default function Deposit({ onDeposit, onError, onConfirmation }: DepositP
 
       {account && chainId === desiredChainId ? (
         <Column gap={16}>
-          <CurrencyInput
-            value={depositAmount}
-            placeholder="0.0"
-            onUserInput={handleDepositAmountUpdate}
-            balance={balance}
-          />
-          {!+depositAmount || !parsedDepositAmount ? (
-            <PrimaryButton disabled large>
+          <Column>
+            <CurrencyInput
+              value={depositAmount}
+              placeholder="0.0"
+              onUserInput={handleDepositAmountUpdate}
+              balance={balance}
+            />
+
+            <ArrowWrapper>
+              <Arrow />
+            </ArrowWrapper>
+
+            <Wallet layer={2} />
+          </Column>
+
+          <PrimaryButton onClick={handleDeposit} disabled={!canDeposit} large>
+            {!+depositAmount || !parsedDepositAmount ? (
               <Trans>Enter an amount</Trans>
-            </PrimaryButton>
-          ) : balance?.lessThan(parsedDepositAmount) ? (
-            <PrimaryButton disabled large>
+            ) : balance?.lessThan(parsedDepositAmount) ? (
               <Trans>Insufficient ETH balance</Trans>
-            </PrimaryButton>
-          ) : (
-            <PrimaryButton onClick={handleDeposit} large>
-              <Trans>Deposit</Trans>
-            </PrimaryButton>
-          )}
+            ) : (
+              <Trans>Next</Trans>
+            )}
+          </PrimaryButton>
         </Column>
       ) : account ? (
         <ErrorCard textAlign="center">

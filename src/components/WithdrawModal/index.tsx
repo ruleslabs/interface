@@ -21,6 +21,7 @@ import { useETHBalances, useWithdrawEtherMutation } from '@/state/wallet/hooks'
 import { L2_STARKGATE_ADDRESSES, ETH_ADDRESSES } from '@/constants/addresses'
 import { networkId } from '@/constants/networks'
 import Wallet from '@/components/Wallet'
+import ComingSoon, { WHITELIST } from '@/components/MarketplaceModal/ComingSoon'
 
 import Arrow from '@/images/arrow.svg'
 import LayerswapIcon from '@/images/layerswap.svg'
@@ -161,6 +162,8 @@ export default function WithdrawModal() {
       setTxHash(null)
     }
   }, [isOpen])
+
+  if (!WHITELIST.includes(currentUser.slug)) return <ComingSoon onDismiss={toggleWithdrawModal} isOpen={isOpen} />
 
   return (
     <Modal onDismiss={toggleWithdrawModal} isOpen={isOpen}>
