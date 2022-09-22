@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
 
 import { useCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
 import CurrencyInput from '@/components/Input/CurrencyInput'
-import { metaMaskHooks, metaMask, desiredChainId } from '@/constants/connectors'
+import { metaMaskHooks } from '@/constants/connectors'
 import { TYPE } from '@/styles/theme'
 import useRampSdk from '@/hooks/useRampSdk'
 import { PrimaryButton, ThirdPartyButton } from '@/components/Button'
@@ -13,13 +13,11 @@ import Separator from '@/components/Separator'
 import { useEthereumETHBalance } from '@/state/wallet/hooks'
 import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
 import { useEthereumStarkgateContract } from '@/hooks/useContract'
-import { ErrorCard, InfoCard } from '@/components/Card'
-import Link from '@/components/Link'
 import Wallet from '@/components/Wallet'
+import Metamask from '@/components/Metamask'
 
 import Arrow from '@/images/arrow.svg'
 import RampIcon from '@/images/ramp.svg'
-import MetamaskIcon from '@/images/metamask.svg'
 
 const { useAccount, useChainId } = metaMaskHooks
 
@@ -58,16 +56,6 @@ export default function Deposit({ onDeposit, onError, onConfirmation }: DepositP
   // metamask
   const account = useAccount()
   const chainId = useChainId()
-  const activateMetamask = useCallback(() => metaMask.activate(desiredChainId), [metaMask, desiredChainId])
-  const [metamaskFound, setMetamaskFound] = useState(false)
-
-  // attempt to connect eagerly on mount
-  useEffect(() => {
-    metaMask.connectEagerly()
-    if (typeof window.ethereum !== 'undefined') {
-      setMetamaskFound(true)
-    }
-  }, [])
 
   // Deposit
   const [depositAmount, setDepositAmount] = useState('')
@@ -107,28 +95,31 @@ export default function Deposit({ onDeposit, onError, onConfirmation }: DepositP
   )
 
   return (
-    <Column gap={16}>
-      <TYPE.medium>
-        <Trans>From your bank account</Trans>
-      </TYPE.medium>
-      <ThirdPartyButton
-        title="Ramp"
-        subtitle={t`Buy ETH with your credit card or a bank transfer`}
-        onClick={rampSdk?.show}
-      >
-        <RampIcon />
-      </ThirdPartyButton>
+    <Column gap={32}>
+      <Column gap={16}>
+        <TYPE.medium>
+          <Trans>From your bank account</Trans>
+        </TYPE.medium>
+
+        <ThirdPartyButton
+          title="Ramp"
+          subtitle={t`Buy ETH with your credit card or a bank transfer`}
+          onClick={rampSdk?.show}
+        >
+          <RampIcon />
+        </ThirdPartyButton>
+      </Column>
 
       <Separator>
         <Trans>or</Trans>
       </Separator>
 
-      <TYPE.medium>
-        <Trans>From your Ethereum wallet</Trans>
-      </TYPE.medium>
+      <Column gap={16}>
+        <TYPE.medium>
+          <Trans>From your Ethereum wallet</Trans>
+        </TYPE.medium>
 
-      {account && chainId === desiredChainId ? (
-        <Column gap={16}>
+        <Metamask>
           <Column>
             <CurrencyInput
               value={depositAmount}
@@ -153,36 +144,8 @@ export default function Deposit({ onDeposit, onError, onConfirmation }: DepositP
               <Trans>Next</Trans>
             )}
           </PrimaryButton>
-        </Column>
-      ) : account ? (
-        <ErrorCard textAlign="center">
-          <Trans>
-            Metamask connected to the wrong network,
-            <br />
-            please&nbsp;
-            <span onClick={activateMetamask}>switch network</span>
-          </Trans>
-        </ErrorCard>
-      ) : metamaskFound ? (
-        <ThirdPartyButton
-          title={t`Connect Metamask`}
-          subtitle={t`Deposit ETH from your wallet`}
-          onClick={activateMetamask}
-        >
-          <MetamaskIcon />
-        </ThirdPartyButton>
-      ) : (
-        <InfoCard textAlign="center">
-          <Trans>
-            Haven’t got an Ethereum wallet yet?
-            <br />
-            Learn how to create one with&nbsp;
-            <Link href="https://metamask.io/" target="_blank" color="text1" underline>
-              Metamask
-            </Link>
-          </Trans>
-        </InfoCard>
-      )}
+        </Metamask>
+      </Column>
     </Column>
   )
 }
