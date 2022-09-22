@@ -8,11 +8,11 @@ import { useModalOpen, useWithdrawModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import Column from '@/components/Column'
 import { PrimaryButton, ThirdPartyButton } from '@/components/Button'
-import { InfoCard } from '@/components/Card'
+import { InfoCard, ErrorCard } from '@/components/Card'
 import Link from '@/components/Link'
 import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
 import CurrencyInput from '@/components/Input/CurrencyInput'
-import { metaMask, metaMaskHooks } from '@/constants/connectors'
+import { metaMask, metaMaskHooks, desiredChainId } from '@/constants/connectors'
 import { TYPE } from '@/styles/theme'
 import Separator from '@/components/Separator'
 import { useCurrentUser } from '@/state/user/hooks'
@@ -20,11 +20,13 @@ import StarknetSigner from '@/components/StarknetSigner'
 import { useETHBalances, useWithdrawEtherMutation } from '@/state/wallet/hooks'
 import { L2_STARKGATE_ADDRESSES, ETH_ADDRESSES } from '@/constants/addresses'
 import { networkId } from '@/constants/networks'
+import Wallet from '@/components/Wallet'
 
+import Arrow from '@/images/arrow.svg'
 import LayerswapIcon from '@/images/layerswap.svg'
 import MetamaskIcon from '@/images/metamask.svg'
 
-const { useAccount } = metaMaskHooks
+const { useAccount, useChainId } = metaMaskHooks
 
 const StyledWithdrawModal = styled(Column)`
   width: 546px;
@@ -38,6 +40,25 @@ const StyledWithdrawModal = styled(Column)`
   `}
 `
 
+const ArrowWrapper = styled(Column)`
+  width: 36px;
+  height: 36px;
+  background: ${({ theme }) => theme.bg5};
+  box-shadow: 0px 0px 5px ${({ theme }) => theme.bg1};
+  justify-content: center;
+  border-radius: 50%;
+  position: relative;
+  margin: -6px auto;
+
+  & svg {
+    margin: 0 auto;
+    width: 22px;
+    height: 22px;
+    fill: ${({ theme }) => theme.text1};
+    transform: rotate(90deg);
+  }
+`
+
 export default function WithdrawModal() {
   // current user
   const currentUser = useCurrentUser()
@@ -48,7 +69,8 @@ export default function WithdrawModal() {
 
   // metamask
   const account = useAccount()
-  const activateMetamask = useCallback(() => metaMask.activate(), [metaMask])
+  const chainId = useChainId()
+  const activateMetamask = useCallback(() => metaMask.activate(desiredChainId), [metaMask, desiredChainId])
   const [metamaskFound, setMetamaskFound] = useState(false)
 
   // attempt to connect eagerly on mount
@@ -124,9 +146,16 @@ export default function WithdrawModal() {
     [parsedWithdrawAmount, account]
   )
 
+  // next step check
+  const canWithdraw = useMemo(
+    () => +withdrawAmount && parsedWithdrawAmount && balance && !balance.lessThan(parsedWithdrawAmount),
+    [withdrawAmount, parsedWithdrawAmount, balance]
+  )
+
   // on close modal
   useEffect(() => {
     if (isOpen) {
+      setCalls(null)
       setWithdrawAmount(null)
       setError(null)
       setTxHash(null)
@@ -168,28 +197,42 @@ export default function WithdrawModal() {
             <Trans>To your Ethereum wallet</Trans>
           </TYPE.medium>
 
-          {account ? (
+          {account && chainId === desiredChainId ? (
             <Column gap={16}>
-              <CurrencyInput
-                value={withdrawAmount}
-                placeholder="0.0"
-                onUserInput={handleWithdrawAmountUpdate}
-                balance={balance}
-              />
-              {!+withdrawAmount || !parsedWithdrawAmount ? (
-                <PrimaryButton disabled large>
+              <Column>
+                <CurrencyInput
+                  value={withdrawAmount}
+                  placeholder="0.0"
+                  onUserInput={handleWithdrawAmountUpdate}
+                  balance={balance}
+                />
+
+                <ArrowWrapper>
+                  <Arrow />
+                </ArrowWrapper>
+
+                <Wallet layer={1} />
+              </Column>
+
+              <PrimaryButton onClick={handleConfirmation} disabled={!canWithdraw} large>
+                {!+withdrawAmount || !parsedWithdrawAmount ? (
                   <Trans>Enter an amount</Trans>
-                </PrimaryButton>
-              ) : balance?.lessThan(parsedWithdrawAmount) ? (
-                <PrimaryButton disabled large>
+                ) : balance?.lessThan(parsedWithdrawAmount) ? (
                   <Trans>Insufficient ETH balance</Trans>
-                </PrimaryButton>
-              ) : (
-                <PrimaryButton onClick={handleConfirmation} large>
+                ) : (
                   <Trans>Next</Trans>
-                </PrimaryButton>
-              )}
+                )}
+              </PrimaryButton>
             </Column>
+          ) : account ? (
+            <ErrorCard textAlign="center">
+              <Trans>
+                Metamask connected to the wrong network,
+                <br />
+                please&nbsp;
+                <span onClick={activateMetamask}>switch network</span>
+              </Trans>
+            </ErrorCard>
           ) : metamaskFound ? (
             <ThirdPartyButton
               title={t`Connect Metamask`}
