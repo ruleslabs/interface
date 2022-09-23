@@ -77,46 +77,49 @@ const EtherscanButtonWrapper = styled(ColumnCenter)`
 `
 
 interface ConfirmationProps {
-  amountDeposited?: string
+  confirmationText: string
+  transactionText: string
   txHash?: string
   error?: string
+  waitingForFees: boolean
 }
 
-export default function Confirmation({ amountDeposited, txHash, error }: ConfirmationProps) {
+export default function Confirmation({
+  confirmationText,
+  transactionText,
+  txHash,
+  error,
+  waitingForFees,
+}: ConfirmationProps) {
+  console.log(error)
   return (
     <StyledConfirmation>
       <Column gap={24}>
-        {error ? <StyledFail /> : txHash ? <StyledCheckmark /> : <StyledSpinner fill="primary1" />}
+        {txHash ? <StyledCheckmark /> : error ? <StyledFail /> : <StyledSpinner fill="primary1" />}
 
         {txHash ? (
           <ColumnCenter gap={8}>
-            <Title>
-              <Trans>Your {amountDeposited} ETH deposit is on its way</Trans>
-            </Title>
+            <Title>{confirmationText}</Title>
 
             <Subtitle>
-              <Trans>The deposit might take a few hours to arrive on your Rules wallet.</Trans>
+              <Trans>The transaction might take a few hours to succeed.</Trans>
             </Subtitle>
           </ColumnCenter>
         ) : error ? (
           <ColumnCenter gap={8}>
             <Title>
-              <Trans>Your deposit has been rejected</Trans>
+              <Trans>Your transaction has been rejected</Trans>
             </Title>
 
-            <ErrorMessage>
-              <Trans>{error}</Trans>
-            </ErrorMessage>
+            <ErrorMessage>{error}</ErrorMessage>
           </ColumnCenter>
         ) : (
           <ColumnCenter gap={8}>
             <Title>
-              <Trans>Waiting for confirmation</Trans>
+              {waitingForFees ? <Trans>Estimating network fee</Trans> : <Trans>Waiting for confirmation</Trans>}
             </Title>
 
-            <Subtitle>
-              <Trans>{amountDeposited} ETH deposit on your Rules wallet</Trans>
-            </Subtitle>
+            <Subtitle>{transactionText}</Subtitle>
           </ColumnCenter>
         )}
       </Column>
@@ -125,7 +128,7 @@ export default function Confirmation({ amountDeposited, txHash, error }: Confirm
         <EtherscanButtonWrapper>
           <Link target="_blank" href={`${CHAINS[desiredChainId].explorerBaseUrl}/tx/${txHash}`}>
             <PrimaryButton large>
-              <Trans>See on Etherscan</Trans>
+              <Trans>See on Voyager</Trans>
             </PrimaryButton>
           </Link>
         </EtherscanButtonWrapper>
