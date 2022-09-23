@@ -71,9 +71,9 @@ const StyledAccountStatus = styled(AccountStatus)`
   `}
 `
 
-const HamburgerWrapper = styled.div<{ alert?: boolean; notification?: boolean }>`
+const HamburgerWrapper = styled.div<{ alert?: boolean; notifications?: number }>`
   ${({ theme, alert = false }) => alert && theme.before.alert}
-  ${({ theme, notification = false }) => notification && theme.before.notification}
+  ${({ theme, notifications = 0 }) => notifications && theme.before.notifications}
 `
 
 interface MenuLink {
@@ -117,7 +117,7 @@ export default function Header() {
         {allModalsClosed ? (
           <HamburgerWrapper
             alert={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
-            notification={currentUser?.starknetWallet.retrievableEtherAmount}
+            notifications={currentUser?.retrievableEthers.length}
           >
             <Hamburger onClick={openNavModal} />
           </HamburgerWrapper>

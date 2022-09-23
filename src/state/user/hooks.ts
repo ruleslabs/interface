@@ -15,6 +15,10 @@ const CURRENT_USER_QUERY = gql`
       email
       slug
       boughtStarterPack
+      retrievableEthers {
+        amount
+        l1Recipient
+      }
       nextPackToBuy {
         slug
       }
@@ -22,7 +26,6 @@ const CURRENT_USER_QUERY = gql`
         address
         signerEscapeTriggeredAt
         needsSignerPublicKeyUpdate
-        retrievableEtherAmount
         rulesPrivateKey {
           salt
           iv

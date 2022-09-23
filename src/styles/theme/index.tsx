@@ -55,7 +55,7 @@ const Notification = css`
     top: -8px;
     right: -8px;
     border-radius: 50%;
-    content: '1';
+    content: '${({ notifications }) => notifications}';
     color: ${({ theme }) => theme.text1};
     font-size: 16px;
     font-weight: 700;
@@ -96,7 +96,7 @@ function theme(darkMode: boolean) {
 
     before: {
       alert: Alert,
-      notification: Notification,
+      notifications: Notification,
     },
 
     size: {

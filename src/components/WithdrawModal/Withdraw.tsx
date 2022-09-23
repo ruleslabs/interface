@@ -194,9 +194,9 @@ export default function WithdrawModal({ onL1Claim }: WithdrawModalProps) {
               <Trans>To your Ethereum wallet</Trans>
             </TYPE.medium>
 
-            {currentUser?.starknetWallet.retrievableEtherAmount && (
+            {currentUser?.retrievableEthers.length && (
               <TYPE.body color="primary1" fontWeight={500} onClick={onL1Claim} textAlign="right" clickable>
-                <Trans>Available ETH (1)</Trans>
+                <Trans>Available ETH ({currentUser.retrievableEthers.length})</Trans>
               </TYPE.body>
             )}
           </RowBetween>

@@ -49,7 +49,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
             <IconButton
               onClick={toggleSettingsModal}
               alert={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
-              notification={currentUser?.starknetWallet.retrievableEtherAmount}
+              notifications={currentUser?.retrievableEthers.length}
             >
               <Settings />
             </IconButton>

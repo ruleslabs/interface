@@ -51,7 +51,7 @@ export const SecondaryButton = styled(BaseButton)`
   }
 `
 
-export const IconButton = styled.button<{ alert?: boolean; notification?: boolean }>`
+export const IconButton = styled.button<{ alert?: boolean; notifications?: number }>`
   width: 32px;
   height: 32px;
   background-color: ${({ theme }) => theme.bg3};
@@ -69,7 +69,7 @@ export const IconButton = styled.button<{ alert?: boolean; notification?: boolea
   }
 
   ${({ theme, alert = false }) => alert && theme.before.alert}
-  ${({ theme, notification = false }) => notification && theme.before.notification}
+  ${({ theme, notifications = 0 }) => notifications && theme.before.notifications}
 `
 
 const StyledRowButton = styled.button`

@@ -40,8 +40,8 @@ const Balance = styled(Row)<{ alert?: boolean }>`
   ${({ theme, alert = false }) => alert && theme.before.alert}
 `
 
-const Notifiable = styled.div<{ notification?: boolean }>`
-  ${({ theme, notification = false }) => notification && theme.before.notification}
+const Notifiable = styled.div<{ notifications?: number }>`
+  ${({ theme, notifications = 0 }) => notifications && theme.before.notifications}
   width: fit-content;
   padding-right: 16px;
 `
@@ -114,7 +114,7 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
           </TYPE.body>
         )}
         {currentUser?.starknetWallet.address && (
-          <Notifiable notification={currentUser?.starknetWallet.retrievableEtherAmount}>
+          <Notifiable notifications={currentUser?.retrievableEthers.length}>
             <TYPE.body onClick={toggleWithdrawModal} clickable>
               <Trans>Withdraw ETH</Trans>
             </TYPE.body>

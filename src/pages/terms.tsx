@@ -860,7 +860,7 @@ function Terms() {
         conséquence, elle n’est pas responsable de ces Contenus.
       </p>
       <p>
-        Si la Société reçoit une notification concernant un Contenu illicite, elle agira promptement pour le retirer ou
+        Si la Société reçoit une notifications concernant un Contenu illicite, elle agira promptement pour le retirer ou
         en rendre son accès impossible, et elle pourra prendre les mesures décrites à l’article{' '}
         <em>« Sanctions en cas de manquement »</em>.
       </p>
