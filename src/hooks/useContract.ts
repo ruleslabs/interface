@@ -6,9 +6,15 @@ import { useWeb3React } from '@web3-react/core'
 
 import MulticallABI from '@/abis/multicall.json'
 import EthereumStarkgateABI from '@/abis/ethereum/starkgate.json'
+import EthereumMulticallABI from '@/abis/ethereum/multicall.json'
 
 import { useStarknet } from '@/lib/starknet'
-import { AddressesMap, MULTICALL_ADDRESSES, L1_STARKGATE_ADDRESSES } from '@/constants/addresses'
+import {
+  AddressesMap,
+  L2_MULTICALL_ADDRESSES,
+  L1_MULTICALL_ADDRESSES,
+  L1_STARKGATE_ADDRESSES,
+} from '@/constants/addresses'
 
 //
 // Starknet
@@ -30,7 +36,7 @@ export function useContract(addressOrAddressesMap: string | AddressesMap, abi: A
 }
 
 export function useMulticallContract(): Contract | null {
-  return useContract(MULTICALL_ADDRESSES, MulticallABI as Abi)
+  return useContract(L2_MULTICALL_ADDRESSES, MulticallABI as Abi)
 }
 
 //
@@ -75,4 +81,8 @@ export function useEthereumContract(
 
 export function useEthereumStarkgateContract(): EthereumContract | null {
   return useEthereumContract(L1_STARKGATE_ADDRESSES, EthereumStarkgateABI as Abi)
+}
+
+export function useEthereumMulticallContract(): EthereumContract | null {
+  return useEthereumContract(L1_MULTICALL_ADDRESSES, EthereumMulticallABI as Abi)
 }

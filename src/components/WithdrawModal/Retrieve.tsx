@@ -14,7 +14,7 @@ import { ApplicationModal } from '@/state/application/actions'
 import Metamask from '@/components/Metamask'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import EthereumSigner from '@/components/EthereumSigner'
-import { useEthereumStarkgateContract } from '@/hooks/useContract'
+import { useEthereumMulticallContract, useEthereumStarkgateContract } from '@/hooks/useContract'
 import Link from '@/components/Link'
 import { desiredChainId } from '@/constants/connectors'
 import { CHAINS } from '@/constants/networks'
@@ -50,11 +50,11 @@ const RetrievableAddress = styled(Link)`
   }
 `
 
-interface L1ClaimProps {
+interface RetrieveProps {
   onDismiss(): void
 }
 
-export default function L1Claim({ onDismiss }: L1ClaimProps) {
+export default function Retrieve({ onDismiss }: RetrieveProps) {
   // current user
   const currentUser = useCurrentUser()
 
@@ -90,28 +90,38 @@ export default function L1Claim({ onDismiss }: L1ClaimProps) {
   const [error, setError] = useState<string | null>(null)
 
   // retrieve
+  const ethereumMulticallContract = useEthereumMulticallContract()
   const ethereumStarkgateContract = useEthereumStarkgateContract()
   const onRetrieve = useCallback(() => {
-    if (!ethereumStarkgateContract || !retrievableEther) return
+    if (!ethereumStarkgateContract || !ethereumMulticallContract || !currentUser?.retrievableEthers) return
+
+    const fragment = ethereumStarkgateContract.interface?.getFunction('withdraw')
+    if (!fragment) return
 
     setWaitingForTx(true)
 
-    // const estimate = ethereumStarkgateContract.estimateGas.multicall
-    // const method = ethereumStarkgateContract.multicall
-    // const args: Array<string | string[] | number> = [retrievableEther.amount, retrievableEther.l1Recipient]
-    //
-    // estimate(...args, value ? { value } : {})
-    //   .then((estimatedGasLimit) =>
-    //     method(...args, { ...(value ? { value } : {}), gasLimit: estimatedGasLimit }).then((response: any) => {
-    //       setTxHash(response.hash)
-    //     })
-    //   )
-    //   .catch((error: any) => {
-    //     setError(error.message)
-    //     // we only care if the error is something _other_ than the user rejected the tx
-    //     if (error?.code !== 4001) console.error(error)
-    //   })
-  }, [ethereumStarkgateContract])
+    const estimate = ethereumMulticallContract.estimateGas.aggregate
+    const method = ethereumMulticallContract.aggregate
+    const args = currentUser?.retrievableEthers.map((retrievableEther: any) => ({
+      target: ethereumStarkgateContract.address,
+      callData: ethereumStarkgateContract.interface.encodeFunctionData(fragment, [
+        retrievableEther.amount,
+        retrievableEther.l1Recipient,
+      ]),
+    }))
+
+    estimate(args, {})
+      .then((estimatedGasLimit) =>
+        method(args, { gasLimit: estimatedGasLimit }).then((response: any) => {
+          setTxHash(response.hash)
+        })
+      )
+      .catch((error: any) => {
+        setError(error.message)
+        // we only care if the error is something _other_ than the user rejected the tx
+        if (error?.code !== 4001) console.error(error)
+      })
+  }, [ethereumMulticallContract, ethereumStarkgateContract, currentUser?.retrievableEthers])
 
   // on close modal
   useEffect(() => {

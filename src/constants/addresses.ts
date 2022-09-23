@@ -5,9 +5,14 @@ export type AddressesMap = {
   [chainId: number]: string
 }
 
-export const MULTICALL_ADDRESSES: AddressesMap = {
+export const L2_MULTICALL_ADDRESSES: AddressesMap = {
   [SupportedNetworks.GOERLI]: '0x042a12c5a641619a6c58e623d5735273cdfb0e13df72c4bacb4e188892034bd6',
   [SupportedNetworks.MAINNET]: '0x0740a7a14618bb7e4688d10059bc42104d22c315bb647130630c77d3b6d3ee50',
+}
+
+export const L1_MULTICALL_ADDRESSES: AddressesMap = {
+  [SupportedChainIds.GOERLI]: '0x77dca2c955b15e9de4dbbcf1246b4b85b651e50e',
+  [SupportedChainIds.MAINNET]: '0xeefba1e63905ef1d7acba5a8513c70307c1ce441',
 }
 
 export const ETH_ADDRESSES: AddressesMap = {

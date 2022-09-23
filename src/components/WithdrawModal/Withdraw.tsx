@@ -59,10 +59,10 @@ const ArrowWrapper = styled(Column)`
 `
 
 interface WithdrawModalProps {
-  onL1Claim(): void
+  onRetrieve(): void
 }
 
-export default function WithdrawModal({ onL1Claim }: WithdrawModalProps) {
+export default function WithdrawModal({ onRetrieve }: WithdrawModalProps) {
   // current user
   const currentUser = useCurrentUser()
 
@@ -195,7 +195,7 @@ export default function WithdrawModal({ onL1Claim }: WithdrawModalProps) {
             </TYPE.medium>
 
             {currentUser?.retrievableEthers.length && (
-              <TYPE.body color="primary1" fontWeight={500} onClick={onL1Claim} textAlign="right" clickable>
+              <TYPE.body color="primary1" fontWeight={500} onClick={onRetrieve} textAlign="right" clickable>
                 <Trans>Available ETH ({currentUser.retrievableEthers.length})</Trans>
               </TYPE.body>
             )}

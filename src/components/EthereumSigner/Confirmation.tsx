@@ -128,7 +128,7 @@ export default function Confirmation({
         <EtherscanButtonWrapper>
           <Link target="_blank" href={`${CHAINS[desiredChainId].explorerBaseUrl}/tx/${txHash}`}>
             <PrimaryButton large>
-              <Trans>See on Voyager</Trans>
+              <Trans>See on Etherscan</Trans>
             </PrimaryButton>
           </Link>
         </EtherscanButtonWrapper>

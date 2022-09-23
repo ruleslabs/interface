@@ -7,7 +7,7 @@ import ComingSoon, { WHITELIST } from '@/components/MarketplaceModal/ComingSoon'
 import { useCurrentUser } from '@/state/user/hooks'
 
 import Withdraw from './Withdraw'
-import L1Claim from './L1Claim'
+import Retrieve from './Retrieve'
 
 export default function AuthModal() {
   // current user
@@ -18,12 +18,12 @@ export default function AuthModal() {
   const toggleWithdrawModal = useWithdrawModalToggle()
 
   // L1
-  const [l1Claim, setL1Claim] = useState(false)
-  const toggleL1Claim = useCallback(() => setL1Claim(!l1Claim), [l1Claim])
+  const [retrieve, setRetrieve] = useState(false)
+  const toggleRetrieve = useCallback(() => setRetrieve(!retrieve), [retrieve])
 
   useEffect(() => {
     if (isOpen) {
-      setL1Claim(false)
+      setRetrieve(false)
     }
   }, [isOpen])
 
@@ -31,7 +31,7 @@ export default function AuthModal() {
 
   return (
     <Modal onDismiss={toggleWithdrawModal} isOpen={isOpen}>
-      {l1Claim ? <L1Claim onDismiss={toggleL1Claim} /> : <Withdraw onL1Claim={toggleL1Claim} />}
+      {retrieve ? <Retrieve onDismiss={toggleRetrieve} /> : <Withdraw onRetrieve={toggleRetrieve} />}
     </Modal>
   )
 }
