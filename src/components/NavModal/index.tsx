@@ -34,7 +34,8 @@ const NavWrapper = styled(Column)`
 
 const NavLinkButtonStyle = css`
   width: 100%;
-  padding: 14px 12px;
+  margin: 14px 0;
+  padding: 0 16px 0 12px;
   font-size: 1rem;
   height: fit-content;
 `
@@ -43,10 +44,11 @@ const StyledNavLink = styled(NavLink)`
   ${NavLinkButtonStyle}
 `
 
-const StyledNavButton = styled(NavButton)<{ alert?: boolean }>`
+const StyledNavButton = styled(NavButton)<{ alert?: boolean; notification?: boolean }>`
   ${NavLinkButtonStyle}
 
   ${({ theme, alert = false }) => alert && theme.before.alert}
+  ${({ theme, notification = false }) => notification && theme.before.notification}
 `
 
 const StyledLanguageSelector = styled(LanguageSelector)`
@@ -128,6 +130,7 @@ export default function NavModal() {
                 <StyledNavButton
                   onClick={toggleSettings}
                   alert={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
+                  notification={currentUser?.starknetWallet.retrievableEtherAmount}
                 >
                   <Trans>Settings</Trans>
                 </StyledNavButton>

@@ -22,6 +22,7 @@ const CURRENT_USER_QUERY = gql`
         address
         signerEscapeTriggeredAt
         needsSignerPublicKeyUpdate
+        retrievableEtherAmount
         rulesPrivateKey {
           salt
           iv

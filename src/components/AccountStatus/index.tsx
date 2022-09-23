@@ -46,7 +46,11 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
         {!!currentUser ? (
           <>
             <NavLink href={`/user/${currentUser.slug}`}>{currentUser.username}</NavLink>
-            <IconButton onClick={toggleSettingsModal} alert={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}>
+            <IconButton
+              onClick={toggleSettingsModal}
+              alert={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
+              notification={currentUser?.starknetWallet.retrievableEtherAmount}
+            >
               <Settings />
             </IconButton>
           </>

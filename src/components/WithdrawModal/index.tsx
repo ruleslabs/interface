@@ -27,7 +27,7 @@ export default function AuthModal() {
     }
   }, [isOpen])
 
-  if (!WHITELIST.includes(currentUser.slug)) return <ComingSoon onDismiss={toggleAcceptOfferModal} isOpen={isOpen} />
+  if (!WHITELIST.includes(currentUser?.slug)) return <ComingSoon onDismiss={toggleWithdrawModal} isOpen={isOpen} />
 
   return (
     <Modal onDismiss={toggleWithdrawModal} isOpen={isOpen}>

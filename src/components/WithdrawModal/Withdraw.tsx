@@ -20,6 +20,7 @@ import { L2_STARKGATE_ADDRESSES, ETH_ADDRESSES } from '@/constants/addresses'
 import { networkId } from '@/constants/networks'
 import Wallet from '@/components/Wallet'
 import Metamask from '@/components/Metamask'
+import { InfoCard } from '@/components/Card'
 
 import Arrow from '@/images/arrow.svg'
 import LayerswapIcon from '@/images/layerswap.svg'
@@ -193,12 +194,21 @@ export default function WithdrawModal({ onL1Claim }: WithdrawModalProps) {
               <Trans>To your Ethereum wallet</Trans>
             </TYPE.medium>
 
-            <TYPE.body color="primary1" fontWeight={500} onClick={onL1Claim} textAlign="right" clickable>
-              <Trans>Available withdraws (1)</Trans>
-            </TYPE.body>
+            {currentUser?.starknetWallet.retrievableEtherAmount && (
+              <TYPE.body color="primary1" fontWeight={500} onClick={onL1Claim} textAlign="right" clickable>
+                <Trans>Available ETH (1)</Trans>
+              </TYPE.body>
+            )}
           </RowBetween>
 
           <Metamask>
+            <InfoCard textAlign="center">
+              <Trans>
+                You will have to sign another transaction once your withdraw will be accepted to completely retrieve
+                your funds.
+              </Trans>
+            </InfoCard>
+
             <Column>
               <CurrencyInput
                 value={withdrawAmount}

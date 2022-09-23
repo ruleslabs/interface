@@ -35,6 +35,7 @@ declare module 'styled-components' {
 
     before: {
       alert: FlattenSimpleInterpolation<DefaultTheme>
+      notification: FlattenSimpleInterpolation<DefaultTheme>
     }
 
     size: {

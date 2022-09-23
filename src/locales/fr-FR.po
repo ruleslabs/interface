@@ -1094,3 +1094,7 @@ msgstr "Ton Portefeuille Ethereum"
 #: src/components/Wallet/index.tsx
 msgid "Your Rules Wallet"
 msgstr "Ton Portefeuille Rules"
+
+#: src/components/WithdrawModal/Withdraw.tsx
+msgid "You will have to sign another transaction once your withdraw will be accepted to completely retrieve your funds."
+msgstr "Tu devras signer une transaction supplémentaire une fois le retrait validé pour complètement récupérer tes fonds."

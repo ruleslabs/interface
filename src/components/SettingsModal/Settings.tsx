@@ -40,6 +40,12 @@ const Balance = styled(Row)<{ alert?: boolean }>`
   ${({ theme, alert = false }) => alert && theme.before.alert}
 `
 
+const Notifiable = styled.div<{ notification?: boolean }>`
+  ${({ theme, notification = false }) => notification && theme.before.notification}
+  width: fit-content;
+  padding-right: 16px;
+`
+
 interface SettingsProps extends React.HTMLAttributes<HTMLDivElement> {
   dispatch: () => void
 }
@@ -108,9 +114,11 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
           </TYPE.body>
         )}
         {currentUser?.starknetWallet.address && (
-          <TYPE.body onClick={toggleWithdrawModal} clickable>
-            <Trans>Withdraw ETH</Trans>
-          </TYPE.body>
+          <Notifiable notification={currentUser?.starknetWallet.retrievableEtherAmount}>
+            <TYPE.body onClick={toggleWithdrawModal} clickable>
+              <Trans>Withdraw ETH</Trans>
+            </TYPE.body>
+          </Notifiable>
         )}
         <Link href="/settings/profile">
           <TYPE.body clickable>

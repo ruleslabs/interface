@@ -43,6 +43,25 @@ const Alert = css`
   }
 `
 
+const Notification = css`
+  position: relative;
+  text-align: center;
+
+  ::before {
+    width: 20px;
+    height: 20px;
+    background: ${({ theme }) => theme.primary1};
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    border-radius: 50%;
+    content: '1';
+    color: ${({ theme }) => theme.text1};
+    font-size: 16px;
+    font-weight: 700;
+  }
+`
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function colors(darkMode: boolean): Colors {
   return {
@@ -77,6 +96,7 @@ function theme(darkMode: boolean) {
 
     before: {
       alert: Alert,
+      notification: Notification,
     },
 
     size: {

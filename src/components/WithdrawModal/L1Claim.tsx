@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
+import { useCurrentUser } from '@/state/user/hooks'
 import { ModalHeader } from '@/components/Modal'
 import Column from '@/components/Column'
 import Row from '@/components/Row'
@@ -38,12 +39,17 @@ interface L1ClaimProps {
 }
 
 export default function L1Claim({ onDismiss }: L1ClaimProps) {
+  // current user
+  const currentUser = useCurrentUser()
+
   // modal
   const toggleWithdrawModal = useWithdrawModalToggle()
 
   // amount
-  const amount = '7280000000000000'
-  const parsedAmount = useMemo(() => WeiAmount.fromRawAmount(amount), [amount])
+  const parsedAmount = useMemo(
+    () => WeiAmount.fromRawAmount(currentUser?.starknetWallet.retrievableEtherAmount ?? 0),
+    [currentUser?.starknetWallet.retrievableEtherAmount]
+  )
 
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
@@ -64,7 +70,7 @@ export default function L1Claim({ onDismiss }: L1ClaimProps) {
             <Trans>Total balance</Trans>
           </TYPE.body>
 
-          <Row gap={16}>
+          <Row gap={12}>
             <TYPE.medium>{parsedAmount?.toSignificant(6) ?? 0} ETH</TYPE.medium>
             <TYPE.medium color="text2">{weiAmountToEURValue(parsedAmount) ?? 0}€</TYPE.medium>
           </Row>
@@ -72,7 +78,7 @@ export default function L1Claim({ onDismiss }: L1ClaimProps) {
 
         <Metamask>
           <PrimaryButton large>
-            <Trans>Claim</Trans>
+            <Trans>Retrieve</Trans>
           </PrimaryButton>
         </Metamask>
       </Column>
