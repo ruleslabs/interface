@@ -81,16 +81,9 @@ interface ConfirmationProps {
   transactionText: string
   txHash?: string
   error?: string
-  waitingForFees: boolean
 }
 
-export default function Confirmation({
-  confirmationText,
-  transactionText,
-  txHash,
-  error,
-  waitingForFees,
-}: ConfirmationProps) {
+export default function Confirmation({ confirmationText, transactionText, txHash, error }: ConfirmationProps) {
   console.log(error)
   return (
     <StyledConfirmation>
@@ -116,7 +109,7 @@ export default function Confirmation({
         ) : (
           <ColumnCenter gap={8}>
             <Title>
-              {waitingForFees ? <Trans>Estimating network fee</Trans> : <Trans>Waiting for confirmation</Trans>}
+              <Trans>Waiting for confirmation</Trans>
             </Title>
 
             <Subtitle>{transactionText}</Subtitle>

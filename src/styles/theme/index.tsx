@@ -43,7 +43,7 @@ const Alert = css`
   }
 `
 
-const Notification = css`
+const Notification = css<{ notifications?: number }>`
   position: relative;
   text-align: center;
 
@@ -55,7 +55,7 @@ const Notification = css`
     top: -8px;
     right: -8px;
     border-radius: 50%;
-    content: '${({ notifications }) => notifications}';
+    content: '${({ notifications = 0 }) => notifications}';
     color: ${({ theme }) => theme.text1};
     font-size: 16px;
     font-weight: 700;

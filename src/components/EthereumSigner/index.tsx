@@ -27,7 +27,6 @@ interface EthereumSignerProps {
   txHash?: string
   error?: string
   onDismiss(): void
-  onError(error: string): void
 }
 
 export default function EthereumSigner({

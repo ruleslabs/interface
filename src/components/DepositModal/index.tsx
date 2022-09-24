@@ -76,31 +76,28 @@ export default function DepositModal() {
 
   // deposit
   const ethereumStarkgateContract = useEthereumStarkgateContract()
-  const onDeposit = useCallback(
-    (amount: string) => {
-      if (!ethereumStarkgateContract || !parsedDepositAmount || !currentUser?.starknetWallet.address) return
+  const onDeposit = useCallback(() => {
+    if (!ethereumStarkgateContract || !parsedDepositAmount || !currentUser?.starknetWallet.address) return
 
-      setWaitingForTx(true)
+    setWaitingForTx(true)
 
-      const estimate = ethereumStarkgateContract.estimateGas.deposit
-      const method = ethereumStarkgateContract.deposit
-      const args: Array<string | string[] | number> = [currentUser.starknetWallet.address]
-      const value = parsedDepositAmount.quotient.toString()
+    const estimate = ethereumStarkgateContract.estimateGas.deposit
+    const method = ethereumStarkgateContract.deposit
+    const args: Array<string | string[] | number> = [currentUser.starknetWallet.address]
+    const value = parsedDepositAmount.quotient.toString()
 
-      estimate(...args, value ? { value } : {})
-        .then((estimatedGasLimit) =>
-          method(...args, { ...(value ? { value } : {}), gasLimit: estimatedGasLimit }).then((response: any) => {
-            setTxHash(response.hash)
-          })
-        )
-        .catch((error: any) => {
-          setError(error.message)
-          // we only care if the error is something _other_ than the user rejected the tx
-          if (error?.code !== 4001) console.error(error)
+    estimate(...args, value ? { value } : {})
+      .then((estimatedGasLimit) =>
+        method(...args, { ...(value ? { value } : {}), gasLimit: estimatedGasLimit }).then((response: any) => {
+          setTxHash(response.hash)
         })
-    },
-    [parsedDepositAmount, ethereumStarkgateContract, currentUser?.starknetWallet.address]
-  )
+      )
+      .catch((error: any) => {
+        setError(error.message)
+        // we only care if the error is something _other_ than the user rejected the tx
+        if (error?.code !== 4001) console.error(error)
+      })
+  }, [parsedDepositAmount, ethereumStarkgateContract, currentUser?.starknetWallet.address])
 
   // next step check
   const canDeposit = useMemo(

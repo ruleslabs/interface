@@ -29,7 +29,7 @@ export default function Metamask({ children }: MetamaskProps) {
     }
   }, [])
 
-  if (account && chainId === desiredChainId) return children
+  if (account && chainId === desiredChainId) return <>{children}</>
   else if (account)
     return (
       <ErrorCard textAlign="center">

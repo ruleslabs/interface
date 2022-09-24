@@ -74,7 +74,7 @@ export default function Retrieve({ onDismiss }: RetrieveProps) {
     [currentUser?.retrievableEthers]
   )
   const totalParsedAmount = useMemo(() => {
-    const total = (currentUser?.retrievableEthers ?? []).reduce<JSBI>(
+    const total = ((currentUser?.retrievableEthers ?? []) as any[]).reduce<JSBI>(
       (acc, retrievableEther: any) => JSBI.add(JSBI.BigInt(retrievableEther.amount), acc),
       JSBI.BigInt(0)
     )
@@ -128,7 +128,10 @@ export default function Retrieve({ onDismiss }: RetrieveProps) {
           retrieveEtherMutation({
             variables: {
               hash: response.hash,
-              withdraws: currentUser.retrievableEthers.map(({ amount, l1Recipient }) => ({ amount, l1Recipient })),
+              withdraws: currentUser.retrievableEthers.map((retrievableEther: any) => ({
+                amount: retrievableEther.amount,
+                l1Recipient: retrievableEther.l1Recipient,
+              })),
             },
           })
             .then(() => setCurrentUser({ ...currentUser, retrievableEthers: [] }))
@@ -147,7 +150,7 @@ export default function Retrieve({ onDismiss }: RetrieveProps) {
   // on close modal
   useEffect(() => {
     if (isOpen) {
-      setWaitingForTx(null)
+      setWaitingForTx(false)
       setError(null)
       setTxHash(null)
     }

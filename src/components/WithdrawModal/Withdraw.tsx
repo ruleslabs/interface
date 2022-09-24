@@ -2,6 +2,7 @@ import { useCallback, useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
 import { Call, Signature } from 'starknet'
+import { ApolloError } from '@apollo/client'
 
 import { useModalOpen, useWithdrawModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
@@ -149,7 +150,7 @@ export default function WithdrawModal({ onRetrieve }: WithdrawModalProps) {
   useEffect(() => {
     if (isOpen) {
       setCalls(null)
-      setWithdrawAmount(null)
+      setWithdrawAmount('')
       setError(null)
       setTxHash(null)
     }
@@ -189,12 +190,12 @@ export default function WithdrawModal({ onRetrieve }: WithdrawModalProps) {
         </Separator>
 
         <Column gap={16}>
-          <RowBetween justify="space-around">
+          <RowBetween>
             <TYPE.medium>
               <Trans>To your Ethereum wallet</Trans>
             </TYPE.medium>
 
-            {currentUser?.retrievableEthers.length && (
+            {!!currentUser?.retrievableEthers.length && (
               <TYPE.body color="primary1" fontWeight={500} onClick={onRetrieve} textAlign="right" clickable>
                 <Trans>Available ETH ({currentUser.retrievableEthers.length})</Trans>
               </TYPE.body>

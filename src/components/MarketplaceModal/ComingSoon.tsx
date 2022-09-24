@@ -16,8 +16,9 @@ export const WHITELIST = [
   'bambinohdd',
   'moriarty',
   'loucho640',
-  't1',
-  't5',
+  // 't1',
+  // 't5',
+  'disket',
   'heloise',
 ]
 
