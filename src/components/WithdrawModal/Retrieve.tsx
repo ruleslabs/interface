@@ -3,8 +3,9 @@ import { useMemo, useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
+import { ApolloError } from '@apollo/client'
 
-import { useCurrentUser } from '@/state/user/hooks'
+import { useCurrentUser, useSetCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
 import Row, { RowBetween } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
@@ -18,6 +19,7 @@ import { useEthereumMulticallContract, useEthereumStarkgateContract } from '@/ho
 import Link from '@/components/Link'
 import { desiredChainId } from '@/constants/connectors'
 import { CHAINS } from '@/constants/networks'
+import { useRetrieveEtherMutation } from '@/state/wallet/hooks'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
 
@@ -57,6 +59,7 @@ interface RetrieveProps {
 export default function Retrieve({ onDismiss }: RetrieveProps) {
   // current user
   const currentUser = useCurrentUser()
+  const setCurrentUser = useSetCurrentUser()
 
   // modal
   const isOpen = useModalOpen(ApplicationModal.WITHDRAW)
@@ -89,9 +92,14 @@ export default function Retrieve({ onDismiss }: RetrieveProps) {
   // error
   const [error, setError] = useState<string | null>(null)
 
-  // retrieve
+  // mutation
+  const [retrieveEtherMutation] = useRetrieveEtherMutation()
+
+  // l1 contracts
   const ethereumMulticallContract = useEthereumMulticallContract()
   const ethereumStarkgateContract = useEthereumStarkgateContract()
+
+  // retrieve
   const onRetrieve = useCallback(() => {
     if (!ethereumStarkgateContract || !ethereumMulticallContract || !currentUser?.retrievableEthers) return
 
@@ -102,7 +110,7 @@ export default function Retrieve({ onDismiss }: RetrieveProps) {
 
     const estimate = ethereumMulticallContract.estimateGas.aggregate
     const method = ethereumMulticallContract.aggregate
-    const args = currentUser?.retrievableEthers.map((retrievableEther: any) => ({
+    const args = currentUser.retrievableEthers.map((retrievableEther: any) => ({
       target: ethereumStarkgateContract.address,
       callData: ethereumStarkgateContract.interface.encodeFunctionData(fragment, [
         retrievableEther.amount,
@@ -110,10 +118,23 @@ export default function Retrieve({ onDismiss }: RetrieveProps) {
       ]),
     }))
 
+    return
+
     estimate(args, {})
       .then((estimatedGasLimit) =>
         method(args, { gasLimit: estimatedGasLimit }).then((response: any) => {
           setTxHash(response.hash)
+
+          retrieveEtherMutation({
+            variables: {
+              hash: response.hash,
+              withdraws: currentUser.retrievableEthers.map(({ amount, l1Recipient }) => ({ amount, l1Recipient })),
+            },
+          })
+            .then(() => setCurrentUser({ ...currentUser, retrievableEthers: [] }))
+            .catch((retrieveEtherError: ApolloError) => {
+              console.error(retrieveEtherError?.graphQLErrors?.[0])
+            })
         })
       )
       .catch((error: any) => {

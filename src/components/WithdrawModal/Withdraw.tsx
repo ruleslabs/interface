@@ -118,7 +118,7 @@ export default function WithdrawModal({ onRetrieve }: WithdrawModalProps) {
       const amount = parsedWithdrawAmount.quotient.toString()
 
       withdrawEtherMutation({
-        variables: { amount, recipientAddress: account, maxFee, signature: JSON.stringify(signature) },
+        variables: { amount, l1Recipient: account, maxFee, signature: JSON.stringify(signature) },
       })
         .then((res?: any) => {
           const hash = res?.data?.withdrawEther?.hash

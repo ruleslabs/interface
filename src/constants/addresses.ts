@@ -36,6 +36,6 @@ export const L1_STARKGATE_ADDRESSES: AddressesMap = {
 }
 
 export const L2_STARKGATE_ADDRESSES: AddressesMap = {
-  [SupportedNetworks.GOERLI]: '0x073314940630fd6dcda0d772d4c972c4e0a9946bef9dabf4ef84eda8ef542b82',
-  [SupportedNetworks.MAINNET]: '0x073314940630fd6dcda0d772d4c972c4e0a9946bef9dabf4ef84eda8ef542b82',
+  [SupportedNetworks.GOERLI]: '0x73314940630fd6dcda0d772d4c972c4e0a9946bef9dabf4ef84eda8ef542b82',
+  [SupportedNetworks.MAINNET]: '0x73314940630fd6dcda0d772d4c972c4e0a9946bef9dabf4ef84eda8ef542b82',
 }

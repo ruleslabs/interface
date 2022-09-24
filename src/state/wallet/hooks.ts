@@ -65,12 +65,16 @@ const ACCEPT_OFFER_MUTATION = gql`
 `
 
 const WITHDRAW_ETHER_MUTATION = gql`
-  mutation ($recipientAddress: String!, $amount: String!, $maxFee: String!, $signature: String!) {
-    withdrawEther(
-      input: { recipientAddress: $recipientAddress, amount: $amount, maxFee: $maxFee, signature: $signature }
-    ) {
+  mutation ($l1Recipient: String!, $amount: String!, $maxFee: String!, $signature: String!) {
+    withdrawEther(input: { l1Recipient: $l1Recipient, amount: $amount, maxFee: $maxFee, signature: $signature }) {
       hash
     }
+  }
+`
+
+const RETRIEVE_ETHER_MUTATION = gql`
+  mutation ($hash: String!, $withdraws: [EtherWithdraw!]!) {
+    retrieveEther(input: { hash: $hash, withdraws: $withdraws })
   }
 `
 
@@ -143,4 +147,8 @@ export function useAcceptOfferMutation() {
 
 export function useWithdrawEtherMutation() {
   return useMutation(WITHDRAW_ETHER_MUTATION)
+}
+
+export function useRetrieveEtherMutation() {
+  return useMutation(RETRIEVE_ETHER_MUTATION)
 }

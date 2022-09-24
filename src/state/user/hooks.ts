@@ -136,10 +136,10 @@ export function useCurrentUser() {
   return currentUser
 }
 
-// export function useSetCurrentUser() {
-//   const dispatch = useAppDispatch()
-//   return useCallback((user: any) => dispatch(setCurrentUser({ user })), [dispatch, setCurrentUser])
-// }
+export function useSetCurrentUser() {
+  const dispatch = useAppDispatch()
+  return useCallback((user: any) => dispatch(setCurrentUser({ user })), [dispatch, setCurrentUser])
+}
 
 export function useQueryCurrentUser() {
   const dispatch = useAppDispatch()
