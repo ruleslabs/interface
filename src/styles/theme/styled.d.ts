@@ -1,4 +1,4 @@
-import { ThemedCssFunction, FlattenSimpleInterpolation } from 'styled-components'
+import { ThemedCssFunction } from 'styled-components'
 
 export interface Colors {
   white: string
@@ -34,8 +34,8 @@ declare module 'styled-components' {
     }
 
     before: {
-      alert: FlattenSimpleInterpolation<DefaultTheme>
-      notifications: FlattenSimpleInterpolation<DefaultTheme>
+      alert: ThemedCssFunction<DefaultTheme>
+      notifications: ThemedCssFunction<DefaultTheme>
     }
 
     size: {

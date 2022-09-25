@@ -47,8 +47,8 @@ const StyledNavLink = styled(NavLink)`
 const StyledNavButton = styled(NavButton)<{ alert?: boolean; notifications?: number }>`
   ${NavLinkButtonStyle}
 
-  ${({ theme, alert = false }) => alert && theme.before.alert}
-  ${({ theme, notifications = 0 }) => notifications && theme.before.notifications}
+  ${({ theme, alert = false }) => alert && theme.before.alert``}
+  ${({ theme, notifications = 0 }) => notifications && theme.before.notifications``}
 `
 
 const StyledLanguageSelector = styled(LanguageSelector)`

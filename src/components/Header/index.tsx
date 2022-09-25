@@ -72,8 +72,8 @@ const StyledAccountStatus = styled(AccountStatus)`
 `
 
 const HamburgerWrapper = styled.div<{ alert?: boolean; notifications?: number }>`
-  ${({ theme, alert = false }) => alert && theme.before.alert}
-  ${({ theme, notifications = 0 }) => notifications && theme.before.notifications}
+  ${({ theme, alert = false }) => alert && theme.before.alert``}
+  ${({ theme, notifications = 0 }) => notifications && theme.before.notifications``}
 `
 
 interface MenuLink {

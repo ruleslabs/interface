@@ -37,11 +37,17 @@ const Balance = styled(Row)<{ alert?: boolean }>`
     }
   `}
 
-  ${({ theme, alert = false }) => alert && theme.before.alert}
+  ${({ theme, alert = false }) => alert && theme.before.alert``}
 `
 
 const Notifiable = styled.div<{ notifications?: number }>`
-  ${({ theme, notifications = 0 }) => notifications && theme.before.notifications}
+  ${({ theme, notifications = 0 }) =>
+    notifications &&
+    theme.before.notifications`
+      ::before {
+        top: -1px;
+      }
+    `}
   width: fit-content;
   padding-right: 16px;
 `

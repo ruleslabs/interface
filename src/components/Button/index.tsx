@@ -68,8 +68,8 @@ export const IconButton = styled.button<{ alert?: boolean; notifications?: numbe
     height: 18px;
   }
 
-  ${({ theme, alert = false }) => alert && theme.before.alert}
-  ${({ theme, notifications = 0 }) => notifications && theme.before.notifications}
+  ${({ theme, alert = false }) => alert && theme.before.alert``}
+  ${({ theme, notifications = 0 }) => notifications && theme.before.notifications``}
 `
 
 const StyledRowButton = styled.button`

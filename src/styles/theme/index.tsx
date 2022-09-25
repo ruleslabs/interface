@@ -43,24 +43,30 @@ const Alert = css`
   }
 `
 
-const Notification = css<{ notifications?: number }>`
-  position: relative;
-  text-align: center;
+const Notifications = css<{ notifications?: number }>`
+  ${Alert}
 
   ::before {
-    width: 20px;
-    height: 20px;
     background: ${({ theme }) => theme.primary1};
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    border-radius: 50%;
     content: '${({ notifications = 0 }) => notifications}';
-    color: ${({ theme }) => theme.text1};
-    font-size: 16px;
-    font-weight: 700;
   }
 `
+
+const BEFORES_CSS = {
+  alert: Alert,
+  notifications: Notifications,
+}
+
+const before: { [before in keyof typeof BEFORES_CSS]: typeof css } = Object.keys(BEFORES_CSS).reduce(
+  (acc: any, before) => {
+    acc[before as keyof typeof BEFORES_CSS] = (first: any, ...interpolations: any[]) => css`
+      ${BEFORES_CSS[before as keyof typeof BEFORES_CSS]}
+      ${first && interpolations && css(first, ...interpolations)}
+    `
+    return acc
+  },
+  {}
+) as any
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function colors(darkMode: boolean): Colors {
@@ -94,10 +100,7 @@ function theme(darkMode: boolean) {
 
     media: mediaWidth,
 
-    before: {
-      alert: Alert,
-      notifications: Notification,
-    },
+    before,
 
     size: {
       headerHeight: '57px',

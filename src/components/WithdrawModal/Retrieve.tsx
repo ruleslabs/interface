@@ -169,13 +169,15 @@ export default function Retrieve({ onDismiss }: RetrieveProps) {
     >
       <Column gap={26}>
         <TYPE.large>
-          <Trans>Retrieve your available ETH</Trans>
+          <Trans>Validate my transactions</Trans>
         </TYPE.large>
 
         {(currentUser?.retrievableEthers ?? []).map((retrievableEther: any, index: number) => (
           <RetrievableWrapper key={`retrievable-ether-${index}`}>
             <Column gap={8}>
-              <TYPE.body>Amount to retrieve</TYPE.body>
+              <TYPE.body>
+                <Trans>Amount to transfer</Trans>
+              </TYPE.body>
 
               <Row gap={12}>
                 <TYPE.medium>{parsedAmounts[index]?.toSignificant(6) ?? 0} ETH</TYPE.medium>
@@ -199,7 +201,7 @@ export default function Retrieve({ onDismiss }: RetrieveProps) {
 
         <Metamask>
           <PrimaryButton onClick={onRetrieve} large>
-            <Trans>Retrieve all</Trans>
+            <Trans>Validate all</Trans>
           </PrimaryButton>
         </Metamask>
       </Column>

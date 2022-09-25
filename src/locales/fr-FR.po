@@ -391,7 +391,7 @@ msgid "Platinium"
 msgstr "Platine"
 
 #: src/components/OffersSelector/index.tsx
-msgid "{0, plural, =1 {{0} available} other {{0} availables}}"
+msgid "{0, plural, =1 {{0} available} other {{0} available}}"
 msgstr "{0, plural, =1 {{0} disponible} other {{0} disponibles}}"
 
 #: src/components/OffersSelector/index.tsx
@@ -1096,5 +1096,21 @@ msgid "Your Rules Wallet"
 msgstr "Ton Portefeuille Rules"
 
 #: src/components/WithdrawModal/Withdraw.tsx
-msgid "You will have to sign another transaction once your withdraw will be accepted to completely retrieve your funds."
-msgstr "Tu devras signer une transaction supplémentaire une fois le retrait validé pour complètement récupérer tes fonds."
+msgid "An additional step will be required to transfer the funds."
+msgstr "Une étape supplémentaire sera nécessaire pour transférer les fonds."
+
+#: src/components/WithdrawModal/Withdraw.tsx
+msgid "{0, plural, =1 {Validate my transactions ({0} available)} other {Validate my transactions ({0} available)}}"
+msgstr "{0, plural, =1 {Valider mes transactions ({0} disponible)} other {Valider mes transactions ({0} disponibles)}}"
+
+#: src/components/WithdrawModal/Retrieve.tsx
+msgid "Validate my transactions"
+msgstr "Valider mes transactions"
+
+#: src/components/WithdrawModal/Retrieve.tsx
+msgid "Amount to transfer"
+msgstr "Montant à transférer"
+
+#: src/components/WithdrawModal/Retrieve.tsx
+msgid "Validate all"
+msgstr "Tout valider"

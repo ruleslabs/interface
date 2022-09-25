@@ -1,13 +1,12 @@
 import { useCallback, useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
-import { t, Trans } from '@lingui/macro'
+import { t, Trans, Plural } from '@lingui/macro'
 import { Call, Signature } from 'starknet'
 import { ApolloError } from '@apollo/client'
 
 import { useModalOpen, useWithdrawModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import Column from '@/components/Column'
-import { RowBetween } from '@/components/Row'
 import { PrimaryButton, ThirdPartyButton } from '@/components/Button'
 import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
 import CurrencyInput from '@/components/Input/CurrencyInput'
@@ -190,50 +189,51 @@ export default function WithdrawModal({ onRetrieve }: WithdrawModalProps) {
         </Separator>
 
         <Column gap={16}>
-          <RowBetween>
-            <TYPE.medium>
-              <Trans>To your Ethereum wallet</Trans>
-            </TYPE.medium>
-
-            {!!currentUser?.retrievableEthers.length && (
-              <TYPE.body color="primary1" fontWeight={500} onClick={onRetrieve} textAlign="right" clickable>
-                <Trans>Available ETH ({currentUser.retrievableEthers.length})</Trans>
-              </TYPE.body>
-            )}
-          </RowBetween>
+          <TYPE.medium>
+            <Trans>To your Ethereum wallet</Trans>
+          </TYPE.medium>
 
           <Metamask>
-            <InfoCard textAlign="center">
-              <Trans>
-                You will have to sign another transaction once your withdraw will be accepted to completely retrieve
-                your funds.
-              </Trans>
-            </InfoCard>
-
-            <Column>
-              <CurrencyInput
-                value={withdrawAmount}
-                placeholder="0.0"
-                onUserInput={handleWithdrawAmountUpdate}
-                balance={balance}
-              />
-
-              <ArrowWrapper>
-                <Arrow />
-              </ArrowWrapper>
-
-              <Wallet layer={1} />
-            </Column>
-
-            <PrimaryButton onClick={handleConfirmation} disabled={!canWithdraw} large>
-              {!+withdrawAmount || !parsedWithdrawAmount ? (
-                <Trans>Enter an amount</Trans>
-              ) : balance?.lessThan(parsedWithdrawAmount) ? (
-                <Trans>Insufficient ETH balance</Trans>
+            <Column gap={32}>
+              {currentUser?.retrievableEthers.length ? (
+                <PrimaryButton onClick={onRetrieve} large>
+                  <Plural
+                    value={currentUser.retrievableEthers.length}
+                    _1="Validate my transactions ({0} available)"
+                    other="Validate my transactions ({0} available)"
+                  />
+                </PrimaryButton>
               ) : (
-                <Trans>Next</Trans>
+                <InfoCard textAlign="center">
+                  <Trans>An additional step will be required to transfer the funds.</Trans>
+                </InfoCard>
               )}
-            </PrimaryButton>
+
+              <Column>
+                <CurrencyInput
+                  value={withdrawAmount}
+                  placeholder="0.0"
+                  onUserInput={handleWithdrawAmountUpdate}
+                  balance={balance}
+                />
+
+                <ArrowWrapper>
+                  <Arrow />
+                </ArrowWrapper>
+
+                <Wallet layer={1} />
+              </Column>
+
+              <PrimaryButton onClick={handleConfirmation} disabled={!canWithdraw} large>
+                {!+withdrawAmount || !parsedWithdrawAmount ? (
+                  <Trans>Enter an amount</Trans>
+                ) : balance?.lessThan(parsedWithdrawAmount) ? (
+                  <Trans>Insufficient ETH balance</Trans>
+                ) : (
+                  <Trans>Next</Trans>
+                )}
+              </PrimaryButton>
+            </Column>
           </Metamask>
         </Column>
       </Column>

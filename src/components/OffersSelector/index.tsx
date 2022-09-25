@@ -98,7 +98,7 @@ export default function OffersSelector({
           <Trans>Select a card</Trans>
         </TableTitle>
         <AvailabilityCount>
-          <Plural value={offersSearch?.nbHits ?? 0} _1="{0} available" other="{0} availables" />
+          <Plural value={offersSearch?.nbHits ?? 0} _1="{0} available" other="{0} available" />
         </AvailabilityCount>
       </RowBetween>
       <OffersTable
