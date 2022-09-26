@@ -5,13 +5,27 @@ import { CardDisplaySelector, CardFullscreenSelector } from '@/components/CardSe
 
 import Close from '@/images/close.svg'
 
-const CardVideoWrapper = styled.div`
+const CardVideoWrapper = styled.div<{ stacked: boolean }>`
   overflow: hidden;
   height: 100%;
+  ${({ stacked }) => stacked && 'padding-right: 24px;'}
 
   video {
     height: 100%;
+    border-radius: 4.44%/3.17%;
+    box-shadow: 0 0 3px 0 #00000080;
+    ${({ stacked }) => stacked && 'transform: scale(0.97) translate(15px, 6px) rotate(3deg);'}
   }
+
+  ${({ theme, stacked }) =>
+    stacked &&
+    theme.media.small`
+    padding-right: 0;
+
+    video {
+      transform: scale(0.92) translate(2.5%, -1%) rotate(3deg);
+    }
+  `}
 `
 
 const DefaultCardVisualWrapperStyle = css`
@@ -62,14 +76,10 @@ const FullscreenCardVisualWrapperStyle = css<{ scarcityName: string }>`
     height: 100%;
   }
 
-  ${CardVideoWrapper} > video {
-    transform: scale(1.014, 1.007) translate(-0.1%, 0);
-  }
-
   ${CardVideoWrapper} {
     box-shadow: 0 0 32px
       ${({ theme, scarcityName }) => (scarcityName === 'Platinium' ? theme.platinium : theme.primary1)};
-    border-radius: 4%;
+    border-radius: 4.44%/3.17%;
   }
 
   & > div {
@@ -123,12 +133,23 @@ const StyledClose = styled(Close)`
   cursor: pointer;
 `
 
+const StackImage = styled.img`
+  position: absolute;
+  z-index: -1;
+
+  ${({ theme }) => theme.media.small`
+    height: auto !important;
+    width: calc(100% - 40px) !important;
+  `}
+`
+
 interface CardModel3DProps {
   videoUrl: string
   pictureUrl: string
   rotatingVideoUrl: string
   backPictureUrl: string
   scarcityName: string
+  stacked: boolean
 }
 
 export default function CardModel3D({
@@ -137,6 +158,7 @@ export default function CardModel3D({
   pictureUrl,
   backPictureUrl,
   scarcityName,
+  stacked = false,
 }: CardModel3DProps) {
   const [cardModelDisplayMode, setCardModelDisplayMode] = useState<'front' | 'back' | 'rotate'>('front')
   const [fullscreen, setFullscreen] = useState(false)
@@ -150,8 +172,12 @@ export default function CardModel3D({
   return (
     <>
       <CardVisualsWrapper fullscreen={fullscreen} scarcityName={scarcityName}>
+        {stacked && !fullscreen && <StackImage src="/assets/common-stack.png" />}
         {fullscreen && <StyledClose onClick={toggleFullscreen} />}
-        <CardVideoWrapper style={{ display: cardModelDisplayMode === 'front' ? 'initial' : 'none' }}>
+        <CardVideoWrapper
+          style={{ display: cardModelDisplayMode === 'front' ? 'initial' : 'none' }}
+          stacked={stacked && !fullscreen}
+        >
           <video src={videoUrl} playsInline loop autoPlay muted />
         </CardVideoWrapper>
         <video

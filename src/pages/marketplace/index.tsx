@@ -123,7 +123,10 @@ export default function Marketplace() {
 
     const highestLowestAskFiat = Math.ceil(+(weiAmountToEURValue(highestLowestAsk) ?? 0))
 
-    if (filters.maximumPrice === null || filters.maximumPrice > highestLowestAskFiat)
+    if (
+      (filters.maximumPrice === null && highestLowestAskFiat) ||
+      (filters.maximumPrice && filters.maximumPrice > highestLowestAskFiat)
+    )
       setMaximumPrice(highestLowestAskFiat)
 
     return { cardModels, highestLowestAskFiat }

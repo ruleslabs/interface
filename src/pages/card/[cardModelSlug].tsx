@@ -103,6 +103,7 @@ export default function CardModelPage() {
           pictureUrl={cardModel.pictureUrl}
           backPictureUrl={backPictureUrl}
           scarcityName={cardModel.scarcity.name}
+          stacked={true}
         />
         <MainSectionCardsWrapper>
           <Card>
