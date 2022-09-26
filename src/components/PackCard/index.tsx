@@ -43,12 +43,12 @@ const StyledLargeSpinner = styled(LargeSpinner)`
   width: 26.8%;
   height: auto;
   left: 35.6%;
-  top: 34.7%;
+  top: 40.7%;
 `
 
 const PrepareOpeningButton = styled(PrimaryButton)`
   ${StatusStyle}
-  top: 37.1%;
+  top: 42.6%;
   display: none;
 `
 

@@ -90,21 +90,14 @@ const FlipCardWrapper = styled.div<{ scarcity: string; revealed: boolean }>`
     position: absolute;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-
-    span {
-      border-radius: 12px;
-      box-shadow: 0 0 32px ${({ theme, scarcity }) => (scarcity === 'Platinium' ? theme.platinium : theme.primary1)},
-        0 0 0 12px #000;
-      position: absolute;
-      top: 1px;
-      bottom: 2px;
-      left: 2px;
-      right: 2px;
-    }
+    border-radius: 4.44%/3.17%;
+    box-shadow: 0 0 32px ${({ theme, scarcity }) => (scarcity === 'Platinium' ? theme.platinium : theme.primary1)},
+      0 0 0 12px #000;
   }
 
   & > div:last-child {
     transform: rotateY(180deg);
+    overflow: hidden;
   }
 `
 
@@ -151,7 +144,6 @@ const CardImage = ({ cards, revealedCardIndex, onClick, cardIndexToLoad, focused
       >
         <div>
           <img src={backPictureUrl} alt="card-back" />
-          <span />
         </div>
         <div>
           <CardVideo
@@ -161,7 +153,6 @@ const CardImage = ({ cards, revealedCardIndex, onClick, cardIndexToLoad, focused
             autoPlay
             muted
           />
-          <span />
         </div>
       </FlipCardWrapper>
     </StyledCardImage>
