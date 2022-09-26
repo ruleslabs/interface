@@ -1,19 +1,44 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 
 import useTheme from '@/hooks/useTheme'
-import { TYPE } from '@/styles/theme'
+import SliderInput from '@/components/Input/SliderInput'
 
 const StyledSlider = styled.input`
   -webkit-appearance: none;
   width: 100%;
-  height: 3px;
+  height: 2px;
+  border-radius: 1px;
   outline: none;
   margin-bottom: 8px;
 
+  &::before {
+    width: 100%;
+    height: 2px;
+    background: ${({ theme }) => theme.text1};
+    border-radius: 1px;
+    content: '';
+    left: 2px;
+    position: absolute;
+    display: block;
+    z-index: -1;
+  }
+
+  &:active,
+  &focus {
+    &::before {
+      background: ${({ theme }) => theme.primary1};
+    }
+
+    &::-webkit-slider-thumb {
+      border: 2px solid ${({ theme }) => theme.primary1};
+    }
+  }
+
   &::-webkit-slider-thumb {
-    background: ${({ theme }) => theme.bg2};
-    border: solid 2px ${({ theme }) => theme.white};
+    background: ${({ theme }) => theme.bg5};
+    border: 2px solid ${({ theme }) => theme.text1};
+    border-radius: 2px;
     width: 20px;
     -webkit-appearance: none;
     height: 20px;
@@ -21,33 +46,9 @@ const StyledSlider = styled.input`
   }
 
   &::-moz-range-thumb {
-    background: ${({ theme }) => theme.white};
+    background: ${({ theme }) => theme.text1};
   }
 `
-
-const SliderInputWrapper = styled.div`
-  border: solid 2px ${({ theme }) => theme.white};
-  height: 32px;
-  display: flex;
-  align-items: center;
-  padding-left: 8px;
-
-  & > * {
-    font-size: 14px;
-  }
-`
-
-const SliderInput = styled.input`
-  background: transparent;
-  border: none;
-  color: ${({ theme }) => theme.white};
-
-  &:focus {
-    outline: none;
-  }
-`
-
-const inputRegex = RegExp(`^[0-9]*$`)
 
 interface SliderProps {
   value: number
@@ -60,19 +61,21 @@ interface SliderProps {
 export default function Slider({ value, unit = '', min = 0, max, onChange }: SliderProps) {
   const theme = useTheme()
 
-  const sliderStyle = {
-    background: `linear-gradient(to right, ${theme.white} 0%, ${theme.white} ${((value - min) / (max - min)) * 100}%, ${
-      theme.bg3
-    } ${((value - min) / (max - min)) * 100}%, ${theme.bg3} 100%)`,
-  }
+  const sliderStyle = useMemo(
+    () => ({
+      background: `linear-gradient(to right, transparent 0%, transparent ${((value - min) / (max - min)) * 100}%, ${
+        theme.bg3
+      } ${((value - min) / (max - min)) * 100}%, ${theme.bg3} 100%)`,
+    }),
+    [value, min, max, theme]
+  )
 
-  const handleChange = useCallback(
+  const handleInputUpdate = useCallback((value: string) => onChange(+value), [])
+
+  const handleSlidingUpdate = useCallback(
     (event) => {
-      const newValue = event.target.value.replace(/^0*/, '')
-
-      if (inputRegex.test(newValue)) {
-        onChange(newValue.length > 0 ? Math.min(+newValue, max) : 0)
-      }
+      const newValue = event.target.value
+      if (newValue === '' || /^([0-9]+)$/.test(newValue)) onChange(newValue.length > 0 ? Math.min(+newValue, max) : 0)
     },
     [max, onChange]
   )
@@ -85,14 +88,10 @@ export default function Slider({ value, unit = '', min = 0, max, onChange }: Sli
         max={max}
         value={value}
         step="1"
-        aria-label="Example slider, range 0 to 100"
-        onChange={handleChange}
+        onChange={handleSlidingUpdate}
         style={sliderStyle}
       />
-      <SliderInputWrapper>
-        <TYPE.body>{unit}</TYPE.body>
-        <SliderInput type="text" value={value} onChange={handleChange} pattern="^[0-9]+$" />
-      </SliderInputWrapper>
+      <SliderInput type="text" value={value} onUserInput={handleInputUpdate} placeholder="0" unit="€" />
     </>
   )
 }

@@ -96,11 +96,12 @@ export default function Marketplace() {
   // query
   const cardModelsQuery = useQuery(CARD_MODELS_ON_SALE_QUERY)
 
-  const { cardModels, highestLowestAskFiat, lowestLowestAskFiat } = useMemo(() => {
-    let highestLowestAsk: WeiAmount | undefined
-    let lowestLowestAsk: WeiAmount | undefined
+  const { cardModels, highestLowestAskFiat } = useMemo(() => {
+    if (!cardModelsQuery?.data?.cardModelsOnSale) return { cardModels: [], highestLowestAskFiat: 0 }
 
-    const cardModels = (cardModelsQuery?.data?.cardModelsOnSale ?? [])
+    let highestLowestAsk: WeiAmount | undefined
+
+    const cardModels = cardModelsQuery.data.cardModelsOnSale
       .filter((cardModel: any) => {
         const parsedLowestAsk = WeiAmount.fromRawAmount(cardModel.lowestAsk)
 
@@ -110,8 +111,6 @@ export default function Marketplace() {
         // get highest lowest ask before filtering by price
         highestLowestAsk =
           !highestLowestAsk || parsedLowestAsk.greaterThan(highestLowestAsk) ? parsedLowestAsk : highestLowestAsk
-        lowestLowestAsk =
-          !lowestLowestAsk || parsedLowestAsk.lessThan(lowestLowestAsk) ? parsedLowestAsk : lowestLowestAsk
 
         if (filters.maximumPrice !== null && filters.maximumPrice < +(weiAmountToEURValue(parsedLowestAsk) ?? 0))
           return false
@@ -122,15 +121,12 @@ export default function Marketplace() {
         return a.lowestAsk.localeCompare(b.lowestAsk)
       })
 
-    const [highestLowestAskFiat, lowestLowestAskFiat] = [
-      Math.ceil(+(weiAmountToEURValue(highestLowestAsk) ?? 0)),
-      Math.ceil(+(weiAmountToEURValue(lowestLowestAsk) ?? 0)),
-    ]
+    const highestLowestAskFiat = Math.ceil(+(weiAmountToEURValue(highestLowestAsk) ?? 0))
 
-    if (!filters.maximumPrice || filters.maximumPrice > highestLowestAskFiat) setMaximumPrice(highestLowestAskFiat)
-    else if (filters.maximumPrice < lowestLowestAskFiat) setMaximumPrice(lowestLowestAskFiat)
+    if (filters.maximumPrice === null || filters.maximumPrice > highestLowestAskFiat)
+      setMaximumPrice(highestLowestAskFiat)
 
-    return { cardModels, highestLowestAskFiat, lowestLowestAskFiat }
+    return { cardModels, highestLowestAskFiat }
   }, [filters, cardModelsQuery?.data?.cardModelsOnSale, weiAmountToEURValue, setMaximumPrice, increaseSort])
 
   if (cardModelsQuery.error || cardModelsQuery.loading) {
@@ -141,7 +137,6 @@ export default function Marketplace() {
   return (
     <>
       <StyledMarketplaceSidebar
-        maximumPriceLowerBound={lowestLowestAskFiat}
         maximumPriceUpperBound={highestLowestAskFiat}
         isOpenOnMobile={isFiltersSidebarOpenOnMobile}
         dispatch={toggleFiltersOnMobile}

@@ -1,4 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit'
+import { Seasons, ScarcityName } from '@rulesorg/sdk-core'
 
 import {
   updateMarketplaceScarcityFilter,
@@ -16,8 +17,8 @@ export interface MarketplaceState {
 
 export const initialState: MarketplaceState = {
   filters: {
-    scarcities: [],
-    seasons: [],
+    scarcities: ScarcityName,
+    seasons: Object.keys(Seasons).map((season) => +season),
     maximumPrice: null,
   },
 }

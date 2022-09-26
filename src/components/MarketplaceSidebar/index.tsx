@@ -79,16 +79,10 @@ const FilterName = styled(TYPE.body)`
 
 interface MarketplaceSidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   dispatch: () => void
-  maximumPriceLowerBound: number
   maximumPriceUpperBound: number
 }
 
-export default function MarketplaceSidebar({
-  dispatch,
-  maximumPriceLowerBound,
-  maximumPriceUpperBound,
-  ...props
-}: MarketplaceSidebarProps) {
+export default function MarketplaceSidebar({ dispatch, maximumPriceUpperBound, ...props }: MarketplaceSidebarProps) {
   const filters = useMarketplaceFilters()
 
   const toggleTierFilter = useMarketplaceScarcityFilterToggler()
@@ -141,7 +135,7 @@ export default function MarketplaceSidebar({
           </FilterName>
           <Slider
             unit="€"
-            min={maximumPriceLowerBound}
+            min={0}
             max={maximumPriceUpperBound}
             onChange={setMaximumPrice}
             value={filters.maximumPrice ?? maximumPriceUpperBound}
