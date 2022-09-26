@@ -172,7 +172,7 @@ export default function CardModel3D({
   return (
     <>
       <CardVisualsWrapper fullscreen={fullscreen} scarcityName={scarcityName}>
-        {stacked && !fullscreen && <StackImage src="/assets/common-stack.png" />}
+        {stacked && !fullscreen && <StackImage src={`/assets/${scarcityName}-stack.png`} />}
         {fullscreen && <StyledClose onClick={toggleFullscreen} />}
         <CardVideoWrapper
           style={{ display: cardModelDisplayMode === 'front' ? 'initial' : 'none' }}
