@@ -118,8 +118,6 @@ export default function Retrieve({ onDismiss }: RetrieveProps) {
       ]),
     }))
 
-    return
-
     estimate(args, {})
       .then((estimatedGasLimit) =>
         method(args, { gasLimit: estimatedGasLimit }).then((response: any) => {
@@ -159,9 +157,8 @@ export default function Retrieve({ onDismiss }: RetrieveProps) {
   return (
     <EthereumSigner
       modalHeaderChildren={<BackButton onClick={onDismiss} />}
-      confirmationText={t`Your ${totalParsedAmount?.toSignificant(6)} ETH retrieve is on its way`}
-      confirmationActionText={t`Confirm deposit`}
-      transactionText={t`${totalParsedAmount?.toSignificant(6)} ETH retrieve to your Ethereum wallet`}
+      confirmationText={t`Your ${totalParsedAmount?.toSignificant(6)} ETH transfer is on its way`}
+      transactionText={t`${totalParsedAmount?.toSignificant(6)} ETH transfer to your Ethereum wallet`}
       waitingForTx={waitingForTx}
       txHash={txHash ?? undefined}
       error={error ?? undefined}

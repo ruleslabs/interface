@@ -21,7 +21,6 @@ interface EthereumSignerProps {
   children: React.ReactNode
   modalHeaderChildren: string | React.ReactNode
   confirmationText: string
-  confirmationActionText?: string
   transactionText: string
   waitingForTx: boolean
   txHash?: string
@@ -33,7 +32,6 @@ export default function EthereumSigner({
   children,
   modalHeaderChildren,
   confirmationText,
-  confirmationActionText,
   transactionText,
   waitingForTx,
   txHash,

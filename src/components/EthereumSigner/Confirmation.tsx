@@ -84,7 +84,6 @@ interface ConfirmationProps {
 }
 
 export default function Confirmation({ confirmationText, transactionText, txHash, error }: ConfirmationProps) {
-  console.log(error)
   return (
     <StyledConfirmation>
       <Column gap={24}>

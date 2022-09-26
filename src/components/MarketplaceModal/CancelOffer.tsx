@@ -19,7 +19,6 @@ import StarknetSigner from '@/components/StarknetSigner'
 import { MARKETPLACE_ADDRESSES } from '@/constants/addresses'
 import { useCancelOfferMutation } from '@/state/wallet/hooks'
 import { networkId } from '@/constants/networks'
-import ComingSoon, { WHITELIST } from './ComingSoon'
 
 const CardBreakdown = styled(RowCenter)`
   gap: 16px;
@@ -120,8 +119,6 @@ export default function CancelOfferModal({
       setError(null)
     }
   }, [isOpen])
-
-  if (!WHITELIST.includes(currentUser.slug)) return <ComingSoon onDismiss={toggleCancelOfferModal} isOpen={isOpen} />
 
   return (
     <Modal onDismiss={toggleCancelOfferModal} isOpen={isOpen}>

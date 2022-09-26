@@ -22,7 +22,6 @@ import { useAcceptOfferMutation } from '@/state/wallet/hooks'
 import { networkId } from '@/constants/networks'
 import { useETHBalances } from '@/state/wallet/hooks'
 import { PurchaseBreakdown } from './PriceBreakdown'
-import ComingSoon, { WHITELIST } from './ComingSoon'
 
 const CardBreakdown = styled(RowCenter)`
   gap: 16px;
@@ -141,8 +140,6 @@ export default function AcceptOfferModal({
       setError(null)
     }
   }, [isOpen])
-
-  if (!WHITELIST.includes(currentUser.slug)) return <ComingSoon onDismiss={toggleAcceptOfferModal} isOpen={isOpen} />
 
   return (
     <Modal onDismiss={toggleAcceptOfferModal} isOpen={isOpen}>

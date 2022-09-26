@@ -3,7 +3,6 @@ import { useState, useCallback, useEffect } from 'react'
 import Modal from '@/components/Modal'
 import { useModalOpen, useWithdrawModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
-import ComingSoon, { WHITELIST } from '@/components/MarketplaceModal/ComingSoon'
 import { useCurrentUser } from '@/state/user/hooks'
 
 import Withdraw from './Withdraw'
@@ -26,8 +25,6 @@ export default function AuthModal() {
       setRetrieve(false)
     }
   }, [isOpen])
-
-  if (!WHITELIST.includes(currentUser?.slug)) return <ComingSoon onDismiss={toggleWithdrawModal} isOpen={isOpen} />
 
   return (
     <Modal onDismiss={toggleWithdrawModal} isOpen={isOpen}>

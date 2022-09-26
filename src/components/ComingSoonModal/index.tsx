@@ -22,7 +22,7 @@ export const WHITELIST = [
   'heloise',
 ]
 
-const StyledComingSoon = styled(TYPE.large)`
+const StyledComingSoonModal = styled(TYPE.large)`
   font-size: 32px;
   text-align: center;
   width: 546px;
@@ -36,21 +36,21 @@ const StyledComingSoon = styled(TYPE.large)`
   `}
 `
 
-interface ComingSoonProps {
+interface ComingSoonModalProps {
   onDismiss(): void
   isOpen: boolean
 }
 
-export default function ComingSoon({ onDismiss, isOpen }: ComingSoonProps) {
+export default function ComingSoonModal({ onDismiss, isOpen }: ComingSoonModalProps) {
   return (
     <Modal onDismiss={onDismiss} isOpen={isOpen}>
-      <StyledComingSoon>
+      <StyledComingSoonModal>
         <ModalHeader onDismiss={onDismiss}>
           <div />
         </ModalHeader>
 
         <Trans>Coming Soon</Trans>
-      </StyledComingSoon>
+      </StyledComingSoonModal>
     </Modal>
   )
 }

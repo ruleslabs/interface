@@ -120,7 +120,6 @@ export default function DepositModal() {
       <EthereumSigner
         modalHeaderChildren={t`Fund your account`}
         confirmationText={t`Your ${depositAmount} ETH deposit is on its way`}
-        confirmationActionText={t`Confirm deposit`}
         transactionText={t`${depositAmount} ETH deposit to your Rules wallet`}
         waitingForTx={waitingForTx}
         txHash={txHash ?? undefined}

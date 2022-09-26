@@ -1114,3 +1114,15 @@ msgstr "Montant à transférer"
 #: src/components/WithdrawModal/Retrieve.tsx
 msgid "Validate all"
 msgstr "Tout valider"
+
+#: src/components/WithdrawModal/Retrieve.tsx
+msgid "{0} ETH transfer to your Ethereum wallet"
+msgstr "Transfert de {0} ETH sur ton portefeuille Ethereum"
+
+#: src/components/WithdrawModal/Retrieve.tsx
+msgid "Your {0} ETH transfer is on its way"
+msgstr "Ton transfert de {0} ETH est en route"
+
+#: src/components/WithdrawModal/Retrieve.tsx
+msgid "Confirm transfer"
+msgstr "Confirmer le transfert"
