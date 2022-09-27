@@ -61,9 +61,7 @@ export default function CardModelBreakdown({
             <span> / {maxSupply ?? '4000'}</span>
           </TYPE.body>
         ) : (
-          <TYPE.subtitle>
-            <Trans>Limited edition</Trans>
-          </TYPE.subtitle>
+          <TYPE.subtitle>{maxSupply ? <Trans>Limited edition</Trans> : <Trans>Currently edited</Trans>}</TYPE.subtitle>
         )}
       </Column>
     </>

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
@@ -54,11 +54,19 @@ export default function OffersSelectorBreakdown({
 
   // query offer
   const offerQuery = useQuery(OFFER_QUERY, { variables: { id: offerId }, skip: !offerId })
-
   const offer = offerQuery?.data?.offerById
 
   // price
   const parsedPrice = useMemo(() => (offer?.price ? WeiAmount.fromRawAmount(offer.price) : null), [offer?.price])
+
+  // serialNumber
+  const [serialNumberModal, setSerialNumberModal] = useState<number | null>(null)
+  const [priceModal, setPriceModal] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (serialNumber) setSerialNumberModal(serialNumber)
+    if (offer?.price) setPriceModal(offer.price)
+  }, [serialNumber, offer?.price])
 
   return (
     <>
@@ -80,15 +88,15 @@ export default function OffersSelectorBreakdown({
         </PrimaryButton>
       </Column>
 
-      {offer?.price && serialNumber && (
+      {priceModal && serialNumberModal && (
         <AcceptOfferModal
           artistName={artistName}
           scarcityName={scarcityName}
           scarcityMaxSupply={scarcityMaxSupply}
           season={season}
-          serialNumber={serialNumber}
+          serialNumber={serialNumberModal}
           pictureUrl={pictureUrl}
-          price={offer.price}
+          price={priceModal}
           onSuccess={onSuccessfulOfferAcceptance}
         />
       )}

@@ -31,7 +31,7 @@ export default function CardModelHistory({ cardModelId, ...props }: CardModelHis
     Object.keys(TransfersSort)[0] as keyof typeof TransfersSort
   )
 
-  const transfersSearch = useSearchTransfers({ facets: { cardModelId }, sortKey: transfersSort })
+  const transfersSearch = useSearchTransfers({ facets: { cardModelId }, sortKey: transfersSort, onlySales: true })
 
   return (
     <>

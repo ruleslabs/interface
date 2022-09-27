@@ -128,15 +128,17 @@ interface SearchTransfersFacets {
 interface SearchTransfersProps {
   facets: SearchTransfersFacets
   sortKey?: keyof typeof TransfersSort
+  onlySales?: boolean
 }
 
 export function useSearchTransfers({
   facets,
   sortKey = Object.keys(TransfersSort)[0] as keyof typeof TransfersSort,
+  onlySales = false,
 }: SearchTransfersProps): Search {
   const [transfersSearch, setTransfersSearch] = useState<Search>({ loading: true, error: null })
 
-  const facetFilters = useFacetFilters({ ...facets, is_sale: 'true' })
+  const facetFilters = useFacetFilters({ ...facets, is_sale: onlySales ? 'true' : undefined })
 
   useEffect(() => {
     setTransfersSearch({ ...transfersSearch, loading: true, error: null })

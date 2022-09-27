@@ -1126,3 +1126,7 @@ msgstr "Ton transfert de {0} ETH est en route"
 #: src/components/WithdrawModal/Retrieve.tsx
 msgid "Confirm transfer"
 msgstr "Confirmer le transfert"
+
+#: src/components/CardModelBreakdown/index.tsx
+msgid "Currently edited"
+msgstr "En production"

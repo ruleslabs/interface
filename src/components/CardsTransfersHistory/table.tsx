@@ -67,7 +67,7 @@ export default function TransfersTable({ transfers, loading, error, showSerialNu
 
   const usersTable = useMemo(
     () =>
-      ((usersQuery?.data?.usersByIds ?? []) as any[]).reduce<{ [key: string]: string }>((acc, user: any) => {
+      ((usersQuery?.data?.usersByIds ?? []) as any[]).reduce<{ [key: string]: any }>((acc, user: any) => {
         acc[user.id] = user
         return acc
       }, {}),

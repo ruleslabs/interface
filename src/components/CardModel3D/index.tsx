@@ -170,14 +170,13 @@ export default function CardModel3D({
 
   const toggleFullscreen = useCallback(() => setFullscreen(!fullscreen), [setFullscreen, fullscreen])
 
+  stacked = stacked && !fullscreen && cardModelDisplayMode === 'front'
+
   return (
     <CardVisualsWrapper fullscreen={fullscreen} scarcityName={scarcityName} {...props}>
-      {stacked && !fullscreen && <StackImage src={`/assets/${scarcityName.toLowerCase()}-stack.png`} />}
+      {stacked && <StackImage src={`/assets/${scarcityName.toLowerCase()}-stack.png`} />}
       {fullscreen && <StyledClose onClick={toggleFullscreen} />}
-      <CardVideoWrapper
-        style={{ display: cardModelDisplayMode === 'front' ? 'initial' : 'none' }}
-        stacked={stacked && !fullscreen}
-      >
+      <CardVideoWrapper style={{ display: cardModelDisplayMode === 'front' ? 'initial' : 'none' }} stacked={stacked}>
         <video src={videoUrl} playsInline loop autoPlay muted />
       </CardVideoWrapper>
       <video

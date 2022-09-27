@@ -90,7 +90,6 @@ export default function Confirmation({
   error,
   waitingForFees,
 }: ConfirmationProps) {
-  console.log(error)
   return (
     <StyledConfirmation>
       <Column gap={24}>
