@@ -56,6 +56,10 @@ const CardTransfersHistoryWrapper = styled(Card)`
   `}
 `
 
+const StyledCardModel3D = styled(CardModel3D)`
+  z-index: -1;
+`
+
 const QUERY_CARD = gql`
   query ($slug: String!) {
     card(slug: $slug) {
@@ -138,7 +142,7 @@ export default function CardBreakout() {
       </Section>
 
       <MainSection size="sm">
-        <CardModel3D
+        <StyledCardModel3D
           videoUrl={card.cardModel.videoUrl}
           rotatingVideoUrl={card.cardModel.rotatingVideoUrl}
           pictureUrl={card.cardModel.pictureUrl}

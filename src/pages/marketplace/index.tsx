@@ -123,7 +123,7 @@ export default function Marketplace() {
 
     if (
       highestLowestAskFiat !== null &&
-      (filters?.maximumPrice === null || filters.maximumPrice > highestLowestAskFiat)
+      (filters?.maximumPrice === null || filters.maximumPrice > +highestLowestAskFiat)
     )
       setMaximumPrice(Math.ceil(+(highestLowestAskFiat ?? 0)))
 

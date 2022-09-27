@@ -65,6 +65,7 @@ const CardPicture = styled.img`
 
 const RemoveButton = styled(SecondaryButton)`
   position: absolute;
+  width: -moz-available;
   left: -2px;
   right: -2px;
   bottom: 0;

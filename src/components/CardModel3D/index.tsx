@@ -143,7 +143,7 @@ const StackImage = styled.img`
   `}
 `
 
-interface CardModel3DProps {
+interface CardModel3DProps extends React.HTMLAttributes<HTMLDivElement> {
   videoUrl: string
   pictureUrl: string
   rotatingVideoUrl: string
@@ -159,6 +159,7 @@ export default function CardModel3D({
   backPictureUrl,
   scarcityName,
   stacked = false,
+  ...props
 }: CardModel3DProps) {
   const [cardModelDisplayMode, setCardModelDisplayMode] = useState<'front' | 'back' | 'rotate'>('front')
   const [fullscreen, setFullscreen] = useState(false)
@@ -171,7 +172,7 @@ export default function CardModel3D({
 
   return (
     <>
-      <CardVisualsWrapper fullscreen={fullscreen} scarcityName={scarcityName}>
+      <CardVisualsWrapper fullscreen={fullscreen} scarcityName={scarcityName} {...props}>
         {stacked && !fullscreen && <StackImage src={`/assets/${scarcityName.toLowerCase()}-stack.png`} />}
         {fullscreen && <StyledClose onClick={toggleFullscreen} />}
         <CardVideoWrapper
