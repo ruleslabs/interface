@@ -39,6 +39,7 @@ const MainSection = styled(Section)`
 const MainSectionCardsWrapper = styled(Column)`
   gap: 24px;
   width: 350px;
+  z-index: 1; /* firefox... */
 
   & > div:last-child {
     min-height: 215px;
@@ -54,10 +55,6 @@ const CardTransfersHistoryWrapper = styled(Card)`
   ${({ theme }) => theme.media.extraSmall`
     display: none;
   `}
-`
-
-const StyledCardModel3D = styled(CardModel3D)`
-  z-index: -1;
 `
 
 const QUERY_CARD = gql`
@@ -142,7 +139,7 @@ export default function CardBreakout() {
       </Section>
 
       <MainSection size="sm">
-        <StyledCardModel3D
+        <CardModel3D
           videoUrl={card.cardModel.videoUrl}
           rotatingVideoUrl={card.cardModel.rotatingVideoUrl}
           pictureUrl={card.cardModel.pictureUrl}

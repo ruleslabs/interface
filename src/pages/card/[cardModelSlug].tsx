@@ -32,6 +32,7 @@ const MainSection = styled(Section)`
 const MainSectionCardsWrapper = styled(Column)`
   gap: 24px;
   width: 350px;
+  z-index: 1; /* firefox... */
 
   ${({ theme }) => theme.media.small`
     gap: 16px;
@@ -43,10 +44,6 @@ const CardTransfersHistoryWrapper = styled(Card)`
   ${({ theme }) => theme.media.extraSmall`
     display: none;
   `}
-`
-
-const StyledCardModel3D = styled(CardModel3D)`
-  z-index: -1;
 `
 
 const QUERY_CARD_MODEL = gql`
@@ -101,7 +98,7 @@ export default function CardModelPage() {
       </Section>
 
       <MainSection size="sm">
-        <StyledCardModel3D
+        <CardModel3D
           videoUrl={cardModel.videoUrl}
           rotatingVideoUrl={cardModel.rotatingVideoUrl}
           pictureUrl={cardModel.pictureUrl}

@@ -8,6 +8,7 @@ import Close from '@/images/close.svg'
 const CardVideoWrapper = styled.div<{ stacked: boolean }>`
   overflow: hidden;
   height: 100%;
+  max-width: -moz-available;
   ${({ stacked }) => stacked && 'padding-right: 24px;'}
 
   video {
@@ -32,7 +33,6 @@ const DefaultCardVisualWrapperStyle = css`
   position: absolute;
   height: 100%;
   top: 0;
-  left: 0;
   left: 16px;
 
   & > img,
@@ -171,34 +171,32 @@ export default function CardModel3D({
   const toggleFullscreen = useCallback(() => setFullscreen(!fullscreen), [setFullscreen, fullscreen])
 
   return (
-    <>
-      <CardVisualsWrapper fullscreen={fullscreen} scarcityName={scarcityName} {...props}>
-        {stacked && !fullscreen && <StackImage src={`/assets/${scarcityName.toLowerCase()}-stack.png`} />}
-        {fullscreen && <StyledClose onClick={toggleFullscreen} />}
-        <CardVideoWrapper
-          style={{ display: cardModelDisplayMode === 'front' ? 'initial' : 'none' }}
-          stacked={stacked && !fullscreen}
-        >
-          <video src={videoUrl} playsInline loop autoPlay muted />
-        </CardVideoWrapper>
-        <video
-          src={rotatingVideoUrl}
-          style={{ display: cardModelDisplayMode === 'rotate' ? 'initial' : 'none' }}
-          playsInline
-          loop
-          autoPlay
-          muted
-        />
-        <img src={backPictureUrl} style={{ display: cardModelDisplayMode === 'back' ? 'initial' : 'none' }} />
-        <StyledCardDisplaySelector
-          pictureUrl={pictureUrl}
-          backPictureUrl={backPictureUrl}
-          onBackSelected={onBackSelected}
-          onFrontSelected={onFrontSelected}
-          onRotateSelected={onRotateSelected}
-        />
-        {!fullscreen && <StyledCardFullscreenSelector toggleFullscreen={toggleFullscreen} />}
-      </CardVisualsWrapper>
-    </>
+    <CardVisualsWrapper fullscreen={fullscreen} scarcityName={scarcityName} {...props}>
+      {stacked && !fullscreen && <StackImage src={`/assets/${scarcityName.toLowerCase()}-stack.png`} />}
+      {fullscreen && <StyledClose onClick={toggleFullscreen} />}
+      <CardVideoWrapper
+        style={{ display: cardModelDisplayMode === 'front' ? 'initial' : 'none' }}
+        stacked={stacked && !fullscreen}
+      >
+        <video src={videoUrl} playsInline loop autoPlay muted />
+      </CardVideoWrapper>
+      <video
+        src={rotatingVideoUrl}
+        style={{ display: cardModelDisplayMode === 'rotate' ? 'initial' : 'none' }}
+        playsInline
+        loop
+        autoPlay
+        muted
+      />
+      <img src={backPictureUrl} style={{ display: cardModelDisplayMode === 'back' ? 'initial' : 'none' }} />
+      <StyledCardDisplaySelector
+        pictureUrl={pictureUrl}
+        backPictureUrl={backPictureUrl}
+        onBackSelected={onBackSelected}
+        onFrontSelected={onFrontSelected}
+        onRotateSelected={onRotateSelected}
+      />
+      {!fullscreen && <StyledCardFullscreenSelector toggleFullscreen={toggleFullscreen} />}
+    </CardVisualsWrapper>
   )
 }
