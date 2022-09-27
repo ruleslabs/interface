@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { useQuery, gql } from '@apollo/client'
 import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
@@ -27,65 +26,12 @@ interface CardModelHistoryProps extends React.HTMLAttributes<HTMLDivElement> {
   cardModelId: string
 }
 
-const QUERY_TRANSFERS_USERS = gql`
-  query ($ids: [ID!]!) {
-    usersByIds(ids: $ids) {
-      id
-      slug
-      username
-      profile {
-        pictureUrl(derivative: "width=128")
-      }
-    }
-  }
-`
-
 export default function CardModelHistory({ cardModelId, ...props }: CardModelHistoryProps) {
   const [transfersSort, setTransfersSort] = useState<keyof typeof TransfersSort>(
     Object.keys(TransfersSort)[0] as keyof typeof TransfersSort
   )
 
-  const [transfers, setTransfers] = useState<any[]>([])
-  const [usersTable, setUsersTable] = useState<{ [key: string]: string }>({})
-  const [usersTableLoading, setUsersTableLoading] = useState(false)
-
-  const {
-    hits: transfersHits,
-    loading: transfersLoading,
-    error: transfersError,
-  } = useSearchTransfers({ facets: { cardModelId }, sortKey: transfersSort })
-
-  const userIds = useMemo(() => {
-    setUsersTableLoading(true)
-    return (transfersHits ?? []).reduce<string[]>((acc, hit: any) => {
-      if (hit.fromUserId) acc.push(hit.fromUserId)
-      if (hit.toUserId) acc.push(hit.toUserId)
-
-      return acc
-    }, [])
-  }, [JSON.stringify(transfersHits)])
-
-  useEffect(() => setTransfers(transfersHits ?? []), [transfersHits, setTransfers])
-
-  // usersData
-  const {
-    data: usersData,
-    loading: usersLoading,
-    error: usersError,
-  } = useQuery(QUERY_TRANSFERS_USERS, { variables: { ids: userIds }, skip: !userIds.length })
-
-  // usersTable
-  useEffect(() => {
-    if (!usersData?.usersByIds) return
-
-    setUsersTable(
-      (usersData?.usersByIds as any[]).reduce<{ [key: string]: string }>((acc, user: any) => {
-        acc[user.id] = user
-        return acc
-      }, {})
-    )
-    setUsersTableLoading(false)
-  }, [usersData, setUsersTable])
+  const transfersSearch = useSearchTransfers({ facets: { cardModelId }, sortKey: transfersSort })
 
   return (
     <>
@@ -110,10 +56,9 @@ export default function CardModelHistory({ cardModelId, ...props }: CardModelHis
       </SortingTitle>
 
       <TransfersTable
-        transfers={transfers}
-        usersTable={usersTable}
-        loading={usersLoading || transfersLoading || usersTableLoading}
-        error={!!usersError || !!usersError}
+        transfers={transfersSearch.hits}
+        loading={transfersSearch.loading}
+        error={!!transfersSearch.error}
         showSerialNumber={true}
       />
     </>

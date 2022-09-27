@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import moment from 'moment'
+import { useQuery, gql } from '@apollo/client'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { Trans, t } from '@lingui/macro'
 
@@ -26,26 +27,65 @@ const StyledTable = styled(Table)`
   `}
 `
 
+const QUERY_TRANSFERS_USERS = gql`
+  query ($ids: [ID!]!) {
+    usersByIds(ids: $ids) {
+      id
+      slug
+      username
+      profile {
+        pictureUrl(derivative: "width=128")
+      }
+    }
+  }
+`
+
 interface TransfersTableProps {
-  transfers: any[]
-  usersTable: { [key: string]: any }
+  transfers?: any[]
   loading: boolean
   error: boolean
   showSerialNumber: boolean
 }
 
-export default function TransfersTable({
-  transfers,
-  usersTable,
-  loading,
-  error,
-  showSerialNumber,
-}: TransfersTableProps) {
+export default function TransfersTable({ transfers, loading, error, showSerialNumber }: TransfersTableProps) {
   const router = useRouter()
+
+  // user table
+  const userIds = useMemo(
+    () =>
+      (transfers ?? []).reduce<string[]>((acc, hit: any) => {
+        if (hit.fromUserId) acc.push(hit.fromUserId)
+        if (hit.toUserId) acc.push(hit.toUserId)
+
+        return acc
+      }, []),
+    [JSON.stringify(transfers)]
+  )
+
+  // usersData
+  const usersQuery = useQuery(QUERY_TRANSFERS_USERS, { variables: { ids: userIds }, skip: !userIds.length })
+
+  const usersTable = useMemo(
+    () =>
+      ((usersQuery?.data?.usersByIds ?? []) as any[]).reduce<{ [key: string]: string }>((acc, user: any) => {
+        acc[user.id] = user
+        return acc
+      }, {}),
+    [usersQuery?.data?.usersByIds]
+  )
+
+  // error
+  error = error || !!usersQuery.error
+
+  // loading
+  loading = loading || !!usersQuery.loading
 
   // parsed price
   const parsedPrices = useMemo(
-    () => transfers.map((transfer: any) => (transfer.price ? WeiAmount.fromRawAmount(`0x${transfer.price}`) : null)),
+    () =>
+      (transfers ?? []).map((transfer: any) =>
+        transfer.price ? WeiAmount.fromRawAmount(`0x${transfer.price}`) : null
+      ),
     [transfers]
   )
 
@@ -87,7 +127,7 @@ export default function TransfersTable({
         </tr>
       </thead>
       <tbody>
-        {!loading && !error && transfers.length && Object.keys(usersTable).length ? (
+        {!loading && !error && transfers && usersTable ? (
           transfers.map((transfer, index) => (
             <tr key={`rule-nft-history-${index}`}>
               <td>

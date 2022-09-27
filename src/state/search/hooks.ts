@@ -136,7 +136,7 @@ export function useSearchTransfers({
 }: SearchTransfersProps): Search {
   const [transfersSearch, setTransfersSearch] = useState<Search>({ loading: true, error: null })
 
-  const facetFilters = useFacetFilters(facets)
+  const facetFilters = useFacetFilters({ ...facets, is_sale: 'true' })
 
   useEffect(() => {
     setTransfersSearch({ ...transfersSearch, loading: true, error: null })
