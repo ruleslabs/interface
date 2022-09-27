@@ -149,7 +149,7 @@ interface CardModel3DProps {
   rotatingVideoUrl: string
   backPictureUrl: string
   scarcityName: string
-  stacked: boolean
+  stacked?: boolean
 }
 
 export default function CardModel3D({
@@ -172,7 +172,7 @@ export default function CardModel3D({
   return (
     <>
       <CardVisualsWrapper fullscreen={fullscreen} scarcityName={scarcityName}>
-        {stacked && !fullscreen && <StackImage src={`/assets/${scarcityName}-stack.png`} />}
+        {stacked && !fullscreen && <StackImage src={`/assets/${scarcityName.toLowerCase()}-stack.png`} />}
         {fullscreen && <StyledClose onClick={toggleFullscreen} />}
         <CardVideoWrapper
           style={{ display: cardModelDisplayMode === 'front' ? 'initial' : 'none' }}

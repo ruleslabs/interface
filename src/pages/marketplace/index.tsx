@@ -97,11 +97,9 @@ export default function Marketplace() {
   const cardModelsQuery = useQuery(CARD_MODELS_ON_SALE_QUERY)
 
   const { cardModels, highestLowestAskFiat } = useMemo(() => {
-    if (!cardModelsQuery?.data?.cardModelsOnSale) return { cardModels: [], highestLowestAskFiat: 0 }
-
     let highestLowestAsk: WeiAmount | undefined
 
-    const cardModels = cardModelsQuery.data.cardModelsOnSale
+    const cardModels = (cardModelsQuery?.data?.cardModelsOnSale ?? [])
       .filter((cardModel: any) => {
         const parsedLowestAsk = WeiAmount.fromRawAmount(cardModel.lowestAsk)
 
@@ -121,15 +119,15 @@ export default function Marketplace() {
         return a.lowestAsk.localeCompare(b.lowestAsk)
       })
 
-    const highestLowestAskFiat = Math.ceil(+(weiAmountToEURValue(highestLowestAsk) ?? 0))
+    const highestLowestAskFiat = weiAmountToEURValue(highestLowestAsk)
 
     if (
-      (filters.maximumPrice === null && highestLowestAskFiat) ||
-      (filters.maximumPrice && filters.maximumPrice > highestLowestAskFiat)
+      highestLowestAskFiat !== null &&
+      (filters?.maximumPrice === null || filters.maximumPrice > highestLowestAskFiat)
     )
-      setMaximumPrice(highestLowestAskFiat)
+      setMaximumPrice(Math.ceil(+(highestLowestAskFiat ?? 0)))
 
-    return { cardModels, highestLowestAskFiat }
+    return { cardModels, highestLowestAskFiat: Math.ceil(+(highestLowestAskFiat ?? 0)) }
   }, [filters, cardModelsQuery?.data?.cardModelsOnSale, weiAmountToEURValue, setMaximumPrice, increaseSort])
 
   if (cardModelsQuery.error || cardModelsQuery.loading) {
