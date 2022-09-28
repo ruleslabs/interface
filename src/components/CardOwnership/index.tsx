@@ -88,11 +88,17 @@ export default function CardOwnership({
         {!pendingStatus && (parsedPrice || currentUser?.slug === ownerSlug) ? (
           <>
             {currentUser?.slug === ownerSlug && parsedPrice ? (
-              <PrimaryButton onClick={toggleCancelOfferModal} large>
-                <Trans>
-                  Close offer - {parsedPrice.toSignificant(6)} ETH ({weiAmountToEURValue(parsedPrice)}€)
-                </Trans>
-              </PrimaryButton>
+              <>
+                <PrimaryButton onClick={toggleCancelOfferModal} large>
+                  <Trans>
+                    Close offer - {parsedPrice.toSignificant(6)} ETH ({weiAmountToEURValue(parsedPrice)}€)
+                  </Trans>
+                </PrimaryButton>
+
+                <SecondaryButton onClick={toggleCreateOfferModal} large>
+                  <Trans>Update price</Trans>
+                </SecondaryButton>
+              </>
             ) : parsedPrice ? (
               <PrimaryButton onClick={toggleAcceptOfferModal} large>
                 <Trans>
