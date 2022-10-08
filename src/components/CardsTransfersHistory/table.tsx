@@ -131,22 +131,28 @@ export default function TransfersTable({ transfers, loading, error, showSerialNu
           transfers.map((transfer, index) => (
             <tr key={`rule-nft-history-${index}`}>
               <td>
-                <Link href={`/user/${usersTable[transfer.toUserId].slug}`}>
-                  <Avatar src={usersTable[transfer.toUserId].profile.pictureUrl} />
-                </Link>
+                {usersTable[transfer.toUserId] && (
+                  <Link href={`/user/${usersTable[transfer.toUserId].slug}`}>
+                    <Avatar src={usersTable[transfer.toUserId].profile.pictureUrl} />
+                  </Link>
+                )}
               </td>
               <td>
-                <Link href={`/user/${usersTable[transfer.toUserId].slug}`}>
-                  <TYPE.body clickable>{usersTable[transfer.toUserId].username}</TYPE.body>
-                </Link>
+                {usersTable[transfer.toUserId] && (
+                  <Link href={`/user/${usersTable[transfer.toUserId].slug}`}>
+                    <TYPE.body clickable>{usersTable[transfer.toUserId].username}</TYPE.body>
+                  </Link>
+                )}
               </td>
               <td>
-                {!!transfer.fromUserId ? (
+                {transfer.fromUserId && usersTable[transfer.fromUserId] ? (
                   <Link href={`/user/${usersTable[transfer.fromUserId].slug}`}>
                     <TYPE.body clickable>{usersTable[transfer.fromUserId].username}</TYPE.body>
                   </Link>
                 ) : (
-                  <TYPE.body>{transfer.airdrop ? t`Offered by Rules` : t`Pack opening`}</TYPE.body>
+                  !transfer.fromUserId && (
+                    <TYPE.body>{transfer.airdrop ? t`Offered by Rules` : t`Pack opening`}</TYPE.body>
+                  )
                 )}
               </td>
               <td>

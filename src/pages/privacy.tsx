@@ -26,7 +26,7 @@ function Privacy() {
         </li>
       </ol>
       <p>
-        Le responsable de traitement est la société RULES SAS, immatriculée au RCS de Paris sous le n°878 831 312 et
+        Le responsable de traitement est la société RULES SAS, immatriculée au RCS de Paris sous le n°911 690 170 et
         dont le siège social est situé au 229 rue Saint-Honoré – Paris (75001) (ci-après « <strong>Nous</strong> »).
       </p>
       <ol start={2} type="1">

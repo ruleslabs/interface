@@ -15,7 +15,7 @@ function Terms() {
       </ol>
       <p>
         La société RULES (la « <strong>Société</strong> ») est une société par actions simplifiée immatriculée inscrite
-        au RCS de Paris sous le n° 878 831 312, dont le siège social est situé 229 rue Saint-Honoré – Paris (75001).
+        au RCS de Paris sous le n° 911 690 170, dont le siège social est situé 229 rue Saint-Honoré – Paris (75001).
       </p>
       <p>La Société peut être contactée aux coordonnées suivantes :</p>
       <ul>

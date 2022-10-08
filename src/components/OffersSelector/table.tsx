@@ -109,7 +109,7 @@ export default function OffersTable({
         </tr>
       </thead>
       <tbody>
-        {offers.length && Object.keys(usersTable).length ? (
+        {offers.length && usersTable ? (
           offers.map((offer: any, index) => (
             <tr key={`offer-${index}`}>
               <RadioButtonWrapper>
@@ -132,9 +132,11 @@ export default function OffersTable({
                 </Link>
               </td>
               <td>
-                <Link href={`/user/${usersTable[offer.sellerUserId].slug}`}>
-                  <TYPE.body clickable>{usersTable[offer.sellerUserId].username}</TYPE.body>
-                </Link>
+                {usersTable[offer.sellerUserId] && (
+                  <Link href={`/user/${usersTable[offer.sellerUserId].slug}`}>
+                    <TYPE.body clickable>{usersTable[offer.sellerUserId].username}</TYPE.body>
+                  </Link>
+                )}
               </td>
             </tr>
           ))

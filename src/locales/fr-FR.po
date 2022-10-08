@@ -905,13 +905,13 @@ msgstr "Ton portefeuille est verrouillé car tu as réinitialisé ton mot de pas
 msgid "Your wallet is locked. This happens when you reset your password. In order to recover your wallet, you need to deposit at least<0/><1>{0} ETH ({1}€)</1>"
 msgstr "Ton portefeuille est verrouillé car tu as réinitialisé ton mot de passe. Afin d'y retrouver l'accès tu dois y faire un dépôt d'au moins<0/><1>{0} ETH ({1}€)</1>"
 
-#: src/components/DepositModal/Confirmation.tsx
-msgid "Your {amountDeposited} ETH deposit is on its way"
-msgstr "Ton dépôt de {amountDeposited} ETH est en route"
+#: src/components/DepositModal/index.tsx
+msgid "{depositAmount} ETH deposit to your Rules wallet"
+msgstr "Dépôt de {depositAmount} ETH sur ton portefeuille Rules"
 
-#: src/components/DepositModal/Confirmation.tsx
-msgid "{amountDeposited} ETH deposit on your Rules wallet"
-msgstr "Dépôt de {amountDeposited} ETH sur ton portefeuille Rules"
+#: src/components/DepositModal/index.tsx
+msgid "Your {depositAmount} ETH deposit is on its way"
+msgstr "Ton dépôt de {depositAmount} ETH est en route"
 
 #: src/components/OfferModal/Confirmation.tsx
 msgid "Card transfer."
