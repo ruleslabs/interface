@@ -13,6 +13,7 @@ import {
   KeyPair,
 } from 'starknet'
 
+import { networkId, feederGatewayUrl, ProviderUrlNetworksMap } from '@/constants/networks'
 import getNonce from './getNonce'
 import signTransaction from './signTransaction'
 
@@ -51,7 +52,10 @@ export default async function estimateFee(
 
   switch (transactionVersion) {
     case 0:
-      const url = urljoin('https://alpha4.starknet.io/feeder_gateway', 'estimate_fee?blockNumber=pending')
+      const networkUrl = ProviderUrlNetworksMap[networkId]
+      if (!networkUrl) throw 'Failed to get network URL'
+
+      const url = urljoin(networkUrl, feederGatewayUrl, 'estimate_fee?blockNumber=pending')
 
       const transactions = Array.isArray(calls) ? calls : [calls]
       const nonce = await getNonce(account, transactionVersion)

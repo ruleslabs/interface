@@ -8,6 +8,9 @@ export const ProviderUrlNetworksMap: { [network: string]: string } = {
   [SupportedNetworks.MAINNET]: 'https://alpha-mainnet.starknet.io',
 }
 
+export const feederGatewayUrl = 'feeder_gateway'
+export const gatewayUrl = 'gateway'
+
 export const defaultNetwork = SupportedNetworks.GOERLI
 export const networkId = process.env.NEXT_PUBLIC_STARKNET_NETWORK_ID ?? defaultNetwork
 

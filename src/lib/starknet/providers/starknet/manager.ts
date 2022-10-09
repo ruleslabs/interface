@@ -23,7 +23,9 @@ export function useStarknetManager({ network }: UseStarknetManagerProps): Starkn
   const networkUrl = ProviderUrlNetworksMap[networkId]
 
   const [state, dispatch] = useReducer(reducer, {
-    provider: new Provider(networkUrl ? { baseUrl: networkUrl } : undefined),
+    provider: new Provider(
+      networkUrl ? { sequencer: { baseUrl: networkUrl, feederGatewayUrl: 'feeder_gateway' } } : undefined
+    ),
     network: networkId,
   })
 
