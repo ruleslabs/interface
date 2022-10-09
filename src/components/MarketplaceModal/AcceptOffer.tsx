@@ -108,9 +108,9 @@ export default function AcceptOfferModal({
   const [txHash, setTxHash] = useState<string | null>(null)
 
   const onSignature = useCallback(
-    (signature: Signature, maxFee: string) => {
+    (signature: Signature, maxFee: string, nonce: string) => {
       acceptOfferMutation({
-        variables: { tokenId, maxFee, signature: JSON.stringify(signature) },
+        variables: { tokenId, maxFee, nonce, signature: JSON.stringify(signature) },
       })
         .then((res?: any) => {
           const hash = res?.data?.acceptOffer?.hash

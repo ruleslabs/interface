@@ -26,6 +26,7 @@ const CURRENT_USER_QUERY = gql`
         address
         signerEscapeTriggeredAt
         needsSignerPublicKeyUpdate
+        transactionVersion
         rulesPrivateKey {
           salt
           iv

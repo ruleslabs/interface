@@ -2,7 +2,7 @@ import JSBI from 'jsbi'
 import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
-import { ec, number, hash, Account, Call, EstimateFee, Signature } from 'starknet'
+import { ec, number, Account, Call, EstimateFee, Signature } from 'starknet'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
 import Input from '@/components/Input'
@@ -17,7 +17,8 @@ import { useCurrentUser } from '@/state/user/hooks'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import { ErrorCard } from '@/components/Card'
 import { useDepositModalToggle } from '@/state/application/hooks'
-import { useCurrentUserNextNonceQuery } from '@/state/wallet/hooks'
+import getNonce from '@/utils/getNonce'
+import estimateFee from '@/utils/estimateFee'
 
 const StyledSigner = styled(ColumnCenter)`
   padding-bottom: 8px;
@@ -52,7 +53,7 @@ interface SignerProps {
   transactionValue?: string
   onWaitingForFees(estimating: boolean): void
   onConfirmation(): void
-  onSignature(signature: Signature, maxFee: string): void
+  onSignature(signature: Signature, maxFee: string, nonce: string): void
   onError(error: string): void
 }
 
@@ -77,6 +78,7 @@ export default function Signer({
   const currentUser = useCurrentUser()
   const rulesPrivateKey = currentUser.starknetWallet.rulesPrivateKey
   const address = currentUser.starknetWallet.address
+  const transactionVersion = currentUser.starknetWallet.transactionVersion
 
   // errors
   const [error, setError] = useState<string | null>(null)
@@ -138,11 +140,12 @@ export default function Signer({
 
           setAccount(account)
           onWaitingForFees(true)
-          return account.estimateFee(calls)
+          return estimateFee(account, keyPair, calls, transactionVersion)
         })
         .then((estimatedFees?: EstimateFee) => {
+          console.log(estimatedFees)
           const maxFee = estimatedFees?.suggestedMaxFee.toString() ?? '0'
-          const fee = estimatedFees?.amount.toString() ?? '0'
+          const fee = estimatedFees?.overall_fee.toString() ?? '0'
           if (maxFee === '0' || fee === '0') {
             onError('Failed to estimate fees')
             return
@@ -158,11 +161,8 @@ export default function Signer({
           onError(error.message)
         })
     },
-    [password, rulesPrivateKey, address, provider, calls, onError, onWaitingForFees]
+    [password, rulesPrivateKey, address, provider, calls, onError, onWaitingForFees, transactionVersion]
   )
-
-  // nonce mgmt
-  const currentUserNextNonceQuery = useCurrentUserNextNonceQuery()
 
   // tx signature
   const signTransaction = useCallback(
@@ -173,26 +173,24 @@ export default function Signer({
 
       onConfirmation()
 
-      currentUserNextNonceQuery()
+      let nonce: string | null
+
+      getNonce(account, transactionVersion)
         .catch((error: Error) => {
           console.error(error)
 
           onError('Failed to get next nonce')
           return Promise.reject()
         })
-        .then((res: any) => {
-          const nextNonce = res?.data?.currentUser?.starknetWallet?.nextNonce
-          if (nextNonce !== 0 && !nextNonce) {
-            onError('Failed to consume nonce')
-            return
-          }
+        .then((nonceBN: number.BigNumberish) => {
+          nonce = toHex(toBN(result[0]))
 
           const signerDetails = {
             walletAddress: account.address,
-            nonce: nextNonce,
             maxFee: parsedNetworkFee.maxFee.quotient.toString(),
-            version: number.toBN(hash.transactionVersion),
+            version: number.toBN(transactionVersion),
             chainId: account.chainId,
+            nonce,
           }
 
           return account.signer.signTransaction(calls, signerDetails)
@@ -203,7 +201,7 @@ export default function Signer({
             return
           }
 
-          onSignature(signature, parsedNetworkFee.maxFee.quotient.toString())
+          onSignature(signature, parsedNetworkFee.maxFee.quotient.toString(), nonce!)
         })
         .catch((error: Error) => {
           if (!error) return
@@ -212,7 +210,7 @@ export default function Signer({
           onError(`Failed to sign transaction: ${error.message}`)
         })
     },
-    [currentUserNextNonceQuery, onError, calls, account, parsedNetworkFee?.maxFee, onSignature]
+    [onError, calls, account, parsedNetworkFee?.maxFee, onSignature, transactionVersion]
   )
 
   if (!isOpen) return null

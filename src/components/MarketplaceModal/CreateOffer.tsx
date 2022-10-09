@@ -112,11 +112,17 @@ export default function CreateOfferModal({
   const [txHash, setTxHash] = useState<string | null>(null)
 
   const onSignature = useCallback(
-    (signature: Signature, maxFee: string) => {
+    (signature: Signature, maxFee: string, nonce: string) => {
       if (!parsedPrice) return
 
       createOfferMutation({
-        variables: { tokenId, price: parsedPrice.quotient.toString(), maxFee, signature: JSON.stringify(signature) },
+        variables: {
+          tokenId,
+          price: parsedPrice.quotient.toString(),
+          maxFee,
+          nonce,
+          signature: JSON.stringify(signature),
+        },
       })
         .then((res?: any) => {
           const hash = res?.data?.createOffer?.hash

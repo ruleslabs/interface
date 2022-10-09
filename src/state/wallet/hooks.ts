@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState, useCallback } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import JSBI from 'jsbi'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { Abi } from 'starknet'
@@ -12,20 +12,9 @@ import { useStarknet } from '@/lib/starknet'
 import { ETH_ADDRESSES } from '@/constants/addresses'
 import { useMultipleContractSingleData } from '@/lib/hooks/multicall'
 import { useEthereumBlockNumber } from '@/state/application/hooks'
-import { getApolloClient } from '@/apollo/apollo'
-
-const CURRENT_USER_NEXT_NONCE_QUERY = gql`
-  query {
-    currentUser {
-      starknetWallet {
-        nextNonce
-      }
-    }
-  }
-`
 
 const TRANSFER_CARD_MUTATION = gql`
-  mutation ($tokenId: String!, $recipientAddress: String!, $maxFee: String!, $signature: String!) {
+  mutation ($tokenId: String!, $recipientAddress: String!, $maxFee: String!, $nonce: String!, $signature: String!) {
     transferCard(
       input: {
         tokenId: $tokenId
@@ -41,32 +30,34 @@ const TRANSFER_CARD_MUTATION = gql`
 `
 
 const CREATE_OFFER_MUTATION = gql`
-  mutation ($tokenId: String!, $price: String!, $maxFee: String!, $signature: String!) {
-    createOffer(input: { tokenId: $tokenId, price: $price, maxFee: $maxFee, signature: $signature }) {
+  mutation ($tokenId: String!, $price: String!, $maxFee: String!, $nonce: String!, $signature: String!) {
+    createOffer(input: { tokenId: $tokenId, price: $price, maxFee: $maxFee, nonce: $nonce, signature: $signature }) {
       hash
     }
   }
 `
 
 const CANCEL_OFFER_MUTATION = gql`
-  mutation ($tokenId: String!, $maxFee: String!, $signature: String!) {
-    cancelOffer(input: { tokenId: $tokenId, maxFee: $maxFee, signature: $signature }) {
+  mutation ($tokenId: String!, $maxFee: String!, $nonce: String!, $signature: String!) {
+    cancelOffer(input: { tokenId: $tokenId, maxFee: $maxFee, nonce: $nonce, signature: $signature }) {
       hash
     }
   }
 `
 
 const ACCEPT_OFFER_MUTATION = gql`
-  mutation ($tokenId: String!, $maxFee: String!, $signature: String!) {
-    acceptOffer(input: { tokenId: $tokenId, maxFee: $maxFee, signature: $signature }) {
+  mutation ($tokenId: String!, $maxFee: String!, $nonce: String!, $signature: String!) {
+    acceptOffer(input: { tokenId: $tokenId, maxFee: $maxFee, nonce: $nonce, signature: $signature }) {
       hash
     }
   }
 `
 
 const WITHDRAW_ETHER_MUTATION = gql`
-  mutation ($l1Recipient: String!, $amount: String!, $maxFee: String!, $signature: String!) {
-    withdrawEther(input: { l1Recipient: $l1Recipient, amount: $amount, maxFee: $maxFee, signature: $signature }) {
+  mutation ($l1Recipient: String!, $amount: String!, $maxFee: String!, $nonce: String!, $signature: String!) {
+    withdrawEther(
+      input: { l1Recipient: $l1Recipient, amount: $amount, maxFee: $maxFee, nonce: $nonce, signature: $signature }
+    ) {
       hash
     }
   }
@@ -121,12 +112,6 @@ export function useEthereumETHBalance(address?: string): WeiAmount | undefined {
   }, [provider, address, setBalance, blockNumber])
 
   return balance
-}
-
-export function useCurrentUserNextNonceQuery() {
-  return useCallback(async () => {
-    return getApolloClient()?.query({ query: CURRENT_USER_NEXT_NONCE_QUERY })
-  }, [getApolloClient])
 }
 
 export function useTransferCardMutation() {

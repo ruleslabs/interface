@@ -163,7 +163,7 @@ export default function GiftModal({
   const [txHash, setTxHash] = useState<string | null>(null)
 
   const onSignature = useCallback(
-    (signature: Signature, maxFee: string) => {
+    (signature: Signature, maxFee: string, nonce: string) => {
       if (!recipient?.starknetWallet.address) return
 
       transferCardMutation({
@@ -171,6 +171,7 @@ export default function GiftModal({
           tokenId,
           recipientAddress: recipient.starknetWallet.address,
           maxFee,
+          nonce,
           signature: JSON.stringify(signature),
         },
       })
