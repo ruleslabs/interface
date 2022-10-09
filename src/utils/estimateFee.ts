@@ -5,7 +5,6 @@ import {
   hash,
   stark,
   json,
-  ec,
   constants,
   Account,
   EstimateFee,
@@ -15,6 +14,7 @@ import {
 } from 'starknet'
 
 import getNonce from './getNonce'
+import signTransaction from './signTransaction'
 
 const feeTransactionVersionBase = number.toBN(2).pow(number.toBN(128))
 
@@ -58,17 +58,18 @@ export default async function estimateFee(
 
       const calldata = transaction.fromCallsToExecuteCalldataWithNonce(transactions, nonce)
 
-      const msgHash = hash.calculateTransactionHashCommon(
-        constants.TransactionHashPrefix.INVOKE,
-        feeTransactionVersion,
-        account.address,
-        hash.getSelectorFromName('__execute__'),
-        calldata,
-        constants.ZERO,
-        account.chainId
+      const signature = await signTransaction(
+        transactions,
+        {
+          walletAddress: account.address,
+          version: feeTransactionVersion,
+          maxFee: constants.ZERO,
+          chainId: account.chainId,
+          nonce,
+        },
+        transactionVersion,
+        { keyPair }
       )
-
-      const signature = ec.sign(keyPair, msgHash)
 
       const res = await fetch(url, {
         method: 'POST',

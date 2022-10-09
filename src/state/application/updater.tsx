@@ -15,7 +15,7 @@ function useBlockNumber() {
   const fetchBlock = useCallback(() => {
     if (!provider) return
     provider
-      .getBlock()
+      .getBlock('latest')
       .then((block: GetBlockResponse) => {
         dispatch(updateBlockNumber({ blockNumber: block.block_number }))
       })

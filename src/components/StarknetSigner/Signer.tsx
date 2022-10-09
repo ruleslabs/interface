@@ -2,7 +2,7 @@ import JSBI from 'jsbi'
 import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
-import { ec, number, Account, Call, EstimateFee, Signature } from 'starknet'
+import { ec, number, Account, Call, EstimateFee, Signature, KeyPair } from 'starknet'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
 import Input from '@/components/Input'
@@ -19,6 +19,7 @@ import { ErrorCard } from '@/components/Card'
 import { useDepositModalToggle } from '@/state/application/hooks'
 import getNonce from '@/utils/getNonce'
 import estimateFee from '@/utils/estimateFee'
+import signTransaction from '@/utils/signTransaction'
 
 const StyledSigner = styled(ColumnCenter)`
   padding-bottom: 8px;
@@ -85,6 +86,7 @@ export default function Signer({
 
   // starknet account
   const [account, setAccount] = useState<Account | null>(null)
+  const [keyPair, setKeyPair] = useState<KeyPair | null>(null)
 
   // balance
   const balance =
@@ -139,11 +141,12 @@ export default function Signer({
           const account = new Account(provider, address, keyPair)
 
           setAccount(account)
+          setKeyPair(keyPair)
+
           onWaitingForFees(true)
           return estimateFee(account, keyPair, calls, transactionVersion)
         })
         .then((estimatedFees?: EstimateFee) => {
-          console.log(estimatedFees)
           const maxFee = estimatedFees?.suggestedMaxFee.toString() ?? '0'
           const fee = estimatedFees?.overall_fee.toString() ?? '0'
           if (maxFee === '0' || fee === '0') {
@@ -165,11 +168,11 @@ export default function Signer({
   )
 
   // tx signature
-  const signTransaction = useCallback(
+  const handleSignature = useCallback(
     (event) => {
       event.preventDefault()
 
-      if (!account || !parsedNetworkFee?.maxFee || !calls) return
+      if (!account || !keyPair || !parsedNetworkFee?.maxFee || !calls) return
 
       onConfirmation()
 
@@ -183,7 +186,7 @@ export default function Signer({
           return Promise.reject()
         })
         .then((nonceBN: number.BigNumberish) => {
-          nonce = toHex(toBN(result[0]))
+          nonce = number.toHex(number.toBN(nonceBN))
 
           const signerDetails = {
             walletAddress: account.address,
@@ -193,7 +196,7 @@ export default function Signer({
             nonce,
           }
 
-          return account.signer.signTransaction(calls, signerDetails)
+          return signTransaction(calls, signerDetails, transactionVersion, { keyPair })
         })
         .then((signature?: Signature) => {
           if (!signature) {
@@ -210,7 +213,7 @@ export default function Signer({
           onError(`Failed to sign transaction: ${error.message}`)
         })
     },
-    [onError, calls, account, parsedNetworkFee?.maxFee, onSignature, transactionVersion]
+    [onError, calls, account, keyPair, parsedNetworkFee?.maxFee, onSignature, transactionVersion]
   )
 
   if (!isOpen) return null
@@ -218,7 +221,7 @@ export default function Signer({
   return (
     <StyledSigner gap={26}>
       {parsedNetworkFee ? (
-        <StyledForm onSubmit={signTransaction}>
+        <StyledForm onSubmit={handleSignature}>
           <Column gap={20}>
             <Column gap={12}>
               <FeeWrapper>
