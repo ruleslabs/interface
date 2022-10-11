@@ -1,9 +1,11 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Call, Signature } from 'starknet'
+import { t } from '@lingui/macro'
 
-import { ModalHeader } from '@/components/Modal'
 import Column from '@/components/Column'
+import { ModalHeader } from '@/components/Modal'
+import { useWaitingTransactionQuery } from '@/state/wallet/hooks'
 import Confirmation from './Confirmation'
 import Signer from './Signer'
 
@@ -55,6 +57,15 @@ export default function StarknetSigner({
   onError,
   children,
 }: StarknetSignerProps) {
+  // wallet lazyness
+  const waitingTransactionQuery = useWaitingTransactionQuery()
+  const waitingTransaction = waitingTransactionQuery.data?.waitingTransaction
+  const loading = waitingTransactionQuery.loading
+
+  useEffect(() => {
+    if (waitingTransactionQuery.error) onError('An error has occurred, please refresh the page and try again.')
+  }, [waitingTransactionQuery.error])
+
   // fee estimation waiting
   const [waitingForFees, setWaitingForFees] = useState(false)
   const onWaitingForFees = useCallback((waiting: boolean) => setWaitingForFees(waiting), [])
@@ -63,20 +74,28 @@ export default function StarknetSigner({
   const [waitingForTx, setWaitingForTx] = useState(false)
   const onConfirmation = useCallback(() => setWaitingForTx(true), [])
 
+  if (loading) return null
+
   return (
     <>
       <DummyFocusInput type="text" />
       <StyledStarknetSignerModal gap={26}>
         <ModalHeader onDismiss={onDismiss}>
-          {txHash || waitingForTx || waitingForFees ? <div /> : modalHeaderText}
+          {waitingTransaction || txHash || waitingForTx || waitingForFees ? <div /> : modalHeaderText}
         </ModalHeader>
-        {txHash || waitingForTx || waitingForFees ? (
+        {waitingTransaction ? (
+          <Confirmation
+            txHash={waitingTransaction.hash}
+            confirmationText={t`Your wallet is already processing another transaction`}
+          />
+        ) : txHash || waitingForTx || waitingForFees ? (
           <Confirmation
             txHash={txHash ?? undefined}
             error={error ?? undefined}
             waitingForFees={waitingForFees}
             confirmationText={confirmationText}
             transactionText={transactionText}
+            success={!!txHash}
           />
         ) : (
           !calls && children

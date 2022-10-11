@@ -196,7 +196,7 @@ export default function Signer({
             nonce,
           }
 
-          return signTransaction(calls, signerDetails, transactionVersion, { keyPair })
+          return signTransaction(calls, signerDetails, transactionVersion, { keyPair, signer: account.signer })
         })
         .then((signature?: Signature) => {
           if (!signature) {

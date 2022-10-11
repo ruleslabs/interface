@@ -3,7 +3,7 @@ import JSBI from 'jsbi'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { Abi } from 'starknet'
 import { useWeb3React } from '@web3-react/core'
-import { gql, useMutation } from '@apollo/client'
+import { gql, useMutation, useQuery } from '@apollo/client'
 
 import ERC20ABI from '@/abis/ERC20.json'
 
@@ -12,6 +12,14 @@ import { useStarknet } from '@/lib/starknet'
 import { ETH_ADDRESSES } from '@/constants/addresses'
 import { useMultipleContractSingleData } from '@/lib/hooks/multicall'
 import { useEthereumBlockNumber } from '@/state/application/hooks'
+
+const WAITING_TRANSACTION_QUERY = gql`
+  query {
+    waitingTransaction {
+      hash
+    }
+  }
+`
 
 const TRANSFER_CARD_MUTATION = gql`
   mutation ($tokenId: String!, $recipientAddress: String!, $maxFee: String!, $nonce: String!, $signature: String!) {
@@ -112,6 +120,10 @@ export function useEthereumETHBalance(address?: string): WeiAmount | undefined {
   }, [provider, address, setBalance, blockNumber])
 
   return balance
+}
+
+export function useWaitingTransactionQuery() {
+  return useQuery(WAITING_TRANSACTION_QUERY)
 }
 
 export function useTransferCardMutation() {

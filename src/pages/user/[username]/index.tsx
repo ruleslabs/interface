@@ -36,6 +36,7 @@ const ShowcaseSection = styled(Section)`
 const DeckImage = styled.img`
   width: 100%;
   display: block;
+  opacity: 0.7;
 `
 
 const StyledEmptyCard = styled(RowCenter)<{ clickable: boolean }>`

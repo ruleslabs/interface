@@ -77,11 +77,11 @@ export function colors(darkMode: boolean): Colors {
     primary1: '#9F04DC',
     primary2: '#7C03AE',
 
-    bg1: '#181818',
-    bg2: '#212121',
-    bg3: '#373737',
+    bg1: '#0D1114',
+    bg2: '#202326',
+    bg3: '#535458',
     bg4: '#AFAFAF',
-    bg5: '#272727',
+    bg5: '#2d2f33',
 
     text1: '#FFFFFF',
     text2: '#FFFFFF80',
