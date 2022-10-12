@@ -44,6 +44,7 @@ const UserSection = styled(Section)`
 
 const Gradient = styled.div`
   background: ${({ theme }) => theme.gradient1};
+  box-shadow: inset 0 -5px 5px -5px rgb(0 0 0 / 50%);
   height: 183px;
   width: 100%;
 `

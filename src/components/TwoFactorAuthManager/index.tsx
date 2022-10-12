@@ -31,7 +31,7 @@ const TwoFactorAuthSetter = styled(Column)`
 `
 
 const QRCodeWrapper = styled.div`
-  background: ${({ theme }) => theme.bg3}80;
+  background: ${({ theme }) => theme.bg5};
   padding: 24px 0;
   border: 1px solid ${({ theme }) => theme.bg3};
   border-radius: 4px;
@@ -138,7 +138,7 @@ export default function TwoFactorAuthManager() {
               </TYPE.subtitle>
 
               <QRCodeWrapper>
-                <QRCodeSVG value={twoFactorAuthSecret?.url ?? ''} bgColor={`${theme.bg3}80`} fgColor={theme.text1} />
+                <QRCodeSVG value={twoFactorAuthSecret?.url ?? ''} bgColor={`${theme.bg5}`} fgColor={theme.text1} />
               </QRCodeWrapper>
 
               <Input

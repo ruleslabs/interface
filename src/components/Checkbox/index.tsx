@@ -16,19 +16,19 @@ const Checkmark = styled.span`
   height: 24px;
   width: 24px;
   border-radius: 3px;
-  border: 1px solid ${({ theme }) => theme.bg2};
-  background-color: ${({ theme }) => theme.bg3};
+  border: 1px solid ${({ theme }) => theme.bg3};
+  background-color: ${({ theme }) => theme.bg5};
 
   &:after {
     content: '';
     position: absolute;
     display: none;
     left: 8px;
-    top: 3px;
-    width: 4px;
-    height: 10px;
+    top: 2px;
+    width: 6px;
+    height: 12px;
     border: solid white;
-    border-width: 0 2px 2px 0;
+    border-width: 0 3px 3px 0;
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
@@ -47,6 +47,7 @@ const CheckboxLabel = styled.label`
 
   & ${CheckboxInput}:checked ~ ${Checkmark} {
     background: ${({ theme }) => theme.primary1};
+    border-width: 0;
   }
 
   & ${CheckboxInput}:checked ~ ${Checkmark}:after {

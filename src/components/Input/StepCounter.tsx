@@ -24,7 +24,7 @@ const SmallButton = styled(BaseButton)`
 `
 
 const NumericalInput = styled.input`
-  background: ${({ theme }) => theme.bg3}80;
+  background: ${({ theme }) => theme.bg5};
   border: 1px solid ${({ theme }) => theme.bg3};
   border-radius: 3px;
   font-size: 16px;

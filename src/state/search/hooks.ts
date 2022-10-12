@@ -210,7 +210,7 @@ export function useSearchOffers({
   facets,
   priceDesc = true,
   skip = false,
-  hitsPerPage = 32,
+  hitsPerPage = 128,
 }: SearchOffersProps): Search {
   const [offersSearch, setOffersSearch] = useState<Search>({ loading: true, error: null })
 

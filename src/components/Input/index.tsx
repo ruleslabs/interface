@@ -18,7 +18,7 @@ function InputBase({ onUserInput, ...props }: InputProps | SearchBarProps) {
 
 const InputWrapper = styled(RowCenter)<{ prefixed: boolean; $valid: boolean }>`
   position: relative;
-  background: ${({ theme }) => theme.bg3}80;
+  background: ${({ theme }) => theme.bg5};
   border: 1px solid ${({ theme, $valid }) => ($valid ? theme.bg3 : theme.error)};
   border-radius: 4px;
   box-sizing: border-box;

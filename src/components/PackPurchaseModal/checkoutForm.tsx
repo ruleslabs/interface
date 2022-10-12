@@ -40,8 +40,8 @@ const Form = styled.form<{ $display: boolean }>`
 `
 
 const StripeInputWrapper = styled(RowCenter)`
-  padding: 8px;
-  background: ${({ theme }) => theme.bg3}80;
+  padding: 12px;
+  background: ${({ theme }) => theme.bg5};
   border-radius: 3px;
   border: 1px solid ${({ theme }) => theme.bg3};
 
@@ -50,8 +50,7 @@ const StripeInputWrapper = styled(RowCenter)`
   }
 
   & svg {
-    max-height: 19px;
-    width: 32px;
+    height: 28px;
   }
 `
 
@@ -61,8 +60,8 @@ const StripeLabel = styled.label`
   gap: 8px;
   width: 100%;
 
-  div:first-child {
-    margin-left: 8px;
+  & div:first-child {
+    margin-left: 4px;
   }
 `
 
@@ -117,7 +116,7 @@ export default function CheckoutForm({ stripeClientSecret, paymentIntentError, a
           backgroundColor: 'transparent',
           color: theme.text1,
           letterSpacing: '0.025em',
-          fontFamily: 'Source Code Pro, monospace',
+          fontFamily: 'Roboto, Helvetica',
           '::placeholder': {
             color: theme.text2,
           },
@@ -241,7 +240,9 @@ export default function CheckoutForm({ stripeClientSecret, paymentIntentError, a
                 </StripeInputWrapper>
               </StripeLabel>
               <StripeLabel>
-                <TYPE.body>CVC</TYPE.body>
+                <TYPE.body>
+                  <Trans>Security code</Trans>
+                </TYPE.body>
                 <StripeInputWrapper>
                   <CardCvcElement options={options} />
                 </StripeInputWrapper>
