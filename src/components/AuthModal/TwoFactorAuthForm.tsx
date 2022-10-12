@@ -6,7 +6,6 @@ import { ModalHeader } from '@/components/Modal'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'
-import { BackButton } from '@/components/Button'
 import { AuthMode } from '@/state/auth/actions'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode, useTwoFactorAuthSignInMutation, useTwoFactorAuthToken } from '@/state/auth/hooks'
@@ -66,9 +65,7 @@ export default function TwoFactorAuthForm({ onSuccessfulConnection }: TwoFactorA
 
   return (
     <>
-      <ModalHeader onDismiss={toggleAuthModal}>
-        <BackButton onClick={() => setAuthMode(AuthMode.SIGN_IN)} />
-      </ModalHeader>
+      <ModalHeader onDismiss={toggleAuthModal} onBack={() => setAuthMode(AuthMode.SIGN_IN)} />
 
       <Column gap={26}>
         <TYPE.large>

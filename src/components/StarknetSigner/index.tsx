@@ -30,7 +30,7 @@ const StyledStarknetSignerModal = styled(Column)`
 
 interface StarknetSignerProps {
   children: React.ReactNode
-  modalHeaderText: string
+  modalHeaderChildren?: string | React.ReactNode
   confirmationText: string
   confirmationActionText?: string
   transactionText: string
@@ -41,10 +41,11 @@ interface StarknetSignerProps {
   onSignature(signature: Signature, maxFee: string, nonce: string): void
   onDismiss(): void
   onError(error: string): void
+  onBack?: () => void
 }
 
 export default function StarknetSigner({
-  modalHeaderText,
+  modalHeaderChildren,
   confirmationText,
   confirmationActionText,
   transactionText,
@@ -55,6 +56,7 @@ export default function StarknetSigner({
   onSignature,
   onDismiss,
   onError,
+  onBack,
   children,
 }: StarknetSignerProps) {
   // wallet lazyness
@@ -80,9 +82,13 @@ export default function StarknetSigner({
     <>
       <DummyFocusInput type="text" />
       <StyledStarknetSignerModal gap={26}>
-        <ModalHeader onDismiss={onDismiss}>
-          {waitingTransaction || txHash || waitingForTx || waitingForFees ? <div /> : modalHeaderText}
+        <ModalHeader
+          onDismiss={onDismiss}
+          onBack={!waitingTransaction && !txHash && !waitingForTx && !waitingForFees ? onBack : undefined}
+        >
+          {!waitingTransaction && !txHash && !waitingForTx && !waitingForFees && modalHeaderChildren}
         </ModalHeader>
+
         {waitingTransaction ? (
           <Confirmation
             txHash={waitingTransaction.hash}

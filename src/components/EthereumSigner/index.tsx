@@ -19,13 +19,14 @@ const StyledEthereumSignerModal = styled(Column)`
 
 interface EthereumSignerProps {
   children: React.ReactNode
-  modalHeaderChildren: string | React.ReactNode
+  modalHeaderChildren?: string | React.ReactNode
   confirmationText: string
   transactionText: string
   waitingForTx: boolean
   txHash?: string
   error?: string
   onDismiss(): void
+  onBack?: () => void
 }
 
 export default function EthereumSigner({
@@ -37,11 +38,14 @@ export default function EthereumSigner({
   txHash,
   error,
   onDismiss,
+  onBack,
 }: EthereumSignerProps) {
   return (
     <>
       <StyledEthereumSignerModal gap={26}>
-        <ModalHeader onDismiss={onDismiss}>{txHash || waitingForTx ? <div /> : modalHeaderChildren}</ModalHeader>
+        <ModalHeader onDismiss={onDismiss} onBack={!txHash && !waitingForTx ? onBack : undefined}>
+          {!txHash && !waitingForTx && modalHeaderChildren}
+        </ModalHeader>
         {txHash || waitingForTx ? (
           <Confirmation
             txHash={txHash ?? undefined}

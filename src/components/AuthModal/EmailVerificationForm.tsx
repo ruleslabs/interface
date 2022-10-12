@@ -8,7 +8,6 @@ import { EMAIL_VERIFICATION_CODE_LENGTH } from '@/constants/misc'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'
-import { BackButton } from '@/components/Button'
 import { AuthMode } from '@/state/auth/actions'
 import {
   useAuthForm,
@@ -155,9 +154,7 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
 
   return (
     <>
-      <ModalHeader onDismiss={toggleAuthModal}>
-        <BackButton onClick={() => setAuthMode(AuthMode.SIGN_UP)} />
-      </ModalHeader>
+      <ModalHeader onDismiss={toggleAuthModal} onBack={() => setAuthMode(AuthMode.SIGN_UP)} />
 
       <Column gap={26}>
         <TYPE.large>

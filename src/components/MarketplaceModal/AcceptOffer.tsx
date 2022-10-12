@@ -144,7 +144,7 @@ export default function AcceptOfferModal({
   return (
     <Modal onDismiss={toggleAcceptOfferModal} isOpen={isOpen}>
       <StarknetSigner
-        modalHeaderText={t`Confirm purchase`}
+        modalHeaderChildren={t`Confirm purchase`}
         confirmationText={t`Your purchase will be accepted`}
         confirmationActionText={t`Confirm purchase`}
         transactionText={t`offer acceptance.`}

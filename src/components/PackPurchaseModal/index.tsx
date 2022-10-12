@@ -18,7 +18,7 @@ import Lock from '@/images/lock.svg'
 
 const StyledPackPurchaseModal = styled(Column)`
   width: 560px;
-  padding: 16px;
+  padding: 26px;
   background: ${({ theme }) => theme.bg2};
   border-radius: 4px;
 

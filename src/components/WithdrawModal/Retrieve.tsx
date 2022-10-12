@@ -9,7 +9,7 @@ import { useCurrentUser, useSetCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
 import Row, { RowBetween } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
-import { BackButton, PrimaryButton } from '@/components/Button'
+import { PrimaryButton } from '@/components/Button'
 import { useWithdrawModalToggle, useModalOpen } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import Metamask from '@/components/Metamask'
@@ -156,7 +156,7 @@ export default function Retrieve({ onDismiss }: RetrieveProps) {
 
   return (
     <EthereumSigner
-      modalHeaderChildren={<BackButton onClick={onDismiss} />}
+      onBack={onDismiss}
       confirmationText={t`Your ${totalParsedAmount?.toSignificant(6)} ETH transfer is on its way`}
       transactionText={t`${totalParsedAmount?.toSignificant(6)} ETH transfer to your Ethereum wallet`}
       waitingForTx={waitingForTx}

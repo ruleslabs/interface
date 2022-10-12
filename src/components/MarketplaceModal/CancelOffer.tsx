@@ -123,7 +123,7 @@ export default function CancelOfferModal({
   return (
     <Modal onDismiss={toggleCancelOfferModal} isOpen={isOpen}>
       <StarknetSigner
-        modalHeaderText={t`Confirm offer cancelation`}
+        modalHeaderChildren={t`Confirm offer cancelation`}
         confirmationText={t`Your offer will be canceled`}
         confirmationActionText={t`Confirm offer cancelation`}
         transactionText={t`offer cancelation.`}

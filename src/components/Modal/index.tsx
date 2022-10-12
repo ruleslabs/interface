@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { DialogOverlay, DialogContent } from '@reach/dialog'
 import { animated, useTransition } from 'react-spring'
 import { useRouter } from 'next/router'
+import { BackButton } from '@/components/Button'
 
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
@@ -122,6 +123,17 @@ export default function Modal({ children, isOpen, onDismiss, sidebar = false, au
   )
 }
 
+const StyledModalHeader = styled(RowCenter)`
+  justify-content: center;
+  min-height: 16px;
+`
+
+const StyledBackButton = styled(BackButton)`
+  position: absolute;
+  top: 16px;
+  left: 16px;
+`
+
 const ModalTitle = styled(TYPE.large)`
   ${({ theme }) => theme.media.medium`
     width: 100%;
@@ -129,10 +141,17 @@ const ModalTitle = styled(TYPE.large)`
   `}
 `
 
+const ModalHeaderWrapper = styled.div`
+  margin: 8px 0;
+`
+
 const StyledClose = styled(Close)`
   width: 20px;
   height: 20px;
   cursor: pointer;
+  position: absolute;
+  top: 16px;
+  right: 16px;
 
   ${({ theme }) => theme.media.medium`
     display: none;
@@ -140,15 +159,23 @@ const StyledClose = styled(Close)`
 `
 
 interface ModalHeaderProps {
-  children: React.ReactNode
   onDismiss: () => void
+  onBack?: () => void
+  children?: React.ReactNode
 }
 
-export const ModalHeader = ({ children, onDismiss }: ModalHeaderProps) => {
+export const ModalHeader = ({ children, onDismiss, onBack }: ModalHeaderProps) => {
   return (
-    <RowCenter justify="space-between">
-      {typeof children === 'string' ? <ModalTitle>{children}</ModalTitle> : children}
+    <StyledModalHeader>
+      {onBack && <StyledBackButton onClick={onBack} />}
+      {children ? (
+        <ModalHeaderWrapper>
+          {typeof children === 'string' ? <ModalTitle>{children}</ModalTitle> : children}
+        </ModalHeaderWrapper>
+      ) : (
+        <div />
+      )}
       <StyledClose onClick={onDismiss} />
-    </RowCenter>
+    </StyledModalHeader>
   )
 }

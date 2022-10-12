@@ -208,7 +208,7 @@ export default function GiftModal({
   return (
     <Modal onDismiss={toggleOfferModal} isOpen={isOpen}>
       <StarknetSigner
-        modalHeaderText={t`Offer this card`}
+        modalHeaderChildren={t`Offer this card`}
         confirmationText={t`Your card is on its way`}
         transactionText={t`card transfer.`}
         calls={calls ?? undefined}

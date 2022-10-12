@@ -157,7 +157,7 @@ export default function CreateOfferModal({
   return (
     <Modal onDismiss={toggleCreateOfferModal} isOpen={isOpen}>
       <StarknetSigner
-        modalHeaderText={t`Enter an asking price`}
+        modalHeaderChildren={t`Enter an asking price`}
         confirmationText={t`Your offer will be created`}
         confirmationActionText={t`Confirm offer creation`}
         transactionText={t`offer creation.`}

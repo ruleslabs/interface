@@ -6,7 +6,6 @@ import { Trans, t } from '@lingui/macro'
 import { ModalHeader } from '@/components/Modal'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
-import { BackButton } from '@/components/Button'
 import { AuthMode } from '@/state/auth/actions'
 import {
   useSetAuthMode,
@@ -89,9 +88,7 @@ export default function RequestPasswordUpdateForm() {
 
   return (
     <>
-      <ModalHeader onDismiss={toggleAuthModal}>
-        <BackButton onClick={() => setAuthMode(AuthMode.TWO_FACTOR_AUTH)} />
-      </ModalHeader>
+      <ModalHeader onDismiss={toggleAuthModal} onBack={() => setAuthMode(AuthMode.TWO_FACTOR_AUTH)} />
 
       <Column gap={26}>
         <TYPE.body>

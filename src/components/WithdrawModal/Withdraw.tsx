@@ -157,7 +157,7 @@ export default function WithdrawModal({ onRetrieve }: WithdrawModalProps) {
 
   return (
     <StarknetSigner
-      modalHeaderText={t`Withdraw your balance`}
+      modalHeaderChildren={t`Withdraw your balance`}
       confirmationText={t`Your ${withdrawAmount} ETH withdraw is on its way`}
       confirmationActionText={t`Confirm withdraw`}
       transactionText={t`${withdrawAmount} ETH withdraw to your Ethereum wallet`}
