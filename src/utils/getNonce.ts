@@ -12,4 +12,6 @@ export default async function getNonce(account: Account, transactionVersion: num
     case 1:
       return account.getNonce()
   }
+
+  throw 'Invalid transaction version'
 }

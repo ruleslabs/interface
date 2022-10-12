@@ -1,8 +1,18 @@
-import { transaction, hash, ec, constants, Signer, Signature, KeyPair, InvocationsSignerDetails } from 'starknet'
+import {
+  transaction,
+  hash,
+  ec,
+  constants,
+  SignerInterface,
+  Signature,
+  KeyPair,
+  InvocationsSignerDetails,
+  Call,
+} from 'starknet'
 
 interface TransactionSignerOptions {
-  signer?: Signer
-  keyPar?: KeyPair
+  signer?: SignerInterface
+  keyPair?: KeyPair
 }
 
 export default async function signTransaction(
@@ -34,4 +44,6 @@ export default async function signTransaction(
 
       return options.signer.signTransaction(transactions, transactionsDetail)
   }
+
+  throw 'Invalid transaction version'
 }

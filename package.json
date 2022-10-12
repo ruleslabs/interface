@@ -63,7 +63,8 @@
     "redux-localstorage-simple": "^2.5.1",
     "starknet": "^4.8.0",
     "styled-components": "^5.3.3",
-    "tslib": "^2.4.0"
+    "tslib": "^2.4.0",
+    "url-join": "4.0.1"
   },
   "devDependencies": {
     "@lingui/cli": "^3.13.3",
@@ -76,6 +77,7 @@
     "@types/node": "^17.0.21",
     "@types/react": "^17.0.35",
     "@types/styled-components": "^5.1.15",
+    "@types/url-join": "^4.0.1",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "babel-eslint": "^10.1.0",

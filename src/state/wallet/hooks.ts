@@ -29,6 +29,7 @@ const TRANSFER_CARD_MUTATION = gql`
         recipientAddress: $recipientAddress
         quantity: 1
         maxFee: $maxFee
+        nonce: $nonce
         signature: $signature
       }
     ) {

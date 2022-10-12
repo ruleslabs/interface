@@ -6,11 +6,12 @@ import {
   stark,
   json,
   constants,
+  api,
   Account,
   EstimateFee,
   EstimateFeeResponse,
-  Sequencer,
   KeyPair,
+  Call,
 } from 'starknet'
 
 import { networkId, feederGatewayUrl, ProviderUrlNetworksMap } from '@/constants/networks'
@@ -19,7 +20,7 @@ import signTransaction from './signTransaction'
 
 const feeTransactionVersionBase = number.toBN(2).pow(number.toBN(128))
 
-function parseFeeEstimateResponse(res: Sequencer.EstimateFeeResponse): EstimateFeeResponse {
+function parseFeeEstimateResponse(res: api.Sequencer.EstimateFeeResponse): EstimateFeeResponse {
   if ('overall_fee' in res) {
     let gasInfo = {}
 
@@ -101,4 +102,6 @@ export default async function estimateFee(
     case 1:
       return account.estimateFee(calls)
   }
+
+  throw 'Invalid transaction version'
 }
