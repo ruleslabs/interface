@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import useComponentSize from '@/hooks/useComponentSize'
 
-const MAX_WIDTH = 350
+const MAX_WIDTH = 270
 const GAP = 32
 
 const StyledGrid = styled.div<{ cols: number; gap: number }>`

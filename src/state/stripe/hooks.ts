@@ -13,14 +13,19 @@ interface PaymentIntent {
 
 export function useCreatePaymentIntent(): (packId: string, quantity: number) => Promise<PaymentIntent> {
   return useCallback(
-    async (packId, quantity) => await RulesAPI.post<PaymentIntent>('create-payment-intent', { packId, quantity }),
+    async (packId, quantity) => RulesAPI.post<PaymentIntent>('payment/create', { packId, quantity }),
     []
   )
 }
 
-export function useValidatePaymentMethod(): (paymentMethodId: string) => Promise<PaymentIntent> {
+export function useValidatePaymentMethod(): (paymentMethod: string) => Promise<PaymentIntent> {
+  return useCallback(async (paymentMethod) => RulesAPI.post<PaymentIntent>('payment/validate', { paymentMethod }), [])
+}
+
+export function useConfirmPaymentIntent(): (paymentIntent: any, paymentMethod: any) => Promise<PaymentIntent> {
   return useCallback(
-    async (paymentMethodId) => await RulesAPI.post<PaymentIntent>('validate-payment-method', { paymentMethodId }),
+    async (paymentIntent, paymentMethod) =>
+      RulesAPI.post<PaymentIntent>('payment/confirm', { paymentIntent, paymentMethod }),
     []
   )
 }

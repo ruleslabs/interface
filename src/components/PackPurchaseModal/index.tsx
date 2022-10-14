@@ -7,12 +7,11 @@ import { TYPE } from '@/styles/theme'
 import Modal, { ModalHeader } from '@/components/Modal'
 import { useModalOpen, usePackPurchaseModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
-import CheckoutForm from './checkoutForm'
 import { useStripePromise, useCreatePaymentIntent } from '@/state/stripe/hooks'
 import Column from '@/components/Column'
 import { RowCenter } from '@/components/Row'
+import CheckoutForm from './CheckoutForm'
 import Confirmation from './Confirmation'
-import Error from './Error'
 
 import Lock from '@/images/lock.svg'
 
@@ -51,100 +50,58 @@ export default function PackPurchaseModal({
   const isOpen = useModalOpen(ApplicationModal.PACK_PURCHASE)
   const togglePackPurchaseModal = usePackPurchaseModalToggle()
 
+  // error
+  const [error, setError] = useState<string | null>(null)
+  const onError = useCallback((error: string) => setError(error), [])
+
+  // processing
+  const [processing, setProcessing] = useState(false)
+  const onConfirm = useCallback(() => setProcessing(true), [])
+
   // stripe
   const stripePromise = useStripePromise()
-  const [paymentIntentInitialized, setPaymentIntentInitialized] = useState(false)
-  const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null)
+  const [paymentIntent, setPaymentIntent] = useState<string | null>(null)
   const [paymentIntentError, setPaymentIntentError] = useState(false)
   const createPaymentIntent = useCreatePaymentIntent()
 
   const refreshPaymentIntent = useCallback(() => {
     if (!isOpen) return
 
-    setStripeClientSecret(null)
-    setPaymentIntentInitialized(true)
+    setPaymentIntent(null)
 
     createPaymentIntent(packId, quantity)
+      .then((data) => setPaymentIntent(data?.paymentIntent ?? null))
       .catch((err) => {
         setPaymentIntentError(true) // TODO handle error
         console.error(err)
       })
-      .then((data) => setStripeClientSecret(data?.clientSecret ?? null))
-  }, [packId, createPaymentIntent, setPaymentIntentError, setStripeClientSecret, quantity, isOpen])
+  }, [packId, createPaymentIntent, quantity, isOpen])
 
   useEffect(() => {
-    if (!paymentIntentInitialized) refreshPaymentIntent()
-  }, [refreshPaymentIntent, paymentIntentInitialized])
+    if (!paymentIntent) refreshPaymentIntent()
+  }, [refreshPaymentIntent, paymentIntent])
 
-  // error/success handlers
-  const [error, setError] = useState<string | null>(null)
+  // success
   const [success, setSuccess] = useState(false)
-
   const onSuccess = useCallback(() => {
     setSuccess(true)
     onSuccessfulPackPurchase(quantity)
-  }, [onSuccessfulPackPurchase, quantity, setSuccess])
-  const onError = useCallback(
-    (error: string) => {
-      setError(error)
-      console.error(error)
-    },
-    [setError]
-  )
-
-  // websocket
-  const [wsClient, setWsClient] = useState<WebSocket | null>(null)
-  useEffect(() => {
-    if (!isOpen && wsClient) {
-      wsClient.close()
-      setWsClient(null)
-    }
-
-    if (!stripeClientSecret || !process.env.NEXT_PUBLIC_WS_URI || !isOpen) return
-
-    const ws = wsClient ?? new WebSocket(process.env.NEXT_PUBLIC_WS_URI)
-    if (!wsClient) setWsClient(ws)
-
-    ws.onopen = () => {
-      console.log('hey ws')
-      const paymentIntentId = stripeClientSecret.match(/^pi_[a-zA-Z0-9]*/)?.[0]
-      if (!paymentIntentId) return
-
-      ws.send(
-        JSON.stringify({
-          action: 'subscribePaymentIntent',
-          paymentIntentId,
-        })
-      )
-    }
-
-    ws.onmessage = (event) => {
-      const data = event.data ? JSON.parse(event.data) : {}
-      console.log('ws', data)
-      if (data.error || data.success === false) onError(data.error ?? 'Unknown error')
-      else onSuccess()
-    }
-
-    ws.onclose = (event) => {
-      console.log('bye ws')
-      setWsClient(null)
-    }
-  }, [setWsClient, wsClient, stripeClientSecret, onSuccess, onError, isOpen])
+  }, [onSuccessfulPackPurchase, quantity])
 
   // on retry
   const onRetry = useCallback(() => {
-    wsClient?.close()
     setError(null)
     refreshPaymentIntent()
-  }, [setError, refreshPaymentIntent, wsClient])
+  }, [refreshPaymentIntent])
 
   // on close modal
   useEffect(() => {
-    if (!isOpen) {
-      setPaymentIntentInitialized(false)
-      setStripeClientSecret(null)
-    } else {
+    if (isOpen) {
+      setPaymentIntentError(false)
+      setPaymentIntent(null)
       setSuccess(false)
+      setError(null)
+      setProcessing(false)
     }
   }, [isOpen])
 
@@ -152,9 +109,7 @@ export default function PackPurchaseModal({
     <Modal onDismiss={togglePackPurchaseModal} isOpen={isOpen}>
       <StyledPackPurchaseModal gap={26}>
         <ModalHeader onDismiss={togglePackPurchaseModal}>
-          {success ? (
-            <div />
-          ) : (
+          {!success && !error && !processing && (
             <RowCenter gap={16}>
               <TYPE.large>
                 <Trans>Secured Payment</Trans>
@@ -163,20 +118,22 @@ export default function PackPurchaseModal({
             </RowCenter>
           )}
         </ModalHeader>
-        {error ? (
-          <Error error={error} onRetry={onRetry} />
-        ) : success ? (
-          <Confirmation packName={packName} amountPaid={price} />
-        ) : (
-          <Elements stripe={stripePromise}>
-            <CheckoutForm
-              stripeClientSecret={stripeClientSecret}
-              paymentIntentError={paymentIntentError}
-              amount={price * quantity}
-              onError={onError}
-            />
-          </Elements>
+
+        {(!!error || success || processing) && (
+          <Confirmation packName={packName} amountPaid={price} error={error} onRetry={onRetry} success={success} />
         )}
+
+        <Elements stripe={stripePromise}>
+          <CheckoutForm
+            isOpen={!success && !error && !processing}
+            paymentIntent={paymentIntent}
+            paymentIntentError={paymentIntentError}
+            amount={price * quantity}
+            onError={onError}
+            onConfirm={onConfirm}
+            onSuccess={onSuccess}
+          />
+        </Elements>
       </StyledPackPurchaseModal>
     </Modal>
   )

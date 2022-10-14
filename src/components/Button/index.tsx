@@ -13,7 +13,7 @@ export const BaseButton = styled.button<{ large?: boolean }>`
   border: none;
   border-radius: ${({ large = false }) => (large ? '4px' : '3px')};
   font-size: 16px;
-  min-height: ${({ large = false }) => (large ? '44px' : '35px')};
+  min-height: ${({ large = false }) => (large ? '54px' : '44px')};
   padding: 8px 20px;
   cursor: pointer;
   font-weight: 500;

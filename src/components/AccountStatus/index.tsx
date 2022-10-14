@@ -14,6 +14,16 @@ import { PrimaryButton, SecondaryButton, IconButton } from '@/components/Button'
 import DepositModal from '@/components/DepositModal'
 import WithdrawModal from '@/components/WithdrawModal'
 
+const RotatingIconButton = styled(IconButton)`
+  & svg {
+    transition: transform 100ms ease-out;
+  }
+
+  &:hover svg {
+    transform: rotate(45deg);
+  }
+`
+
 const StyledAccountStatus = styled.div`
   display: flex;
   align-items: center;
@@ -46,13 +56,13 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
         {!!currentUser ? (
           <>
             <NavLink href={`/user/${currentUser.slug}`}>{currentUser.username}</NavLink>
-            <IconButton
+            <RotatingIconButton
               onClick={toggleSettingsModal}
               alert={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
               notifications={currentUser?.retrievableEthers.length}
             >
               <Settings />
-            </IconButton>
+            </RotatingIconButton>
           </>
         ) : (
           <>
