@@ -70,7 +70,7 @@ export default function PackPurchaseModal({
     setPaymentIntent(null)
 
     createPaymentIntent(packId, quantity)
-      .then((data) => setPaymentIntent(data?.paymentIntent ?? null))
+      .then((res) => setPaymentIntent(res?.paymentIntent?.id ?? null))
       .catch((err) => {
         setPaymentIntentError(true) // TODO handle error
         console.error(err)
@@ -91,6 +91,7 @@ export default function PackPurchaseModal({
   // on retry
   const onRetry = useCallback(() => {
     setError(null)
+    setProcessing(false)
     refreshPaymentIntent()
   }, [refreshPaymentIntent])
 
@@ -108,7 +109,7 @@ export default function PackPurchaseModal({
   return (
     <Modal onDismiss={togglePackPurchaseModal} isOpen={isOpen}>
       <StyledPackPurchaseModal gap={26}>
-        <ModalHeader onDismiss={togglePackPurchaseModal}>
+        <ModalHeader onDismiss={togglePackPurchaseModal} onBack={error ? onRetry : undefined}>
           {!success && !error && !processing && (
             <RowCenter gap={16}>
               <TYPE.large>
@@ -120,7 +121,7 @@ export default function PackPurchaseModal({
         </ModalHeader>
 
         {(!!error || success || processing) && (
-          <Confirmation packName={packName} amountPaid={price} error={error} onRetry={onRetry} success={success} />
+          <Confirmation packName={packName} amountPaid={price} error={error ?? undefined} success={success} />
         )}
 
         <Elements stripe={stripePromise}>

@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { loadStripe } from '@stripe/stripe-js'
+import { loadStripe, PaymentIntent, PaymentMethod } from '@stripe/stripe-js'
 
 import RulesAPI from '@/utils/rulesAPI'
 
@@ -7,25 +7,30 @@ export function useStripePromise(): Promise<any> {
   return useMemo(() => loadStripe(process.env.NEXT_PUBLIC_STRIPE_ID ?? ''), [])
 }
 
-interface PaymentIntent {
-  clientSecret: string
-}
-
-export function useCreatePaymentIntent(): (packId: string, quantity: number) => Promise<PaymentIntent> {
+export function useCreatePaymentIntent(): (
+  packId: string,
+  quantity: number
+) => Promise<{ paymentIntent: PaymentIntent }> {
   return useCallback(
-    async (packId, quantity) => RulesAPI.post<PaymentIntent>('payment/create', { packId, quantity }),
+    (packId, quantity) => RulesAPI.post<{ paymentIntent: PaymentIntent }>('payment/create', { packId, quantity }),
     []
   )
 }
 
-export function useValidatePaymentMethod(): (paymentMethod: string) => Promise<PaymentIntent> {
-  return useCallback(async (paymentMethod) => RulesAPI.post<PaymentIntent>('payment/validate', { paymentMethod }), [])
+export function useValidatePaymentMethod(): (paymentMethod: string) => Promise<{ paymentMethod: PaymentMethod }> {
+  return useCallback(
+    (paymentMethod) => RulesAPI.post<{ paymentMethod: PaymentMethod }>('payment/validate', { paymentMethod }),
+    []
+  )
 }
 
-export function useConfirmPaymentIntent(): (paymentIntent: any, paymentMethod: any) => Promise<PaymentIntent> {
+export function useConfirmPaymentIntent(): (
+  paymentIntent: any,
+  paymentMethod: any
+) => Promise<{ paymentIntent: PaymentIntent }> {
   return useCallback(
-    async (paymentIntent, paymentMethod) =>
-      RulesAPI.post<PaymentIntent>('payment/confirm', { paymentIntent, paymentMethod }),
+    (paymentIntent, paymentMethod) =>
+      RulesAPI.post<{ paymentIntent: PaymentIntent }>('payment/confirm', { paymentIntent, paymentMethod }),
     []
   )
 }

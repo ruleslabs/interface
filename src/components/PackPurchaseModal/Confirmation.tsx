@@ -62,7 +62,6 @@ const ErrorMessage = styled(Subtitle)`
 
 const SeeMyPacksButtonWrapper = styled(ColumnCenter)`
   width: 100%;
-  gap: 16px;
 
   a {
     max-width: 380px;
@@ -70,7 +69,6 @@ const SeeMyPacksButtonWrapper = styled(ColumnCenter)`
   }
 
   button {
-    height: 50px;
     width: 100%;
   }
 `

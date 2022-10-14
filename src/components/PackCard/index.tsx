@@ -30,7 +30,7 @@ const StatusStyle = css`
 
 const InDelivery = styled.img`
   ${StatusStyle}
-  top: 34.1%;
+  top: 39.6%;
 `
 
 const Soldout = styled.img`

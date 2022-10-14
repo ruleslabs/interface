@@ -166,15 +166,14 @@ export default function CheckoutForm({
           type: 'card',
           card: cardNumberElement,
         })
-        .then((result: any) => {
-          const paymentMethod = result?.paymentMethod?.id
-          if (!paymentMethod) throw { error: 'Invalid payment method' }
+        .then((res: any) => {
+          if (!res?.paymentMethod?.id) throw { error: 'Invalid payment method' }
 
-          return validatePaymentMethod(paymentMethod).catch((err) => {
+          return validatePaymentMethod(res.paymentMethod.id).catch((err) => {
             throw { error: err?.error?.message }
           })
         })
-        .then((res) => {
+        .then((res: any) => {
           if (!res?.paymentMethod) throw { failure: 'An error has occured with your payment method' }
 
           onConfirm()
@@ -183,28 +182,32 @@ export default function CheckoutForm({
             throw { failure: err }
           })
         })
-        .then((res) => {
-          if (res?.error) {
+        .then((res: any) => {
+          if (res?.paymentIntent?.error) {
             throw { failure: res.error }
-          } else if (res?.next_action) {
-            return stripe.handleCardAction(res.client_secret).catch((err) => {
+          } else if (res?.paymentIntent?.next_action) {
+            // Handle next action
+            return stripe.handleCardAction(res.paymentIntent.client_secret).catch((err) => {
               throw null
             })
           } else {
+            // confirm payment
             onSuccess()
           }
+
+          throw null
         })
-        .then((res) => {
-          if (res?.error) throw { failure: res.error.message }
+        .then((res: any) => {
+          if (res?.paymentIntent?.error) throw { failure: res.paymentIntent.error?.message }
           if (!res?.paymentIntent || !res.paymentIntent.payment_method) throw null
 
+          // confirm payment after next action
           return confirmPaymentIntent(res.paymentIntent.id, res.paymentIntent.payment_method).catch((err) => {
             throw { failure: err }
           })
         })
-        .then((res) => {
-          console.log(res)
-          if (res.status === 'succeeded') onSuccess()
+        .then((res: any) => {
+          if (res?.paymentIntent?.status === 'succeeded') onSuccess()
           else throw null
         })
         .catch((err) => {
