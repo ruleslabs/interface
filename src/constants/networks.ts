@@ -32,11 +32,11 @@ interface BasicNetworkInformation {
 export const NETWORKS: { [networkId: string]: BasicNetworkInformation } = {
   [SupportedNetworks.GOERLI]: {
     name: 'Alpha Goerli',
-    explorerBaseUrl: 'https://goerli.voyager.online',
+    explorerBaseUrl: 'https://testnet.starkscan.co/tx',
   },
   [SupportedNetworks.MAINNET]: {
     name: 'Alpha Mainnet',
-    explorerBaseUrl: 'https://voyager.online',
+    explorerBaseUrl: 'https://starkscan.co/tx',
   },
 }
 

@@ -128,7 +128,7 @@ export default function Confirmation({
         <EtherscanButtonWrapper>
           <Link target="_blank" href={`${NETWORKS[networkId].explorerBaseUrl}/tx/${txHash}`}>
             <PrimaryButton large>
-              <Trans>See on Voyager</Trans>
+              <Trans>See on Starkscan</Trans>
             </PrimaryButton>
           </Link>
         </EtherscanButtonWrapper>
