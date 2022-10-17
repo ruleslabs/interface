@@ -2,17 +2,18 @@ import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
+import { ActiveLink } from '@/components/Link'
 import { useCurrentUser } from '@/state/user/hooks'
-import { NavLink } from '@/components/NavLink'
 import { useSettingsModalToggle, useAuthModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
 import Settings from '@/images/settings.svg'
 import SettingsModal from '@/components/SettingsModal'
 import AuthModal from '@/components/AuthModal'
-import { PrimaryButton, SecondaryButton, IconButton } from '@/components/Button'
+import { PrimaryButton, SecondaryButton, IconButton, NavButton } from '@/components/Button'
 import DepositModal from '@/components/DepositModal'
 import WithdrawModal from '@/components/WithdrawModal'
+import useNeededActions from '@/hooks/useNeededActions'
 
 const RotatingIconButton = styled(IconButton)`
   & svg {
@@ -29,11 +30,20 @@ const StyledAccountStatus = styled.div`
   align-items: center;
   gap: 20px;
   height: 100%;
+
+  a {
+    height: 100%;
+  }
 `
 
 export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement>) {
+  // current user
   const currentUser = useCurrentUser()
 
+  // needed actions
+  const neededActions = useNeededActions()
+
+  // modal
   const toggleSettingsModal = useSettingsModalToggle()
 
   const toggleAuthModal = useAuthModalToggle()
@@ -55,11 +65,14 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
       <StyledAccountStatus {...props}>
         {!!currentUser ? (
           <>
-            <NavLink href={`/user/${currentUser.slug}`}>{currentUser.username}</NavLink>
+            <ActiveLink href={`/user/${currentUser.slug}`}>
+              <NavButton>{currentUser.username}</NavButton>
+            </ActiveLink>
+
             <RotatingIconButton
               onClick={toggleSettingsModal}
               alert={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
-              notifications={currentUser?.retrievableEthers.length}
+              notifications={neededActions.total}
             >
               <Settings />
             </RotatingIconButton>

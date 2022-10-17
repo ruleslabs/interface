@@ -17,6 +17,7 @@ import { useRevokeSessionMutation } from '@/state/auth/hooks'
 import { useDepositModalToggle, useWithdrawModalToggle } from '@/state/application/hooks'
 import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
+import useNeededActions from '@/hooks/useNeededActions'
 
 const Balance = styled(Row)<{ alert?: boolean }>`
   align-items: center;
@@ -59,6 +60,9 @@ interface SettingsProps extends React.HTMLAttributes<HTMLDivElement> {
 export default function Settings({ dispatch, ...props }: SettingsProps) {
   const currentUser = useCurrentUser()
   const router = useRouter()
+
+  // needed actions
+  const neededActions = useNeededActions()
 
   // Deposit ETH
   const toggleDepositModal = useDepositModalToggle()
@@ -120,9 +124,16 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
           </TYPE.body>
         )}
         {currentUser?.starknetWallet.address && (
-          <Notifiable notifications={currentUser?.retrievableEthers.length}>
+          <Notifiable notifications={neededActions.withdraw}>
             <TYPE.body onClick={toggleWithdrawModal} clickable>
               <Trans>Withdraw ETH</Trans>
+            </TYPE.body>
+          </Notifiable>
+        )}
+        {neededActions.upgrade && (
+          <Notifiable notifications={neededActions.upgrade}>
+            <TYPE.body onClick={toggleWithdrawModal} clickable>
+              <Trans>Upgrade wallet</Trans>
             </TYPE.body>
           </Notifiable>
         )}

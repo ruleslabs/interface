@@ -874,8 +874,11 @@ msgstr "Le pack de lancement de la Saison 1."
 msgid "Contains 3 common cards to start your journey."
 msgstr "Contient 3 cartes communes pour commencer sa collection."
 
-msgid "The first Base Pack of the 1st Season."
-msgstr "Le premier Base Pack de la Saison 1."
+msgid "Find Kerchak and all the Rules artists in this first Base Pack !"
+msgstr "Retrouve Kerchak et tous les artistes de Rules dans ce premier Base Pack !"
+
+msgid "The pack with a delicious sweet taste."
+msgstr "Le Pack au délicieux goût sucré."
 
 #: src/components/OfferModal/index.tsx
 msgid "Offer this {artistName}"

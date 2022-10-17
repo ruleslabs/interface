@@ -2,12 +2,13 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
 import AccountStatus from '@/components/AccountStatus'
-import { NavLink } from '@/components/NavLink'
-import Link from '@/components/Link'
+import { NavButton } from '@/components/Button'
+import Link, { ActiveLink } from '@/components/Link'
 import { useOpenModal, useCloseModal, useModalOpen } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import NavModal from '@/components/NavModal'
 import { useCurrentUser } from '@/state/user/hooks'
+import useNeededActions from '@/hooks/useNeededActions'
 
 import Logo from '@/public/assets/logo.svg'
 import Hamburger from '@/images/hamburger.svg'
@@ -76,12 +77,7 @@ const HamburgerWrapper = styled.div<{ alert?: boolean; notifications?: number }>
   ${({ theme, notifications = 0 }) => notifications && theme.before.notifications``}
 `
 
-interface MenuLink {
-  name: string
-  link: string
-}
-
-export const menuLinks: MenuLink[] = [
+export const menuLinks = [
   { name: 'Packs', link: '/packs' },
   { name: 'Marketplace', link: '/marketplace' },
   { name: 'Community', link: '/community' },
@@ -93,6 +89,9 @@ export default function Header() {
   const allModalsClosed = useModalOpen(null)
   const currentUser = useCurrentUser()
 
+  // needed actions
+  const neededActions = useNeededActions()
+
   return (
     <StyledHeader>
       <Link href="/">
@@ -100,12 +99,12 @@ export default function Header() {
       </Link>
 
       <NavBar>
-        {menuLinks.map((menuLink: MenuLink, index: number) => (
-          <Trans
-            key={`nav-link-${index}`}
-            id={menuLink.name}
-            render={({ translation }) => <NavLink href={menuLink.link}>{translation}</NavLink>}
-          />
+        {menuLinks.map((menuLink, index: number) => (
+          <ActiveLink key={`nav-link-${index}`} href={menuLink.link}>
+            <NavButton>
+              <Trans id={menuLink.name} render={({ translation }) => translation} />
+            </NavButton>
+          </ActiveLink>
         ))}
       </NavBar>
 
@@ -117,7 +116,7 @@ export default function Header() {
         {allModalsClosed ? (
           <HamburgerWrapper
             alert={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
-            notifications={currentUser?.retrievableEthers.length}
+            notifications={neededActions.total}
           >
             <Hamburger onClick={openNavModal} />
           </HamburgerWrapper>

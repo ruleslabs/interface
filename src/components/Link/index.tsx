@@ -1,8 +1,11 @@
 import React from 'react'
-import styled from 'styled-components'
 import NextLink from 'next/link'
+import { useRouter } from 'next/router'
+import styled from 'styled-components'
 
 const StyledLink = styled.a<{ color?: string; underline: boolean }>`
+  outline: none;
+
   ${({ color = 'primary1', theme, underline }) => `
     color: ${(theme as any)[color]};
 
@@ -28,4 +31,24 @@ export default function Link({ href, color, target, children, underline = false,
       </StyledLink>
     </NextLink>
   )
+}
+
+// Active Link
+
+interface ActiveLinkProps {
+  children: React.ReactElement
+  href: string
+  perfectMatch?: boolean
+}
+
+export function ActiveLink({ children, href, perfectMatch = false }: ActiveLinkProps) {
+  const { asPath } = useRouter()
+  const childClassName = children.props.className ?? ''
+
+  const className =
+    (perfectMatch && asPath === href) || (!perfectMatch && asPath.indexOf(href) === 0)
+      ? `${childClassName} active`.trim()
+      : childClassName
+
+  return <Link href={href}>{React.cloneElement(children, { className: className || null })}</Link>
 }

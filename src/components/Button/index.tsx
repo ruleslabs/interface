@@ -72,6 +72,50 @@ export const IconButton = styled.button<{ alert?: boolean; notifications?: numbe
   ${({ theme, notifications = 0 }) => notifications && theme.before.notifications``}
 `
 
+export const NavButton = styled(TYPE.body)<{ alert?: boolean; notifications?: number }>`
+  display: flex;
+  padding: 0 20px;
+  height: 100%;
+  align-items: center;
+  transition: 100ms ease background;
+  cursor: pointer;
+
+  &.active,
+  &:hover {
+    background: ${({ theme }) => theme.bg3};
+  }
+
+  &.active {
+    font-weight: 700;
+  }
+
+  ${({ theme }) => theme.media.medium`
+    &.active,
+    &:hover {
+      background: ${theme.bg3};
+    }
+  `}
+
+  ${({ theme, alert = false }) => alert && theme.before.alert``}
+  ${({ theme, notifications = 0 }) => notifications && theme.before.notifications``}
+`
+
+export const TabButton = styled(TYPE.body)`
+  padding-bottom: 8px;
+  cursor: pointer;
+  border-width: 0 0 1px;
+  border-style: solid;
+  border-color: transparent;
+  transition: 100ms ease border-color;
+
+  &.active {
+    font-weight: 700;
+    border-color: ${({ theme }) => theme.white};
+  }
+`
+
+// More complex components
+
 const StyledRowButton = styled.button`
   border: none;
   outline: none;

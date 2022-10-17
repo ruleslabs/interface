@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
+import { ActiveLink } from '@/components/Link'
 import { useCurrentUser } from '@/state/user/hooks'
 import Modal from '@/components/Modal'
-import { NavLink, NavLinkProps, NavButton } from '@/components/NavLink'
 import Column from '@/components/Column'
 import { useNavModalToggle, useModalOpen, useAuthModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
@@ -13,8 +13,9 @@ import { ApplicationModal } from '@/state/application/actions'
 import { BackButton } from '@/components/Button'
 import Settings from '@/components/SettingsModal/Settings'
 import LanguageSelector from '@/components/LanguageSelector'
-import { SecondaryButton, PrimaryButton } from '@/components/Button'
+import { SecondaryButton, PrimaryButton, NavButton } from '@/components/Button'
 import { menuLinks } from '@/components/Header'
+import useNeededActions from '@/hooks/useNeededActions'
 
 const StyledNavModal = styled.div`
   margin-top: ${({ theme }) => theme.size.headerHeightMedium};
@@ -32,56 +33,39 @@ const NavWrapper = styled(Column)`
   right: 18px;
 `
 
-const NavLinkButtonStyle = css`
+const StyledNavButton = styled(NavButton)`
   width: 100%;
-  margin: 14px 0;
-  padding: 0 16px 0 12px;
-  font-size: 1rem;
   height: fit-content;
-`
-
-const StyledNavLink = styled(NavLink)`
-  ${NavLinkButtonStyle}
-`
-
-const StyledNavButton = styled(NavButton)<{ alert?: boolean; notifications?: number }>`
-  ${NavLinkButtonStyle}
-
-  ${({ theme, alert = false }) => alert && theme.before.alert``}
-  ${({ theme, notifications = 0 }) => notifications && theme.before.notifications``}
+  padding: 16px 12px;
 `
 
 const StyledLanguageSelector = styled(LanguageSelector)`
   margin: 16px 0;
 `
 
-const CustomNavLink = (props: NavLinkProps) => {
-  const toggleNavModal = useNavModalToggle()
+const Notifiable = styled.div`
+  height: 100%;
 
-  return <StyledNavLink onClick={toggleNavModal} {...props} />
-}
+  ${({ theme, notifications = 0 }) =>
+    notifications &&
+    theme.before.notifications`
+      ::before {
+        top: -1px;
+        right: -24px;
+      }
+    `}
+`
 
-interface SettingsProps extends React.HTMLAttributes<HTMLDivElement> {
-  dispatch: () => void
-}
-
-const CustomSettings = ({ dispatch, ...props }: SettingsProps) => {
-  const toggleNavModal = useNavModalToggle()
-
-  return (
-    <Column gap={24} {...props}>
-      <BackButton onClick={dispatch} style={{ padding: '12px 0' }} />
-      <Settings dispatch={toggleNavModal} />
-    </Column>
-  )
-}
-
-const StyledSettings = styled(CustomSettings)`
+const StyledSettings = styled(Column)`
+  gap: 24px;
   padding-left: 12px;
 `
 
 export default function NavModal() {
   const currentUser = useCurrentUser()
+
+  // needed actions
+  const neededActions = useNeededActions()
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const toggleSettings = useCallback(() => setIsSettingsOpen(!isSettingsOpen), [isSettingsOpen])
@@ -109,30 +93,33 @@ export default function NavModal() {
       <StyledNavModal>
         <NavWrapper gap={16}>
           {isSettingsOpen && currentUser ? (
-            <StyledSettings dispatch={toggleSettings} />
+            <StyledSettings>
+              <BackButton onClick={toggleSettings} style={{ padding: '12px 0' }} />
+              <Settings dispatch={toggleNavModal} />
+            </StyledSettings>
           ) : (
             <>
-              {currentUser && <CustomNavLink href={`/user/${currentUser.slug}`}>{currentUser.username}</CustomNavLink>}
+              {currentUser && (
+                <ActiveLink href={`/user/${currentUser.slug}`} onClick={toggleNavModal}>
+                  <StyledNavButton>{currentUser.username}</StyledNavButton>
+                </ActiveLink>
+              )}
 
               {menuLinks.map((menuLink, index: number) => (
-                <Trans
-                  key={`nav-link-${index}`}
-                  id={menuLink.name}
-                  render={({ translation }) => (
-                    <CustomNavLink href={menuLink.link} onClick={toggleNavModal}>
-                      {translation}
-                    </CustomNavLink>
-                  )}
-                />
+                <ActiveLink key={`nav-link-${index}`} href={menuLink.link} onClick={toggleNavModal}>
+                  <StyledNavButton>
+                    <Trans id={menuLink.name} render={({ translation }) => translation} />
+                  </StyledNavButton>
+                </ActiveLink>
               ))}
 
               {currentUser ? (
                 <StyledNavButton
                   onClick={toggleSettings}
                   alert={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
-                  notifications={currentUser?.retrievableEthers.length}
                 >
                   <Trans>Settings</Trans>
+                  <Notifiable notifications={neededActions.total} />
                 </StyledNavButton>
               ) : (
                 <>

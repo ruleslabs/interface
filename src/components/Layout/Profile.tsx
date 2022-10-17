@@ -3,12 +3,13 @@ import styled from 'styled-components'
 import { useRouter } from 'next/router'
 import { Trans } from '@lingui/macro'
 
+import { ActiveLink } from '@/components/Link'
 import Section from '@/components/Section'
 import { TYPE } from '@/styles/theme'
 import Row, { RowCenter } from '@/components/Row'
 import { ColumnCenter } from '@/components/Column'
 import User from '@/components/User'
-import TabLink from '@/components/TabLink'
+import { TabButton } from '@/components/Button'
 import { useSearchUser, useCurrentUser } from '@/state/user/hooks'
 import DiscordUser from '@/components/DiscordStatus/DiscordUser'
 
@@ -74,6 +75,12 @@ const StyledDiscordUser = styled(DiscordUser)`
   `}
 `
 
+export const tabLinks = [
+  { name: 'Deck', link: '' },
+  { name: 'Cards', link: '/cards' },
+  { name: 'Packs', link: '/packs' },
+] // TODO: move it somewhere else as a single source of truth
+
 export default function ProfileLayout({ children }: { children: React.ReactElement }) {
   const router = useRouter()
   const { username } = router.query
@@ -124,15 +131,13 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
           )}
         </UserSection>
         <TabBar>
-          <TabLink href={`/user/${userSlug}`}>
-            <Trans>Deck</Trans>
-          </TabLink>
-          <TabLink href={`/user/${userSlug}/cards`}>
-            <Trans>Cards</Trans>
-          </TabLink>
-          <TabLink href={`/user/${userSlug}/packs`}>
-            <Trans>Packs</Trans>
-          </TabLink>
+          {tabLinks.map((tabLink, index: number) => (
+            <ActiveLink key={`tab-link-${index}`} href={`/user/${userSlug}${tabLink.link}`} perfectMatch>
+              <TabButton>
+                <Trans id={tabLink.name} render={({ translation }) => translation} />
+              </TabButton>
+            </ActiveLink>
+          ))}
         </TabBar>
       </StyledSection>
       {React.cloneElement(children, { userId: user.id })}
