@@ -2594,10 +2594,10 @@
     redux-thunk "^2.4.1"
     reselect "^4.1.5"
 
-"@rulesorg/sdk-core@^0.8.12":
-  version "0.8.12"
-  resolved "https://registry.yarnpkg.com/@rulesorg/sdk-core/-/sdk-core-0.8.12.tgz#a4593142695579df420fdb5b99a4593e5b45c703"
-  integrity sha512-H1asZ45ebMdhliZrpR64LAhmxtN87IavXgkVSmKhWmp1aW6xvQ+kogBL64QrCGd4QMbPciMGyFEni2yItxfvmw==
+"@rulesorg/sdk-core@^0.9.1":
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/@rulesorg/sdk-core/-/sdk-core-0.9.1.tgz#8334d6f963ab9b0c8576965e32625620df2bfa66"
+  integrity sha512-bZCauGou7bSuWb9U6ydY6SFxEv0b99z6LIwig7GesKs5P5GbyfnW3UvZGJLqmhd5/DfexkQmOr+v61x+/jMiTA==
   dependencies:
     big.js "^6.2.1"
     decimal.js-light "^2.5.1"

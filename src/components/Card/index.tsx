@@ -19,7 +19,7 @@ export const ErrorCard = styled(TYPE.body)`
   background: ${({ theme }) => theme.error}26;
   border: 1px solid ${({ theme }) => theme.error};
   border-radius: 3px;
-  padding: 24px 36px;
+  padding: 24px;
   width: 100%;
 
   span,
@@ -32,7 +32,7 @@ export const ErrorCard = styled(TYPE.body)`
 export const InfoCard = styled(TYPE.body)`
   border: 1px solid ${({ theme }) => theme.bg3};
   border-radius: 3px;
-  padding: 24px 36px;
+  padding: 24px;
   width: 100%;
 
   span,

@@ -14,7 +14,7 @@ import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import { storeAccessToken } from '@/utils/accessToken'
 import { useRemoveCurrentUser } from '@/state/user/hooks'
 import { useRevokeSessionMutation } from '@/state/auth/hooks'
-import { useDepositModalToggle, useWithdrawModalToggle } from '@/state/application/hooks'
+import { useDepositModalToggle, useWithdrawModalToggle, useUpgradeWalletModalToggle } from '@/state/application/hooks'
 import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
 import useNeededActions from '@/hooks/useNeededActions'
@@ -67,6 +67,7 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
   // Deposit ETH
   const toggleDepositModal = useDepositModalToggle()
   const toggleWithdrawModal = useWithdrawModalToggle()
+  const toggleUpgradeWalletModal = useUpgradeWalletModalToggle()
 
   // ETH balance
   const weiAmountToEURValue = useWeiAmountToEURValue()
@@ -130,9 +131,9 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
             </TYPE.body>
           </Notifiable>
         )}
-        {neededActions.upgrade && (
+        {!!neededActions.upgrade && (
           <Notifiable notifications={neededActions.upgrade}>
-            <TYPE.body onClick={toggleWithdrawModal} clickable>
+            <TYPE.body onClick={toggleUpgradeWalletModal} clickable>
               <Trans>Upgrade wallet</Trans>
             </TYPE.body>
           </Notifiable>

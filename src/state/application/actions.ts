@@ -14,6 +14,7 @@ export enum ApplicationModal {
   CREATE_OFFER,
   CANCEL_OFFER,
   ACCEPT_OFFER,
+  UPGRADE_WALLET,
 }
 
 export const setOpenModal = createAction<{ modal: ApplicationModal | null }>('application/setOpenModal')

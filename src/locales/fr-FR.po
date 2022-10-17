@@ -1140,3 +1140,34 @@ msgstr "En production"
 #: src/components/CardOwnership/index.tsx
 msgid "Update price"
 msgstr "Changer le prix"
+
+#: src/components/WalletUpgradeModal/index.tsx
+msgid "You need to update your wallet to keep your ETHs safe"
+msgstr "Tu dois mettre à jour ton portefeuille pour garder tes ETHs en sécurité"
+
+#: src/components/WalletUpgradeModal/index.tsx
+msgid "<0>Starknet released the Alpha 0.10.0</0> and it implies some changes for your wallet. If you don't hold ETHs, the upgrade is not mandatory but still recommended."
+msgstr "<0>Starknet est passé en version Alpha 0.10.0</0> et ça implique quelques changements pour ton portefeuille. Si tu ne détiens pas d'Ethereum, la mise à jour n'est pas obligatoire mais recommandée."
+
+#: src/components/WalletUpgradeModal/index.tsx
+msgid "Don't panic, this upgrade comes with a surprise.<0/>Upgrade your account and unlock an exclusive discord skin."
+msgstr "Pas de panique, cette mise à jour arrive avec une surprise.<0/>Met à jour ton portefeuille et débloque un skin discord exclusif."
+
+#: src/components/WalletUpgradeModal/index.tsx
+msgid "Upgrade your wallet"
+msgstr "Met à jour ton portefeuille"
+#: src/components/WalletUpgradeModal/index.tsx
+msgid "Your wallet will be upgraded"
+msgstr "Ton wallet va être mit à jour"
+
+#: src/components/WalletUpgradeModal/index.tsx
+msgid "Confirm wallet upgrade"
+msgstr "Confirme la mise à jour de ton portefeuille"
+
+#: src/components/WalletUpgradeModal/index.tsx
+msgid "wallet upgrade."
+msgstr "mise à jour du portefeuille."
+
+#: src/components/WalletUpgradeModal/index.tsx
+msgid "Upgrade"
+msgstr "Mettre à jour"

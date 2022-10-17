@@ -102,7 +102,7 @@ export default function Header() {
         {menuLinks.map((menuLink, index: number) => (
           <ActiveLink key={`nav-link-${index}`} href={menuLink.link}>
             <NavButton>
-              <Trans id={menuLink.name} render={({ translation }) => translation} />
+              <Trans id={menuLink.name} render={({ translation }) => <>{translation}</>} />
             </NavButton>
           </ActiveLink>
         ))}

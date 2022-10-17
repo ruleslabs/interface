@@ -13,6 +13,7 @@ import AuthModal from '@/components/AuthModal'
 import { PrimaryButton, SecondaryButton, IconButton, NavButton } from '@/components/Button'
 import DepositModal from '@/components/DepositModal'
 import WithdrawModal from '@/components/WithdrawModal'
+import WalletUpgradeModal from '@/components/WalletUpgradeModal'
 import useNeededActions from '@/hooks/useNeededActions'
 
 const RotatingIconButton = styled(IconButton)`
@@ -92,6 +93,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
       <SettingsModal currentUser={currentUser} />
       <DepositModal />
       <WithdrawModal />
+      <WalletUpgradeModal />
       <AuthModal />
     </>
   )

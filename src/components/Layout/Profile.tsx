@@ -134,7 +134,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
           {tabLinks.map((tabLink, index: number) => (
             <ActiveLink key={`tab-link-${index}`} href={`/user/${userSlug}${tabLink.link}`} perfectMatch>
               <TabButton>
-                <Trans id={tabLink.name} render={({ translation }) => translation} />
+                <Trans id={tabLink.name} render={({ translation }) => <>{translation}</>} />
               </TabButton>
             </ActiveLink>
           ))}

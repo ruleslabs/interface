@@ -39,3 +39,7 @@ export const L2_STARKGATE_ADDRESSES: AddressesMap = {
   [SupportedNetworks.GOERLI]: '0x73314940630fd6dcda0d772d4c972c4e0a9946bef9dabf4ef84eda8ef542b82',
   [SupportedNetworks.MAINNET]: '0x73314940630fd6dcda0d772d4c972c4e0a9946bef9dabf4ef84eda8ef542b82',
 }
+
+// Class hashes
+
+export const ACCOUNT_CLASS_HASH = '0x6d706cfbac9b8262d601c38251c5fbe0497c3a96cc91a92b08d91b61d9e70c4'

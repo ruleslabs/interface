@@ -78,6 +78,14 @@ const RETRIEVE_ETHER_MUTATION = gql`
   }
 `
 
+const UPGRADE_WALLET_MUTATION = gql`
+  mutation ($maxFee: String!, $nonce: String!, $signature: String!) {
+    upgradeWallet(input: { maxFee: $maxFee, nonce: $nonce, signature: $signature }) {
+      hash
+    }
+  }
+`
+
 interface Balance {
   low?: string
   high?: string
@@ -149,4 +157,8 @@ export function useWithdrawEtherMutation() {
 
 export function useRetrieveEtherMutation() {
   return useMutation(RETRIEVE_ETHER_MUTATION)
+}
+
+export function useUpgradeWalletMutation() {
+  return useMutation(UPGRADE_WALLET_MUTATION)
 }

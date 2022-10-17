@@ -108,7 +108,7 @@ export default function NavModal() {
               {menuLinks.map((menuLink, index: number) => (
                 <ActiveLink key={`nav-link-${index}`} href={menuLink.link} onClick={toggleNavModal}>
                   <StyledNavButton>
-                    <Trans id={menuLink.name} render={({ translation }) => translation} />
+                    <Trans id={menuLink.name} render={({ translation }) => <>{translation}</>} />
                   </StyledNavButton>
                 </ActiveLink>
               ))}

@@ -86,3 +86,7 @@ export function useCancelOfferModalToggle(): () => void {
 export function useAcceptOfferModalToggle(): () => void {
   return useToggleModal(ApplicationModal.ACCEPT_OFFER)
 }
+
+export function useUpgradeWalletModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.UPGRADE_WALLET)
+}
