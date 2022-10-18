@@ -27,6 +27,7 @@ const CURRENT_USER_QUERY = gql`
         signerEscapeTriggeredAt
         needsSignerPublicKeyUpdate
         transactionVersion
+        needsUpgrade
         rulesPrivateKey {
           salt
           iv

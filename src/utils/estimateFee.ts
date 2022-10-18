@@ -88,8 +88,11 @@ export default async function estimateFee(
         headers: { 'Content-Type': 'application/json' },
       })
 
-      const textResponse = await res.text()
-      const response = json.parse(textResponse)
+      const responseBody = await res.text()
+
+      if (!res.ok) throw responseBody.message
+
+      const response = json.parse(responseBody)
       const parsedResponse = parseFeeEstimateResponse(response)
 
       const suggestedMaxFee = stark.estimatedFeeToMaxFee(parsedResponse.overall_fee)

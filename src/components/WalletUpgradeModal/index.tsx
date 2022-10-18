@@ -20,7 +20,7 @@ import Link from '@/components/Link'
 
 import Pumpkin from '@/images/pumpkin.svg'
 
-const Skin = styled.div`
+const Badge = styled.div`
   width: 72px;
   height: 72px;
   border: 4px solid #f3900e;
@@ -29,9 +29,9 @@ const Skin = styled.div`
   padding: 12px 14px 16px;
   background: ${({ theme }) => theme.bg1};
   margin: 16px auto 0;
-  animation: rotate 5s linear infinite;
+  animation: badge-float 5s linear infinite;
 
-  @keyframes rotate {
+  @keyframes badge-float {
     0% {
       transform: translatey(0px) scale(1.02);
     }
@@ -46,7 +46,11 @@ const Skin = styled.div`
   }
 `
 
-export default function UpgradeWalletModal() {
+interface UpgradeWalletModalProps {
+  onSuccess(): void
+}
+
+export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProps) {
   // current user
   const currentUser = useCurrentUser()
 
@@ -74,24 +78,28 @@ export default function UpgradeWalletModal() {
   const [upgradeWalletMutation] = useUpgradeWalletMutation()
   const [txHash, setTxHash] = useState<string | null>(null)
 
-  const onSignature = useCallback((signature: Signature, maxFee: string, nonce: string) => {
-    upgradeWalletMutation({ variables: { maxFee, nonce, signature: JSON.stringify(signature) } })
-      .then((res?: any) => {
-        const hash = res?.data?.upgradeWallet?.hash
-        if (!hash) {
-          onError('Transaction not received')
-          return
-        }
+  const onSignature = useCallback(
+    (signature: Signature, maxFee: string, nonce: string) => {
+      upgradeWalletMutation({ variables: { maxFee, nonce, signature: JSON.stringify(signature) } })
+        .then((res?: any) => {
+          const hash = res?.data?.upgradeWallet?.hash
+          if (!hash) {
+            onError('Transaction not received')
+            return
+          }
 
-        setTxHash(hash)
-      })
-      .catch((upgradeWalletError: ApolloError) => {
-        const error = upgradeWalletError?.graphQLErrors?.[0]
-        onError(error?.message ?? 'Transaction not received')
+          onSuccess()
+          setTxHash(hash)
+        })
+        .catch((upgradeWalletError: ApolloError) => {
+          const error = upgradeWalletError?.graphQLErrors?.[0]
+          onError(error?.message ?? 'Transaction not received')
 
-        console.error(error)
-      })
-  }, [])
+          console.error(error)
+        })
+    },
+    [onSuccess]
+  )
 
   // on close modal
   useEffect(() => {
@@ -137,12 +145,12 @@ export default function UpgradeWalletModal() {
             <Trans>
               Don&apos;t panic, this upgrade comes with a surprise.
               <br />
-              Upgrade your account and unlock an exclusive discord skin.
+              Upgrade your account and unlock an exclusive discord badge.
             </Trans>
 
-            <Skin>
+            <Badge>
               <Pumpkin />
-            </Skin>
+            </Badge>
           </InfoCard>
 
           {currentUser?.starknetWallet.needsSignerPublicKeyUpdate && (

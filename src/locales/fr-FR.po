@@ -631,10 +631,6 @@ msgid "Your {packName} is on its way"
 msgstr "Votre {packName} est en route"
 
 #: src/components/PackPurchaseModal/Confirmation.tsx
-msgid "View on Voyager"
-msgstr "Voir sur Voyager"
-
-#: src/components/PackPurchaseModal/Confirmation.tsx
 msgid "Copy"
 msgstr "Copier"
 
@@ -945,8 +941,8 @@ msgid "See on Etherscan"
 msgstr "Voir sur Etherscan"
 
 #: src/components/OfferModal/Confirmation.tsx
-msgid "See on Voyager"
-msgstr "Voir sur Voyager"
+msgid "See on Starkscan"
+msgstr "Voir sur Starkscan"
 
 #: src/components/DepositModal/Confirmation.tsx
 #: src/components/OfferModal/Confirmation.tsx
@@ -960,6 +956,10 @@ msgstr "Votre carte est en route"
 #: src/components/OfferModal/Confirmation.tsx
 msgid "The transaction might take a few hours to succeed."
 msgstr "La transaction peut prendre quelques heures."
+
+#: src/components/OfferModal/Confirmation.tsx
+msgid "The transaction might take a few minutes to succeed."
+msgstr "La transaction peut prendre quelques minutes."
 
 #: src/components/StarknetSigner/index.tsx
 msgid "You do not have enough ETH in your Rules wallet to pay for network fees on Starknet.<0/><1>Buy ETH or deposit from another wallet.</1>"
@@ -1147,18 +1147,19 @@ msgstr "Tu dois mettre à jour ton portefeuille pour garder tes ETHs en sécurit
 
 #: src/components/WalletUpgradeModal/index.tsx
 msgid "<0>Starknet released the Alpha 0.10.0</0> and it implies some changes for your wallet. If you don't hold ETHs, the upgrade is not mandatory but still recommended."
-msgstr "<0>Starknet est passé en version Alpha 0.10.0</0> et ça implique quelques changements pour ton portefeuille. Si tu ne détiens pas d'Ethereum, la mise à jour n'est pas obligatoire mais recommandée."
+msgstr "<0>Starknet est passé en version Alpha 0.10.0</0> et ça implique quelques changements pour ton portefeuille. Si tu ne détiens pas d'ETHs, la mise à jour n'est pas obligatoire mais recommandée."
 
 #: src/components/WalletUpgradeModal/index.tsx
-msgid "Don't panic, this upgrade comes with a surprise.<0/>Upgrade your account and unlock an exclusive discord skin."
-msgstr "Pas de panique, cette mise à jour arrive avec une surprise.<0/>Met à jour ton portefeuille et débloque un skin discord exclusif."
+msgid "Don't panic, this upgrade comes with a surprise.<0/>Upgrade your account and unlock an exclusive discord badge."
+msgstr "Pas de panique, cette mise à jour arrive avec une surprise.<0/>Mets à jour ton portefeuille et débloque un badge discord exclusif."
 
 #: src/components/WalletUpgradeModal/index.tsx
 msgid "Upgrade your wallet"
-msgstr "Met à jour ton portefeuille"
+msgstr "Mets à jour ton portefeuille"
+
 #: src/components/WalletUpgradeModal/index.tsx
 msgid "Your wallet will be upgraded"
-msgstr "Ton wallet va être mit à jour"
+msgstr "Ton wallet va être mis à jour"
 
 #: src/components/WalletUpgradeModal/index.tsx
 msgid "Confirm wallet upgrade"

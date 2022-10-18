@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
 import { ActiveLink } from '@/components/Link'
-import { useCurrentUser } from '@/state/user/hooks'
+import { useCurrentUser, useSetCurrentUser } from '@/state/user/hooks'
 import { useSettingsModalToggle, useAuthModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
@@ -61,6 +61,13 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
   const toggleSignInModal = () => toggleAuthModalWithMode(AuthMode.SIGN_IN)
   const toggleSignUpModal = () => toggleAuthModalWithMode(AuthMode.SIGN_UP)
 
+  // wallet upgrade
+  const setCurrentUser = useSetCurrentUser()
+  const onSuccessfulWalletUpgrade = useCallback(
+    () => setCurrentUser({ ...currentUser, starknetWallet: { ...currentUser.starknetWallet, needsUpgrade: false } }),
+    [setCurrentUser, currentUser]
+  )
+
   return (
     <>
       <StyledAccountStatus {...props}>
@@ -93,7 +100,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
       <SettingsModal currentUser={currentUser} />
       <DepositModal />
       <WithdrawModal />
-      <WalletUpgradeModal />
+      <WalletUpgradeModal onSuccess={onSuccessfulWalletUpgrade} />
       <AuthModal />
     </>
   )
