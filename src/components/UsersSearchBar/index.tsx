@@ -10,8 +10,7 @@ import { useSearchUsers } from '@/state/search/hooks'
 import useDebounce from '@/hooks/useDebounce'
 import { TYPE } from '@/styles/theme'
 import { useCurrentUser } from '@/state/user/hooks'
-
-import Certified from '@/images/certified.svg'
+import Certified from '@/components/Certified'
 
 const StyledSearchBar = styled(SearchBar)`
   width: 100%;
@@ -69,7 +68,6 @@ const SearchSuggestedUser = styled(RowCenter)`
 `
 
 const StyledCertified = styled(Certified)`
-  width: 18px;
   position: absolute;
   top: 6px;
   left: 47px;

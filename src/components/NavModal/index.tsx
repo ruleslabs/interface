@@ -43,7 +43,7 @@ const StyledLanguageSelector = styled(LanguageSelector)`
   margin: 16px 0;
 `
 
-const Notifiable = styled.div`
+const Notifiable = styled.div<{ notifications?: number }>`
   height: 100%;
 
   ${({ theme, notifications = 0 }) =>

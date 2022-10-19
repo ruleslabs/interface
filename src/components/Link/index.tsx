@@ -35,13 +35,13 @@ export default function Link({ href, color, target, children, underline = false,
 
 // Active Link
 
-interface ActiveLinkProps {
+interface ActiveLinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
   children: React.ReactElement
   href: string
   perfectMatch?: boolean
 }
 
-export function ActiveLink({ children, href, perfectMatch = false }: ActiveLinkProps) {
+export function ActiveLink({ children, href, perfectMatch = false, ...props }: ActiveLinkProps) {
   const { asPath } = useRouter()
   const childClassName = children.props.className ?? ''
 
@@ -50,5 +50,9 @@ export function ActiveLink({ children, href, perfectMatch = false }: ActiveLinkP
       ? `${childClassName} active`.trim()
       : childClassName
 
-  return <Link href={href}>{React.cloneElement(children, { className: className || null })}</Link>
+  return (
+    <Link href={href} {...props}>
+      {React.cloneElement(children, { className: className || null })}
+    </Link>
+  )
 }

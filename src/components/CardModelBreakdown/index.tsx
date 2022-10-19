@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
-import Certified from '@/images/certified.svg'
+import Certified from '@/components/Certified'
 import Link from '@/components/Link'
 
 const UserLogin = styled(RowCenter)`
@@ -48,7 +48,7 @@ export default function CardModelBreakdown({
             <Trans>Official card</Trans>
           </TYPE.body>
         )}
-        <Certified width="18px" />
+        <Certified />
       </UserLogin>
       <Column gap={8}>
         <TYPE.body>

@@ -90,7 +90,7 @@ export default async function estimateFee(
 
       const responseBody = await res.text()
 
-      if (!res.ok) throw responseBody.message
+      if (!res.ok) throw (responseBody as any).message
 
       const response = json.parse(responseBody)
       const parsedResponse = parseFeeEstimateResponse(response)

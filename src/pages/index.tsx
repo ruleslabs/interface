@@ -23,7 +23,7 @@ const Video = styled.video`
   ${({ theme }) => theme.media.medium`
     top: ${theme.size.headerHeightMedium};
     height: calc(100% - ${theme.size.headerHeightMedium} + 128px);
-    object-position: left;
+    object-position: center;
   `}
 `
 
@@ -109,9 +109,11 @@ export default function Home() {
     }
   }, [])
 
+  return <Video src="https://videos.rules.art/mp4/halloween-homepage.mp4" playsInline loop autoPlay muted />
+
   return (
     <>
-      <Video src="https://videos.rules.art/mp4/homepage.mp4" playsInline loop autoPlay muted />
+      <Video src="https://videos.rules.art/mp4/halloween-homepage.mp4" playsInline loop autoPlay muted />
       <Section>
         <StyledYoutubeEmbed embedId="m0lYtWPhJVo" />
       </Section>

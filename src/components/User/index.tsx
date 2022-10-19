@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 import { TYPE } from '@/styles/theme'
 import Row from '@/components/Row'
 import { ColumnCenter } from '@/components/Column'
-import Certified from '@/images/certified.svg'
+import Certified from '@/components/Certified'
 import { useAvatarEditModalToggle } from '@/state/application/hooks'
 import AvatarEditModal from '@/components/AvatarEditModal'
 import { useDefaultAvatarIdFromUrl } from '@/hooks/useDefaultAvatarUrls'
@@ -79,7 +79,7 @@ export default function User({
         </UserAvatarWrapper>
         <Row gap={4}>
           <TYPE.body>{username}</TYPE.body>
-          {certified && <Certified width="18px" />}
+          {certified && <Certified />}
         </Row>
       </ColumnCenter>
       {canEdit && <AvatarEditModal currentAvatarId={defaultAvatarId} certifiedAvatarUrl={certifiedPictureUrl} />}
