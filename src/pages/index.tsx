@@ -11,19 +11,47 @@ import { useSetAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
 import Section from '@/components/Section'
 import Link from '@/components/Link'
+import useWindowSize from '@/hooks/useWindowSize'
 
-const Video = styled.video`
+const Video = styled.video<{ windowHeight?: number }>`
   position: absolute;
-  top: ${({ theme }) => theme.size.headerHeight};
-  height: calc(100% - ${({ theme }) => theme.size.headerHeight} + 128px); // 100% - header + footer
+  top: ${({ theme }) => theme.size.headerHeight}px;
+  height: ${({ theme, windowHeight = 0 }) => windowHeight - theme.size.headerHeight}px;
+  width: 100%;
+  object-fit: cover;
+  z-index: -1;
+
+  ${({ theme, windowHeight = 0 }) => theme.media.medium`
+    top: ${theme.size.headerHeightMedium};
+    height: ${windowHeight - theme.size.headerHeightMedium}px;
+    object-position: left;
+  `}
+`
+
+const DesktopVideo = styled.video<{ windowHeight?: number }>`
+  position: absolute;
+  top: ${({ theme }) => theme.size.headerHeight}px;
+  height: ${({ theme, windowHeight = 0 }) => windowHeight - theme.size.headerHeight}px;
   width: 100%;
   object-fit: cover;
   z-index: -1;
 
   ${({ theme }) => theme.media.medium`
-    top: ${theme.size.headerHeightMedium};
-    height: calc(100% - ${theme.size.headerHeightMedium} + 128px);
-    object-position: center;
+    display: none;
+  `}
+`
+
+const MobileVideo = styled.video<{ windowHeight?: number }>`
+  position: absolute;
+  top: ${({ theme }) => theme.size.headerHeightMedium}px;
+  height: ${({ theme, windowHeight = 0 }) => windowHeight - theme.size.headerHeightMedium}px;
+  width: 100%;
+  object-fit: cover;
+  z-index: -1;
+  object-position: center;
+
+  ${({ theme }) => theme.media.mediumGT`
+    display: none;
   `}
 `
 
@@ -109,7 +137,29 @@ export default function Home() {
     }
   }, [])
 
-  return <Video src="https://videos.rules.art/mp4/halloween-homepage.mp4" playsInline loop autoPlay muted />
+  // window size
+  const windowSize = useWindowSize()
+
+  return (
+    <>
+      <DesktopVideo
+        windowHeight={windowSize.height}
+        src="https://videos.rules.art/mp4/halloween-homepage-desktop.mp4"
+        playsInline
+        loop
+        autoPlay
+        muted
+      />
+      <MobileVideo
+        windowHeight={windowSize.height}
+        src="https://videos.rules.art/mp4/halloween-homepage-mobile.mp4"
+        playsInline
+        loop
+        autoPlay
+        muted
+      />
+    </>
+  )
 
   return (
     <>

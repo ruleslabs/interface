@@ -23,7 +23,7 @@ const MobileNavWrapper = styled.div`
 `
 
 const StyledHeader = styled.header`
-  height: ${({ theme }) => theme.size.headerHeight};
+  height: ${({ theme }) => theme.size.headerHeight}px;
   background-color: ${({ theme }) => theme.bg2};
   display: flex;
   align-items: center;
@@ -39,7 +39,7 @@ const StyledHeader = styled.header`
   ${({ theme }) => theme.media.medium`
     padding: 0 1rem;
     justify-content: space-between;
-    height: ${theme.size.headerHeightMedium};
+    height: ${theme.size.headerHeightMedium}px;
     z-index: 999;
   `}
 `

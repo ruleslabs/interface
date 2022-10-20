@@ -13,7 +13,7 @@ const StyledFooter = styled.footer`
   display: flex;
   align-items: center;
   justify-content: space-around;
-  bottom: -128px; // 80 + 48
+  bottom: -${({ theme }) => theme.size.footerHeight}px;
   left: 0;
   right: 0;
 `

@@ -16,10 +16,11 @@ import LanguageSelector from '@/components/LanguageSelector'
 import { SecondaryButton, PrimaryButton, NavButton } from '@/components/Button'
 import { menuLinks } from '@/components/Header'
 import useNeededActions from '@/hooks/useNeededActions'
+import useWindowSize from '@/hooks/useWindowSize'
 
-const StyledNavModal = styled.div`
-  margin-top: ${({ theme }) => theme.size.headerHeightMedium};
-  height: calc(100% - ${({ theme }) => theme.size.headerHeightMedium});
+const StyledNavModal = styled.div<{ windowHeight?: number }>`
+  margin-top: ${({ theme }) => theme.size.headerHeightMedium}px;
+  height: ${({ theme, windowHeight = 0 }) => windowHeight - theme.size.headerHeightMedium}px;
   width: 280px;
   background: ${({ theme }) => theme.bg2};
   position: relative;
@@ -88,9 +89,12 @@ export default function NavModal() {
   const toggleSignInModal = () => toggleAuthModalWithMode(AuthMode.SIGN_IN)
   const toggleSignUpModal = () => toggleAuthModalWithMode(AuthMode.SIGN_UP)
 
+  // window size
+  const windowSize = useWindowSize()
+
   return (
     <Modal onDismiss={toggleNavModal} isOpen={isOpen} sidebar>
-      <StyledNavModal>
+      <StyledNavModal windowHeight={windowSize.height}>
         <NavWrapper gap={16}>
           {isSettingsOpen && currentUser ? (
             <StyledSettings>

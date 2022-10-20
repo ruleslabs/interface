@@ -15,6 +15,7 @@ import Grid from '@/components/Grid'
 import { useSearchCards } from '@/state/search/hooks'
 import { useDeckState, useDeckActionHandlers } from '@/state/deck/hooks'
 import useDebounce from '@/hooks/useDebounce'
+import useWindowSize from '@/hooks/useWindowSize'
 
 import Close from '@/images/close.svg'
 
@@ -32,11 +33,11 @@ const QUERY_CARDS = gql`
   }
 `
 
-const StyledDeckInsertionModal = styled.div`
+const StyledDeckInsertionModal = styled.div<{ windowHeight?: number }>`
   padding: 16px;
   background: ${({ theme }) => theme.bg1};
   width: 100vw;
-  height: 100vh;
+  height: ${({ windowHeight }) => windowHeight}px;
   overflow: scroll;
 `
 
@@ -144,12 +145,15 @@ export default function DeckInsertionModal({ userId, cardIndex }: DeckInsertionM
     )
   }, [cardsData?.cardsByIds, setCardsTable])
 
+  // window size
+  const windowSize = useWindowSize()
+
   const isValid = !cardsHitsError && !cardsError
   const isLoading = cardsHitsLoading || cardsLoading
 
   return (
     <Modal onDismiss={onDismiss} isOpen={isOpen}>
-      <StyledDeckInsertionModal>
+      <StyledDeckInsertionModal windowHeight={windowSize.height}>
         <Row justify="flex-end">
           <StyledClose onClick={onDismiss} />
         </Row>

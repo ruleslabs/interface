@@ -34,7 +34,7 @@ const StyledMarketplaceSidebar = styled.div`
   background: ${({ theme }) => theme.bg2};
   position: fixed;
   width: 283px;
-  top: ${({ theme }) => theme.size.headerHeight};
+  top: ${({ theme }) => theme.size.headerHeight}px;
   bottom: 0;
   left: 0;
   z-index: 1;
@@ -46,7 +46,7 @@ const StyledMarketplaceSidebar = styled.div`
   `}
 
   ${({ theme }) => theme.media.medium`
-    top: ${theme.size.headerHeightMedium};
+    top: ${theme.size.headerHeightMedium}px;
   `}
 `
 

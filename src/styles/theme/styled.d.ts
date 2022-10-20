@@ -39,8 +39,9 @@ declare module 'styled-components' {
     }
 
     size: {
-      headerHeight: string
-      headerHeightMedium: string
+      footerHeight: number
+      headerHeight: number
+      headerHeightMedium: number
     }
   }
 }

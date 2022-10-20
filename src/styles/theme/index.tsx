@@ -103,8 +103,9 @@ function theme(darkMode: boolean) {
     before,
 
     size: {
-      headerHeight: '57px',
-      headerHeightMedium: '62px',
+      footerHeight: 128,
+      headerHeight: 57,
+      headerHeightMedium: 62,
     },
   }
 }
