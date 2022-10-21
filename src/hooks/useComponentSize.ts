@@ -1,19 +1,25 @@
-import { useEffect, useState, RefObject } from 'react'
+import { useEffect, useState, useCallback, RefObject } from 'react'
 
-export default function useComponentSize<T extends HTMLElement>(ref: RefObject<T>) {
-  const getSize = () => ({
-    width: ref?.current?.getBoundingClientRect().width ?? 0,
-    height: ref?.current?.getBoundingClientRect().height ?? 0,
-  })
+export default function useComponentRect<T extends HTMLElement>(ref: RefObject<T>) {
+  const getRect = useCallback(() => {
+    const boundingClientRect = ref?.current?.getBoundingClientRect() ?? {}
 
-  const [size, setSize] = useState({ width: 0, height: 0 })
+    return {
+      width: boundingClientRect.width ?? 0,
+      height: boundingClientRect.height ?? 0,
+      x: boundingClientRect.x ?? 0,
+      y: boundingClientRect.y ?? 0,
+    }
+  }, [ref?.current])
+
+  const [rect, setRect] = useState({ width: 0, height: 0, x: 0, y: 0 })
 
   useEffect(() => {
     const handleResize = () => {
-      setSize(getSize())
+      setRect(getRect())
     }
 
-    if (ref.current) setSize(getSize())
+    if (ref.current) setRect(getRect())
 
     window.addEventListener('resize', handleResize)
 
@@ -22,5 +28,5 @@ export default function useComponentSize<T extends HTMLElement>(ref: RefObject<T
     }
   }, [ref])
 
-  return size
+  return rect
 }

@@ -11,8 +11,8 @@ export const PASSWORD_MIN_LENGTH = 6
 
 export const BLOCK_POLLING = 10_000 // 10s
 
-export const PACK_OPENING_DURATION = 5_000 // 5s
-export const PACK_OPENING_FLASH_DURATION = 2_000 // 5s
+export const PACK_OPENING_DURATION = 5_00 // 5s
+export const PACK_OPENING_FLASH_DURATION = 2_00 // 5s
 
 export const ARTIST_FEE_PERCENTAGE = 25_000 // 2.5%
 export const MARKETPLACE_FEE_PERCENTAGE = 25_000 // 2.5%
