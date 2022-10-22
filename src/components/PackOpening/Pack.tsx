@@ -56,7 +56,7 @@ interface PackOpeningPackProps {
   pictureUrl?: string
   id?: string
   onOpening(cards: any[]): void
-  onError(): void
+  onError(error: string): void
 }
 
 export default function PackOpeningPack({ pictureUrl, id, onOpening, onError }: PackOpeningPackProps) {
@@ -93,9 +93,6 @@ export default function PackOpeningPack({ pictureUrl, id, onOpening, onError }: 
           onError(error?.message ?? 'Failed to open pack')
 
           console.error(error)
-
-          console.error(packOpeningError)
-          onError(e)
         })
     }, PACK_OPENING_DURATION) // dopamine optimization è_é
   }, [id, loop])

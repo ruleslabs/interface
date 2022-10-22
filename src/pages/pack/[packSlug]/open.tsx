@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 
-import PackOpeningLayout from '@/components/Layout/PackOpening'
 import { TYPE } from '@/styles/theme'
 import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'
@@ -45,7 +44,7 @@ const StyledSoundSwitch = styled.div`
 `
 
 const StyledPackOpeningCards = styled(PackOpeningCards)`
-  margin: 168px auto 0;
+  margin: 15vh auto 0;
 `
 
 interface SoundSwitchProps {
@@ -83,7 +82,7 @@ function PackOpening() {
 
   // opening
   const [cards, setCards] = useState<any[] | null>(null)
-  const onOpening = useCallback((cards: any[]) => setCards(cards))
+  const onOpening = useCallback((cards: any[]) => setCards(cards), [])
 
   if (loading || error || packQuery.error || !pack) return null
 
@@ -106,8 +105,6 @@ function PackOpening() {
   )
 }
 
-PackOpening.getLayout = (page: JSX.Element) => {
-  return <PackOpeningLayout>{page}</PackOpeningLayout>
-}
+PackOpening.getLayout = (page: JSX.Element) => page
 
 export default PackOpening

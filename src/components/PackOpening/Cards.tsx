@@ -4,13 +4,9 @@ import { ScarcityName } from '@rulesorg/sdk-core'
 import { useSpring, animated } from 'react-spring'
 
 import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
-import CardModelBreakdown from '@/components/CardModelBreakdown'
-import Card from '@/components/Card'
 import { useAudioLoop } from '@/state/packOpening/hooks'
 import { Sound } from '@/state/packOpening/actions'
 import Row from '@/components/Row'
-
-import Close from '@/images/close.svg'
 
 const CARD_WIDTH = 256
 const CARD_RATIO = 1.39
@@ -27,25 +23,12 @@ const StyledPackOpeningCards = styled(Row)`
   }
 `
 
-const FocusedVeil = styled.div<{ active: boolean }>`
-  z-index: 99;
-  background: #000;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  transition: opacity ${({ active }) => (active ? 100 : 600)}ms ease,
-    ${({ active }) => (active ? '' : 'visibility 0s linear 100ms')};
-  opacity: ${({ active }) => (active ? '1' : '0')};
-  visibility: ${({ active }) => (active ? 'visible' : 'hidden')};
-`
-
 const CardTranslator = styled.div`
   width: fit-content;
   cursor: pointer;
   width: 256px;
   perspective: 1000px;
+  touch-action: none;
 `
 
 const CardRotator = styled.div<{ scarcity: string; revealed: boolean }>`
@@ -65,6 +48,8 @@ const CardBackImage = styled.img`
   width: 100%;
   border-radius: 4.44% / 3.17%;
   transform: rotateY(180deg);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 `
 
 const CardFrontVideo = styled.video`
@@ -82,22 +67,6 @@ const Glare = styled.div`
   top: 0;
   width: 100%;
   bottom: 0;
-`
-
-const CardModelBreakdownWrapper = styled(Card)`
-  position: absolute;
-  left: calc(50% + ${CARD_WIDTH / 2}px);
-  top: 406px;
-  width: 300px;
-`
-
-const StyledClose = styled(Close)`
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  top: 178px;
-  left: calc(50% + ${CARD_WIDTH / 2 + 300 - 20}px);
 `
 
 interface CardImageProps {
@@ -119,17 +88,22 @@ const CardImage = ({ cards, revealedCardIndex, cardIndexToLoad, focused }: CardI
     config: { mass: 5, tension: 200, friction: 30 },
   }))
 
-  // onMouseMove
-  const onMouseMove = useCallback(
+  // onPointerMove
+  const onPointerMove = useCallback(
     (event) => {
+      // get targetRect and pointer position
       const targetRect = event.currentTarget.getBoundingClientRect()
+      const pointerPosition = {
+        x: event.clientX ?? event.touches?.[0]?.clientX,
+        y: event.clientY ?? event.touches?.[0]?.clientY,
+      }
 
-      if (!targetRect.height || !targetRect.width) return
+      if (!targetRect.height || !targetRect.width || !pointerPosition.x || !pointerPosition.y) return
 
       // mouse position
       const relativeMousePosition = {
-        x: event.clientX - Math.floor(targetRect.x),
-        y: event.clientY - Math.floor(targetRect.y),
+        x: pointerPosition.x - Math.floor(targetRect.x),
+        y: pointerPosition.y - Math.floor(targetRect.y),
       }
       const percentCenterPosition = {
         x: Math.round((100 * relativeMousePosition.x) / targetRect.width - 50),
@@ -147,8 +121,8 @@ const CardImage = ({ cards, revealedCardIndex, cardIndexToLoad, focused }: CardI
     [api]
   )
 
-  // onMouseLeave
-  const onMouseLeave = useCallback(() => api({ rotation: [0, 0], glare: [50, 50, 0] }), [api])
+  // onPointerLeave
+  const onPointerLeave = useCallback(() => api({ rotation: [0, 0], glare: [50, 50, 0] }), [api])
 
   // interpolations
   const rotationInterpolation = useCallback(
@@ -172,15 +146,13 @@ const CardImage = ({ cards, revealedCardIndex, cardIndexToLoad, focused }: CardI
   const glareOpacityInterpolation = useCallback((_mx, _my, opacity) => opacity, [])
 
   return (
-    <CardTranslator
-      position={cardIndexToLoad === 0 ? 'left' : cardIndexToLoad === 1 ? 'center' : 'right'}
-      focused={focused}
-    >
+    <CardTranslator>
       <CardRotator
         as={animated.div}
         style={{ transform: styles.rotation.to(rotationInterpolation) }}
-        onMouseMove={onMouseMove}
-        onMouseLeave={onMouseLeave}
+        onPointerMove={onPointerMove}
+        onPointerLeave={onPointerLeave}
+        onTouchMove={onPointerMove}
         revealed={revealedCardIndex !== undefined}
         scarcity={revealedCardIndex !== undefined ? cards[revealedCardIndex].cardModel.scarcity.name : ScarcityName[0]}
       >
@@ -259,39 +231,22 @@ export default function PackOpeningCards({ cards, ...props }: PackOpeningCardsPr
   const resetFocus = useCallback(() => setFocusedCard(null), [setFocusedCard])
 
   return (
-    <>
-      <StyledPackOpeningCards {...props}>
-        {Array(3)
-          .fill(0)
-          .map((_, index: number) => (
-            <CardImage
-              key={`card-image-${index}`}
-              cards={sortedCardsByScarcity}
-              cardIndexToLoad={index}
-              revealedCardIndex={revealedCardIndexes[index]}
-              onClick={() => handleCardFocus(index)}
-              focused={
-                revealedCardIndexes[index] !== undefined &&
-                focusedCard?.slug === sortedCardsByScarcity[revealedCardIndexes[index]]?.slug
-              }
-            />
-          ))}
-      </StyledPackOpeningCards>
-      <FocusedVeil onClick={resetFocus} active={!!focusedCard}>
-        <CardModelBreakdownWrapper>
-          {!!focusedCard && (
-            <CardModelBreakdown
-              artistName={focusedCard.cardModel.artist.displayName}
-              artistUsername={focusedCard.cardModel.artist.user?.username}
-              season={focusedCard.cardModel.season}
-              scarcity={focusedCard.cardModel.scarcity.name}
-              maxSupply={focusedCard.cardModel.scarcity.maxSupply}
-              serial={focusedCard.serialNumber}
-            />
-          )}
-        </CardModelBreakdownWrapper>
-        <StyledClose onClick={resetFocus} />
-      </FocusedVeil>
-    </>
+    <StyledPackOpeningCards {...props}>
+      {Array(3)
+        .fill(0)
+        .map((_, index: number) => (
+          <CardImage
+            key={`card-image-${index}`}
+            cards={sortedCardsByScarcity}
+            cardIndexToLoad={index}
+            revealedCardIndex={revealedCardIndexes[index]}
+            onClick={() => handleCardFocus(index)}
+            focused={
+              revealedCardIndexes[index] !== undefined &&
+              focusedCard?.slug === sortedCardsByScarcity[revealedCardIndexes[index]]?.slug
+            }
+          />
+        ))}
+    </StyledPackOpeningCards>
   )
 }
