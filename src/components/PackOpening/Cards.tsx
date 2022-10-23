@@ -61,13 +61,42 @@ const CardFrontVideo = styled.video`
 
 const Glare = styled.div`
   transform: translateZ(1px);
-  z-index: 2;
+  z-index: 3;
   mix-blend-mode: overlay;
   position: absolute;
   top: 0;
   width: 100%;
   bottom: 0;
 `
+
+const Holo = styled.div`
+  transform: translateZ(1px);
+  z-index: 2;
+  mix-blend-mode: color-dodge;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  bottom: 0;
+  background-blend-mode: exclusion, hue, hard-light;
+  background-size: 50%, 200% 700%, 300%, 200%;
+`
+
+const HoloAfter = styled.div`
+  position: absolute;
+  top: 0;
+  width: 100%;
+  bottom: 0;
+  mix-blend-mode: exclusion;
+  background-blend-mode: exclusion, color-burn, hue, hard-light;
+  background-size: 50%, 200% 400%, 147%, 200%;
+`
+
+const INITIAL_SPRING_VALUES = {
+  rotation: [0, 0],
+  touch: [50, 50],
+  holo: [50, 50, 0],
+  opacity: [0],
+}
 
 interface CardImageProps {
   cards: any[]
@@ -83,8 +112,7 @@ const CardImage = ({ cards, revealedCardIndex, cardIndexToLoad, focused }: CardI
 
   // react spring
   const [styles, api] = useSpring(() => ({
-    rotation: [0, 0],
-    glare: [50, 50, 0],
+    ...INITIAL_SPRING_VALUES,
     config: { mass: 5, tension: 200, friction: 30 },
   }))
 
@@ -105,26 +133,41 @@ const CardImage = ({ cards, revealedCardIndex, cardIndexToLoad, focused }: CardI
         x: pointerPosition.x - Math.floor(targetRect.x),
         y: pointerPosition.y - Math.floor(targetRect.y),
       }
+      const percentPosition = {
+        x: Math.round((100 * relativeMousePosition.x) / targetRect.width),
+        y: Math.round((100 * relativeMousePosition.y) / targetRect.height),
+      }
       const percentCenterPosition = {
-        x: Math.round((100 * relativeMousePosition.x) / targetRect.width - 50),
-        y: Math.round((100 * relativeMousePosition.y) / targetRect.height - 50),
+        x: percentPosition.x - 50,
+        y: percentPosition.y - 50,
       }
 
       // rotation
       const rotation = [percentCenterPosition.y / 2, percentCenterPosition.x / -3.5]
 
-      // glare
-      const glare = [percentCenterPosition.x + 50, percentCenterPosition.y + 50, 1]
+      // touch
+      const touch = [percentPosition.x, percentPosition.y]
 
-      api({ rotation, glare })
+      // holo ~ 3:2 ratio
+      // x = 50 +/- 12.5
+      // y = 50 +/- 33.3
+      const holo = [
+        percentPosition.x / 4 + 37.5,
+        percentPosition.y / 3 + 33.3,
+        (Math.abs(percentCenterPosition.x) + Math.abs(percentCenterPosition.y)) / 50 -
+          Math.abs(percentCenterPosition.x * percentCenterPosition.y) / 4000,
+      ]
+
+      api({ rotation, touch, holo, opacity: [1] })
     },
     [api]
   )
 
   // onPointerLeave
-  const onPointerLeave = useCallback(() => api({ rotation: [0, 0], glare: [50, 50, 0] }), [api])
+  const onPointerLeave = useCallback(() => api(INITIAL_SPRING_VALUES), [api])
 
   // interpolations
+  // rotation
   const rotationInterpolation = useCallback(
     (rx, ry) => `
       rotateX(${rx}deg)
@@ -132,6 +175,7 @@ const CardImage = ({ cards, revealedCardIndex, cardIndexToLoad, focused }: CardI
     `,
     []
   )
+  // touch
   const glarePositionInterpolation = useCallback(
     (mx, my) => `
       radial-gradient(
@@ -143,7 +187,63 @@ const CardImage = ({ cards, revealedCardIndex, cardIndexToLoad, focused }: CardI
     `,
     []
   )
-  const glareOpacityInterpolation = useCallback((_mx, _my, opacity) => opacity, [])
+  // holo
+  const holoBackgroundImageInterpolation = useCallback(
+    (mx, my) => `
+      url(/assets/illusion.jpg),
+      repeating-linear-gradient(
+        0deg,
+        hsl(0deg, 100%, 70%) 5%,
+        hsl(60deg, 100%, 70%) 10%,
+        hsl(120deg, 100%, 70%) 15%,
+        hsl(180deg, 100%, 70%) 20%,
+        hsl(240deg, 100%, 70%) 25%,
+        hsl(300deg, 100%, 70%) 30%,
+        hsl(360deg, 100%, 70%) 35%
+      ),
+      repeating-linear-gradient(
+        125deg,
+        hsl(227deg, 53%, 12%) 0%,
+        hsl(180deg, 10%, 60%) 4%,
+        hsl(180deg, 29%, 66%) 4.5%,
+        hsl(180deg, 10%, 60%) 5%,
+        hsl(227deg, 53%, 12%) 10%,
+        hsl(227deg, 53%, 12%) 12%
+      ),
+      radial-gradient(
+        farthest-corner circle
+        at ${mx}% ${my}%,
+        rgba(0, 0, 0, 0.1) 12%,
+        rgba(0, 0, 0, 0.15) 20%,
+        rgba(0, 0, 0, 0.25) 120%
+      )
+    `,
+    []
+  )
+  const holoBackgroundInterpolation = useCallback(
+    (posx, posy) => `
+      center, 0% ${posy}%, ${posx}% ${posy}%
+    `,
+    []
+  )
+  const holoFilterInterpolation = useCallback(
+    (_posx, _posy, hyp) => `
+      brightness(${hyp * 0.3 + 0.4}) contrast(2) saturate(1.5)
+    `,
+    []
+  )
+  const holoAfterBackgroundInterpolation = useCallback(
+    (posx, posy) => `
+      center, 0% ${posy}%, ${-posx}% ${-posy}%
+    `,
+    []
+  )
+  const holoAfterFilterInterpolation = useCallback(
+    (_posx, _posy, hyp) => `
+      brightness(${hyp * 0.5 + 0.7}) contrast(1.6) saturate(1.4)
+    `,
+    []
+  )
 
   return (
     <CardTranslator>
@@ -164,11 +264,30 @@ const CardImage = ({ cards, revealedCardIndex, cardIndexToLoad, focused }: CardI
           autoPlay
           muted
         />
+        <Holo
+          as={animated.div}
+          style={{
+            backgroundImage: styles.touch.to(holoBackgroundImageInterpolation),
+            backgroundPosition: styles.holo.to(holoBackgroundInterpolation),
+            filter: styles.holo.to(holoFilterInterpolation),
+            opacity: styles.opacity,
+          }}
+        >
+          <HoloAfter
+            as={animated.div}
+            style={{
+              backgroundImage: styles.touch.to(holoBackgroundImageInterpolation),
+              backgroundPosition: styles.holo.to(holoAfterBackgroundInterpolation),
+              filter: styles.holo.to(holoAfterFilterInterpolation),
+            }}
+          />
+        </Holo>
         <Glare
           as={animated.div}
           style={{
-            background: styles.glare.to(glarePositionInterpolation),
-            opacity: styles.glare.to(glareOpacityInterpolation),
+            backgroundImage: styles.touch.to(holoBackgroundImageInterpolation),
+            background: styles.touch.to(glarePositionInterpolation),
+            opacity: styles.opacity,
           }}
         />
       </CardRotator>
