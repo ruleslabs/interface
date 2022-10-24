@@ -7,6 +7,7 @@ import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
 import { useAudioLoop } from '@/state/packOpening/hooks'
 import { Sound } from '@/state/packOpening/actions'
 import Row from '@/components/Row'
+import { round } from '@/utils/math'
 
 const CARD_WIDTH = 256
 const CARD_RATIO = 1.39
@@ -59,10 +60,8 @@ const CardFrontVideo = styled.video`
   backface-visibility: hidden;
 `
 
-const Glare = styled.div`
-  transform: translateZ(1px);
-  z-index: 3;
-  mix-blend-mode: overlay;
+const HoloWrapper = styled.div`
+  mix-blend-mode: color-dodge;
   position: absolute;
   top: 0;
   width: 100%;
@@ -70,32 +69,49 @@ const Glare = styled.div`
 `
 
 const Holo = styled.div`
+  transform-style: preserve-3d;
   transform: translateZ(1px);
-  z-index: 2;
-  mix-blend-mode: color-dodge;
   position: absolute;
   top: 0;
   width: 100%;
   bottom: 0;
-  background-blend-mode: exclusion, hue, hard-light;
-  background-size: 50%, 200% 700%, 300%, 200%;
+  z-index: 2;
+
+  background-blend-mode: exclusion, hue, hard-light, exclusion;
+  background-size: 50%, 200% 700%, 300% 100%, 200% 100%;
 `
 
 const HoloAfter = styled.div`
+  transform-style: preserve-3d;
+  transform: translateZ(1px);
   position: absolute;
   top: 0;
   width: 100%;
   bottom: 0;
+  z-index: 2;
+
   mix-blend-mode: exclusion;
-  background-blend-mode: exclusion, color-burn, hue, hard-light;
-  background-size: 50%, 200% 400%, 147%, 200%;
+
+  background-blend-mode: exclusion, hue, hard-light, exclusion;
+  background-size: 50%, 200% 400%, 147% 100%, 200% 100%;
+`
+
+const Glare = styled.div`
+  transform-style: preserve-3d;
+  transform: translateZ(1px);
+  z-index: 4;
+  mix-blend-mode: overlay;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  bottom: 0;
 `
 
 const INITIAL_SPRING_VALUES = {
   rotation: [0, 0],
   touch: [50, 50],
   holo: [50, 50, 0],
-  opacity: [0],
+  opacity: 0,
 }
 
 interface CardImageProps {
@@ -134,8 +150,8 @@ const CardImage = ({ cards, revealedCardIndex, cardIndexToLoad, focused }: CardI
         y: pointerPosition.y - Math.floor(targetRect.y),
       }
       const percentPosition = {
-        x: Math.round((100 * relativeMousePosition.x) / targetRect.width),
-        y: Math.round((100 * relativeMousePosition.y) / targetRect.height),
+        x: round((100 * relativeMousePosition.x) / targetRect.width),
+        y: round((100 * relativeMousePosition.y) / targetRect.height),
       }
       const percentCenterPosition = {
         x: percentPosition.x - 50,
@@ -152,13 +168,16 @@ const CardImage = ({ cards, revealedCardIndex, cardIndexToLoad, focused }: CardI
       // x = 50 +/- 12.5
       // y = 50 +/- 33.3
       const holo = [
-        percentPosition.x / 4 + 37.5,
-        percentPosition.y / 3 + 33.3,
-        (Math.abs(percentCenterPosition.x) + Math.abs(percentCenterPosition.y)) / 50 -
-          Math.abs(percentCenterPosition.x * percentCenterPosition.y) / 4000,
+        round(percentPosition.x / 4 + 37.5, 1),
+        round(percentPosition.y / 3 + 33.3, 1),
+        round(
+          (Math.abs(percentCenterPosition.x) + Math.abs(percentCenterPosition.y)) / 50 -
+            Math.abs(percentCenterPosition.x * percentCenterPosition.y) / 4000,
+          1
+        ),
       ]
 
-      api({ rotation, touch, holo, opacity: [1] })
+      api({ rotation, touch, holo, opacity: 1 })
     },
     [api]
   )
@@ -170,8 +189,8 @@ const CardImage = ({ cards, revealedCardIndex, cardIndexToLoad, focused }: CardI
   // rotation
   const rotationInterpolation = useCallback(
     (rx, ry) => `
-      rotateX(${rx}deg)
-      rotateY(${ry}deg)
+      rotateX(${round(rx, 1)}deg)
+      rotateY(${round(ry, 1)}deg)
     `,
     []
   )
@@ -179,7 +198,7 @@ const CardImage = ({ cards, revealedCardIndex, cardIndexToLoad, focused }: CardI
   const glarePositionInterpolation = useCallback(
     (mx, my) => `
       radial-gradient(
-        farthest-corner circle at ${mx}% ${my}%,
+        farthest-corner circle at ${round(mx, 1)}% ${round(my, 1)}%,
         rgba(255, 255, 255, 0.8) 10%,
         rgba(255, 255, 255, 0.65) 20%,
         rgba(0, 0, 0, 0.5) 90%
@@ -212,7 +231,7 @@ const CardImage = ({ cards, revealedCardIndex, cardIndexToLoad, focused }: CardI
       ),
       radial-gradient(
         farthest-corner circle
-        at ${mx}% ${my}%,
+        at ${round(mx, 1)}% ${round(my, 1)}%,
         rgba(0, 0, 0, 0.1) 12%,
         rgba(0, 0, 0, 0.15) 20%,
         rgba(0, 0, 0, 0.25) 120%
@@ -220,30 +239,34 @@ const CardImage = ({ cards, revealedCardIndex, cardIndexToLoad, focused }: CardI
     `,
     []
   )
-  const holoBackgroundInterpolation = useCallback(
-    (posx, posy) => `
-      center, 0% ${posy}%, ${posx}% ${posy}%
-    `,
-    []
-  )
+  const holoBackgroundInterpolation = useCallback((posx, posy) => {
+    // round with 1 decimal precision
+    posx = round(posx, 1)
+    posy = round(posy, 1)
+
+    return `center, 0% ${posy}%, ${posx}% ${posy}%`
+  }, [])
   const holoFilterInterpolation = useCallback(
     (_posx, _posy, hyp) => `
-      brightness(${hyp * 0.3 + 0.4}) contrast(2) saturate(1.5)
+      brightness(${round(hyp, 2) * 0.3 + 0.4}) contrast(2) saturate(1.5)
     `,
     []
   )
-  const holoAfterBackgroundInterpolation = useCallback(
-    (posx, posy) => `
-      center, 0% ${posy}%, ${-posx}% ${-posy}%
-    `,
-    []
-  )
+  const holoAfterBackgroundInterpolation = useCallback((posx, posy) => {
+    // round with 1 decimal precision
+    posx = round(posx, 1)
+    posy = round(posy, 1)
+
+    return `center, 0% ${posy}%, -${posx}% -${posy}%`
+  }, [])
   const holoAfterFilterInterpolation = useCallback(
     (_posx, _posy, hyp) => `
-      brightness(${hyp * 0.5 + 0.7}) contrast(1.6) saturate(1.4)
+      brightness(${round(hyp, 2) * 0.5 + 0.7}) contrast(1.6) saturate(1.4)
     `,
     []
   )
+  // opacity
+  const opacityInterpolation = useCallback((opacity) => round(opacity, 2), [])
 
   return (
     <CardTranslator>
@@ -264,15 +287,20 @@ const CardImage = ({ cards, revealedCardIndex, cardIndexToLoad, focused }: CardI
           autoPlay
           muted
         />
-        <Holo
+        <HoloWrapper
           as={animated.div}
           style={{
-            backgroundImage: styles.touch.to(holoBackgroundImageInterpolation),
-            backgroundPosition: styles.holo.to(holoBackgroundInterpolation),
             filter: styles.holo.to(holoFilterInterpolation),
-            opacity: styles.opacity,
+            opacity: styles.opacity.to(opacityInterpolation),
           }}
         >
+          <Holo
+            as={animated.div}
+            style={{
+              backgroundImage: styles.touch.to(holoBackgroundImageInterpolation),
+              backgroundPosition: styles.holo.to(holoBackgroundInterpolation),
+            }}
+          />
           <HoloAfter
             as={animated.div}
             style={{
@@ -281,13 +309,13 @@ const CardImage = ({ cards, revealedCardIndex, cardIndexToLoad, focused }: CardI
               filter: styles.holo.to(holoAfterFilterInterpolation),
             }}
           />
-        </Holo>
+        </HoloWrapper>
         <Glare
           as={animated.div}
           style={{
             backgroundImage: styles.touch.to(holoBackgroundImageInterpolation),
             background: styles.touch.to(glarePositionInterpolation),
-            opacity: styles.opacity,
+            opacity: styles.opacity.to(opacityInterpolation),
           }}
         />
       </CardRotator>
