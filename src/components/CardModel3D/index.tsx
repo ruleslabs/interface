@@ -1,30 +1,31 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 
 import { CardDisplaySelector, CardFullscreenSelector } from '@/components/CardSelector'
+import Card from './Card'
+import useWindowSize from '@/hooks/useWindowSize'
 
 import Close from '@/images/close.svg'
 
-const CardVideoWrapper = styled.div<{ stacked: boolean }>`
-  overflow: hidden;
+const CardWrapper = styled.div<{ stacked: boolean; smallWidth?: number }>`
   height: 100%;
-  max-width: -moz-available;
-  ${({ stacked }) => stacked && 'padding-right: 24px;'}
+  width: fit-content;
 
-  video {
-    height: 100%;
-    border-radius: 4.44%/3.17%;
-    box-shadow: 0 0 3px 0 #00000080;
-    ${({ stacked }) => stacked && 'transform: scale(0.97) translate(15px, 6px) rotate(3deg);'}
-  }
+  ${({ stacked }) =>
+    stacked &&
+    `
+      transform: scale(0.97) translate(4.3%,1.5%) rotate(3deg);
+      padding-right: 24px;
+  `}
 
-  ${({ theme, stacked }) =>
+  ${({ theme, stacked, smallWidth }) =>
     stacked &&
     theme.media.small`
     padding-right: 0;
+    height: unset;
 
-    video {
-      transform: scale(0.92) translate(2.5%, -1%) rotate(3deg);
+    & video {
+      ${smallWidth && `width: ${smallWidth}px;`}
     }
   `}
 `
@@ -35,20 +36,8 @@ const DefaultCardVisualWrapperStyle = css`
   top: 0;
   left: 16px;
 
-  & > img,
-  & > video {
-    object-fit: contain;
-    height: 100%;
-  }
-
   ${({ theme }) => theme.media.small`
     position: initial;
-
-    img,
-    video {
-      width: 100%;
-      max-width: 500px; /* Safari height bug */
-    }
   `}
 
   ${({ theme }) => theme.media.medium`
@@ -76,12 +65,6 @@ const FullscreenCardVisualWrapperStyle = css<{ scarcityName: string }>`
     height: 100%;
   }
 
-  ${CardVideoWrapper} {
-    box-shadow: 0 0 32px
-      ${({ theme, scarcityName }) => (scarcityName === 'Platinium' ? theme.platinium : theme.primary1)};
-    border-radius: 4.44%/3.17%;
-  }
-
   & > div {
     position: initial;
     top: unset;
@@ -101,7 +84,7 @@ const StyledCardDisplaySelector = styled(CardDisplaySelector)`
   ${({ theme }) => theme.media.small`
     position: initial;
     flex-direction: row;
-    margin: 12px 0;
+    margin: 32px 0 12px;
     justify-content: center;
   `}
 
@@ -133,14 +116,23 @@ const StyledClose = styled(Close)`
   cursor: pointer;
 `
 
-const StackImage = styled.img`
-  position: absolute;
-  z-index: -1;
+const CardsStack = styled.div<{ smallHeight?: number }>`
+  img {
+    position: absolute;
+    z-index: -1;
+    height: 100%;
+  }
 
-  ${({ theme }) => theme.media.small`
-    height: auto !important;
-    width: calc(100% - 40px) !important;
+  ${({ theme, smallHeight }) => theme.media.small`
+    & img {
+      ${smallHeight && `height: ${smallHeight}px;`}
+    }
   `}
+`
+
+const StackImageTop = styled.img`
+  border-radius: 4.44% / 3.17%;
+  transform: scale(0.97) translate(4.8%, 1.3%);
 `
 
 interface CardModel3DProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -172,13 +164,25 @@ export default function CardModel3D({
 
   stacked = stacked && !fullscreen && cardModelDisplayMode === 'front'
 
+  // window size
+  const windowSize = useWindowSize()
+  const cardWidth = useMemo(() => (windowSize.width ?? 0) * 0.72, [windowSize.width])
+  const stackHeight = useMemo(() => cardWidth * 1.39, [cardWidth])
+
   return (
     <CardVisualsWrapper fullscreen={fullscreen} scarcityName={scarcityName} {...props}>
-      {stacked && <StackImage src={`/assets/${scarcityName.toLowerCase()}-stack.png`} />}
+      {stacked && (
+        <CardsStack smallHeight={stackHeight}>
+          <img src={`/assets/${scarcityName.toLowerCase()}-stack.png`} />
+          <StackImageTop src={pictureUrl} />
+        </CardsStack>
+      )}
       {fullscreen && <StyledClose onClick={toggleFullscreen} />}
-      <CardVideoWrapper style={{ display: cardModelDisplayMode === 'front' ? 'initial' : 'none' }} stacked={stacked}>
-        <video src={videoUrl} playsInline loop autoPlay muted />
-      </CardVideoWrapper>
+
+      <CardWrapper stacked={stacked} smallWidth={cardWidth}>
+        <Card scarcityName={scarcityName} videoUrl={videoUrl} revealed />
+      </CardWrapper>
+
       <video
         src={rotatingVideoUrl}
         style={{ display: cardModelDisplayMode === 'rotate' ? 'initial' : 'none' }}
@@ -187,7 +191,6 @@ export default function CardModel3D({
         autoPlay
         muted
       />
-      <img src={backPictureUrl} style={{ display: cardModelDisplayMode === 'back' ? 'initial' : 'none' }} />
       <StyledCardDisplaySelector
         pictureUrl={pictureUrl}
         backPictureUrl={backPictureUrl}

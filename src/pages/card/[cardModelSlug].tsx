@@ -50,7 +50,7 @@ const QUERY_CARD_MODEL = gql`
   query ($slug: String!) {
     cardModel(slug: $slug) {
       id
-      pictureUrl(derivative: "width=64")
+      pictureUrl(derivative: "width=1024")
       videoUrl
       rotatingVideoUrl
       lowestAsk

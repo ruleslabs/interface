@@ -79,7 +79,7 @@ const QUERY_CARD = gql`
         id
         videoUrl
         rotatingVideoUrl
-        pictureUrl(derivative: "width=128")
+        pictureUrl(derivative: "width=1024")
         season
         youtubePreviewId
         artist {
