@@ -36,8 +36,12 @@ const DefaultCardVisualWrapperStyle = css`
   top: 0;
   left: 16px;
 
+  & > video {
+    height: 100%;
+  }
+
   ${({ theme }) => theme.media.small`
-    position: initial;
+    position: unset;
   `}
 
   ${({ theme }) => theme.media.medium`
@@ -162,7 +166,7 @@ export default function CardModel3D({
 
   const toggleFullscreen = useCallback(() => setFullscreen(!fullscreen), [setFullscreen, fullscreen])
 
-  stacked = stacked && !fullscreen && cardModelDisplayMode === 'front'
+  stacked = stacked && !fullscreen
 
   // window size
   const windowSize = useWindowSize()
@@ -179,18 +183,14 @@ export default function CardModel3D({
       )}
       {fullscreen && <StyledClose onClick={toggleFullscreen} />}
 
-      <CardWrapper stacked={stacked} smallWidth={cardWidth}>
-        <Card scarcityName={scarcityName} videoUrl={videoUrl} revealed />
-      </CardWrapper>
+      {(cardModelDisplayMode === 'front' || cardModelDisplayMode === 'back') && (
+        <CardWrapper stacked={stacked} smallWidth={cardWidth}>
+          <Card scarcityName={scarcityName} videoUrl={videoUrl} revealed={cardModelDisplayMode === 'front'} />
+        </CardWrapper>
+      )}
 
-      <video
-        src={rotatingVideoUrl}
-        style={{ display: cardModelDisplayMode === 'rotate' ? 'initial' : 'none' }}
-        playsInline
-        loop
-        autoPlay
-        muted
-      />
+      {cardModelDisplayMode === 'rotate' && <video src={rotatingVideoUrl} playsInline loop autoPlay muted />}
+
       <StyledCardDisplaySelector
         pictureUrl={pictureUrl}
         backPictureUrl={backPictureUrl}

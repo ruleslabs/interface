@@ -1,6 +1,6 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-import { useSpring, animated } from 'react-spring'
+import { useSpring, animated, interpolate } from 'react-spring'
 
 import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
 import { round } from '@/utils/math'
@@ -97,6 +97,7 @@ const INITIAL_SPRING_VALUES = {
   touch: [50, 50],
   holo: [50, 50, 0],
   opacity: 0,
+  transaltion: [0, 0],
 }
 
 interface CardProps {
@@ -106,13 +107,14 @@ interface CardProps {
   width?: number
 }
 
-export default function Card({ videoUrl, width }: CardProps) {
+export default function Card({ videoUrl, width, revealed }: CardProps) {
   // get back picture
   const backPictureUrl = useCardsBackPictureUrl(512)
 
   // react spring
   const [styles, api] = useSpring(() => ({
     ...INITIAL_SPRING_VALUES,
+    rotation: [0, revealed ? 0 : 180],
     config: { mass: 5, tension: 200, friction: 30 },
   }))
 
@@ -143,7 +145,7 @@ export default function Card({ videoUrl, width }: CardProps) {
       }
 
       // rotation
-      const rotation = [percentCenterPosition.y / 2, percentCenterPosition.x / -3.5]
+      const rotation = [percentCenterPosition.y / 2, percentCenterPosition.x / -3.5 + (revealed ? 0 : 180)]
 
       // touch
       const touch = [percentPosition.x, percentPosition.y]
@@ -163,11 +165,17 @@ export default function Card({ videoUrl, width }: CardProps) {
 
       api({ rotation, touch, holo, opacity: 1 })
     },
-    [api]
+    [api, revealed]
   )
 
   // onPointerLeave
-  const onPointerLeave = useCallback(() => api(INITIAL_SPRING_VALUES), [api])
+  const onPointerLeave = useCallback(
+    () => api({ ...INITIAL_SPRING_VALUES, rotation: [0, revealed ? 0 : 180] }),
+    [api, revealed]
+  )
+
+  // on revealed update
+  useEffect(() => api({ ...INITIAL_SPRING_VALUES, rotation: [0, revealed ? 0 : 180] }), [api, revealed])
 
   // interpolations
   // rotation
@@ -251,9 +259,19 @@ export default function Card({ videoUrl, width }: CardProps) {
   )
   // opacity
   const opacityInterpolation = useCallback((opacity) => round(opacity, 2), [])
+  // translation
+  const translationInterpolation = useCallback(
+    (tx, ty) => `
+      translate(0)
+    `,
+    []
+  )
+  // holo opacity
+  // disable holo effect on the back of the card
+  const holoOpacityInterpolation = useCallback((opacity, rotation) => (rotation[1] >= 90 ? 0 : opacity), [])
 
   return (
-    <CardTranslator>
+    <CardTranslator as={animated.div} style={{ transform: styles.transaltion.to(translationInterpolation) }}>
       <CardRotator
         as={animated.div}
         style={{ transform: styles.rotation.to(rotationInterpolation) }}
@@ -267,7 +285,7 @@ export default function Card({ videoUrl, width }: CardProps) {
           as={animated.div}
           style={{
             filter: styles.holo.to(holoFilterInterpolation),
-            opacity: styles.opacity.to(opacityInterpolation),
+            opacity: interpolate([styles.opacity, styles.rotation], holoOpacityInterpolation),
           }}
         >
           <Holo
