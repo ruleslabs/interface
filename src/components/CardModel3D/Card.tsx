@@ -175,7 +175,9 @@ export default function Card({ videoUrl, width, revealed }: CardProps) {
   )
 
   // on revealed update
-  useEffect(() => api({ ...INITIAL_SPRING_VALUES, rotation: [0, revealed ? 0 : 180] }), [api, revealed])
+  useEffect(() => {
+    api({ ...INITIAL_SPRING_VALUES, rotation: [0, revealed ? 0 : 180] })
+  }, [api, revealed])
 
   // interpolations
   // rotation

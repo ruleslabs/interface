@@ -18,11 +18,14 @@ const CardWrapper = styled.div<{ stacked: boolean; smallWidth?: number }>`
       padding-right: 24px;
   `}
 
-  ${({ theme, stacked, smallWidth }) =>
-    stacked &&
-    theme.media.small`
-    padding-right: 0;
-    height: unset;
+  ${({ theme, stacked, smallWidth }) => theme.media.small`
+    ${
+      stacked &&
+      `
+        padding-right: 0;
+        height: unset;
+      `
+    }
 
     & video {
       ${smallWidth && `width: ${smallWidth}px;`}
