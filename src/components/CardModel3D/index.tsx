@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import styled, { css } from 'styled-components'
+import { useSpring, animated } from 'react-spring'
 
-import { CardDisplaySelector, CardFullscreenSelector } from '@/components/CardSelector'
+import { CardDisplaySelector, CardFullscreenSelector } from './Selector'
 import Card from './Card'
 import useWindowSize from '@/hooks/useWindowSize'
 
@@ -15,14 +16,14 @@ const CardWrapper = styled.div<{ stacked: boolean; smallWidth?: number }>`
     stacked &&
     `
       transform: scale(0.97) translate(4.3%,1.5%) rotate(3deg);
-      padding-right: 24px;
+      margin-right: 24px;
   `}
 
   ${({ theme, stacked, smallWidth }) => theme.media.small`
     ${
       stacked &&
       `
-        padding-right: 0;
+        margin-right: 0;
         height: unset;
       `
     }
@@ -145,7 +146,6 @@ const StackImageTop = styled.img`
 interface CardModel3DProps extends React.HTMLAttributes<HTMLDivElement> {
   videoUrl: string
   pictureUrl: string
-  rotatingVideoUrl: string
   backPictureUrl: string
   scarcityName: string
   stacked?: boolean
@@ -153,21 +153,19 @@ interface CardModel3DProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export default function CardModel3D({
   videoUrl,
-  rotatingVideoUrl,
   pictureUrl,
   backPictureUrl,
   scarcityName,
   stacked = false,
   ...props
 }: CardModel3DProps) {
-  const [cardModelDisplayMode, setCardModelDisplayMode] = useState<'front' | 'back' | 'rotate'>('front')
+  const [revealed, setRevealed] = useState(true)
   const [fullscreen, setFullscreen] = useState(false)
 
-  const onBackSelected = useCallback(() => setCardModelDisplayMode('back'), [setCardModelDisplayMode])
-  const onFrontSelected = useCallback(() => setCardModelDisplayMode('front'), [setCardModelDisplayMode])
-  const onRotateSelected = useCallback(() => setCardModelDisplayMode('rotate'), [setCardModelDisplayMode])
+  const reveal = useCallback(() => setRevealed(true), [])
+  const hide = useCallback(() => setRevealed(false), [])
 
-  const toggleFullscreen = useCallback(() => setFullscreen(!fullscreen), [setFullscreen, fullscreen])
+  const toggleFullscreen = useCallback(() => setFullscreen(!fullscreen), [fullscreen])
 
   stacked = stacked && !fullscreen
 
@@ -176,31 +174,29 @@ export default function CardModel3D({
   const cardWidth = useMemo(() => (windowSize.width ?? 0) * 0.72, [windowSize.width])
   const stackHeight = useMemo(() => cardWidth * 1.39, [cardWidth])
 
+  // spring
+  const [styles, api] = useSpring(() => ({ stackOpacity: 1, config: { mass: 3, tension: 500, friction: 50 } }))
+
+  // card callbacks
+  const onRest = useCallback(() => api({ stackOpacity: +revealed }), [api, revealed])
+  const onStart = useCallback(() => api({ stackOpacity: 0 }), [api])
+
   return (
     <CardVisualsWrapper fullscreen={fullscreen} scarcityName={scarcityName} {...props}>
       {stacked && (
-        <CardsStack smallHeight={stackHeight}>
+        <CardsStack smallHeight={stackHeight} as={animated.div} style={{ opacity: styles.stackOpacity }}>
           <img src={`/assets/${scarcityName.toLowerCase()}-stack.png`} />
           <StackImageTop src={pictureUrl} />
         </CardsStack>
       )}
       {fullscreen && <StyledClose onClick={toggleFullscreen} />}
 
-      {(cardModelDisplayMode === 'front' || cardModelDisplayMode === 'back') && (
-        <CardWrapper stacked={stacked} smallWidth={cardWidth}>
-          <Card scarcityName={scarcityName} videoUrl={videoUrl} revealed={cardModelDisplayMode === 'front'} />
-        </CardWrapper>
-      )}
+      <CardWrapper stacked={stacked} smallWidth={cardWidth}>
+        <Card scarcityName={scarcityName} videoUrl={videoUrl} revealed={revealed} onStart={onStart} onRest={onRest} />
+      </CardWrapper>
 
-      {cardModelDisplayMode === 'rotate' && <video src={rotatingVideoUrl} playsInline loop autoPlay muted />}
+      <StyledCardDisplaySelector pictureUrl={pictureUrl} backPictureUrl={backPictureUrl} reveal={reveal} hide={hide} />
 
-      <StyledCardDisplaySelector
-        pictureUrl={pictureUrl}
-        backPictureUrl={backPictureUrl}
-        onBackSelected={onBackSelected}
-        onFrontSelected={onFrontSelected}
-        onRotateSelected={onRotateSelected}
-      />
       {!fullscreen && <StyledCardFullscreenSelector toggleFullscreen={toggleFullscreen} />}
     </CardVisualsWrapper>
   )

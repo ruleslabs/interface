@@ -105,18 +105,25 @@ interface CardProps {
   videoUrl: string
   revealed: boolean
   width?: number
+  onStart?: () => void
+  onRest?: () => void
 }
 
-export default function Card({ videoUrl, width, revealed }: CardProps) {
+export default function Card({ videoUrl, width, revealed, onStart, onRest }: CardProps) {
   // get back picture
   const backPictureUrl = useCardsBackPictureUrl(512)
 
   // react spring
-  const [styles, api] = useSpring(() => ({
-    ...INITIAL_SPRING_VALUES,
-    rotation: [0, revealed ? 0 : 180],
-    config: { mass: 5, tension: 200, friction: 30 },
-  }))
+  const [styles, api] = useSpring(
+    () => ({
+      ...INITIAL_SPRING_VALUES,
+      rotation: [0, revealed ? 0 : 180],
+      config: { mass: 5, tension: 200, friction: 30 },
+      onStart,
+      onRest,
+    }),
+    [onRest, onStart]
+  )
 
   // onPointerMove
   const onPointerMove = useCallback(
@@ -277,7 +284,7 @@ export default function Card({ videoUrl, width, revealed }: CardProps) {
       <CardRotator
         as={animated.div}
         style={{ transform: styles.rotation.to(rotationInterpolation) }}
-        onPointerMove={onPointerMove}
+        onMouseMove={onPointerMove}
         onPointerLeave={onPointerLeave}
         onTouchMove={onPointerMove}
       >

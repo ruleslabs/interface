@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import Column from '@/components/Column'
 import { RowCenter } from '@/components/Row'
 
-import Spin from '@/images/spin.svg'
 import Expand from '@/images/expand.svg'
 
 const StyledCardDisplaySelector = styled(Column)`
@@ -29,30 +28,19 @@ const StyledCardDisplaySelector = styled(Column)`
 interface CardDisplaySelectorProps extends React.HTMLAttributes<HTMLDivElement> {
   pictureUrl: string
   backPictureUrl: string
-  onFrontSelected: () => void
-  onBackSelected: () => void
-  onRotateSelected: () => void
+  reveal: () => void
+  hide: () => void
 }
 
-export function CardDisplaySelector({
-  pictureUrl,
-  backPictureUrl,
-  onFrontSelected,
-  onBackSelected,
-  onRotateSelected,
-  ...props
-}: CardDisplaySelectorProps) {
+export function CardDisplaySelector({ pictureUrl, backPictureUrl, reveal, hide, ...props }: CardDisplaySelectorProps) {
   return (
     <StyledCardDisplaySelector {...props}>
-      <div onClick={onFrontSelected}>
+      <div onClick={reveal}>
         <img src={pictureUrl} />
       </div>
-      <div onClick={onBackSelected}>
+      <div onClick={hide}>
         <img src={backPictureUrl} />
       </div>
-      <RowCenter onClick={onRotateSelected} justify="center">
-        <Spin />
-      </RowCenter>
     </StyledCardDisplaySelector>
   )
 }

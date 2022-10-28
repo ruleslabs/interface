@@ -78,7 +78,6 @@ const QUERY_CARD = gql`
       cardModel {
         id
         videoUrl
-        rotatingVideoUrl
         pictureUrl(derivative: "width=1024")
         season
         youtubePreviewId
@@ -103,11 +102,7 @@ export default function CardBreakout() {
   const cardSlug = `${cardModelSlug}-${serialNumber}`
 
   const cardQuery = useQuery(QUERY_CARD, { variables: { slug: cardSlug }, skip: !cardSlug })
-  const card =
-    cardQuery.data?.card ??
-    JSON.parse(
-      '{"id":"6342d1db63a593c264ccac1a","serialNumber":173,"inTransfer":false,"inOfferCreation":false,"inOfferCancelation":false,"inOfferAcceptance":false,"owner":{"user":{"slug":"t6","username":"t6","profile":{"pictureUrl":"https://assets.rules.art/eyJidWNrZXQiOiJydWxlc2xhYnMtaW1hZ2VzIiwia2V5IjoidXNlcnMvZGVmYXVsdC1hdmF0YXItMi5qcGciLCJlZGl0cyI6eyJyZXNpemUiOnsid2lkdGgiOjEyOCwiZml0IjoiY29udGFpbiJ9fX0=","__typename":"UserProfile"},"__typename":"User"},"__typename":"Owner"},"cardModel":{"id":"62bd73b32ecd6ab6cf1e6543","videoUrl":"https://videos.rules.art/mp4/zinee-season-1-platinium.mp4","rotatingVideoUrl":"https://videos.rules.art/mp4/3d/zinee-season-1-platinium.mp4","pictureUrl":"https://assets.rules.art/eyJidWNrZXQiOiJydWxlc2xhYnMtaW1hZ2VzIiwia2V5IjoiY2FyZC1tb2RlbHMvemluZWUtc2Vhc29uLTEtcGxhdGluaXVtLmpwZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJ3aWR0aCI6MTAyNCwiZml0IjoiY29udGFpbiJ9fX0=","season":1,"youtubePreviewId":"P_J3py6uTAE","artist":{"displayName":"Zinée","user":null,"__typename":"Artist"},"scarcity":{"name":"Platinium","maxSupply":350,"__typename":"Scarcity"},"__typename":"CardModel"},"__typename":"Card"}'
-    )
+  const card = cardQuery.data?.card
 
   const backPictureUrl = useCardsBackPictureUrl(512)
 
@@ -145,7 +140,6 @@ export default function CardBreakout() {
       <MainSection size="sm">
         <CardModel3D
           videoUrl={card.cardModel.videoUrl}
-          rotatingVideoUrl={card.cardModel.rotatingVideoUrl}
           pictureUrl={card.cardModel.pictureUrl}
           backPictureUrl={backPictureUrl}
           scarcityName={card.cardModel.scarcity.name}
