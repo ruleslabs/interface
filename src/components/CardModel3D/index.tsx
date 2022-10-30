@@ -213,7 +213,7 @@ export default function CardModel3D({
       setScale(1)
     } else {
       const targetRect = cardRef?.current?.getBoundingClientRect()
-      if (!targetRect) return
+      if (!targetRect || !windowSize?.width || !windowSize?.height) return
 
       const scaleX = (windowSize.width - FULLSCREEN_MARGIN[1] - FULLSCREEN_MARGIN[3]) / targetRect.width
       const scaleY = (windowSize.height - FULLSCREEN_MARGIN[0] - FULLSCREEN_MARGIN[2]) / targetRect.height

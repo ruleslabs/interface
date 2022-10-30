@@ -98,7 +98,7 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
           console.error(error)
         })
     },
-    [onSuccess]
+    [onSuccess, onError]
   )
 
   // on close modal

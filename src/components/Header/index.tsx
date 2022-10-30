@@ -81,6 +81,7 @@ export const menuLinks = [
   { name: 'Packs', link: '/packs' },
   { name: 'Marketplace', link: '/marketplace' },
   { name: 'Community', link: '/community' },
+  { name: 'Discord', link: 'https://discord.gg/DrfezKYUhH' },
 ] // TODO: move it somewhere else as a single source of truth
 
 export default function Header() {

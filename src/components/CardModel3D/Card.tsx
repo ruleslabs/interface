@@ -101,7 +101,7 @@ interface CardProps {
   width?: number
   onStart?: () => void
   onRest?: () => void
-  cardRef: any
+  cardRef?: any
 }
 
 export default function Card({

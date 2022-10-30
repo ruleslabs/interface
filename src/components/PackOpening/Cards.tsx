@@ -78,13 +78,7 @@ export default function PackOpeningCards({ cards, ...props }: PackOpeningCardsPr
       {Array(3)
         .fill(0)
         .map((_, index: number) => (
-          <Card
-            key={`card-image-${index}`}
-            scarcityName={cards[index].cardModel.scarcity.name}
-            videoUrl={cards[index].cardModel.videoUrl}
-            width={256}
-            revealed
-          />
+          <Card key={`card-image-${index}`} videoUrl={cards[index].cardModel.videoUrl} width={256} revealed />
         ))}
     </StyledPackOpeningCards>
   )
