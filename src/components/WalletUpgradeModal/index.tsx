@@ -68,7 +68,7 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
         calldata: [ACCOUNT_CLASS_HASH],
       },
     ])
-  }, [])
+  }, [currentUser?.starknetWallet?.address])
 
   // error
   const [error, setError] = useState<string | null>(null)

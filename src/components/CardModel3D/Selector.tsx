@@ -30,28 +30,27 @@ interface CardDisplaySelectorProps extends React.HTMLAttributes<HTMLDivElement> 
   backPictureUrl: string
   reveal: () => void
   hide: () => void
+  toggleFullscreen: () => void
 }
 
-export function CardDisplaySelector({ pictureUrl, backPictureUrl, reveal, hide, ...props }: CardDisplaySelectorProps) {
+export function CardDisplaySelector({
+  pictureUrl,
+  backPictureUrl,
+  reveal,
+  hide,
+  toggleFullscreen,
+  ...props
+}: CardDisplaySelectorProps) {
   return (
     <StyledCardDisplaySelector {...props}>
       <div onClick={reveal}>
         <img src={pictureUrl} />
       </div>
+
       <div onClick={hide}>
         <img src={backPictureUrl} />
       </div>
-    </StyledCardDisplaySelector>
-  )
-}
 
-interface CardFullscreenSelectorProps extends React.HTMLAttributes<HTMLDivElement> {
-  toggleFullscreen: () => void
-}
-
-export function CardFullscreenSelector({ toggleFullscreen, ...props }: CardFullscreenSelectorProps) {
-  return (
-    <StyledCardDisplaySelector {...props}>
       <RowCenter onClick={toggleFullscreen} justify="center">
         <Expand />
       </RowCenter>

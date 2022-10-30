@@ -1,9 +1,10 @@
-import { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { useSpring, animated, interpolate } from 'react-spring'
 
 import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
 import { round } from '@/utils/math'
+import useWindowSize from '@/hooks/useWindowSize'
 
 const CardTranslator = styled.div`
   width: fit-content;
@@ -92,38 +93,51 @@ const Glare = styled.div`
   bottom: 0;
 `
 
-const INITIAL_SPRING_VALUES = {
-  rotation: [0, 0],
-  touch: [50, 50],
-  holo: [50, 50, 0],
-  opacity: 0,
-  transaltion: [0, 0],
-}
-
 interface CardProps {
-  scarcityName: string
   videoUrl: string
   revealed: boolean
+  fullscreen?: boolean
+  transform?: any
   width?: number
   onStart?: () => void
   onRest?: () => void
+  cardRef: any
 }
 
-export default function Card({ videoUrl, width, revealed, onStart, onRest }: CardProps) {
+export default function Card({
+  videoUrl,
+  width,
+  revealed,
+  fullscreen = false,
+  transform = {},
+  onStart,
+  onRest,
+  cardRef,
+}: CardProps) {
   // get back picture
   const backPictureUrl = useCardsBackPictureUrl(512)
 
-  // react spring
-  const [styles, api] = useSpring(
+  // window size
+  const windowSize = useWindowSize()
+
+  const defaultSpringValues = useMemo(
     () => ({
-      ...INITIAL_SPRING_VALUES,
-      rotation: [0, revealed ? 0 : 180],
-      config: { mass: 5, tension: 200, friction: 30 },
-      onStart,
-      onRest,
+      rotation: [0, revealed ? 0 : 180, transform.rz ?? 0],
+      touch: [50, 50],
+      holo: [50, 50, 0],
+      opacity: 0,
+      translation: [transform.tx ?? 0, transform.ty ?? 0, transform.scale ?? 0],
     }),
-    [onRest, onStart]
+    [revealed, transform.rz, transform.tx, transform.ty]
   )
+
+  // react spring
+  const [styles, api] = useSpring(() => ({
+    ...defaultSpringValues,
+    config: { mass: 5, tension: 200, friction: 30 },
+    onStart,
+    onRest,
+  }))
 
   // onPointerMove
   const onPointerMove = useCallback(
@@ -152,10 +166,14 @@ export default function Card({ videoUrl, width, revealed, onStart, onRest }: Car
       }
 
       // rotation
-      const rotation = [percentCenterPosition.y / 2, percentCenterPosition.x / -3.5 + (revealed ? 0 : 180)]
+      const rotation = [
+        percentCenterPosition.y / 2,
+        percentCenterPosition.x / -3.5 + (revealed ? 0 : 180),
+        transform.rz ?? 0,
+      ]
 
       // touch
-      const touch = [percentPosition.x, percentPosition.y]
+      const touch = [rotation[1] > 90 ? -percentPosition.x + 100 : percentPosition.x, percentPosition.y]
 
       // holo ~ 3:2 ratio
       // x = 50 +/- 12.5
@@ -172,26 +190,27 @@ export default function Card({ videoUrl, width, revealed, onStart, onRest }: Car
 
       api({ rotation, touch, holo, opacity: 1 })
     },
-    [api, revealed]
+    [api, revealed, windowSize.width, windowSize.height, transform.rz]
   )
 
   // onPointerLeave
   const onPointerLeave = useCallback(
-    () => api({ ...INITIAL_SPRING_VALUES, rotation: [0, revealed ? 0 : 180] }),
-    [api, revealed]
+    () => api({ ...defaultSpringValues, translation: undefined }),
+    [api, JSON.stringify(defaultSpringValues)]
   )
 
-  // on revealed update
+  // on default spring value update
   useEffect(() => {
-    api({ ...INITIAL_SPRING_VALUES, rotation: [0, revealed ? 0 : 180] })
-  }, [api, revealed])
+    api(defaultSpringValues)
+  }, [JSON.stringify(defaultSpringValues)])
 
   // interpolations
   // rotation
   const rotationInterpolation = useCallback(
-    (rx, ry) => `
+    (rx, ry, rz) => `
       rotateX(${round(rx, 1)}deg)
       rotateY(${round(ry, 1)}deg)
+      rotateZ(${round(rz, 1)}deg)
     `,
     []
   )
@@ -270,8 +289,8 @@ export default function Card({ videoUrl, width, revealed, onStart, onRest }: Car
   const opacityInterpolation = useCallback((opacity) => round(opacity, 2), [])
   // translation
   const translationInterpolation = useCallback(
-    (tx, ty) => `
-      translate(0)
+    (tx, ty, scale) => `
+      translate(${tx}px, ${ty}px) scale(${scale})
     `,
     []
   )
@@ -280,7 +299,11 @@ export default function Card({ videoUrl, width, revealed, onStart, onRest }: Car
   const holoOpacityInterpolation = useCallback((opacity, rotation) => (rotation[1] >= 90 ? 0 : opacity), [])
 
   return (
-    <CardTranslator as={animated.div} style={{ transform: styles.transaltion.to(translationInterpolation) }}>
+    <CardTranslator
+      as={animated.div}
+      style={{ transform: styles.translation.to(translationInterpolation) }}
+      ref={cardRef}
+    >
       <CardRotator
         as={animated.div}
         style={{ transform: styles.rotation.to(rotationInterpolation) }}

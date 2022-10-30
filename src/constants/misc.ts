@@ -18,3 +18,5 @@ export const ARTIST_FEE_PERCENTAGE = 25_000 // 2.5%
 export const MARKETPLACE_FEE_PERCENTAGE = 25_000 // 2.5%
 export const BIG_INT_MIN_MARKETPLACE_OFFER_PRICE = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(13))
 export const BIG_INT_MAX_MARKETPLACE_OFFER_PRICE = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(26))
+
+export const CARD_ASPECT_RATIO = 1488 / 1062
