@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useSpring, animated, interpolate } from 'react-spring'
 
 import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
-import { round } from '@/utils/math'
+import { round, range } from '@/utils/math'
 import useWindowSize from '@/hooks/useWindowSize'
 
 const CardTranslator = styled.div`
@@ -96,6 +96,7 @@ const Glare = styled.div`
 interface CardProps {
   videoUrl: string
   revealed: boolean
+  scarcityName: string
   fullscreen?: boolean
   transform?: any
   width?: number
@@ -108,6 +109,7 @@ export default function Card({
   videoUrl,
   width,
   revealed,
+  scarcityName,
   fullscreen = false,
   transform = {},
   onStart,
@@ -157,8 +159,8 @@ export default function Card({
         y: pointerPosition.y - Math.floor(targetRect.y),
       }
       const percentPosition = {
-        x: round((100 * relativeMousePosition.x) / targetRect.width),
-        y: round((100 * relativeMousePosition.y) / targetRect.height),
+        x: range(round((100 * relativeMousePosition.x) / targetRect.width), 0, 100),
+        y: range(round((100 * relativeMousePosition.y) / targetRect.height), 0, 100),
       }
       const percentCenterPosition = {
         x: percentPosition.x - 50,
@@ -313,29 +315,31 @@ export default function Card({
       >
         <CardBackImage src={backPictureUrl} alt="card-back" />
         <CardFrontVideo src={videoUrl} width={width} playsInline loop autoPlay muted />
-        <HoloWrapper
-          as={animated.div}
-          style={{
-            filter: styles.holo.to(holoFilterInterpolation),
-            opacity: interpolate([styles.opacity, styles.rotation], holoOpacityInterpolation),
-          }}
-        >
-          <Holo
+        {scarcityName !== 'Common' && (
+          <HoloWrapper
             as={animated.div}
             style={{
-              backgroundImage: styles.touch.to(holoBackgroundImageInterpolation),
-              backgroundPosition: styles.holo.to(holoBackgroundInterpolation),
+              filter: styles.holo.to(holoFilterInterpolation),
+              opacity: interpolate([styles.opacity, styles.rotation], holoOpacityInterpolation),
             }}
-          />
-          <HoloAfter
-            as={animated.div}
-            style={{
-              backgroundImage: styles.touch.to(holoBackgroundImageInterpolation),
-              backgroundPosition: styles.holo.to(holoAfterBackgroundInterpolation),
-              filter: styles.holo.to(holoAfterFilterInterpolation),
-            }}
-          />
-        </HoloWrapper>
+          >
+            <Holo
+              as={animated.div}
+              style={{
+                backgroundImage: styles.touch.to(holoBackgroundImageInterpolation),
+                backgroundPosition: styles.holo.to(holoBackgroundInterpolation),
+              }}
+            />
+            <HoloAfter
+              as={animated.div}
+              style={{
+                backgroundImage: styles.touch.to(holoBackgroundImageInterpolation),
+                backgroundPosition: styles.holo.to(holoAfterBackgroundInterpolation),
+                filter: styles.holo.to(holoAfterFilterInterpolation),
+              }}
+            />
+          </HoloWrapper>
+        )}
         <Glare
           as={animated.div}
           style={{

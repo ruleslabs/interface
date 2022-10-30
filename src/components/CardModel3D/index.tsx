@@ -279,6 +279,7 @@ export default function CardModel3D({
         <Card
           videoUrl={videoUrl}
           fullscreen={fullscreen}
+          scarcityName={scarcityName}
           transform={{
             rz: stacked && !fullscreen ? 3 : 0,
             tx: translation.tx,
