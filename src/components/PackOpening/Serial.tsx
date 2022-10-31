@@ -28,7 +28,7 @@ const SerialStroke = styled(TYPE.body)`
 `
 
 interface SerialProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: string
+  children: React.ReactNode
 }
 
 export default function Serial({ children, ...props }: SerialProps) {

@@ -3,7 +3,11 @@ import { useLayoutEffect, useState } from 'react'
 import { round } from '@/utils/math'
 import useWindowSize from '@/hooks/useWindowSize'
 
-export default function useCardModel3DFullscreen(fullscreen: boolean, target?: HTMLDivElement, options: any = {}) {
+export default function useCardModel3DFullscreen(
+  fullscreen: boolean,
+  target: HTMLDivElement | null,
+  options: any = {}
+) {
   // window size
   const windowSize = useWindowSize()
 

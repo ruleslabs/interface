@@ -36,7 +36,7 @@ export default function PackOpeningCards({ cards, ...props }: PackOpeningCardsPr
   const [revealedCardIndexes, setRevealedCardIndexes] = useState<number[]>([])
 
   const onClick = useCallback(
-    (cardIndex: number): number => {
+    (cardIndex: number) => {
       if (!revealedCardIndexes.includes(cardIndex)) {
         const card = cards[cardIndex]
 
