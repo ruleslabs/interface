@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect, useLayoutEffect, useRef } from 'react'
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import { useSpring, animated } from 'react-spring'
 import FocusLock from 'react-focus-lock'
@@ -9,9 +9,30 @@ import { RowCenter } from '@/components/Row'
 import Card from './Card'
 import useWindowSize from '@/hooks/useWindowSize'
 import { CARD_ASPECT_RATIO } from '@/constants/misc'
-import { round } from '@/utils/math'
+import useCardModel3DFullscreen from '@/hooks/useCardModel3DFullscreen'
 
 import Close from '@/images/close.svg'
+
+const StyledCardModel3D = styled.div<{ fullscreen: boolean; scarcityName: string }>`
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 16px;
+
+  & > video {
+    height: 100%;
+  }
+
+  ${({ fullscreen }) => fullscreen && `z-index: 999999;`}
+
+  ${({ theme }) => theme.media.small`
+    position: unset;
+  `}
+
+  ${({ theme }) => theme.media.medium`
+    left: 60px;
+  `}
+`
 
 const CardWrapper = styled.div<{ stacked: boolean; fullscreen: boolean; smallWidth?: number }>`
   height: 100%;
@@ -48,27 +69,6 @@ const DefaultCardVisualWrapperStyle = css`
   & > video {
     height: 100%;
   }
-
-  ${({ theme }) => theme.media.small`
-    position: unset;
-  `}
-
-  ${({ theme }) => theme.media.medium`
-    left: 60px;
-  `}
-`
-
-const CardVisualsWrapper = styled.div<{ fullscreen: boolean; scarcityName: string }>`
-  position: absolute;
-  height: 100%;
-  top: 0;
-  left: 16px;
-
-  & > video {
-    height: 100%;
-  }
-
-  ${({ fullscreen }) => fullscreen && `z-index: 999999;`}
 
   ${({ theme }) => theme.media.small`
     position: unset;
@@ -121,16 +121,6 @@ const StackImageTop = styled.img`
   transform: scale(0.97) translate(4.8%, 1.3%);
 `
 
-const Focus = styled.div`
-  width: 1px;
-  height: 0px;
-  padding: 0px;
-  overflow: hidden;
-  position: fixed;
-  top: 1px;
-  left: 1px;
-`
-
 const Veil = styled.div`
   position: fixed;
   top: 0;
@@ -148,13 +138,6 @@ const FullscreenBar = styled(RowCenter)`
     flex-direction: row;
   }
 `
-
-const FULLSCREEN_MARGIN = [64, 32, 64, 32]
-
-const FULLSCREEN_VERTICAL_MARGIN = 16
-const FULLSCREEN_HORIZONTAL_MARGIN = 32
-
-const FULLSCREEN_MAXIMUM_SCALE = 1.75
 
 interface CardModel3DProps extends React.HTMLAttributes<HTMLDivElement> {
   videoUrl: string
@@ -203,46 +186,13 @@ export default function CardModel3D({
   }, [moving])
 
   // on fullscreen
-  const [translation, setTranslation] = useState<any>({})
-  const [scale, setScale] = useState(1)
-  const [cardRect, setCardRect] = useState<any | null>(null)
-
-  useLayoutEffect(() => {
-    if (!fullscreen) {
-      setTranslation({ tx: 0, ty: 0 })
-      setScale(1)
-    } else {
-      const targetRect = cardRef?.current?.getBoundingClientRect()
-      if (!targetRect || !windowSize?.width || !windowSize?.height) return
-
-      const scaleX = (windowSize.width - FULLSCREEN_MARGIN[1] - FULLSCREEN_MARGIN[3]) / targetRect.width
-      const scaleY = (windowSize.height - FULLSCREEN_MARGIN[0] - FULLSCREEN_MARGIN[2]) / targetRect.height
-
-      const offsetX = FULLSCREEN_MARGIN[3] - FULLSCREEN_MARGIN[1]
-      const offsetY = FULLSCREEN_MARGIN[2] - FULLSCREEN_MARGIN[0]
-
-      const scale = round(Math.min(scaleX, scaleY, FULLSCREEN_MAXIMUM_SCALE), 3)
-
-      setScale(scale)
-
-      setTranslation({
-        tx: round(windowSize.width / 2 - targetRect.x - targetRect.width / 2) + offsetX,
-        ty: round(windowSize.height / 2 - targetRect.y - targetRect.height / 2) + offsetY,
-      })
-
-      console.log(targetRect.width)
-
-      const width = targetRect.width * scale
-      const height = targetRect.height * scale
-      const x = windowSize.width / 2 - width / 2
-      const y = windowSize.height / 2 - height / 2
-
-      setCardRect({ width, height, x, y })
-    }
-  }, [fullscreen, windowSize.width, windowSize.height, cardRef?.current?.offsetWidth, cardRef?.current?.offsetHeight])
+  const { translation, scale, cardRect } = useCardModel3DFullscreen(fullscreen, cardRef?.current, {
+    maxScale: 1.75,
+    margin: [64, 32],
+  })
 
   return (
-    <CardVisualsWrapper fullscreen={fullscreen} scarcityName={scarcityName} {...props}>
+    <StyledCardModel3D fullscreen={fullscreen} scarcityName={scarcityName} {...props}>
       {stacked && (
         <CardsStack smallHeight={stackHeight} as={animated.div} style={{ opacity: styles.stackOpacity }}>
           <img src={`/assets/${scarcityName.toLowerCase()}-stack.png`} />
@@ -253,24 +203,26 @@ export default function CardModel3D({
       {fullscreen && (
         <FocusLock>
           <RemoveScroll>
-            <Focus>
-              <Veil>
-                {cardRect && (
-                  <FullscreenBar
-                    style={{ width: `${cardRect.width}px`, left: `${cardRect.x}px`, top: `${cardRect.y - 48}px` }}
-                  >
-                    <CardDisplaySelector
-                      pictureUrl={pictureUrl}
-                      backPictureUrl={backPictureUrl}
-                      reveal={reveal}
-                      hide={hide}
-                      toggleFullscreen={toggleFullscreen}
-                    />
-                    <StyledClose onClick={toggleFullscreen} />
-                  </FullscreenBar>
-                )}
-              </Veil>
-            </Focus>
+            <Veil>
+              {cardRect && (
+                <FullscreenBar
+                  style={{
+                    width: `${cardRect.width - 16}px`,
+                    left: `${cardRect.x + 8}px`,
+                    top: `${cardRect.y - 48}px`,
+                  }}
+                >
+                  <CardDisplaySelector
+                    pictureUrl={pictureUrl}
+                    backPictureUrl={backPictureUrl}
+                    reveal={reveal}
+                    hide={hide}
+                    toggleFullscreen={toggleFullscreen}
+                  />
+                  <StyledClose onClick={toggleFullscreen} />
+                </FullscreenBar>
+              )}
+            </Veil>
           </RemoveScroll>
         </FocusLock>
       )}
@@ -302,6 +254,6 @@ export default function CardModel3D({
           toggleFullscreen={toggleFullscreen}
         />
       )}
-    </CardVisualsWrapper>
+    </StyledCardModel3D>
   )
 }

@@ -93,7 +93,7 @@ const Glare = styled.div`
   bottom: 0;
 `
 
-interface CardProps {
+export interface CardProps {
   videoUrl: string
   revealed: boolean
   scarcityName: string
@@ -103,6 +103,7 @@ interface CardProps {
   onStart?: () => void
   onRest?: () => void
   cardRef?: any
+  onClick?: () => void
 }
 
 export default function Card({
@@ -115,6 +116,7 @@ export default function Card({
   onStart,
   onRest,
   cardRef,
+  onClick,
 }: CardProps) {
   // get back picture
   const backPictureUrl = useCardsBackPictureUrl(512)
@@ -128,7 +130,7 @@ export default function Card({
       touch: [50, 50],
       holo: [50, 50, 0],
       opacity: 0,
-      translation: [transform.tx ?? 0, transform.ty ?? 0, transform.scale ?? 0],
+      translation: [transform.tx ?? 0, transform.ty ?? 0, transform.scale ?? 1],
     }),
     [revealed, transform.rz, transform.tx, transform.ty]
   )
@@ -312,6 +314,7 @@ export default function Card({
         onMouseMove={onPointerMove}
         onPointerLeave={onPointerLeave}
         onTouchMove={onPointerMove}
+        onClick={onClick}
       >
         <CardBackImage src={backPictureUrl} alt="card-back" />
         <CardFrontVideo src={videoUrl} width={width} playsInline loop autoPlay muted />
