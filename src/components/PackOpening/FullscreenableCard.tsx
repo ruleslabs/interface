@@ -55,7 +55,7 @@ export default function FullscreenableCard({ fullscreen, onDismiss, serialNumber
       {fullscreen && (
         <FocusLock>
           <RemoveScroll>
-            <Veil>
+            <Veil onClick={onDismiss}>
               {cardRect && (
                 <>
                   <StyledClose

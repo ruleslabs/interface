@@ -96,6 +96,7 @@ export function useAudioLoop() {
       dispatch(updateLatestSound({ sound }))
 
       if (loopSourceNode) {
+        console.log(sound)
         loopSourceNode.onended = () => playLoop(sound)
         loopSourceNode.loop = false
       } else playLoop(sound)

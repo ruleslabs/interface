@@ -57,15 +57,15 @@ interface PackOpeningPackProps {
   id?: string
   onOpening(cards: any[]): void
   onError(error: string): void
+  isOpen: boolean
 }
 
-export default function PackOpeningPack({ pictureUrl, id, onOpening, onError }: PackOpeningPackProps) {
+export default function PackOpeningPack({ pictureUrl, id, onOpening, onError, isOpen }: PackOpeningPackProps) {
   // sound mgmt
   const { loop, fx, latestLoopSound } = useAudioLoop()
 
   // open pack mutation
   const [packOpeningMutation] = usePackOpeningMutation()
-  const [cards, setCards] = useState<any[]>([])
 
   // opening state
   const [opening, setOpening] = useState(false)
@@ -103,6 +103,8 @@ export default function PackOpeningPack({ pictureUrl, id, onOpening, onError }: 
       fx(Sound.FX_PACK_OPENING)
     }
   }, [opened, loop, latestLoopSound])
+
+  if (!isOpen) return null
 
   return (
     <Column gap={80}>

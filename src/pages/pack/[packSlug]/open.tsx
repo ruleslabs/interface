@@ -95,11 +95,16 @@ function PackOpening() {
 
       <MainSection>
         <Title>{pack.displayName}</Title>
-        {cards ? (
-          <StyledPackOpeningCards cards={cards} />
-        ) : (
-          <PackOpeningPack id={pack.id} pictureUrl={pack.pictureUrl} onError={useRouter} onOpening={setCards} />
-        )}
+
+        {cards && <StyledPackOpeningCards cards={cards} />}
+
+        <PackOpeningPack
+          id={pack.id}
+          pictureUrl={pack.pictureUrl}
+          onError={useRouter}
+          onOpening={setCards}
+          isOpen={!cards}
+        />
       </MainSection>
     </>
   )

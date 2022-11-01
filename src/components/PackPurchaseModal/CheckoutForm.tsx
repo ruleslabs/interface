@@ -188,18 +188,23 @@ export default function CheckoutForm({
           } else if (res?.paymentIntent?.next_action) {
             // Handle next action
             return stripe.handleCardAction(res.paymentIntent.client_secret).catch((err) => {
-              throw null
+              throw err
             })
           } else {
             // confirm payment
             onSuccess()
+            return
           }
 
-          throw null
+          console.log(res)
+          throw { failure: res?.error?.message ?? 'Invalid response after confirmation' }
         })
         .then((res: any) => {
           if (res?.paymentIntent?.error) throw { failure: res.paymentIntent.error?.message }
-          if (!res?.paymentIntent || !res.paymentIntent.payment_method) throw null
+          if (!res?.paymentIntent || !res.paymentIntent.payment_method) {
+            console.log(res)
+            throw { failure: res?.error?.message ?? 'Invalid card action response' }
+          }
 
           // confirm payment after next action
           return confirmPaymentIntent(res.paymentIntent.id, res.paymentIntent.payment_method).catch((err) => {
@@ -208,7 +213,10 @@ export default function CheckoutForm({
         })
         .then((res: any) => {
           if (res?.paymentIntent?.status === 'succeeded') onSuccess()
-          else throw null
+          else {
+            console.log(res)
+            throw { failure: res?.error?.message ?? 'Invalid confirmation response after card action' }
+          }
         })
         .catch((err) => {
           console.error(err)
