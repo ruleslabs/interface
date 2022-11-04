@@ -26,7 +26,7 @@ export default function Grid({ children, maxWidth = MAX_WIDTH, gap = GAP, ...pro
 
   useEffect(() => {
     setCols(gridWidth ? Math.ceil((gridWidth + gap) / (maxWidth + gap)) : 0)
-  }, [setCols, gridWidth])
+  }, [gridWidth])
 
   return (
     <StyledGrid ref={gridRef} cols={cols} gap={gap} {...props}>

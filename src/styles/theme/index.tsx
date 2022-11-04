@@ -88,7 +88,9 @@ export function colors(darkMode: boolean): Colors {
 
     gradient1: 'linear-gradient(90deg, #f95b29, #ff9700)',
 
-    platinium: '#B2A4D8',
+    common: '#8C04C1',
+    platinium: '#E7E7E7',
+    halloween: '#AF4027',
 
     error: '#CB222C',
   }

@@ -18,7 +18,9 @@ export interface Colors {
 
   gradient1: string
 
+  common: string
   platinium: string
+  halloween: string
 
   error: string
 }

@@ -79,6 +79,7 @@ export const tabLinks = [
   { name: 'Deck', link: '' },
   { name: 'Cards', link: '/cards' },
   { name: 'Packs', link: '/packs' },
+  { name: 'Ruledex', link: '/ruledex' },
 ] // TODO: move it somewhere else as a single source of truth
 
 export default function ProfileLayout({ children }: { children: React.ReactElement }) {
