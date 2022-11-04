@@ -5,6 +5,7 @@ import { Trans } from '@lingui/macro'
 import { ActiveLink } from '@/components/Link'
 import { useCurrentUser } from '@/state/user/hooks'
 import Modal from '@/components/Modal'
+import { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
 import { useNavModalToggle, useModalOpen, useAuthModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
@@ -17,6 +18,14 @@ import { SecondaryButton, PrimaryButton, NavButton } from '@/components/Button'
 import { menuLinks } from '@/components/Header'
 import useNeededActions from '@/hooks/useNeededActions'
 import useWindowSize from '@/hooks/useWindowSize'
+
+import ExternalLinkIcon from '@/images/external-link.svg'
+
+const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
+  width: 12px;
+  height: 12px;
+  fill: ${({ theme }) => theme.text2};
+`
 
 const StyledNavModal = styled.div<{ windowHeight?: number }>`
   margin-top: ${({ theme }) => theme.size.headerHeightMedium}px;
@@ -109,10 +118,19 @@ export default function NavModal() {
                 </ActiveLink>
               )}
 
-              {menuLinks.map((menuLink, index: number) => (
-                <ActiveLink key={`nav-link-${index}`} href={menuLink.link} onClick={toggleNavModal}>
+              {menuLinks.map((menuLink) => (
+                <ActiveLink
+                  key={menuLink.link}
+                  href={menuLink.link}
+                  onClick={toggleNavModal}
+                  target={menuLink.external ? '_blank' : undefined}
+                >
                   <StyledNavButton>
-                    <Trans id={menuLink.name} render={({ translation }) => <>{translation}</>} />
+                    <RowCenter gap={4}>
+                      <Trans id={menuLink.name} render={({ translation }) => <>{translation}</>} />
+
+                      {menuLink.external && <StyledExternalLinkIcon />}
+                    </RowCenter>
                   </StyledNavButton>
                 </ActiveLink>
               ))}

@@ -3,6 +3,7 @@ import { Trans } from '@lingui/macro'
 
 import AccountStatus from '@/components/AccountStatus'
 import { NavButton } from '@/components/Button'
+import { RowCenter } from '@/components/Row'
 import Link, { ActiveLink } from '@/components/Link'
 import { useOpenModal, useCloseModal, useModalOpen } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
@@ -13,6 +14,13 @@ import useNeededActions from '@/hooks/useNeededActions'
 import Logo from '@/public/assets/logo.svg'
 import Hamburger from '@/images/hamburger.svg'
 import Close from '@/images/close.svg'
+import ExternalLinkIcon from '@/images/external-link.svg'
+
+const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
+  width: 12px;
+  height: 12px;
+  fill: ${({ theme }) => theme.text2};
+`
 
 const MobileNavWrapper = styled.div`
   display: none;
@@ -81,7 +89,7 @@ export const menuLinks = [
   { name: 'Packs', link: '/packs' },
   { name: 'Marketplace', link: '/marketplace' },
   { name: 'Community', link: '/community' },
-  { name: 'Discord', link: 'https://discord.gg/DrfezKYUhH' },
+  { name: 'Discord', link: 'https://discord.gg/DrfezKYUhH', external: true },
 ] // TODO: move it somewhere else as a single source of truth
 
 export default function Header() {
@@ -101,9 +109,13 @@ export default function Header() {
 
       <NavBar>
         {menuLinks.map((menuLink, index: number) => (
-          <ActiveLink key={`nav-link-${index}`} href={menuLink.link}>
+          <ActiveLink key={`nav-link-${index}`} href={menuLink.link} target={menuLink.external ? '_blank' : undefined}>
             <NavButton>
-              <Trans id={menuLink.name} render={({ translation }) => <>{translation}</>} />
+              <RowCenter gap={4}>
+                <Trans id={menuLink.name} render={({ translation }) => <>{translation}</>} />
+
+                {menuLink.external && <StyledExternalLinkIcon />}
+              </RowCenter>
             </NavButton>
           </ActiveLink>
         ))}
