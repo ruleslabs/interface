@@ -15,6 +15,7 @@ import Column from '@/components/Column'
 import { useSearchCards } from '@/state/search/hooks'
 import { TYPE } from '@/styles/theme'
 import { useCurrentUser } from '@/state/user/hooks'
+import { LOW_SERIAL_MAXS } from '@/constants/misc'
 
 const ScarcitySelectorWrapper = styled(RowCenter)`
   gap: 42px;
@@ -32,7 +33,7 @@ const ScarcitySelectorWrapper = styled(RowCenter)`
 const ScarcitySelector = styled(BaseButton)<{ scarcity: string; active: boolean }>`
   background: ${({ theme }) => theme.bg2};
   border-style: solid;
-  border-color: ${({ theme, scarcity }) => theme[scarcity]};
+  border-color: ${({ theme, scarcity }) => (theme as any)[scarcity]};
   border-width: ${({ active }) => (active ? '4px 4px 4px 20px' : '0 0 0 16px')};
   height: 55px;
   display: flex;
@@ -50,6 +51,7 @@ const StyledGrid = styled(Grid)`
 
 const LockableCardModel = styled(Column)<{ locked?: boolean }>`
   gap: 12px;
+  position: relative;
 
   ${({ theme, locked = false }) =>
     locked &&
@@ -74,6 +76,26 @@ const CardModelId = styled(TYPE.body)`
   border-radius: 3px;
 `
 
+const LowSerialBadge = styled.div`
+  width: 36px;
+  height: 36px;
+  background: radial-gradient(circle, #44dd53 0, #1d8c28 100%);
+  border-radius: 100%;
+  position: absolute;
+  top: -16px;
+  right: -16px;
+
+  ::after {
+    content: '#';
+    position: absolute;
+    font-size: 26px;
+    top: 3px;
+    left: 10px;
+    font-weight: 700;
+    color: #fff;
+  }
+`
+
 const QUERY_CARD_MODELS = gql`
   query {
     allCardModels {
@@ -90,6 +112,7 @@ const QUERY_CARD_MODELS = gql`
 const QUERY_CARDS = gql`
   query ($ids: [ID!]!) {
     cardsByIds(ids: $ids) {
+      serialNumber
       cardModel {
         uid
         pictureUrl(derivative: "width=1024")
@@ -136,10 +159,14 @@ function Ruledex({ userId }: RuledexProps) {
   const cardModels = allCardModelsQuery.data?.allCardModels ?? []
 
   // unlocked card models
-  const unlockedCardModelUids = useMemo(
+  const cardModelsBadges = useMemo(
     () =>
-      cards.reduce<{ [uid: number]: string }>((acc, card: any) => {
-        acc[card.cardModel.uid] = card.cardModel.scarcity.name
+      (cards as any[]).reduce<{ [uid: number]: any }>((acc, card: any) => {
+        acc[card.cardModel.uid] = acc[card.cardModel.uid] ?? {}
+
+        if (card.serialNumber < LOW_SERIAL_MAXS[card.cardModel.scarcity.name] ?? 0)
+          acc[card.cardModel.uid].lowSerial = true
+
         return acc
       }, {}),
     [cards.length]
@@ -151,7 +178,7 @@ function Ruledex({ userId }: RuledexProps) {
   // scarcities max
   const scarcitiesMax = useMemo(
     () =>
-      cardModels.reduce<{ [scarcityName: string]: number }>((acc, cardModel: any) => {
+      (cardModels as any[]).reduce<{ [scarcityName: string]: number }>((acc, cardModel: any) => {
         acc[cardModel.scarcity.name] = (acc[cardModel.scarcity.name] ?? 0) + 1
         return acc
       }, {}),
@@ -161,12 +188,11 @@ function Ruledex({ userId }: RuledexProps) {
   // scarcities balance
   const scarcitiesBalance = useMemo(
     () =>
-      cardModels.reduce<{ [scarcityName: string]: number }>((acc, cardModel: any) => {
-        acc[cardModel.scarcity.name] =
-          (acc[cardModel.scarcity.name] ?? 0) + (unlockedCardModelUids[cardModel.uid] ? 1 : 0)
+      (cardModels as any[]).reduce<{ [scarcityName: string]: number }>((acc, cardModel: any) => {
+        acc[cardModel.scarcity.name] = (acc[cardModel.scarcity.name] ?? 0) + (cardModelsBadges[cardModel.uid] ? 1 : 0)
         return acc
       }, {}),
-    [cardModels.length, Object.keys(unlockedCardModelUids).length]
+    [cardModels.length, Object.keys(cardModelsBadges).length]
   )
 
   return (
@@ -190,11 +216,12 @@ function Ruledex({ userId }: RuledexProps) {
       <StyledGrid gap={28} maxWidth={132}>
         {cardModels
           .filter((cardModel: any) => cardModel.scarcity.name === selectedScarcity)
-          .sort((a, b) => a.uid - b.uid)
+          .sort((a: any, b: any) => a.uid - b.uid)
           .map((cardModel: any) => (
-            <LockableCardModel key={cardModel.slug} locked={!unlockedCardModelUids[cardModel.uid]}>
+            <LockableCardModel key={cardModel.slug} locked={!cardModelsBadges[cardModel.uid]}>
               <CardModel cardModelSlug={cardModel.slug} pictureUrl={cardModel.pictureUrl} />
               <CardModelId>#{cardModel.uid.toString().padStart(3, '0')}</CardModelId>
+              {cardModelsBadges[cardModel.uid]?.lowSerial && <LowSerialBadge />}
             </LockableCardModel>
           ))}
       </StyledGrid>

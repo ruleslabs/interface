@@ -20,3 +20,9 @@ export const BIG_INT_MIN_MARKETPLACE_OFFER_PRICE = JSBI.exponentiate(JSBI.BigInt
 export const BIG_INT_MAX_MARKETPLACE_OFFER_PRICE = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(26))
 
 export const CARD_ASPECT_RATIO = 1488 / 1062
+
+export const LOW_SERIAL_MAXS: { [scarcityName: string]: number } = {
+  Common: 100,
+  Platinium: 20,
+  Halloween: 100,
+}

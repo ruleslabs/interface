@@ -38,6 +38,7 @@ export default function Link({ href, color, target, children, underline = false,
 interface ActiveLinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
   children: React.ReactElement
   href: string
+  target?: string
   perfectMatch?: boolean
 }
 
