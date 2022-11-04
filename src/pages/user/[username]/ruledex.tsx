@@ -23,6 +23,10 @@ const ScarcitySelectorWrapper = styled(RowCenter)`
   ${({ theme }) => theme.media.medium`
     justify-content: space-around;
   `}
+
+  ${({ theme }) => theme.media.small`
+    gap: 24px;
+  `}
 `
 
 const ScarcitySelector = styled(BaseButton)<{ scarcity: string; active: boolean }>`
@@ -131,8 +135,20 @@ function Ruledex({ userId }: RuledexProps) {
   const allCardModelsQuery = useQuery(QUERY_CARD_MODELS)
   const cardModels = allCardModelsQuery.data?.allCardModels ?? []
 
-  // scarcities
+  // unlocked card models
+  const unlockedCardModelUids = useMemo(
+    () =>
+      cards.reduce<{ [uid: number]: string }>((acc, card: any) => {
+        acc[card.cardModel.uid] = card.cardModel.scarcity.name
+        return acc
+      }, {}),
+    [cards.length]
+  )
+
+  // selected scarcity
   const [selectedScarcity, setSelectedScarcity] = useState(ScarcityName[0])
+
+  // scarcities max
   const scarcitiesMax = useMemo(
     () =>
       cardModels.reduce<{ [scarcityName: string]: number }>((acc, cardModel: any) => {
@@ -142,15 +158,16 @@ function Ruledex({ userId }: RuledexProps) {
     [cardModels.length]
   )
 
-  // unlocked card models
-  // const unlockedCardModels = useMemo(
-  //   () =>
-  //     cards.reduce<>((acc, card: any) => {
-  //       acc[cardModel.scarcity.name] = acc[cardModel.scarcity.name] ? acc[cardModel.scarcity.name] + 1 : 0
-  //       return acc
-  //     }, {}),
-  //   [cards.length]
-  // )
+  // scarcities balance
+  const scarcitiesBalance = useMemo(
+    () =>
+      cardModels.reduce<{ [scarcityName: string]: number }>((acc, cardModel: any) => {
+        acc[cardModel.scarcity.name] =
+          (acc[cardModel.scarcity.name] ?? 0) + (unlockedCardModelUids[cardModel.uid] ? 1 : 0)
+        return acc
+      }, {}),
+    [cardModels.length, Object.keys(unlockedCardModelUids).length]
+  )
 
   return (
     <Section>
@@ -164,7 +181,7 @@ function Ruledex({ userId }: RuledexProps) {
           >
             <TYPE.body fontWeight={700}>{scarcityName}</TYPE.body>
             <TYPE.large spanColor="text2" fontSize={32}>
-              0 <span>/{scarcitiesMax[scarcityName] ?? 0}</span>
+              {scarcitiesBalance[scarcityName] ?? 0} <span>/{scarcitiesMax[scarcityName] ?? 0}</span>
             </TYPE.large>
           </ScarcitySelector>
         ))}
@@ -175,7 +192,7 @@ function Ruledex({ userId }: RuledexProps) {
           .filter((cardModel: any) => cardModel.scarcity.name === selectedScarcity)
           .sort((a, b) => a.uid - b.uid)
           .map((cardModel: any) => (
-            <LockableCardModel key={cardModel.slug} locked>
+            <LockableCardModel key={cardModel.slug} locked={!unlockedCardModelUids[cardModel.uid]}>
               <CardModel cardModelSlug={cardModel.slug} pictureUrl={cardModel.pictureUrl} />
               <CardModelId>#{cardModel.uid.toString().padStart(3, '0')}</CardModelId>
             </LockableCardModel>
