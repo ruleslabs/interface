@@ -238,7 +238,7 @@ export default function PackOpeningCards({ cards, ...props }: PackOpeningCardsPr
               artistName={focusedCard.cardModel.artist.displayName}
               artistUsername={focusedCard.cardModel.artist.user?.username}
               season={focusedCard.cardModel.season}
-              scarcity={focusedCard.cardModel.scarcity.name}
+              scarcityName={focusedCard.cardModel.scarcity.name}
               maxSupply={focusedCard.cardModel.scarcity.maxSupply}
               serial={focusedCard.serialNumber}
             />

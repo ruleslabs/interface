@@ -110,7 +110,7 @@ export default function CardModelPage() {
               artistName={cardModel.artist.displayName}
               artistUsername={cardModel.artist.user?.username}
               season={cardModel.season}
-              scarcity={cardModel.scarcity.name}
+              scarcityName={cardModel.scarcity.name}
               maxSupply={cardModel.scarcity.maxSupply}
             />
           </Card>

@@ -173,7 +173,7 @@ function Ruledex({ userId }: RuledexProps) {
   )
 
   // selected scarcity
-  const [selectedScarcity, setSelectedScarcity] = useState(ScarcityName[0])
+  const [selectedScarcity, setSelectedScarcity] = useState<string | null>(null)
 
   // scarcities max
   const scarcitiesMax = useMemo(
@@ -215,7 +215,7 @@ function Ruledex({ userId }: RuledexProps) {
 
       <StyledGrid gap={28} maxWidth={132}>
         {cardModels
-          .filter((cardModel: any) => cardModel.scarcity.name === selectedScarcity)
+          .filter((cardModel: any) => !selectedScarcity || cardModel.scarcity.name === selectedScarcity)
           .sort((a: any, b: any) => a.uid - b.uid)
           .map((cardModel: any) => (
             <LockableCardModel key={cardModel.slug} locked={!cardModelsBadges[cardModel.uid]}>

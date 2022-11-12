@@ -20,7 +20,7 @@ interface CardModelBreakdownProps {
   artistName: string
   artistUsername?: string
   season: number
-  scarcity: string
+  scarcityName: string
   maxSupply: number
   serial?: number
 }
@@ -29,7 +29,7 @@ export default function CardModelBreakdown({
   artistName,
   artistUsername,
   season,
-  scarcity,
+  scarcityName,
   maxSupply,
   serial,
 }: CardModelBreakdownProps) {
@@ -54,14 +54,16 @@ export default function CardModelBreakdown({
         <TYPE.body>
           <Trans>Season {season}</Trans>
         </TYPE.body>
-        <Trans id={`${scarcity} card`} render={({ translation }) => <TYPE.body>{translation}</TYPE.body>} />
+        <Trans id={`${scarcityName} card`} render={({ translation }) => <TYPE.body>{translation}</TYPE.body>} />
         {serial ? (
           <TYPE.body spanColor="text2">
             #{serial}
-            <span> / {maxSupply ?? '4000'}</span>
+            <span> / {maxSupply}</span>
           </TYPE.body>
         ) : (
-          <TYPE.subtitle>{maxSupply ? <Trans>Limited edition</Trans> : <Trans>Currently edited</Trans>}</TYPE.subtitle>
+          <TYPE.subtitle>
+            {scarcityName === 'Common' ? <Trans>Currently edited</Trans> : <Trans>Limited edition</Trans>}
+          </TYPE.subtitle>
         )}
       </Column>
     </>
