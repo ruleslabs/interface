@@ -5,7 +5,7 @@ import AccountStatus from '@/components/AccountStatus'
 import { NavButton } from '@/components/Button'
 import { RowCenter } from '@/components/Row'
 import Link, { ActiveLink } from '@/components/Link'
-import { useOpenModal, useCloseModal, useModalOpen } from '@/state/application/hooks'
+import { useOpenModal, useCloseModal, useModalOpen, useSettingsModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import NavModal from '@/components/NavModal'
 import { useCurrentUser } from '@/state/user/hooks'
@@ -22,11 +22,26 @@ const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
   fill: ${({ theme }) => theme.text2};
 `
 
+const HamburgerWrapper = styled.div<{ alert?: boolean; notifications?: number }>`
+  cursor: pointer;
+
+  ${({ theme, alert = false }) => !!alert && theme.before.alert``}
+  ${({ theme, notifications = 0 }) => !!notifications && theme.before.notifications``}
+
+  ${({ theme }) => theme.media.medium`
+    display: none;
+  `}
+`
+
 const MobileNavWrapper = styled.div`
   display: none;
 
+  & > ${HamburgerWrapper} {
+    display: unset;
+  }
+
   ${({ theme }) => theme.media.medium`
-    display: inherit;
+    display: unset;
   `}
 `
 
@@ -45,10 +60,14 @@ const StyledHeader = styled.header`
   padding: 0 100px;
 
   ${({ theme }) => theme.media.medium`
-    padding: 0 1rem;
+    padding: 0 16px;
     justify-content: space-between;
     height: ${theme.size.headerHeightMedium}px;
     z-index: 999;
+  `}
+
+  ${({ theme }) => theme.media.extraSmall`
+    padding: 0 12px;
   `}
 `
 
@@ -56,6 +75,10 @@ const StyledLogo = styled(Logo)`
   height: 24px;
   fill: ${({ theme }) => theme.white};
   margin-right: 8px;
+
+  ${({ theme }) => theme.media.extraSmall`
+    height: 20px;
+  `}
 `
 
 const StyledClose = styled(Close)`
@@ -75,14 +98,7 @@ const NavBar = styled.nav`
 `
 
 const StyledAccountStatus = styled(AccountStatus)`
-  ${({ theme }) => theme.media.medium`
-    display: none;
-  `}
-`
-
-const HamburgerWrapper = styled.div<{ alert?: boolean; notifications?: number }>`
-  ${({ theme, alert = false }) => alert && theme.before.alert``}
-  ${({ theme, notifications = 0 }) => notifications && theme.before.notifications``}
+  margin-right: 20px;
 `
 
 export const menuLinks = [
@@ -93,10 +109,14 @@ export const menuLinks = [
 ] // TODO: move it somewhere else as a single source of truth
 
 export default function Header() {
+  // current user
+  const currentUser = useCurrentUser()
+
+  // modal
+  const toggleSettingsModal = useSettingsModalToggle()
   const openNavModal = useOpenModal(ApplicationModal.NAV)
   const closeModal = useCloseModal()
   const allModalsClosed = useModalOpen(null)
-  const currentUser = useCurrentUser()
 
   // needed actions
   const neededActions = useNeededActions()
@@ -125,6 +145,13 @@ export default function Header() {
 
       <StyledAccountStatus />
 
+      <HamburgerWrapper
+        alert={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
+        notifications={neededActions.total}
+      >
+        <Hamburger onClick={toggleSettingsModal} />
+      </HamburgerWrapper>
+
       <MobileNavWrapper>
         {allModalsClosed ? (
           <HamburgerWrapper
@@ -136,6 +163,7 @@ export default function Header() {
         ) : (
           <StyledClose onClick={closeModal} />
         )}
+
         <NavModal />
       </MobileNavWrapper>
     </StyledHeader>

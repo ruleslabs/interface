@@ -7,7 +7,7 @@ import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
 import Modal from '@/components/Modal'
-import { useModalOpen, useAcceptOfferModalToggle, useDepositModalToggle } from '@/state/application/hooks'
+import { useModalOpen, useAcceptOfferModalToggle, useWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
@@ -18,9 +18,8 @@ import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
 import StarknetSigner from '@/components/StarknetSigner'
 import { ETH_ADDRESSES, MARKETPLACE_ADDRESSES } from '@/constants/addresses'
-import { useAcceptOfferMutation } from '@/state/wallet/hooks'
 import { networkId } from '@/constants/networks'
-import { useETHBalances } from '@/state/wallet/hooks'
+import { useETHBalances, useAcceptOfferMutation } from '@/state/wallet/hooks'
 import { PurchaseBreakdown } from './PriceBreakdown'
 
 const CardBreakdown = styled(RowCenter)`
@@ -68,7 +67,7 @@ export default function AcceptOfferModal({
   // modal
   const isOpen = useModalOpen(ApplicationModal.ACCEPT_OFFER)
   const toggleAcceptOfferModal = useAcceptOfferModalToggle()
-  const toggleDepositModal = useDepositModalToggle()
+  const toggleWalletModal = useWalletModalToggle()
 
   // balance
   const balance = useETHBalances([currentUser?.starknetWallet.address])[currentUser?.starknetWallet.address]
@@ -183,7 +182,7 @@ export default function AcceptOfferModal({
               <Trans>
                 You do not have enough ETH in your Rules wallet to purchase this card.
                 <br />
-                <span onClick={toggleDepositModal}>Buy ETH or deposit from another wallet.</span>
+                <span onClick={toggleWalletModal}>Buy ETH or deposit from another wallet.</span>
               </Trans>
             </ErrorCard>
           )}

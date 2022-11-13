@@ -82,19 +82,12 @@ export const NavButton = styled(TYPE.body)<{ alert?: boolean; notifications?: nu
 
   &.active,
   &:hover {
-    background: ${({ theme }) => theme.bg3};
+    background: ${({ theme }) => theme.bg3}80;
   }
 
   &.active {
     font-weight: 700;
   }
-
-  ${({ theme }) => theme.media.medium`
-    &.active,
-    &:hover {
-      background: ${theme.bg3};
-    }
-  `}
 
   ${({ theme, alert = false }) => alert && theme.before.alert``}
   ${({ theme, notifications = 0 }) => notifications && theme.before.notifications``}

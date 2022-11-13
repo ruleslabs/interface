@@ -1172,3 +1172,7 @@ msgstr "mise à jour du portefeuille."
 #: src/components/WalletUpgradeModal/index.tsx
 msgid "Upgrade"
 msgstr "Mettre à jour"
+
+#: src/components/StarknetSigner/index.tsx
+msgid "Your wallet is already processing another transaction"
+msgstr "Ton portefeuille est déjà occupé avec une autre transaction"

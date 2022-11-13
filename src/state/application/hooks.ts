@@ -55,12 +55,8 @@ export function useNavModalToggle(): () => void {
   return useToggleModal(ApplicationModal.NAV)
 }
 
-export function useDepositModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.DEPOSIT)
-}
-
-export function useWithdrawModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.WITHDRAW)
+export function useWalletModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.WALLET)
 }
 
 export function useAvatarEditModalToggle(): () => void {

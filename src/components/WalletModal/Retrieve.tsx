@@ -1,5 +1,5 @@
 import JSBI from 'jsbi'
-import { useMemo, useState, useEffect, useCallback } from 'react'
+import { useMemo, useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
@@ -10,8 +10,6 @@ import Column from '@/components/Column'
 import Row, { RowBetween } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
-import { useWithdrawModalToggle, useModalOpen } from '@/state/application/hooks'
-import { ApplicationModal } from '@/state/application/actions'
 import Metamask from '@/components/Metamask'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import EthereumSigner from '@/components/EthereumSigner'
@@ -19,7 +17,7 @@ import { useEthereumMulticallContract, useEthereumStarkgateContract } from '@/ho
 import Link from '@/components/Link'
 import { desiredChainId } from '@/constants/connectors'
 import { CHAINS } from '@/constants/networks'
-import { useRetrieveEtherMutation } from '@/state/wallet/hooks'
+import { useRetrieveEtherMutation, useSetWalletModalMode } from '@/state/wallet/hooks'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
 
@@ -52,18 +50,14 @@ const RetrievableAddress = styled(Link)`
   }
 `
 
-interface RetrieveProps {
-  onDismiss(): void
-}
-
-export default function Retrieve({ onDismiss }: RetrieveProps) {
+export default function Retrieve() {
   // current user
   const currentUser = useCurrentUser()
   const setCurrentUser = useSetCurrentUser()
 
-  // modal
-  const isOpen = useModalOpen(ApplicationModal.WITHDRAW)
-  const toggleWithdrawModal = useWithdrawModalToggle()
+  // modal mode
+  const setWalletModalMode = useSetWalletModalMode()
+  const onDismiss = useCallback(() => setWalletModalMode(null), [])
 
   // amount
   const parsedAmounts = useMemo(
@@ -145,15 +139,6 @@ export default function Retrieve({ onDismiss }: RetrieveProps) {
       })
   }, [ethereumMulticallContract, ethereumStarkgateContract, currentUser?.retrievableEthers])
 
-  // on close modal
-  useEffect(() => {
-    if (isOpen) {
-      setWaitingForTx(false)
-      setError(null)
-      setTxHash(null)
-    }
-  }, [isOpen])
-
   return (
     <EthereumSigner
       onBack={onDismiss}
@@ -162,7 +147,7 @@ export default function Retrieve({ onDismiss }: RetrieveProps) {
       waitingForTx={waitingForTx}
       txHash={txHash ?? undefined}
       error={error ?? undefined}
-      onDismiss={toggleWithdrawModal}
+      onDismiss={onDismiss}
     >
       <Column gap={26}>
         <TYPE.large>

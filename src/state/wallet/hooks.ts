@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from 'react'
+import { useMemo, useEffect, useState, useCallback } from 'react'
 import JSBI from 'jsbi'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { Abi } from 'starknet'
@@ -12,6 +12,9 @@ import { useStarknet } from '@/lib/starknet'
 import { ETH_ADDRESSES } from '@/constants/addresses'
 import { useMultipleContractSingleData } from '@/lib/hooks/multicall'
 import { useEthereumBlockNumber } from '@/state/application/hooks'
+import { useAppDispatch, useAppSelector } from '@/state/hooks'
+import { AppState } from '@/state'
+import { setWalletModalMode, WalletModalMode } from './actions'
 
 const WAITING_TRANSACTION_QUERY = gql`
   query {
@@ -85,6 +88,22 @@ const UPGRADE_WALLET_MUTATION = gql`
     }
   }
 `
+
+// Modal mode
+
+export function useWalletModalMode(): AppState['wallet']['walletModalMode'] {
+  return useAppSelector((state: AppState) => state.wallet.walletModalMode)
+}
+
+export function useSetWalletModalMode(): (walletModalMode: WalletModalMode) => void {
+  const dispatch = useAppDispatch()
+  return useCallback(
+    (walletModalMode: WalletModalMode) => dispatch(setWalletModalMode({ walletModalMode })),
+    [dispatch]
+  )
+}
+
+// balance
 
 interface Balance {
   low?: string

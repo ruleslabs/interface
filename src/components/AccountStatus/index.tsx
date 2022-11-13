@@ -1,30 +1,22 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
+import { WeiAmount } from '@rulesorg/sdk-core'
 
 import { ActiveLink } from '@/components/Link'
 import { useCurrentUser, useSetCurrentUser } from '@/state/user/hooks'
-import { useSettingsModalToggle, useAuthModalToggle } from '@/state/application/hooks'
+import { useSettingsModalToggle, useAuthModalToggle, useWalletModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
-import Settings from '@/images/settings.svg'
 import SettingsModal from '@/components/SettingsModal'
 import AuthModal from '@/components/AuthModal'
-import { PrimaryButton, SecondaryButton, IconButton, NavButton } from '@/components/Button'
-import DepositModal from '@/components/DepositModal'
-import WithdrawModal from '@/components/WithdrawModal'
+import { PrimaryButton, SecondaryButton } from '@/components/Button'
+import WalletModal from '@/components/WalletModal'
 import WalletUpgradeModal from '@/components/WalletUpgradeModal'
 import useNeededActions from '@/hooks/useNeededActions'
-
-const RotatingIconButton = styled(IconButton)`
-  & svg {
-    transition: transform 100ms ease-out;
-  }
-
-  &:hover svg {
-    transform: rotate(45deg);
-  }
-`
+import { TYPE } from '@/styles/theme'
+import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
+import { useETHBalances } from '@/state/wallet/hooks'
 
 const StyledAccountStatus = styled.div`
   display: flex;
@@ -32,9 +24,48 @@ const StyledAccountStatus = styled.div`
   gap: 20px;
   height: 100%;
 
-  a {
-    height: 100%;
+  ${({ theme }) => theme.media.medium`
+    & a {
+      display: none;
+    }
+  `}
+`
+
+const ProfileButton = styled(SecondaryButton)`
+  height: 42px;
+  background: transparent;
+  padding: 0 16px;
+  border: 1px solid ${({ theme }) => theme.bg3};
+  font-weight: 500;
+
+  &.active,
+  &:hover {
+    background: ${({ theme }) => theme.bg3}80;
   }
+`
+
+const WalletButton = styled(SecondaryButton)`
+  width: unset;
+  padding: 0 16px;
+  height: 42px;
+  background: ${({ theme }) => theme.primary1}20;
+  border: 1px solid ${({ theme }) => theme.primary1}80;
+  border-radius: 3px;
+
+  & * {
+    color: ${({ theme }) => theme.primary1};
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  &.active,
+  &:hover {
+    background: ${({ theme }) => theme.primary1}40;
+  }
+
+  ${({ theme }) => theme.media.medium`
+    padding: 0 12px;
+  `}
 `
 
 export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement>) {
@@ -46,7 +77,9 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
 
   // modal
   const toggleSettingsModal = useSettingsModalToggle()
+  const toggleWalletModal = useWalletModalToggle()
 
+  // auth modal
   const toggleAuthModal = useAuthModalToggle()
   const setAuthMode = useSetAuthMode()
 
@@ -68,22 +101,25 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
     [setCurrentUser, currentUser]
   )
 
+  // ETH balance
+  const weiAmountToEURValue = useWeiAmountToEURValue()
+  let balance = useETHBalances([currentUser?.starknetWallet.address])[currentUser?.starknetWallet.address]
+  balance = currentUser?.starknetWallet.address ? balance : WeiAmount.fromRawAmount(0)
+
   return (
     <>
       <StyledAccountStatus {...props}>
         {!!currentUser ? (
           <>
             <ActiveLink href={`/user/${currentUser.slug}`}>
-              <NavButton>{currentUser.username}</NavButton>
+              <ProfileButton>{currentUser.username}</ProfileButton>
             </ActiveLink>
 
-            <RotatingIconButton
-              onClick={toggleSettingsModal}
-              alert={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
-              notifications={neededActions.total}
-            >
-              <Settings />
-            </RotatingIconButton>
+            {currentUser?.starknetWallet.address && (
+              <WalletButton onClick={toggleWalletModal}>
+                <TYPE.body>{balance ? `${balance.toFixed(6)} Ξ` : 'Loading...'}</TYPE.body>
+              </WalletButton>
+            )}
           </>
         ) : (
           <>
@@ -98,8 +134,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
       </StyledAccountStatus>
 
       <SettingsModal currentUser={currentUser} />
-      <DepositModal />
-      <WithdrawModal />
+      <WalletModal />
       <WalletUpgradeModal onSuccess={onSuccessfulWalletUpgrade} />
       <AuthModal />
     </>

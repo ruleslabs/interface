@@ -10,6 +10,7 @@ import user from './user/reducer'
 import deck from './deck/reducer'
 import onboarding from './onboarding/reducer'
 import packOpening from './packOpening/reducer'
+import wallet from './wallet/reducer'
 
 const PERSISTED_KEYS: string[] = ['user']
 
@@ -22,6 +23,7 @@ const store = configureStore({
     deck,
     onboarding,
     packOpening,
+    wallet,
     multicall: multicall.reducer,
   },
   middleware: (getDefaultMiddleware) =>

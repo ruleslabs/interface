@@ -1,11 +1,9 @@
-import { useCallback, useState, useEffect, useMemo } from 'react'
+import { useCallback, useState, useMemo } from 'react'
 import styled from 'styled-components'
 import { t, Trans, Plural } from '@lingui/macro'
 import { Call, Signature } from 'starknet'
 import { ApolloError } from '@apollo/client'
 
-import { useModalOpen, useWithdrawModalToggle } from '@/state/application/hooks'
-import { ApplicationModal } from '@/state/application/actions'
 import Column from '@/components/Column'
 import { PrimaryButton, ThirdPartyButton } from '@/components/Button'
 import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
@@ -15,7 +13,7 @@ import { TYPE } from '@/styles/theme'
 import Separator from '@/components/Separator'
 import { useCurrentUser } from '@/state/user/hooks'
 import StarknetSigner from '@/components/StarknetSigner'
-import { useETHBalances, useWithdrawEtherMutation } from '@/state/wallet/hooks'
+import { useETHBalances, useWithdrawEtherMutation, useSetWalletModalMode } from '@/state/wallet/hooks'
 import { L2_STARKGATE_ADDRESSES, ETH_ADDRESSES } from '@/constants/addresses'
 import { networkId } from '@/constants/networks'
 import Wallet from '@/components/Wallet'
@@ -66,9 +64,9 @@ export default function WithdrawModal({ onRetrieve }: WithdrawModalProps) {
   // current user
   const currentUser = useCurrentUser()
 
-  // modal
-  const isOpen = useModalOpen(ApplicationModal.WITHDRAW)
-  const toggleWithdrawModal = useWithdrawModalToggle()
+  // modal mode
+  const setWalletModalMode = useSetWalletModalMode()
+  const onDismiss = useCallback(() => setWalletModalMode(null), [])
 
   // metamask
   const account = useAccount()
@@ -145,16 +143,6 @@ export default function WithdrawModal({ onRetrieve }: WithdrawModalProps) {
     [withdrawAmount, parsedWithdrawAmount, balance]
   )
 
-  // on close modal
-  useEffect(() => {
-    if (isOpen) {
-      setCalls(null)
-      setWithdrawAmount('')
-      setError(null)
-      setTxHash(null)
-    }
-  }, [isOpen])
-
   return (
     <StarknetSigner
       modalHeaderChildren={t`Withdraw your balance`}
@@ -165,7 +153,7 @@ export default function WithdrawModal({ onRetrieve }: WithdrawModalProps) {
       calls={calls ?? undefined}
       txHash={txHash ?? undefined}
       error={error ?? undefined}
-      onDismiss={toggleWithdrawModal}
+      onDismiss={onDismiss}
       onSignature={onSignature}
       onError={onError}
     >

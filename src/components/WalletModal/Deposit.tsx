@@ -1,19 +1,16 @@
-import { useCallback, useState, useEffect, useMemo } from 'react'
+import { useCallback, useState, useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
 
 import { useCurrentUser } from '@/state/user/hooks'
-import Modal from '@/components/Modal'
 import Column from '@/components/Column'
-import { useModalOpen, useDepositModalToggle } from '@/state/application/hooks'
-import { ApplicationModal } from '@/state/application/actions'
 import CurrencyInput from '@/components/Input/CurrencyInput'
 import { metaMaskHooks } from '@/constants/connectors'
 import { TYPE } from '@/styles/theme'
 import useRampSdk from '@/hooks/useRampSdk'
 import { PrimaryButton, ThirdPartyButton } from '@/components/Button'
 import Separator from '@/components/Separator'
-import { useEthereumETHBalance } from '@/state/wallet/hooks'
+import { useEthereumETHBalance, useSetWalletModalMode } from '@/state/wallet/hooks'
 import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
 import { useEthereumStarkgateContract } from '@/hooks/useContract'
 import Wallet from '@/components/Wallet'
@@ -48,12 +45,12 @@ export default function DepositModal() {
   // current user
   const currentUser = useCurrentUser()
 
+  // modal mode
+  const setWalletModalMode = useSetWalletModalMode()
+  const onDismiss = useCallback(() => setWalletModalMode(null), [])
+
   // Ramp
   const rampSdk = useRampSdk({ email: currentUser?.email, address: currentUser?.starknetWallet.address })
-
-  // modal
-  const isOpen = useModalOpen(ApplicationModal.DEPOSIT)
-  const toggleDepositModal = useDepositModalToggle()
 
   // metamask
   const account = useAccount()
@@ -105,80 +102,68 @@ export default function DepositModal() {
     [depositAmount, parsedDepositAmount, balance]
   )
 
-  // on close modal
-  useEffect(() => {
-    if (isOpen) {
-      setWaitingForTx(false)
-      setDepositAmount('')
-      setError(null)
-      setTxHash(null)
-    }
-  }, [isOpen])
-
   return (
-    <Modal onDismiss={toggleDepositModal} isOpen={isOpen}>
-      <EthereumSigner
-        modalHeaderChildren={t`Fund your account`}
-        confirmationText={t`Your ${depositAmount} ETH deposit is on its way`}
-        transactionText={t`${depositAmount} ETH deposit to your Rules wallet`}
-        waitingForTx={waitingForTx}
-        txHash={txHash ?? undefined}
-        error={error ?? undefined}
-        onDismiss={toggleDepositModal}
-      >
-        <Column gap={32}>
-          <Column gap={16}>
-            <TYPE.medium>
-              <Trans>From your bank account</Trans>
-            </TYPE.medium>
+    <EthereumSigner
+      modalHeaderChildren={t`Fund your account`}
+      confirmationText={t`Your ${depositAmount} ETH deposit is on its way`}
+      transactionText={t`${depositAmount} ETH deposit to your Rules wallet`}
+      waitingForTx={waitingForTx}
+      txHash={txHash ?? undefined}
+      error={error ?? undefined}
+      onDismiss={onDismiss}
+    >
+      <Column gap={32}>
+        <Column gap={16}>
+          <TYPE.medium>
+            <Trans>From your bank account</Trans>
+          </TYPE.medium>
 
-            <ThirdPartyButton
-              title="Ramp"
-              subtitle={t`Buy ETH with your credit card or a bank transfer`}
-              onClick={rampSdk?.show}
-            >
-              <RampIcon />
-            </ThirdPartyButton>
-          </Column>
-
-          <Separator>
-            <Trans>or</Trans>
-          </Separator>
-
-          <Column gap={16}>
-            <TYPE.medium>
-              <Trans>From your Ethereum wallet</Trans>
-            </TYPE.medium>
-
-            <Metamask>
-              <Column>
-                <CurrencyInput
-                  value={depositAmount}
-                  placeholder="0.0"
-                  onUserInput={handleDepositAmountUpdate}
-                  balance={balance}
-                />
-
-                <ArrowWrapper>
-                  <Arrow />
-                </ArrowWrapper>
-
-                <Wallet layer={2} />
-              </Column>
-
-              <PrimaryButton onClick={onDeposit} disabled={!canDeposit} large>
-                {!+depositAmount || !parsedDepositAmount ? (
-                  <Trans>Enter an amount</Trans>
-                ) : balance?.lessThan(parsedDepositAmount) ? (
-                  <Trans>Insufficient ETH balance</Trans>
-                ) : (
-                  <Trans>Next</Trans>
-                )}
-              </PrimaryButton>
-            </Metamask>
-          </Column>
+          <ThirdPartyButton
+            title="Ramp"
+            subtitle={t`Buy ETH with your credit card or a bank transfer`}
+            onClick={rampSdk?.show}
+          >
+            <RampIcon />
+          </ThirdPartyButton>
         </Column>
-      </EthereumSigner>
-    </Modal>
+
+        <Separator>
+          <Trans>or</Trans>
+        </Separator>
+
+        <Column gap={16}>
+          <TYPE.medium>
+            <Trans>From your Ethereum wallet</Trans>
+          </TYPE.medium>
+
+          <Metamask>
+            <Column>
+              <CurrencyInput
+                value={depositAmount}
+                placeholder="0.0"
+                onUserInput={handleDepositAmountUpdate}
+                balance={balance}
+              />
+
+              <ArrowWrapper>
+                <Arrow />
+              </ArrowWrapper>
+
+              <Wallet layer={2} />
+            </Column>
+
+            <PrimaryButton onClick={onDeposit} disabled={!canDeposit} large>
+              {!+depositAmount || !parsedDepositAmount ? (
+                <Trans>Enter an amount</Trans>
+              ) : balance?.lessThan(parsedDepositAmount) ? (
+                <Trans>Insufficient ETH balance</Trans>
+              ) : (
+                <Trans>Next</Trans>
+              )}
+            </PrimaryButton>
+          </Metamask>
+        </Column>
+      </Column>
+    </EthereumSigner>
   )
 }

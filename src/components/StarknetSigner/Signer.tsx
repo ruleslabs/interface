@@ -6,6 +6,7 @@ import { ec, number, Account, Call, EstimateFee, Signature, KeyPair } from 'star
 import { WeiAmount } from '@rulesorg/sdk-core'
 
 import Input from '@/components/Input'
+import { useWalletModalToggle } from '@/state/application/hooks'
 import { useETHBalances } from '@/state/wallet/hooks'
 import Column, { ColumnCenter } from '@/components/Column'
 import { RowCenter } from '@/components/Row'
@@ -16,7 +17,6 @@ import { useStarknet } from '@/lib/starknet'
 import { useCurrentUser } from '@/state/user/hooks'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import { ErrorCard } from '@/components/Card'
-import { useDepositModalToggle } from '@/state/application/hooks'
 import getNonce from '@/utils/getNonce'
 import estimateFee from '@/utils/estimateFee'
 import signTransaction from '@/utils/signTransaction'
@@ -69,7 +69,7 @@ export default function Signer({
   onError,
 }: SignerProps) {
   // deposit modal
-  const toggleDepositModal = useDepositModalToggle()
+  const toggleWalletModal = useWalletModalToggle()
 
   // password
   const [password, setPassword] = useState('')
@@ -260,7 +260,7 @@ export default function Signer({
                 <Trans>
                   You do not have enough ETH in your Rules wallet to pay for network fees on Starknet.
                   <br />
-                  <span onClick={toggleDepositModal}>Buy ETH or deposit from another wallet.</span>
+                  <span onClick={toggleWalletModal}>Buy ETH or deposit from another wallet.</span>
                 </Trans>
               </ErrorCard>
             )}
