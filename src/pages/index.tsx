@@ -144,26 +144,12 @@ export default function Home() {
     <>
       <DesktopVideo
         windowHeight={windowSize.height}
-        src="https://videos.rules.art/mp4/halloween-homepage-desktop.mp4"
+        src="https://videos.rules.art/mp4/homepage.mp4"
         playsInline
         loop
         autoPlay
         muted
       />
-      <MobileVideo
-        windowHeight={windowSize.height}
-        src="https://videos.rules.art/mp4/halloween-homepage-mobile.mp4"
-        playsInline
-        loop
-        autoPlay
-        muted
-      />
-    </>
-  )
-
-  return (
-    <>
-      <Video src="https://videos.rules.art/mp4/halloween-homepage.mp4" playsInline loop autoPlay muted />
       <Section>
         <StyledYoutubeEmbed embedId="m0lYtWPhJVo" />
       </Section>

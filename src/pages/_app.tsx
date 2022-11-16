@@ -58,7 +58,7 @@ function App({ Component, pageProps }: AppProps) {
                 />
                 <meta property="og:image" content={`${process.env.NEXT_PUBLIC_APP_URL}/assets/twitter-card.jpg`} />
 
-                <link rel="shortcut icon" href="/assets/halloween-favicon.ico" />
+                <link rel="shortcut icon" href="/assets/favicon.ico" />
               </Head>
               <StyledThemeProvider>{getLayout(<Component {...pageProps} />)}</StyledThemeProvider>
             </Web3ReactProvider>
