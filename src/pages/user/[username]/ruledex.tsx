@@ -10,14 +10,14 @@ import ProfileLayout from '@/components/Layout/Profile'
 import Section from '@/components/Section'
 import Grid from '@/components/Grid'
 import CardModel from '@/components/CardModel'
-import { RowCenter } from '@/components/Row'
+import Row, { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
 import { useSearchCards } from '@/state/search/hooks'
 import { TYPE } from '@/styles/theme'
 import { useCurrentUser } from '@/state/user/hooks'
 import { LOW_SERIAL_MAXS } from '@/constants/misc'
 
-const ScarcitySelectorWrapper = styled(RowCenter)`
+const ScarcitySelectorWrapper = styled(Row)`
   gap: 42px;
   flex-wrap: wrap;
 
@@ -31,18 +31,22 @@ const ScarcitySelectorWrapper = styled(RowCenter)`
 `
 
 const ScarcitySelector = styled(BaseButton)<{ scarcity: string; active: boolean }>`
-  background: ${({ theme }) => theme.bg2};
-  border-style: solid;
-  border-color: ${({ theme, scarcity }) => (theme as any)[scarcity]};
-  border-width: ${({ active }) => (active ? '4px 4px 4px 20px' : '0 0 0 16px')};
-  height: 55px;
-  display: flex;
-  padding: 0 15px 0 20px;
-  width: 100%;
-  max-width: 195px;
-  align-items: center;
-  justify-content: space-between;
+  border: solid 4px ${({ theme, scarcity, active }) => (active ? `${(theme as any)[scarcity]}` : 'transparent')};
   box-sizing: content-box;
+  width: 100%;
+  max-width: 246px;
+  background: transparent;
+  padding: 0;
+
+  & > div {
+    background: ${({ theme }) => theme.bg2};
+    border-style: solid;
+    border-color: ${({ theme, scarcity }) => (theme as any)[scarcity]};
+    border-width: 0 0 0 16px;
+    height: 55px;
+    padding: 0 15px 0 20px;
+    justify-content: space-between;
+  }
 `
 
 const StyledGrid = styled(Grid)`
@@ -174,6 +178,10 @@ function Ruledex({ userId }: RuledexProps) {
 
   // selected scarcity
   const [selectedScarcity, setSelectedScarcity] = useState<string | null>(null)
+  const toggleSelectedScarcity = useCallback(
+    (scarcityName: string) => setSelectedScarcity(selectedScarcity === scarcityName ? null : scarcityName),
+    [selectedScarcity]
+  )
 
   // scarcities max
   const scarcitiesMax = useMemo(
@@ -201,14 +209,16 @@ function Ruledex({ userId }: RuledexProps) {
         {ScarcityName.map((scarcityName) => (
           <ScarcitySelector
             key={scarcityName}
-            scarcity={scarcityName.toLowerCase()}
             active={selectedScarcity === scarcityName}
-            onClick={() => setSelectedScarcity(scarcityName)}
+            scarcity={scarcityName.toLowerCase()}
           >
-            <TYPE.body fontWeight={700}>{scarcityName}</TYPE.body>
-            <TYPE.large spanColor="text2" fontSize={32}>
-              {scarcitiesBalance[scarcityName] ?? 0} <span>/{scarcitiesMax[scarcityName] ?? 0}</span>
-            </TYPE.large>
+            <RowCenter onClick={() => toggleSelectedScarcity(scarcityName)}>
+              <TYPE.body fontWeight={700}>{scarcityName}</TYPE.body>
+
+              <TYPE.large spanColor="text2" fontSize={32}>
+                {scarcitiesBalance[scarcityName] ?? 0} <span>/{scarcitiesMax[scarcityName] ?? 0}</span>
+              </TYPE.large>
+            </RowCenter>
           </ScarcitySelector>
         ))}
       </ScarcitySelectorWrapper>
