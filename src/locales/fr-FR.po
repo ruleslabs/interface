@@ -1176,3 +1176,11 @@ msgstr "Ton portefeuille est déjà occupé avec une autre transaction"
 #: src/components/WalletModal/index.tsx
 msgid "Withdraw"
 msgstr "Retirer"
+
+#: src/components/SettingsModal/Settings.tsx
+msgid "Upgrade wallet"
+msgstr "Mettre à jour le portefeuille"
+
+#: src/components/SettingsModal/Settings.tsx
+msgid "Validate withdraws"
+msgstr "Valider les retraits"

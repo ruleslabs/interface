@@ -114,7 +114,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
             </ActiveLink>
 
             {currentUser?.starknetWallet.address && (
-              <WalletButton onClick={toggleWalletModal}>
+              <WalletButton onClick={toggleWalletModal} notifications={neededActions.withdraw}>
                 <TYPE.body>{balance ? `${balance.toFixed(6)} Ξ` : 'Loading...'}</TYPE.body>
               </WalletButton>
             )}

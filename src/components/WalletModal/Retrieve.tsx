@@ -150,10 +150,6 @@ export default function Retrieve() {
       error={error ?? undefined}
     >
       <Column gap={26}>
-        <TYPE.large>
-          <Trans>Validate my transactions</Trans>
-        </TYPE.large>
-
         {(currentUser?.retrievableEthers ?? []).map((retrievableEther: any, index: number) => (
           <RetrievableWrapper key={`retrievable-ether-${index}`}>
             <Column gap={8}>

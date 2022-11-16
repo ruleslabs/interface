@@ -42,17 +42,14 @@ const ArrowWrapper = styled(Column)`
   }
 `
 
-interface WithdrawModalProps {
-  onRetrieve(): void
-}
-
-export default function WithdrawModal({ onRetrieve }: WithdrawModalProps) {
+export default function WithdrawModal() {
   // current user
   const currentUser = useCurrentUser()
 
   // modal mode
   const setWalletModalMode = useSetWalletModalMode()
   const onBack = useCallback(() => setWalletModalMode(WalletModalMode.WITHDRAW), [])
+  const onRetrieve = useCallback(() => setWalletModalMode(WalletModalMode.RETRIEVE), [])
 
   // metamask
   const account = useAccount()

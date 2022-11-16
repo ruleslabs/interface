@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
 import AccountStatus from '@/components/AccountStatus'
-import { NavButton } from '@/components/Button'
+import { NavButton, IconButton } from '@/components/Button'
 import { RowCenter } from '@/components/Row'
 import Link, { ActiveLink } from '@/components/Link'
 import { useOpenModal, useCloseModal, useModalOpen, useSettingsModalToggle } from '@/state/application/hooks'
@@ -13,8 +13,23 @@ import useNeededActions from '@/hooks/useNeededActions'
 
 import Logo from '@/public/assets/logo.svg'
 import Hamburger from '@/images/hamburger.svg'
+import Settings from '@/images/settings.svg'
 import Close from '@/images/close.svg'
 import ExternalLinkIcon from '@/images/external-link.svg'
+
+const RotatingIconButton = styled(IconButton)`
+  & svg {
+    transition: transform 100ms ease-out;
+  }
+
+  &:hover svg {
+    transform: rotate(45deg);
+  }
+
+  ${({ theme }) => theme.media.medium`
+    display: none;
+  `}
+`
 
 const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
   width: 12px;
@@ -27,18 +42,10 @@ const HamburgerWrapper = styled.div<{ alert?: boolean; notifications?: number }>
 
   ${({ theme, alert = false }) => !!alert && theme.before.alert``}
   ${({ theme, notifications = 0 }) => !!notifications && theme.before.notifications``}
-
-  ${({ theme }) => theme.media.medium`
-    display: none;
-  `}
 `
 
 const MobileNavWrapper = styled.div`
   display: none;
-
-  & > ${HamburgerWrapper} {
-    display: unset;
-  }
 
   ${({ theme }) => theme.media.medium`
     display: unset;
@@ -145,12 +152,15 @@ export default function Header() {
 
       <StyledAccountStatus />
 
-      <HamburgerWrapper
-        alert={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
-        notifications={neededActions.total}
-      >
-        <Hamburger onClick={toggleSettingsModal} />
-      </HamburgerWrapper>
+      {currentUser && (
+        <RotatingIconButton
+          onClick={toggleSettingsModal}
+          alert={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
+          notifications={neededActions.total}
+        >
+          <Settings />
+        </RotatingIconButton>
+      )}
 
       <MobileNavWrapper>
         {allModalsClosed ? (
