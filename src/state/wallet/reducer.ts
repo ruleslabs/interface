@@ -1,12 +1,12 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 
-import { setWalletModalMode, WalletModalModal, WalletModalModePayload } from './actions'
+import { setWalletModalMode, WalletModalMode, WalletModalModePayload } from './actions'
 
 export interface WalletState {
-  walletModalMode: WalletModalModal | null
+  walletModalMode: WalletModalMode | null
 }
 
-export const initialState: AuthState = {
+export const initialState: WalletState = {
   walletModalMode: null,
 }
 

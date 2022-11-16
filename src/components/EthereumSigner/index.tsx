@@ -11,7 +11,7 @@ interface EthereumSignerProps {
   waitingForTx: boolean
   txHash?: string
   error?: string
-  onDismiss(): void
+  onDismiss?: () => void
   onBack?: () => void
 }
 

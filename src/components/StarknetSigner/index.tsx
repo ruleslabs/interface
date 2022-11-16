@@ -26,7 +26,7 @@ interface StarknetSignerProps {
   txHash?: string
   error?: string
   onSignature(signature: Signature, maxFee: string, nonce: string): void
-  onDismiss(): void
+  onDismiss?: () => void
   onError(error: string): void
   onBack?: () => void
 }
