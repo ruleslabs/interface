@@ -262,7 +262,7 @@ const StyledThirdPartyButton = styled(SecondaryButton)<{ active: boolean }>`
 
 interface ThirdPartyButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   title: string
-  subtitle: string
+  subtitle?: string
   children: React.ReactNode
 }
 
@@ -272,9 +272,11 @@ export const ThirdPartyButton = ({ title, subtitle, children, ...props }: ThirdP
       {children}
       <Column gap={4}>
         <TYPE.body>{title}</TYPE.body>
-        <TYPE.subtitle fontWeight={400} fontSize={12}>
-          {subtitle}
-        </TYPE.subtitle>
+        {subtitle && (
+          <TYPE.subtitle fontWeight={400} fontSize={12}>
+            {subtitle}
+          </TYPE.subtitle>
+        )}
       </Column>
     </StyledThirdPartyButton>
   )

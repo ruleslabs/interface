@@ -6,6 +6,7 @@ import { DialogOverlay, DialogContent } from '@reach/dialog'
 import { animated, useTransition } from 'react-spring'
 import { useRouter } from 'next/router'
 import { BackButton } from '@/components/Button'
+import Column from '@/components/Column'
 
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
@@ -123,6 +124,22 @@ export default function Modal({ children, isOpen, onDismiss, sidebar = false, au
   )
 }
 
+// Modal content
+
+export const ModalContent = styled(Column)<{ width?: number }>`
+  width: ${({ width = 546 }) => width}px;
+  padding: 26px;
+  background: ${({ theme }) => theme.bg2};
+  border-radius: 4px;
+
+  ${({ theme }) => theme.media.medium`
+    width: 100%;
+    height: 100%;
+  `}
+`
+
+// Modal header
+
 const StyledModalHeader = styled(RowCenter)`
   justify-content: center;
   min-height: 16px;
@@ -159,7 +176,7 @@ const StyledClose = styled(Close)`
 `
 
 interface ModalHeaderProps {
-  onDismiss: () => void
+  onDismiss?: () => void
   onBack?: () => void
   children?: React.ReactNode
 }
@@ -175,7 +192,7 @@ export const ModalHeader = ({ children, onDismiss, onBack }: ModalHeaderProps) =
       ) : (
         <div />
       )}
-      <StyledClose onClick={onDismiss} />
+      {onDismiss && <StyledClose onClick={onDismiss} />}
     </StyledModalHeader>
   )
 }

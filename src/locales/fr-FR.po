@@ -36,10 +36,6 @@ msgid "Current balance"
 msgstr "Solde du compte"
 
 #: src/components/SettingsModal/Settings.tsx
-msgid "Deposit ETH"
-msgstr "Déposer de l'ETH"
-
-#: src/components/SettingsModal/Settings.tsx
 msgid "Logout"
 msgstr "Se déconnecter"
 
@@ -327,8 +323,12 @@ msgid "From your Ethereum wallet"
 msgstr "Depuis ton portefeuille Ethereum"
 
 #: src/components/DepositModal/index.tsx
-msgid "Deposit ETH from your wallet"
-msgstr "Dépose de l'ETH depuis ton portefeuille"
+msgid "Deposit ETH from your Ethereum wallet"
+msgstr "Dépose de l'ETH depuis ton portefeuille Ethereum"
+
+#: src/components/DepositModal/index.tsx
+msgid "Withdraw ETH to your Ethereum wallet"
+msgstr "Retire de l'ETH vers ton portefeuille Ethereum"
 
 #: src/components/DepositModal/index.tsx
 msgid "Fund your account"
@@ -1081,13 +1081,9 @@ msgstr "retrait de {withdrawAmount} ETH vers ton portefeuille Ethereum"
 msgid "Your {withdrawAmount} ETH withdraw is on its way"
 msgstr "Ton retrait de {withdrawAmount} ETH est en route"
 
-#: src/components/SettingsModal/Settings.tsx
-msgid "Withdraw ETH"
-msgstr "Retirer de l'ETH"
-
 #: src/components/WithdrawModal/index.tsx
-msgid "Withdraw ETH to your wallet"
-msgstr "Retire de l'ETH vers ton portefeuille wallet"
+msgid "Deposit ETH from your Ethereum wallet"
+msgstr "Dépose de l'ETH depuis ton portefeuille Ethereum"
 
 #: src/components/WithdrawModal/index.tsx
 msgid "Withdraw your balance"
@@ -1176,3 +1172,7 @@ msgstr "Mettre à jour"
 #: src/components/StarknetSigner/index.tsx
 msgid "Your wallet is already processing another transaction"
 msgstr "Ton portefeuille est déjà occupé avec une autre transaction"
+
+#: src/components/WalletModal/index.tsx
+msgid "Withdraw"
+msgstr "Retirer"

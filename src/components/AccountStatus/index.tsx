@@ -15,7 +15,6 @@ import WalletModal from '@/components/WalletModal'
 import WalletUpgradeModal from '@/components/WalletUpgradeModal'
 import useNeededActions from '@/hooks/useNeededActions'
 import { TYPE } from '@/styles/theme'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import { useETHBalances } from '@/state/wallet/hooks'
 
 const StyledAccountStatus = styled.div`
@@ -102,7 +101,6 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
   )
 
   // ETH balance
-  const weiAmountToEURValue = useWeiAmountToEURValue()
   let balance = useETHBalances([currentUser?.starknetWallet.address])[currentUser?.starknetWallet.address]
   balance = currentUser?.starknetWallet.address ? balance : WeiAmount.fromRawAmount(0)
 

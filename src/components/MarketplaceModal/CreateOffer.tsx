@@ -5,7 +5,7 @@ import { uint256HexFromStrHex, getStarknetCardId, ScarcityName } from '@rulesorg
 import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
-import Modal from '@/components/Modal'
+import Modal, { ModalContent } from '@/components/Modal'
 import { useModalOpen, useCreateOfferModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
@@ -156,48 +156,50 @@ export default function CreateOfferModal({
 
   return (
     <Modal onDismiss={toggleCreateOfferModal} isOpen={isOpen}>
-      <StarknetSigner
-        modalHeaderChildren={t`Enter an asking price`}
-        confirmationText={t`Your offer will be created`}
-        confirmationActionText={t`Confirm offer creation`}
-        transactionText={t`offer creation.`}
-        calls={calls ?? undefined}
-        txHash={txHash ?? undefined}
-        error={error ?? undefined}
-        onDismiss={toggleCreateOfferModal}
-        onSignature={onSignature}
-        onError={onError}
-      >
-        <Column gap={32}>
-          <CardBreakdown>
-            <img src={pictureUrl} />
-            <Column gap={4}>
-              <TYPE.body spanColor="text2">
-                {artistName} S{season}&nbsp;
-                <Trans id={scarcityName} render={({ translation }) => <>{translation}</>} />
-              </TYPE.body>
-              <TYPE.subtitle>
-                #{serialNumber} / {scarcityMaxSupply ?? '4000'}
-              </TYPE.subtitle>
-            </Column>
-          </CardBreakdown>
+      <ModalContent>
+        <StarknetSigner
+          modalHeaderChildren={t`Enter an asking price`}
+          confirmationText={t`Your offer will be created`}
+          confirmationActionText={t`Confirm offer creation`}
+          transactionText={t`offer creation.`}
+          calls={calls ?? undefined}
+          txHash={txHash ?? undefined}
+          error={error ?? undefined}
+          onDismiss={toggleCreateOfferModal}
+          onSignature={onSignature}
+          onError={onError}
+        >
+          <Column gap={32}>
+            <CardBreakdown>
+              <img src={pictureUrl} />
+              <Column gap={4}>
+                <TYPE.body spanColor="text2">
+                  {artistName} S{season}&nbsp;
+                  <Trans id={scarcityName} render={({ translation }) => <>{translation}</>} />
+                </TYPE.body>
+                <TYPE.subtitle>
+                  #{serialNumber} / {scarcityMaxSupply ?? '4000'}
+                </TYPE.subtitle>
+              </Column>
+            </CardBreakdown>
 
-          {currentUser?.starknetWallet.needsSignerPublicKeyUpdate ? (
-            <ErrorCard>
-              <LockedWallet />
-            </ErrorCard>
-          ) : (
-            <Column gap={32}>
-              <EtherInput onUserInput={onPriceInput} value={price} placeholder="0.0" />
-              {parsedPrice && <SaleBreakdown price={parsedPrice.quotient.toString()} artistName={artistName} />}
-            </Column>
-          )}
+            {currentUser?.starknetWallet.needsSignerPublicKeyUpdate ? (
+              <ErrorCard>
+                <LockedWallet />
+              </ErrorCard>
+            ) : (
+              <Column gap={32}>
+                <EtherInput onUserInput={onPriceInput} value={price} placeholder="0.0" />
+                {parsedPrice && <SaleBreakdown price={parsedPrice.quotient.toString()} artistName={artistName} />}
+              </Column>
+            )}
 
-          <PrimaryButton onClick={handleConfirmation} disabled={!isPriceValid} large>
-            <Trans>Next</Trans>
-          </PrimaryButton>
-        </Column>
-      </StarknetSigner>
+            <PrimaryButton onClick={handleConfirmation} disabled={!isPriceValid} large>
+              <Trans>Next</Trans>
+            </PrimaryButton>
+          </Column>
+        </StarknetSigner>
+      </ModalContent>
     </Modal>
   )
 }

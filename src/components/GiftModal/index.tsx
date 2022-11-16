@@ -5,7 +5,7 @@ import { uint256HexFromStrHex, getStarknetCardId, ScarcityName } from '@rulesorg
 import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
-import Modal from '@/components/Modal'
+import Modal, { ModalContent } from '@/components/Modal'
 import { useModalOpen, useOfferModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import UsersSearchBar from '@/components/UsersSearchBar'
@@ -207,81 +207,83 @@ export default function GiftModal({
 
   return (
     <Modal onDismiss={toggleOfferModal} isOpen={isOpen}>
-      <StarknetSigner
-        modalHeaderChildren={t`Offer this card`}
-        confirmationText={t`Your card is on its way`}
-        transactionText={t`card transfer.`}
-        calls={calls ?? undefined}
-        txHash={txHash ?? undefined}
-        error={error ?? undefined}
-        onDismiss={toggleOfferModal}
-        onSignature={onSignature}
-        onError={onError}
-      >
-        <Column gap={24}>
-          <CardBreakdown>
-            <img src={pictureUrl} />
-            <Column gap={4}>
-              <TYPE.body spanColor="text2">
-                {artistName} S{season}&nbsp;
-                <Trans id={scarcityName} render={({ translation }) => <>{translation}</>} />
-              </TYPE.body>
-              <TYPE.subtitle>
-                #{serialNumber} / {scarcityMaxSupply ?? '4000'}
-              </TYPE.subtitle>
-            </Column>
-          </CardBreakdown>
-
-          {currentUser?.starknetWallet.needsSignerPublicKeyUpdate ? (
-            <ErrorCard>
-              <LockedWallet />
-            </ErrorCard>
-          ) : (
-            <>
-              <RowCenter gap={16}>
-                <TYPE.body style={{ whiteSpace: 'nowrap' }}>
-                  <Trans>Send to</Trans>
+      <ModalContent>
+        <StarknetSigner
+          modalHeaderChildren={t`Offer this card`}
+          confirmationText={t`Your card is on its way`}
+          transactionText={t`card transfer.`}
+          calls={calls ?? undefined}
+          txHash={txHash ?? undefined}
+          error={error ?? undefined}
+          onDismiss={toggleOfferModal}
+          onSignature={onSignature}
+          onError={onError}
+        >
+          <Column gap={24}>
+            <CardBreakdown>
+              <img src={pictureUrl} />
+              <Column gap={4}>
+                <TYPE.body spanColor="text2">
+                  {artistName} S{season}&nbsp;
+                  <Trans id={scarcityName} render={({ translation }) => <>{translation}</>} />
                 </TYPE.body>
-                <UsersSearchBar onSelect={setRecipient} selfSearchAllowed={false} />
-              </RowCenter>
-
-              <Column gap={12}>
-                <TransferSummary>
-                  <RowCenter gap={12}>
-                    <img src={currentUser?.profile.pictureUrl} />
-                    <TYPE.body fontSize={14}>
-                      <Trans>My account</Trans>
-                    </TYPE.body>
-                  </RowCenter>
-
-                  <ArrowWrapper>
-                    <Arrow />
-                  </ArrowWrapper>
-
-                  <RowCenter gap={12}>
-                    {recipient && (
-                      <>
-                        <img src={recipient.profile.pictureUrl} />
-                        <TYPE.body fontSize={14}>{recipient.username}</TYPE.body>
-                      </>
-                    )}
-                  </RowCenter>
-                </TransferSummary>
-
-                {recipient && !recipient.starknetWallet.address && (
-                  <TYPE.body color="error">
-                    <Trans>This user does not have a wallet yet, please try again in a few hours.</Trans>
-                  </TYPE.body>
-                )}
+                <TYPE.subtitle>
+                  #{serialNumber} / {scarcityMaxSupply ?? '4000'}
+                </TYPE.subtitle>
               </Column>
-            </>
-          )}
+            </CardBreakdown>
 
-          <PrimaryButton onClick={handleConfirmation} disabled={!recipient?.starknetWallet.address} large>
-            <Trans>Next</Trans>
-          </PrimaryButton>
-        </Column>
-      </StarknetSigner>
+            {currentUser?.starknetWallet.needsSignerPublicKeyUpdate ? (
+              <ErrorCard>
+                <LockedWallet />
+              </ErrorCard>
+            ) : (
+              <>
+                <RowCenter gap={16}>
+                  <TYPE.body style={{ whiteSpace: 'nowrap' }}>
+                    <Trans>Send to</Trans>
+                  </TYPE.body>
+                  <UsersSearchBar onSelect={setRecipient} selfSearchAllowed={false} />
+                </RowCenter>
+
+                <Column gap={12}>
+                  <TransferSummary>
+                    <RowCenter gap={12}>
+                      <img src={currentUser?.profile.pictureUrl} />
+                      <TYPE.body fontSize={14}>
+                        <Trans>My account</Trans>
+                      </TYPE.body>
+                    </RowCenter>
+
+                    <ArrowWrapper>
+                      <Arrow />
+                    </ArrowWrapper>
+
+                    <RowCenter gap={12}>
+                      {recipient && (
+                        <>
+                          <img src={recipient.profile.pictureUrl} />
+                          <TYPE.body fontSize={14}>{recipient.username}</TYPE.body>
+                        </>
+                      )}
+                    </RowCenter>
+                  </TransferSummary>
+
+                  {recipient && !recipient.starknetWallet.address && (
+                    <TYPE.body color="error">
+                      <Trans>This user does not have a wallet yet, please try again in a few hours.</Trans>
+                    </TYPE.body>
+                  )}
+                </Column>
+              </>
+            )}
+
+            <PrimaryButton onClick={handleConfirmation} disabled={!recipient?.starknetWallet.address} large>
+              <Trans>Next</Trans>
+            </PrimaryButton>
+          </Column>
+        </StarknetSigner>
+      </ModalContent>
     </Modal>
   )
 }

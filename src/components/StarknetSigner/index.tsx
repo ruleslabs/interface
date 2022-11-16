@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { Call, Signature } from 'starknet'
 import { t } from '@lingui/macro'
 
-import Column from '@/components/Column'
 import { ModalHeader } from '@/components/Modal'
 import { useWaitingTransactionQuery } from '@/state/wallet/hooks'
 import Confirmation from './Confirmation'
@@ -14,18 +13,6 @@ const DummyFocusInput = styled.input`
   max-width: 0;
   position: fixed;
   left: 99999px;
-`
-
-const StyledStarknetSignerModal = styled(Column)`
-  width: 546px;
-  padding: 26px;
-  background: ${({ theme }) => theme.bg2};
-  border-radius: 4px;
-
-  ${({ theme }) => theme.media.medium`
-    width: 100%;
-    height: 100%;
-  `}
 `
 
 interface StarknetSignerProps {
@@ -81,43 +68,41 @@ export default function StarknetSigner({
   return (
     <>
       <DummyFocusInput type="text" />
-      <StyledStarknetSignerModal gap={26}>
-        <ModalHeader
-          onDismiss={onDismiss}
-          onBack={!waitingTransaction && !txHash && !waitingForTx && !waitingForFees ? onBack : undefined}
-        >
-          {!waitingTransaction && !txHash && !waitingForTx && !waitingForFees && modalHeaderChildren}
-        </ModalHeader>
+      <ModalHeader
+        onDismiss={onDismiss}
+        onBack={!waitingTransaction && !txHash && !waitingForTx && !waitingForFees ? onBack : undefined}
+      >
+        {!waitingTransaction && !txHash && !waitingForTx && !waitingForFees && modalHeaderChildren}
+      </ModalHeader>
 
-        {waitingTransaction ? (
-          <Confirmation
-            txHash={waitingTransaction.hash}
-            confirmationText={t`Your wallet is already processing another transaction`}
-          />
-        ) : txHash || waitingForTx || waitingForFees ? (
-          <Confirmation
-            txHash={txHash ?? undefined}
-            error={error ?? undefined}
-            waitingForFees={waitingForFees}
-            confirmationText={confirmationText}
-            transactionText={transactionText}
-            success={!!txHash}
-          />
-        ) : (
-          !calls && children
-        )}
-
-        <Signer
-          confirmationActionText={confirmationActionText}
-          isOpen={!txHash && !waitingForTx && !waitingForFees && !!calls}
-          transactionValue={transactionValue}
-          onWaitingForFees={onWaitingForFees}
-          onConfirmation={onConfirmation}
-          onSignature={onSignature}
-          onError={onError}
-          calls={calls ?? undefined}
+      {waitingTransaction ? (
+        <Confirmation
+          txHash={waitingTransaction.hash}
+          confirmationText={t`Your wallet is already processing another transaction`}
         />
-      </StyledStarknetSignerModal>
+      ) : txHash || waitingForTx || waitingForFees ? (
+        <Confirmation
+          txHash={txHash ?? undefined}
+          error={error ?? undefined}
+          waitingForFees={waitingForFees}
+          confirmationText={confirmationText}
+          transactionText={transactionText}
+          success={!!txHash}
+        />
+      ) : (
+        !calls && children
+      )}
+
+      <Signer
+        confirmationActionText={confirmationActionText}
+        isOpen={!txHash && !waitingForTx && !waitingForFees && !!calls}
+        transactionValue={transactionValue}
+        onWaitingForFees={onWaitingForFees}
+        onConfirmation={onConfirmation}
+        onSignature={onSignature}
+        onError={onError}
+        calls={calls ?? undefined}
+      />
     </>
   )
 }

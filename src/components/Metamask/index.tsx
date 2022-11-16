@@ -4,6 +4,7 @@ import { t, Trans } from '@lingui/macro'
 import { metaMask, metaMaskHooks, desiredChainId } from '@/constants/connectors'
 import { ThirdPartyButton } from '@/components/Button'
 import { InfoCard, ErrorCard } from '@/components/Card'
+import Column from '@/components/Column'
 import Link from '@/components/Link'
 
 import MetamaskIcon from '@/images/metamask.svg'
@@ -43,13 +44,11 @@ export default function Metamask({ children }: MetamaskProps) {
     )
   else if (metamaskFound)
     return (
-      <ThirdPartyButton
-        title={t`Connect Metamask`}
-        subtitle={t`Withdraw ETH to your wallet`}
-        onClick={activateMetamask}
-      >
-        <MetamaskIcon />
-      </ThirdPartyButton>
+      <Column>
+        <ThirdPartyButton title={t`Connect Metamask`} onClick={activateMetamask}>
+          <MetamaskIcon />
+        </ThirdPartyButton>
+      </Column>
     )
   else
     return (

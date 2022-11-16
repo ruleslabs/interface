@@ -18,6 +18,7 @@ import Link from '@/components/Link'
 import { desiredChainId } from '@/constants/connectors'
 import { CHAINS } from '@/constants/networks'
 import { useRetrieveEtherMutation, useSetWalletModalMode } from '@/state/wallet/hooks'
+import { WalletModalMode } from '@/state/wallet/actions'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
 
@@ -57,7 +58,7 @@ export default function Retrieve() {
 
   // modal mode
   const setWalletModalMode = useSetWalletModalMode()
-  const onDismiss = useCallback(() => setWalletModalMode(null), [])
+  const onBack = useCallback(() => setWalletModalMode(WalletModalMode.WITHDRAW), [])
 
   // amount
   const parsedAmounts = useMemo(
@@ -141,13 +142,12 @@ export default function Retrieve() {
 
   return (
     <EthereumSigner
-      onBack={onDismiss}
+      onBack={onBack}
       confirmationText={t`Your ${totalParsedAmount?.toSignificant(6)} ETH transfer is on its way`}
       transactionText={t`${totalParsedAmount?.toSignificant(6)} ETH transfer to your Ethereum wallet`}
       waitingForTx={waitingForTx}
       txHash={txHash ?? undefined}
       error={error ?? undefined}
-      onDismiss={onDismiss}
     >
       <Column gap={26}>
         <TYPE.large>
