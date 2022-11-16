@@ -74,8 +74,8 @@ export function colors(darkMode: boolean): Colors {
     white: '#ffffff',
     black: '#000000',
 
-    primary1: '#f95b29',
-    primary2: '#b83523',
+    primary1: '#9F04DC',
+    primary2: '#7C03AE',
 
     bg1: '#0D1114',
     bg2: '#202326',
@@ -86,7 +86,7 @@ export function colors(darkMode: boolean): Colors {
     text1: '#FFFFFF',
     text2: '#FFFFFF80',
 
-    gradient1: 'linear-gradient(90deg, #f95b29, #ff9700)',
+    gradient1: 'linear-gradient(90deg, #6E36E7, #CB49CE)',
 
     common: '#8C04C1',
     platinium: '#E7E7E7',
