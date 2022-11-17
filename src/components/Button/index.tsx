@@ -64,8 +64,12 @@ export const IconButton = styled.button<{ alert?: boolean; notifications?: numbe
   outline: none;
 
   & > svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
+
+    * {
+      fill: ${({ theme }) => theme.text1};
+    }
   }
 
   ${({ theme, alert = false }) => alert && theme.before.alert``}

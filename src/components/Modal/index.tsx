@@ -135,6 +135,10 @@ export const ModalContent = styled(Column)<{ width?: number }>`
   ${({ theme }) => theme.media.medium`
     width: 100%;
     height: 100%;
+    border-radius: 0;
+    padding: 16px;
+    overflow-y: scroll;
+    overflow-x: hidden;
   `}
 `
 
@@ -159,7 +163,7 @@ const ModalTitle = styled(TYPE.large)`
 `
 
 const ModalHeaderWrapper = styled.div`
-  margin: 8px 0;
+  margin: 32px 0 24px;
 `
 
 const StyledClose = styled(Close)`

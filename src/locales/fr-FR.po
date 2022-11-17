@@ -1184,3 +1184,23 @@ msgstr "Mettre à jour le portefeuille"
 #: src/components/SettingsModal/Settings.tsx
 msgid "Validate withdraws"
 msgstr "Valider les retraits"
+
+#: src/components/WalletModal/index.tsx
+msgid "Advanced wallet settings"
+msgstr "Paramètres avancés du portefeuille"
+
+#: src/components/WalletModal/AdvanceWalletSettings.tsx
+msgid "Wallet address"
+msgstr "Address du portefeuille"
+
+#: src/components/WalletModal/AdvanceWalletSettings.tsx
+msgid "Private key"
+msgstr "Clef privée"
+
+#: src/components/WalletModal/AdvanceWalletSettings.tsx
+msgid "DO NOT share your private key with anyone!<0/><1>it can be used to steal everything on your wallet (your packs, cards, and ETH)</1>"
+msgstr "NE PARTAGE JAMAIS ta clef privée avec quelqu'un<0/><1>elle pourrait être utilisée pour voler l'intégralité de ton portefeuille (tes packs, cartes et ETH)</1>"
+
+#: src/components/WalletModal/AdvanceWalletSettings.tsx
+msgid "Reveal the private key"
+msgstr "Révéler la clef privée"

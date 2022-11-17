@@ -1,17 +1,15 @@
 import JSBI from 'jsbi'
 import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 import { ec, number, Account, Call, EstimateFee, Signature, KeyPair } from 'starknet'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
-import Input from '@/components/Input'
 import { useWalletModalToggle } from '@/state/application/hooks'
 import { useETHBalances } from '@/state/wallet/hooks'
 import Column, { ColumnCenter } from '@/components/Column'
 import { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
-import { decryptRulesPrivateKey } from '@/utils/wallet'
 import { PrimaryButton } from '@/components/Button'
 import { useStarknet } from '@/lib/starknet'
 import { useCurrentUser } from '@/state/user/hooks'
@@ -20,20 +18,21 @@ import { ErrorCard } from '@/components/Card'
 import getNonce from '@/utils/getNonce'
 import estimateFee from '@/utils/estimateFee'
 import signTransaction from '@/utils/signTransaction'
+import PrivateKeyDecipherForm from './PrivateKeyDecipherForm'
 
 const StyledSigner = styled(ColumnCenter)`
   padding-bottom: 8px;
   gap: 32px;
 `
 
-const StyledForm = styled.form`
-  width: 100%;
-`
-
 const SubmitButton = styled(PrimaryButton)`
   width: 100%;
   height: 55px;
   margin-top: 12px;
+`
+
+const StyledForm = styled.form`
+  width: 100%;
 `
 
 const FeeWrapper = styled(RowCenter)`
@@ -71,18 +70,10 @@ export default function Signer({
   // deposit modal
   const toggleWalletModal = useWalletModalToggle()
 
-  // password
-  const [password, setPassword] = useState('')
-  const onPasswordInput = useCallback((value: string) => setPassword(value), [setPassword])
-
   // wallet
   const currentUser = useCurrentUser()
-  const rulesPrivateKey = currentUser.starknetWallet.rulesPrivateKey
   const address = currentUser.starknetWallet.address
   const transactionVersion = currentUser.starknetWallet.transactionVersion
-
-  // errors
-  const [error, setError] = useState<string | null>(null)
 
   // starknet account
   const [account, setAccount] = useState<Account | null>(null)
@@ -120,32 +111,22 @@ export default function Signer({
 
   // prepare transaction
   const prepareTransaction = useCallback(
-    (event) => {
-      event.preventDefault()
-
+    (privateKey: string) => {
       if (!calls) return
 
-      decryptRulesPrivateKey(rulesPrivateKey, password)
-        .catch((error: Error) => {
-          console.error(error)
+      const keyPair = ec.getKeyPair(privateKey)
+      if (!keyPair || !provider) {
+        onError('Failed to sign transaction')
+        return
+      }
+      const account = new Account(provider, address, keyPair)
 
-          setError(error.message)
-          return Promise.reject()
-        })
-        .then((res: string) => {
-          const keyPair = ec.getKeyPair(res)
-          if (!keyPair || !provider) {
-            setError('Failed to sign transaction')
-            return
-          }
-          const account = new Account(provider, address, keyPair)
+      setAccount(account)
+      setKeyPair(keyPair)
 
-          setAccount(account)
-          setKeyPair(keyPair)
+      onWaitingForFees(true)
 
-          onWaitingForFees(true)
-          return estimateFee(account, keyPair, calls, transactionVersion)
-        })
+      estimateFee(account, keyPair, calls, transactionVersion)
         .then((estimatedFees?: EstimateFee) => {
           const maxFee = estimatedFees?.suggestedMaxFee.toString() ?? '0'
           const fee = estimatedFees?.overall_fee.toString() ?? '0'
@@ -164,7 +145,7 @@ export default function Signer({
           onError(error.message)
         })
     },
-    [password, rulesPrivateKey, address, provider, calls, onError, onWaitingForFees, transactionVersion]
+    [address, provider, calls, onError, onWaitingForFees, transactionVersion]
   )
 
   // tx signature
@@ -219,7 +200,7 @@ export default function Signer({
   if (!isOpen) return null
 
   return (
-    <StyledSigner gap={26}>
+    <StyledSigner>
       {parsedNetworkFee ? (
         <StyledForm onSubmit={handleSignature}>
           <Column gap={20}>
@@ -271,29 +252,10 @@ export default function Signer({
           </Column>
         </StyledForm>
       ) : (
-        <StyledForm onSubmit={prepareTransaction}>
-          <Column gap={20}>
-            <Column gap={12}>
-              <Input
-                id="password"
-                value={password}
-                placeholder={t`Password`}
-                type="password"
-                autoComplete="password"
-                onUserInput={onPasswordInput}
-                $valid={!error}
-              />
-
-              {error && (
-                <Trans id={error} render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>} />
-              )}
-            </Column>
-
-            <SubmitButton type="submit" large>
-              {confirmationActionText ? confirmationActionText : <Trans>Confirm</Trans>}
-            </SubmitButton>
-          </Column>
-        </StyledForm>
+        <PrivateKeyDecipherForm
+          confirmationActionText={confirmationActionText}
+          onPrivateKeyDeciphered={prepareTransaction}
+        />
       )}
     </StyledSigner>
   )

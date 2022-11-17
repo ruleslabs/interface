@@ -1,7 +1,7 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { WeiAmount } from '@rulesorg/sdk-core'
-import { Trans } from '@lingui/macro'
+import { Trans, t } from '@lingui/macro'
 
 import Modal, { ModalHeader, ModalContent } from '@/components/Modal'
 import { useModalOpen, useWalletModalToggle } from '@/state/application/hooks'
@@ -13,12 +13,29 @@ import Column from '@/components/Column'
 import Row from '@/components/Row'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import { TYPE } from '@/styles/theme'
+import { IconButton } from '@/components/Button'
 
 import Deposit from './Deposit'
 import StarkgateDeposit from './StarkgateDeposit'
 import Withdraw from './Withdraw'
 import StarkgateWithdraw from './StarkgateWithdraw'
 import Retrieve from './Retrieve'
+import AdvanceWalletSettings from './AdvanceWalletSettings'
+
+import Dots from '@/images/dots.svg'
+
+const AdvancedSettingsButton = styled(IconButton)`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border: solid 1px ${({ theme }) => theme.bg3}80;
+  background: transparent;
+  border-radius: 3px;
+
+  &:hover {
+    background: ${({ theme }) => theme.bg5};
+  }
+`
 
 const ETHBalance = styled(TYPE.medium)`
   font-size: 32px;
@@ -101,41 +118,59 @@ export default function WalletModal() {
     return null
   }, [walletModalMode])
 
+  // advanced
+  const [advancedMode, setAdvancedMode] = useState(false)
+  const toggleAdvancedMode = useCallback(() => setAdvancedMode(!advancedMode), [advancedMode])
+
   return (
     <Modal onDismiss={toggleWalletModal} isOpen={isOpen}>
       <ModalContent>
-        <ModalHeader onDismiss={toggleWalletModal} />
+        <ModalHeader onDismiss={toggleWalletModal} onBack={advancedMode ? toggleAdvancedMode : undefined}>
+          {advancedMode ? (
+            t`Advanced wallet settings`
+          ) : (
+            <AdvancedSettingsButton onClick={toggleAdvancedMode}>
+              <Dots />
+            </AdvancedSettingsButton>
+          )}
+        </ModalHeader>
 
-        <Column gap={8}>
-          <ETHBalance>{balance ? `${balance.toFixed(6)} ETH` : '- ETH'}</ETHBalance>
-          <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)} EUR` : '- €'}</FiatBalance>
-        </Column>
+        {advancedMode ? (
+          <AdvanceWalletSettings />
+        ) : (
+          <>
+            <Column gap={8}>
+              <ETHBalance>{balance ? `${balance.toFixed(6)} ETH` : '- ETH'}</ETHBalance>
+              <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)} EUR` : '- €'}</FiatBalance>
+            </Column>
 
-        <ModeSelectorBar>
-          <ModeSelector
-            selected={
-              walletModalMode === null ||
-              walletModalMode === WalletModalMode.DEPOSIT ||
-              walletModalMode === WalletModalMode.STARKGATE_DEPOSIT
-            }
-            onClick={onDepositMode}
-          >
-            <Trans>Deposit</Trans>
-          </ModeSelector>
+            <ModeSelectorBar>
+              <ModeSelector
+                selected={
+                  walletModalMode === null ||
+                  walletModalMode === WalletModalMode.DEPOSIT ||
+                  walletModalMode === WalletModalMode.STARKGATE_DEPOSIT
+                }
+                onClick={onDepositMode}
+              >
+                <Trans>Deposit</Trans>
+              </ModeSelector>
 
-          <ModeSelector
-            selected={
-              walletModalMode === WalletModalMode.WITHDRAW ||
-              walletModalMode === WalletModalMode.STARKGATE_WITHDRAW ||
-              walletModalMode === WalletModalMode.RETRIEVE
-            }
-            onClick={onWithdrawMode}
-          >
-            <Trans>Withdraw</Trans>
-          </ModeSelector>
-        </ModeSelectorBar>
+              <ModeSelector
+                selected={
+                  walletModalMode === WalletModalMode.WITHDRAW ||
+                  walletModalMode === WalletModalMode.STARKGATE_WITHDRAW ||
+                  walletModalMode === WalletModalMode.RETRIEVE
+                }
+                onClick={onWithdrawMode}
+              >
+                <Trans>Withdraw</Trans>
+              </ModeSelector>
+            </ModeSelectorBar>
 
-        <ModeContent>{renderModal()}</ModeContent>
+            <ModeContent>{renderModal()}</ModeContent>
+          </>
+        )}
       </ModalContent>
     </Modal>
   )
