@@ -58,7 +58,7 @@ export default function DiscordStatus({ redirectPath, connectionText, onConnect 
     [redirectPath]
   )
 
-  const [discordUser, setDiscordUser] = useState<any | null>(currentUser?.profile?.discordUser)
+  const [discordMember, setDiscordMember] = useState<any | null>(currentUser?.profile?.discordMember)
 
   useEffect(() => {
     if (!discordCode) return
@@ -68,7 +68,7 @@ export default function DiscordStatus({ redirectPath, connectionText, onConnect 
     router.replace(redirectPath, undefined, { shallow: true })
     connectDiscordAccountMutation({ variables: { code: discordCode, redirectPath } })
       .then((res: any) => {
-        setDiscordUser(res?.data?.connectDiscordAccount ?? null)
+        setDiscordMember(res?.data?.connectDiscordAccount ?? null)
 
         queryCurrentUser()
         setDiscordLoading(false)
@@ -84,7 +84,7 @@ export default function DiscordStatus({ redirectPath, connectionText, onConnect 
     connectDiscordAccountMutation,
     queryCurrentUser,
     setDiscordLoading,
-    setDiscordUser,
+    setDiscordMember,
     redirectPath,
     onConnect,
   ])
@@ -94,7 +94,7 @@ export default function DiscordStatus({ redirectPath, connectionText, onConnect 
 
     disconnectDiscordAccountMutation()
       .then((res: any) => {
-        setDiscordUser(null)
+        setDiscordMember(null)
         queryCurrentUser()
         setDiscordLoading(false)
       })
@@ -106,12 +106,12 @@ export default function DiscordStatus({ redirectPath, connectionText, onConnect 
 
   return (
     <>
-      {discordUser?.username && discordUser?.discriminator ? (
+      {discordMember?.username && discordMember?.discriminator ? (
         <>
           <DiscordDisconnectWrapper>
             <TYPE.body spanColor="text2">
-              <Trans>Connected as {discordUser.username}</Trans>
-              <span>#{discordUser.discriminator}</span>
+              <Trans>Connected as {discordMember.username}</Trans>
+              <span>#{discordMember.discriminator}</span>
             </TYPE.body>
             {discordLoading ? (
               <TYPE.subtitle>Loading ...</TYPE.subtitle>

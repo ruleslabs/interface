@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { DialogOverlay, DialogContent } from '@reach/dialog'
 import { animated, useTransition } from 'react-spring'
 import { useRouter } from 'next/router'
-import { BackButton } from '@/components/Button'
+import { BackButton, IconButton } from '@/components/Button'
 import Column from '@/components/Column'
 
 import { TYPE } from '@/styles/theme'
@@ -166,13 +166,16 @@ const ModalHeaderWrapper = styled.div`
   margin: 32px 0 24px;
 `
 
-const StyledClose = styled(Close)`
-  width: 20px;
-  height: 20px;
+const CloseButton = styled(IconButton)`
   cursor: pointer;
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 10px;
+  right: 10px;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
 
   ${({ theme }) => theme.media.medium`
     display: none;
@@ -196,7 +199,11 @@ export const ModalHeader = ({ children, onDismiss, onBack }: ModalHeaderProps) =
       ) : (
         <div />
       )}
-      {onDismiss && <StyledClose onClick={onDismiss} />}
+      {onDismiss && (
+        <CloseButton onClick={onDismiss}>
+          <Close />
+        </CloseButton>
+      )}
     </StyledModalHeader>
   )
 }

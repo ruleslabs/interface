@@ -41,6 +41,7 @@ const ETHBalance = styled(TYPE.medium)`
   font-size: 32px;
   width: 100%;
   text-align: center;
+  margin-top: 16px;
 `
 
 const FiatBalance = styled(TYPE.subtitle)`
@@ -126,19 +127,17 @@ export default function WalletModal() {
     <Modal onDismiss={toggleWalletModal} isOpen={isOpen}>
       <ModalContent>
         <ModalHeader onDismiss={toggleWalletModal} onBack={advancedMode ? toggleAdvancedMode : undefined}>
-          {advancedMode ? (
-            t`Advanced wallet settings`
-          ) : (
-            <AdvancedSettingsButton onClick={toggleAdvancedMode}>
-              <Dots />
-            </AdvancedSettingsButton>
-          )}
+          {advancedMode && t`Advanced wallet settings`}
         </ModalHeader>
 
         {advancedMode ? (
           <AdvanceWalletSettings />
         ) : (
           <>
+            <AdvancedSettingsButton onClick={toggleAdvancedMode}>
+              <Dots />
+            </AdvancedSettingsButton>
+
             <Column gap={8}>
               <ETHBalance>{balance ? `${balance.toFixed(6)} ETH` : '- ETH'}</ETHBalance>
               <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)} EUR` : '- €'}</FiatBalance>

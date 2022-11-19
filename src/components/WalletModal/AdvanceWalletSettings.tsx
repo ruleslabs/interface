@@ -58,7 +58,7 @@ export default function AdvanceWalletSettings() {
   const handlePrivateKey = useCallback((privateKey: string) => setPrivateKey(privateKey), [])
 
   return (
-    <Column gap={32}>
+    <Column gap={48}>
       <Column gap={8}>
         <TYPE.medium>
           <Trans>Wallet address</Trans>

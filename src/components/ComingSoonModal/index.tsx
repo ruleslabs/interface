@@ -45,9 +45,7 @@ export default function ComingSoonModal({ onDismiss, isOpen }: ComingSoonModalPr
   return (
     <Modal onDismiss={onDismiss} isOpen={isOpen}>
       <StyledComingSoonModal>
-        <ModalHeader onDismiss={onDismiss}>
-          <div />
-        </ModalHeader>
+        <ModalHeader onDismiss={onDismiss} />
 
         <Trans>Coming Soon</Trans>
       </StyledComingSoonModal>

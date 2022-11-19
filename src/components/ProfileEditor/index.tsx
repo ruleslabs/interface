@@ -172,7 +172,7 @@ export default function ProfileEditor() {
           <TYPE.large>Discord</TYPE.large>
           <DiscordStatusWrapper>
             <DiscordStatus redirectPath="/settings/profile" connectionText={t`Connect my account`} />
-            {currentUser?.profile?.discordUser && (
+            {currentUser?.profile?.discordMember && (
               <Column gap={24}>
                 <Checkbox value={isDiscordVisible} onChange={toggleDiscordVisibility}>
                   <TYPE.body>

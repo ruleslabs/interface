@@ -11,7 +11,7 @@ import { ColumnCenter } from '@/components/Column'
 import User from '@/components/User'
 import { TabButton } from '@/components/Button'
 import { useSearchUser, useCurrentUser } from '@/state/user/hooks'
-import DiscordUser from '@/components/DiscordStatus/DiscordUser'
+import DiscordMember from '@/components/DiscordStatus/DiscordMember'
 
 import Instagram from '@/images/instagram-color.svg'
 import Twitter from '@/images/twitter-color.svg'
@@ -66,7 +66,7 @@ const TabBar = styled(Row)`
   gap: 32px;
 `
 
-const StyledDiscordUser = styled(DiscordUser)`
+const StyledDiscordMember = styled(DiscordMember)`
   margin-top: 128px; // 208px / 2 + 24px
 
   ${({ theme }) => theme.media.small`
@@ -95,7 +95,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
   if (error || (!user && !loading)) return <TYPE.body>User not found</TYPE.body>
   else if (!user) return null
 
-  const discordUser = user?.profile?.discordUser
+  const discordMember = user?.profile?.discordMember
 
   return (
     <>
@@ -124,10 +124,10 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
               )}
             </RowCenter>
           </ColumnCenter>
-          {user.profile.discordUser && user.profile.isDiscordVisible && (
-            <StyledDiscordUser
-              username={user.profile.discordUser.username}
-              discriminator={user.profile.discordUser.discriminator}
+          {user.profile.discordMember && user.profile.isDiscordVisible && (
+            <StyledDiscordMember
+              username={user.profile.discordMember.username}
+              discriminator={user.profile.discordMember.discriminator}
             />
           )}
         </UserSection>

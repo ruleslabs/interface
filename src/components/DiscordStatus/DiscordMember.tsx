@@ -5,7 +5,7 @@ import DiscordLogo from '@/images/discord.svg'
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
 
-const StyledDiscordUser = styled(RowCenter)`
+const StyledDiscordMember = styled(RowCenter)`
   background: ${({ theme }) => theme.bg3};
   height: 36px;
   border-radius: 4px;
@@ -27,19 +27,19 @@ const StyledDiscordLogo = styled(DiscordLogo)`
   }
 `
 
-interface DiscordUserProps extends React.HTMLAttributes<HTMLDivElement> {
+interface DiscordMemberProps extends React.HTMLAttributes<HTMLDivElement> {
   username: string
   discriminator: string
 }
 
-export default function DiscordUser({ username, discriminator, ...props }: DiscordUserProps) {
+export default function DiscordMember({ username, discriminator, ...props }: DiscordMemberProps) {
   return (
-    <StyledDiscordUser {...props}>
+    <StyledDiscordMember {...props}>
       <StyledDiscordLogo />
       <TYPE.body spanColor="text2">
         {username}
         <span>#{discriminator}</span>
       </TYPE.body>
-    </StyledDiscordUser>
+    </StyledDiscordMember>
   )
 }

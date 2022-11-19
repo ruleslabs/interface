@@ -42,7 +42,7 @@ const CURRENT_USER_QUERY = gql`
         instagramUsername
         isDiscordVisible
         certified
-        discordUser {
+        discordMember {
           username
           discriminator
         }
@@ -60,7 +60,7 @@ const SEARCH_USER_CONTENT = `
     certified
     twitterUsername
     instagramUsername
-    discordUser {
+    discordMember {
       username
       discriminator
     }

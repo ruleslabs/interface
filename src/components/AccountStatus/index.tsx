@@ -17,19 +17,6 @@ import useNeededActions from '@/hooks/useNeededActions'
 import { TYPE } from '@/styles/theme'
 import { useETHBalances } from '@/state/wallet/hooks'
 
-const StyledAccountStatus = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  height: 100%;
-
-  ${({ theme }) => theme.media.medium`
-    & a {
-      display: none;
-    }
-  `}
-`
-
 const ProfileButton = styled(SecondaryButton)`
   height: 42px;
   background: transparent;
@@ -64,6 +51,23 @@ const WalletButton = styled(SecondaryButton)`
 
   ${({ theme }) => theme.media.medium`
     padding: 0 12px;
+  `}
+`
+
+const StyledAccountStatus = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 100%;
+
+  ${({ theme }) => theme.media.medium`
+    & > * {
+      display: none;
+    }
+
+    & ${WalletButton} {
+      display: unset;
+    }
   `}
 `
 
