@@ -19,6 +19,7 @@ const MainSection = styled(Section)`
   display: flex;
   flex-direction: row-reverse;
   margin-bottom: 96px;
+  justify-content: end;
 
   ${({ theme }) => theme.media.small`
     flex-direction: column;

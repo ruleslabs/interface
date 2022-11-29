@@ -15,7 +15,7 @@ import Close from '@/images/close.svg'
 
 const StyledCardModel3D = styled.div<{ fullscreen: boolean; scarcityName: string }>`
   position: absolute;
-  height: 100%;
+  height: 512px;
   top: 0;
   left: 16px;
 
@@ -27,6 +27,7 @@ const StyledCardModel3D = styled.div<{ fullscreen: boolean; scarcityName: string
 
   ${({ theme }) => theme.media.small`
     position: unset;
+    height: auto;
   `}
 
   ${({ theme }) => theme.media.medium`
