@@ -2594,15 +2594,16 @@
     redux-thunk "^2.4.1"
     reselect "^4.1.5"
 
-"@rulesorg/sdk-core@^0.9.2":
-  version "0.9.2"
-  resolved "https://registry.yarnpkg.com/@rulesorg/sdk-core/-/sdk-core-0.9.2.tgz#e821d3cade1db8e8a81ac0c35625a796ab663677"
-  integrity sha512-B8aGNlzAEW/dkzzW3FOqSW7A0tglQbbEElEUujLTDSgNSntkliHY4GWp9hbu8i8XVwf73zp/SpDVjJvYet+rcQ==
+"@rulesorg/sdk-core@^0.10.5":
+  version "0.10.5"
+  resolved "https://registry.yarnpkg.com/@rulesorg/sdk-core/-/sdk-core-0.10.5.tgz#995c743813dd36d841cb8221124d3737115887b0"
+  integrity sha512-B7ZCGcic5G279SrL2Q26XXZdEp6H5Sr90acCw1Bba4nyYDC5jTt+iPm9HuOzVKqYHQrMO1ThqCPgHZ9RBziZNw==
   dependencies:
     big.js "^6.2.1"
     decimal.js-light "^2.5.1"
     jsbi "^4.1.0"
     multiformats "^9.6.4"
+    starknet "^4.9.0"
     tiny-invariant "^1.2.0"
     toformat "^2.0.0"
 
@@ -7895,6 +7896,23 @@ starknet@^4.8.0:
   version "4.8.0"
   resolved "https://registry.yarnpkg.com/starknet/-/starknet-4.8.0.tgz#78c8dda7853bd60804eebc743ff1a9671eb0e1c4"
   integrity sha512-v6bKLWsTxYqdjeWttruOIKTwz2QaZIRrq0w9LpqOCngexeNVpF9N0KU+XZyEOzNYDIg32tQ0BmBAoKso21Wumg==
+  dependencies:
+    "@ethersproject/bytes" "^5.6.1"
+    bn.js "^5.2.1"
+    elliptic "^6.5.4"
+    ethereum-cryptography "^1.0.3"
+    hash.js "^1.1.7"
+    isomorphic-fetch "^3.0.0"
+    json-bigint "^1.0.0"
+    minimalistic-assert "^1.0.1"
+    pako "^2.0.4"
+    ts-custom-error "^3.2.0"
+    url-join "^4.0.1"
+
+starknet@^4.9.0:
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/starknet/-/starknet-4.9.0.tgz#1d0b5a1ff532a41b84a619f3d7c3f833f67dad2d"
+  integrity sha512-0Y9Nce0msMs1k3jid93ZuPD2e3yW42FUuMFChRTaq1qcjP8G/fL+5+/zuq441VQ82/JxAHnVqBMvpmMgn5yJSA==
   dependencies:
     "@ethersproject/bytes" "^5.6.1"
     bn.js "^5.2.1"

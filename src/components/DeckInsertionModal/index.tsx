@@ -44,6 +44,7 @@ const StyledDeckInsertionModal = styled.div<{ windowHeight?: number }>`
 const CardPicture = styled.img`
   width: 100%;
   cursor: pointer;
+  border-radius: 4.44%/3.17%;
 `
 
 const CardName = styled(TYPE.body)`

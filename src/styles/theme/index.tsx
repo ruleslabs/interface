@@ -84,7 +84,7 @@ export function colors(darkMode: boolean): Colors {
     bg5: '#2e3033',
 
     text1: '#FFFFFF',
-    text2: '#FFFFFF80',
+    text2: '#909193',
 
     gradient1: 'linear-gradient(90deg, #6E36E7, #CB49CE)',
 
@@ -93,6 +93,8 @@ export function colors(darkMode: boolean): Colors {
     halloween: '#AF4027',
 
     error: '#CB222C',
+    green1: '#0EA63B',
+    green2: '#06AC77',
   }
 }
 
@@ -191,6 +193,9 @@ export const TYPE = {
   },
   subtitle(props: TextProps) {
     return <TextWrapper fontWeight={400} color={'text2'} {...props} />
+  },
+  small(props: TextProps) {
+    return <TextWrapper fontWeight={400} fontSize={14} color={'text1'} {...props} />
   },
   body(props: TextProps) {
     return <TextWrapper fontWeight={400} fontSize={16} color={'text1'} {...props} />

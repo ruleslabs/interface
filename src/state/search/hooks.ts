@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
-import { useQuery, gql } from '@apollo/client'
+import { useQuery, useLazyQuery, gql } from '@apollo/client'
 import algoliasearch from 'algoliasearch'
 
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
@@ -19,6 +19,24 @@ const SEARCHED_USERS_QUERY = gql`
           pictureUrl
           certified
         }
+      }
+    }
+  }
+`
+
+const ALL_STARKNET_TRANSACTION_FOR_USER_QUERY = gql`
+  query ($address: String!, $after: String) {
+    allStarknetTransactionsForAddress(address: $address, after: $after) {
+      nodes {
+        hash
+        status
+        blockNumber
+        blockTimestamp
+        actualFee
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
       }
     }
   }
@@ -263,6 +281,8 @@ export function useSearchUsers({ search = '', facets }: SearchUsersProps) {
   return usersSearch
 }
 
+// Non algolia search
+
 export function useSearchedUsers() {
   const { data: queryData, loading, error } = useQuery(SEARCHED_USERS_QUERY)
   const searchedUsers = [...(queryData?.currentUser?.searchedUsers ?? [])] // mandatory for reverse() to work
@@ -270,4 +290,39 @@ export function useSearchedUsers() {
   const orderedSearchedUsers = useMemo(() => searchedUsers.reverse(), [searchedUsers])
 
   return { searchedUsers: orderedSearchedUsers, loading, error }
+}
+
+export function useStarknetTransactionsForAddress(address: string) {
+  // pagination cursor and page
+  const [endCursor, setEndCursor] = useState<string | null>(null)
+  const [hasNextPage, setHasNextPage] = useState(false)
+  const [starknetTransactions, setStarknetTransactions] = useState<any[]>([])
+
+  // on query completed
+  const onQueryCompleted = useCallback(
+    (data: any) => {
+      setEndCursor(data.allStarknetTransactionsForAddress.pageInfo.endCursor)
+      setHasNextPage(data.allStarknetTransactionsForAddress.pageInfo.hasNextPage)
+
+      setStarknetTransactions(starknetTransactions.concat(data.allStarknetTransactionsForAddress.nodes))
+    },
+    [starknetTransactions.length]
+  )
+
+  // get callable query
+  const [getAllStarknetTransactionsForAddress, { loading, error }] = useLazyQuery(
+    ALL_STARKNET_TRANSACTION_FOR_USER_QUERY,
+    { onCompleted: onQueryCompleted }
+  )
+
+  // nextPage
+  const nextPage = useCallback(() => {
+    getAllStarknetTransactionsForAddress({ variables: { address, after: endCursor } })
+  }, [getAllStarknetTransactionsForAddress, address, endCursor])
+
+  useEffect(() => {
+    nextPage()
+  }, [])
+
+  return [hasNextPage ? nextPage : null, { data: starknetTransactions, loading, error }]
 }

@@ -65,6 +65,9 @@ const SEARCH_USER_CONTENT = `
       discriminator
     }
   }
+  starknetWallet {
+    address
+  }
 `
 
 const SEARCH_USER_MUTATION = gql`

@@ -4,7 +4,7 @@ import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 import styled from 'styled-components'
 
-import Modal from '@/components/Modal'
+import Modal, { ModalContent } from '@/components/Modal'
 import { useModalOpen, useUpgradeWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
@@ -112,62 +112,68 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
 
   return (
     <Modal onDismiss={toggleUpgradeWalletModal} isOpen={isOpen}>
-      <StarknetSigner
-        modalHeaderChildren={t`Upgrade your wallet`}
-        confirmationText={t`Your wallet will be upgraded`}
-        confirmationActionText={t`Confirm wallet upgrade`}
-        transactionText={t`wallet upgrade.`}
-        calls={calls ?? undefined}
-        txHash={txHash ?? undefined}
-        error={error ?? undefined}
-        onDismiss={toggleUpgradeWalletModal}
-        onSignature={onSignature}
-        onError={onError}
-      >
-        <Column gap={32}>
-          <Column gap={16}>
-            <TYPE.medium>
-              <Trans>You need to update your wallet to keep your ETHs safe</Trans>
-            </TYPE.medium>
+      <ModalContent>
+        <StarknetSigner
+          modalHeaderChildren={t`Upgrade your wallet`}
+          confirmationText={t`Your wallet will be upgraded`}
+          confirmationActionText={t`Confirm wallet upgrade`}
+          transactionText={t`wallet upgrade.`}
+          calls={calls ?? undefined}
+          txHash={txHash ?? undefined}
+          error={error ?? undefined}
+          onDismiss={toggleUpgradeWalletModal}
+          onSignature={onSignature}
+          onError={onError}
+        >
+          <Column gap={32}>
+            <Column gap={16}>
+              <TYPE.medium>
+                <Trans>You need to update your wallet to keep your ETHs safe</Trans>
+              </TYPE.medium>
 
-            <TYPE.body>
+              <TYPE.body>
+                <Trans>
+                  <Link
+                    href="https://medium.com/starkware/starknet-alpha-0-10-0-923007290470"
+                    target="_blank"
+                    underline
+                  >
+                    Starknet released the Alpha 0.10.0
+                  </Link>{' '}
+                  and it implies some changes for your wallet. If you don&apos;t hold ETHs, the upgrade is not mandatory
+                  but still recommended.
+                </Trans>
+              </TYPE.body>
+            </Column>
+
+            <InfoCard textAlign="center">
               <Trans>
-                <Link href="https://medium.com/starkware/starknet-alpha-0-10-0-923007290470" target="_blank" underline>
-                  Starknet released the Alpha 0.10.0
-                </Link>{' '}
-                and it implies some changes for your wallet. If you don&apos;t hold ETHs, the upgrade is not mandatory
-                but still recommended.
+                Don&apos;t panic, this upgrade comes with a surprise.
+                <br />
+                Upgrade your account and unlock an exclusive discord badge.
               </Trans>
-            </TYPE.body>
+
+              <Badge>
+                <Pumpkin />
+              </Badge>
+            </InfoCard>
+
+            {currentUser?.starknetWallet.needsSignerPublicKeyUpdate && (
+              <ErrorCard>
+                <LockedWallet />
+              </ErrorCard>
+            )}
+
+            <PrimaryButton
+              onClick={handleConfirmation}
+              disabled={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
+              large
+            >
+              <Trans>Upgrade</Trans>
+            </PrimaryButton>
           </Column>
-
-          <InfoCard textAlign="center">
-            <Trans>
-              Don&apos;t panic, this upgrade comes with a surprise.
-              <br />
-              Upgrade your account and unlock an exclusive discord badge.
-            </Trans>
-
-            <Badge>
-              <Pumpkin />
-            </Badge>
-          </InfoCard>
-
-          {currentUser?.starknetWallet.needsSignerPublicKeyUpdate && (
-            <ErrorCard>
-              <LockedWallet />
-            </ErrorCard>
-          )}
-
-          <PrimaryButton
-            onClick={handleConfirmation}
-            disabled={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
-            large
-          >
-            <Trans>Upgrade</Trans>
-          </PrimaryButton>
-        </Column>
-      </StarknetSigner>
+        </StarknetSigner>
+      </ModalContent>
     </Modal>
   )
 }

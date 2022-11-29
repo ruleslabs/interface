@@ -23,6 +23,9 @@ export interface Colors {
   halloween: string
 
   error: string
+
+  green1: string
+  green2: string
 }
 
 declare module 'styled-components' {

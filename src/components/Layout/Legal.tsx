@@ -106,7 +106,7 @@ const StyledLegalLayout = styled(Section)`
   }
 
   code {
-    font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+    font-family: Inconsolata, monospace;
     font-size: 85%;
     margin: 0;
   }

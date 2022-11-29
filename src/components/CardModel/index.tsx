@@ -33,6 +33,7 @@ const StyledCustomCardModel = styled(Link)`
 
 const Card = styled.img<{ inDelivery: boolean; pendingStatus: boolean }>`
   width: 100%;
+  border-radius: 4.44%/3.17%;
   ${({ inDelivery, pendingStatus }) => (inDelivery || pendingStatus) && 'opacity: 0.3;'}
 `
 

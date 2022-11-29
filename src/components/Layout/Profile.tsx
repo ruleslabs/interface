@@ -63,7 +63,8 @@ const TabBar = styled(Row)`
   bottom: 0;
   left: 0;
   right: 0;
-  gap: 32px;
+  gap: 12px 32px;
+  flex-wrap: wrap;
 `
 
 const StyledDiscordMember = styled(DiscordMember)`
@@ -80,6 +81,7 @@ export const tabLinks = [
   { name: 'Cards', link: '/cards' },
   { name: 'Packs', link: '/packs' },
   { name: 'Rulédex', link: '/ruledex' },
+  { name: 'Explorer', link: '/explorer' },
 ] // TODO: move it somewhere else as a single source of truth
 
 export default function ProfileLayout({ children }: { children: React.ReactElement }) {
@@ -141,7 +143,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
           ))}
         </TabBar>
       </StyledSection>
-      {React.cloneElement(children, { userId: user.id })}
+      {React.cloneElement(children, { userId: user?.id, address: user?.starknetWallet?.address })}
     </>
   )
 }

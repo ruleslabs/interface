@@ -32,7 +32,7 @@ const Input = styled.input`
   background: transparent;
   border: none;
   font-size: 24px;
-  font-family: 'Roboto Mono', monospace;
+  font-family: Inconsolata, monospace;
   outline: none;
   width: 100%;
 

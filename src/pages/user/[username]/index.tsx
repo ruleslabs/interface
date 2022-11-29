@@ -40,7 +40,7 @@ const DeckImage = styled.img`
 `
 
 const StyledEmptyCard = styled(RowCenter)<{ clickable: boolean }>`
-  border-radius: 10px;
+  border-radius: 4.44%/3.17%;
   transition: background 100ms ease;
 
   ${({ clickable, theme }) =>
@@ -61,7 +61,8 @@ const StyledEmptyCard = styled(RowCenter)<{ clickable: boolean }>`
 
 const CardPicture = styled.img`
   width: 100%;
-  border-radius: 10px;
+  border-radius: 4.44%/3.17%;
+  display: block;
 `
 
 const RemoveButton = styled(SecondaryButton)`
@@ -69,7 +70,7 @@ const RemoveButton = styled(SecondaryButton)`
   width: -moz-available;
   left: -2px;
   right: -2px;
-  bottom: 0;
+  bottom: -2px;
   opacity: 0;
   transition: opacity 100ms ease-out;
   cursor: pointer;

@@ -876,6 +876,9 @@ msgstr "Retrouve Kerchak et tous les artistes de Rules dans ce premier Base Pack
 msgid "The pack with a delicious sweet taste."
 msgstr "Le Pack au délicieux goût sucré."
 
+msgid "The pack that make waves."
+msgstr "Le pack qui fait des vagues."
+
 #: src/components/OfferModal/index.tsx
 msgid "Offer this {artistName}"
 msgstr "Offrir cette {artistName}"
