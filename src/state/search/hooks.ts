@@ -30,9 +30,15 @@ const ALL_STARKNET_TRANSACTION_FOR_USER_QUERY = gql`
       nodes {
         hash
         status
+        fromAddress
         blockNumber
         blockTimestamp
         actualFee
+        code
+        events {
+          key
+          data
+        }
       }
       pageInfo {
         endCursor
