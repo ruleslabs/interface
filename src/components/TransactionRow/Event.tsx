@@ -1,14 +1,16 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
 import { gql, useQuery } from '@apollo/client'
-import { parseEvent, EventKeys, TransferSingleEvent } from '@rulesorg/sdk-core'
-import { Trans } from '@lingui/macro'
+import { parseEvent, WeiAmount, EventKeys, TransferSingleEvent, OfferCreationEvent } from '@rulesorg/sdk-core'
+import { t, Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
 import Link from '@/components/Link'
 import { networkId } from '@/constants/networks'
-import { PACKS_OPENER_ADDRESSES, AIRDROP_MINTER_ADDRESSES } from '@/constants/addresses'
+import { PACKS_OPENER_ADDRESSES, AIRDROP_MINTER_ADDRESSES, TAX_RESERVE_ADDRESSES } from '@/constants/addresses'
+
+import EthereumIcon from '@/images/ethereum.svg'
 
 // queries
 
@@ -17,9 +19,12 @@ const CARD_AND_USERS_EVENT_QUERY = gql`
     cardByStarknetTokenId(starknetTokenId: $starknetTokenId) {
       serialNumber
       cardModel {
-        pictureUrl(derivative: "width=256")
-        name
+        pictureUrl(derivative: "width=128")
+        season
         slug
+        artist {
+          displayName
+        }
       }
     }
     usersByStarknetAddresses(starknetAddresses: $usersStarknetAddresses) {
@@ -36,9 +41,21 @@ const PACK_AND_USERS_EVENT_QUERY = gql`
   query ($starknetTokenId: String!, $usersStarknetAddresses: [String!]!) {
     packByStarknetTokenId(starknetTokenId: $starknetTokenId) {
       displayName
-      pictureUrl(derivative: "width=256")
+      pictureUrl(derivative: "width=128")
       slug
     }
+    usersByStarknetAddresses(starknetAddresses: $usersStarknetAddresses) {
+      username
+      slug
+      starknetWallet {
+        address
+      }
+    }
+  }
+`
+
+const USERS_EVENT_QUERY = gql`
+  query ($usersStarknetAddresses: [String!]!) {
     usersByStarknetAddresses(starknetAddresses: $usersStarknetAddresses) {
       username
       slug
@@ -57,12 +74,14 @@ const StyledEvent = styled(RowCenter)`
   background: ${({ theme }) => theme.bg5};
   gap: 16px;
 
-  img {
+  img,
+  svg {
     height: 48px;
   }
 
-  & a {
-    font-weight: 700;
+  a,
+  span {
+    font-weight: 500;
   }
 
   & a:hover {
@@ -106,7 +125,7 @@ function PackOpeningPreparationEvent({ parsedEvent }: PackOpeningPreparationEven
       <TYPE.body>
         <Trans>
           <Link href={`/user/${fromUser.slug}`}>{fromUser?.username ?? parsedEvent.from}</Link>
-          <span> </span>
+          <br />
           opened {parsedEvent.amount}
           <span> </span>
           <Link href={`/pack/${pack.slug}`}>{pack.displayName}</Link>
@@ -123,6 +142,7 @@ interface CardTransferEventProps {
 }
 
 function TransferEvent({ parsedEvent }: CardTransferEventProps) {
+  // get gql query base on token type
   const gqlQuery = useMemo(() => {
     switch (parsedEvent.type) {
       case 'card':
@@ -136,13 +156,16 @@ function TransferEvent({ parsedEvent }: CardTransferEventProps) {
     }
   })
 
+  // query data
   const query = useQuery(gqlQuery, {
     variables: { starknetTokenId: parsedEvent.tokenId, usersStarknetAddresses: [parsedEvent.to, parsedEvent.from] },
     skip: !gqlQuery,
   })
 
+  // airdrop
   const airdrop = parsedEvent.operator === AIRDROP_MINTER_ADDRESSES[networkId]
 
+  // get token (pack/card) data
   const token = useMemo(() => {
     const token = query.data?.cardByStarknetTokenId ?? query.data?.packByStarknetTokenId
     if (!token) return null
@@ -152,7 +175,7 @@ function TransferEvent({ parsedEvent }: CardTransferEventProps) {
         return {
           pictureUrl: token.cardModel.pictureUrl,
           href: `/card/${token.cardModel.slug}/${token.serialNumber}`,
-          name: `${token.cardModel.name} #${token.serialNumber}`,
+          name: `${token.cardModel.artist.displayName} - ${t`Season`} ${token.cardModel.season} #${token.serialNumber}`,
         }
 
       case 'pack':
@@ -163,6 +186,8 @@ function TransferEvent({ parsedEvent }: CardTransferEventProps) {
         }
     }
   })
+
+  // read users
   const usersTable = useMapUsersByAddress(query.data?.usersByStarknetAddresses)
 
   const toUser = usersTable[parsedEvent.to]
@@ -177,7 +202,7 @@ function TransferEvent({ parsedEvent }: CardTransferEventProps) {
       <TYPE.body>
         <Trans>
           <Link href={`/user/${toUser?.slug ?? parsedEvent.to}`}>{toUser?.username ?? parsedEvent.to}</Link>
-          <span> </span>
+          <br />
           received {parsedEvent.type === 'pack' ? `${parsedEvent.amount} ` : ''}
           <Link href={token.href}>{token.name}</Link>
         </Trans>
@@ -186,14 +211,14 @@ function TransferEvent({ parsedEvent }: CardTransferEventProps) {
           <Trans>
             <span> </span>
             from&nbsp;
-            <Link href={`/user/${fromUser.slug ?? parsedEvent.from}`}>{fromUser.username ?? parsedEvent.from}</Link>
+            <Link href={`/user/${fromUser?.slug ?? parsedEvent.from}`}>{fromUser?.username ?? parsedEvent.from}</Link>
           </Trans>
         )}
 
         {airdrop && (
           <Trans>
             <span> </span>
-            gifted by Rules
+            gifted by <span>Rules</span>
           </Trans>
         )}
       </TYPE.body>
@@ -201,7 +226,124 @@ function TransferEvent({ parsedEvent }: CardTransferEventProps) {
   )
 }
 
-// event manager
+// ETHER TRANSFER
+
+interface EtherTransferEventProps {
+  parsedEvent: TransferEvent
+}
+
+function EtherTransferEvent({ parsedEvent }: EtherTransferEventProps) {
+  // query data
+  const query = useQuery(USERS_EVENT_QUERY, {
+    variables: { usersStarknetAddresses: [parsedEvent.from, parsedEvent.to] },
+  })
+
+  // read users
+  const usersTable = useMapUsersByAddress(query.data?.usersByStarknetAddresses)
+
+  const toUser = usersTable[parsedEvent.to]
+  const fromUser = usersTable[parsedEvent.from]
+
+  // parsed amount
+  const parsedAmount = useMemo(() => WeiAmount.fromRawAmount(parsedEvent.value), [parsedEvent.value])
+
+  // is marketplace tax
+  const marketplaceTax = parsedEvent.to === TAX_RESERVE_ADDRESSES[networkId]
+
+  if (!query.data) return null
+
+  return (
+    <StyledEvent>
+      <EthereumIcon />
+
+      <TYPE.body>
+        <Trans>
+          {marketplaceTax ? (
+            <TYPE.body fontWeight="500">Rules</TYPE.body>
+          ) : (
+            <>
+              <Link href={`/user/${toUser?.slug ?? parsedEvent.to}`}>{toUser?.username ?? parsedEvent.to}</Link>
+              <br />
+            </>
+          )}
+          received {parsedAmount.toSignificant(6)} ETH
+        </Trans>
+
+        {parsedEvent.from !== '0x0' && (
+          <Trans>
+            <span> </span>
+            from&nbsp;
+            <Link href={`/user/${fromUser?.slug ?? parsedEvent.from}`}>{fromUser?.username ?? parsedEvent.from}</Link>
+          </Trans>
+        )}
+      </TYPE.body>
+    </StyledEvent>
+  )
+}
+
+// OFFER CREATION
+
+interface OfferCreationAndCancelEventProps {
+  parsedEvent: OfferCreationEvent
+}
+
+function OfferCreationAndCancelEvent({ parsedEvent }: OfferCreationAndCancelEventProps) {
+  const query = useQuery(CARD_AND_USERS_EVENT_QUERY, {
+    variables: { starknetTokenId: parsedEvent.tokenId, usersStarknetAddresses: [parsedEvent.seller] },
+  })
+
+  // get token (pack/card) data
+  const card = useMemo(() => {
+    const card = query.data?.cardByStarknetTokenId
+    if (!card) return null
+
+    return {
+      pictureUrl: card.cardModel.pictureUrl,
+      href: `/card/${card.cardModel.slug}/${card.serialNumber}`,
+      name: `${card.cardModel.artist.displayName} - ${t`Season`} ${card.cardModel.season} #${card.serialNumber}`,
+    }
+  })
+
+  // get seller
+  const sellerUser = query.data?.usersByStarknetAddresses?.[0]
+
+  // parsed amount
+  const parsedPrice = useMemo(
+    () => (parsedEvent.price ? WeiAmount.fromRawAmount(parsedEvent.price) : null),
+    [parsedEvent.price]
+  )
+
+  if (!card) return null
+
+  return (
+    <StyledEvent>
+      <img src={card.pictureUrl} />
+
+      <TYPE.body>
+        <Trans>
+          <Link href={`/user/${sellerUser?.slug ?? parsedEvent.seller}`}>
+            {sellerUser?.username ?? parsedEvent.seller}
+          </Link>
+          <br />
+        </Trans>
+
+        {parsedPrice ? <Trans>puts on sale</Trans> : <Trans>cancelled the sale of</Trans>}
+
+        <span> </span>
+        <Link href={card.href}>{card.name}</Link>
+
+        {parsedPrice && (
+          <Trans>
+            <span> </span>
+            for {parsedPrice.toSignificant(6)} ETH
+          </Trans>
+        )}
+      </TYPE.body>
+    </StyledEvent>
+  )
+}
+
+// EVENT MGMT
 
 interface EventProps {
   address: string
@@ -211,19 +353,34 @@ interface EventProps {
 
 export default function Event({ address, $key, $data }: EventProps) {
   const [parsedEvent, involvedAddresses] = useMemo(() => parseEvent($key, $data), [$key, $data])
+  const parsedEvents = Array.isArray(parsedEvent) ? parsedEvent : [parsedEvent]
 
-  console.log(parsedEvent, involvedAddresses)
+  // fix offer cancel event lack of informations
+  if (parsedEvents[0].key === EventKeys.OFFER_CANCELED) {
+    parsedEvents[0].seller = address
+  } else if (!involvedAddresses.includes(address)) return null
 
-  if (!involvedAddresses.includes(address)) return null
+  return (
+    <>
+      {parsedEvents.map((parsedEvent, index) => {
+        switch (parsedEvent.key) {
+          case EventKeys.TRANSFER_SINGLE:
+            return parsedEvent.to === PACKS_OPENER_ADDRESSES[networkId] ? (
+              <PackOpeningPreparationEvent key={index} parsedEvent={parsedEvent} />
+            ) : (
+              <TransferEvent key={index} parsedEvent={parsedEvent} />
+            )
 
-  switch (parsedEvent.key) {
-    case EventKeys.TRANSFER_SINGLE:
-      return parsedEvent.to === PACKS_OPENER_ADDRESSES[networkId] ? (
-        <PackOpeningPreparationEvent parsedEvent={parsedEvent} />
-      ) : (
-        <TransferEvent parsedEvent={parsedEvent} />
-      )
-  }
+          case EventKeys.TRANSFER:
+            return <EtherTransferEvent key={index} parsedEvent={parsedEvent} />
 
-  return null
+          case EventKeys.OFFER_CREATED:
+          case EventKeys.OFFER_CANCELED:
+            return <OfferCreationAndCancelEvent key={index} parsedEvent={parsedEvent as OfferCreationEvent} />
+        }
+
+        return null
+      })}
+    </>
+  )
 }

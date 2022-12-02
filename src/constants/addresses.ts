@@ -50,6 +50,11 @@ export const AIRDROP_MINTER_ADDRESSES: AddressesMap = {
   [SupportedNetworks.MAINNET]: '0x43d0424a8a2689b38cd33ce74c4a34c600461320379598e5a3c2a59713f0aa2',
 }
 
+export const TAX_RESERVE_ADDRESSES: AddressesMap = {
+  [SupportedNetworks.GOERLI]: '0x7c936b2c29e54b1aa24e1f33f36d1b2ce3c7755f87a5a837c924fc56bde7d86',
+  [SupportedNetworks.MAINNET]: '0x5abca3aa491806315a8cadebee93a8a167a4c0ac1a56b924429a891970e0b8d',
+}
+
 // Class hashes
 
 export const ACCOUNT_CLASS_HASH = '0x6d706cfbac9b8262d601c38251c5fbe0497c3a96cc91a92b08d91b61d9e70c4'

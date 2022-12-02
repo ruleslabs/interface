@@ -6,7 +6,7 @@ const Table = styled.table`
   border-collapse: separate;
 
   thead tr {
-    background: ${({ theme }) => theme.bg3}4d;
+    background: ${({ theme }) => theme.bg5};
   }
 
   thead td {
