@@ -39,6 +39,14 @@ const ALL_STARKNET_TRANSACTION_FOR_USER_QUERY = gql`
           key
           data
         }
+        l2ToL1Messages {
+          fromAddress
+          toAddress
+          payload
+        }
+        offchainData {
+          action
+        }
       }
       pageInfo {
         endCursor

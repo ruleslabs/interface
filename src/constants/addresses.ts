@@ -40,6 +40,16 @@ export const L2_STARKGATE_ADDRESSES: AddressesMap = {
   [SupportedNetworks.MAINNET]: '0x73314940630fd6dcda0d772d4c972c4e0a9946bef9dabf4ef84eda8ef542b82',
 }
 
+export const PACKS_OPENER_ADDRESSES: AddressesMap = {
+  [SupportedNetworks.GOERLI]: '0x2ab650f7b211fc81e592e2e82310009f30105321c71273f381cf177bda2b4e1',
+  [SupportedNetworks.MAINNET]: '0x27fb5a7be4707e2b1fe653e7296ad30114596fafdd3fbc3f9b92a0551ff18ec',
+}
+
+export const AIRDROP_MINTER_ADDRESSES: AddressesMap = {
+  [SupportedNetworks.GOERLI]: '0x7fbb88af467e48e163b43667b4254faee9b18a6d193fd4b4a47cc39044b4025',
+  [SupportedNetworks.MAINNET]: '0x43d0424a8a2689b38cd33ce74c4a34c600461320379598e5a3c2a59713f0aa2',
+}
+
 // Class hashes
 
 export const ACCOUNT_CLASS_HASH = '0x6d706cfbac9b8262d601c38251c5fbe0497c3a96cc91a92b08d91b61d9e70c4'

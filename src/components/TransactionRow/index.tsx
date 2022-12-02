@@ -16,6 +16,7 @@ import Badge from './Badge'
 import useReduceHash from '@/hooks/useReduceHash'
 import Caret from '@/components/Caret'
 import Card from '@/components/Card'
+import Event from './Event'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
 
@@ -83,7 +84,21 @@ interface TransactionRowProps extends React.HTMLAttributes<HTMLDivElement> {
   blockNumber?: number
   blockTimestamp?: Date
   actualFee?: string
+  offchainData?: {
+    action: string
+  }
+  events: Array<{
+    key: string
+    data: string[]
+  }>
+  l2ToL1Messages: Array<{
+    fromAddress: string
+    toAddress: string
+    payload: string[]
+  }>
 }
+
+const MemoizedTransactionRowPropsEqualityCheck = (prevProps, nextProps) => prevProps.hash === nextProps.hash
 
 const MemoizedTransactionRow = React.memo(function TransactionRow({
   hash,
@@ -94,6 +109,9 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
   blockNumber,
   blockTimestamp,
   actualFee,
+  events,
+  l2ToL1Messages,
+  offchainData,
   ...props
 }: TransactionRowProps) {
   // blockchain details visibility
@@ -145,8 +163,6 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
     moment.relativeTimeThreshold('h', 24)
     moment.relativeTimeThreshold('d', 100_000_000) // any number big enough
 
-    console.log(new Date(blockTimestamp).getTime())
-
     return moment(blockTimestamp).locale(locale).fromNow(true)
   }, [blockTimestamp, locale])
 
@@ -159,8 +175,17 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
   return (
     <Card {...props}>
       <Column gap={8}>
-        <TYPE.large>event no 1</TYPE.large>
-        <TYPE.large>event no 2</TYPE.large>
+        {events.map((event, index) => (
+          <Event key={index} address={address} $key={event.key} $data={event.data} />
+        ))}
+
+        {l2ToL1Messages.map((message, index) => (
+          <TYPE.large key={index}>{message.fromAddress}</TYPE.large>
+        ))}
+
+        {!events.length && !l2ToL1Messages.length && offchainData?.action && (
+          <TYPE.large>{offchainData.action}</TYPE.large>
+        )}
       </Column>
 
       <SeeDetails clickable>
@@ -243,6 +268,7 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
       </TxGrid>
     </Card>
   )
-})
+},
+MemoizedTransactionRowPropsEqualityCheck)
 
 export default MemoizedTransactionRow

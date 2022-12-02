@@ -34,6 +34,9 @@ function Explorer({ address }: ExplorerProps) {
             blockNumber={starknetTransaction.blockNumber}
             blockTimestamp={starknetTransaction.blockTimestamp}
             actualFee={starknetTransaction.actualFee}
+            events={starknetTransaction.events}
+            l2ToL1Messages={starknetTransaction.l2ToL1Messages}
+            offchainData={starknetTransaction.offchainData}
           />
         ))}
       </Column>
