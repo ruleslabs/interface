@@ -10,10 +10,11 @@ import TransactionRow from '@/components/TransactionRow'
 
 interface ExplorerProps {
   address: string
+  userId: string
 }
 
-function Explorer({ address }: ExplorerProps) {
-  const [nextPage, starknetTransactionQuery] = useStarknetTransactionsForAddress(address)
+function Explorer({ address, userId }: ExplorerProps) {
+  const [nextPage, starknetTransactionQuery] = useStarknetTransactionsForAddress(userId, address)
   const starknetTransactions = starknetTransactionQuery.data
 
   // loading / error

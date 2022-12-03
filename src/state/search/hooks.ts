@@ -25,8 +25,8 @@ const SEARCHED_USERS_QUERY = gql`
 `
 
 const ALL_STARKNET_TRANSACTION_FOR_USER_QUERY = gql`
-  query ($address: String!, $after: String) {
-    allStarknetTransactionsForAddress(address: $address, after: $after) {
+  query ($address: String, $userId: String!, $after: String) {
+    allStarknetTransactionsForAddressOrUserId(address: $address, userId: $userId, after: $after) {
       nodes {
         hash
         status
@@ -306,7 +306,7 @@ export function useSearchedUsers() {
   return { searchedUsers: orderedSearchedUsers, loading, error }
 }
 
-export function useStarknetTransactionsForAddress(address: string) {
+export function useStarknetTransactionsForAddress(userId: string, address?: string) {
   // pagination cursor and page
   const [endCursor, setEndCursor] = useState<string | null>(null)
   const [hasNextPage, setHasNextPage] = useState(false)
@@ -315,24 +315,28 @@ export function useStarknetTransactionsForAddress(address: string) {
   // on query completed
   const onQueryCompleted = useCallback(
     (data: any) => {
-      setEndCursor(data.allStarknetTransactionsForAddress.pageInfo.endCursor)
-      setHasNextPage(data.allStarknetTransactionsForAddress.pageInfo.hasNextPage)
+      setEndCursor(data.allStarknetTransactionsForAddressOrUserId.pageInfo.endCursor)
+      setHasNextPage(data.allStarknetTransactionsForAddressOrUserId.pageInfo.hasNextPage)
 
-      setStarknetTransactions(starknetTransactions.concat(data.allStarknetTransactionsForAddress.nodes))
+      setStarknetTransactions(starknetTransactions.concat(data.allStarknetTransactionsForAddressOrUserId.nodes))
     },
     [starknetTransactions.length]
   )
 
   // get callable query
-  const [getAllStarknetTransactionsForAddress, { loading, error }] = useLazyQuery(
+  const [getAllStarknetTransactionsForAddressOrUserId, { loading, error }] = useLazyQuery(
     ALL_STARKNET_TRANSACTION_FOR_USER_QUERY,
     { onCompleted: onQueryCompleted }
   )
 
   // nextPage
   const nextPage = useCallback(() => {
-    getAllStarknetTransactionsForAddress({ variables: { address, after: endCursor } })
-  }, [getAllStarknetTransactionsForAddress, address, endCursor])
+    const options = { variables: { userId, after: endCursor } }
+
+    if (address) options.variables.address = address
+
+    getAllStarknetTransactionsForAddressOrUserId(options)
+  }, [getAllStarknetTransactionsForAddressOrUserId, address, endCursor])
 
   useEffect(() => {
     nextPage()

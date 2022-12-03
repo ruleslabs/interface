@@ -17,14 +17,13 @@ import useReduceHash from '@/hooks/useReduceHash'
 import Caret from '@/components/Caret'
 import Card from '@/components/Card'
 import Event from './Event'
+import OffchainAction from './OffchainAction'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
 
-// const StyledTransactionRow = styled(Column)`
-//   width: 100%;
-//   border-radius: 4px;
-//   background: ${({ theme }) => theme.bg2};
-// `
+const StyledTransactionRow = styled(Card)<{ offchain: boolean }>`
+  ${({ offchain }) => offchain && 'opacity: 0.5;'}
+`
 
 const SeeDetails = styled(TYPE.body)`
   margin-top: 16px;
@@ -173,7 +172,7 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
   const parsedFee = useMemo(() => (actualFee ? WeiAmount.fromRawAmount(actualFee, 'gwei') : undefined), [actualFee])
 
   return (
-    <Card {...props}>
+    <StyledTransactionRow offchain={!status || status === 'REJECTED'} {...props}>
       <Column gap={8}>
         {events.map((event, index) => (
           <Event key={index} address={address} $key={event.key} $data={event.data} />
@@ -184,7 +183,7 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
         ))}
 
         {!events.length && !l2ToL1Messages.length && offchainData?.action && (
-          <TYPE.large>{offchainData.action}</TYPE.large>
+          <OffchainAction action={offchainData.action} status={status} />
         )}
       </Column>
 
@@ -266,7 +265,7 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
           <TYPE.small>{transactionAge ?? 'N/A'}</TYPE.small>
         </div>
       </TxGrid>
-    </Card>
+    </StyledTransactionRow>
   )
 },
 MemoizedTransactionRowPropsEqualityCheck)

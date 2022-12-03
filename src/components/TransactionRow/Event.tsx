@@ -14,6 +14,16 @@ import EthereumIcon from '@/images/ethereum.svg'
 
 // queries
 
+const USERS_QUERY_CONTENT = `
+  usersByStarknetAddresses(starknetAddresses: $usersStarknetAddresses) {
+    username
+    slug
+    starknetWallet {
+      address
+    }
+  }
+`
+
 const CARD_AND_USERS_EVENT_QUERY = gql`
   query ($starknetTokenId: String!, $usersStarknetAddresses: [String!]!) {
     cardByStarknetTokenId(starknetTokenId: $starknetTokenId) {
@@ -27,13 +37,7 @@ const CARD_AND_USERS_EVENT_QUERY = gql`
         }
       }
     }
-    usersByStarknetAddresses(starknetAddresses: $usersStarknetAddresses) {
-      username
-      slug
-      starknetWallet {
-        address
-      }
-    }
+    ${USERS_QUERY_CONTENT}
   }
 `
 
@@ -44,25 +48,13 @@ const PACK_AND_USERS_EVENT_QUERY = gql`
       pictureUrl(derivative: "width=128")
       slug
     }
-    usersByStarknetAddresses(starknetAddresses: $usersStarknetAddresses) {
-      username
-      slug
-      starknetWallet {
-        address
-      }
-    }
+    ${USERS_QUERY_CONTENT}
   }
 `
 
 const USERS_EVENT_QUERY = gql`
   query ($usersStarknetAddresses: [String!]!) {
-    usersByStarknetAddresses(starknetAddresses: $usersStarknetAddresses) {
-      username
-      slug
-      starknetWallet {
-        address
-      }
-    }
+    ${USERS_QUERY_CONTENT}
   }
 `
 
@@ -343,6 +335,20 @@ function OfferCreationAndCancelEvent({ parsedEvent }: OfferCreationAndCancelEven
   )
 }
 
+// ACCOUNT DEPLOYMENT EVENT
+
+function AccountDeploymentEvent() {
+  return (
+    <StyledEvent>
+      <EthereumIcon />
+
+      <TYPE.body>
+        <Trans>Wallet created</Trans>
+      </TYPE.body>
+    </StyledEvent>
+  )
+}
+
 // EVENT MGMT
 
 interface EventProps {
@@ -355,10 +361,12 @@ export default function Event({ address, $key, $data }: EventProps) {
   const [parsedEvent, involvedAddresses] = useMemo(() => parseEvent($key, $data), [$key, $data])
   const parsedEvents = Array.isArray(parsedEvent) ? parsedEvent : [parsedEvent]
 
-  // fix offer cancel event lack of informations
-  if (parsedEvents[0].key === EventKeys.OFFER_CANCELED) {
+  // fix events lack of informations
+  if ($key === EventKeys.ACCOUNT_INITIALIZED) {
+    return <AccountDeploymentEvent />
+  } else if (parsedEvents[0]?.key === EventKeys.OFFER_CANCELED) {
     parsedEvents[0].seller = address
-  } else if (!involvedAddresses.includes(address)) return null
+  } else if (!involvedAddresses?.includes(address)) return null
 
   return (
     <>
