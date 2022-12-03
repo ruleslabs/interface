@@ -64,7 +64,7 @@ const StyledHeader = styled.header`
   left: 0;
   right: 0;
   z-index: 3;
-  padding: 0 100px;
+  padding: 0 64px;
 
   ${({ theme }) => theme.media.medium`
     padding: 0 16px;
@@ -95,7 +95,7 @@ const StyledClose = styled(Close)`
 `
 
 const NavBar = styled.nav`
-  margin-left: 64px;
+  margin-left: 32px;
   height: 100%;
   display: flex;
 

@@ -143,7 +143,7 @@ export default function Retrieve() {
   return (
     <EthereumSigner
       onBack={onBack}
-      confirmationText={t`Your ${totalParsedAmount?.toSignificant(6)} ETH transfer is on its way`}
+      confirmationText={t`Your ETH transfer is on its way`}
       transactionText={t`${totalParsedAmount?.toSignificant(6)} ETH transfer to your Ethereum wallet`}
       waitingForTx={waitingForTx}
       txHash={txHash ?? undefined}

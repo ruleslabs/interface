@@ -172,7 +172,7 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
   const parsedFee = useMemo(() => (actualFee ? WeiAmount.fromRawAmount(actualFee, 'gwei') : undefined), [actualFee])
 
   return (
-    <StyledTransactionRow offchain={!status || status === 'REJECTED'} {...props}>
+    <StyledTransactionRow offchain={status === 'RECEIVED' || status === 'REJECTED'} {...props}>
       <Column gap={8}>
         {events.map((event, index) => (
           <Event key={index} address={address} $key={event.key} $data={event.data} />

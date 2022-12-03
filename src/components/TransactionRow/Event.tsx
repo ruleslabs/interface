@@ -335,16 +335,36 @@ function OfferCreationAndCancelEvent({ parsedEvent }: OfferCreationAndCancelEven
   )
 }
 
-// ACCOUNT DEPLOYMENT EVENT
+// WALLET DEPLOYMENT EVENT
 
-function AccountDeploymentEvent() {
+interface WalletEventProps {
+  eventKey: string
+}
+
+function WalletEvent({ eventKey }: WalletEventProps) {
+  const eventText = useMemo(() => {
+    switch (eventKey) {
+      case EventKeys.ACCOUNT_INITIALIZED:
+        return t`Wallet deployed`
+
+      case EventKeys.ACCOUNT_UPGRADED:
+        return t`Wallet upgraded`
+
+      case EventKeys.SIGNER_ESCAPE_TRIGGERED:
+        return t`Password update triggered`
+
+      case EventKeys.SIGNER_ESCAPED:
+        return t`Password update completed`
+    }
+  }, [eventKey])
+
+  if (!eventKey) return null
+
   return (
     <StyledEvent>
       <EthereumIcon />
 
-      <TYPE.body>
-        <Trans>Wallet created</Trans>
-      </TYPE.body>
+      <TYPE.body>{eventText}</TYPE.body>
     </StyledEvent>
   )
 }
@@ -361,10 +381,10 @@ export default function Event({ address, $key, $data }: EventProps) {
   const [parsedEvent, involvedAddresses] = useMemo(() => parseEvent($key, $data), [$key, $data])
   const parsedEvents = Array.isArray(parsedEvent) ? parsedEvent : [parsedEvent]
 
+  if (!parsedEvent) return <WalletEvent eventKey={$key} />
+
   // fix events lack of informations
-  if ($key === EventKeys.ACCOUNT_INITIALIZED) {
-    return <AccountDeploymentEvent />
-  } else if (parsedEvents[0]?.key === EventKeys.OFFER_CANCELED) {
+  if (parsedEvents[0]?.key === EventKeys.OFFER_CANCELED) {
     parsedEvents[0].seller = address
   } else if (!involvedAddresses?.includes(address)) return null
 
