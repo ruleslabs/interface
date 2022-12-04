@@ -21,6 +21,8 @@ function Explorer({ address, userId }: ExplorerProps) {
   const isValid = !starknetTransactionQuery.error
   const isLoading = starknetTransactionQuery.loading
 
+  return null
+
   return (
     <Section>
       <Column gap={16}>
@@ -41,7 +43,11 @@ function Explorer({ address, userId }: ExplorerProps) {
           />
         ))}
       </Column>
-      {isLoading ? <TYPE.body>loading</TYPE.body> : nextPage && <button onClick={nextPage}>load more</button>}
+      {isLoading ? (
+        <TYPE.body>loading</TYPE.body>
+      ) : (
+        nextPage && <button onClick={nextPage ?? undefined}>load more</button>
+      )}
     </Section>
   )
 }

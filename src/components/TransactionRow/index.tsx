@@ -97,7 +97,8 @@ interface TransactionRowProps extends React.HTMLAttributes<HTMLDivElement> {
   }>
 }
 
-const MemoizedTransactionRowPropsEqualityCheck = (prevProps, nextProps) => prevProps.hash === nextProps.hash
+const MemoizedTransactionRowPropsEqualityCheck = (prevProps: TransactionRowProps, nextProps: TransactionRowProps) =>
+  prevProps.hash === nextProps.hash
 
 const MemoizedTransactionRow = React.memo(function TransactionRow({
   hash,

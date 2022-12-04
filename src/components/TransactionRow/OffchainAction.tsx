@@ -75,6 +75,9 @@ export default function OffchainAction({ action, status }: OffchainActionProps) 
 
       case StarknetTransactionAction.OFFER_ACCEPTANCE:
         return t`Offer acceptance`
+
+      default:
+        return 'Unkown transation' // should not happen
     }
   }, [action])
 

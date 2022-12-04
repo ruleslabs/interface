@@ -306,7 +306,10 @@ export function useSearchedUsers() {
   return { searchedUsers: orderedSearchedUsers, loading, error }
 }
 
-export function useStarknetTransactionsForAddress(userId: string, address?: string) {
+export function useStarknetTransactionsForAddress(
+  userId: string,
+  address?: string
+): [(() => void) | null, { data: any[], loading: boolean, error: any }] {
   // pagination cursor and page
   const [endCursor, setEndCursor] = useState<string | null>(null)
   const [hasNextPage, setHasNextPage] = useState(false)
@@ -331,7 +334,7 @@ export function useStarknetTransactionsForAddress(userId: string, address?: stri
 
   // nextPage
   const nextPage = useCallback(() => {
-    const options = { variables: { userId, after: endCursor } }
+    const options: any = { variables: { userId, after: endCursor } }
 
     if (address) options.variables.address = address
 

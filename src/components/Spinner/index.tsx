@@ -6,7 +6,7 @@ import styled from 'styled-components'
 // '((instance: SVGSVGElement | null) => void) | RefObject<SVGSVGElement> | null | undefined'.
 import emptySvg from '@/images/emptySvg.svg'
 
-const StyledSpinner = styled(emptySvg)<{ fill: string }>`
+const StyledSpinner = styled(emptySvg)<{ fill?: string }>`
   animation: rotate 2s linear infinite;
   margin: -25px 0 0 -25px;
   width: 50px;
@@ -40,7 +40,7 @@ const StyledSpinner = styled(emptySvg)<{ fill: string }>`
 `
 
 interface SpinnerProps extends React.SVGProps<SVGElement> {
-  fill: string
+  fill?: string
 }
 
 const Spinner = ({ fill, ...props }: SpinnerProps) => (

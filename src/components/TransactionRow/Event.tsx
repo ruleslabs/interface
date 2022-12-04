@@ -1,7 +1,14 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
 import { gql, useQuery } from '@apollo/client'
-import { parseEvent, WeiAmount, EventKeys, TransferSingleEvent, OfferCreationEvent } from '@rulesorg/sdk-core'
+import {
+  parseEvent,
+  WeiAmount,
+  EventKeys,
+  TransferEvent,
+  TransferSingleEvent,
+  OfferCreatedEvent,
+} from '@rulesorg/sdk-core'
 import { t, Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
@@ -86,7 +93,7 @@ const StyledEvent = styled(RowCenter)`
 function useMapUsersByAddress(users?: any) {
   return useMemo(
     () =>
-      (users ?? []).reduce<{ [address: string]: any }>((acc, user) => {
+      ((users ?? []) as any[]).reduce<{ [address: string]: any }>((acc, user) => {
         acc[user.starknetWallet.address] = user
         return acc
       }, {}),
@@ -133,7 +140,7 @@ interface CardTransferEventProps {
   parsedEvent: TransferSingleEvent
 }
 
-function TransferEvent({ parsedEvent }: CardTransferEventProps) {
+function TokenTransferEvent({ parsedEvent }: CardTransferEventProps) {
   // get gql query base on token type
   const gqlQuery = useMemo(() => {
     switch (parsedEvent.type) {
@@ -144,9 +151,9 @@ function TransferEvent({ parsedEvent }: CardTransferEventProps) {
         return PACK_AND_USERS_EVENT_QUERY
 
       default:
-        return ``
+        return gql``
     }
-  })
+  }, [parsedEvent.type])
 
   // query data
   const query = useQuery(gqlQuery, {
@@ -177,7 +184,7 @@ function TransferEvent({ parsedEvent }: CardTransferEventProps) {
           name: token.displayName,
         }
     }
-  })
+  }, [!!query.data])
 
   // read users
   const usersTable = useMapUsersByAddress(query.data?.usersByStarknetAddresses)
@@ -251,7 +258,7 @@ function EtherTransferEvent({ parsedEvent }: EtherTransferEventProps) {
       <TYPE.body>
         <Trans>
           {marketplaceTax ? (
-            <TYPE.body fontWeight="500">Rules</TYPE.body>
+            <TYPE.body fontWeight={500}>Rules</TYPE.body>
           ) : (
             <>
               <Link href={`/user/${toUser?.slug ?? parsedEvent.to}`}>{toUser?.username ?? parsedEvent.to}</Link>
@@ -276,7 +283,7 @@ function EtherTransferEvent({ parsedEvent }: EtherTransferEventProps) {
 // OFFER CREATION
 
 interface OfferCreationAndCancelEventProps {
-  parsedEvent: OfferCreationEvent
+  parsedEvent: OfferCreatedEvent
 }
 
 function OfferCreationAndCancelEvent({ parsedEvent }: OfferCreationAndCancelEventProps) {
@@ -294,7 +301,7 @@ function OfferCreationAndCancelEvent({ parsedEvent }: OfferCreationAndCancelEven
       href: `/card/${card.cardModel.slug}/${card.serialNumber}`,
       name: `${card.cardModel.artist.displayName} - ${t`Season`} ${card.cardModel.season} #${card.serialNumber}`,
     }
-  })
+  }, [!!query.data])
 
   // get seller
   const sellerUser = query.data?.usersByStarknetAddresses?.[0]
@@ -356,6 +363,8 @@ function WalletEvent({ eventKey }: WalletEventProps) {
       case EventKeys.SIGNER_ESCAPED:
         return t`Password update completed`
     }
+
+    return null
   }, [eventKey])
 
   if (!eventKey) return null
@@ -379,13 +388,13 @@ interface EventProps {
 
 export default function Event({ address, $key, $data }: EventProps) {
   const [parsedEvent, involvedAddresses] = useMemo(() => parseEvent($key, $data), [$key, $data])
-  const parsedEvents = Array.isArray(parsedEvent) ? parsedEvent : [parsedEvent]
-
   if (!parsedEvent) return <WalletEvent eventKey={$key} />
+
+  const parsedEvents = Array.isArray(parsedEvent) ? parsedEvent : [parsedEvent]
 
   // fix events lack of informations
   if (parsedEvents[0]?.key === EventKeys.OFFER_CANCELED) {
-    parsedEvents[0].seller = address
+    ;(parsedEvents[0] as OfferCreatedEvent).seller = address
   } else if (!involvedAddresses?.includes(address)) return null
 
   return (
@@ -393,18 +402,18 @@ export default function Event({ address, $key, $data }: EventProps) {
       {parsedEvents.map((parsedEvent, index) => {
         switch (parsedEvent.key) {
           case EventKeys.TRANSFER_SINGLE:
-            return parsedEvent.to === PACKS_OPENER_ADDRESSES[networkId] ? (
-              <PackOpeningPreparationEvent key={index} parsedEvent={parsedEvent} />
+            return (parsedEvent as TransferSingleEvent).to === PACKS_OPENER_ADDRESSES[networkId] ? (
+              <PackOpeningPreparationEvent key={index} parsedEvent={parsedEvent as TransferSingleEvent} />
             ) : (
-              <TransferEvent key={index} parsedEvent={parsedEvent} />
+              <TokenTransferEvent key={index} parsedEvent={parsedEvent as TransferSingleEvent} />
             )
 
           case EventKeys.TRANSFER:
-            return <EtherTransferEvent key={index} parsedEvent={parsedEvent} />
+            return <EtherTransferEvent key={index} parsedEvent={parsedEvent as TransferEvent} />
 
           case EventKeys.OFFER_CREATED:
           case EventKeys.OFFER_CANCELED:
-            return <OfferCreationAndCancelEvent key={index} parsedEvent={parsedEvent as OfferCreationEvent} />
+            return <OfferCreationAndCancelEvent key={index} parsedEvent={parsedEvent as OfferCreatedEvent} />
         }
 
         return null
