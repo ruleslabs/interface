@@ -17,6 +17,7 @@ import useReduceHash from '@/hooks/useReduceHash'
 import Caret from '@/components/Caret'
 import Card from '@/components/Card'
 import Event from './Event'
+import Message from './Message'
 import OffchainAction from './OffchainAction'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
@@ -180,7 +181,13 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
         ))}
 
         {l2ToL1Messages.map((message, index) => (
-          <TYPE.large key={index}>{message.fromAddress}</TYPE.large>
+          <Message
+            key={index}
+            address={address}
+            fromAddress={message.fromAddress}
+            toAddress={message.toAddress}
+            payload={message.payload}
+          />
         ))}
 
         {!events.length && !l2ToL1Messages.length && offchainData?.action && (

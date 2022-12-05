@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
-import { gql, useQuery } from '@apollo/client'
 import {
   parseEvent,
   WeiAmount,
@@ -16,54 +15,9 @@ import { RowCenter } from '@/components/Row'
 import Link from '@/components/Link'
 import { networkId } from '@/constants/networks'
 import { PACKS_OPENER_ADDRESSES, AIRDROP_MINTER_ADDRESSES, TAX_RESERVE_ADDRESSES } from '@/constants/addresses'
+import { useMapUsersByAddress, useTokenAndAddressesQuery, useAddressesQuery } from '@/state/transactions/hooks'
 
 import EthereumIcon from '@/images/ethereum.svg'
-
-// queries
-
-const USERS_QUERY_CONTENT = `
-  usersByStarknetAddresses(starknetAddresses: $usersStarknetAddresses) {
-    username
-    slug
-    starknetWallet {
-      address
-    }
-  }
-`
-
-const CARD_AND_USERS_EVENT_QUERY = gql`
-  query ($starknetTokenId: String!, $usersStarknetAddresses: [String!]!) {
-    cardByStarknetTokenId(starknetTokenId: $starknetTokenId) {
-      serialNumber
-      cardModel {
-        pictureUrl(derivative: "width=128")
-        season
-        slug
-        artist {
-          displayName
-        }
-      }
-    }
-    ${USERS_QUERY_CONTENT}
-  }
-`
-
-const PACK_AND_USERS_EVENT_QUERY = gql`
-  query ($starknetTokenId: String!, $usersStarknetAddresses: [String!]!) {
-    packByStarknetTokenId(starknetTokenId: $starknetTokenId) {
-      displayName
-      pictureUrl(derivative: "width=128")
-      slug
-    }
-    ${USERS_QUERY_CONTENT}
-  }
-`
-
-const USERS_EVENT_QUERY = gql`
-  query ($usersStarknetAddresses: [String!]!) {
-    ${USERS_QUERY_CONTENT}
-  }
-`
 
 // style
 
@@ -88,19 +42,6 @@ const StyledEvent = styled(RowCenter)`
   }
 `
 
-// HOOKS
-
-function useMapUsersByAddress(users?: any) {
-  return useMemo(
-    () =>
-      ((users ?? []) as any[]).reduce<{ [address: string]: any }>((acc, user) => {
-        acc[user.starknetWallet.address] = user
-        return acc
-      }, {}),
-    [users?.length]
-  )
-}
-
 // PACK OPENING PREPARATION EVENT
 
 interface PackOpeningPreparationEventProps {
@@ -108,9 +49,8 @@ interface PackOpeningPreparationEventProps {
 }
 
 function PackOpeningPreparationEvent({ parsedEvent }: PackOpeningPreparationEventProps) {
-  const query = useQuery(PACK_AND_USERS_EVENT_QUERY, {
-    variables: { starknetTokenId: parsedEvent.tokenId, usersStarknetAddresses: [parsedEvent.from] },
-  })
+  // query data
+  const query = useTokenAndAddressesQuery('pack', parsedEvent.tokenId, [parsedEvent.from])
 
   const pack = query.data?.packByStarknetTokenId
   const fromUser = query.data?.usersByStarknetAddresses?.[0]
@@ -123,7 +63,7 @@ function PackOpeningPreparationEvent({ parsedEvent }: PackOpeningPreparationEven
 
       <TYPE.body>
         <Trans>
-          <Link href={`/user/${fromUser.slug}`}>{fromUser?.username ?? parsedEvent.from}</Link>
+          <Link href={`/user/${fromUser?.slug ?? parsedEvent.from}`}>{fromUser?.username ?? parsedEvent.from}</Link>
           <br />
           opened {parsedEvent.amount}
           <span> </span>
@@ -141,25 +81,8 @@ interface CardTransferEventProps {
 }
 
 function TokenTransferEvent({ parsedEvent }: CardTransferEventProps) {
-  // get gql query base on token type
-  const gqlQuery = useMemo(() => {
-    switch (parsedEvent.type) {
-      case 'card':
-        return CARD_AND_USERS_EVENT_QUERY
-
-      case 'pack':
-        return PACK_AND_USERS_EVENT_QUERY
-
-      default:
-        return gql``
-    }
-  }, [parsedEvent.type])
-
   // query data
-  const query = useQuery(gqlQuery, {
-    variables: { starknetTokenId: parsedEvent.tokenId, usersStarknetAddresses: [parsedEvent.to, parsedEvent.from] },
-    skip: !gqlQuery,
-  })
+  const query = useTokenAndAddressesQuery(parsedEvent.type, parsedEvent.tokenId, [parsedEvent.to, parsedEvent.from])
 
   // airdrop
   const airdrop = parsedEvent.operator === AIRDROP_MINTER_ADDRESSES[networkId]
@@ -230,9 +153,7 @@ interface EtherTransferEventProps {
 
 function EtherTransferEvent({ parsedEvent }: EtherTransferEventProps) {
   // query data
-  const query = useQuery(USERS_EVENT_QUERY, {
-    variables: { usersStarknetAddresses: [parsedEvent.from, parsedEvent.to] },
-  })
+  const query = useAddressesQuery([parsedEvent.from, parsedEvent.to])
 
   // read users
   const usersTable = useMapUsersByAddress(query.data?.usersByStarknetAddresses)
@@ -276,9 +197,8 @@ interface OfferCreationAndCancelEventProps {
 }
 
 function OfferCreationAndCancelEvent({ parsedEvent }: OfferCreationAndCancelEventProps) {
-  const query = useQuery(CARD_AND_USERS_EVENT_QUERY, {
-    variables: { starknetTokenId: parsedEvent.tokenId, usersStarknetAddresses: [parsedEvent.seller] },
-  })
+  // query data
+  const query = useTokenAndAddressesQuery('card', parsedEvent.tokenId, [parsedEvent.seller])
 
   // get token (pack/card) data
   const card = useMemo(() => {
