@@ -1,6 +1,6 @@
 import 'moment/locale/fr'
 
-import React, { useMemo, useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback, RefObject } from 'react'
 import moment from 'moment'
 import styled from 'styled-components'
 import { WeiAmount } from '@rulesorg/sdk-core'
@@ -75,7 +75,8 @@ const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
 
 // Main Components
 
-interface TransactionRowProps extends React.HTMLAttributes<HTMLDivElement> {
+interface TransactionRowProps<T extends HTMLElement> extends React.HTMLAttributes<HTMLDivElement> {
+  innerRef?: RefObject<T>
   hash: string
   address: string
   fromAddress: string
@@ -102,6 +103,7 @@ const MemoizedTransactionRowPropsEqualityCheck = (prevProps: TransactionRowProps
   prevProps.hash === nextProps.hash
 
 const MemoizedTransactionRow = React.memo(function TransactionRow({
+  innerRef,
   hash,
   address,
   fromAddress,
@@ -175,7 +177,7 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
 
   return (
     <StyledTransactionRow offchain={status === 'RECEIVED' || status === 'REJECTED'} {...props}>
-      <Column gap={8}>
+      <Column gap={8} ref={innerRef}>
         {events.map((event, index) => (
           <Event key={index} address={address} $key={event.key} $data={event.data} />
         ))}

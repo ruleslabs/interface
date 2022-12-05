@@ -1,10 +1,21 @@
+import { useRef, useCallback } from 'react'
+import styled from 'styled-components'
+
 import DefaultLayout from '@/components/Layout'
 import ProfileLayout from '@/components/Layout/Profile'
-import { TYPE } from '@/styles/theme'
 import { useStarknetTransactionsForAddress } from '@/state/search/hooks'
 import Section from '@/components/Section'
 import Column from '@/components/Column'
 import TransactionRow from '@/components/TransactionRow'
+import Spinner from '@/components/Spinner'
+
+// css
+
+const StyledSpinner = styled(Spinner)`
+  width: 32px;
+  margin: 16px auto;
+  display: block;
+`
 
 // Main Component
 
@@ -21,12 +32,29 @@ function Explorer({ address, userId }: ExplorerProps) {
   const isValid = !starknetTransactionQuery.error
   const isLoading = starknetTransactionQuery.loading
 
+  // infinite scroll
+  const observer = useRef()
+  const lastTxRef = useCallback(
+    (node) => {
+      if (!nextPage) return
+      if (isLoading) return
+      if (observer.current) observer.current.disconnect()
+
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) nextPage()
+      })
+      if (node) observer.current.observe(node)
+    },
+    [isLoading, nextPage]
+  )
+
   return (
     <Section>
       <Column gap={16}>
-        {starknetTransactions.map((starknetTransaction) => (
+        {starknetTransactions.map((starknetTransaction, index) => (
           <TransactionRow
             key={starknetTransaction.hash}
+            innerRef={index + 1 === starknetTransactions.length ? lastTxRef : undefined}
             fromAddress={starknetTransaction.fromAddress}
             address={address}
             hash={starknetTransaction.hash}
@@ -41,11 +69,7 @@ function Explorer({ address, userId }: ExplorerProps) {
           />
         ))}
       </Column>
-      {isLoading ? (
-        <TYPE.body>loading</TYPE.body>
-      ) : (
-        nextPage && <button onClick={nextPage ?? undefined}>load more</button>
-      )}
+      {isLoading && <StyledSpinner />}
     </Section>
   )
 }

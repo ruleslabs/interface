@@ -180,8 +180,12 @@ function EtherTransferEvent({ parsedEvent }: EtherTransferEventProps) {
         <span> </span>
         {parsedAmount.toSignificant(6)} ETH
         <span> </span>
+        <Trans>to</Trans>
+        <span> </span>
         {marketplaceTax ? (
-          <span>Rules</span>
+          <span>
+            <Trans>Rules (artists fund)</Trans>
+          </span>
         ) : (
           <Link href={`/user/${toUser?.slug ?? parsedEvent.to}`}>{toUser?.username ?? parsedEvent.to}</Link>
         )}
