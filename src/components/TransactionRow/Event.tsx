@@ -199,27 +199,24 @@ function TokenTransferEvent({ parsedEvent }: CardTransferEventProps) {
       <img src={token.pictureUrl} />
 
       <TYPE.body>
-        <Trans>
-          <Link href={`/user/${toUser?.slug ?? parsedEvent.to}`}>{toUser?.username ?? parsedEvent.to}</Link>
-          <br />
-          received {parsedEvent.type === 'pack' ? `${parsedEvent.amount} ` : ''}
-          <Link href={token.href}>{token.name}</Link>
-        </Trans>
-
-        {parsedEvent.from !== '0x0' && (
-          <Trans>
-            <span> </span>
-            from&nbsp;
-            <Link href={`/user/${fromUser?.slug ?? parsedEvent.from}`}>{fromUser?.username ?? parsedEvent.from}</Link>
-          </Trans>
+        {parsedEvent.from === '0x0' ? (
+          <span>Rules</span>
+        ) : (
+          <Link href={`/user/${fromUser?.slug ?? parsedEvent.from}`}>{fromUser?.username ?? parsedEvent.from}</Link>
         )}
+        <br />
 
-        {airdrop && (
-          <Trans>
-            <span> </span>
-            gifted by <span>Rules</span>
-          </Trans>
-        )}
+        {airdrop ? <Trans>offered</Trans> : <Trans>sent</Trans>}
+        <span> </span>
+
+        {parsedEvent.type === 'pack' ? `${parsedEvent.amount} ` : ''}
+        <Link href={token.href}>{token.name}</Link>
+        <span> </span>
+
+        <Trans>to</Trans>
+        <span> </span>
+
+        <Link href={`/user/${toUser?.slug ?? parsedEvent.to}`}>{toUser?.username ?? parsedEvent.to}</Link>
       </TYPE.body>
     </StyledEvent>
   )
@@ -256,24 +253,16 @@ function EtherTransferEvent({ parsedEvent }: EtherTransferEventProps) {
       <EthereumIcon />
 
       <TYPE.body>
-        <Trans>
-          {marketplaceTax ? (
-            <TYPE.body fontWeight={500}>Rules</TYPE.body>
-          ) : (
-            <>
-              <Link href={`/user/${toUser?.slug ?? parsedEvent.to}`}>{toUser?.username ?? parsedEvent.to}</Link>
-              <br />
-            </>
-          )}
-          received {parsedAmount.toSignificant(6)} ETH
-        </Trans>
-
-        {parsedEvent.from !== '0x0' && (
-          <Trans>
-            <span> </span>
-            from&nbsp;
-            <Link href={`/user/${fromUser?.slug ?? parsedEvent.from}`}>{fromUser?.username ?? parsedEvent.from}</Link>
-          </Trans>
+        <Link href={`/user/${fromUser?.slug ?? parsedEvent.from}`}>{fromUser?.username ?? parsedEvent.from}</Link>
+        <br />
+        <Trans>sent</Trans>
+        <span> </span>
+        {parsedAmount.toSignificant(6)} ETH
+        <span> </span>
+        {marketplaceTax ? (
+          <span>Rules</span>
+        ) : (
+          <Link href={`/user/${toUser?.slug ?? parsedEvent.to}`}>{toUser?.username ?? parsedEvent.to}</Link>
         )}
       </TYPE.body>
     </StyledEvent>

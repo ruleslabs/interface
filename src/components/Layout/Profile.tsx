@@ -1,8 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
-// import { t, Trans } from '@lingui/macro'
-import { Trans } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 
 import { ActiveLink } from '@/components/Link'
 import Section from '@/components/Section'
@@ -82,7 +81,7 @@ export const tabLinks = [
   { name: 'Cards', link: '/cards' },
   { name: 'Packs', link: '/packs' },
   { name: 'Rulédex', link: '/ruledex' },
-  // { name: t`Activity`, link: '/activity' },
+  { name: t`Activity`, link: '/activity' },
 ] // TODO: move it somewhere else as a single source of truth
 
 export default function ProfileLayout({ children }: { children: React.ReactElement }) {

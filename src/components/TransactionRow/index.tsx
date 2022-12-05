@@ -22,7 +22,7 @@ import OffchainAction from './OffchainAction'
 import ExternalLinkIcon from '@/images/external-link.svg'
 
 const StyledTransactionRow = styled(Card)<{ offchain: boolean }>`
-  ${({ offchain }) => offchain && 'opacity: 0.5;'}
+  ${({ offchain }) => offchain && 'opacity: 0.7;'}
 `
 
 const SeeDetails = styled(TYPE.body)`

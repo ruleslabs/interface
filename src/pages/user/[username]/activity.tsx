@@ -21,8 +21,6 @@ function Explorer({ address, userId }: ExplorerProps) {
   const isValid = !starknetTransactionQuery.error
   const isLoading = starknetTransactionQuery.loading
 
-  return null
-
   return (
     <Section>
       <Column gap={16}>

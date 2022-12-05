@@ -309,7 +309,7 @@ export function useSearchedUsers() {
 export function useStarknetTransactionsForAddress(
   userId: string,
   address?: string
-): [(() => void) | null, { data: any[], loading: boolean, error: any }] {
+): [(() => void) | null, { data: any[]; loading: boolean; error: any }] {
   // pagination cursor and page
   const [endCursor, setEndCursor] = useState<string | null>(null)
   const [hasNextPage, setHasNextPage] = useState(false)
