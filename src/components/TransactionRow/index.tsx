@@ -1,6 +1,6 @@
 import 'moment/locale/fr'
 
-import React, { useMemo, useState, useCallback, RefObject } from 'react'
+import React, { useMemo, useState, useCallback } from 'react'
 import moment from 'moment'
 import styled from 'styled-components'
 import { WeiAmount } from '@rulesorg/sdk-core'
@@ -41,7 +41,8 @@ const SeeDetails = styled(TYPE.body)`
 const TxGrid = styled.div<{ isOpen?: boolean }>`
   ${({ isOpen = true }) => isOpen && 'margin-top: 16px;'}
   max-height: ${({ isOpen = true }) => (isOpen ? '75px' : 0)};
-  overflow: hidden;
+  overflow-x: scroll;
+  overflow-y: hidden;
   transition: max-height 250ms, margin 250ms;
 
   transform-origin: top;
@@ -50,6 +51,7 @@ const TxGrid = styled.div<{ isOpen?: boolean }>`
 
   & > * {
     padding: 8px;
+    white-space: nowrap;
   }
 `
 
@@ -75,8 +77,8 @@ const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
 
 // Main Components
 
-interface TransactionRowProps<T extends HTMLElement> extends React.HTMLAttributes<HTMLDivElement> {
-  innerRef?: RefObject<T>
+interface TransactionRowProps extends React.HTMLAttributes<HTMLDivElement> {
+  innerRef?: (node: any) => void
   hash: string
   address: string
   fromAddress: string

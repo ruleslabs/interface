@@ -185,8 +185,7 @@ msgstr "Ton nouveau mot de passe doit être différent de l'ancien"
 msgid "Passwords do not match"
 msgstr "Les mots de passe ne correspondent pas"
 
-# Payment errors
-
+#: Payment errors
 msgid "Payment method already used by another user"
 msgstr "Cette carte est déjà utilisée par un autre utilisateur"
 
@@ -1213,29 +1212,8 @@ msgid "<0> </0>for {0} ETH"
 msgstr "<0> </0>pour {0} ETH"
 
 #: src/components/TransactionRow/Event.tsx
-#: src/components/TransactionRow/Event.tsx
-msgid "<0> </0>from <1>{0}</1>"
-msgstr "<0> </0>de la part de <1>{0}</1>"
-
-#: src/components/TransactionRow/Event.tsx
-msgid "<0> </0>gifted by <1>Rules</1>"
-msgstr "<0> </0>offert par <1>Rules</1>"
-
-#: src/components/TransactionRow/Event.tsx
-msgid "<0>{0}</0><1/>"
-msgstr "<0>{0}</0><1/>"
-
-#: src/components/TransactionRow/Event.tsx
 msgid "<0>{0}</0><1/>opened {1}<2> </2><3>{2}</3>"
 msgstr "<0>{0}</0><1/>a ouvert {1}<2> </2><3>{2}</3>"
-
-#: src/components/TransactionRow/Event.tsx
-msgid "<0>{0}</0><1/>received {1}<2>{2}</2>"
-msgstr "<0>{0}</0><1/>a reçu {1}<2>{2}</2>"
-
-#: src/components/TransactionRow/Event.tsx
-msgid "{0}received {1} ETH"
-msgstr "{0}a reçu {1} ETH"
 
 #: src/components/TransactionRow/Event.tsx
 msgid "puts on sale"
@@ -1248,3 +1226,88 @@ msgstr "a annulé la vente de"
 #: src/components/TransactionRow/Event.tsx
 msgid "Season"
 msgstr "Saison"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "offered"
+msgstr "a offert"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "sent"
+msgstr "a envoyé"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "to"
+msgstr "à"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "Wallet upgraded"
+msgstr "Portefeuille mit à jour"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "Wallet deployed"
+msgstr "Portefeuille déployé"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "Password update completed"
+msgstr "Mot de passe mit à jour"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "Password update triggered"
+msgstr "Mise à jour du mot de passe déclanchée"
+
+#: src/components/TransactionRow/Message.tsx
+msgid "withdrawn {0} ETH to"
+msgstr "a retiré {0} ETH vers"
+
+#: src/components/TransactionRow/index.tsx
+msgid "See blockchain details"
+msgstr "Voir les détails blockchain"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Wallet deployment"
+msgstr "Déploiement du portefeuille"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Wallet password update"
+msgstr "Changement du mot de passe du portefeuille"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Wallet password update triggering"
+msgstr "Déclanchement du changement de mot de passe du portefeuille"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Wallet upgrade"
+msgstr "Mise à jour du portefeuille"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Pack cards delivery"
+msgstr "Livraison des carte d'un pack"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Pack delivery"
+msgstr "Livraison d'un pack"
+
+#: src/components/CardsTransfersHistory/table.tsx
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Pack opening"
+msgstr "Ouverture d'un pack"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Offer acceptance"
+msgstr "Acceptation d'une offre"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Offer cancellation"
+msgstr "Annulation d'une offre"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Offer creation"
+msgstr "Création d'une offre"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "ETH Withdraw"
+msgstr "Retrait d'ETH"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Card transfer"
+msgstr "Transfert de carte"

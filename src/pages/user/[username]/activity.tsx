@@ -8,6 +8,7 @@ import Section from '@/components/Section'
 import Column from '@/components/Column'
 import TransactionRow from '@/components/TransactionRow'
 import Spinner from '@/components/Spinner'
+import { useCurrentUser } from '@/state/user/hooks'
 
 // css
 
@@ -33,9 +34,9 @@ function Explorer({ address, userId }: ExplorerProps) {
   const isLoading = starknetTransactionQuery.loading
 
   // infinite scroll
-  const observer = useRef()
+  const observer = useRef<IntersectionObserver | null>(null)
   const lastTxRef = useCallback(
-    (node) => {
+    (node: any) => {
       if (!nextPage) return
       if (isLoading) return
       if (observer.current) observer.current.disconnect()
@@ -47,6 +48,9 @@ function Explorer({ address, userId }: ExplorerProps) {
     },
     [isLoading, nextPage]
   )
+
+  const currentUser = useCurrentUser()
+  if (currentUser.slug !== 'chqrles' && currentUser.slug !== 'lereglement') return
 
   return (
     <Section>

@@ -232,12 +232,10 @@ function OfferCreationAndCancelEvent({ parsedEvent }: OfferCreationAndCancelEven
       <img src={card.pictureUrl} />
 
       <TYPE.body>
-        <Trans>
-          <Link href={`/user/${sellerUser?.slug ?? parsedEvent.seller}`}>
-            {sellerUser?.username ?? parsedEvent.seller}
-          </Link>
-          <br />
-        </Trans>
+        <Link href={`/user/${sellerUser?.slug ?? parsedEvent.seller}`}>
+          {sellerUser?.username ?? parsedEvent.seller}
+        </Link>
+        <br />
 
         {parsedPrice ? <Trans>puts on sale</Trans> : <Trans>cancelled the sale of</Trans>}
 

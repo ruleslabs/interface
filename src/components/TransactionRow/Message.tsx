@@ -10,6 +10,7 @@ import { desiredChainId } from '@/constants/connectors'
 import { networkId, CHAINS } from '@/constants/networks'
 import { L2_STARKGATE_ADDRESSES, L1_STARKGATE_ADDRESSES } from '@/constants/addresses'
 import { useAddressesQuery } from '@/state/transactions/hooks'
+import useReduceHash from '@/hooks/useReduceHash'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
 import EthereumIcon from '@/images/ethereum.svg'
@@ -21,6 +22,7 @@ const StyledEvent = styled(RowCenter)`
   border-radius: 3px;
   background: ${({ theme }) => theme.bg5};
   gap: 16px;
+  word-break: break-all;
 
   & > img,
   & > svg {
@@ -43,8 +45,13 @@ const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
   fill: ${({ theme }) => theme.text1};
 `
 
-const ExternalLink = styled(TYPE.body)`
-  display: inline-block;
+const EtherscanLink = styled(Link)`
+  & > div {
+    display: inline-flex;
+    font-family: Inconsolata, monospace;
+    font-weight: 500;
+    color: ${({ theme }) => theme.primary1};
+  }
 `
 
 // ETHER WITHDRAW MESSAGE
@@ -62,6 +69,9 @@ function EtherWithdrawMessage({ address, parsedMessage }: EtherWithdrawMessagePr
 
   const parsedAmount = useMemo(() => WeiAmount.fromRawAmount(parsedMessage.amount), [parsedMessage.amount])
 
+  // reduce l1Recipient
+  const reducedL1Recipient = useReduceHash(parsedMessage.l1Recipient)
+
   return (
     <StyledEvent>
       <EthereumIcon />
@@ -71,12 +81,15 @@ function EtherWithdrawMessage({ address, parsedMessage }: EtherWithdrawMessagePr
         <br />
         <Trans>withdrawn {parsedAmount.toSignificant(6)} ETH to</Trans>
         <span> </span>
-        <Link target="_blank" href={`${CHAINS[desiredChainId].explorerBaseUrl}/address/${parsedMessage.l1Recipient}`}>
-          <RowCenter style={{ display: 'inline' }} gap={6}>
-            {parsedMessage.l1Recipient}
+        <EtherscanLink
+          target="_blank"
+          href={`${CHAINS[desiredChainId].explorerBaseUrl}/address/${parsedMessage.l1Recipient}`}
+        >
+          <RowCenter gap={6}>
+            {reducedL1Recipient}
             <StyledExternalLinkIcon />
           </RowCenter>
-        </Link>
+        </EtherscanLink>
       </TYPE.body>
     </StyledEvent>
   )
@@ -99,7 +112,7 @@ export default function Message({ address, fromAddress, toAddress, payload }: Ev
   }, [payload.length])
 
   // only message supported for the moment
-  if (parsedMessage.type !== 'withdraw') return null
+  if (parsedMessage?.type !== 'withdraw') return null
 
   return <EtherWithdrawMessage address={address} parsedMessage={parsedMessage as WithdrawMessage} />
 }
