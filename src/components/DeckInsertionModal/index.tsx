@@ -28,6 +28,7 @@ const QUERY_CARDS = gql`
       cardModel {
         slug
         pictureUrl(derivative: "width=512")
+        videoUrl
       }
     }
   }
