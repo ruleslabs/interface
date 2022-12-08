@@ -46,6 +46,8 @@ export default function StarknetSigner({
   onBack,
   children,
 }: StarknetSignerProps) {
+  // password prompt
+
   // wallet lazyness
   const waitingTransactionQuery = useWaitingTransactionQuery()
   const waitingTransaction = waitingTransactionQuery.data?.waitingTransaction
@@ -67,13 +69,9 @@ export default function StarknetSigner({
 
   return (
     <>
+      {!calls && <ModalHeader onDismiss={onDismiss}>{modalHeaderChildren}</ModalHeader>}
+
       <DummyFocusInput type="text" />
-      <ModalHeader
-        onDismiss={onDismiss}
-        onBack={!waitingTransaction && !txHash && !waitingForTx && !waitingForFees ? onBack : undefined}
-      >
-        {!waitingTransaction && !txHash && !waitingForTx && !waitingForFees && modalHeaderChildren}
-      </ModalHeader>
 
       {waitingTransaction ? (
         <Confirmation
@@ -94,6 +92,9 @@ export default function StarknetSigner({
       )}
 
       <Signer
+        onDismiss={onDismiss}
+        onBack={onBack}
+        modalHeaderChildren={modalHeaderChildren}
         confirmationActionText={confirmationActionText}
         isOpen={!txHash && !waitingForTx && !waitingForFees && !!calls}
         transactionValue={transactionValue}

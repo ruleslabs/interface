@@ -184,7 +184,7 @@ function EtherTransferEvent({ parsedEvent }: EtherTransferEventProps) {
         <span> </span>
         {marketplaceTax ? (
           <span>
-            <Trans>Rules (artists fund)</Trans>
+            <Trans>Rules (service fee + artists fee)</Trans>
           </span>
         ) : (
           <Link href={`/user/${toUser?.slug ?? parsedEvent.to}`}>{toUser?.username ?? parsedEvent.to}</Link>

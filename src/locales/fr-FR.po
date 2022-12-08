@@ -246,8 +246,8 @@ msgid "Buy - {0} ETH ({1}€)"
 msgstr "Acheter - {0} ETH ({1}€)"
 
 #: src/components/CardOwnership/index.tsx
-msgid "Close offer - {0} ETH ({1}€)"
-msgstr "Arrêter la vente - {0} ETH ({1}€)"
+msgid "Close offer"
+msgstr "Arrêter la vente"
 
 #: src/components/CardOwnership/index.tsx
 msgid "Gift"
@@ -1241,7 +1241,7 @@ msgstr "à"
 
 #: src/components/TransactionRow/Event.tsx
 msgid "Wallet upgraded"
-msgstr "Portefeuille mit à jour"
+msgstr "Portefeuille mis à jour"
 
 #: src/components/TransactionRow/Event.tsx
 msgid "Wallet deployed"
@@ -1249,7 +1249,7 @@ msgstr "Portefeuille déployé"
 
 #: src/components/TransactionRow/Event.tsx
 msgid "Password update completed"
-msgstr "Mot de passe mit à jour"
+msgstr "Mot de passe mis à jour"
 
 #: src/components/TransactionRow/Event.tsx
 msgid "Password update triggered"
@@ -1260,8 +1260,8 @@ msgid "withdrawn {0} ETH to"
 msgstr "a retiré {0} ETH vers"
 
 #: src/components/TransactionRow/index.tsx
-msgid "See blockchain details"
-msgstr "Voir les détails blockchain"
+msgid "See transaction"
+msgstr "Afficher la transaction"
 
 #: src/components/TransactionRow/OffchainAction.tsx
 msgid "Wallet deployment"
@@ -1311,3 +1311,11 @@ msgstr "Retrait d'ETH"
 #: src/components/TransactionRow/OffchainAction.tsx
 msgid "Card transfer"
 msgstr "Transfert de carte"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "Rules (service fee + artists fee)"
+msgstr "Rules (frais service + commission artiste)"
+
+#: src/components/StarknetSigner/Signer.tsx
+msgid "Enter your password"
+msgstr "Entre ton mot de passe"

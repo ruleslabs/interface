@@ -90,9 +90,7 @@ export default function CardOwnership({
             {currentUser?.slug === ownerSlug && parsedPrice ? (
               <>
                 <PrimaryButton onClick={toggleCancelOfferModal} large>
-                  <Trans>
-                    Close offer - {parsedPrice.toSignificant(6)} ETH ({weiAmountToEURValue(parsedPrice)}€)
-                  </Trans>
+                  <Trans>Close offer</Trans>
                 </PrimaryButton>
 
                 <SecondaryButton onClick={toggleCreateOfferModal} large>

@@ -19,14 +19,10 @@ const SubmitButton = styled(PrimaryButton)`
 `
 
 interface PrivateKeyDecipherFormProps {
-  confirmationActionText?: string
   onPrivateKeyDeciphered(privateKey: string): void
 }
 
-export default function PrivateKeyDecipherForm({
-  confirmationActionText,
-  onPrivateKeyDeciphered,
-}: PrivateKeyDecipherFormProps) {
+export default function PrivateKeyDecipherForm({ onPrivateKeyDeciphered }: PrivateKeyDecipherFormProps) {
   // password
   const [password, setPassword] = useState('')
   const onPasswordInput = useCallback((value: string) => setPassword(value), [setPassword])
@@ -77,7 +73,7 @@ export default function PrivateKeyDecipherForm({
         </Column>
 
         <SubmitButton type="submit" disabled={!password.length} large>
-          {confirmationActionText ?? <Trans>Confirm</Trans>}
+          <Trans>Next</Trans>
         </SubmitButton>
       </Column>
     </StyledForm>

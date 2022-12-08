@@ -203,7 +203,7 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
         <RowCenter gap={6} onClick={toggleBlockchainDetails}>
           <Caret direction={areBlockchainDetailsOpen ? 'bottom' : 'right'} filled />
 
-          <Trans>See blockchain details</Trans>
+          <Trans>See transaction</Trans>
         </RowCenter>
       </SeeDetails>
 
