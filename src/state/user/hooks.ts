@@ -37,7 +37,7 @@ const CURRENT_USER_QUERY = gql`
       hasTwoFactorAuthActivated
       profile {
         pictureUrl(derivative: "width=320")
-        certifiedPictureUrl(derivative: "width=320")
+        customAvatarUrl(derivative: "width=320")
         twitterUsername
         instagramUsername
         isDiscordVisible

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import styled from 'styled-components'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 
 import Input from '@/components/Input'
 import { useCurrentUser } from '@/state/user/hooks'
@@ -84,10 +84,7 @@ export default function AdvanceWalletSettings() {
         ) : (
           <>
             <div />
-            <PrivateKeyDecipherForm
-              confirmationActionText={t`Reveal the private key`}
-              onPrivateKeyDeciphered={handlePrivateKey}
-            />
+            <PrivateKeyDecipherForm onPrivateKeyDeciphered={handlePrivateKey} />
           </>
         )}
       </Column>

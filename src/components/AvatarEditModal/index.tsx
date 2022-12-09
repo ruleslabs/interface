@@ -84,10 +84,10 @@ const Checkmark = styled.span`
 
 interface AvatarEditModalProps {
   currentAvatarId: number
-  certifiedAvatarUrl?: string
+  customAvatarUrl?: string
 }
 
-export default function AvatarEditModal({ currentAvatarId, certifiedAvatarUrl }: AvatarEditModalProps) {
+export default function AvatarEditModal({ currentAvatarId, customAvatarUrl }: AvatarEditModalProps) {
   const toggleAvatarEditModal = useAvatarEditModalToggle()
   const isOpen = useModalOpen(ApplicationModal.AVATAR_EDIT)
 
@@ -127,9 +127,9 @@ export default function AvatarEditModal({ currentAvatarId, certifiedAvatarUrl }:
               <Checkmark />
             </Avatar>
           ))}
-          {certifiedAvatarUrl && (
+          {customAvatarUrl && (
             <Avatar selected={selectedAvatarId === 0} onClick={() => handleAvatarEdit(0)}>
-              <img src={certifiedAvatarUrl} />
+              <img src={customAvatarUrl} />
               <Checkmark />
             </Avatar>
           )}

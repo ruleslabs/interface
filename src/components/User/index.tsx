@@ -49,7 +49,7 @@ const UserAvatarEdit = styled(TYPE.body)`
 interface UserProps {
   username: string
   pictureUrl: string
-  certifiedPictureUrl?: string
+  customAvatarUrl?: string
   certified: boolean
   size?: Size
   canEdit?: boolean
@@ -58,7 +58,7 @@ interface UserProps {
 export default function User({
   username,
   pictureUrl,
-  certifiedPictureUrl,
+  customAvatarUrl,
   certified,
   size = 'md',
   canEdit = false,
@@ -82,7 +82,7 @@ export default function User({
           {certified && <Certified />}
         </Row>
       </ColumnCenter>
-      {canEdit && <AvatarEditModal currentAvatarId={defaultAvatarId} certifiedAvatarUrl={certifiedPictureUrl} />}
+      {canEdit && <AvatarEditModal currentAvatarId={defaultAvatarId} customAvatarUrl={customAvatarUrl} />}
     </>
   )
 }
