@@ -28,13 +28,15 @@ const StyledTable = styled(Table)`
 `
 
 const QUERY_TRANSFERS_USERS = gql`
-  query ($ids: [ID!]!) {
-    usersByIds(ids: $ids) {
-      id
+  query ($starknetAddresses: [String!]!) {
+    usersByStarknetAddresses(starknetAddresses: $starknetAddresses) {
       slug
       username
       profile {
         pictureUrl(derivative: "width=128")
+      }
+      starknetWallet {
+        address
       }
     }
   }
@@ -51,11 +53,11 @@ export default function TransfersTable({ transfers, loading, error, showSerialNu
   const router = useRouter()
 
   // user table
-  const userIds = useMemo(
+  const starknetAddresses = useMemo(
     () =>
       (transfers ?? []).reduce<string[]>((acc, hit: any) => {
-        if (hit.fromUserId) acc.push(hit.fromUserId)
-        if (hit.toUserId) acc.push(hit.toUserId)
+        if (hit.fromStarknetAddress) acc.push(hit.fromStarknetAddress)
+        if (hit.toStarknetAddress) acc.push(hit.toStarknetAddress)
 
         return acc
       }, []),
@@ -63,15 +65,18 @@ export default function TransfersTable({ transfers, loading, error, showSerialNu
   )
 
   // usersData
-  const usersQuery = useQuery(QUERY_TRANSFERS_USERS, { variables: { ids: userIds }, skip: !userIds.length })
+  const usersQuery = useQuery(QUERY_TRANSFERS_USERS, {
+    variables: { starknetAddresses },
+    skip: !starknetAddresses.length,
+  })
 
   const usersTable = useMemo(
     () =>
-      ((usersQuery?.data?.usersByIds ?? []) as any[]).reduce<{ [key: string]: any }>((acc, user: any) => {
-        acc[user.id] = user
+      ((usersQuery?.data?.usersByStarknetAddresses ?? []) as any[]).reduce<{ [key: string]: any }>((acc, user: any) => {
+        acc[user.starknetWallet.address!] = user
         return acc
       }, {}),
-    [usersQuery?.data?.usersByIds]
+    [usersQuery?.data?.usersByStarknetAddresses]
   )
 
   // error
@@ -131,26 +136,26 @@ export default function TransfersTable({ transfers, loading, error, showSerialNu
           transfers.map((transfer, index) => (
             <tr key={`rule-nft-history-${index}`}>
               <td>
-                {usersTable[transfer.toUserId] && (
-                  <Link href={`/user/${usersTable[transfer.toUserId].slug}`}>
-                    <Avatar src={usersTable[transfer.toUserId].profile.pictureUrl} />
+                {usersTable[transfer.toStarknetAddress] && (
+                  <Link href={`/user/${usersTable[transfer.toStarknetAddress].slug}`}>
+                    <Avatar src={usersTable[transfer.toStarknetAddress].profile.pictureUrl} />
                   </Link>
                 )}
               </td>
               <td>
-                {usersTable[transfer.toUserId] && (
-                  <Link href={`/user/${usersTable[transfer.toUserId].slug}`}>
-                    <TYPE.body clickable>{usersTable[transfer.toUserId].username}</TYPE.body>
+                {usersTable[transfer.toStarknetAddress] && (
+                  <Link href={`/user/${usersTable[transfer.toStarknetAddress].slug}`}>
+                    <TYPE.body clickable>{usersTable[transfer.toStarknetAddress].username}</TYPE.body>
                   </Link>
                 )}
               </td>
               <td>
-                {transfer.fromUserId && usersTable[transfer.fromUserId] ? (
-                  <Link href={`/user/${usersTable[transfer.fromUserId].slug}`}>
-                    <TYPE.body clickable>{usersTable[transfer.fromUserId].username}</TYPE.body>
+                {transfer.fromStarknetAddress && usersTable[transfer.fromStarknetAddress] ? (
+                  <Link href={`/user/${usersTable[transfer.fromStarknetAddress].slug}`}>
+                    <TYPE.body clickable>{usersTable[transfer.fromStarknetAddress].username}</TYPE.body>
                   </Link>
                 ) : (
-                  !transfer.fromUserId && (
+                  !transfer.fromStarknetAddress && (
                     <TYPE.body>{transfer.airdrop ? t`Offered by Rules` : t`Pack opening`}</TYPE.body>
                   )
                 )}

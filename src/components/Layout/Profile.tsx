@@ -126,7 +126,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
               )}
             </RowCenter>
           </ColumnCenter>
-          {user.profile.discordMember && user.profile.isDiscordVisible && (
+          {user.profile.discordMember && (
             <StyledDiscordMember
               username={user.profile.discordMember.username}
               discriminator={user.profile.discordMember.discriminator}

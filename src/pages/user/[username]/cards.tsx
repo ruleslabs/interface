@@ -39,7 +39,12 @@ const QUERY_CARDS = gql`
   }
 `
 
-function Cards({ userId }: { userId: string }) {
+interface CardsProps {
+  userId: string
+  address: string
+}
+
+function Cards({ userId, address }: CardsProps) {
   // current user
   const router = useRouter()
   const { username } = router.query
@@ -50,17 +55,14 @@ function Cards({ userId }: { userId: string }) {
 
   // sort
   const [sortDesc, setSortDesc] = useState(true)
+  const toggleSort = useCallback(() => setSortDesc(!sortDesc), [sortDesc, setSortDesc])
 
-  const toggleSort = useCallback(() => {
-    setSortDesc(!sortDesc)
-  }, [sortDesc, setSortDesc])
-
-  const cardsSearch = useSearchCards({ facets: { ownerUserId: userId }, dateDesc: sortDesc })
+  const cardsSearch = useSearchCards({ facets: { ownerStarknetAddress: address }, dateDesc: sortDesc })
 
   const cardIds = useMemo(
     () =>
       (cardsSearch?.hits ?? []).reduce<string[]>((acc, hit: any) => {
-        acc.push(hit.cardId)
+        acc.push(hit.objectID)
 
         return acc
       }, []),

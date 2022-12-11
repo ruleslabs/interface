@@ -133,10 +133,10 @@ const QUERY_CARDS = gql`
 `
 
 interface RuledexProps {
-  userId: string
+  address: string
 }
 
-function Ruledex({ userId }: RuledexProps) {
+function Ruledex({ address }: RuledexProps) {
   // user slug
   const router = useRouter()
   const { username } = router.query
@@ -151,7 +151,7 @@ function Ruledex({ userId }: RuledexProps) {
   const toggleSort = useCallback(() => setSortDesc(!sortDesc), [sortDesc])
 
   // get user's cards ids
-  const cardsSearch = useSearchCards({ facets: { ownerUserId: userId }, dateDesc: sortDesc })
+  const cardsSearch = useSearchCards({ facets: { ownerStarknetAddress: address }, dateDesc: sortDesc })
   const cardIds = useMemo(() => (cardsSearch?.hits ?? []).map((hit: any) => hit.cardId, []), [cardsSearch?.hits])
 
   // Query cards

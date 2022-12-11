@@ -201,7 +201,11 @@ const DeckCards = ({ deck, indexes, onInsertion, onRemove, isCurrentUserProfile 
   )
 }
 
-function Profile({ userId }: { userId: string }) {
+interface ProfileProps {
+  address: string
+}
+
+function Profile({ address }: ProfileProps) {
   const router = useRouter()
   const { username } = router.query
   const userSlug = typeof username === 'string' ? username.toLowerCase() : null
@@ -268,7 +272,7 @@ function Profile({ userId }: { userId: string }) {
         </DeckGridSecondLine>
       </ShowcaseSection>
       {isCurrentUserProfile && cardIndexToInsert > 0 && (
-        <DeckInsertionModal userId={userId} cardIndex={cardIndexToInsert} />
+        <DeckInsertionModal starknetWalletAddress={address} cardIndex={cardIndexToInsert} />
       )}
     </>
   )

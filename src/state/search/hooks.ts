@@ -152,6 +152,8 @@ function useFacetFilters(facets: any) {
   )
 }
 
+// ALGOLIA SEARCHES
+
 interface SearchTransfersFacets {
   cardModelId?: string
   serialNumber?: number
@@ -189,7 +191,7 @@ export function useSearchTransfers({
 }
 
 interface SearchCardsFacets {
-  ownerUserId?: string
+  ownerStarknetAddress?: string
   cardId?: string | string[]
 }
 

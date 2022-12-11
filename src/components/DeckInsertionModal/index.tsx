@@ -58,11 +58,11 @@ const StyledClose = styled(Close)`
 `
 
 interface DeckInsertionModalProps {
-  userId: string
+  starknetWalletAddress: string
   cardIndex: number
 }
 
-export default function DeckInsertionModal({ userId, cardIndex }: DeckInsertionModalProps) {
+export default function DeckInsertionModal({ starknetWalletAddress, cardIndex }: DeckInsertionModalProps) {
   // search bar
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 200)
@@ -109,7 +109,7 @@ export default function DeckInsertionModal({ userId, cardIndex }: DeckInsertionM
     loading: cardsHitsLoading,
     error: cardsHitsError,
   } = useSearchCards({
-    facets: { ownerUserId: userId, cardId: dashedDeckCardIds },
+    facets: { ownerStarknetAddress: starknetWalletAddress, cardId: dashedDeckCardIds },
     search: debouncedSearch,
     skip: !isOpen,
   })
