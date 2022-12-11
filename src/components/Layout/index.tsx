@@ -5,6 +5,7 @@ import { useQueryCurrentUser } from '@/state/user/hooks'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import useWindowSize from '@/hooks/useWindowSize'
+import Maintenance from '@/components/Maintenance'
 
 const MainContent = styled.main<{ windowHeight?: number }>`
   min-height: ${({ theme, windowHeight = 0 }) => windowHeight - theme.size.footerHeight}px;
@@ -28,7 +29,7 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
     <>
       <MainContent windowHeight={windowSize.height}>
         <Header />
-        {children}
+        {process.env.NEXT_PUBLIC_MAINTENANCE ? <Maintenance /> : children}
         <Footer />
       </MainContent>
     </>

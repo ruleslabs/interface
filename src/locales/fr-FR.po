@@ -1319,3 +1319,7 @@ msgstr "Rules (frais service + commission artiste)"
 #: src/components/StarknetSigner/Signer.tsx
 msgid "Enter your password"
 msgstr "Entre ton mot de passe"
+
+#: src/components/Maintenance/index.tsx
+msgid "Update in progress..."
+msgstr "Mise à jour en cours..."
