@@ -1,19 +1,24 @@
 import { useState, useCallback, useMemo } from 'react'
+import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
-import { Plural, t } from '@lingui/macro'
+import { t, Trans, Plural } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
 import DefaultLayout from '@/components/Layout'
 import ProfileLayout from '@/components/Layout/Profile'
-import GridHeader from '@/components/GridHeader'
+import { RowBetween } from '@/components/Row'
+import Column from '@/components/Column'
 import Section from '@/components/Section'
 import CardModel from '@/components/CardModel'
 import Grid from '@/components/Grid'
-import { useSearchCards } from '@/state/search/hooks'
+import { useSearchCards, CardsSortingKey } from '@/state/search/hooks'
 import { TYPE } from '@/styles/theme'
 import EmptyTab, { EmptyCardsTabOfCurrentUser } from '@/components/EmptyTab'
 import { useCurrentUser } from '@/state/user/hooks'
 import useCardsPendingStatus from '@/hooks/useCardsPendingStatus'
+import { RowButton } from '@/components/Button'
+import Hover from '@/components/AnimatedIcon/hover'
+import Spinner from '@/components/Spinner'
 
 const CARD_CONTENT = `
   serialNumber
@@ -32,12 +37,106 @@ const CARD_CONTENT = `
   }
 `
 
+// css
+
+const StyledSpinner = styled(Spinner)`
+  width: 32px;
+  margin: 16px auto;
+  display: block;
+`
+
 const QUERY_CARDS = gql`
   query ($ids: [ID!]!, $userId: ID!) {
     cardsInDeliveryForUser(userId: $userId) { ${CARD_CONTENT} }
     cardsByIds(ids: $ids) { ${CARD_CONTENT} }
   }
 `
+
+const GridHeader = styled(RowBetween)`
+  margin-bottom: 32px;
+  padding: 0 8px;
+  align-items: center;
+`
+
+const SortButton = styled(RowButton)`
+  position: relative;
+  border: solid 1px ${({ theme }) => theme.text2}80;
+  border-radius: 3px;
+  padding: 8px 16px;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.text2};
+  }
+`
+
+const Dropdown = styled(Column)<{ isOpen: boolean }>`
+  ${({ isOpen }) => !isOpen && 'display: none;'}
+  position: absolute;
+  background: ${({ theme }) => theme.bg2};
+  top: 38px;
+  right: 0;
+  padding: 8px 0;
+  min-width: 250px;
+  z-index: 1;
+
+  & > * {
+    padding: 12px 40px;
+    white-space: nowrap;
+    width: 100%;
+    text-align: right;
+  }
+
+  & > *:hover {
+    background: ${({ theme }) => theme.bg3};
+  }
+`
+
+const sorts: Array<{
+  name: string
+  key: CardsSortingKey
+  desc: boolean
+}> = [
+  {
+    name: 'Newest',
+    key: 'txIndexDesc',
+    desc: true,
+  },
+  {
+    name: 'Oldest',
+    key: 'txIndexAsc',
+    desc: false,
+  },
+  {
+    name: 'Low serial',
+    key: 'serialAsc',
+    desc: false,
+  },
+  {
+    name: 'High serial',
+    key: 'serialDesc',
+    desc: true,
+  },
+  {
+    name: 'Price: low to high',
+    key: 'lastPriceAsc',
+    desc: false,
+  },
+  {
+    name: 'Price: high to low',
+    key: 'lastPriceDesc',
+    desc: true,
+  },
+  {
+    name: 'Alphabetical A-Z',
+    key: 'artistAsc',
+    desc: false,
+  },
+  {
+    name: 'Alphabetical Z-A',
+    key: 'artistDesc',
+    desc: true,
+  },
+]
 
 interface CardsProps {
   userId: string
@@ -53,11 +152,14 @@ function Cards({ userId, address }: CardsProps) {
   const currentUser = useCurrentUser()
   const isCurrentUserProfile = currentUser?.slug === userSlug
 
-  // sort
-  const [sortDesc, setSortDesc] = useState(true)
-  const toggleSort = useCallback(() => setSortDesc(!sortDesc), [sortDesc, setSortDesc])
+  // sort button
+  const [sortDropdownOpen, setSortDropdownOpen] = useState(false)
+  const toggleSortDropdown = useCallback(() => setSortDropdownOpen(!sortDropdownOpen), [sortDropdownOpen])
 
-  const cardsSearch = useSearchCards({ facets: { ownerStarknetAddress: address }, dateDesc: sortDesc })
+  // sort
+  const [sortIndex, setSortIndex] = useState(0)
+
+  const cardsSearch = useSearchCards({ facets: { ownerStarknetAddress: address }, sortingKey: sorts[sortIndex].key })
 
   const cardIds = useMemo(
     () =>
@@ -89,17 +191,30 @@ function Cards({ userId, address }: CardsProps) {
 
   return (
     <Section>
-      <GridHeader sortTexts={['Newest', 'Oldest']} sortValue={sortDesc} onSortUpdate={toggleSort}>
-        <TYPE.body>
-          {!isValid ? (
-            t`An error has occured`
-          ) : isLoading ? (
-            'Loading...'
-          ) : (
+      {cards.length > 0 && (
+        <GridHeader>
+          <TYPE.body>
             <Plural value={cards.length} _1="{0} card" other="{0} cards" />
-          )}
-        </TYPE.body>
-      </GridHeader>
+          </TYPE.body>
+
+          <SortButton onClick={toggleSortDropdown}>
+            <TYPE.body>
+              <Trans id={sorts[sortIndex].name} render={({ translation }) => <>{translation}</>} />
+            </TYPE.body>
+
+            <Hover width="16" height="16" reverse={!sorts[sortIndex].desc} />
+
+            <Dropdown isOpen={sortDropdownOpen}>
+              {sorts.map((sort, index) => (
+                <TYPE.body key={index} onClick={() => setSortIndex(index)}>
+                  <Trans id={sort.name} render={({ translation }) => <>{translation}</>} />
+                </TYPE.body>
+              ))}
+            </Dropdown>
+          </SortButton>
+        </GridHeader>
+      )}
+
       {isValid && !isLoading && cards.length > 0 ? (
         <Grid gap={64}>
           {cards.map((card: any, index: number) => (
@@ -121,6 +236,7 @@ function Cards({ userId, address }: CardsProps) {
         !isLoading &&
         (isCurrentUserProfile ? <EmptyCardsTabOfCurrentUser /> : <EmptyTab emptyText={t`No cards`} />)
       )}
+      {isLoading && <StyledSpinner />}
     </Section>
   )
 }

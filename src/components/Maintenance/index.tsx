@@ -49,7 +49,7 @@ export default function Maintenance() {
   if (maintenaceQuery.loading) return <div />
 
   return (
-    <StyledMaintenance style={{ marginTop: `${windowSize.height / 2 - 70}px` }}>
+    <StyledMaintenance style={windowSize?.height ? { marginTop: `${windowSize.height / 2 - 70}px` } : undefined}>
       <RulesPlainIcon />
 
       <Separator />

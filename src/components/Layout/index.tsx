@@ -29,7 +29,7 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
     <>
       <MainContent windowHeight={windowSize.height}>
         <Header />
-        {process.env.NEXT_PUBLIC_MAINTENANCE ? <Maintenance /> : children}
+        {process.env.NEXT_PUBLIC_MAINTENANCE === 'true' ? <Maintenance /> : children}
         <Footer />
       </MainContent>
     </>

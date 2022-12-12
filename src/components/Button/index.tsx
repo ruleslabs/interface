@@ -119,15 +119,6 @@ const StyledRowButton = styled.button`
   background: transparent;
   display: inline-block;
   cursor: pointer;
-
-  svg {
-    width: 12px;
-    height: 12px;
-  }
-
-  &:hover * {
-    text-decoration: underline;
-  }
 `
 
 interface RowButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
@@ -142,14 +133,25 @@ export function RowButton({ children, ...props }: RowButtonProps) {
   )
 }
 
+const StyledBackButton = styled(RowButton)`
+  &:hover * {
+    text-decoration: underline;
+  }
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+`
+
 export function BackButton(props: React.HTMLAttributes<HTMLButtonElement>) {
   return (
-    <RowButton {...props}>
+    <StyledBackButton {...props}>
       <Caret direction="left" />
       <TYPE.white fontSize={16}>
         <Trans>Back</Trans>
       </TYPE.white>
-    </RowButton>
+    </StyledBackButton>
   )
 }
 

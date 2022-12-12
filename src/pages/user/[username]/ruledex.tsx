@@ -151,7 +151,7 @@ function Ruledex({ address }: RuledexProps) {
   const toggleSort = useCallback(() => setSortDesc(!sortDesc), [sortDesc])
 
   // get user's cards ids
-  const cardsSearch = useSearchCards({ facets: { ownerStarknetAddress: address }, dateDesc: sortDesc })
+  const cardsSearch = useSearchCards({ facets: { ownerStarknetAddress: address } })
   const cardIds = useMemo(() => (cardsSearch?.hits ?? []).map((hit: any) => hit.cardId, []), [cardsSearch?.hits])
 
   // Query cards

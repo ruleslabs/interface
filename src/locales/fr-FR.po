@@ -542,6 +542,22 @@ msgid "Newest"
 msgstr "Plus récentes"
 
 #: src/pages/user/[username]/cards.tsx
+msgid "Low serial"
+msgstr "Serial bas"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "High serial"
+msgstr "Serial haut"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "Alphabetical A-Z"
+msgstr "Alphabétique A-Z"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "Alphabetical Z-A"
+msgstr "Alphabétique Z-A"
+
+#: src/pages/user/[username]/cards.tsx
 msgid "{0, plural, =1 {{0} card} other {{0} cards}}"
 msgstr "{0, plural, =1 {{0} carte} other {{0} cartes}}"
 

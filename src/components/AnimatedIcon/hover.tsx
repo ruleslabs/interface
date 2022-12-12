@@ -9,10 +9,12 @@ const StyledHover = styled(Hover)<{ $reverse: boolean }>`
     #bottom-bar {
       transition: width 200ms ease, x 200ms ease;
     }
+
     #top-bar {
       width: ${$reverse ? '6' : '20'}px;
       x: ${$reverse ? '9' : '2'}px;
     }
+
     #bottom-bar {
       width: ${$reverse ? '20' : '6'}px;
       x: ${$reverse ? '2' : '9'}px;
@@ -21,9 +23,9 @@ const StyledHover = styled(Hover)<{ $reverse: boolean }>`
 `
 
 interface StyledHoverProps extends React.SVGProps<SVGElement> {
-  reverse: boolean
+  reverse?: boolean
 }
 
-export default function AnimatedHover({ reverse, ...props }: StyledHoverProps) {
+export default function AnimatedHover({ reverse = false, ...props }: StyledHoverProps) {
   return <StyledHover $reverse={reverse} {...props} />
 }

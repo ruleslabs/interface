@@ -105,22 +105,36 @@ export function useMarketplaceSetMaximumPrice(): (price: number) => void {
 
 const client = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_ID ?? '', process.env.NEXT_PUBLIC_ALGOLIA_KEY ?? '')
 const algoliaIndexes = {
-  transfersPriceDesc: client.initIndex('transfers-price-desc'),
-  transfersDateDesc: client.initIndex('transfers-date-desc'),
-  cardsDateDesc: client.initIndex('cards-date-desc'),
-  cardsDateAsc: client.initIndex('cards-date-asc'),
-  offersPriceDesc: client.initIndex('offers-price-desc'),
-  offersPriceAsc: client.initIndex('offers-price-asc'),
+  transfers: {
+    priceDesc: client.initIndex('transfers-price-desc'),
+    dateDesc: client.initIndex('transfers-date-desc'),
+  },
+  cards: {
+    txIndexDesc: client.initIndex('cards-tx-index-desc'),
+    txIndexAsc: client.initIndex('cards-tx-index-asc'),
+    serialDesc: client.initIndex('cards-serial-desc'),
+    serialAsc: client.initIndex('cards-serial-asc'),
+    lastPriceDesc: client.initIndex('cards-last-price-desc'),
+    lastPriceAsc: client.initIndex('cards-last-price-asc'),
+    artistDesc: client.initIndex('cards-artist-desc'),
+    artistAsc: client.initIndex('cards-artist-asc'),
+  },
+  offers: {
+    priceDesc: client.initIndex('offers-price-desc'),
+    priceAsc: client.initIndex('offers-price-asc'),
+  },
   users: client.initIndex('users'),
 }
 
+export type CardsSortingKey = keyof typeof algoliaIndexes.cards
+
 export const TransfersSort = {
   dateDesc: {
-    index: algoliaIndexes.transfersDateDesc,
+    index: algoliaIndexes.transfers.dateDesc,
     displayName: 'Last sales',
   },
   priceDesc: {
-    index: algoliaIndexes.transfersPriceDesc,
+    index: algoliaIndexes.transfers.priceDesc,
     displayName: 'Highest sales',
   },
 }
@@ -190,19 +204,22 @@ export function useSearchTransfers({
   return transfersSearch
 }
 
-interface SearchCardsFacets {
-  ownerStarknetAddress?: string
-  cardId?: string | string[]
-}
-
 interface SearchCardsProps {
-  facets: SearchCardsFacets
-  dateDesc?: boolean
+  facets: {
+    ownerStarknetAddress?: string
+    cardId?: string | string[]
+  }
+  sortingKey?: CardsSortingKey
   search?: string
   skip?: boolean
 }
 
-export function useSearchCards({ facets, dateDesc = true, search = '', skip = false }: SearchCardsProps): Search {
+export function useSearchCards({
+  facets,
+  sortingKey = (Object.keys(algoliaIndexes.cards)[0] as CardsSortingKey),
+  search = '',
+  skip = false,
+}: SearchCardsProps): Search {
   const [cardsSearch, setCardsSearch] = useState<Search>({ loading: true, error: null })
 
   const facetFilters = useFacetFilters(facets)
@@ -214,15 +231,15 @@ export function useSearchCards({ facets, dateDesc = true, search = '', skip = fa
     setCardsSearch({ ...cardsSearch, loading: true, error: null });
 
     // prettier-ignore
-    (dateDesc ? algoliaIndexes.cardsDateDesc : algoliaIndexes.cardsDateAsc)
-      .search(search, { facetFilters, page: 0, hitsPerPage: 256 }) // TODO pagination bruh
+    algoliaIndexes.cards[sortingKey]
+      ?.search(search, { facetFilters, page: 0, hitsPerPage: 256 }) // TODO pagination bruh
       .then((res) => setCardsSearch({ hits: res.hits, loading: false, error: null }))
       .catch((err) => {
         setCardsSearch({ loading: false, error: err })
         console.error(err)
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [facetFilters, setCardsSearch, dateDesc, search, skip])
+  }, [facetFilters, setCardsSearch, sortingKey, search, skip])
 
   return cardsSearch
 }
@@ -257,7 +274,7 @@ export function useSearchOffers({
     setOffersSearch({ ...offersSearch, loading: true, error: null });
 
     // prettier-ignore
-    (priceDesc ? algoliaIndexes.offersPriceDesc : algoliaIndexes.offersPriceAsc)
+    (priceDesc ? algoliaIndexes.offers.priceDesc : algoliaIndexes.offers.priceAsc)
       .search('', { facetFilters, page: 0, hitsPerPage })
       .then((res) => setOffersSearch({ ...res, loading: false, error: null }))
       .catch((err) => {
