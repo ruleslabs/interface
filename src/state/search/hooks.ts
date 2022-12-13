@@ -216,7 +216,7 @@ interface SearchCardsProps {
 
 export function useSearchCards({
   facets,
-  sortingKey = (Object.keys(algoliaIndexes.cards)[0] as CardsSortingKey),
+  sortingKey = Object.keys(algoliaIndexes.cards)[0] as CardsSortingKey,
   search = '',
   skip = false,
 }: SearchCardsProps): Search {
@@ -225,7 +225,10 @@ export function useSearchCards({
   const facetFilters = useFacetFilters(facets)
 
   useEffect(() => {
-    if (skip) return
+    if (skip) {
+      setCardsSearch({ loading: false, error: null })
+      return
+    }
 
     // prettier-ignore
     setCardsSearch({ ...cardsSearch, loading: true, error: null });

@@ -159,7 +159,11 @@ function Cards({ userId, address }: CardsProps) {
   // sort
   const [sortIndex, setSortIndex] = useState(0)
 
-  const cardsSearch = useSearchCards({ facets: { ownerStarknetAddress: address }, sortingKey: sorts[sortIndex].key })
+  const cardsSearch = useSearchCards({
+    facets: { ownerStarknetAddress: address },
+    sortingKey: sorts[sortIndex].key,
+    skip: !address,
+  })
 
   const cardIds = useMemo(
     () =>

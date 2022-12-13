@@ -81,6 +81,7 @@ interface TransactionRowProps extends React.HTMLAttributes<HTMLDivElement> {
   innerRef?: (node: any) => void
   hash: string
   address: string
+  publicKey: string
   fromAddress: string
   status: string
   code?: string
@@ -108,6 +109,7 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
   innerRef,
   hash,
   address,
+  publicKey,
   fromAddress,
   status,
   code,
@@ -181,7 +183,7 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
     <StyledTransactionRow offchain={status === 'RECEIVED' || status === 'REJECTED'} {...props}>
       <Column gap={8} ref={innerRef}>
         {events.map((event, index) => (
-          <Event key={index} address={address} $key={event.key} $data={event.data} />
+          <Event key={index} address={address} publicKey={publicKey} $key={event.key} $data={event.data} />
         ))}
 
         {l2ToL1Messages.map((message, index) => (

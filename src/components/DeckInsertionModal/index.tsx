@@ -117,8 +117,7 @@ export default function DeckInsertionModal({ starknetWalletAddress, cardIndex }:
   const cardIds = useMemo(
     () =>
       (cardsHits ?? []).reduce<string[]>((acc, hit: any) => {
-        acc.push(hit.cardId)
-
+        acc.push(hit.objectID)
         return acc
       }, []),
     [cardsHits]

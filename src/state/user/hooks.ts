@@ -24,6 +24,7 @@ const CURRENT_USER_QUERY = gql`
       }
       starknetWallet {
         address
+        publicKey
         signerEscapeTriggeredAt
         needsSignerPublicKeyUpdate
         transactionVersion
@@ -67,6 +68,7 @@ const SEARCH_USER_CONTENT = `
   }
   starknetWallet {
     address
+    publicKey
   }
 `
 

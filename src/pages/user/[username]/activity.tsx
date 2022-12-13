@@ -21,10 +21,11 @@ const StyledSpinner = styled(Spinner)`
 
 interface ExplorerProps {
   address: string
+  publicKey: string
   userId: string
 }
 
-function Explorer({ address, userId }: ExplorerProps) {
+function Explorer({ address, publicKey, userId }: ExplorerProps) {
   const [nextPage, starknetTransactionQuery] = useStarknetTransactionsForAddress(userId, address)
   const starknetTransactions = starknetTransactionQuery.data
 
@@ -57,6 +58,7 @@ function Explorer({ address, userId }: ExplorerProps) {
             innerRef={index + 1 === starknetTransactions.length ? lastTxRef : undefined}
             fromAddress={starknetTransaction.fromAddress}
             address={address}
+            publicKey={publicKey}
             hash={starknetTransaction.hash}
             status={starknetTransaction.status}
             code={starknetTransaction.code}

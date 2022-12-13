@@ -143,7 +143,11 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
           ))}
         </TabBar>
       </StyledSection>
-      {React.cloneElement(children, { userId: user?.id, address: user?.starknetWallet?.address })}
+      {React.cloneElement(children, {
+        userId: user?.id,
+        address: user?.starknetWallet?.address,
+        publicKey: user?.starknetWallet?.publicKey,
+      })}
     </>
   )
 }

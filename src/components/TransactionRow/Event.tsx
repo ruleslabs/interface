@@ -7,7 +7,9 @@ import {
   TransferEvent,
   TransferSingleEvent,
   OfferCreatedEvent,
+  AccountInitializedEvent,
 } from '@rulesorg/sdk-core'
+import { getChecksumAddress } from 'starknet'
 import { t, Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
@@ -293,20 +295,35 @@ function WalletEvent({ eventKey }: WalletEventProps) {
 
 interface EventProps {
   address: string
+  publicKey: string
   $key: string
   $data: string[]
 }
 
-export default function Event({ address, $key, $data }: EventProps) {
-  const [parsedEvent, involvedAddresses] = useMemo(() => parseEvent($key, $data), [$key, $data])
-  if (!parsedEvent) return <WalletEvent eventKey={$key} />
+export default function Event({ address, publicKey, $key, $data }: EventProps) {
+  const [parsedEvents, involvedAddresses] = useMemo(() => {
+    const [parsedEvent, involvedAddresses] = parseEvent($key, $data)
+    if (!parsedEvent) return []
 
-  const parsedEvents = Array.isArray(parsedEvent) ? parsedEvent : [parsedEvent]
+    const parsedEvents = Array.isArray(parsedEvent) ? parsedEvent : [parsedEvent]
 
-  // fix events lack of informations
-  if (parsedEvents[0]?.key === EventKeys.OFFER_CANCELED) {
-    ;(parsedEvents[0] as OfferCreatedEvent).seller = address
-  } else if (!involvedAddresses?.includes(address)) return null
+    // fix events lack of informations
+    if (parsedEvents[0]?.key === EventKeys.OFFER_CANCELED) {
+      ;(parsedEvents[0] as OfferCreatedEvent).seller = address
+      involvedAddresses.push(address)
+    } else if (
+      parsedEvents[0]?.key === EventKeys.ACCOUNT_INITIALIZED &&
+      getChecksumAddress((parsedEvents[0] as AccountInitializedEvent).signerPublicKey).toLowerCase() === publicKey
+    ) {
+      involvedAddresses.push(address)
+    }
+
+    return [parsedEvents, involvedAddresses]
+  }, [$key, $data, publicKey, address])
+
+  if (!parsedEvents) return <WalletEvent eventKey={$key} />
+
+  if (!involvedAddresses?.includes(address)) return null
 
   return (
     <>
@@ -325,6 +342,9 @@ export default function Event({ address, $key, $data }: EventProps) {
           case EventKeys.OFFER_CREATED:
           case EventKeys.OFFER_CANCELED:
             return <OfferCreationAndCancelEvent key={index} parsedEvent={parsedEvent as OfferCreatedEvent} />
+
+          case EventKeys.ACCOUNT_INITIALIZED:
+            return <WalletEvent key={index} eventKey={$key} />
         }
 
         return null
