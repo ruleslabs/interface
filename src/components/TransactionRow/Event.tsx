@@ -303,7 +303,7 @@ interface EventProps {
 export default function Event({ address, publicKey, $key, $data }: EventProps) {
   const [parsedEvents, involvedAddresses] = useMemo(() => {
     const [parsedEvent, involvedAddresses] = parseEvent($key, $data)
-    if (!parsedEvent) return []
+    if (!parsedEvent || !involvedAddresses) return []
 
     const parsedEvents = Array.isArray(parsedEvent) ? parsedEvent : [parsedEvent]
 
@@ -313,7 +313,7 @@ export default function Event({ address, publicKey, $key, $data }: EventProps) {
       involvedAddresses.push(address)
     } else if (
       parsedEvents[0]?.key === EventKeys.ACCOUNT_INITIALIZED &&
-      getChecksumAddress((parsedEvents[0] as AccountInitializedEvent).signerPublicKey).toLowerCase() === publicKey
+      getChecksumAddress((parsedEvents[0] as AccountInitializedEvent).signerPublicKey) === publicKey
     ) {
       involvedAddresses.push(address)
     }

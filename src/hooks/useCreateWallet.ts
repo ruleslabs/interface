@@ -25,7 +25,7 @@ export default function useCreateWallet(): (password: string) => Promise<WalletI
     const encryptedPrivateKey = await encryptWithPassword(password, iv, salt, encodedPrivateKey)
 
     return {
-      starkPub,
+      starkPub: getChecksumAddress(starkPub),
       userKey: { encryptedPrivateKey, salt, iv },
     }
   }, [])
