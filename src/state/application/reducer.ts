@@ -1,9 +1,16 @@
 import { createReducer } from '@reduxjs/toolkit'
 
-import { setOpenModal, updateBlockNumber, updateEthereumBlockNumber, ApplicationModal } from './actions'
+import {
+  setOpenModal,
+  updateEtherPrice,
+  updateBlockNumber,
+  updateEthereumBlockNumber,
+  ApplicationModal,
+} from './actions'
 
 export interface ApplicationState {
   readonly openModal: ApplicationModal | null
+  readonly etherPrice?: number
   readonly blockNumber?: number
   readonly ethereumBlockNumber: { readonly [chainId: number]: number }
 }
@@ -21,6 +28,9 @@ export default createReducer(initialState, (builder) =>
         ...state,
         openModal: modal,
       }
+    })
+    .addCase(updateEtherPrice, (state, { payload: { price } }) => {
+      state.etherPrice = price
     })
     .addCase(updateBlockNumber, (state, { payload: { blockNumber } }) => {
       state.blockNumber = Math.max(state.blockNumber ?? 0, blockNumber)

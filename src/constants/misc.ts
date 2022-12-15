@@ -10,6 +10,7 @@ export const PASSWORD_MIN_LEVENSHTEIN = 4
 export const PASSWORD_MIN_LENGTH = 6
 
 export const BLOCK_POLLING = 10_000 // 10s
+export const ETH_PRICE_POLLING = 60_000 // 60s
 
 export const PACK_OPENING_DURATION = 5_000 // 5s
 export const PACK_OPENING_FLASH_DURATION = 2_000 // 5s

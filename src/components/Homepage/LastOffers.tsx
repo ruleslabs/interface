@@ -244,7 +244,6 @@ export default function LastOffers() {
           ?.map((hit, index) => (
             <MemoizedOfferCard
               key={hit.cardId}
-              innerRef={index + 1 === offersSearch.hits.length ? lastTxRef : undefined}
               cardId={hit.cardId}
               cardModel={cardModelsTable[hit.cardModelId]}
               user={usersTable[hit.sellerStarknetAddress]}
@@ -254,6 +253,8 @@ export default function LastOffers() {
             />
           ))}
       </StyledLastOffers>
+
+      <div ref={lastTxRef} />
 
       <PaginationSpinner loading={isLoading} />
     </>

@@ -3,10 +3,39 @@ import { GetBlockResponse } from 'starknet'
 import { useWeb3React } from '@web3-react/core'
 
 import { useAppDispatch } from '@/state/hooks'
-import { updateBlockNumber, updateEthereumBlockNumber } from './actions'
+import { updateEtherPrice, updateBlockNumber, updateEthereumBlockNumber } from './actions'
 import { useStarknet } from '@/lib/starknet'
 import useDebounce from '@/hooks/useDebounce'
-import { BLOCK_POLLING } from '@/constants/misc'
+import { BLOCK_POLLING, ETH_PRICE_POLLING } from '@/constants/misc'
+
+export function useEtherEURPrice(): number | undefined {
+  const dispatch = useAppDispatch()
+
+  const fetchEthPrice = useCallback(
+    () =>
+      fetch('https://api.coinbase.com/v2/prices/ETH-EUR/spot')
+        .then((res) => res.json())
+        .then((res: any) => {
+          const amount = res?.data?.amount
+
+          dispatch(updateEtherPrice({ price: !!amount ? +amount : undefined }))
+        })
+        .catch((err) => console.error(err)),
+    [dispatch]
+  )
+
+  useEffect(() => {
+    fetchEthPrice()
+
+    const handler = setInterval(() => {
+      fetchEthPrice()
+    }, ETH_PRICE_POLLING)
+
+    return () => {
+      clearInterval(handler)
+    }
+  }, [fetchEthPrice])
+}
 
 function useBlockNumber() {
   const { provider } = useStarknet()
@@ -87,5 +116,6 @@ function useEthereumBlockNumber() {
 export default function Updater(): null {
   useBlockNumber()
   useEthereumBlockNumber()
+  useEtherEURPrice()
   return null
 }

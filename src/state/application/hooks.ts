@@ -9,6 +9,10 @@ export function useBlockNumber(): number | undefined {
   return useAppSelector((state: AppState) => state.application.blockNumber)
 }
 
+export function useEtherPrice(): number | undefined {
+  return useAppSelector((state: AppState) => state.application.etherPrice)
+}
+
 export function useEthereumBlockNumber(): number | undefined {
   const { chainId } = useWeb3React()
   return useAppSelector((state: AppState) => state.application.ethereumBlockNumber[chainId ?? -1])

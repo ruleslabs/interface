@@ -17,6 +17,7 @@ export enum ApplicationModal {
 }
 
 export const setOpenModal = createAction<{ modal: ApplicationModal | null }>('application/setOpenModal')
+export const updateEtherPrice = createAction<{ price: number }>('application/updateEtherPrice')
 export const updateBlockNumber = createAction<{ blockNumber: number }>('application/updateBlockNumber')
 export const updateEthereumBlockNumber = createAction<{ chainId: number; blockNumber: number }>(
   'application/updateEthereumBlockNumber'
