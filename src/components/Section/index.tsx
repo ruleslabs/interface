@@ -4,7 +4,6 @@ type Size = 'sm' | 'md' | 'max'
 
 const BaseSection = styled.div<{ marginBottom?: string; marginTop?: string }>`
   margin: ${({ marginTop, marginBottom }) => `${marginTop || '0'} auto ${marginBottom || '36px'}`};
-  box-sizing: content-box;
 `
 
 const Section = styled(BaseSection)<{ size?: Size }>`

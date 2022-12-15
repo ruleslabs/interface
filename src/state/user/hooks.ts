@@ -19,9 +19,6 @@ const CURRENT_USER_QUERY = gql`
         amount
         l1Recipient
       }
-      nextPackToBuy {
-        slug
-      }
       starknetWallet {
         address
         publicKey

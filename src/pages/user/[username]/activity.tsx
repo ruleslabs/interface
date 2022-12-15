@@ -1,4 +1,3 @@
-import { useRef, useCallback } from 'react'
 import styled from 'styled-components'
 
 import DefaultLayout from '@/components/Layout'
@@ -8,6 +7,7 @@ import Section from '@/components/Section'
 import Column from '@/components/Column'
 import TransactionRow from '@/components/TransactionRow'
 import Spinner from '@/components/Spinner'
+import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 
 // css
 
@@ -34,20 +34,7 @@ function Explorer({ address, publicKey, userId }: ExplorerProps) {
   const isLoading = starknetTransactionQuery.loading
 
   // infinite scroll
-  const observer = useRef<IntersectionObserver | null>(null)
-  const lastTxRef = useCallback(
-    (node: any) => {
-      if (!nextPage) return
-      if (isLoading) return
-      if (observer.current) observer.current.disconnect()
-
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) nextPage()
-      })
-      if (node) observer.current.observe(node)
-    },
-    [isLoading, nextPage]
-  )
+  const lastTxRef = useInfiniteScroll(nextPage, isLoading)
 
   return (
     <Section>

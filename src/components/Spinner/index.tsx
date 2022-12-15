@@ -66,3 +66,18 @@ const StyledLargeSpinner = styled.img`
 export const LargeSpinner = (props: React.HTMLAttributes<HTMLImageElement>) => (
   <StyledLargeSpinner src="/assets/spinner.png" {...props} />
 )
+
+// PAGINATION SPINNER
+
+const StyledPaginationSpinner = styled(Spinner)`
+  width: 32px;
+  margin: 16px auto;
+  display: block;
+`
+
+interface PaginationSpinnerProps extends React.HTMLAttributes<HTMLImageElement> {
+  loading: boolean
+}
+
+export const PaginationSpinner = ({ loading, ...props }: PaginationSpinnerProps) =>
+  loading ? <StyledPaginationSpinner /> : null

@@ -118,7 +118,7 @@ export default function CardBreakout() {
   const onSuccessfulOfferAcceptance = useCallback(() => setPendingStatus(CardPendingStatus.IN_OFFER_ACCEPTANCE), [])
 
   // card price
-  const offerSearch = useSearchOffers({ facets: { cardId: card?.id }, skip: !card?.id })
+  const offerSearch = useSearchOffers({ facets: { cardId: card?.id }, skip: !card?.id, hitsPerPage: 1 })
   const cardPrice = useMemo(
     () => (offerSearch?.hits?.[0]?.price ? `0x${offerSearch?.hits?.[0]?.price}` : null),
     [offerSearch?.hits?.[0]?.price]

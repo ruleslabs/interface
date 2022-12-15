@@ -66,7 +66,10 @@ export default function OffersSelector({
   // exclude accepted offers
   const dashedObjectIds = useMemo(() => acceptedOfferIds.map((offerId: string) => `-${offerId}`), [acceptedOfferIds])
 
-  const offersSearch = useSearchOffers({ facets: { cardModelId, objectID: dashedObjectIds }, priceDesc: sortDesc })
+  const offersSearch = useSearchOffers({
+    facets: { cardModelId, objectID: dashedObjectIds },
+    sortingKey: sortDesc ? 'priceDesc' : 'priceAsc',
+  })
 
   useEffect(() => {
     setUserIds(

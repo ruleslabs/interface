@@ -109,7 +109,7 @@ export default function CardModelSales({ slug, cardModelId, lowestAsk, averageSa
           </Link>
 
           <CardsOnSaleCount textAlign="center">
-            <Plural value={offersSearch?.nbHits} _1="{0} card on sale" other="{0} cards on sale" />
+            <Plural value={offersSearch.nbHits} _1="{0} card on sale" other="{0} cards on sale" />
           </CardsOnSaleCount>
         </Column>
       ) : (

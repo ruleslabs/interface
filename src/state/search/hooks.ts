@@ -122,11 +122,13 @@ const algoliaIndexes = {
   offers: {
     priceDesc: client.initIndex('offers-price-desc'),
     priceAsc: client.initIndex('offers-price-asc'),
+    txIndexDesc: client.initIndex('offers-tx-index-desc'),
   },
   users: client.initIndex('users'),
 }
 
 export type CardsSortingKey = keyof typeof algoliaIndexes.cards
+export type OffersSortingKey = keyof typeof algoliaIndexes.offers
 
 export const TransfersSort = {
   dateDesc: {
@@ -139,12 +141,15 @@ export const TransfersSort = {
   },
 }
 
-interface Search {
+interface AlgoliaSearch {
+  nextPage?: () => void
   hits?: any[]
   nbHits?: number
   loading: boolean
   error: string | null
 }
+
+type ApolloSearch = [(() => void) | null, { data: any[]; loading: boolean; error: any }]
 
 function useFacetFilters(facets: any) {
   return useMemo(
@@ -235,7 +240,7 @@ export function useSearchCards({
 
     // prettier-ignore
     algoliaIndexes.cards[sortingKey]
-      ?.search(search, { facetFilters, page: 0, hitsPerPage: 256 }) // TODO pagination bruh
+      .search(search, { facetFilters, page: 0, hitsPerPage: 256 }) // TODO pagination bruh
       .then((res) => setCardsSearch({ hits: res.hits, loading: false, error: null }))
       .catch((err) => {
         setCardsSearch({ loading: false, error: err })
@@ -247,47 +252,59 @@ export function useSearchCards({
   return cardsSearch
 }
 
-interface SearchOffersFacets {
-  cardModelId?: string
-  cardId?: string
-  objectID?: string[]
-}
-
 interface SearchOffersProps {
-  facets: SearchOffersFacets
+  facets: {
+    cardModelId?: string
+    cardId?: string
+    objectID?: string[]
+  }
   priceDesc?: boolean
   skip?: boolean
   hitsPerPage?: number
+  onPageFetch?: (hits: any[]) => void
 }
 
 export function useSearchOffers({
-  facets,
-  priceDesc = true,
+  facets = {},
+  sortingKey = Object.keys(algoliaIndexes.offers)[0] as OffersSortingKey,
   skip = false,
-  hitsPerPage = 128,
-}: SearchOffersProps): Search {
-  const [offersSearch, setOffersSearch] = useState<Search>({ loading: true, error: null })
+  hitsPerPage = 32,
+  onPageFetch,
+}: SearchOffersProps): AlgoliaSearch {
+  const [offersSearch, setOffersSearch] = useState<AlgoliaSearch>({ loading: true, error: null })
+  const [nextPageNumber, setNextPageNumber] = useState<number | null>(0)
 
   const facetFilters = useFacetFilters({ ...facets, available: '-false' })
 
-  useEffect(() => {
-    if (skip) return
+  const getOffers = useCallback(() => {
+    if (nextPageNumber === null) return
 
-    // prettier-ignore
-    setOffersSearch({ ...offersSearch, loading: true, error: null });
-
-    // prettier-ignore
-    (priceDesc ? algoliaIndexes.offers.priceDesc : algoliaIndexes.offers.priceAsc)
-      .search('', { facetFilters, page: 0, hitsPerPage })
-      .then((res) => setOffersSearch({ ...res, loading: false, error: null }))
+    algoliaIndexes.offers[sortingKey]
+      .search('', { facetFilters, page: nextPageNumber, hitsPerPage })
+      .then((res) => {
+        setOffersSearch({
+          hits: (offersSearch.hits ?? []).concat(res.hits),
+          nbHits: res.nbHits,
+          loading: false,
+          error: null,
+        })
+        setNextPageNumber(res.page + 1 < res.nbPages ? res.page + 1 : null)
+        if (onPageFetch) onPageFetch(res.hits)
+      })
       .catch((err) => {
         setOffersSearch({ loading: false, error: err })
         console.error(err)
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [facetFilters, setOffersSearch, priceDesc, skip, hitsPerPage])
+  }, [nextPageNumber, facetFilters, hitsPerPage, offersSearch.hits])
 
-  return offersSearch
+  useEffect(() => {
+    if (nextPageNumber === 0 && !skip) getOffers()
+  }, [skip, nextPageNumber])
+
+  return {
+    nextPage: nextPageNumber === null ? null : getOffers,
+    ...offersSearch,
+  }
 }
 
 interface SearchUsersFacets {
@@ -328,10 +345,7 @@ export function useSearchedUsers() {
   return { searchedUsers: orderedSearchedUsers, loading, error }
 }
 
-export function useStarknetTransactionsForAddress(
-  userId: string,
-  address?: string
-): [(() => void) | null, { data: any[]; loading: boolean; error: any }] {
+export function useStarknetTransactionsForAddress(userId: string, address?: string): ApolloSearch {
   // pagination cursor and page
   const [endCursor, setEndCursor] = useState<string | null>(null)
   const [hasNextPage, setHasNextPage] = useState(false)
