@@ -283,7 +283,7 @@ export function useSearchOffers({
       .search('', { facetFilters, page: nextPageNumber, hitsPerPage })
       .then((res) => {
         setOffersSearch({
-          hits: (offersSearch.hits ?? []).concat(res.hits),
+          hits: onPageFetch ? [] : (offersSearch.hits ?? []).concat(res.hits),
           nbHits: res.nbHits,
           loading: false,
           error: null,

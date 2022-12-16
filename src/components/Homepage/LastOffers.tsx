@@ -75,6 +75,7 @@ const AvatarImage = styled.img`
   border-radius: 50%;
   width: 46px;
   height: 46px;
+  display: block;
 `
 
 interface MemoizedOfferCardProps {
@@ -174,7 +175,7 @@ const MemoizedOfferCard = React.memo(function OfferCards({
           </TYPE.body>
 
           <ProfileWrapper>
-            <Column alignItems="end">
+            <Column alignItems="end" gap={2}>
               <Link href={`/user/${user.slug}`}>
                 <TYPE.body clickable>{user.username}</TYPE.body>
               </Link>
@@ -182,7 +183,9 @@ const MemoizedOfferCard = React.memo(function OfferCards({
               <TYPE.body color="text2">{offerAge}</TYPE.body>
             </Column>
 
-            <AvatarImage src={user.profile.pictureUrl} />
+            <Link href={`/user/${user.slug}`}>
+              <AvatarImage src={user.profile.pictureUrl} />
+            </Link>
           </ProfileWrapper>
         </InfosWrapper>
       </Row>
@@ -192,6 +195,10 @@ const MemoizedOfferCard = React.memo(function OfferCards({
 MemoizedOfferCardPropsEqualityCheck)
 
 export default function LastOffers() {
+  // hits
+  const [offersHits, setOfferHits] = useState<any[]>([])
+  const [pendingHits, setPendingHits] = useState<any[]>([])
+
   // tables
   const [usersTable, setUsersTable] = useState<{ [key: string]: any }>({})
   const [cardModelsTable, setCardModelsTable] = useState<{ [key: string]: any }>({})
@@ -214,8 +221,10 @@ export default function LastOffers() {
           return acc
         }, {}),
       })
+
+      setOfferHits(offersHits.concat(pendingHits))
     },
-    [Object.keys(usersTable).length, Object.keys(cardModelsTable).length]
+    [Object.keys(usersTable).length, Object.keys(cardModelsTable).length, offersHits.length, pendingHits.length]
   )
   const [queryOffersData, offersQuery] = useLazyQuery(OFFERS_QUERY, { onCompleted: onOffersQueryCompleted })
 
@@ -227,6 +236,7 @@ export default function LastOffers() {
         starknetAddresses: hits.map((hit) => hit.sellerStarknetAddress),
       },
     })
+    setPendingHits(hits)
   })
   const offersSearch = useSearchOffers({ sortingKey: 'txIndexDesc', onPageFetch })
 
@@ -239,11 +249,12 @@ export default function LastOffers() {
   return (
     <>
       <StyledLastOffers>
-        {offersSearch.hits
-          ?.filter((hit) => cardModelsTable[hit.cardModelId] && usersTable[hit.sellerStarknetAddress])
-          ?.map((hit, index) => (
+        {offersHits
+          .filter((hit) => cardModelsTable[hit.cardModelId] && usersTable[hit.sellerStarknetAddress])
+          .map((hit, index) => (
             <MemoizedOfferCard
               key={hit.cardId}
+              innerRef={index + 1 === offersHits.length ? lastTxRef : undefined}
               cardId={hit.cardId}
               cardModel={cardModelsTable[hit.cardModelId]}
               user={usersTable[hit.sellerStarknetAddress]}
@@ -253,8 +264,6 @@ export default function LastOffers() {
             />
           ))}
       </StyledLastOffers>
-
-      <div ref={lastTxRef} />
 
       <PaginationSpinner loading={isLoading} />
     </>
