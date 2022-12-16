@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 const Row = styled.div<{
   gap?: number
-  justify?: 'stretch' | 'center' | 'start' | 'end' | 'flex-start' | 'flex-end' | 'space-between'
+  justify?: 'stretch' | 'center' | 'start' | 'end' | 'flex-start' | 'flex-end' | 'space-between' | 'space-around'
   alignItems?: 'center' | 'baseline' | 'start' | 'end' | 'flex-start' | 'flex-end' | 'normal'
   switchDirection?: string
 }>`

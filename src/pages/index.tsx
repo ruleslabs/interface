@@ -11,18 +11,22 @@ import HOMEPAGE from '@/components/Homepage'
 const StyledHome = styled(Section)`
   width: 100%;
   display: flex;
-  gap: 64px;
+  gap: 32px;
   margin-top: 64px;
 `
 
 const AsideColumn = styled(Column)`
-  min-width: 275px;
+  min-width: 290px;
   gap: 32px;
   flex: 0;
 `
 
 const MainColumn = styled(Column)`
   flex: 1;
+`
+
+const StyledCard = styled(Card)`
+  padding: 20px;
 `
 
 interface ArticleProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -43,27 +47,27 @@ export default function Home() {
     <StyledHome>
       <AsideColumn>
         <Article title={t`Live`}>
-          <Card>
+          <StyledCard>
             <HOMEPAGE.Live />
-          </Card>
+          </StyledCard>
         </Article>
 
         <Article title={t`Hall of fame`}>
-          <Card>
-            <HOMEPAGE.Live />
-          </Card>
+          <StyledCard>
+            <HOMEPAGE.HallOfFame />
+          </StyledCard>
         </Article>
 
         <Article title={t`Artists fund`}>
-          <Card>
-            <HOMEPAGE.Live />
-          </Card>
+          <StyledCard>
+            <HOMEPAGE.ArtistsFund />
+          </StyledCard>
         </Article>
 
         <Article title={t`Community creations`}>
-          <Card>
-            <HOMEPAGE.Live />
-          </Card>
+          <StyledCard>
+            <HOMEPAGE.CommunityCreations />
+          </StyledCard>
         </Article>
       </AsideColumn>
 
