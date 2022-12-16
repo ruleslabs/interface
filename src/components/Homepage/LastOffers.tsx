@@ -229,7 +229,7 @@ export default function LastOffers() {
   const [queryOffersData, offersQuery] = useLazyQuery(OFFERS_QUERY, { onCompleted: onOffersQueryCompleted })
 
   // search offers
-  const onPageFetch = useCallback((hits: any) => {
+  const onPageFetched = useCallback((hits: any) => {
     queryOffersData({
       variables: {
         cardModelIds: hits.map((hit) => hit.cardModelId),
@@ -238,7 +238,7 @@ export default function LastOffers() {
     })
     setPendingHits(hits)
   })
-  const offersSearch = useSearchOffers({ sortingKey: 'txIndexDesc', onPageFetch })
+  const offersSearch = useSearchOffers({ sortingKey: 'txIndexDesc', onPageFetched })
 
   // loading
   const isLoading = offersSearch.loading || offersQuery.loading

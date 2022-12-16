@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState, useEffect } from 'react'
 import { useQuery, useLazyQuery, gql } from '@apollo/client'
 import algoliasearch from 'algoliasearch'
 
+import { NULL_PRICE } from '@/constants/misc'
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
 import {
   updateMarketplaceScarcityFilter,
@@ -107,7 +108,7 @@ const client = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_ID ?? '', process.e
 const algoliaIndexes = {
   transfers: {
     priceDesc: client.initIndex('transfers-price-desc'),
-    dateDesc: client.initIndex('transfers-date-desc'),
+    txIndexDesc: client.initIndex('transfers-tx-index-desc'),
   },
   cards: {
     txIndexDesc: client.initIndex('cards-tx-index-desc'),
@@ -127,19 +128,9 @@ const algoliaIndexes = {
   users: client.initIndex('users'),
 }
 
+export type TransfersSortingKey = keyof typeof algoliaIndexes.transfers
 export type CardsSortingKey = keyof typeof algoliaIndexes.cards
 export type OffersSortingKey = keyof typeof algoliaIndexes.offers
-
-export const TransfersSort = {
-  dateDesc: {
-    index: algoliaIndexes.transfers.dateDesc,
-    displayName: 'Last sales',
-  },
-  priceDesc: {
-    index: algoliaIndexes.transfers.priceDesc,
-    displayName: 'Highest sales',
-  },
-}
 
 interface AlgoliaSearch {
   nextPage?: () => void
@@ -173,41 +164,104 @@ function useFacetFilters(facets: any) {
 
 // ALGOLIA SEARCHES
 
-interface SearchTransfersFacets {
-  cardModelId?: string
-  serialNumber?: number
+// TRANSFERS
+
+interface AlgoliaSearchProps {
+  search?: string
+  facets: any
+  algoliaIndex: any
+  hitsPerPage: number
+  onPageFetched?: () => void
+  skip: boolean
+}
+
+function useAlgoliaSearch({
+  search = '',
+  facets = {},
+  algoliaIndex,
+  hitsPerPage,
+  onPageFetched,
+  skip,
+}: AlgoliaSearchProps) {
+  const [searchResult, setSearchResult] = useState<AlgoliaSearch>({ loading: true, error: null })
+  const [nextPageNumber, setNextPageNumber] = useState<number | null>(0)
+
+  const facetFilters = useFacetFilters({ ...facets })
+
+  const runSearch = useCallback(() => {
+    if (nextPageNumber === null) return
+
+    setSearchResult({ ...searchResult, loading: true, error: null })
+
+    algoliaIndex
+      .search(search, { facetFilters, page: nextPageNumber, hitsPerPage })
+      .then((res) => {
+        setSearchResult({
+          hits: onPageFetched ? [] : (searchResult.hits ?? []).concat(res.hits),
+          nbHits: res.nbHits,
+          loading: false,
+          error: null,
+        })
+        setNextPageNumber(res.page + 1 < res.nbPages ? res.page + 1 : null)
+
+        if (onPageFetched) onPageFetched(res.hits)
+      })
+      .catch((err) => {
+        setSearchResult({ loading: false, error: err })
+        console.error(err)
+      })
+  }, [algoliaIndex, nextPageNumber, facetFilters, hitsPerPage, searchResult.hits])
+
+  useEffect(() => {
+    setNextPageNumber(0)
+    setSearchResult({ loading: true, error: null })
+  }, [algoliaIndex])
+
+  useEffect(() => {
+    if (nextPageNumber === 0 && !skip) runSearch()
+  }, [skip, nextPageNumber])
+
+  return {
+    nextPage: nextPageNumber === null ? null : runSearch,
+    ...searchResult,
+  }
 }
 
 interface SearchTransfersProps {
-  facets: SearchTransfersFacets
-  sortKey?: keyof typeof TransfersSort
+  facets: {
+    cardModelId?: string
+    serialNumber?: number
+    fromStarknetAddress?: string
+  }
+  sortingKey?: TransfersSortingKey
   onlySales?: boolean
+  skip?: boolean
+  onPageFetched?: (hits: any[]) => void
 }
 
 export function useSearchTransfers({
-  facets,
-  sortKey = Object.keys(TransfersSort)[0] as keyof typeof TransfersSort,
+  facets = {},
+  sortingKey = Object.keys(algoliaIndexes.transfers)[0] as TransfersSortingKey,
   onlySales = false,
-}: SearchTransfersProps): Search {
-  const [transfersSearch, setTransfersSearch] = useState<Search>({ loading: true, error: null })
-
-  const facetFilters = useFacetFilters({ ...facets, is_sale: onlySales ? 'true' : undefined })
-
-  useEffect(() => {
-    setTransfersSearch({ ...transfersSearch, loading: true, error: null })
-
-    TransfersSort[sortKey].index
-      .search('', { facetFilters, page: 0, hitsPerPage: 32 })
-      .then((res) => setTransfersSearch({ hits: res.hits, loading: false, error: null }))
-      .catch((err) => {
-        setTransfersSearch({ loading: false, error: err })
-        console.error(err)
-      })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [facetFilters, setTransfersSearch, sortKey])
-
-  return transfersSearch
+  noMinting = false,
+  hitsPerPage = 32,
+  onPageFetched,
+  skip = false,
+}: SearchTransfersProps): AlgoliaSearch {
+  return useAlgoliaSearch({
+    facets: {
+      ...facets,
+      price: onlySales ? `-${NULL_PRICE}` : facets.price,
+      fromStarknetAddress: noMinting ? '-0x0' : facets.fromStarknetAddress,
+    },
+    algoliaIndex: algoliaIndexes.transfers[sortingKey],
+    hitsPerPage,
+    onPageFetched,
+    skip,
+  })
 }
+
+// CARDS
 
 interface SearchCardsProps {
   facets: {
@@ -247,10 +301,12 @@ export function useSearchCards({
         console.error(err)
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [facetFilters, setCardsSearch, sortingKey, search, skip])
+  }, [facetFilters, sortingKey, search, skip])
 
   return cardsSearch
 }
+
+// OFFERS
 
 interface SearchOffersProps {
   facets: {
@@ -261,7 +317,7 @@ interface SearchOffersProps {
   priceDesc?: boolean
   skip?: boolean
   hitsPerPage?: number
-  onPageFetch?: (hits: any[]) => void
+  onPageFetched?: (hits: any[]) => void
 }
 
 export function useSearchOffers({
@@ -269,54 +325,30 @@ export function useSearchOffers({
   sortingKey = Object.keys(algoliaIndexes.offers)[0] as OffersSortingKey,
   skip = false,
   hitsPerPage = 32,
-  onPageFetch,
+  onPageFetched,
 }: SearchOffersProps): AlgoliaSearch {
-  const [offersSearch, setOffersSearch] = useState<AlgoliaSearch>({ loading: true, error: null })
-  const [nextPageNumber, setNextPageNumber] = useState<number | null>(0)
-
-  const facetFilters = useFacetFilters({ ...facets, available: '-false' })
-
-  const getOffers = useCallback(() => {
-    if (nextPageNumber === null) return
-
-    algoliaIndexes.offers[sortingKey]
-      .search('', { facetFilters, page: nextPageNumber, hitsPerPage })
-      .then((res) => {
-        setOffersSearch({
-          hits: onPageFetch ? [] : (offersSearch.hits ?? []).concat(res.hits),
-          nbHits: res.nbHits,
-          loading: false,
-          error: null,
-        })
-        setNextPageNumber(res.page + 1 < res.nbPages ? res.page + 1 : null)
-        if (onPageFetch) onPageFetch(res.hits)
-      })
-      .catch((err) => {
-        setOffersSearch({ loading: false, error: err })
-        console.error(err)
-      })
-  }, [nextPageNumber, facetFilters, hitsPerPage, offersSearch.hits])
-
-  useEffect(() => {
-    if (nextPageNumber === 0 && !skip) getOffers()
-  }, [skip, nextPageNumber])
-
-  return {
-    nextPage: nextPageNumber === null ? null : getOffers,
-    ...offersSearch,
-  }
+  return useAlgoliaSearch({
+    facets: {
+      ...facets,
+      available: '-false',
+    },
+    algoliaIndex: algoliaIndexes.offers[sortingKey],
+    hitsPerPage,
+    onPageFetched,
+    skip,
+  })
 }
 
-interface SearchUsersFacets {
-  username?: string
-}
+// USERS
 
 interface SearchUsersProps {
   search?: string
-  facets: SearchUsersFacets
+  facets?: {
+    username?: string
+  }
 }
 
-export function useSearchUsers({ search = '', facets }: SearchUsersProps) {
+export function useSearchUsers({ search = '', facets = {} }: SearchUsersProps) {
   const [usersSearch, setUsersSearch] = useState<Search>({ loading: true, error: null })
 
   const facetFilters = useFacetFilters(facets)

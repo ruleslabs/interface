@@ -18,6 +18,7 @@ const StyledHome = styled(Section)`
 const AsideColumn = styled(Column)`
   min-width: 275px;
   gap: 32px;
+  flex: 0;
 `
 
 const MainColumn = styled(Column)`

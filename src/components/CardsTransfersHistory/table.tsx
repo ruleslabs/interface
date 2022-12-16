@@ -6,6 +6,7 @@ import { useQuery, gql } from '@apollo/client'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { Trans, t } from '@lingui/macro'
 
+import { NULL_PRICE } from '@/constants/misc'
 import { TYPE } from '@/styles/theme'
 import Table from '@/components/Table'
 import Link from '@/components/Link'
@@ -89,7 +90,7 @@ export default function TransfersTable({ transfers, loading, error, showSerialNu
   const parsedPrices = useMemo(
     () =>
       (transfers ?? []).map((transfer: any) =>
-        transfer.price ? WeiAmount.fromRawAmount(`0x${transfer.price}`) : null
+        transfer.price !== NULL_PRICE ? WeiAmount.fromRawAmount(`0x${transfer.price}`) : null
       ),
     [transfers]
   )

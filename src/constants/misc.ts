@@ -27,3 +27,5 @@ export const LOW_SERIAL_MAXS: { [scarcityName: string]: number } = {
   Platinium: 20,
   Halloween: 100,
 }
+
+export const NULL_PRICE = '0000000000000000000000'
