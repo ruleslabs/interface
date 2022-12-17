@@ -129,28 +129,22 @@ export default function DeckInsertionModal({ starknetWalletAddress, cardIndex }:
     setCards(cardsHits ?? [])
   }, [cardsHits, setCards])
 
-  const {
-    data: cardsData,
-    loading: cardsLoading,
-    error: cardsError,
-  } = useQuery(QUERY_CARDS, { variables: { ids: cardIds }, skip: !cardIds.length || !isOpen })
+  const cardsQuery = useQuery(QUERY_CARDS, { variables: { ids: cardIds }, skip: !cardIds.length || !isOpen })
 
   useEffect(() => {
-    if (cardsLoading) return
-
     setCardsTable(
-      ((cardsData?.cardsByIds ?? []) as any[]).reduce<{ [key: string]: any }>((acc, card: any) => {
+      ((cardsQuery.data?.cardsByIds ?? []) as any[]).reduce<{ [key: string]: any }>((acc, card: any) => {
         acc[card.id] = card
         return acc
       }, {})
     )
-  }, [cardsData?.cardsByIds, setCardsTable])
+  }, [!!cardsQuery.data?.cardsByIds])
 
   // window size
   const windowSize = useWindowSize()
 
-  const isValid = !cardsHitsError && !cardsError
-  const isLoading = cardsHitsLoading || cardsLoading
+  const isValid = !cardsHitsError && !cardsQuery.error
+  const isLoading = cardsHitsLoading || cardsQuery.loading
 
   return (
     <Modal onDismiss={onDismiss} isOpen={isOpen}>
@@ -169,7 +163,7 @@ export default function DeckInsertionModal({ starknetWalletAddress, cardIndex }:
 
             <Grid gap={64} maxWidth={256}>
               {cards.map((hit: any, index: number) => {
-                const card = cardsTable[hit.cardId]
+                const card = cardsTable[hit.objectID]
 
                 return (
                   <Column key={`deck-insertion-card-${index}`} gap={12}>
