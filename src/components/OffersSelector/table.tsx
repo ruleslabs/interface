@@ -132,9 +132,9 @@ export default function OffersTable({
                 </Link>
               </td>
               <td>
-                {usersTable[offer.sellerUserId] && (
-                  <Link href={`/user/${usersTable[offer.sellerUserId].slug}`}>
-                    <TYPE.body clickable>{usersTable[offer.sellerUserId].username}</TYPE.body>
+                {usersTable[offer.sellerStarknetAddress] && (
+                  <Link href={`/user/${usersTable[offer.sellerStarknetAddress].slug}`}>
+                    <TYPE.body clickable>{usersTable[offer.sellerStarknetAddress].username}</TYPE.body>
                   </Link>
                 )}
               </td>

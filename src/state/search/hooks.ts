@@ -136,8 +136,23 @@ export type CardsSortingKey = keyof typeof algoliaIndexes.cards
 export type OffersSortingKey = keyof typeof algoliaIndexes.offers
 export type UsersSortingKey = keyof typeof algoliaIndexes.users
 
+<<<<<<< HEAD
 interface AlgoliaSearch {
   nextPage?: () => void
+=======
+export const TransfersSort = {
+  dateDesc: {
+    index: algoliaIndexes.transfers.txIndexDesc,
+    displayName: 'Last sales',
+  },
+  priceDesc: {
+    index: algoliaIndexes.transfers.priceDesc,
+    displayName: 'Highest sales',
+  },
+}
+
+interface Search {
+>>>>>>> d23247b (homepage update minor bugs fixes)
   hits?: any[]
   nbHits?: number
   loading: boolean
@@ -168,7 +183,15 @@ function useFacetFilters(facets: any) {
 
 // ALGOLIA SEARCHES
 
+<<<<<<< HEAD
 // TRANSFERS
+=======
+interface SearchTransfersFacets {
+  cardModelId?: string
+  serialNumber?: number
+  price?: string
+}
+>>>>>>> d23247b (homepage update minor bugs fixes)
 
 interface AlgoliaSearchProps {
   search?: string
@@ -218,10 +241,14 @@ function useAlgoliaSearch({
       })
   }, [algoliaIndex, nextPageNumber, facetFilters, hitsPerPage, searchResult.hits, filters])
 
+<<<<<<< HEAD
   useEffect(() => {
     setNextPageNumber(0)
     setSearchResult({ loading: true, error: null })
   }, [algoliaIndex])
+=======
+  const facetFilters = useFacetFilters({ ...facets, price: onlySales ? `-0000000000000000000000` : facets.price })
+>>>>>>> d23247b (homepage update minor bugs fixes)
 
   useEffect(() => {
     if (nextPageNumber === 0 && !skip) runSearch()

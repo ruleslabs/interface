@@ -9,11 +9,13 @@ import { RowBetween } from '@/components/Row'
 import { useSearchOffers } from '@/state/search/hooks'
 
 const QUERY_OFFERS_USERS = gql`
-  query ($ids: [ID!]!) {
-    usersByIds(ids: $ids) {
-      id
+  query ($starknetAddresses: [String!]!) {
+    usersByStarknetAddresses(starknetAddresses: $starknetAddresses) {
       slug
       username
+      starknetWallet {
+        address
+      }
     }
   }
 `
@@ -55,7 +57,7 @@ export default function OffersSelector({
 }: OffersSelectorProps) {
   const [offers, setOffers] = useState<any[]>([])
   const [usersTable, setUsersTable] = useState<{ [key: string]: string }>({})
-  const [userIds, setUserIds] = useState<string[]>([])
+  const [starknetAddresses, setStarknetAddresses] = useState<string[]>([])
 
   const [sortDesc, setSortDesc] = useState(false)
 
@@ -72,27 +74,27 @@ export default function OffersSelector({
   })
 
   useEffect(() => {
-    setUserIds(
-      ((offersSearch?.hits ?? []) as any[]).reduce<string[]>((acc, hit: any) => {
-        if (hit.sellerUserId) acc.push(hit.sellerUserId)
-        return acc
-      }, [])
-    )
-
+    setStarknetAddresses(((offersSearch?.hits ?? []) as any[]).map((hit: any) => hit.sellerStarknetAddress))
     setOffers(offersSearch?.hits ?? [])
   }, [offersSearch?.hits])
 
   // query
-  const offersUsersQuery = useQuery(QUERY_OFFERS_USERS, { variables: { ids: userIds }, skip: !userIds.length })
+  const offersUsersQuery = useQuery(QUERY_OFFERS_USERS, {
+    variables: { starknetAddresses },
+    skip: !starknetAddresses.length,
+  })
 
   useEffect(() => {
     setUsersTable(
-      ((offersUsersQuery?.data?.usersByIds ?? []) as any[]).reduce<{ [key: string]: string }>((acc, user: any) => {
-        acc[user.id] = user
-        return acc
-      }, {})
+      ((offersUsersQuery?.data?.usersByStarknetAddresses ?? []) as any[]).reduce<{ [key: string]: string }>(
+        (acc, user: any) => {
+          acc[user.starknetWallet.address] = user
+          return acc
+        },
+        {}
+      )
     )
-  }, [offersUsersQuery?.data?.usersByIds])
+  }, [offersUsersQuery?.data?.usersByStarknetAddresses])
 
   return (
     <StyledOffersSelector {...props}>

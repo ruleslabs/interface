@@ -47,6 +47,8 @@ export default function CardModelHistory({ cardModelId, ...props }: CardModelHis
 
   console.log(transfersSearch)
 
+  console.log(transfersSearch)
+
   return (
     <>
       <SortingTitle>
