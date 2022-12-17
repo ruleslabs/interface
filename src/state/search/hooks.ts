@@ -287,7 +287,7 @@ export function useSearchCards({
 }: SearchCardsProps): Search {
   const [cardsSearch, setCardsSearch] = useState<Search>({ loading: true, error: null })
 
-  const facetFilters = useFacetFilters(facets)
+  const facetFilters = useFacetFilters({ ...facets, cardId: undefined, objectID: facets.cardId })
 
   useEffect(() => {
     if (skip) {
