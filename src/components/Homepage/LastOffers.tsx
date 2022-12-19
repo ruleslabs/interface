@@ -78,7 +78,7 @@ const AvatarImage = styled.img`
   display: block;
 `
 
-interface MemoizedOfferCardProps {
+interface OfferCardProps {
   innerRef?: (node: any) => void
   cardId: string
   cardModel: any
@@ -88,7 +88,7 @@ interface MemoizedOfferCardProps {
   timestamp: string
 }
 
-const MemoizedOfferCardPropsEqualityCheck = (prevProps: MemoizedOfferCardProps, nextProps: MemoizedOfferCardProps) =>
+const MemoizedOfferCardPropsEqualityCheck = (prevProps: OfferCardProps, nextProps: OfferCardProps) =>
   prevProps.cardId === nextProps.cardId
 
 const MemoizedOfferCard = React.memo(function OfferCards({
@@ -98,7 +98,7 @@ const MemoizedOfferCard = React.memo(function OfferCards({
   serialNumber,
   price,
   timestamp,
-}: TransactionRowProps) {
+}: OfferCardProps) {
   // parsed price
   const parsedPriced = useMemo(() => WeiAmount.fromRawAmount(`0x${price}`), [price])
 
@@ -229,15 +229,18 @@ export default function LastOffers() {
   const [queryOffersData, offersQuery] = useLazyQuery(OFFERS_QUERY, { onCompleted: onOffersQueryCompleted })
 
   // search offers
-  const onPageFetched = useCallback((hits: any) => {
-    queryOffersData({
-      variables: {
-        cardModelIds: hits.map((hit) => hit.cardModelId),
-        starknetAddresses: hits.map((hit) => hit.sellerStarknetAddress),
-      },
-    })
-    setPendingHits(hits)
-  })
+  const onPageFetched = useCallback(
+    (hits: any) => {
+      queryOffersData({
+        variables: {
+          cardModelIds: hits.map((hit) => hit.cardModelId),
+          starknetAddresses: hits.map((hit) => hit.sellerStarknetAddress),
+        },
+      })
+      setPendingHits(hits)
+    },
+    [queryOffersData]
+  )
   const offersSearch = useSearchOffers({ sortingKey: 'txIndexDesc', onPageFetched })
 
   // loading

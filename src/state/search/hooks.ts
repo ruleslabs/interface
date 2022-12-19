@@ -125,12 +125,16 @@ const algoliaIndexes = {
     priceAsc: client.initIndex('offers-price-asc'),
     txIndexDesc: client.initIndex('offers-tx-index-desc'),
   },
-  users: client.initIndex('users'),
+  users: {
+    certified: client.initIndex('users'),
+    cScore: client.initIndex('users-c-score-desc'),
+  },
 }
 
 export type TransfersSortingKey = keyof typeof algoliaIndexes.transfers
 export type CardsSortingKey = keyof typeof algoliaIndexes.cards
 export type OffersSortingKey = keyof typeof algoliaIndexes.offers
+export type UsersSortingKey = keyof typeof algoliaIndexes.users
 
 interface AlgoliaSearch {
   nextPage?: () => void
@@ -169,6 +173,7 @@ function useFacetFilters(facets: any) {
 interface AlgoliaSearchProps {
   search?: string
   facets: any
+  filters?: string
   algoliaIndex: any
   hitsPerPage: number
   onPageFetched?: () => void
@@ -178,6 +183,7 @@ interface AlgoliaSearchProps {
 function useAlgoliaSearch({
   search = '',
   facets = {},
+  filters,
   algoliaIndex,
   hitsPerPage,
   onPageFetched,
@@ -194,7 +200,7 @@ function useAlgoliaSearch({
     setSearchResult({ ...searchResult, loading: true, error: null })
 
     algoliaIndex
-      .search(search, { facetFilters, page: nextPageNumber, hitsPerPage })
+      .search(search, { facetFilters, filters, page: nextPageNumber, hitsPerPage })
       .then((res) => {
         setSearchResult({
           hits: onPageFetched ? [] : (searchResult.hits ?? []).concat(res.hits),
@@ -210,7 +216,7 @@ function useAlgoliaSearch({
         setSearchResult({ loading: false, error: err })
         console.error(err)
       })
-  }, [algoliaIndex, nextPageNumber, facetFilters, hitsPerPage, searchResult.hits])
+  }, [algoliaIndex, nextPageNumber, facetFilters, hitsPerPage, searchResult.hits, filters])
 
   useEffect(() => {
     setNextPageNumber(0)
@@ -318,6 +324,7 @@ interface SearchOffersProps {
   skip?: boolean
   hitsPerPage?: number
   onPageFetched?: (hits: any[]) => void
+  sortingKey?: OffersSortingKey
 }
 
 export function useSearchOffers({
@@ -343,27 +350,35 @@ export function useSearchOffers({
 
 interface SearchUsersProps {
   search?: string
+  hitsPerPage?: number
+  sortingKey?: UsersSortingKey
+  onPageFetched?: (hits: any[]) => void
+  skip?: boolean
+  filters?: string
   facets?: {
     username?: string
+    userId?: string
   }
 }
 
-export function useSearchUsers({ search = '', facets = {} }: SearchUsersProps) {
-  const [usersSearch, setUsersSearch] = useState<Search>({ loading: true, error: null })
-
-  const facetFilters = useFacetFilters(facets)
-
-  useEffect(() => {
-    algoliaIndexes.users
-      .search(search, { facetFilters, page: 0, hitsPerPage: 10 })
-      .then((res) => setUsersSearch({ hits: res.hits, loading: false, error: null }))
-      .catch((err) => {
-        setUsersSearch({ loading: false, error: err })
-        console.error(err)
-      })
-  }, [facetFilters, search, setUsersSearch])
-
-  return usersSearch
+export function useSearchUsers({
+  search = '',
+  facets = {},
+  filters,
+  sortingKey = Object.keys(algoliaIndexes.users)[0] as UsersSortingKey,
+  hitsPerPage = 10,
+  skip = false,
+  onPageFetched,
+}: SearchUsersProps) {
+  return useAlgoliaSearch({
+    facets: { ...facets, userId: undefined, objectID: facets.userId },
+    filters,
+    search,
+    algoliaIndex: algoliaIndexes.users[sortingKey],
+    hitsPerPage,
+    onPageFetched,
+    skip,
+  })
 }
 
 // Non algolia search

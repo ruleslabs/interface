@@ -138,15 +138,18 @@ export default function Live() {
   const [queryTransferData, transferQuery] = useLazyQuery(TRANSFERS_QUERY, { onCompleted: onTransfersQueryCompleted })
 
   // search transfer
-  const onPageFetched = useCallback((hits: any) => {
-    setTransferHit(hits[0])
-    queryTransferData({
-      variables: {
-        cardModelId: hits[0].cardModelId,
-        starknetAddresses: [hits[0].fromStarknetAddress, hits[0].toStarknetAddress],
-      },
-    })
-  })
+  const onPageFetched = useCallback(
+    (hits: any) => {
+      setTransferHit(hits[0])
+      queryTransferData({
+        variables: {
+          cardModelId: hits[0].cardModelId,
+          starknetAddresses: [hits[0].fromStarknetAddress, hits[0].toStarknetAddress],
+        },
+      })
+    },
+    [queryTransferData]
+  )
   const transferSearch = useSearchTransfers({
     sortingKey: 'txIndexDesc',
     hitsPerPage: 1,
