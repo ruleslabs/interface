@@ -35,7 +35,7 @@ interface ArticleProps extends React.HTMLAttributes<HTMLDivElement> {
 
 function Article({ title, children, ...props }: ArticleProps) {
   return (
-    <Column gap={24} {...props}>
+    <Column gap={12} {...props}>
       <TYPE.large>{title}</TYPE.large>
       {children}
     </Column>
