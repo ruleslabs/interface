@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { useLazyQuery, gql } from '@apollo/client'
 import { parseCScore } from '@rulesorg/sdk-core'
+import { Trans } from '@lingui/macro'
 
 import shortenUsername from '@/utils/shortenUsername'
 import { TYPE } from '@/styles/theme'
@@ -10,6 +11,7 @@ import Link from '@/components/Link'
 import Column from '@/components/Column'
 import { RowCenter } from '@/components/Row'
 import { PaginationSpinner } from '@/components/Spinner'
+import Tooltip from '@/components/Tooltip'
 import { useCurrentUser } from '@/state/user/hooks'
 
 const USERS_QUERY = gql`
@@ -52,6 +54,22 @@ const Rank = styled(RowCenter)<{ rank: number }>`
   * {
     width: 100%;
     text-align: center;
+  }
+`
+
+const StyledTooltip = styled(Tooltip)`
+  width: 212px;
+  right: -234px;
+  bottom: 10px;
+  box-shadow: 0 0 4px #00000020;
+  transform: translateY(50%);
+`
+
+const CScore = styled(TYPE.body)`
+  position: relative;
+
+  &:hover > div {
+    display: unset;
   }
 `
 
@@ -107,9 +125,20 @@ const MemoizedUserRow = React.memo(function UserRow({
         <TYPE.body clickable>{shortUsername}</TYPE.body>
       </Link>
 
-      <TYPE.body color="text2">
-        {parsedCScore.cardModelsPercentage.toFixed(0)}% - {parsedCScore.cardsCount}
-      </TYPE.body>
+      <CScore>
+        <TYPE.body color="text2">
+          {parsedCScore.cardModelsPercentage.toFixed(0)}% - {parsedCScore.cardsCount}
+        </TYPE.body>
+
+        <StyledTooltip direction="left">
+          <TYPE.body>
+            <Trans>
+              Collection {parsedCScore.cardModelsPercentage.toFixed(0)}% complete. This collector has{' '}
+              {parsedCScore.cardsCount} cards.
+            </Trans>
+          </TYPE.body>
+        </StyledTooltip>
+      </CScore>
     </StyledUserRow>
   )
 },
@@ -215,7 +244,9 @@ export default function HallOfFame() {
               cScore={currentUserCScore}
               cardModelsCount={cardModelsCount}
             />
-            <TYPE.body color="text2">Your rank: {currentUserRank}</TYPE.body>
+            <TYPE.body color="text2">
+              <Trans>Your rank: {currentUserRank}</Trans>
+            </TYPE.body>
           </Column>
         </>
       )}

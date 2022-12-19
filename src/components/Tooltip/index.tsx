@@ -1,9 +1,82 @@
+import React from 'react'
 import styled from 'styled-components'
 
 import { TYPE } from '@/styles/theme'
 import Caret from '@/components/Caret'
+import { RowCenter } from '@/components/Row'
 
-const StyledTooltip = styled(TYPE.body)`
+const StyledTooltip = styled.div`
+  background: ${({ theme }) => theme.bg5};
+  position: absolute;
+  display: none;
+  border-radius: 5px;
+  padding: 12px;
+  z-index: 999;
+  box-shadow: 0 0 4px #00000020;
+`
+
+const CaretWrapper = styled(RowCenter)<{ direction: 'top' | 'right' | 'bottom' | 'left' }>`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  ${({ direction }) => {
+    switch (direction) {
+      case 'top':
+        return `
+          top: -12px;
+          bottom: unset;
+        `
+
+      case 'right':
+        return `
+          right: -12px;
+          left: unset;
+        `
+
+      case 'bottom':
+        return `
+          top: unset;
+          bottom: -12px;
+        `
+
+      case 'left':
+        return `
+          right: unset;
+          left: -12px;
+        `
+    }
+  }}
+`
+
+const StyledCaret = styled(Caret)`
+  position: absolute;
+  width: 18px;
+  z-index: 1;
+
+  & * {
+    fill: ${({ theme }) => theme.bg5} !important;
+  }
+`
+
+interface Tooltip extends React.HTMLAttributes<HTMLDivElement> {
+  direction?: string
+}
+
+export default function Tooltip({ children, direction = 'bottom', ...props }: TooltipProps) {
+  return (
+    <StyledTooltip {...props}>
+      {children}
+      <CaretWrapper direction={direction}>
+        <StyledCaret filled direction={direction} />
+      </CaretWrapper>
+    </StyledTooltip>
+  )
+}
+
+const StyledInfoTooltip = styled(TYPE.body)`
   position: relative;
   background: ${({ theme }) => theme.bg3};
   width: 18px;
@@ -35,7 +108,7 @@ const Info = styled(TYPE.body)`
   box-shadow: 0px 4px 4px #00000040;
 `
 
-const StyledCaret = styled(Caret)`
+const StyledInfoCaret = styled(StyledCaret)`
   position: absolute;
   bottom: 22px;
   width: 18px;
@@ -47,15 +120,15 @@ const StyledCaret = styled(Caret)`
   }
 `
 
-interface TooltipProps {
+interface InfoTooltipProps {
   text: string
 }
 
-export default function Tooltip({ text }: TooltipProps) {
+export function InfoTooltip({ text }: InfoTooltipProps) {
   return (
-    <StyledTooltip>
-      <StyledCaret filled direction="bottom" />
+    <StyledInfoTooltip>
+      <StyledInfoCaret filled direction="bottom" />
       <Info>{text}</Info>i
-    </StyledTooltip>
+    </StyledInfoTooltip>
   )
 }
