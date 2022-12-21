@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { TYPE } from '@/styles/theme'
 import Caret from '@/components/Caret'
 import { RowCenter } from '@/components/Row'
+import { CssDirection } from '@/styles/theme'
 
 const StyledTooltip = styled.div`
   background: ${({ theme }) => theme.bg5};
@@ -15,7 +16,7 @@ const StyledTooltip = styled.div`
   box-shadow: 0 0 4px #00000020;
 `
 
-const CaretWrapper = styled(RowCenter)<{ direction: 'top' | 'right' | 'bottom' | 'left' }>`
+const CaretWrapper = styled(RowCenter)<{ direction: CssDirection }>`
   position: absolute;
   top: 0;
   bottom: 0;
@@ -48,6 +49,8 @@ const CaretWrapper = styled(RowCenter)<{ direction: 'top' | 'right' | 'bottom' |
           left: -12px;
         `
     }
+
+    return null
   }}
 `
 
@@ -61,8 +64,8 @@ const StyledCaret = styled(Caret)`
   }
 `
 
-interface Tooltip extends React.HTMLAttributes<HTMLDivElement> {
-  direction?: string
+interface TooltipProps extends React.HTMLAttributes<HTMLDivElement> {
+  direction?: CssDirection
 }
 
 export default function Tooltip({ children, direction = 'bottom', ...props }: TooltipProps) {

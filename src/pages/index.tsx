@@ -9,7 +9,7 @@ import Card from '@/components/Card'
 import HOMEPAGE from '@/components/Homepage'
 import DefaultLayout from '@/components/Layout'
 import { useHomepageTab, useSetHomepageTab } from '@/state/application/hooks'
-import { HomepageTabs } from '@/state/application/actions'
+import { HomepageTabs, HomepageTabKey } from '@/state/application/actions'
 
 const StyledHome = styled(Section)`
   width: 100%;
@@ -165,7 +165,7 @@ function Home() {
         <TabSelector length={Object.keys(HomepageTabs).length}>
           <TabSelectorActiveIndicator activeIndex={Object.keys(HomepageTabs).indexOf(activeHomepageTabKey)} />
 
-          {Object.keys(HomepageTabs).map((tabKey) => (
+          {(Object.keys(HomepageTabs) as HomepageTabKey[]).map((tabKey) => (
             <TabSelectorButton key={tabKey} onClick={() => setActiveHomepageTabKey(tabKey)}>
               <Trans id={HomepageTabs[tabKey]} render={({ translation }) => <>{translation}</>} />
             </TabSelectorButton>

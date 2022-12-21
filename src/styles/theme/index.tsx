@@ -209,3 +209,5 @@ export const TYPE = {
     return <TextWrapper fontWeight={700} fontSize={26} color={'text1'} {...props} />
   },
 }
+
+export type CssDirection = 'left' | 'right' | 'bottom' | 'top'

@@ -8,7 +8,7 @@ import { useStarknet } from '@/lib/starknet'
 import useDebounce from '@/hooks/useDebounce'
 import { BLOCK_POLLING, ETH_PRICE_POLLING } from '@/constants/misc'
 
-export function useEtherEURPrice(): number | undefined {
+export function useEtherEURPrice() {
   const dispatch = useAppDispatch()
 
   const fetchEthPrice = useCallback(

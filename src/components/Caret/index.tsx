@@ -1,12 +1,12 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 
+import { CssDirection } from '@/styles/theme'
+
 import CaretRight from '@/images/caret-right.svg'
 import FilledCaretRight from '@/images/filled-caret-right.svg'
 
-type Direction = 'left' | 'right' | 'bottom' | 'top'
-
-const CaretStyle = css<{ direction: Direction }>`
+const CaretStyle = css<{ direction: CssDirection }>`
   transform: rotate(
     ${({ direction }) =>
       (direction === 'left' && '180deg') ||
@@ -16,16 +16,16 @@ const CaretStyle = css<{ direction: Direction }>`
   );
 `
 
-const StyledCaret = styled(CaretRight)<{ direction: Direction }>`
+const StyledCaret = styled(CaretRight)<{ direction: CssDirection }>`
   ${CaretStyle}
 `
 
-const StyledFilledCaret = styled(FilledCaretRight)<{ direction: Direction }>`
+const StyledFilledCaret = styled(FilledCaretRight)<{ direction: CssDirection }>`
   ${CaretStyle}
 `
 
 interface CaretProps extends React.SVGProps<SVGElement> {
-  direction: Direction
+  direction: CssDirection
   filled?: boolean
 }
 

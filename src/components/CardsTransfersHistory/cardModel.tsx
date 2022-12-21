@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
 import Row from '@/components/Row'
-import { useSearchTransfers } from '@/state/search/hooks'
+import { useSearchTransfers, TransfersSortingKey } from '@/state/search/hooks'
 import TransfersTable from './table'
 
 const SortingTitle = styled(Row)`
@@ -24,7 +24,7 @@ const SortingTitle = styled(Row)`
 
 const sorts: Array<{
   name: string
-  key: CardsSortingKey
+  key: TransfersSortingKey
 }> = [
   {
     name: 'Last sales',
@@ -41,7 +41,7 @@ interface CardModelHistoryProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export default function CardModelHistory({ cardModelId, ...props }: CardModelHistoryProps) {
-  const [sortingKey, setSortingKey] = useState<CardsSortingKey>(sorts[0].key)
+  const [sortingKey, setSortingKey] = useState<TransfersSortingKey>(sorts[0].key)
 
   const transfersSearch = useSearchTransfers({ facets: { cardModelId }, sortingKey, onlySales: true })
 

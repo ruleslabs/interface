@@ -234,7 +234,7 @@ export default function LastOffers() {
     (data: any) => {
       setUsersTable({
         ...usersTable,
-        ...data.usersByStarknetAddresses.reduce<{ [key: string]: any }>((acc, user) => {
+        ...(data.usersByStarknetAddresses as any[]).reduce<{ [key: string]: any }>((acc, user) => {
           acc[user.starknetWallet.address] = user
           return acc
         }, {}),
@@ -242,7 +242,7 @@ export default function LastOffers() {
 
       setCardModelsTable({
         ...cardModelsTable,
-        ...data.cardModelsByIds.reduce<{ [key: string]: any }>((acc, cardModel) => {
+        ...(data.cardModelsByIds as any[]).reduce<{ [key: string]: any }>((acc, cardModel) => {
           acc[cardModel.id] = cardModel
           return acc
         }, {}),
@@ -259,8 +259,8 @@ export default function LastOffers() {
     (hits: any) => {
       queryOffersData({
         variables: {
-          cardModelIds: hits.map((hit) => hit.cardModelId),
-          starknetAddresses: hits.map((hit) => hit.sellerStarknetAddress),
+          cardModelIds: hits.map((hit: any) => hit.cardModelId),
+          starknetAddresses: hits.map((hit: any) => hit.sellerStarknetAddress),
         },
       })
       setPendingHits(hits)
@@ -273,7 +273,7 @@ export default function LastOffers() {
   const isLoading = offersSearch.loading || offersQuery.loading
 
   // infinite scroll
-  const lastTxRef = useInfiniteScroll(offersSearch.nextPage, isLoading)
+  const lastTxRef = useInfiniteScroll({ nextPage: offersSearch.nextPage, loading: isLoading })
 
   return (
     <>

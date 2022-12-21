@@ -45,7 +45,7 @@ const Medal = styled(TYPE.medium)`
   left: 14px;
 `
 
-const Rank = styled(RowCenter)<{ rank: number }>`
+const Rank = styled(RowCenter)`
   background: ${({ theme }) => theme.bg1};
   border-radius: 50%;
   width: 26px;
@@ -160,7 +160,7 @@ export default function HallOfFame() {
     (data: any) => {
       // compute users table
       setUsersTable(
-        data.usersByIds.reduce<{ [key: string]: any }>((acc, user) => {
+        (data.usersByIds as any[]).reduce<{ [key: string]: any }>((acc, user) => {
           acc[user.id] = user
           return acc
         }, {})
@@ -187,7 +187,7 @@ export default function HallOfFame() {
   const onPageFetched = useCallback(
     (hits: any) => {
       setUsersHits(hits)
-      queryUsersData({ variables: { ids: hits.map((hit) => hit.objectID) } })
+      queryUsersData({ variables: { ids: hits.map((hit: any) => hit.objectID) } })
     },
     [queryUsersData]
   )

@@ -26,7 +26,7 @@ interface ExplorerProps {
 }
 
 function Explorer({ address, publicKey, userId }: ExplorerProps) {
-  const [nextPage, starknetTransactionQuery] = useStarknetTransactionsForAddress(userId, address)
+  const starknetTransactionQuery = useStarknetTransactionsForAddress(userId, address)
   const starknetTransactions = starknetTransactionQuery.data
 
   // loading / error
@@ -34,7 +34,7 @@ function Explorer({ address, publicKey, userId }: ExplorerProps) {
   const isLoading = starknetTransactionQuery.loading
 
   // infinite scroll
-  const lastTxRef = useInfiniteScroll(nextPage, isLoading)
+  const lastTxRef = useInfiniteScroll({ nextPage: starknetTransactionQuery.nextPage, loading: isLoading })
 
   return (
     <Section>

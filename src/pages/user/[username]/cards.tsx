@@ -167,7 +167,7 @@ function Cards({ userId, address }: CardsProps) {
 
   const cardIds = useMemo(
     () =>
-      (cardsSearch?.hits ?? []).reduce<string[]>((acc, hit: any) => {
+      ((cardsSearch?.hits ?? []) as any[]).reduce<string[]>((acc, hit: any) => {
         acc.push(hit.objectID)
 
         return acc

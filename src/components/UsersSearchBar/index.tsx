@@ -134,7 +134,7 @@ export default function UsersSearchBar({ onSelect, selfSearchAllowed = true }: U
     (data: any) => {
       // compute users table
       setUsersTable(
-        data.usersByIds.reduce<{ [key: string]: any }>((acc, user) => {
+        (data.usersByIds as any[]).reduce<{ [key: string]: any }>((acc, user) => {
           acc[user.id] = user
           return acc
         }, {})
@@ -157,7 +157,7 @@ export default function UsersSearchBar({ onSelect, selfSearchAllowed = true }: U
   const onPageFetched = useCallback(
     (hits: any) => {
       setUsersHits(hits)
-      queryUsersData({ variables: { ids: hits.map((hit) => hit.objectID) } })
+      queryUsersData({ variables: { ids: hits.map((hit: any) => hit.objectID) } })
     },
     [queryUsersData]
   )

@@ -23,7 +23,7 @@ export const initialState: ApplicationState = {
   openModal: null,
   blockNumber: 1, // set blockNumber to 1 to run the call listeners cause `get_block` is very slow atm
   ethereumBlockNumber: {},
-  homepageTabKey: Object.keys(HomepageTabs)[0],
+  homepageTabKey: Object.keys(HomepageTabs)[0] as HomepageTabKey,
 }
 
 export default createReducer(initialState, (builder) =>

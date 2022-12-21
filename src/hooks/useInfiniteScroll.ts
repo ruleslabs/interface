@@ -1,6 +1,11 @@
 import { useRef, useCallback } from 'react'
 
-export default function useInfiniteScroll(nextPage?: () => void, loading: boolean) {
+interface InfiniteScrollProps {
+  nextPage?: () => void
+  loading: boolean
+}
+
+export default function useInfiniteScroll({ nextPage, loading }: InfiniteScrollProps) {
   const observer = useRef<IntersectionObserver | null>(null)
   const lastTxRef = useCallback(
     (node: any) => {

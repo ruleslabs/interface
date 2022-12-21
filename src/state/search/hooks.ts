@@ -144,7 +144,12 @@ interface AlgoliaSearch {
   error: string | null
 }
 
-type ApolloSearch = [(() => void) | null, { data: any[]; loading: boolean; error: any }]
+interface ApolloSearch {
+  nextPage?: () => void
+  data: any[]
+  loading: boolean
+  error: any
+}
 
 function useFacetFilters(facets: any) {
   return useMemo(
@@ -174,7 +179,7 @@ interface AlgoliaSearchProps {
   filters?: string
   algoliaIndex: any
   hitsPerPage: number
-  onPageFetched?: () => void
+  onPageFetched?: (hits: any[]) => void
   skip: boolean
 }
 
@@ -186,7 +191,7 @@ function useAlgoliaSearch({
   hitsPerPage,
   onPageFetched,
   skip,
-}: AlgoliaSearchProps) {
+}: AlgoliaSearchProps): AlgoliaSearch {
   const [searchResult, setSearchResult] = useState<AlgoliaSearch>({ loading: true, error: null })
   const [nextPageNumber, setNextPageNumber] = useState<number | null>(0)
 
@@ -199,7 +204,7 @@ function useAlgoliaSearch({
 
     algoliaIndex
       .search(search, { facetFilters, filters, page: nextPageNumber, hitsPerPage })
-      .then((res) => {
+      .then((res: any) => {
         setSearchResult({
           hits: onPageFetched ? [] : (searchResult.hits ?? []).concat(res.hits),
           nbHits: res.nbHits,
@@ -210,7 +215,7 @@ function useAlgoliaSearch({
 
         if (onPageFetched) onPageFetched(res.hits)
       })
-      .catch((err) => {
+      .catch((err: string) => {
         setSearchResult({ loading: false, error: err })
         console.error(err)
       })
@@ -226,7 +231,7 @@ function useAlgoliaSearch({
   }, [skip, nextPageNumber])
 
   return {
-    nextPage: nextPageNumber === null ? null : runSearch,
+    nextPage: nextPageNumber === null ? undefined : runSearch,
     ...searchResult,
   }
 }
@@ -234,15 +239,18 @@ function useAlgoliaSearch({
 // TRANSFERS
 
 interface SearchTransfersProps {
-  facets: {
+  facets?: {
     cardModelId?: string
     serialNumber?: number
     fromStarknetAddress?: string
+    price?: string
   }
+  hitsPerPage?: number
   sortingKey?: TransfersSortingKey
   onlySales?: boolean
   skip?: boolean
   onPageFetched?: (hits: any[]) => void
+  noMinting?: boolean
 }
 
 export function useSearchTransfers({
@@ -277,6 +285,7 @@ interface SearchCardsProps {
   sortingKey?: CardsSortingKey
   search?: string
   skip?: boolean
+  hitsPerPage?: number
   onPageFetched?: (hits: any[]) => void
 }
 
@@ -287,7 +296,7 @@ export function useSearchCards({
   hitsPerPage = 256,
   onPageFetched,
   skip = false,
-}: SearchCardsProps): Search {
+}: SearchCardsProps): AlgoliaSearch {
   return useAlgoliaSearch({
     facets: {
       ...facets,
@@ -304,7 +313,7 @@ export function useSearchCards({
 // OFFERS
 
 interface SearchOffersProps {
-  facets: {
+  facets?: {
     cardModelId?: string
     cardId?: string
     objectID?: string[]
@@ -417,5 +426,10 @@ export function useStarknetTransactionsForAddress(userId: string, address?: stri
     nextPage()
   }, [])
 
-  return [hasNextPage ? nextPage : null, { data: starknetTransactions, loading, error }]
+  return {
+    nextPage: hasNextPage ? nextPage : undefined,
+    data: starknetTransactions,
+    loading,
+    error,
+  }
 }

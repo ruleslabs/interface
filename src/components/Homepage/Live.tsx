@@ -207,7 +207,7 @@ export default function Live() {
 
             <AnimatedLongArrow />
 
-            <UserWrapper href={`/user/${toUser.slug}`}>
+            <UserWrapper>
               <Link href={`/user/${toUser.slug}`}>
                 <img src={toUser.profile.pictureUrl} />
               </Link>

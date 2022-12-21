@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core'
 
 import { AppState } from '@/state'
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
-import { setOpenModal, setHomepageTabKey, ApplicationModal } from './actions'
+import { setOpenModal, setHomepageTabKey, ApplicationModal, HomepageTabKey } from './actions'
 
 // BLOCK NUMBER
 
@@ -28,9 +28,9 @@ export function useHomepageTab(): AppState['application']['homepageTabKey'] {
   return useAppSelector((state: AppState) => state.application.homepageTabKey)
 }
 
-export function useSetHomepageTab(): (tabKey: HomepageTab) => void {
+export function useSetHomepageTab(): (tabKey: HomepageTabKey) => void {
   const dispatch = useAppDispatch()
-  return useCallback((tabKey: HomepageTab) => dispatch(setHomepageTabKey({ tabKey })), [dispatch])
+  return useCallback((tabKey: HomepageTabKey) => dispatch(setHomepageTabKey({ tabKey })), [dispatch])
 }
 
 // MODAL
