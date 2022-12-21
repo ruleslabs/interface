@@ -156,7 +156,7 @@ export default function HallOfFame() {
   const [cardModelsCount, setCardModelsCount] = useState(0)
 
   // query offers data
-  const onTransfersQueryCompleted = useCallback(
+  const onUsersQueryCompleted = useCallback(
     (data: any) => {
       // compute users table
       setUsersTable(
@@ -181,7 +181,7 @@ export default function HallOfFame() {
     },
     [usersHits.length]
   )
-  const [queryUsersData, usersQuery] = useLazyQuery(USERS_QUERY, { onCompleted: onTransfersQueryCompleted })
+  const [queryUsersData, usersQuery] = useLazyQuery(USERS_QUERY, { onCompleted: onUsersQueryCompleted })
 
   // top 10 search
   const onPageFetched = useCallback(

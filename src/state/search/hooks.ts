@@ -136,23 +136,8 @@ export type CardsSortingKey = keyof typeof algoliaIndexes.cards
 export type OffersSortingKey = keyof typeof algoliaIndexes.offers
 export type UsersSortingKey = keyof typeof algoliaIndexes.users
 
-<<<<<<< HEAD
 interface AlgoliaSearch {
   nextPage?: () => void
-=======
-export const TransfersSort = {
-  dateDesc: {
-    index: algoliaIndexes.transfers.txIndexDesc,
-    displayName: 'Last sales',
-  },
-  priceDesc: {
-    index: algoliaIndexes.transfers.priceDesc,
-    displayName: 'Highest sales',
-  },
-}
-
-interface Search {
->>>>>>> d23247b (homepage update minor bugs fixes)
   hits?: any[]
   nbHits?: number
   loading: boolean
@@ -182,16 +167,6 @@ function useFacetFilters(facets: any) {
 }
 
 // ALGOLIA SEARCHES
-
-<<<<<<< HEAD
-// TRANSFERS
-=======
-interface SearchTransfersFacets {
-  cardModelId?: string
-  serialNumber?: number
-  price?: string
-}
->>>>>>> d23247b (homepage update minor bugs fixes)
 
 interface AlgoliaSearchProps {
   search?: string
@@ -239,16 +214,12 @@ function useAlgoliaSearch({
         setSearchResult({ loading: false, error: err })
         console.error(err)
       })
-  }, [algoliaIndex, nextPageNumber, facetFilters, hitsPerPage, searchResult.hits, filters])
+  }, [algoliaIndex, nextPageNumber, facetFilters, hitsPerPage, searchResult.hits, filters, search])
 
-<<<<<<< HEAD
   useEffect(() => {
     setNextPageNumber(0)
     setSearchResult({ loading: true, error: null })
-  }, [algoliaIndex])
-=======
-  const facetFilters = useFacetFilters({ ...facets, price: onlySales ? `-0000000000000000000000` : facets.price })
->>>>>>> d23247b (homepage update minor bugs fixes)
+  }, [algoliaIndex, search])
 
   useEffect(() => {
     if (nextPageNumber === 0 && !skip) runSearch()
@@ -259,6 +230,8 @@ function useAlgoliaSearch({
     ...searchResult,
   }
 }
+
+// TRANSFERS
 
 interface SearchTransfersProps {
   facets: {
@@ -297,46 +270,35 @@ export function useSearchTransfers({
 // CARDS
 
 interface SearchCardsProps {
-  facets: {
+  facets?: {
     ownerStarknetAddress?: string
     cardId?: string | string[]
   }
   sortingKey?: CardsSortingKey
   search?: string
   skip?: boolean
+  onPageFetched?: (hits: any[]) => void
 }
 
 export function useSearchCards({
-  facets,
-  sortingKey = Object.keys(algoliaIndexes.cards)[0] as CardsSortingKey,
   search = '',
+  facets = {},
+  sortingKey = Object.keys(algoliaIndexes.cards)[0] as CardsSortingKey,
+  hitsPerPage = 256,
+  onPageFetched,
   skip = false,
 }: SearchCardsProps): Search {
-  const [cardsSearch, setCardsSearch] = useState<Search>({ loading: true, error: null })
-
-  const facetFilters = useFacetFilters({ ...facets, cardId: undefined, objectID: facets.cardId })
-
-  useEffect(() => {
-    if (skip) {
-      setCardsSearch({ loading: false, error: null })
-      return
-    }
-
-    // prettier-ignore
-    setCardsSearch({ ...cardsSearch, loading: true, error: null });
-
-    // prettier-ignore
-    algoliaIndexes.cards[sortingKey]
-      .search(search, { facetFilters, page: 0, hitsPerPage: 256 }) // TODO pagination bruh
-      .then((res) => setCardsSearch({ hits: res.hits, loading: false, error: null }))
-      .catch((err) => {
-        setCardsSearch({ loading: false, error: err })
-        console.error(err)
-      })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [facetFilters, sortingKey, search, skip])
-
-  return cardsSearch
+  return useAlgoliaSearch({
+    facets: {
+      ...facets,
+      cardId: undefined,
+      objectID: facets.cardId,
+    },
+    algoliaIndex: algoliaIndexes.cards[sortingKey],
+    hitsPerPage,
+    onPageFetched,
+    skip,
+  })
 }
 
 // OFFERS

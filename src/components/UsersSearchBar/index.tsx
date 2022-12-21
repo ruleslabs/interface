@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import styled from 'styled-components'
-import { useQuery, gql } from '@apollo/client'
+import { useLazyQuery, gql } from '@apollo/client'
 import { t } from '@lingui/macro'
 
 import { SearchBar } from '@/components/Input'
@@ -11,6 +11,23 @@ import useDebounce from '@/hooks/useDebounce'
 import { TYPE } from '@/styles/theme'
 import { useCurrentUser } from '@/state/user/hooks'
 import Certified from '@/components/Certified'
+
+const USERS_QUERY = gql`
+  query ($ids: [ID!]!) {
+    usersByIds(ids: $ids) {
+      id
+      slug
+      username
+      starknetWallet {
+        address
+      }
+      profile {
+        pictureUrl(derivative: "width=128")
+        certified
+      }
+    }
+  }
+`
 
 const StyledSearchBar = styled(SearchBar)`
   width: 100%;
@@ -73,22 +90,6 @@ const StyledCertified = styled(Certified)`
   left: 47px;
 `
 
-const USERS_BY_IDS_QUERY = gql`
-  query ($ids: [ID!]!) {
-    usersByIds(ids: $ids) {
-      slug
-      username
-      starknetWallet {
-        address
-      }
-      profile {
-        pictureUrl(derivative: "width=128")
-        certified
-      }
-    }
-  }
-`
-
 interface UsersSearchBarProps {
   onSelect(user: any): void
   selfSearchAllowed?: boolean
@@ -103,11 +104,8 @@ export default function UsersSearchBar({ onSelect, selfSearchAllowed = true }: U
   const debouncedSearch = useDebounce(search, 200)
   const onSearchBarInput = useCallback((value) => setSearch(value), [setSearch])
 
-  // search
+  // search focus
   const [isSearchBarFocused, setIsSearchBarFocused] = useState(false)
-  const [searchSuggestedUserIds, setSearchSuggestedUserIds] = useState<string[]>([])
-  const [searchSuggestedUsers, setSearchSuggestedUsers] = useState<any[]>([])
-
   const searchBarWrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -124,32 +122,46 @@ export default function UsersSearchBar({ onSelect, selfSearchAllowed = true }: U
 
   const onSearchBarFocus = useCallback(() => setIsSearchBarFocused(true), [setIsSearchBarFocused])
 
-  // algolia search
+  // hits
+  const [usersHits, setUsersHits] = useState<any[]>([])
+  const [finalUsersHits, setFinalUsersHits] = useState<any[]>([])
+
+  // tables
+  const [usersTable, setUsersTable] = useState<{ [key: string]: any }>({})
+
+  // query offers data
+  const onUsersQueryCompleted = useCallback(
+    (data: any) => {
+      // compute users table
+      setUsersTable(
+        data.usersByIds.reduce<{ [key: string]: any }>((acc, user) => {
+          acc[user.id] = user
+          return acc
+        }, {})
+      )
+
+      // final hits
+      setFinalUsersHits(usersHits)
+    },
+    [usersHits]
+  )
+  const [queryUsersData, usersQuery] = useLazyQuery(USERS_QUERY, { onCompleted: onUsersQueryCompleted })
+
+  // algolia facets
   const facets = useMemo(
     () => ({ username: selfSearchAllowed || !currentUser?.username ? undefined : `-${currentUser.username}` }),
     [selfSearchAllowed, currentUser?.username]
   )
 
-  const {
-    hits: usersHits,
-    loading: usersHitsLoading,
-    error: usersHitsError,
-  } = useSearchUsers({ search: debouncedSearch, facets })
-
-  useEffect(() => {
-    setSearchSuggestedUserIds((usersHits ?? []).map((hit: any) => hit.userId))
-  }, [usersHits, setSearchSuggestedUserIds])
-
-  const {
-    data: usersData,
-    loading: usersLoading,
-    error: usersError,
-  } = useQuery(USERS_BY_IDS_QUERY, { variables: { ids: searchSuggestedUserIds }, skip: !searchSuggestedUserIds.length })
-
-  useEffect(() => {
-    if (usersLoading) return
-    setSearchSuggestedUsers(usersData?.usersByIds ?? [])
-  }, [usersData, usersLoading, setSearchSuggestedUsers])
+  // top 10 search
+  const onPageFetched = useCallback(
+    (hits: any) => {
+      setUsersHits(hits)
+      queryUsersData({ variables: { ids: hits.map((hit) => hit.objectID) } })
+    },
+    [queryUsersData]
+  )
+  const usersSearch = useSearchUsers({ search: debouncedSearch, facets, onPageFetched })
 
   // selection
   const handleSelect = useCallback(
@@ -161,22 +173,27 @@ export default function UsersSearchBar({ onSelect, selfSearchAllowed = true }: U
   )
 
   return (
-    <SearchBarWrapper ref={searchBarWrapperRef} focused={isSearchBarFocused && searchSuggestedUsers?.length > 0}>
+    <SearchBarWrapper ref={searchBarWrapperRef} focused={isSearchBarFocused && usersHits?.length > 0}>
       <StyledSearchBar
         placeholder={t`Look for a collector...`}
         onUserInput={onSearchBarInput}
         onFocus={onSearchBarFocus}
       />
       <SearchResults>
-        {searchSuggestedUsers.map((user) => (
-          <SearchSuggestedUser key={`user-${user.username}`} onClick={() => handleSelect(user)}>
-            {user.profile.certified && <StyledCertified />}
-            <img src={user.profile.pictureUrl} />
-            <RowCenter gap={4}>
-              <TYPE.body>{user.username}</TYPE.body>
-            </RowCenter>
-          </SearchSuggestedUser>
-        ))}
+        {finalUsersHits
+          .filter((hit) => usersTable[hit.objectID])
+          .map((hit) => (
+            <SearchSuggestedUser
+              key={`user-${usersTable[hit.objectID].username}`}
+              onClick={() => handleSelect(usersTable[hit.objectID])}
+            >
+              {usersTable[hit.objectID].profile.certified && <StyledCertified />}
+              <img src={usersTable[hit.objectID].profile.pictureUrl} />
+              <RowCenter gap={4}>
+                <TYPE.body>{usersTable[hit.objectID].username}</TYPE.body>
+              </RowCenter>
+            </SearchSuggestedUser>
+          ))}
       </SearchResults>
     </SearchBarWrapper>
   )
