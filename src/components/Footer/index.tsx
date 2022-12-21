@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
@@ -10,9 +11,6 @@ const StyledFooter = styled.footer`
   height: 80px;
   margin-top: 32px;
   position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
   bottom: -${({ theme }) => theme.size.footerHeight}px;
   left: 0;
   right: 0;
@@ -22,6 +20,7 @@ const FooterWrapper = styled(RowBetween)`
   padding: 0 32px;
   gap: 32px;
   width: 100%;
+  height: 100%;
   align-items: center;
 
   ${({ theme }) => theme.media.medium`
@@ -30,7 +29,8 @@ const FooterWrapper = styled(RowBetween)`
 
   ${({ theme }) => theme.media.small`
     flex-direction: column-reverse;
-    gap: 16px;
+    gap: unset;
+    justify-content: space-around;
   `}
 `
 
@@ -41,7 +41,7 @@ const LegalText = styled(TYPE.subtitle)`
   `}
 `
 
-export default function Footer() {
+export default function Footer({ children }: React.HTMLAttributes<HTMLDivElement>) {
   const separator = ' - '
 
   return (
@@ -68,8 +68,11 @@ export default function Footer() {
             </Link>
           </Trans>
         </LegalText>
+
         <LanguageSelector />
       </FooterWrapper>
+
+      {children}
     </StyledFooter>
   )
 }

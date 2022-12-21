@@ -6,6 +6,7 @@ import { useLazyQuery, gql } from '@apollo/client'
 import { ScarcityName, WeiAmount } from '@rulesorg/sdk-core'
 import moment from 'moment'
 
+import shortenUsername from '@/utils/shortenUsername'
 import { TYPE } from '@/styles/theme'
 import { useSearchOffers } from '@/state/search/hooks'
 import { PaginationSpinner } from '@/components/Spinner'
@@ -54,6 +55,10 @@ const OfferCard = styled(Card)`
   position: relative;
   min-width: 400px;
   flex: 1;
+
+  ${({ theme }) => theme.media.small`
+    min-width: unset;
+  `}
 `
 
 const CardImage = styled.img`
@@ -63,6 +68,20 @@ const CardImage = styled.img`
 
 const InfosWrapper = styled(Column)`
   flex: 1;
+`
+
+const ArtistName = styled(TYPE.large)`
+  ${({ theme }) => theme.media.small`
+    display: none;
+  `}
+`
+
+const ShortArtistName = styled(TYPE.large)`
+  display: none;
+
+  ${({ theme }) => theme.media.small`
+    display: block;
+  `}
 `
 
 const ProfileWrapper = styled(RowCenter)`
@@ -148,6 +167,12 @@ const MemoizedOfferCard = React.memo(function OfferCards({
     return moment(timestamp).locale(locale).fromNow()
   }, [timestamp, locale])
 
+  // shorten username
+  const shortArtistName = useMemo(
+    () => (cardModel?.artist.displayName ? shortenUsername(cardModel?.artist.displayName) : null),
+    [cardModel?.artist.displayName]
+  )
+
   return (
     <OfferCard>
       <Row gap={16} ref={innerRef}>
@@ -157,7 +182,8 @@ const MemoizedOfferCard = React.memo(function OfferCards({
 
         <InfosWrapper gap={12}>
           <Link href={`/card/${cardModel.slug}/${serialNumber}`}>
-            <TYPE.large>{cardModel.artist.displayName}</TYPE.large>
+            <ArtistName>{cardModel.artist.displayName}</ArtistName>
+            <ShortArtistName>{shortArtistName}</ShortArtistName>
           </Link>
 
           <TYPE.body spanColor="text2">

@@ -30,4 +30,4 @@ export const LOW_SERIAL_MAXS: { [scarcityName: string]: number } = {
 
 export const NULL_PRICE = '0000000000000000000000'
 
-export const MAX_SHORT_USERNAME_LENGTH = 12
+export const MAX_SHORT_USERNAME_LENGTH = 14

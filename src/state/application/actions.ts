@@ -16,6 +16,14 @@ export enum ApplicationModal {
   UPGRADE_WALLET,
 }
 
+export const HomepageTabs = {
+  aside: 'Home',
+  'last-offers': 'Last offers',
+}
+
+export type HomepageTabKey = keyof typeof HomepageTabs
+
+export const setHomepageTabKey = createAction<{ tabKey: HomepageTabKey }>('application/setHomepageTabKey')
 export const setOpenModal = createAction<{ modal: ApplicationModal | null }>('application/setOpenModal')
 export const updateEtherPrice = createAction<{ price: number }>('application/updateEtherPrice')
 export const updateBlockNumber = createAction<{ blockNumber: number }>('application/updateBlockNumber')

@@ -1339,3 +1339,39 @@ msgstr "Entre ton mot de passe"
 #: src/components/Maintenance/index.tsx
 msgid "Update in progress..."
 msgstr "Mise à jour en cours..."
+
+#: src/pages/index.tsx
+msgid "Live"
+msgstr "En direct"
+
+#: src/pages/index.tsx
+msgid "Last offers"
+msgstr "Dernières offres"
+
+#: src/pages/index.tsx
+msgid "Hall of fame"
+msgstr "Hall of fame"
+
+#: src/pages/index.tsx
+msgid "Community creations"
+msgstr "Créé par la commu"
+
+#: src/pages/index.tsx
+msgid "Artists fund"
+msgstr "Cagnotte"
+
+#: src/components/Homepage/HallOfFame.tsx
+msgid "Collection {0}% complete. This collector has {1} cards."
+msgstr "Collection complétée à {0}%. Ce collectionneur possède {1} cartes."
+
+#: src/components/Homepage/Live.tsx
+msgid "Card offered"
+msgstr "Carte offerte"
+
+#: src/components/Homepage/ArtistsFund.tsx
+msgid "donated to independent artists"
+msgstr "reversés aux artistes indés"
+
+#: src/components/Homepage/HallOfFame.tsx
+msgid "Your rank: {currentUserRank}"
+msgstr "Ton classement: {currentUserRank}"

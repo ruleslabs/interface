@@ -3,20 +3,37 @@ import { useWeb3React } from '@web3-react/core'
 
 import { AppState } from '@/state'
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
-import { setOpenModal, ApplicationModal } from './actions'
+import { setOpenModal, setHomepageTabKey, ApplicationModal } from './actions'
+
+// BLOCK NUMBER
 
 export function useBlockNumber(): number | undefined {
   return useAppSelector((state: AppState) => state.application.blockNumber)
-}
-
-export function useEtherPrice(): number | undefined {
-  return useAppSelector((state: AppState) => state.application.etherPrice)
 }
 
 export function useEthereumBlockNumber(): number | undefined {
   const { chainId } = useWeb3React()
   return useAppSelector((state: AppState) => state.application.ethereumBlockNumber[chainId ?? -1])
 }
+
+// ETHER
+
+export function useEtherPrice(): number | undefined {
+  return useAppSelector((state: AppState) => state.application.etherPrice)
+}
+
+// HOMEPAGE
+
+export function useHomepageTab(): AppState['application']['homepageTabKey'] {
+  return useAppSelector((state: AppState) => state.application.homepageTabKey)
+}
+
+export function useSetHomepageTab(): (tabKey: HomepageTab) => void {
+  const dispatch = useAppDispatch()
+  return useCallback((tabKey: HomepageTab) => dispatch(setHomepageTabKey({ tabKey })), [dispatch])
+}
+
+// MODAL
 
 export function useModalOpen(modal: ApplicationModal | null): boolean {
   const openModal = useAppSelector((state) => state.application.openModal)
