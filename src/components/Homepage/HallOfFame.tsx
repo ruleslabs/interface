@@ -233,7 +233,7 @@ export default function HallOfFame() {
           />
         ))}
 
-      {!!currentUserRank && currentUser && !!cardModelsCount && (
+      {!!currentUserRank && !!currentUser && !!cardModelsCount && (
         <>
           <div />
           <Column gap={4}>

@@ -173,6 +173,8 @@ function useFacetFilters(facets: any) {
 
 // ALGOLIA SEARCHES
 
+const ALGOLIA_FIRST_PAGE = 0
+
 interface AlgoliaSearchProps {
   search?: string
   facets: any
@@ -192,8 +194,8 @@ function useAlgoliaSearch({
   onPageFetched,
   skip,
 }: AlgoliaSearchProps): AlgoliaSearch {
-  const [searchResult, setSearchResult] = useState<AlgoliaSearch>({ loading: true, error: null })
-  const [nextPageNumber, setNextPageNumber] = useState<number | null>(0)
+  const [searchResult, setSearchResult] = useState<AlgoliaSearch>({ loading: false, error: null })
+  const [nextPageNumber, setNextPageNumber] = useState<number | null>(ALGOLIA_FIRST_PAGE)
 
   const facetFilters = useFacetFilters({ ...facets })
 
@@ -222,12 +224,12 @@ function useAlgoliaSearch({
   }, [algoliaIndex, nextPageNumber, facetFilters, hitsPerPage, searchResult.hits, filters, search])
 
   useEffect(() => {
-    setNextPageNumber(0)
-    setSearchResult({ loading: true, error: null })
+    setNextPageNumber(ALGOLIA_FIRST_PAGE)
+    setSearchResult({ loading: false, error: null })
   }, [algoliaIndex, search])
 
   useEffect(() => {
-    if (nextPageNumber === 0 && !skip) runSearch()
+    if (nextPageNumber === ALGOLIA_FIRST_PAGE && !skip) runSearch()
   }, [skip, nextPageNumber])
 
   return {

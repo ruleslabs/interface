@@ -250,7 +250,7 @@ export default function LastOffers() {
 
       setOfferHits(offersHits.concat(pendingHits))
     },
-    [Object.keys(usersTable).length, Object.keys(cardModelsTable).length, offersHits.length, pendingHits.length]
+    [Object.keys(usersTable).length, Object.keys(cardModelsTable).length, offersHits.length, pendingHits]
   )
   const [queryOffersData, offersQuery] = useLazyQuery(OFFERS_QUERY, { onCompleted: onOffersQueryCompleted })
 
