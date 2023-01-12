@@ -22,16 +22,13 @@ import useWindowSize from '@/hooks/useWindowSize'
 
 import ArrowIcon from '@/images/arrow.svg'
 
-const DesktopVideo = styled.video<{ windowHeight?: number }>`
+const BackgroundVideo = styled.video<{ windowHeight?: number }>`
   position: fixed;
   top: ${({ theme }) => theme.size.headerHeight}px;
   height: ${({ theme, windowHeight = 0 }) => windowHeight - theme.size.headerHeight}px;
   width: 100%;
   object-fit: cover;
   z-index: -1;
-  ${({ theme }) => theme.media.medium`
-    display: none;
-  `}
 `
 
 const LogoutSection = styled(Section)<{ windowHeight?: number }>`
@@ -92,6 +89,10 @@ const ScrollButton = styled(IconButton)`
   & svg {
     transform: rotate(90deg);
   }
+
+  ${({ theme }) => theme.media.small`
+    margin-bottom: 80px;
+  `}
 `
 
 const ParalaxBackground = styled.div<{ windowHeight?: number }>`
@@ -274,7 +275,7 @@ function Home() {
     <>
       {!currentUser && (
         <>
-          <DesktopVideo
+          <BackgroundVideo
             windowHeight={windowSize.height}
             src="https://videos.rules.art/mp4/homepage.mp4"
             playsInline

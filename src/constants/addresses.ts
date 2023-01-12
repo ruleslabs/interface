@@ -21,12 +21,12 @@ export const ETH_ADDRESSES: AddressesMap = {
 }
 
 export const RULES_TOKENS_ADDRESSES: AddressesMap = {
-  [SupportedNetworks.GOERLI]: '0x7fa3f31baeba9ba94778e40c716486280023e89ae296b88d699337da08c682d',
+  [SupportedNetworks.GOERLI]: '0x15d9449ac58c7cfdd9db67acaf99168a97949c424453019439ec49e96b3b571',
   [SupportedNetworks.MAINNET]: '0x046bfa580e4fa55a38eaa7f51a3469f86b336eed59a6136a07b7adcd095b0eb2',
 }
 
 export const MARKETPLACE_ADDRESSES: AddressesMap = {
-  [SupportedNetworks.GOERLI]: '0x16a025e8c1f35f42e841cd8bff56f22ce706173cd044fffafdef5a355335219',
+  [SupportedNetworks.GOERLI]: '0xc56773d8708c7146e127d7c20e7e4321279db15731ebb1c6dbd1b46b5d0f27',
   [SupportedNetworks.MAINNET]: '0x63a4b3b0122cdaa6ba244739add94aed1d31e3330458cda833a8d119f28cbe8',
 }
 
@@ -41,7 +41,7 @@ export const L2_STARKGATE_ADDRESSES: AddressesMap = {
 }
 
 export const PACKS_OPENER_ADDRESSES: AddressesMap = {
-  [SupportedNetworks.GOERLI]: '0x2ab650f7b211fc81e592e2e82310009f30105321c71273f381cf177bda2b4e1',
+  [SupportedNetworks.GOERLI]: '0x740b0f22c11eaf280acb89447d8f0e28a3d0e42f4d9a8b81b5a3fb3f29ea637',
   [SupportedNetworks.MAINNET]: '0x27fb5a7be4707e2b1fe653e7296ad30114596fafdd3fbc3f9b92a0551ff18ec',
 }
 

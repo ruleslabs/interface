@@ -172,7 +172,7 @@ export default function AcceptOfferModal({
 
             <PurchaseBreakdown price={price} />
 
-            {currentUser?.starknetWallet.needsSignerPublicKeyUpdate && (
+            {currentUser?.starknetWallet.isLocked && (
               <ErrorCard>
                 <LockedWallet />
               </ErrorCard>
@@ -190,7 +190,7 @@ export default function AcceptOfferModal({
 
             <PrimaryButton
               onClick={handleConfirmation}
-              disabled={currentUser?.starknetWallet.needsSignerPublicKeyUpdate || !canPayForCard}
+              disabled={currentUser?.starknetWallet.isLocked || !canPayForCard}
               large
             >
               <Trans>Next</Trans>

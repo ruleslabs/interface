@@ -136,10 +136,7 @@ export default function NavModal() {
               ))}
 
               {currentUser ? (
-                <StyledNavButton
-                  onClick={toggleSettings}
-                  alert={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
-                >
+                <StyledNavButton onClick={toggleSettings} alert={currentUser?.starknetWallet.isLocked}>
                   <Trans>Settings</Trans>
                   <Notifiable notifications={neededActions.total} />
                 </StyledNavButton>

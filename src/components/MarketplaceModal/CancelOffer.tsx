@@ -149,17 +149,13 @@ export default function CancelOfferModal({
               </Column>
             </CardBreakdown>
 
-            {currentUser?.starknetWallet.needsSignerPublicKeyUpdate && (
+            {currentUser?.starknetWallet.isLocked && (
               <ErrorCard>
                 <LockedWallet />
               </ErrorCard>
             )}
 
-            <PrimaryButton
-              onClick={handleConfirmation}
-              disabled={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
-              large
-            >
+            <PrimaryButton onClick={handleConfirmation} disabled={currentUser?.starknetWallet.isLocked} large>
               <Trans>Next</Trans>
             </PrimaryButton>
           </Column>

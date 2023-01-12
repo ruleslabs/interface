@@ -18,10 +18,10 @@ export default function LockedWallet() {
   // signer escape
   const needsDeposit = useMemo(
     () =>
-      currentUser?.starknetWallet.needsSignerPublicKeyUpdate &&
+      currentUser?.starknetWallet.isLocked &&
       balance &&
       JSBI.lessThan(balance.quotient, MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER),
-    [currentUser?.starknetWallet.needsSignerPublicKeyUpdate, balance]
+    [currentUser?.starknetWallet.isLocked, balance]
   )
   const minimumWeiAmountToEscapeSigner = useMemo(
     () => WeiAmount.fromRawAmount(MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER),
