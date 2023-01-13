@@ -155,7 +155,7 @@ export default function Header() {
       {currentUser && (
         <RotatingIconButton
           onClick={toggleSettingsModal}
-          alert={currentUser?.starknetWallet.isLocked}
+          alert={!!currentUser?.starknetWallet.lockingReason}
           notifications={neededActions.total}
         >
           <Settings />
@@ -164,7 +164,7 @@ export default function Header() {
 
       <MobileNavWrapper>
         {allModalsClosed ? (
-          <HamburgerWrapper alert={currentUser?.starknetWallet.isLocked} notifications={neededActions.total}>
+          <HamburgerWrapper alert={!!currentUser?.starknetWallet.lockingReason} notifications={neededActions.total}>
             <Hamburger onClick={openNavModal} />
           </HamburgerWrapper>
         ) : (

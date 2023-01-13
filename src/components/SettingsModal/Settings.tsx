@@ -67,7 +67,7 @@ export default function Settings({ dispatch, ...props }: SettingsProps) {
 
   return (
     <Column gap={20} {...props}>
-      {currentUser?.starknetWallet.isLocked && (
+      {!!currentUser?.starknetWallet.lockingReason && (
         <ErrorCard>
           <LockedWallet />
         </ErrorCard>

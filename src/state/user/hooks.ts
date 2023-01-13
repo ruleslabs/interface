@@ -23,7 +23,7 @@ const CURRENT_USER_QUERY = gql`
         address
         publicKey
         signerEscapeTriggeredAt
-        isLocked
+        lockingReason
         transactionVersion
         needsUpgrade
         rulesPrivateKey {

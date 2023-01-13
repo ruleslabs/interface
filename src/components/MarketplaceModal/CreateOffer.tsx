@@ -183,7 +183,7 @@ export default function CreateOfferModal({
               </Column>
             </CardBreakdown>
 
-            {currentUser?.starknetWallet.isLocked ? (
+            {currentUser?.starknetWallet.lockingReason ? (
               <ErrorCard>
                 <LockedWallet />
               </ErrorCard>

@@ -233,7 +233,7 @@ export default function GiftModal({
               </Column>
             </CardBreakdown>
 
-            {currentUser?.starknetWallet.isLocked ? (
+            {currentUser?.starknetWallet.lockingReason ? (
               <ErrorCard>
                 <LockedWallet />
               </ErrorCard>

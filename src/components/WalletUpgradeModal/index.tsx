@@ -117,13 +117,13 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
               </TYPE.body>
             </Column>
 
-            {currentUser?.starknetWallet.isLocked && (
+            {!!currentUser?.starknetWallet.lockingReason && (
               <ErrorCard>
                 <LockedWallet />
               </ErrorCard>
             )}
 
-            <PrimaryButton onClick={handleConfirmation} disabled={currentUser?.starknetWallet.isLocked} large>
+            <PrimaryButton onClick={handleConfirmation} disabled={!!currentUser?.starknetWallet.lockingReason} large>
               <Trans>Upgrade</Trans>
             </PrimaryButton>
           </Column>

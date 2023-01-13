@@ -1375,3 +1375,7 @@ msgstr "reversés aux artistes indés"
 #: src/components/Homepage/HallOfFame.tsx
 msgid "Your rank: {currentUserRank}"
 msgstr "Ton classement: {currentUserRank}"
+
+#: src/components/LockedWallet/index.tsx
+msgid "We are performing a manual upgrade of your wallet. For this purpose, your wallet has to be locked. Your access will be recovered in a few days."
+msgstr "Nous opérons une mise à jour manuelle de ton portefeuille. Pour ce faire, ton portefeuille est temporairement bloqué. Tu y retrouveras l'accès dans quelques jours."
