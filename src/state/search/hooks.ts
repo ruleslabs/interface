@@ -131,6 +131,8 @@ const algoliaIndexes = {
   },
 }
 
+export type PageFetchedCallback = (hits: any[], pageNumber: number) => void
+
 export type TransfersSortingKey = keyof typeof algoliaIndexes.transfers
 export type CardsSortingKey = keyof typeof algoliaIndexes.cards
 export type OffersSortingKey = keyof typeof algoliaIndexes.offers
@@ -181,7 +183,7 @@ interface AlgoliaSearchProps {
   filters?: string
   algoliaIndex: any
   hitsPerPage: number
-  onPageFetched?: (hits: any[]) => void
+  onPageFetched?: PageFetchedCallback
   skip: boolean
 }
 
@@ -215,7 +217,7 @@ function useAlgoliaSearch({
         })
         setNextPageNumber(res.page + 1 < res.nbPages ? res.page + 1 : null)
 
-        if (onPageFetched) onPageFetched(res.hits)
+        if (onPageFetched) onPageFetched(res.hits, res.page)
       })
       .catch((err: string) => {
         setSearchResult({ loading: false, error: err })
@@ -251,7 +253,7 @@ interface SearchTransfersProps {
   sortingKey?: TransfersSortingKey
   onlySales?: boolean
   skip?: boolean
-  onPageFetched?: (hits: any[]) => void
+  onPageFetched?: PageFetchedCallback
   noMinting?: boolean
 }
 
@@ -288,14 +290,14 @@ interface SearchCardsProps {
   search?: string
   skip?: boolean
   hitsPerPage?: number
-  onPageFetched?: (hits: any[]) => void
+  onPageFetched?: PageFetchedCallback
 }
 
 export function useSearchCards({
   search = '',
   facets = {},
   sortingKey = Object.keys(algoliaIndexes.cards)[0] as CardsSortingKey,
-  hitsPerPage = 256,
+  hitsPerPage = 32,
   onPageFetched,
   skip = false,
 }: SearchCardsProps): AlgoliaSearch {
@@ -323,7 +325,7 @@ interface SearchOffersProps {
   priceDesc?: boolean
   skip?: boolean
   hitsPerPage?: number
-  onPageFetched?: (hits: any[]) => void
+  onPageFetched?: PageFetchedCallback
   sortingKey?: OffersSortingKey
 }
 
@@ -352,7 +354,7 @@ interface SearchUsersProps {
   search?: string
   hitsPerPage?: number
   sortingKey?: UsersSortingKey
-  onPageFetched?: (hits: any[]) => void
+  onPageFetched?: PageFetchedCallback
   skip?: boolean
   filters?: string
   facets?: {

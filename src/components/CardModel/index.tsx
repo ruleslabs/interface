@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
@@ -60,6 +60,8 @@ const StyledLargeSpinner = styled(LargeSpinner)`
 `
 
 interface CardModelProps {
+  innerRef?: (node: any) => void
+  slug: string
   cardModelSlug: string
   pictureUrl: string
   width?: number
@@ -72,7 +74,11 @@ interface CardModelProps {
   lowestAsk?: string
 }
 
-export default function CardModel({
+const MemoizedCardModelPropsEqualityCheck = (prevProps: CardModelProps, nextProps: CardModelProps) =>
+  prevProps.slug === nextProps.slug
+
+const MemoizedCardModel = React.memo(function OfferCards({
+  innerRef,
   cardModelSlug,
   pictureUrl,
   width,
@@ -94,7 +100,7 @@ export default function CardModel({
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
   return (
-    <StyledCardModel width={width}>
+    <StyledCardModel width={width} ref={innerRef}>
       <StyledCustomCardModel href={`/card/${cardModelSlug}${!!serialNumber ? `/${serialNumber}` : ''}`}>
         <Card src={pictureUrl} inDelivery={inDelivery} pendingStatus={!!pendingStatus} />
         {inDelivery && <InDelivery src={`/assets/delivery.${locale}.png`} />}
@@ -137,4 +143,7 @@ export default function CardModel({
       )}
     </StyledCardModel>
   )
-}
+},
+MemoizedCardModelPropsEqualityCheck)
+
+export default MemoizedCardModel

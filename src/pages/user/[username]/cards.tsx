@@ -1,6 +1,6 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback } from 'react'
 import styled from 'styled-components'
-import { useQuery, gql } from '@apollo/client'
+import { useLazyQuery, gql } from '@apollo/client'
 import { t, Trans, Plural } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
@@ -18,9 +18,11 @@ import { useCurrentUser } from '@/state/user/hooks'
 import useCardsPendingStatus from '@/hooks/useCardsPendingStatus'
 import { RowButton } from '@/components/Button'
 import Hover from '@/components/AnimatedIcon/hover'
-import Spinner from '@/components/Spinner'
+import { PaginationSpinner } from '@/components/Spinner'
+import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 
 const CARD_CONTENT = `
+  slug
   serialNumber
   onSale
   inTransfer
@@ -39,16 +41,15 @@ const CARD_CONTENT = `
 
 // css
 
-const StyledSpinner = styled(Spinner)`
-  width: 32px;
-  margin: 16px auto;
-  display: block;
+const CARDS_QUERY = gql`
+  query ($ids: [ID!]!) {
+    cardsByIds(ids: $ids) { ${CARD_CONTENT} }
+  }
 `
 
-const QUERY_CARDS = gql`
-  query ($ids: [ID!]!, $userId: ID!) {
+const CARDS_IN_DELIVERY_QUERY = gql`
+  query ($userId: ID!) {
     cardsInDeliveryForUser(userId: $userId) { ${CARD_CONTENT} }
-    cardsByIds(ids: $ids) { ${CARD_CONTENT} }
   }
 `
 
@@ -152,6 +153,9 @@ function Cards({ userId, address }: CardsProps) {
   const currentUser = useCurrentUser()
   const isCurrentUserProfile = currentUser?.slug === userSlug
 
+  // tables
+  const [cards, setCards] = useState<any[]>([])
+
   // sort button
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false)
   const toggleSortDropdown = useCallback(() => setSortDropdownOpen(!sortDropdownOpen), [sortDropdownOpen])
@@ -159,39 +163,48 @@ function Cards({ userId, address }: CardsProps) {
   // sort
   const [sortIndex, setSortIndex] = useState(0)
 
+  // query cards data
+  const onCardsQueryCompleted = useCallback(
+    (data: any) => {
+      setCards(cards.concat(data.cardsByIds))
+    },
+    [cards.length]
+  )
+  const [queryCardsData, cardsQuery] = useLazyQuery(CARDS_QUERY, {
+    onCompleted: onCardsQueryCompleted,
+    fetchPolicy: 'cache-and-network',
+  })
+
+  // search cards
+  const onPageFetched = useCallback(
+    (hits: any, pageNumber: number) => {
+      if (!pageNumber) setCards([])
+
+      queryCardsData({
+        variables: {
+          ids: hits.map((hit: any) => hit.objectID),
+          userId,
+        },
+        skip: !userId,
+      })
+    },
+    [queryCardsData]
+  )
   const cardsSearch = useSearchCards({
     facets: { ownerStarknetAddress: address },
     sortingKey: sorts[sortIndex].key,
     skip: !address,
+    onPageFetched,
   })
-
-  const cardIds = useMemo(
-    () =>
-      ((cardsSearch?.hits ?? []) as any[]).reduce<string[]>((acc, hit: any) => {
-        acc.push(hit.objectID)
-
-        return acc
-      }, []),
-    [cardsSearch?.hits]
-  )
-
-  // Query cards
-  const cardsQuery = useQuery(QUERY_CARDS, { variables: { ids: cardIds, userId }, skip: !cardIds.length && !userId })
-
-  // Aggregate cards
-  const deliveredCards = cardsQuery.data?.cardsByIds ?? []
-  const inDeliveryCards = cardsQuery.data?.cardsInDeliveryForUser ?? []
-  const cards = useMemo(
-    () => [...inDeliveryCards.map((card: any) => ({ ...card, inDelivery: true })), ...deliveredCards],
-    [deliveredCards.length, inDeliveryCards.length]
-  )
-
-  // loading / error
-  const isValid = !cardsQuery.error && !cardsSearch.error
-  const isLoading = cardsQuery.loading || cardsSearch.loading
 
   // pending status
   const pendingsStatus = useCardsPendingStatus(cards)
+
+  // loading
+  const isLoading = cardsSearch.loading || cardsQuery.loading
+
+  // infinite scroll
+  const lastTxRef = useInfiniteScroll({ nextPage: cardsSearch.nextPage, loading: isLoading })
 
   return (
     <Section>
@@ -219,28 +232,28 @@ function Cards({ userId, address }: CardsProps) {
         </GridHeader>
       )}
 
-      {isValid && !isLoading && cards.length > 0 ? (
-        <Grid gap={64}>
-          {cards.map((card: any, index: number) => (
-            <CardModel
-              key={`user-card-${index}`}
-              cardModelSlug={card.cardModel.slug}
-              pictureUrl={card.cardModel.pictureUrl}
-              onSale={card.onSale}
-              pendingStatus={pendingsStatus[index] ?? undefined}
-              serialNumber={card.serialNumber}
-              inDelivery={card.inDelivery}
-              season={card.cardModel.season}
-              artistName={card.cardModel.artist.displayName}
-            />
-          ))}
-        </Grid>
-      ) : (
-        isValid &&
-        !isLoading &&
-        (isCurrentUserProfile ? <EmptyCardsTabOfCurrentUser /> : <EmptyTab emptyText={t`No cards`} />)
-      )}
-      {isLoading && <StyledSpinner />}
+      <Grid gap={64}>
+        {cards.map((card, index) => (
+          <CardModel
+            key={card.slug}
+            innerRef={index + 1 === cards.length ? lastTxRef : undefined}
+            cardModelSlug={card.cardModel.slug}
+            pictureUrl={card.cardModel.pictureUrl}
+            onSale={card.onSale}
+            pendingStatus={pendingsStatus[index] ?? undefined}
+            serialNumber={card.serialNumber}
+            inDelivery={card.inDelivery}
+            season={card.cardModel.season}
+            artistName={card.cardModel.artist.displayName}
+          />
+        ))}
+      </Grid>
+
+      {!isLoading &&
+        !cards.length &&
+        (isCurrentUserProfile ? <EmptyCardsTabOfCurrentUser /> : <EmptyTab emptyText={t`No cards`} />)}
+
+      <PaginationSpinner loading={isLoading} />
     </Section>
   )
 }
