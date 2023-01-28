@@ -558,8 +558,8 @@ msgid "Alphabetical Z-A"
 msgstr "Alphabétique Z-A"
 
 #: src/pages/user/[username]/cards.tsx
-msgid "{0, plural, =1 {{0} card} other {{0} cards}}"
-msgstr "{0, plural, =1 {{0} carte} other {{0} cartes}}"
+msgid "{cardsCount, plural, =1 {{cardsCount} card} other {{cardsCount} cards}}"
+msgstr "{cardsCount, plural, =1 {{cardsCount} carte} other {{cardsCount} cartes}}"
 
 #: src/pages/user/[username]/packs.tsx
 msgid "{packsCount, plural, =1 {{packsCount} pack} other {{packsCount} packs}}"

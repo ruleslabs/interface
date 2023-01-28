@@ -13,6 +13,7 @@
     "lint": "next lint",
     "start": "next start",
     "dev": "env-cmd -f .env.local next dev",
+    "prod": "env-cmd -f .env.local.production next dev",
     "build:dev": "env-cmd -f .env.development yarn run build",
     "build:prod": "env-cmd -f .env.production yarn run build",
     "deploy:dev": "yarn run build:dev && rm -rf .serverless .serverless_nextjs && env-cmd -f .env.development components-v1 --component",

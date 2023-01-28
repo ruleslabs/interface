@@ -75,7 +75,7 @@ interface CardModelProps {
 }
 
 const MemoizedCardModelPropsEqualityCheck = (prevProps: CardModelProps, nextProps: CardModelProps) =>
-  prevProps.slug === nextProps.slug
+  prevProps.slug === nextProps.slug && !!prevProps.innerRef === !!nextProps.innerRef
 
 const MemoizedCardModel = React.memo(function OfferCards({
   innerRef,

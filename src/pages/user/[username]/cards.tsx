@@ -1,6 +1,6 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import { useLazyQuery, gql } from '@apollo/client'
+import { useLazyQuery, useQuery, gql } from '@apollo/client'
 import { t, Trans, Plural } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
@@ -22,34 +22,46 @@ import { PaginationSpinner } from '@/components/Spinner'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 
 const CARD_CONTENT = `
-  slug
-  serialNumber
-  onSale
-  inTransfer
-  inOfferCreation
-  inOfferCancelation
-  inOfferAcceptance
-  cardModel {
-    slug
-    pictureUrl(derivative: "width=1024")
-    season
-    artist {
-      displayName
-    }
-  }
 `
 
 // css
 
 const CARDS_QUERY = gql`
   query ($ids: [ID!]!) {
-    cardsByIds(ids: $ids) { ${CARD_CONTENT} }
+    cardsByIds(ids: $ids) {
+      slug
+      serialNumber
+      onSale
+      inTransfer
+      inOfferCreation
+      inOfferCancelation
+      inOfferAcceptance
+      cardModel {
+        slug
+        pictureUrl(derivative: "width=1024")
+        season
+        artist {
+          displayName
+        }
+      }
+    }
   }
 `
 
 const CARDS_IN_DELIVERY_QUERY = gql`
   query ($userId: ID!) {
-    cardsInDeliveryForUser(userId: $userId) { ${CARD_CONTENT} }
+    cardsInDeliveryForUser(userId: $userId) {
+      slug
+      serialNumber
+      cardModel {
+        slug
+        pictureUrl(derivative: "width=1024")
+        season
+        artist {
+          displayName
+        }
+      }
+    }
   }
 `
 
@@ -145,11 +157,12 @@ interface CardsProps {
 }
 
 function Cards({ userId, address }: CardsProps) {
-  // current user
+  // router
   const router = useRouter()
   const { username } = router.query
   const userSlug = typeof username === 'string' ? username.toLowerCase() : null
 
+  // current user
   const currentUser = useCurrentUser()
   const isCurrentUserProfile = currentUser?.slug === userSlug
 
@@ -175,18 +188,25 @@ function Cards({ userId, address }: CardsProps) {
     fetchPolicy: 'cache-and-network',
   })
 
+  // query cards in delivery data
+  const cardsInDeliveryQuery = useQuery(CARDS_IN_DELIVERY_QUERY, { variables: { userId }, skip: !userId })
+  const cardsInDelivery = cardsInDeliveryQuery.data?.cardsInDeliveryForUser ?? []
+
+  // cards count
+  const [deliveredCardsCount, setDeliveredCardsCount] = useState(0)
+  const cardsCount = useMemo(
+    () => deliveredCardsCount + cardsInDelivery.length,
+    [cardsInDelivery.length, deliveredCardsCount]
+  )
+
   // search cards
   const onPageFetched = useCallback(
-    (hits: any, pageNumber: number) => {
+    (hits, { pageNumber, totalHitsCount }) => {
       if (!pageNumber) setCards([])
 
-      queryCardsData({
-        variables: {
-          ids: hits.map((hit: any) => hit.objectID),
-          userId,
-        },
-        skip: !userId,
-      })
+      queryCardsData({ variables: { ids: hits.map((hit: any) => hit.objectID) } })
+
+      setDeliveredCardsCount(totalHitsCount)
     },
     [queryCardsData]
   )
@@ -201,17 +221,17 @@ function Cards({ userId, address }: CardsProps) {
   const pendingsStatus = useCardsPendingStatus(cards)
 
   // loading
-  const isLoading = cardsSearch.loading || cardsQuery.loading
+  const isLoading = cardsSearch.loading || cardsQuery.loading || cardsInDelivery.loading
 
   // infinite scroll
   const lastTxRef = useInfiniteScroll({ nextPage: cardsSearch.nextPage, loading: isLoading })
 
   return (
     <Section>
-      {cards.length > 0 && (
+      {cardsCount > 0 && (
         <GridHeader>
           <TYPE.body>
-            <Plural value={cards.length} _1="{0} card" other="{0} cards" />
+            <Plural value={cardsCount} _1="{cardsCount} card" other="{cardsCount} cards" />
           </TYPE.body>
 
           <SortButton onClick={toggleSortDropdown}>
@@ -233,6 +253,17 @@ function Cards({ userId, address }: CardsProps) {
       )}
 
       <Grid gap={64}>
+        {cardsInDelivery.map((card) => (
+          <CardModel
+            key={card.slug}
+            cardModelSlug={card.cardModel.slug}
+            pictureUrl={card.cardModel.pictureUrl}
+            serialNumber={card.serialNumber}
+            season={card.cardModel.season}
+            artistName={card.cardModel.artist.displayName}
+            inDelivery
+          />
+        ))}
         {cards.map((card, index) => (
           <CardModel
             key={card.slug}
@@ -242,7 +273,6 @@ function Cards({ userId, address }: CardsProps) {
             onSale={card.onSale}
             pendingStatus={pendingsStatus[index] ?? undefined}
             serialNumber={card.serialNumber}
-            inDelivery={card.inDelivery}
             season={card.cardModel.season}
             artistName={card.cardModel.artist.displayName}
           />

@@ -131,7 +131,12 @@ const algoliaIndexes = {
   },
 }
 
-export type PageFetchedCallback = (hits: any[], pageNumber: number) => void
+export interface PageFetchedCallbackData {
+  pageNumber: number
+  totalHitsCount: number
+}
+
+export type PageFetchedCallback = (hits: any[], data: PageFetchedCallbackData) => void
 
 export type TransfersSortingKey = keyof typeof algoliaIndexes.transfers
 export type CardsSortingKey = keyof typeof algoliaIndexes.cards
@@ -217,7 +222,7 @@ function useAlgoliaSearch({
         })
         setNextPageNumber(res.page + 1 < res.nbPages ? res.page + 1 : null)
 
-        if (onPageFetched) onPageFetched(res.hits, res.page)
+        if (onPageFetched) onPageFetched(res.hits, { pageNumber: res.page, totalHitsCount: res.nbHits })
       })
       .catch((err: string) => {
         setSearchResult({ loading: false, error: err })
