@@ -271,9 +271,7 @@ function Profile({ address }: ProfileProps) {
           />
         </DeckGridSecondLine>
       </ShowcaseSection>
-      {isCurrentUserProfile && cardIndexToInsert > 0 && (
-        <DeckInsertionModal starknetWalletAddress={address} cardIndex={cardIndexToInsert} />
-      )}
+      {isCurrentUserProfile && <DeckInsertionModal starknetWalletAddress={address} cardIndex={cardIndexToInsert} />}
     </>
   )
 }
