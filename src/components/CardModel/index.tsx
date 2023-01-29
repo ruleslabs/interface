@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
 import { useActiveLocale } from '@/hooks/useActiveLocale'
-import Link from '@/components/Link'
+import Link, { LinkProps } from '@/components/Link'
 import { TYPE } from '@/styles/theme'
 import { ColumnCenter } from '@/components/Column'
 import { LargeSpinner } from '@/components/Spinner'
@@ -18,7 +18,7 @@ const StyledCardModel = styled(ColumnCenter)<{ width?: number }>`
   ${({ width }) => width && `width: ${width}px;`}
 `
 
-const StyledCustomCardModel = styled(Link)`
+const StyledCustomCardModelCss = css`
   cursor: pointer;
   transform: perspective(0);
 
@@ -29,6 +29,14 @@ const StyledCustomCardModel = styled(Link)`
   &:hover img:not(.spinner) {
     transform: perspective(400px) rotateY(10deg);
   }
+`
+
+const StyledCustomCardModelLink = styled(Link)`
+  ${StyledCustomCardModelCss}
+`
+
+const StyledCustomCardModelDiv = styled.div`
+  ${StyledCustomCardModelCss}
 `
 
 const Card = styled.img<{ inDelivery: boolean; pendingStatus: boolean }>`
@@ -59,9 +67,18 @@ const StyledLargeSpinner = styled(LargeSpinner)`
   top: 41.5%;
 `
 
+type CustomCardModelProps = LinkProps | React.HTMLAttributes<HTMLDivElement>
+
+const CustomCardModel = (props: CustomCardModelProps) =>
+  (props as LinkProps).href ? (
+    <StyledCustomCardModelLink {...(props as LinkProps)} />
+  ) : (
+    <StyledCustomCardModelDiv {...(props as React.HTMLAttributes<HTMLDivElement>)} />
+  )
+
 interface CardModelProps {
   innerRef?: (node: any) => void
-  slug: string
+  slug?: string
   cardModelSlug: string
   pictureUrl: string
   width?: number
@@ -109,12 +126,12 @@ const MemoizedCardModel = React.memo(function OfferCards({
 
   return (
     <StyledCardModel width={width} ref={innerRef}>
-      <StyledCustomCardModel onClick={onClick} href={cardLink}>
+      <CustomCardModel onClick={onClick} href={cardLink}>
         <Card src={pictureUrl} inDelivery={inDelivery} pendingStatus={!!pendingStatus} />
         {inDelivery && <InDelivery src={`/assets/delivery.${locale}.png`} />}
         {onSale && !pendingStatus && <OnSale src={`/assets/onsale.${locale}.png`} />}
         {pendingStatus && <StyledLargeSpinner className="spinner" />}
-      </StyledCustomCardModel>
+      </CustomCardModel>
 
       {pendingStatus && (
         <ColumnCenter gap={4}>

@@ -12,9 +12,7 @@ import Grid from '@/components/Grid'
 import CardModel from '@/components/CardModel'
 import Row, { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
-import { useSearchCards } from '@/state/search/hooks'
 import { TYPE } from '@/styles/theme'
-import { useCurrentUser } from '@/state/user/hooks'
 import { LOW_SERIAL_MAXS } from '@/constants/misc'
 
 const ScarcitySelectorWrapper = styled(Row)`
@@ -100,7 +98,7 @@ const LowSerialBadge = styled.div`
   }
 `
 
-const QUERY_CARD_MODELS = gql`
+const ALL_CARD_MODELS_QUERY = gql`
   query {
     allCardModels {
       slug
@@ -113,19 +111,16 @@ const QUERY_CARD_MODELS = gql`
   }
 `
 
-const QUERY_CARDS = gql`
-  query ($ids: [ID!]!) {
-    cardsByIds(ids: $ids) {
-      serialNumber
-      cardModel {
-        uid
-        pictureUrl(derivative: "width=1024")
-        season
-        scarcity {
-          name
-        }
-        artist {
-          displayName
+const USER_OWNED_CARD_MODELS_QUERY = gql`
+  query ($slug: String!) {
+    user(slug: $slug) {
+      ownedCardModels {
+        serialNumbers
+        cardModel {
+          uid
+          scarcity {
+            name
+          }
         }
       }
     }
@@ -142,38 +137,37 @@ function Ruledex({ address }: RuledexProps) {
   const { username } = router.query
   const userSlug = typeof username === 'string' ? username.toLowerCase() : null
 
-  // current user
-  const currentUser = useCurrentUser()
-  const isCurrentUserProfile = currentUser?.slug === userSlug
-
-  // sort
-  const [sortDesc, setSortDesc] = useState(true)
-  const toggleSort = useCallback(() => setSortDesc(!sortDesc), [sortDesc])
-
-  // get user's cards ids
-  const cardsSearch = useSearchCards({ facets: { ownerStarknetAddress: address }, skip: !address })
-  const cardIds = useMemo(() => (cardsSearch?.hits ?? []).map((hit: any) => hit.objectID, []), [cardsSearch?.hits])
-
   // Query cards
-  const cardsQuery = useQuery(QUERY_CARDS, { variables: { ids: cardIds }, skip: !cardIds.length })
-  const cards = cardsQuery.data?.cardsByIds ?? []
+  const ownedCardModelsQuery = useQuery(USER_OWNED_CARD_MODELS_QUERY, {
+    variables: { slug: userSlug },
+    skip: !userSlug,
+  })
+  const ownedCardModels = ownedCardModelsQuery.data?.user.ownedCardModels ?? []
 
   // Query card models
-  const allCardModelsQuery = useQuery(QUERY_CARD_MODELS)
-  const cardModels = allCardModelsQuery.data?.allCardModels ?? []
+  const allCardModelsQuery = useQuery(ALL_CARD_MODELS_QUERY)
+  const allCardModels = allCardModelsQuery.data?.allCardModels ?? []
 
-  // unlocked card models
+  // owned card models
   const cardModelsBadges = useMemo(
     () =>
-      (cards as any[]).reduce<{ [uid: number]: any }>((acc, card: any) => {
-        acc[card.cardModel.uid] = acc[card.cardModel.uid] ?? {}
+      (ownedCardModels as any[]).reduce<{ [uid: number]: any }>((acc, ownedCardModel) => {
+        // skip if needed
+        if (!ownedCardModel.serialNumbers.length) return acc
 
-        if (card.serialNumber < LOW_SERIAL_MAXS[card.cardModel.scarcity.name] ?? 0)
-          acc[card.cardModel.uid].lowSerial = true
+        // init badges
+        acc[ownedCardModel.cardModel.uid] = acc[ownedCardModel.cardModel.uid] ?? {}
+
+        // low serial badge
+        for (const serialNumber of ownedCardModel.serialNumbers)
+          if (serialNumber <= LOW_SERIAL_MAXS[ownedCardModel.cardModel.scarcity.name]) {
+            acc[ownedCardModel.cardModel.uid].lowSerial = true
+            break
+          }
 
         return acc
       }, {}),
-    [cards.length]
+    [ownedCardModels.length]
   )
 
   // selected scarcity
@@ -186,21 +180,21 @@ function Ruledex({ address }: RuledexProps) {
   // scarcities max
   const scarcitiesMax = useMemo(
     () =>
-      (cardModels as any[]).reduce<{ [scarcityName: string]: number }>((acc, cardModel: any) => {
+      (allCardModels as any[]).reduce<{ [scarcityName: string]: number }>((acc, cardModel: any) => {
         acc[cardModel.scarcity.name] = (acc[cardModel.scarcity.name] ?? 0) + 1
         return acc
       }, {}),
-    [cardModels.length]
+    [allCardModels.length]
   )
 
   // scarcities balance
   const scarcitiesBalance = useMemo(
     () =>
-      (cardModels as any[]).reduce<{ [scarcityName: string]: number }>((acc, cardModel: any) => {
+      (allCardModels as any[]).reduce<{ [scarcityName: string]: number }>((acc, cardModel: any) => {
         acc[cardModel.scarcity.name] = (acc[cardModel.scarcity.name] ?? 0) + (cardModelsBadges[cardModel.uid] ? 1 : 0)
         return acc
       }, {}),
-    [cardModels.length, Object.keys(cardModelsBadges).length]
+    [allCardModels.length, Object.keys(cardModelsBadges).length]
   )
 
   return (
@@ -224,13 +218,15 @@ function Ruledex({ address }: RuledexProps) {
       </ScarcitySelectorWrapper>
 
       <StyledGrid gap={28} maxWidth={132}>
-        {cardModels
+        {allCardModels
           .filter((cardModel: any) => !selectedScarcity || cardModel.scarcity.name === selectedScarcity)
           .sort((a: any, b: any) => a.uid - b.uid)
           .map((cardModel: any) => (
             <LockableCardModel key={cardModel.slug} locked={!cardModelsBadges[cardModel.uid]}>
               <CardModel cardModelSlug={cardModel.slug} pictureUrl={cardModel.pictureUrl} />
+
               <CardModelId>#{cardModel.uid.toString().padStart(3, '0')}</CardModelId>
+
               {cardModelsBadges[cardModel.uid]?.lowSerial && <LowSerialBadge />}
             </LockableCardModel>
           ))}

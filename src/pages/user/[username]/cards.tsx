@@ -253,7 +253,7 @@ function Cards({ userId, address }: CardsProps) {
       )}
 
       <Grid gap={64}>
-        {cardsInDelivery.map((card) => (
+        {cardsInDelivery.map((card: any) => (
           <CardModel
             key={card.slug}
             cardModelSlug={card.cardModel.slug}
@@ -264,7 +264,7 @@ function Cards({ userId, address }: CardsProps) {
             inDelivery
           />
         ))}
-        {cards.map((card, index) => (
+        {cards.map((card: any, index) => (
           <CardModel
             key={card.slug}
             innerRef={index + 1 === cards.length ? lastTxRef : undefined}
