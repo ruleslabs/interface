@@ -76,7 +76,6 @@ export default function DeckInsertionModal({ starknetWalletAddress, cardIndex }:
   const handleCardInsertion = useCallback(
     (card: any) => {
       setCards([])
-      setCardsTable([])
       setSearch('')
       onInsertion({ card, cardIndex })
       toggleDeckInsertionModal()
@@ -104,11 +103,16 @@ export default function DeckInsertionModal({ starknetWalletAddress, cardIndex }:
     },
     [cards.length]
   )
-  const [queryCardsData, cardsQuery] = useLazyQuery(CARDS_QUERY, { onCompleted: onCardsQueryCompleted })
+  const [queryCardsData, cardsQuery] = useLazyQuery(CARDS_QUERY, {
+    onCompleted: onCardsQueryCompleted,
+    fetchPolicy: 'cache-and-network',
+  })
 
   // search cards
   const onPageFetched = useCallback(
-    (hits) => {
+    (hits, { pageNumber }) => {
+      if (!pageNumber) setCards([])
+
       queryCardsData({ variables: { ids: hits.map((hit: any) => hit.objectID) } })
     },
     [queryCardsData]

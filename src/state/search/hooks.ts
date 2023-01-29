@@ -316,6 +316,7 @@ export function useSearchCards({
     hitsPerPage,
     onPageFetched,
     skip,
+    search,
   })
 }
 

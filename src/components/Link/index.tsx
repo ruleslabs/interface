@@ -16,7 +16,7 @@ const StyledLink = styled.a<{ color?: string; underline: boolean }>`
 `
 
 interface LinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
-  href: string
+  href?: string
   target?: string
   color?: string
   children: React.ReactNode
@@ -24,6 +24,8 @@ interface LinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
 }
 
 export default function Link({ href, color, target, children, underline = false, ...props }: LinkProps) {
+  if (!href) return <div {...props}>{children}</div>
+
   return (
     <NextLink href={href}>
       <StyledLink href={href} target={target} color={color} underline={underline} {...props}>

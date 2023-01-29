@@ -72,6 +72,7 @@ interface CardModelProps {
   season?: number
   artistName?: string
   lowestAsk?: string
+  onClick?: () => void
 }
 
 const MemoizedCardModelPropsEqualityCheck = (prevProps: CardModelProps, nextProps: CardModelProps) =>
@@ -89,6 +90,7 @@ const MemoizedCardModel = React.memo(function OfferCards({
   season,
   artistName,
   lowestAsk,
+  onClick,
 }: CardModelProps) {
   // locale
   const locale = useActiveLocale()
@@ -99,9 +101,15 @@ const MemoizedCardModel = React.memo(function OfferCards({
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
+  // link
+  const cardLink = useMemo(
+    () => (onClick ? undefined : `/card/${cardModelSlug}${!!serialNumber ? `/${serialNumber}` : ''}`),
+    [!!onClick]
+  )
+
   return (
     <StyledCardModel width={width} ref={innerRef}>
-      <StyledCustomCardModel href={`/card/${cardModelSlug}${!!serialNumber ? `/${serialNumber}` : ''}`}>
+      <StyledCustomCardModel onClick={onClick} href={cardLink}>
         <Card src={pictureUrl} inDelivery={inDelivery} pendingStatus={!!pendingStatus} />
         {inDelivery && <InDelivery src={`/assets/delivery.${locale}.png`} />}
         {onSale && !pendingStatus && <OnSale src={`/assets/onsale.${locale}.png`} />}
