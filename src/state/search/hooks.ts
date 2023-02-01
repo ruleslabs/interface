@@ -206,29 +206,32 @@ function useAlgoliaSearch({
 
   const facetFilters = useFacetFilters({ ...facets })
 
-  const runSearch = useCallback(() => {
-    if (nextPageNumber === null) return
+  const runSearch = useCallback(
+    (forcedNextPageNumber: number | null = null) => {
+      if ((forcedNextPageNumber ?? nextPageNumber) === null) return
 
-    setSearchResult({ ...searchResult, loading: true, error: null })
+      setSearchResult({ ...searchResult, loading: true, error: null })
 
-    algoliaIndex
-      .search(search, { facetFilters, filters, page: nextPageNumber, hitsPerPage })
-      .then((res: any) => {
-        setSearchResult({
-          hits: onPageFetched ? [] : (searchResult.hits ?? []).concat(res.hits),
-          nbHits: res.nbHits,
-          loading: false,
-          error: null,
+      algoliaIndex
+        .search(search, { facetFilters, filters, page: forcedNextPageNumber ?? nextPageNumber, hitsPerPage })
+        .then((res: any) => {
+          setSearchResult({
+            hits: onPageFetched ? [] : (searchResult.hits ?? []).concat(res.hits),
+            nbHits: res.nbHits,
+            loading: false,
+            error: null,
+          })
+          setNextPageNumber(res.page + 1 < res.nbPages ? res.page + 1 : null)
+
+          if (onPageFetched) onPageFetched(res.hits, { pageNumber: res.page, totalHitsCount: res.nbHits })
         })
-        setNextPageNumber(res.page + 1 < res.nbPages ? res.page + 1 : null)
-
-        if (onPageFetched) onPageFetched(res.hits, { pageNumber: res.page, totalHitsCount: res.nbHits })
-      })
-      .catch((err: string) => {
-        setSearchResult({ loading: false, error: err })
-        console.error(err)
-      })
-  }, [algoliaIndex, nextPageNumber, facetFilters, hitsPerPage, searchResult.hits, filters, search])
+        .catch((err: string) => {
+          setSearchResult({ loading: false, error: err })
+          console.error(err)
+        })
+    },
+    [algoliaIndex, nextPageNumber, facetFilters, hitsPerPage, searchResult.hits, filters, search]
+  )
 
   useEffect(() => {
     setNextPageNumber(ALGOLIA_FIRST_PAGE)
@@ -236,8 +239,8 @@ function useAlgoliaSearch({
   }, [algoliaIndex, search])
 
   useEffect(() => {
-    if (nextPageNumber === ALGOLIA_FIRST_PAGE && !skip) runSearch()
-  }, [skip, nextPageNumber])
+    if (!skip) runSearch(ALGOLIA_FIRST_PAGE)
+  }, [skip])
 
   return {
     nextPage: nextPageNumber === null ? undefined : runSearch,
