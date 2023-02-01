@@ -21,9 +21,6 @@ import Hover from '@/components/AnimatedIcon/hover'
 import { PaginationSpinner } from '@/components/Spinner'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 
-const CARD_CONTENT = `
-`
-
 // css
 
 const CARDS_QUERY = gql`

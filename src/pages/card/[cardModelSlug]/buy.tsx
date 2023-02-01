@@ -54,7 +54,6 @@ const QUERY_CARD_MODEL = gql`
         name
         maxSupply
       }
-      cardsOnSaleCount
       artist {
         displayName
       }
@@ -69,7 +68,10 @@ export default function Buy() {
 
   // offer selection
   const [selectedOffer, setSelectedOffer] = useState<{ id: string; serialNumber: number } | null>(null)
-  const selectOffer = useCallback((offer: any | null) => setSelectedOffer(offer), [setSelectedOffer])
+  const onSelection = useCallback(
+    (offerId: string, serialNumber: number) => setSelectedOffer({ id: offerId, serialNumber }),
+    []
+  )
 
   // query
   const cardModelQuery = useQuery(QUERY_CARD_MODEL, { variables: { slug: cardModelSlug }, skip: !cardModelSlug })
@@ -81,8 +83,7 @@ export default function Buy() {
   const onSuccessfulOfferAcceptance = useCallback(() => {
     if (selectedOffer?.id) setAcceptedOfferIds([...acceptedOfferIds, selectedOffer.id])
     setSelectedOffer(null)
-    if (cardModel?.cardsOnSaleCount) cardModel.cardsOnSaleCount -= 1
-  }, [acceptedOfferIds, selectedOffer?.id, cardModel?.cardsOnSaleCount])
+  }, [acceptedOfferIds, selectedOffer?.id])
 
   const isValid = !cardModelQuery.error
   const isLoading = cardModelQuery.loading
@@ -98,10 +99,9 @@ export default function Buy() {
           <>
             <StyledOffersSelector
               cardModelId={cardModel.id}
-              cardsOnSaleCount={cardModel.cardsOnSaleCount}
               acceptedOfferIds={acceptedOfferIds}
-              selectedOffer={selectedOffer}
-              selectOffer={selectOffer}
+              selectedOfferId={selectedOffer?.id}
+              onSelection={onSelection}
             />
             <OffersSelectorBreakdownCard>
               <OffersSelectorBreakdown

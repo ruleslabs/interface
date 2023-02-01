@@ -242,6 +242,10 @@ function useAlgoliaSearch({
     if (!skip) runSearch(ALGOLIA_FIRST_PAGE)
   }, [skip])
 
+  useEffect(() => {
+    if (nextPageNumber === ALGOLIA_FIRST_PAGE && !skip) runSearch()
+  }, [nextPageNumber])
+
   return {
     nextPage: nextPageNumber === null ? undefined : runSearch,
     ...searchResult,

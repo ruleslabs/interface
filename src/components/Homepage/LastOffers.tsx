@@ -222,7 +222,7 @@ MemoizedOfferCardPropsEqualityCheck)
 
 export default function LastOffers() {
   // hits
-  const [offersHits, setOfferHits] = useState<any[]>([])
+  const [offersHits, setOffersHits] = useState<any[]>([])
   const [pendingHits, setPendingHits] = useState<any[]>([])
 
   // tables
@@ -248,7 +248,7 @@ export default function LastOffers() {
         }, {}),
       })
 
-      setOfferHits(offersHits.concat(pendingHits))
+      setOffersHits(offersHits.concat(pendingHits))
     },
     [Object.keys(usersTable).length, Object.keys(cardModelsTable).length, offersHits.length, pendingHits]
   )

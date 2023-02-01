@@ -61,7 +61,7 @@ const CustomPackCard = ({ href, ...props }: CustomPackCardProps) => {
   return href ? <Link href={href} {...props} /> : <div {...props} />
 }
 
-const StyledCustomPackCard = styled(CustomPackCard)<{ state: string; active: boolean }>`
+const StyledCustomPackCard = styled(CustomPackCard)<{ active: boolean }>`
   cursor: pointer;
   transform: perspective(0);
 
