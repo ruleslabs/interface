@@ -61,7 +61,7 @@ const CustomPackCard = ({ href, ...props }: CustomPackCardProps) => {
   return href ? <Link href={href} {...props} /> : <div {...props} />
 }
 
-const StyledCustomPackCard = styled(CustomPackCard)<{ state: string; isOwner: boolean }>`
+const StyledCustomPackCard = styled(CustomPackCard)<{ state: string; active: boolean }>`
   cursor: pointer;
   transform: perspective(0);
 
@@ -73,16 +73,8 @@ const StyledCustomPackCard = styled(CustomPackCard)<{ state: string; isOwner: bo
     display: block;
   }
 
-  ${({ state, isOwner }) =>
-    state === 'delivered' && isOwner
-      ? `
-        cursor: default;
-
-        &:hover img {
-          opacity: 0.3;
-        }
-      `
-      : state !== 'preparingOpening' || !isOwner
+  ${({ active }) =>
+    active
       ? `
         &:hover img {
           transform: perspective(400px) rotateY(10deg);
@@ -134,11 +126,8 @@ export default function PackCard({
     switch (state) {
       case 'inDelivery':
       case 'buyable':
-      case 'preparingOpening':
         return { href: `/pack/${slug}` }
       case 'delivered':
-        return {}
-      case 'readyToOpen':
         return { href: `/pack/${slug}/open` }
     }
 
@@ -147,16 +136,10 @@ export default function PackCard({
 
   return (
     <StyledPackCard width={width}>
-      <StyledCustomPackCard {...actionProps} state={state} isOwner={isOwner}>
+      <StyledCustomPackCard {...actionProps} active={state !== 'inDelivery'}>
         <Card src={pictureUrl} />
         {state === 'inDelivery' && <InDelivery src={`/assets/delivery.${locale}.png`} />}
         {soldout && <Soldout src={`/assets/soldout.png`} />}
-        {isOwner && state === 'preparingOpening' && <StyledLargeSpinner />}
-        {isOwner && state === 'delivered' && (
-          <PrepareOpeningButton onClick={onOpeningPreparation} large>
-            <Trans>Open pack</Trans>
-          </PrepareOpeningButton>
-        )}
       </StyledCustomPackCard>
       {name && (
         <ColumnCenter gap={4}>
@@ -165,15 +148,6 @@ export default function PackCard({
               <TYPE.body textAlign="center">{name}</TYPE.body>
               <TYPE.subtitle textAlign="center">
                 <Trans>Edited in {releaseDateFormatted}</Trans>
-              </TYPE.subtitle>
-            </>
-          ) : state === 'preparingOpening' ? (
-            <>
-              <TYPE.body textAlign="center">
-                <Trans>Opening the pack...</Trans>
-              </TYPE.body>
-              <TYPE.subtitle textAlign="center">
-                <Trans>Please come back later.</Trans>
               </TYPE.subtitle>
             </>
           ) : (

@@ -280,7 +280,7 @@ function Cards({ userId, address }: CardsProps) {
       </Grid>
 
       {!isLoading &&
-        !cards.length &&
+        !cardsCount &&
         (isCurrentUserProfile ? <EmptyCardsTabOfCurrentUser /> : <EmptyTab emptyText={t`No cards`} />)}
 
       <PaginationSpinner loading={isLoading} />
