@@ -14,6 +14,7 @@ import Card from '@/components/Card'
 import Link from '@/components/Link'
 import Row, { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
+import Avatar from '@/components/Avatar'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import { useActiveLocale } from '@/hooks/useActiveLocale'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
@@ -37,6 +38,7 @@ const OFFERS_QUERY = gql`
       slug
       profile {
         pictureUrl(derivative: "width=128")
+        fallbackUrl(derivative: "width=128")
       }
       starknetWallet {
         address
@@ -90,8 +92,7 @@ const ProfileWrapper = styled(RowCenter)`
   margin-left: auto;
 `
 
-const AvatarImage = styled.img`
-  border-radius: 50%;
+const StyledAvatar = styled(Avatar)`
   width: 46px;
   height: 46px;
   display: block;
@@ -210,7 +211,7 @@ const MemoizedOfferCard = React.memo(function OfferCards({
             </Column>
 
             <Link href={`/user/${user.slug}`}>
-              <AvatarImage src={user.profile.pictureUrl} />
+              <StyledAvatar src={user.profile.pictureUrl} fallbackSrc={user.profile.fallbackUrl} />
             </Link>
           </ProfileWrapper>
         </InfosWrapper>

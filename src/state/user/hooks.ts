@@ -36,6 +36,7 @@ const CURRENT_USER_QUERY = gql`
       profile {
         pictureUrl(derivative: "width=320")
         customAvatarUrl(derivative: "width=320")
+        fallbackUrl(derivative: "width=320")
         twitterUsername
         instagramUsername
         isDiscordVisible
@@ -55,6 +56,7 @@ const SEARCH_USER_CONTENT = `
   slug
   profile {
     pictureUrl(derivative: "width=320")
+    fallbackUrl(derivative: "width=320")
     certified
     twitterUsername
     instagramUsername

@@ -72,6 +72,7 @@ const QUERY_CARD = gql`
           username
           profile {
             pictureUrl(derivative: "width=128")
+            fallbackUrl(derivative: "width=128")
           }
         }
       }
@@ -162,6 +163,7 @@ export default function CardBreakout() {
                   ownerSlug={card.owner.user.slug}
                   ownerUsername={card.owner.user.username}
                   ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
+                  ownerProfileFallbackUrl={card.owner.user.profile.fallbackUrl}
                   pendingStatus={pendingStatus ?? undefined}
                   price={cardPrice ?? undefined}
                 />

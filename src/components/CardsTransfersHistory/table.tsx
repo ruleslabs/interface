@@ -9,13 +9,13 @@ import { Trans, t } from '@lingui/macro'
 import { NULL_PRICE } from '@/constants/misc'
 import { TYPE } from '@/styles/theme'
 import Table from '@/components/Table'
+import Avatar from '@/components/Avatar'
 import Link from '@/components/Link'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 
-const Avatar = styled.img`
+const StyledAvatar = styled(Avatar)`
   width: 36px;
   height: 36px;
-  border-radius: 50%;
 `
 
 const StyledTable = styled(Table)`
@@ -35,6 +35,7 @@ const QUERY_TRANSFERS_USERS = gql`
       username
       profile {
         pictureUrl(derivative: "width=128")
+        fallbackUrl(derivative: "width=128")
       }
       starknetWallet {
         address
@@ -139,7 +140,10 @@ export default function TransfersTable({ transfers, loading, error, showSerialNu
               <td>
                 {usersTable[transfer.toStarknetAddress] && (
                   <Link href={`/user/${usersTable[transfer.toStarknetAddress].slug}`}>
-                    <Avatar src={usersTable[transfer.toStarknetAddress].profile.pictureUrl} />
+                    <StyledAvatar
+                      src={usersTable[transfer.toStarknetAddress].profile.pictureUrl}
+                      fallbackSrc={usersTable[transfer.toStarknetAddress].profile.fallbackUrl}
+                    />
                   </Link>
                 )}
               </td>

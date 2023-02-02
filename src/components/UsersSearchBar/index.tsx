@@ -11,6 +11,7 @@ import useDebounce from '@/hooks/useDebounce'
 import { TYPE } from '@/styles/theme'
 import { useCurrentUser } from '@/state/user/hooks'
 import Certified from '@/components/Certified'
+import Avatar from '@/components/Avatar'
 
 const USERS_QUERY = gql`
   query ($ids: [ID!]!) {
@@ -23,6 +24,7 @@ const USERS_QUERY = gql`
       }
       profile {
         pictureUrl(derivative: "width=128")
+        fallbackUrl(derivative: "width=128")
         certified
       }
     }
@@ -188,7 +190,10 @@ export default function UsersSearchBar({ onSelect, selfSearchAllowed = true }: U
               onClick={() => handleSelect(usersTable[hit.objectID])}
             >
               {usersTable[hit.objectID].profile.certified && <StyledCertified />}
-              <img src={usersTable[hit.objectID].profile.pictureUrl} />
+              <Avatar
+                src={usersTable[hit.objectID].profile.pictureUrl}
+                fallbackSrc={usersTable[hit.objectID].profile.fallbackUrl}
+              />
               <RowCenter gap={4}>
                 <TYPE.body>{usersTable[hit.objectID].username}</TYPE.body>
               </RowCenter>

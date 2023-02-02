@@ -103,7 +103,9 @@ interface OfferRowProps {
 }
 
 const MemoizedOfferRowPropsEqualityCheck = (prevProps: OfferRowProps, nextProps: OfferRowProps) =>
-  prevProps.cardId === nextProps.cardId && !!prevProps.innerRef === !!nextProps.innerRef
+  prevProps.offerId === nextProps.offerId &&
+  !!prevProps.innerRef === !!nextProps.innerRef &&
+  prevProps.selected === nextProps.selected
 
 const MemoizedOfferRow = React.memo(function OfferRows({
   innerRef,
@@ -135,7 +137,7 @@ const MemoizedOfferRow = React.memo(function OfferRows({
         </Price>
       </td>
       <td>
-        <Link href={`${asPath.replace(/buy$/, serialNumber)}`}>
+        <Link href={`${asPath.replace(/buy$/, `${serialNumber}`)}`}>
           <TYPE.body clickable>#{serialNumber}</TYPE.body>
         </Link>
       </td>

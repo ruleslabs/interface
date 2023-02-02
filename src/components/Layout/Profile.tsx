@@ -108,6 +108,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
             <User
               username={`${user.username}`}
               pictureUrl={user.profile.pictureUrl}
+              fallbackUrl={user.profile.fallbackUrl}
               certified={user.profile.certified}
               customAvatarUrl={user.profile.customAvatarUrl}
               size="lg"

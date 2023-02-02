@@ -13,6 +13,7 @@ import { ColumnCenter } from '@/components/Column'
 import Row from '@/components/Row'
 import { NULL_PRICE } from '@/constants/misc'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
+import Avatar from '@/components/Avatar'
 
 import LongArrow from '@/images/long-arrow.svg'
 
@@ -35,6 +36,7 @@ const TRANSFERS_QUERY = gql`
       slug
       profile {
         pictureUrl(derivative: "width=128")
+        fallbackUrl(derivative: "width=128")
       }
       starknetWallet {
         address
@@ -73,17 +75,16 @@ const TradeUsers = styled(Row)`
 const UserWrapper = styled.div`
   flex: 1;
 
-  img {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    margin: 0 auto;
-    display: block;
-  }
-
   div {
     margin: 8px auto 0;
   }
+`
+
+const StyledAvatar = styled(Avatar)`
+  width: 48px;
+  height: 48px;
+  margin: 0 auto;
+  display: block;
 `
 
 const AnimatedLongArrow = styled(LongArrow)`
@@ -197,7 +198,7 @@ export default function Live() {
           <TradeUsers justify="space-around">
             <UserWrapper>
               <Link href={`/user/${fromUser.slug}`}>
-                <img src={fromUser.profile.pictureUrl} />
+                <StyledAvatar src={fromUser.profile.pictureUrl} fallbackSrc={fromUser.profile.fallbackUrl} />
               </Link>
 
               <Link href={`/user/${fromUser.slug}`}>
@@ -209,7 +210,7 @@ export default function Live() {
 
             <UserWrapper>
               <Link href={`/user/${toUser.slug}`}>
-                <img src={toUser.profile.pictureUrl} />
+                <StyledAvatar src={toUser.profile.pictureUrl} fallbackSrc={toUser.profile.fallbackUrl} />
               </Link>
 
               <Link href={`/user/${toUser.slug}`}>

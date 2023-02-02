@@ -17,7 +17,8 @@ const SEARCHED_USERS_QUERY = gql`
         slug
         username
         profile {
-          pictureUrl
+          pictureUrl(derivative: "width=512")
+          fallbackUrl(derivative: "width=512")
           certified
         }
       }

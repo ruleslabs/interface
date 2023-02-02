@@ -8,6 +8,7 @@ import Certified from '@/components/Certified'
 import { useAvatarEditModalToggle } from '@/state/application/hooks'
 import AvatarEditModal from '@/components/AvatarEditModal'
 import { useDefaultAvatarIdFromUrl } from '@/hooks/useDefaultAvatarUrls'
+import Avatar from '@/components/Avatar'
 
 type Size = 'sm' | 'md' | 'lg'
 
@@ -49,6 +50,7 @@ const UserAvatarEdit = styled(TYPE.body)`
 interface UserProps {
   username: string
   pictureUrl: string
+  fallbackUrl: string
   customAvatarUrl?: string
   certified: boolean
   size?: Size
@@ -58,6 +60,7 @@ interface UserProps {
 export default function User({
   username,
   pictureUrl,
+  fallbackUrl,
   customAvatarUrl,
   certified,
   size = 'md',
@@ -70,7 +73,7 @@ export default function User({
     <>
       <ColumnCenter>
         <UserAvatarWrapper size={size}>
-          <img src={pictureUrl} />
+          <Avatar src={pictureUrl} fallbackSrc={fallbackUrl} />
           {canEdit && (
             <UserAvatarEdit onClick={toggleAvatarEditModal}>
               <Trans>edit</Trans>

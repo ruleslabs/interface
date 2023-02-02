@@ -13,6 +13,7 @@ import { RowCenter } from '@/components/Row'
 import { PaginationSpinner } from '@/components/Spinner'
 import Tooltip from '@/components/Tooltip'
 import { useCurrentUser } from '@/state/user/hooks'
+import Avatar from '@/components/Avatar'
 
 const USERS_QUERY = gql`
   query ($ids: [ID!]!) {
@@ -22,6 +23,7 @@ const USERS_QUERY = gql`
       slug
       profile {
         pictureUrl(derivative: "width=128")
+        fallbackUrl(derivative: "width=128")
       }
     }
     cardModelsCount
@@ -78,6 +80,7 @@ interface UserRowProps {
   cardModelsCount: number
   username: string
   pictureUrl: string
+  fallbackUrl: string
   slug: string
   rank?: number
 }
@@ -90,6 +93,7 @@ const MemoizedUserRow = React.memo(function UserRow({
   cardModelsCount,
   username,
   pictureUrl,
+  fallbackUrl,
   slug,
   rank = 0,
 }: UserRowProps) {
@@ -111,7 +115,7 @@ const MemoizedUserRow = React.memo(function UserRow({
       <Link href={`/user/${slug}`}>
         {rank <= 3 ? (
           <>
-            <img src={pictureUrl} />
+            <Avatar src={pictureUrl} fallbackSrc={fallbackUrl} />
             {!!rank && <Medal>{rank === 1 ? '🥇' : rank === 2 ? '🥈' : '🥉'}</Medal>}
           </>
         ) : (
@@ -226,6 +230,7 @@ export default function HallOfFame() {
             key={hit.objectID}
             username={usersTable[hit.objectID].username}
             pictureUrl={usersTable[hit.objectID].profile.pictureUrl}
+            fallbackUrl={usersTable[hit.objectID].profile.fallbackUrl}
             slug={usersTable[hit.objectID].slug}
             cScore={hit.cScore}
             rank={hit.rank}
@@ -240,6 +245,7 @@ export default function HallOfFame() {
             <MemoizedUserRow
               username={currentUser.username}
               pictureUrl={currentUser.profile.pictureUrl}
+              fallbackUrl={currentUser.profile.fallbackUrl}
               slug={currentUser.slug}
               cScore={currentUserCScore}
               cardModelsCount={cardModelsCount}
