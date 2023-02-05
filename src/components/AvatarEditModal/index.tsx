@@ -39,7 +39,7 @@ const AvatarsWrapper = styled.div`
 `
 
 const Avatar = styled.div<{ selected: boolean }>`
-  ${({ selected, theme }) => selected && `border: 5px solid ${theme.primary1}`};
+  ${({ selected, theme }) => selected && `border: 4px solid ${theme.primary1}`};
   border-radius: 50%;
 
   img {

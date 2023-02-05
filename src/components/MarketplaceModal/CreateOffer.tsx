@@ -23,6 +23,7 @@ import EtherInput from '@/components/Input/EtherInput'
 import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
 import { SaleBreakdown } from './PriceBreakdown'
 import { BIG_INT_MIN_MARKETPLACE_OFFER_PRICE, BIG_INT_MAX_MARKETPLACE_OFFER_PRICE } from '@/constants/misc'
+import CardModelPriceStats from '@/components/CardModelSales/CardModelPriceStats'
 
 const CardBreakdown = styled(RowCenter)`
   gap: 16px;
@@ -36,11 +37,17 @@ const CardBreakdown = styled(RowCenter)`
   }
 `
 
+const StyledCardModelPriceStats = styled(CardModelPriceStats)`
+  gap: 32px;
+`
+
 interface CreateOfferModalProps {
   artistName: string
   season: number
   scarcityName: string
   scarcityMaxSupply?: number
+  lowestAsk?: string
+  averageSale?: string
   serialNumber: number
   pictureUrl: string
   onSuccess(): void
@@ -51,6 +58,8 @@ export default function CreateOfferModal({
   season,
   scarcityName,
   scarcityMaxSupply,
+  lowestAsk,
+  averageSale,
   serialNumber,
   pictureUrl,
   onSuccess,
@@ -172,16 +181,20 @@ export default function CreateOfferModal({
           <Column gap={32}>
             <CardBreakdown>
               <img src={pictureUrl} />
+
               <Column gap={4}>
                 <TYPE.body spanColor="text2">
                   {artistName} S{season}&nbsp;
                   <Trans id={scarcityName} render={({ translation }) => <>{translation}</>} />
                 </TYPE.body>
+
                 <TYPE.subtitle>
                   #{serialNumber} / {scarcityMaxSupply ?? '4000'}
                 </TYPE.subtitle>
               </Column>
             </CardBreakdown>
+
+            <StyledCardModelPriceStats lowestAsk={lowestAsk} averageSale={averageSale} />
 
             {currentUser?.starknetWallet.lockingReason ? (
               <ErrorCard>

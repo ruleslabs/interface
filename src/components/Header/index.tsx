@@ -64,7 +64,7 @@ const StyledHeader = styled.header`
   left: 0;
   right: 0;
   z-index: 3;
-  padding: 0 64px;
+  padding: 0 32px 0 64px;
 
   ${({ theme }) => theme.media.medium`
     padding: 0 16px;

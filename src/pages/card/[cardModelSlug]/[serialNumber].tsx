@@ -82,6 +82,8 @@ const QUERY_CARD = gql`
         pictureUrl(derivative: "width=1024")
         season
         youtubePreviewId
+        lowestAsk
+        averageSale
         artist {
           displayName
           user {
@@ -125,12 +127,9 @@ export default function CardBreakout() {
     [offerSearch?.hits?.[0]?.price]
   )
 
-  // if (cardQuery.error || cardQuery.loading) {
-  //   if (cardQuery.error) console.error(cardQuery.error)
-  //   return null
-  // }
+  if (cardQuery.error) return <TYPE.body>Card not found</TYPE.body>
 
-  if (!card) return <TYPE.body>Card not found</TYPE.body>
+  if (!card) return null
 
   return (
     <>
@@ -196,6 +195,8 @@ export default function CardBreakout() {
         artistName={card.cardModel.artist.displayName}
         scarcityName={card.cardModel.scarcity.name}
         scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
+        lowestAsk={card.cardModel.lowestAsk}
+        averageSale={card.cardModel.averageSale}
         season={card.cardModel.season}
         serialNumber={card.serialNumber}
         pictureUrl={card.cardModel.pictureUrl}

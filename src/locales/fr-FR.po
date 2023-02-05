@@ -57,7 +57,7 @@ msgstr "Connexion"
 
 #: src/components/AccountStatus/index.tsx
 msgid "Sign up"
-msgstr "Inscription"
+msgstr "Créer un compte"
 
 #: src/components/AuthModal/SignInForm.tsx
 msgid "or"
@@ -441,6 +441,9 @@ msgstr "{0, plural, =1 {Saison} other {Saisons}}"
 msgid "Starter Pack Season 1"
 msgstr "Starter Pack Saison 1"
 
+msgid "The pack detected by telescope."
+msgstr "Le pack détecté par télescope."
+
 #: src/components/PackBreakdown/index.tsx
 msgid "Buy - {0}€"
 msgstr "Acheter - {0}€"
@@ -610,8 +613,8 @@ msgid "Disconnect this session"
 msgstr "Déconnecter cette session"
 
 #: src/components/Footer/index.tsx
-msgid "© Rules 2022 - <0>Terms & Conditions</0>{separator}<1>Confidentiality</1>{separator}<2>Cookies</2>{separator}Contact: <3>support@rules.art</3>"
-msgstr "© Rules 2022 - <0>CGU</0>{separator}<1>Confidentialité</1>{separator}<2>Cookies</2>{separator}Contact: <3>support@rules.art</3>"
+msgid "© Rules 2023 - <0>Terms & Conditions</0>{separator}<1>Confidentiality</1>{separator}<2>Cookies</2>{separator}Contact: <3>support@rules.art</3>"
+msgstr "© Rules 2023 - <0>CGU</0>{separator}<1>Confidentialité</1>{separator}<2>Cookies</2>{separator}Contact: <3>support@rules.art</3>"
 
 #: src/components/PackPurchaseModal/index.tsx
 msgid "Payment being processed"
@@ -1209,7 +1212,7 @@ msgstr "Paramètres avancés du portefeuille"
 
 #: src/components/WalletModal/AdvanceWalletSettings.tsx
 msgid "Wallet address"
-msgstr "Address du portefeuille"
+msgstr "Adresse du portefeuille"
 
 #: src/components/WalletModal/AdvanceWalletSettings.tsx
 msgid "Private key"

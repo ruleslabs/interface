@@ -49,7 +49,7 @@ export default function Footer({ children }: React.HTMLAttributes<HTMLDivElement
       <FooterWrapper>
         <LegalText>
           <Trans>
-            © Rules 2022 -&nbsp;
+            © Rules 2023 -&nbsp;
             <Link href="/terms" target="_blank" color="text2" underline>
               Terms & Conditions
             </Link>

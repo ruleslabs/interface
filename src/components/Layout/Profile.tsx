@@ -94,7 +94,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
 
   const user = currentUser?.slug === userSlug ? currentUser : searchedUser
 
-  if (error || (!user && !loading)) return <TYPE.body>User not found</TYPE.body>
+  if (error) return <TYPE.body>User not found</TYPE.body>
   else if (!user) return null
 
   const discordMember = user?.profile?.discordMember

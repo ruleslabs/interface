@@ -81,14 +81,9 @@ export default function CardModelPage() {
 
   const backPictureUrl = useCardsBackPictureUrl(512)
 
-  if (cardModelQuery.error || cardModelQuery.loading) {
-    if (cardModelQuery.error) console.error(cardModelQuery.error)
-    return null
-  }
+  if (cardModelQuery.error) return <TYPE.body>Card not found</TYPE.body>
 
-  if (!cardModel) {
-    return <TYPE.body>Card not found</TYPE.body>
-  }
+  if (!cardModel) return null
 
   return (
     <>
