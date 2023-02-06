@@ -26,7 +26,7 @@ const communityCreationsData = [
   },
   {
     name: 'Playlists streaming',
-    link: 'https://multy.me/zX3Syk',
+    link: 'https://multy.me/ljQNes',
   },
 ]
 
