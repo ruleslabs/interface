@@ -13,7 +13,13 @@ import CardModel from '@/components/CardModel'
 import Row, { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
-import { LOW_SERIAL_MAXS } from '@/constants/misc'
+import { RULEDEX_LOW_SERIAL_MAXS, RULEDEX_CARDS_COUNT_LEVELS_MINS } from '@/constants/misc'
+
+import RuledexBadgeLowSerial from '@/images/ruledex-badge-low-serial.svg'
+import RuledexBadgeCardsCountLevel1 from '@/images/ruledex-badge-cards-count-level-1.svg'
+import RuledexBadgeCardsCountLevel2 from '@/images/ruledex-badge-cards-count-level-2.svg'
+import RuledexBadgeCardsCountLevel3 from '@/images/ruledex-badge-cards-count-level-3.svg'
+import RuledexBadgeCardsCountLevel4 from '@/images/ruledex-badge-cards-count-level-4.svg'
 
 const ScarcitySelectorWrapper = styled(Row)`
   gap: 42px;
@@ -78,23 +84,17 @@ const CardModelId = styled(TYPE.body)`
   border-radius: 3px;
 `
 
-const LowSerialBadge = styled.div`
-  width: 36px;
-  height: 36px;
-  background: radial-gradient(circle, #44dd53 0, #1d8c28 100%);
-  border-radius: 100%;
+const Badges = styled(Column)`
+  gap: 16px;
   position: absolute;
   top: -16px;
   right: -16px;
 
-  ::after {
-    content: '#';
-    position: absolute;
-    font-size: 26px;
-    top: 3px;
-    left: 10px;
-    font-weight: 700;
-    color: #fff;
+  & > svg {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    box-shadow: 0px 4px 4px #00000040;
   }
 `
 
@@ -156,14 +156,20 @@ function Ruledex({ address }: RuledexProps) {
         if (!ownedCardModel.serialNumbers.length) return acc
 
         // init badges
-        acc[ownedCardModel.cardModel.uid] = acc[ownedCardModel.cardModel.uid] ?? {}
+        acc[ownedCardModel.cardModel.uid] = acc[ownedCardModel.cardModel.uid] ?? { level: 0 }
 
         // low serial badge
-        for (const serialNumber of ownedCardModel.serialNumbers)
-          if (serialNumber <= LOW_SERIAL_MAXS[ownedCardModel.cardModel.scarcity.name]) {
+        for (const serialNumber of ownedCardModel.serialNumbers) {
+          if (serialNumber <= RULEDEX_LOW_SERIAL_MAXS[ownedCardModel.cardModel.scarcity.name]) {
             acc[ownedCardModel.cardModel.uid].lowSerial = true
             break
           }
+        }
+
+        // card counts badges
+        for (const cardCountMin of RULEDEX_CARDS_COUNT_LEVELS_MINS) {
+          if (ownedCardModel.serialNumbers.length >= cardCountMin) ++acc[ownedCardModel.cardModel.uid].level
+        }
 
         return acc
       }, {}),
@@ -227,7 +233,13 @@ function Ruledex({ address }: RuledexProps) {
 
               <CardModelId>#{cardModel.uid.toString().padStart(3, '0')}</CardModelId>
 
-              {cardModelsBadges[cardModel.uid]?.lowSerial && <LowSerialBadge />}
+              <Badges>
+                {cardModelsBadges[cardModel.uid]?.lowSerial && <RuledexBadgeLowSerial />}
+                {cardModelsBadges[cardModel.uid]?.level === 1 && <RuledexBadgeCardsCountLevel1 />}
+                {cardModelsBadges[cardModel.uid]?.level === 2 && <RuledexBadgeCardsCountLevel2 />}
+                {cardModelsBadges[cardModel.uid]?.level === 3 && <RuledexBadgeCardsCountLevel3 />}
+                {cardModelsBadges[cardModel.uid]?.level === 4 && <RuledexBadgeCardsCountLevel4 />}
+              </Badges>
             </LockableCardModel>
           ))}
       </StyledGrid>
