@@ -50,6 +50,7 @@ const QUERY_CARD_MODEL = gql`
   query ($slug: String!) {
     cardModel(slug: $slug) {
       id
+      slug
       pictureUrl(derivative: "width=1024")
       videoUrl
       lowestAsk
@@ -107,6 +108,7 @@ export default function CardModelPage() {
               season={cardModel.season}
               scarcityName={cardModel.scarcity.name}
               maxSupply={cardModel.scarcity.maxSupply}
+              slug={cardModel.slug}
             />
           </Card>
           <Card>

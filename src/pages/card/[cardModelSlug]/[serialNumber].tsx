@@ -78,6 +78,7 @@ const QUERY_CARD = gql`
       }
       cardModel {
         id
+        slug
         videoUrl
         pictureUrl(derivative: "width=1024")
         season
@@ -153,6 +154,7 @@ export default function CardBreakout() {
               scarcityName={card.cardModel.scarcity.name}
               maxSupply={card.cardModel.scarcity.maxSupply}
               serial={card.serialNumber}
+              slug={card.cardModel.slug}
             />
           </Card>
           <div>
