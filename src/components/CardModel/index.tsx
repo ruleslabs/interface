@@ -1,10 +1,10 @@
-import { useMemo } from 'react'
-import styled from 'styled-components'
+import React, { useMemo } from 'react'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
 import { useActiveLocale } from '@/hooks/useActiveLocale'
-import Link from '@/components/Link'
+import Link, { LinkProps } from '@/components/Link'
 import { TYPE } from '@/styles/theme'
 import { ColumnCenter } from '@/components/Column'
 import { LargeSpinner } from '@/components/Spinner'
@@ -18,7 +18,7 @@ const StyledCardModel = styled(ColumnCenter)<{ width?: number }>`
   ${({ width }) => width && `width: ${width}px;`}
 `
 
-const StyledCustomCardModel = styled(Link)`
+const StyledCustomCardModelCss = css`
   cursor: pointer;
   transform: perspective(0);
 
@@ -29,6 +29,14 @@ const StyledCustomCardModel = styled(Link)`
   &:hover img:not(.spinner) {
     transform: perspective(400px) rotateY(10deg);
   }
+`
+
+const StyledCustomCardModelLink = styled(Link)`
+  ${StyledCustomCardModelCss}
+`
+
+const StyledCustomCardModelDiv = styled.div`
+  ${StyledCustomCardModelCss}
 `
 
 const Card = styled.img<{ inDelivery: boolean; pendingStatus: boolean }>`
@@ -59,7 +67,18 @@ const StyledLargeSpinner = styled(LargeSpinner)`
   top: 41.5%;
 `
 
+type CustomCardModelProps = LinkProps | React.HTMLAttributes<HTMLDivElement>
+
+const CustomCardModel = (props: CustomCardModelProps) =>
+  (props as LinkProps).href ? (
+    <StyledCustomCardModelLink {...(props as LinkProps)} />
+  ) : (
+    <StyledCustomCardModelDiv {...(props as React.HTMLAttributes<HTMLDivElement>)} />
+  )
+
 interface CardModelProps {
+  innerRef?: (node: any) => void
+  slug?: string
   cardModelSlug: string
   pictureUrl: string
   width?: number
@@ -70,9 +89,16 @@ interface CardModelProps {
   season?: number
   artistName?: string
   lowestAsk?: string
+  onClick?: () => void
 }
 
-export default function CardModel({
+const MemoizedCardModelPropsEqualityCheck = (prevProps: CardModelProps, nextProps: CardModelProps) =>
+  prevProps.slug === nextProps.slug &&
+  !!prevProps.innerRef === !!nextProps.innerRef &&
+  prevProps.cardModelSlug === nextProps.cardModelSlug
+
+const MemoizedCardModel = React.memo(function OfferCards({
+  innerRef,
   cardModelSlug,
   pictureUrl,
   width,
@@ -83,6 +109,7 @@ export default function CardModel({
   season,
   artistName,
   lowestAsk,
+  onClick,
 }: CardModelProps) {
   // locale
   const locale = useActiveLocale()
@@ -93,14 +120,20 @@ export default function CardModel({
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
+  // link
+  const cardLink = useMemo(
+    () => (onClick ? undefined : `/card/${cardModelSlug}${!!serialNumber ? `/${serialNumber}` : ''}`),
+    [!!onClick]
+  )
+
   return (
-    <StyledCardModel width={width}>
-      <StyledCustomCardModel href={`/card/${cardModelSlug}${!!serialNumber ? `/${serialNumber}` : ''}`}>
+    <StyledCardModel width={width} ref={innerRef}>
+      <CustomCardModel onClick={onClick} href={cardLink}>
         <Card src={pictureUrl} inDelivery={inDelivery} pendingStatus={!!pendingStatus} />
         {inDelivery && <InDelivery src={`/assets/delivery.${locale}.png`} />}
         {onSale && !pendingStatus && <OnSale src={`/assets/onsale.${locale}.png`} />}
         {pendingStatus && <StyledLargeSpinner className="spinner" />}
-      </StyledCustomCardModel>
+      </CustomCardModel>
 
       {pendingStatus && (
         <ColumnCenter gap={4}>
@@ -137,4 +170,7 @@ export default function CardModel({
       )}
     </StyledCardModel>
   )
-}
+},
+MemoizedCardModelPropsEqualityCheck)
+
+export default MemoizedCardModel

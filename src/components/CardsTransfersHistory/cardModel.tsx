@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
 import Row from '@/components/Row'
-import { useSearchTransfers, TransfersSort } from '@/state/search/hooks'
+import { useSearchTransfers, TransfersSortingKey } from '@/state/search/hooks'
 import TransfersTable from './table'
 
 const SortingTitle = styled(Row)`
@@ -22,36 +22,47 @@ const SortingTitle = styled(Row)`
   }
 `
 
+const sorts: Array<{
+  name: string
+  key: TransfersSortingKey
+}> = [
+  {
+    name: 'Last sales',
+    key: 'txIndexDesc',
+  },
+  {
+    name: 'Highest sales',
+    key: 'priceDesc',
+  },
+]
+
 interface CardModelHistoryProps extends React.HTMLAttributes<HTMLDivElement> {
   cardModelId: string
 }
 
 export default function CardModelHistory({ cardModelId, ...props }: CardModelHistoryProps) {
-  const [transfersSort, setTransfersSort] = useState<keyof typeof TransfersSort>(
-    Object.keys(TransfersSort)[0] as keyof typeof TransfersSort
-  )
+  const [sortingKey, setSortingKey] = useState<TransfersSortingKey>(sorts[0].key)
 
-  const transfersSearch = useSearchTransfers({ facets: { cardModelId }, sortKey: transfersSort, onlySales: true })
+  const transfersSearch = useSearchTransfers({ facets: { cardModelId }, sortingKey, onlySales: true })
+
+  console.log(transfersSearch)
+
+  console.log(transfersSearch)
 
   return (
     <>
       <SortingTitle>
-        {(Object.keys(TransfersSort) as Array<keyof typeof TransfersSort>)
-          .sort((a: any) => (a === transfersSort ? -1 : 1))
+        {sorts
+          .sort((sort) => (sort.key === sortingKey ? -1 : 1))
           .map((sort) => (
-            <Trans
-              key={`sorting-title-${sort}`}
-              id={TransfersSort[sort].displayName}
-              render={({ translation }) => (
-                <TYPE.body
-                  color="text2"
-                  fontWeight={700}
-                  onClick={sort !== transfersSort ? () => setTransfersSort(sort) : undefined}
-                >
-                  {translation}
-                </TYPE.body>
-              )}
-            />
+            <TYPE.body
+              key={sort.key}
+              color="text2"
+              fontWeight={700}
+              onClick={sort.key === sortingKey ? undefined : () => setSortingKey(sort.key)}
+            >
+              <Trans id={sort.name} render={({ translation }) => <>{translation}</>} />
+            </TYPE.body>
           ))}
       </SortingTitle>
 

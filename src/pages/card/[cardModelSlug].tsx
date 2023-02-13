@@ -51,6 +51,7 @@ const QUERY_CARD_MODEL = gql`
   query ($slug: String!) {
     cardModel(slug: $slug) {
       id
+      slug
       pictureUrl(derivative: "width=1024")
       videoUrl
       lowestAsk
@@ -82,14 +83,9 @@ export default function CardModelPage() {
 
   const backPictureUrl = useCardsBackPictureUrl(512)
 
-  if (cardModelQuery.error || cardModelQuery.loading) {
-    if (cardModelQuery.error) console.error(cardModelQuery.error)
-    return null
-  }
+  if (cardModelQuery.error) return <TYPE.body>Card not found</TYPE.body>
 
-  if (!cardModel) {
-    return <TYPE.body>Card not found</TYPE.body>
-  }
+  if (!cardModel) return null
 
   return (
     <>
@@ -113,6 +109,7 @@ export default function CardModelPage() {
               season={cardModel.season}
               scarcityName={cardModel.scarcity.name}
               maxSupply={cardModel.scarcity.maxSupply}
+              slug={cardModel.slug}
             />
           </Card>
           <Card>

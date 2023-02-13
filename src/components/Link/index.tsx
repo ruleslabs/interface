@@ -15,7 +15,7 @@ const StyledLink = styled.a<{ color?: string; underline: boolean }>`
   `}
 `
 
-interface LinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
+export interface LinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
   href: string
   target?: string
   color?: string

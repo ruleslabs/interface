@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
-import { Trans } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 
 import { ActiveLink } from '@/components/Link'
 import Section from '@/components/Section'
@@ -81,7 +81,7 @@ export const tabLinks = [
   { name: 'Cards', link: '/cards' },
   { name: 'Packs', link: '/packs' },
   { name: 'Rulédex', link: '/ruledex' },
-  { name: 'Explorer', link: '/explorer' },
+  { name: t`Activity`, link: '/activity' },
 ] // TODO: move it somewhere else as a single source of truth
 
 export default function ProfileLayout({ children }: { children: React.ReactElement }) {
@@ -94,7 +94,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
 
   const user = currentUser?.slug === userSlug ? currentUser : searchedUser
 
-  if (error || (!user && !loading)) return <TYPE.body>User not found</TYPE.body>
+  if (error) return <TYPE.body>User not found</TYPE.body>
   else if (!user) return null
 
   const discordMember = user?.profile?.discordMember
@@ -108,8 +108,9 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
             <User
               username={`${user.username}`}
               pictureUrl={user.profile.pictureUrl}
+              fallbackUrl={user.profile.fallbackUrl}
               certified={user.profile.certified}
-              certifiedPictureUrl={user.profile.certifiedPictureUrl}
+              customAvatarUrl={user.profile.customAvatarUrl}
               size="lg"
               canEdit={userSlug === currentUser?.slug}
             />
@@ -126,7 +127,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
               )}
             </RowCenter>
           </ColumnCenter>
-          {user.profile.discordMember && user.profile.isDiscordVisible && (
+          {user.profile.discordMember && (
             <StyledDiscordMember
               username={user.profile.discordMember.username}
               discriminator={user.profile.discordMember.discriminator}
@@ -143,7 +144,11 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
           ))}
         </TabBar>
       </StyledSection>
-      {React.cloneElement(children, { userId: user?.id, address: user?.starknetWallet?.address })}
+      {React.cloneElement(children, {
+        userId: user?.id,
+        address: user?.starknetWallet?.address,
+        publicKey: user?.starknetWallet?.publicKey,
+      })}
     </>
   )
 }

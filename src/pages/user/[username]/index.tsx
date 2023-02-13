@@ -59,13 +59,14 @@ const StyledEmptyCard = styled(RowCenter)<{ clickable: boolean }>`
   }
 `
 
-const CardPicture = styled.img`
+const CardVideo = styled.video`
   width: 100%;
   border-radius: 4.44%/3.17%;
   display: block;
 `
 
 const RemoveButton = styled(SecondaryButton)`
+  z-index: 1;
   position: absolute;
   width: -moz-available;
   left: -2px;
@@ -143,7 +144,7 @@ const QUERY_USER_SHOWCASED_DECK = gql`
             serialNumber
             cardModel {
               slug
-              pictureUrl(derivative: "width=512")
+              videoUrl
             }
           }
           cardIndex
@@ -185,7 +186,7 @@ const DeckCards = ({ deck, indexes, onInsertion, onRemove, isCurrentUserProfile 
               </RemoveButton>
             )}
             <Link href={`/card/${deck[index].cardModel.slug}/${deck[index].serialNumber}`}>
-              <CardPicture src={deck[index].cardModel.pictureUrl} />
+              <CardVideo src={deck[index].cardModel.videoUrl} playsInline loop autoPlay muted />
             </Link>
           </StyledDeckCard>
         ) : (
@@ -200,7 +201,11 @@ const DeckCards = ({ deck, indexes, onInsertion, onRemove, isCurrentUserProfile 
   )
 }
 
-function Profile({ userId }: { userId: string }) {
+interface ProfileProps {
+  address: string
+}
+
+function Profile({ address }: ProfileProps) {
   const router = useRouter()
   const { username } = router.query
   const userSlug = typeof username === 'string' ? username.toLowerCase() : null
@@ -266,9 +271,7 @@ function Profile({ userId }: { userId: string }) {
           />
         </DeckGridSecondLine>
       </ShowcaseSection>
-      {isCurrentUserProfile && cardIndexToInsert > 0 && (
-        <DeckInsertionModal userId={userId} cardIndex={cardIndexToInsert} />
-      )}
+      {isCurrentUserProfile && <DeckInsertionModal starknetWalletAddress={address} cardIndex={cardIndexToInsert} />}
     </>
   )
 }

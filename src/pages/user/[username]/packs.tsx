@@ -17,14 +17,12 @@ import PackOpeningPreparationModal from '@/components/PackOpeningPreparationModa
 import { usePackOpeningPreparationModalToggle } from '@/state/application/hooks'
 import { useSetPackToPrepare } from '@/state/packOpening/hooks'
 
-const QUERY_USER_PACKS_BALANCES = gql`
+const USER_PACKS_BALANCES_QUERY = gql`
   query ($slug: String!) {
     user(slug: $slug) {
       packsBalances {
         balance
         inDeliveryBalance
-        preparingOpeningBalance
-        readyToOpenBalance
         pack {
           id
           slug
@@ -43,7 +41,7 @@ const StyledPackCard = styled(PackCard)`
 
 interface CustomPackCardProps {
   packBalance: any
-  state: 'inDelivery' | 'delivered' | 'preparingOpening' | 'readyToOpen'
+  state: 'inDelivery' | 'delivered'
   isOwner: boolean
 }
 
@@ -84,7 +82,7 @@ function Packs() {
   const toggleSort = useCallback(() => setIncreaseSort(!increaseSort), [increaseSort, setIncreaseSort])
 
   // query packs
-  const packsBalancesQuery = useQuery(QUERY_USER_PACKS_BALANCES, { variables: { slug: userSlug }, skip: !userSlug })
+  const packsBalancesQuery = useQuery(USER_PACKS_BALANCES_QUERY, { variables: { slug: userSlug }, skip: !userSlug })
 
   // aggregate packs
   const user = packsBalancesQuery.data?.user ?? {}
@@ -98,12 +96,7 @@ function Packs() {
   const packsCount = useMemo(
     () =>
       (packsBalances as any[]).reduce<number>(
-        (acc, packBalance) =>
-          acc +
-          packBalance.balance +
-          packBalance.inDeliveryBalance +
-          packBalance.readyToOpenBalance +
-          packBalance.preparingOpeningBalance,
+        (acc, packBalance) => acc + packBalance.balance + packBalance.inDeliveryBalance,
         0
       ),
     [packsBalances]
@@ -123,27 +116,17 @@ function Packs() {
             )}
           </TYPE.body>
         </GridHeader>
-        {isValid && !isLoading && packsCount ? (
+        {packsCount ? (
           <Grid maxWidth={256}>
             {packsBalances.map((packBalance: any, index: number) => (
               <>
-                {Array(packBalance.readyToOpenBalance)
+                {Array(packBalance.inDeliveryBalance)
                   .fill(0)
                   .map((_, index: number) => (
                     <CustomPackCard
-                      key={index}
+                      key={`in-delivery-${index}`}
                       packBalance={packBalance}
-                      state="readyToOpen"
-                      isOwner={isCurrentUserProfile}
-                    />
-                  ))}
-                {Array(packBalance.preparingOpeningBalance)
-                  .fill(0)
-                  .map((_, index: number) => (
-                    <CustomPackCard
-                      key={index}
-                      packBalance={packBalance}
-                      state="preparingOpening"
+                      state="inDelivery"
                       isOwner={isCurrentUserProfile}
                     />
                   ))}
@@ -151,19 +134,9 @@ function Packs() {
                   .fill(0)
                   .map((_, index: number) => (
                     <CustomPackCard
-                      key={index}
+                      key={`delivered-${index}`}
                       packBalance={packBalance}
                       state="delivered"
-                      isOwner={isCurrentUserProfile}
-                    />
-                  ))}
-                {Array(packBalance.inDeliveryBalance)
-                  .fill(0)
-                  .map((_, index: number) => (
-                    <CustomPackCard
-                      key={index}
-                      packBalance={packBalance}
-                      state="inDelivery"
                       isOwner={isCurrentUserProfile}
                     />
                   ))}
@@ -171,9 +144,7 @@ function Packs() {
             ))}
           </Grid>
         ) : (
-          isValid &&
-          !isLoading &&
-          (isCurrentUserProfile ? <EmptyPacksTabOfCurrentUser /> : <EmptyTab emptyText={t`No packs`} />)
+          !isLoading && (isCurrentUserProfile ? <EmptyPacksTabOfCurrentUser /> : <EmptyTab emptyText={t`No packs`} />)
         )}
       </Section>
       <PackOpeningPreparationModal onSuccess={packsBalancesQuery.refetch} />

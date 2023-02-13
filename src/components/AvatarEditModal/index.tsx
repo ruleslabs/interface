@@ -39,7 +39,7 @@ const AvatarsWrapper = styled.div`
 `
 
 const Avatar = styled.div<{ selected: boolean }>`
-  ${({ selected, theme }) => selected && `border: 5px solid ${theme.primary1}`};
+  ${({ selected, theme }) => selected && `border: 4px solid ${theme.primary1}`};
   border-radius: 50%;
 
   img {
@@ -84,10 +84,10 @@ const Checkmark = styled.span`
 
 interface AvatarEditModalProps {
   currentAvatarId: number
-  certifiedAvatarUrl?: string
+  customAvatarUrl?: string
 }
 
-export default function AvatarEditModal({ currentAvatarId, certifiedAvatarUrl }: AvatarEditModalProps) {
+export default function AvatarEditModal({ currentAvatarId, customAvatarUrl }: AvatarEditModalProps) {
   const toggleAvatarEditModal = useAvatarEditModalToggle()
   const isOpen = useModalOpen(ApplicationModal.AVATAR_EDIT)
 
@@ -127,9 +127,9 @@ export default function AvatarEditModal({ currentAvatarId, certifiedAvatarUrl }:
               <Checkmark />
             </Avatar>
           ))}
-          {certifiedAvatarUrl && (
+          {customAvatarUrl && (
             <Avatar selected={selectedAvatarId === 0} onClick={() => handleAvatarEdit(0)}>
-              <img src={certifiedAvatarUrl} />
+              <img src={customAvatarUrl} />
               <Checkmark />
             </Avatar>
           )}

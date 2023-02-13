@@ -21,12 +21,12 @@ export const ETH_ADDRESSES: AddressesMap = {
 }
 
 export const RULES_TOKENS_ADDRESSES: AddressesMap = {
-  [SupportedNetworks.GOERLI]: '0x7fa3f31baeba9ba94778e40c716486280023e89ae296b88d699337da08c682d',
+  [SupportedNetworks.GOERLI]: '0x15d9449ac58c7cfdd9db67acaf99168a97949c424453019439ec49e96b3b571',
   [SupportedNetworks.MAINNET]: '0x046bfa580e4fa55a38eaa7f51a3469f86b336eed59a6136a07b7adcd095b0eb2',
 }
 
 export const MARKETPLACE_ADDRESSES: AddressesMap = {
-  [SupportedNetworks.GOERLI]: '0x16a025e8c1f35f42e841cd8bff56f22ce706173cd044fffafdef5a355335219',
+  [SupportedNetworks.GOERLI]: '0xc56773d8708c7146e127d7c20e7e4321279db15731ebb1c6dbd1b46b5d0f27',
   [SupportedNetworks.MAINNET]: '0x63a4b3b0122cdaa6ba244739add94aed1d31e3330458cda833a8d119f28cbe8',
 }
 
@@ -38,6 +38,21 @@ export const L1_STARKGATE_ADDRESSES: AddressesMap = {
 export const L2_STARKGATE_ADDRESSES: AddressesMap = {
   [SupportedNetworks.GOERLI]: '0x73314940630fd6dcda0d772d4c972c4e0a9946bef9dabf4ef84eda8ef542b82',
   [SupportedNetworks.MAINNET]: '0x73314940630fd6dcda0d772d4c972c4e0a9946bef9dabf4ef84eda8ef542b82',
+}
+
+export const PACKS_OPENER_ADDRESSES: AddressesMap = {
+  [SupportedNetworks.GOERLI]: '0x740b0f22c11eaf280acb89447d8f0e28a3d0e42f4d9a8b81b5a3fb3f29ea637',
+  [SupportedNetworks.MAINNET]: '0x27fb5a7be4707e2b1fe653e7296ad30114596fafdd3fbc3f9b92a0551ff18ec',
+}
+
+export const AIRDROP_MINTER_ADDRESSES: AddressesMap = {
+  [SupportedNetworks.GOERLI]: '0x7fbb88af467e48e163b43667b4254faee9b18a6d193fd4b4a47cc39044b4025',
+  [SupportedNetworks.MAINNET]: '0x43d0424a8a2689b38cd33ce74c4a34c600461320379598e5a3c2a59713f0aa2',
+}
+
+export const TAX_RESERVE_ADDRESSES: AddressesMap = {
+  [SupportedNetworks.GOERLI]: '0x7c936b2c29e54b1aa24e1f33f36d1b2ce3c7755f87a5a837c924fc56bde7d86',
+  [SupportedNetworks.MAINNET]: '0x5abca3aa491806315a8cadebee93a8a167a4c0ac1a56b924429a891970e0b8d',
 }
 
 // Class hashes

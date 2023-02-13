@@ -88,13 +88,14 @@ export default function ProfileEditor() {
 
     refreshDiscordRolesMutation()
       .then((res: any) => {
+        queryCurrentUser()
         setDiscordLoading(false)
       })
       .catch((refreshDiscordAccountError: ApolloError) => {
         console.error(refreshDiscordAccountError) // TODO: handle error
         setDiscordLoading(false)
       })
-  }, [refreshDiscordRolesMutation, setDiscordLoading])
+  }, [refreshDiscordRolesMutation, setDiscordLoading, queryCurrentUser])
 
   // save changes
   const [setDiscordVisibilityLoading, setSetDiscordVisibilityLoading] = useState(false)

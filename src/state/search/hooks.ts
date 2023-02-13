@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState, useEffect } from 'react'
 import { useQuery, useLazyQuery, gql } from '@apollo/client'
 import algoliasearch from 'algoliasearch'
 
+import { NULL_PRICE } from '@/constants/misc'
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
 import {
   updateMarketplaceScarcityFilter,
@@ -16,7 +17,8 @@ const SEARCHED_USERS_QUERY = gql`
         slug
         username
         profile {
-          pictureUrl
+          pictureUrl(derivative: "width=512")
+          fallbackUrl(derivative: "width=512")
           certified
         }
       }
@@ -25,14 +27,28 @@ const SEARCHED_USERS_QUERY = gql`
 `
 
 const ALL_STARKNET_TRANSACTION_FOR_USER_QUERY = gql`
-  query ($address: String!, $after: String) {
-    allStarknetTransactionsForAddress(address: $address, after: $after) {
+  query ($address: String, $userId: String!, $after: String) {
+    allStarknetTransactionsForAddressOrUserId(address: $address, userId: $userId, after: $after) {
       nodes {
         hash
         status
+        fromAddress
         blockNumber
         blockTimestamp
         actualFee
+        code
+        events {
+          key
+          data
+        }
+        l2ToL1Messages {
+          fromAddress
+          toAddress
+          payload
+        }
+        offchainData {
+          action
+        }
       }
       pageInfo {
         endCursor
@@ -91,31 +107,56 @@ export function useMarketplaceSetMaximumPrice(): (price: number) => void {
 
 const client = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_ID ?? '', process.env.NEXT_PUBLIC_ALGOLIA_KEY ?? '')
 const algoliaIndexes = {
-  transfersPriceDesc: client.initIndex('transfers-price-desc'),
-  transfersDateDesc: client.initIndex('transfers-date-desc'),
-  cardsDateDesc: client.initIndex('cards-date-desc'),
-  cardsDateAsc: client.initIndex('cards-date-asc'),
-  offersPriceDesc: client.initIndex('offers-price-desc'),
-  offersPriceAsc: client.initIndex('offers-price-asc'),
-  users: client.initIndex('users'),
+  transfers: {
+    priceDesc: client.initIndex('transfers-price-desc'),
+    txIndexDesc: client.initIndex('transfers-tx-index-desc'),
+  },
+  cards: {
+    txIndexDesc: client.initIndex('cards-tx-index-desc'),
+    txIndexAsc: client.initIndex('cards-tx-index-asc'),
+    serialDesc: client.initIndex('cards-serial-desc'),
+    serialAsc: client.initIndex('cards-serial-asc'),
+    lastPriceDesc: client.initIndex('cards-last-price-desc'),
+    lastPriceAsc: client.initIndex('cards-last-price-asc'),
+    artistDesc: client.initIndex('cards-artist-desc'),
+    artistAsc: client.initIndex('cards-artist-asc'),
+  },
+  offers: {
+    priceDesc: client.initIndex('offers-price-desc'),
+    priceAsc: client.initIndex('offers-price-asc'),
+    txIndexDesc: client.initIndex('offers-tx-index-desc'),
+  },
+  users: {
+    certified: client.initIndex('users'),
+    cScore: client.initIndex('users-c-score-desc'),
+  },
 }
 
-export const TransfersSort = {
-  dateDesc: {
-    index: algoliaIndexes.transfersDateDesc,
-    displayName: 'Last sales',
-  },
-  priceDesc: {
-    index: algoliaIndexes.transfersPriceDesc,
-    displayName: 'Highest sales',
-  },
+export interface PageFetchedCallbackData {
+  pageNumber: number
+  totalHitsCount: number
 }
 
-interface Search {
+export type PageFetchedCallback = (hits: any[], data: PageFetchedCallbackData) => void
+
+export type TransfersSortingKey = keyof typeof algoliaIndexes.transfers
+export type CardsSortingKey = keyof typeof algoliaIndexes.cards
+export type OffersSortingKey = keyof typeof algoliaIndexes.offers
+export type UsersSortingKey = keyof typeof algoliaIndexes.users
+
+interface AlgoliaSearch {
+  nextPage?: () => void
   hits?: any[]
   nbHits?: number
   loading: boolean
   error: string | null
+}
+
+interface ApolloSearch {
+  nextPage?: () => void
+  data: any[]
+  loading: boolean
+  error: any
 }
 
 function useFacetFilters(facets: any) {
@@ -138,147 +179,222 @@ function useFacetFilters(facets: any) {
   )
 }
 
-interface SearchTransfersFacets {
-  cardModelId?: string
-  serialNumber?: number
+// ALGOLIA SEARCHES
+
+const ALGOLIA_FIRST_PAGE = 0
+
+interface AlgoliaSearchProps {
+  search?: string
+  facets: any
+  filters?: string
+  algoliaIndex: any
+  hitsPerPage: number
+  onPageFetched?: PageFetchedCallback
+  skip: boolean
 }
 
+function useAlgoliaSearch({
+  search = '',
+  facets = {},
+  filters,
+  algoliaIndex,
+  hitsPerPage,
+  onPageFetched,
+  skip,
+}: AlgoliaSearchProps): AlgoliaSearch {
+  const [searchResult, setSearchResult] = useState<AlgoliaSearch>({ loading: false, error: null })
+  const [nextPageNumber, setNextPageNumber] = useState<number | null>(ALGOLIA_FIRST_PAGE)
+
+  const facetFilters = useFacetFilters({ ...facets })
+
+  const runSearch = useCallback(
+    (forcedNextPageNumber: number | null = null) => {
+      if ((forcedNextPageNumber ?? nextPageNumber) === null) return
+
+      setSearchResult({ ...searchResult, loading: true, error: null })
+
+      algoliaIndex
+        .search(search, { facetFilters, filters, page: forcedNextPageNumber ?? nextPageNumber, hitsPerPage })
+        .then((res: any) => {
+          setSearchResult({
+            hits: onPageFetched ? [] : (searchResult.hits ?? []).concat(res.hits),
+            nbHits: res.nbHits,
+            loading: false,
+            error: null,
+          })
+          setNextPageNumber(res.page + 1 < res.nbPages ? res.page + 1 : null)
+
+          if (onPageFetched) onPageFetched(res.hits, { pageNumber: res.page, totalHitsCount: res.nbHits })
+        })
+        .catch((err: string) => {
+          setSearchResult({ loading: false, error: err })
+          console.error(err)
+        })
+    },
+    [algoliaIndex, nextPageNumber, facetFilters, hitsPerPage, searchResult.hits, filters, search]
+  )
+
+  useEffect(() => {
+    setNextPageNumber(ALGOLIA_FIRST_PAGE)
+    setSearchResult({ loading: false, error: null })
+  }, [algoliaIndex, search])
+
+  useEffect(() => {
+    if (!skip) runSearch(ALGOLIA_FIRST_PAGE)
+  }, [skip])
+
+  useEffect(() => {
+    if (nextPageNumber === ALGOLIA_FIRST_PAGE && !skip) runSearch()
+  }, [nextPageNumber])
+
+  return {
+    nextPage: nextPageNumber === null ? undefined : runSearch,
+    ...searchResult,
+  }
+}
+
+// TRANSFERS
+
 interface SearchTransfersProps {
-  facets: SearchTransfersFacets
-  sortKey?: keyof typeof TransfersSort
+  facets?: {
+    cardModelId?: string
+    serialNumber?: number
+    fromStarknetAddress?: string
+    price?: string
+  }
+  hitsPerPage?: number
+  sortingKey?: TransfersSortingKey
   onlySales?: boolean
+  skip?: boolean
+  onPageFetched?: PageFetchedCallback
+  noMinting?: boolean
 }
 
 export function useSearchTransfers({
-  facets,
-  sortKey = Object.keys(TransfersSort)[0] as keyof typeof TransfersSort,
+  facets = {},
+  sortingKey = Object.keys(algoliaIndexes.transfers)[0] as TransfersSortingKey,
   onlySales = false,
-}: SearchTransfersProps): Search {
-  const [transfersSearch, setTransfersSearch] = useState<Search>({ loading: true, error: null })
-
-  const facetFilters = useFacetFilters({ ...facets, is_sale: onlySales ? 'true' : undefined })
-
-  useEffect(() => {
-    setTransfersSearch({ ...transfersSearch, loading: true, error: null })
-
-    TransfersSort[sortKey].index
-      .search('', { facetFilters, page: 0, hitsPerPage: 32 })
-      .then((res) => setTransfersSearch({ hits: res.hits, loading: false, error: null }))
-      .catch((err) => {
-        setTransfersSearch({ loading: false, error: err })
-        console.error(err)
-      })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [facetFilters, setTransfersSearch, sortKey])
-
-  return transfersSearch
+  noMinting = false,
+  hitsPerPage = 32,
+  onPageFetched,
+  skip = false,
+}: SearchTransfersProps): AlgoliaSearch {
+  return useAlgoliaSearch({
+    facets: {
+      ...facets,
+      price: onlySales ? `-${NULL_PRICE}` : facets.price,
+      fromStarknetAddress: noMinting ? '-0x0' : facets.fromStarknetAddress,
+    },
+    algoliaIndex: algoliaIndexes.transfers[sortingKey],
+    hitsPerPage,
+    onPageFetched,
+    skip,
+  })
 }
 
-interface SearchCardsFacets {
-  ownerUserId?: string
-  cardId?: string | string[]
-}
+// CARDS
 
 interface SearchCardsProps {
-  facets: SearchCardsFacets
-  dateDesc?: boolean
+  facets?: {
+    ownerStarknetAddress?: string
+    cardId?: string | string[]
+  }
+  sortingKey?: CardsSortingKey
   search?: string
   skip?: boolean
+  hitsPerPage?: number
+  onPageFetched?: PageFetchedCallback
 }
 
-export function useSearchCards({ facets, dateDesc = true, search = '', skip = false }: SearchCardsProps): Search {
-  const [cardsSearch, setCardsSearch] = useState<Search>({ loading: true, error: null })
-
-  const facetFilters = useFacetFilters(facets)
-
-  useEffect(() => {
-    if (skip) return
-
-    // prettier-ignore
-    setCardsSearch({ ...cardsSearch, loading: true, error: null });
-
-    // prettier-ignore
-    (dateDesc ? algoliaIndexes.cardsDateDesc : algoliaIndexes.cardsDateAsc)
-      .search(search, { facetFilters, page: 0, hitsPerPage: 256 }) // TODO pagination bruh
-      .then((res) => setCardsSearch({ hits: res.hits, loading: false, error: null }))
-      .catch((err) => {
-        setCardsSearch({ loading: false, error: err })
-        console.error(err)
-      })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [facetFilters, setCardsSearch, dateDesc, search, skip])
-
-  return cardsSearch
+export function useSearchCards({
+  search = '',
+  facets = {},
+  sortingKey = Object.keys(algoliaIndexes.cards)[0] as CardsSortingKey,
+  hitsPerPage = 32,
+  onPageFetched,
+  skip = false,
+}: SearchCardsProps): AlgoliaSearch {
+  return useAlgoliaSearch({
+    facets: {
+      ...facets,
+      cardId: undefined,
+      objectID: facets.cardId,
+    },
+    algoliaIndex: algoliaIndexes.cards[sortingKey],
+    hitsPerPage,
+    onPageFetched,
+    skip,
+    search,
+  })
 }
 
-interface SearchOffersFacets {
-  cardModelId?: string
-  cardId?: string
-  objectID?: string[]
-}
+// OFFERS
 
 interface SearchOffersProps {
-  facets: SearchOffersFacets
+  facets?: {
+    cardModelId?: string
+    cardId?: string
+    objectID?: string[]
+  }
   priceDesc?: boolean
   skip?: boolean
   hitsPerPage?: number
+  onPageFetched?: PageFetchedCallback
+  sortingKey?: OffersSortingKey
 }
 
 export function useSearchOffers({
-  facets,
-  priceDesc = true,
+  facets = {},
+  sortingKey = Object.keys(algoliaIndexes.offers)[0] as OffersSortingKey,
   skip = false,
-  hitsPerPage = 128,
-}: SearchOffersProps): Search {
-  const [offersSearch, setOffersSearch] = useState<Search>({ loading: true, error: null })
-
-  const facetFilters = useFacetFilters({ ...facets, available: '-false' })
-
-  useEffect(() => {
-    if (skip) return
-
-    // prettier-ignore
-    setOffersSearch({ ...offersSearch, loading: true, error: null });
-
-    // prettier-ignore
-    (priceDesc ? algoliaIndexes.offersPriceDesc : algoliaIndexes.offersPriceAsc)
-      .search('', { facetFilters, page: 0, hitsPerPage })
-      .then((res) => setOffersSearch({ ...res, loading: false, error: null }))
-      .catch((err) => {
-        setOffersSearch({ loading: false, error: err })
-        console.error(err)
-      })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [facetFilters, setOffersSearch, priceDesc, skip, hitsPerPage])
-
-  return offersSearch
+  hitsPerPage = 32,
+  onPageFetched,
+}: SearchOffersProps): AlgoliaSearch {
+  return useAlgoliaSearch({
+    facets: {
+      ...facets,
+      available: '-false',
+    },
+    algoliaIndex: algoliaIndexes.offers[sortingKey],
+    hitsPerPage,
+    onPageFetched,
+    skip,
+  })
 }
 
-interface SearchUsersFacets {
-  username?: string
-}
+// USERS
 
 interface SearchUsersProps {
   search?: string
-  facets: SearchUsersFacets
+  hitsPerPage?: number
+  sortingKey?: UsersSortingKey
+  onPageFetched?: PageFetchedCallback
+  skip?: boolean
+  filters?: string
+  facets?: {
+    username?: string
+    userId?: string
+  }
 }
 
-export function useSearchUsers({ search = '', facets }: SearchUsersProps) {
-  const [usersSearch, setUsersSearch] = useState<Search>({ loading: true, error: null })
-
-  const facetFilters = useFacetFilters(facets)
-
-  useEffect(() => {
-    algoliaIndexes.users
-      .search(search, { facetFilters, page: 0, hitsPerPage: 10 })
-      .then((res) => setUsersSearch({ hits: res.hits, loading: false, error: null }))
-      .catch((err) => {
-        setUsersSearch({ loading: false, error: err })
-        console.error(err)
-      })
-  }, [facetFilters, search, setUsersSearch])
-
-  return usersSearch
+export function useSearchUsers({
+  search = '',
+  facets = {},
+  filters,
+  sortingKey = Object.keys(algoliaIndexes.users)[0] as UsersSortingKey,
+  hitsPerPage = 10,
+  skip = false,
+  onPageFetched,
+}: SearchUsersProps) {
+  return useAlgoliaSearch({
+    facets: { ...facets, userId: undefined, objectID: facets.userId },
+    filters,
+    search,
+    algoliaIndex: algoliaIndexes.users[sortingKey],
+    hitsPerPage,
+    onPageFetched,
+    skip,
+  })
 }
 
 // Non algolia search
@@ -292,7 +408,7 @@ export function useSearchedUsers() {
   return { searchedUsers: orderedSearchedUsers, loading, error }
 }
 
-export function useStarknetTransactionsForAddress(address: string) {
+export function useStarknetTransactionsForAddress(userId: string, address?: string): ApolloSearch {
   // pagination cursor and page
   const [endCursor, setEndCursor] = useState<string | null>(null)
   const [hasNextPage, setHasNextPage] = useState(false)
@@ -301,28 +417,37 @@ export function useStarknetTransactionsForAddress(address: string) {
   // on query completed
   const onQueryCompleted = useCallback(
     (data: any) => {
-      setEndCursor(data.allStarknetTransactionsForAddress.pageInfo.endCursor)
-      setHasNextPage(data.allStarknetTransactionsForAddress.pageInfo.hasNextPage)
+      setEndCursor(data.allStarknetTransactionsForAddressOrUserId.pageInfo.endCursor)
+      setHasNextPage(data.allStarknetTransactionsForAddressOrUserId.pageInfo.hasNextPage)
 
-      setStarknetTransactions(starknetTransactions.concat(data.allStarknetTransactionsForAddress.nodes))
+      setStarknetTransactions(starknetTransactions.concat(data.allStarknetTransactionsForAddressOrUserId.nodes))
     },
     [starknetTransactions.length]
   )
 
   // get callable query
-  const [getAllStarknetTransactionsForAddress, { loading, error }] = useLazyQuery(
+  const [getAllStarknetTransactionsForAddressOrUserId, { loading, error }] = useLazyQuery(
     ALL_STARKNET_TRANSACTION_FOR_USER_QUERY,
     { onCompleted: onQueryCompleted }
   )
 
   // nextPage
   const nextPage = useCallback(() => {
-    getAllStarknetTransactionsForAddress({ variables: { address, after: endCursor } })
-  }, [getAllStarknetTransactionsForAddress, address, endCursor])
+    const options: any = { variables: { userId, after: endCursor } }
+
+    if (address) options.variables.address = address
+
+    getAllStarknetTransactionsForAddressOrUserId(options)
+  }, [getAllStarknetTransactionsForAddressOrUserId, address, endCursor])
 
   useEffect(() => {
     nextPage()
   }, [])
 
-  return [hasNextPage ? nextPage : null, { data: starknetTransactions, loading, error }]
+  return {
+    nextPage: hasNextPage ? nextPage : undefined,
+    data: starknetTransactions,
+    loading,
+    error,
+  }
 }

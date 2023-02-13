@@ -2,7 +2,6 @@ import { useState, useCallback, useEffect } from 'react'
 import { t, Trans } from '@lingui/macro'
 import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
-import styled from 'styled-components'
 
 import Modal, { ModalContent } from '@/components/Modal'
 import { useModalOpen, useUpgradeWalletModalToggle } from '@/state/application/hooks'
@@ -10,41 +9,13 @@ import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
 import { PrimaryButton } from '@/components/Button'
-import { ErrorCard, InfoCard } from '@/components/Card'
+import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
 import StarknetSigner from '@/components/StarknetSigner'
 import { ACCOUNT_CLASS_HASH } from '@/constants/addresses'
 import { useUpgradeWalletMutation } from '@/state/wallet/hooks'
 import { TYPE } from '@/styles/theme'
 import Link from '@/components/Link'
-
-import Pumpkin from '@/images/pumpkin.svg'
-
-const Badge = styled.div`
-  width: 72px;
-  height: 72px;
-  border: 4px solid #f3900e;
-  border-radius: 50%;
-  justify-content: center;
-  padding: 12px 14px 16px;
-  background: ${({ theme }) => theme.bg1};
-  margin: 16px auto 0;
-  animation: badge-float 5s linear infinite;
-
-  @keyframes badge-float {
-    0% {
-      transform: translatey(0px) scale(1.02);
-    }
-
-    50% {
-      transform: translatey(10px) scale(1);
-    }
-
-    100% {
-      transform: translatey(0px) scale(1.02);
-    }
-  }
-`
 
 interface UpgradeWalletModalProps {
   onSuccess(): void
@@ -146,29 +117,13 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
               </TYPE.body>
             </Column>
 
-            <InfoCard textAlign="center">
-              <Trans>
-                Don&apos;t panic, this upgrade comes with a surprise.
-                <br />
-                Upgrade your account and unlock an exclusive discord badge.
-              </Trans>
-
-              <Badge>
-                <Pumpkin />
-              </Badge>
-            </InfoCard>
-
-            {currentUser?.starknetWallet.needsSignerPublicKeyUpdate && (
+            {!!currentUser?.starknetWallet.lockingReason && (
               <ErrorCard>
                 <LockedWallet />
               </ErrorCard>
             )}
 
-            <PrimaryButton
-              onClick={handleConfirmation}
-              disabled={currentUser?.starknetWallet.needsSignerPublicKeyUpdate}
-              large
-            >
+            <PrimaryButton onClick={handleConfirmation} disabled={!!currentUser?.starknetWallet.lockingReason} large>
               <Trans>Upgrade</Trans>
             </PrimaryButton>
           </Column>

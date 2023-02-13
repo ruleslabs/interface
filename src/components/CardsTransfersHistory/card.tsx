@@ -11,7 +11,7 @@ interface CardTransfersHistoryProps extends React.HTMLAttributes<HTMLDivElement>
 }
 
 export default function CardTransfersHistory({ cardModelId, serialNumber, ...props }: CardTransfersHistoryProps) {
-  const transfersSearch = useSearchTransfers({ facets: { cardModelId, serialNumber } })
+  const transfersSearch = useSearchTransfers({ facets: { cardModelId, serialNumber }, sortingKey: 'txIndexDesc' })
 
   return (
     <div {...props}>

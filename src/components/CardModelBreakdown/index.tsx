@@ -23,6 +23,7 @@ interface CardModelBreakdownProps {
   scarcityName: string
   maxSupply: number
   serial?: number
+  slug: string
 }
 
 export default function CardModelBreakdown({
@@ -32,12 +33,16 @@ export default function CardModelBreakdown({
   scarcityName,
   maxSupply,
   serial,
+  slug,
 }: CardModelBreakdownProps) {
   return (
     <>
-      <TYPE.medium fontSize={28} fontWeight={700}>
-        {artistName}
-      </TYPE.medium>
+      <Link href={`/card/${slug}`}>
+        <TYPE.medium fontSize={28} fontWeight={700} clickable>
+          {artistName}
+        </TYPE.medium>
+      </Link>
+
       <UserLogin>
         {artistUsername ? (
           <Link href={`/user/${artistUsername}`}>
@@ -50,6 +55,7 @@ export default function CardModelBreakdown({
         )}
         <Certified />
       </UserLogin>
+
       <Column gap={8}>
         <TYPE.body>
           <Trans>Season {season}</Trans>

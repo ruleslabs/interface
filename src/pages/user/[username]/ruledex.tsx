@@ -12,10 +12,14 @@ import Grid from '@/components/Grid'
 import CardModel from '@/components/CardModel'
 import Row, { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
-import { useSearchCards } from '@/state/search/hooks'
 import { TYPE } from '@/styles/theme'
-import { useCurrentUser } from '@/state/user/hooks'
-import { LOW_SERIAL_MAXS } from '@/constants/misc'
+import { RULEDEX_LOW_SERIAL_MAXS, RULEDEX_CARDS_COUNT_LEVELS_MINS } from '@/constants/misc'
+
+import RuledexBadgeLowSerial from '@/images/ruledex-badge-low-serial.svg'
+import RuledexBadgeCardsCountLevel1 from '@/images/ruledex-badge-cards-count-level-1.svg'
+import RuledexBadgeCardsCountLevel2 from '@/images/ruledex-badge-cards-count-level-2.svg'
+import RuledexBadgeCardsCountLevel3 from '@/images/ruledex-badge-cards-count-level-3.svg'
+import RuledexBadgeCardsCountLevel4 from '@/images/ruledex-badge-cards-count-level-4.svg'
 
 const ScarcitySelectorWrapper = styled(Row)`
   gap: 42px;
@@ -80,27 +84,21 @@ const CardModelId = styled(TYPE.body)`
   border-radius: 3px;
 `
 
-const LowSerialBadge = styled.div`
-  width: 36px;
-  height: 36px;
-  background: radial-gradient(circle, #44dd53 0, #1d8c28 100%);
-  border-radius: 100%;
+const Badges = styled(Column)`
+  gap: 16px;
   position: absolute;
   top: -16px;
   right: -16px;
 
-  ::after {
-    content: '#';
-    position: absolute;
-    font-size: 26px;
-    top: 3px;
-    left: 10px;
-    font-weight: 700;
-    color: #fff;
+  & > svg {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    box-shadow: 0px 4px 4px #00000040;
   }
 `
 
-const QUERY_CARD_MODELS = gql`
+const ALL_CARD_MODELS_QUERY = gql`
   query {
     allCardModels {
       slug
@@ -113,19 +111,16 @@ const QUERY_CARD_MODELS = gql`
   }
 `
 
-const QUERY_CARDS = gql`
-  query ($ids: [ID!]!) {
-    cardsByIds(ids: $ids) {
-      serialNumber
-      cardModel {
-        uid
-        pictureUrl(derivative: "width=1024")
-        season
-        scarcity {
-          name
-        }
-        artist {
-          displayName
+const USER_OWNED_CARD_MODELS_QUERY = gql`
+  query ($slug: String!) {
+    user(slug: $slug) {
+      ownedCardModels {
+        serialNumbers
+        cardModel {
+          uid
+          scarcity {
+            name
+          }
         }
       }
     }
@@ -133,47 +128,52 @@ const QUERY_CARDS = gql`
 `
 
 interface RuledexProps {
-  userId: string
+  address: string
 }
 
-function Ruledex({ userId }: RuledexProps) {
+function Ruledex({ address }: RuledexProps) {
   // user slug
   const router = useRouter()
   const { username } = router.query
   const userSlug = typeof username === 'string' ? username.toLowerCase() : null
 
-  // current user
-  const currentUser = useCurrentUser()
-  const isCurrentUserProfile = currentUser?.slug === userSlug
-
-  // sort
-  const [sortDesc, setSortDesc] = useState(true)
-  const toggleSort = useCallback(() => setSortDesc(!sortDesc), [sortDesc])
-
-  // get user's cards ids
-  const cardsSearch = useSearchCards({ facets: { ownerUserId: userId }, dateDesc: sortDesc })
-  const cardIds = useMemo(() => (cardsSearch?.hits ?? []).map((hit: any) => hit.cardId, []), [cardsSearch?.hits])
-
   // Query cards
-  const cardsQuery = useQuery(QUERY_CARDS, { variables: { ids: cardIds }, skip: !cardIds.length })
-  const cards = cardsQuery.data?.cardsByIds ?? []
+  const ownedCardModelsQuery = useQuery(USER_OWNED_CARD_MODELS_QUERY, {
+    variables: { slug: userSlug },
+    skip: !userSlug,
+  })
+  const ownedCardModels = ownedCardModelsQuery.data?.user.ownedCardModels ?? []
 
   // Query card models
-  const allCardModelsQuery = useQuery(QUERY_CARD_MODELS)
-  const cardModels = allCardModelsQuery.data?.allCardModels ?? []
+  const allCardModelsQuery = useQuery(ALL_CARD_MODELS_QUERY)
+  const allCardModels = allCardModelsQuery.data?.allCardModels ?? []
 
-  // unlocked card models
+  // owned card models
   const cardModelsBadges = useMemo(
     () =>
-      (cards as any[]).reduce<{ [uid: number]: any }>((acc, card: any) => {
-        acc[card.cardModel.uid] = acc[card.cardModel.uid] ?? {}
+      (ownedCardModels as any[]).reduce<{ [uid: number]: any }>((acc, ownedCardModel) => {
+        // skip if needed
+        if (!ownedCardModel.serialNumbers.length) return acc
 
-        if (card.serialNumber < LOW_SERIAL_MAXS[card.cardModel.scarcity.name] ?? 0)
-          acc[card.cardModel.uid].lowSerial = true
+        // init badges
+        acc[ownedCardModel.cardModel.uid] = acc[ownedCardModel.cardModel.uid] ?? { level: 0 }
+
+        // low serial badge
+        for (const serialNumber of ownedCardModel.serialNumbers) {
+          if (serialNumber <= RULEDEX_LOW_SERIAL_MAXS[ownedCardModel.cardModel.scarcity.name]) {
+            acc[ownedCardModel.cardModel.uid].lowSerial = true
+            break
+          }
+        }
+
+        // card counts badges
+        for (const cardCountMin of RULEDEX_CARDS_COUNT_LEVELS_MINS) {
+          if (ownedCardModel.serialNumbers.length >= cardCountMin) ++acc[ownedCardModel.cardModel.uid].level
+        }
 
         return acc
       }, {}),
-    [cards.length]
+    [ownedCardModels.length]
   )
 
   // selected scarcity
@@ -186,21 +186,21 @@ function Ruledex({ userId }: RuledexProps) {
   // scarcities max
   const scarcitiesMax = useMemo(
     () =>
-      (cardModels as any[]).reduce<{ [scarcityName: string]: number }>((acc, cardModel: any) => {
+      (allCardModels as any[]).reduce<{ [scarcityName: string]: number }>((acc, cardModel: any) => {
         acc[cardModel.scarcity.name] = (acc[cardModel.scarcity.name] ?? 0) + 1
         return acc
       }, {}),
-    [cardModels.length]
+    [allCardModels.length]
   )
 
   // scarcities balance
   const scarcitiesBalance = useMemo(
     () =>
-      (cardModels as any[]).reduce<{ [scarcityName: string]: number }>((acc, cardModel: any) => {
+      (allCardModels as any[]).reduce<{ [scarcityName: string]: number }>((acc, cardModel: any) => {
         acc[cardModel.scarcity.name] = (acc[cardModel.scarcity.name] ?? 0) + (cardModelsBadges[cardModel.uid] ? 1 : 0)
         return acc
       }, {}),
-    [cardModels.length, Object.keys(cardModelsBadges).length]
+    [allCardModels.length, Object.keys(cardModelsBadges).length]
   )
 
   return (
@@ -224,14 +224,22 @@ function Ruledex({ userId }: RuledexProps) {
       </ScarcitySelectorWrapper>
 
       <StyledGrid gap={28} maxWidth={132}>
-        {cardModels
+        {allCardModels
           .filter((cardModel: any) => !selectedScarcity || cardModel.scarcity.name === selectedScarcity)
           .sort((a: any, b: any) => a.uid - b.uid)
           .map((cardModel: any) => (
             <LockableCardModel key={cardModel.slug} locked={!cardModelsBadges[cardModel.uid]}>
               <CardModel cardModelSlug={cardModel.slug} pictureUrl={cardModel.pictureUrl} />
+
               <CardModelId>#{cardModel.uid.toString().padStart(3, '0')}</CardModelId>
-              {cardModelsBadges[cardModel.uid]?.lowSerial && <LowSerialBadge />}
+
+              <Badges>
+                {cardModelsBadges[cardModel.uid]?.lowSerial && <RuledexBadgeLowSerial />}
+                {cardModelsBadges[cardModel.uid]?.level === 1 && <RuledexBadgeCardsCountLevel1 />}
+                {cardModelsBadges[cardModel.uid]?.level === 2 && <RuledexBadgeCardsCountLevel2 />}
+                {cardModelsBadges[cardModel.uid]?.level === 3 && <RuledexBadgeCardsCountLevel3 />}
+                {cardModelsBadges[cardModel.uid]?.level === 4 && <RuledexBadgeCardsCountLevel4 />}
+              </Badges>
             </LockableCardModel>
           ))}
       </StyledGrid>

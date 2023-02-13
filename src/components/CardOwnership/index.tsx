@@ -19,13 +19,13 @@ import {
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import CardPendingStatusText from '@/components/CardPendingStatusText'
 import { CardPendingStatus } from '@/hooks/useCardsPendingStatus'
+import Avatar from '@/components/Avatar'
 
 import Present from '@/images/present.svg'
 
-const Avatar = styled.img`
+const StyledAvatar = styled(Avatar)`
   width: 50px;
   height: 50px;
-  border-radius: 50%;
 `
 
 const ButtonsWrapper = styled(Column)`
@@ -43,6 +43,7 @@ interface CardOwnershipProps {
   ownerSlug: string
   ownerUsername: string
   ownerProfilePictureUrl: string
+  ownerProfileFallbackUrl: string
   pendingStatus?: CardPendingStatus
   price?: string
 }
@@ -51,6 +52,7 @@ export default function CardOwnership({
   ownerSlug,
   ownerUsername,
   ownerProfilePictureUrl,
+  ownerProfileFallbackUrl,
   pendingStatus,
   price,
 }: CardOwnershipProps) {
@@ -73,7 +75,7 @@ export default function CardOwnership({
     <Column gap={16}>
       <RowCenter gap={12}>
         <Link href={`/user/${ownerSlug}`}>
-          <Avatar src={ownerProfilePictureUrl} />
+          <StyledAvatar src={ownerProfilePictureUrl} fallbackSrc={ownerProfileFallbackUrl} />
         </Link>
         <TYPE.body>
           <Trans>
@@ -90,9 +92,7 @@ export default function CardOwnership({
             {currentUser?.slug === ownerSlug && parsedPrice ? (
               <>
                 <PrimaryButton onClick={toggleCancelOfferModal} large>
-                  <Trans>
-                    Close offer - {parsedPrice.toSignificant(6)} ETH ({weiAmountToEURValue(parsedPrice)}€)
-                  </Trans>
+                  <Trans>Close offer</Trans>
                 </PrimaryButton>
 
                 <SecondaryButton onClick={toggleCreateOfferModal} large>

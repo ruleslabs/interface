@@ -5,7 +5,7 @@ import { WeiAmount, Fraction } from '@rulesorg/sdk-core'
 
 import Column from '@/components/Column'
 import Row from '@/components/Row'
-import Tooltip from '@/components/Tooltip'
+import { InfoTooltip } from '@/components/Tooltip'
 import { TYPE } from '@/styles/theme'
 import { ARTIST_FEE_PERCENTAGE, MARKETPLACE_FEE_PERCENTAGE } from '@/constants/misc'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
@@ -55,7 +55,7 @@ export function SaleBreakdown({ price, artistName }: SaleBreakdownProps) {
           <Trans>Artist fee ({ARTIST_FEE_PERCENTAGE / 10_000}%)</Trans>
         </TYPE.body>
 
-        <Tooltip text={t`This fee will go to ${artistName} and his team.`} />
+        <InfoTooltip text={t`This fee will go to ${artistName} and his team.`} />
 
         <Row gap={8}>
           <TYPE.subtitle>{weiAmountToEURValue(artistFee) ?? 0}€</TYPE.subtitle>
@@ -68,7 +68,7 @@ export function SaleBreakdown({ price, artistName }: SaleBreakdownProps) {
           <Trans>Marketplace fee ({MARKETPLACE_FEE_PERCENTAGE / 10_000}%)</Trans>
         </TYPE.body>
 
-        <Tooltip text={t`This fee will help Rules' further development.`} />
+        <InfoTooltip text={t`This fee will help Rules' further development.`} />
 
         <Row gap={8}>
           <TYPE.subtitle>{weiAmountToEURValue(marketplaceFee) ?? 0}€</TYPE.subtitle>

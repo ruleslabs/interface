@@ -10,6 +10,7 @@ export const PASSWORD_MIN_LEVENSHTEIN = 4
 export const PASSWORD_MIN_LENGTH = 6
 
 export const BLOCK_POLLING = 10_000 // 10s
+export const ETH_PRICE_POLLING = 60_000 // 60s
 
 export const PACK_OPENING_DURATION = 5_000 // 5s
 export const PACK_OPENING_FLASH_DURATION = 2_000 // 5s
@@ -21,8 +22,14 @@ export const BIG_INT_MAX_MARKETPLACE_OFFER_PRICE = JSBI.exponentiate(JSBI.BigInt
 
 export const CARD_ASPECT_RATIO = 1488 / 1062
 
-export const LOW_SERIAL_MAXS: { [scarcityName: string]: number } = {
+export const RULEDEX_LOW_SERIAL_MAXS: { [scarcityName: string]: number } = {
   Common: 100,
   Platinium: 20,
   Halloween: 100,
 }
+
+export const RULEDEX_CARDS_COUNT_LEVELS_MINS = [5, 10, 20, 50]
+
+export const NULL_PRICE = '0000000000000000000000'
+
+export const MAX_SHORT_USERNAME_LENGTH = 14

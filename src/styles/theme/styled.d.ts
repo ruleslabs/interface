@@ -26,6 +26,9 @@ export interface Colors {
 
   green1: string
   green2: string
+
+  purple: string
+  pink: string
 }
 
 declare module 'styled-components' {

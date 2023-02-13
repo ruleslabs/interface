@@ -101,7 +101,7 @@ function PackOpening() {
         <PackOpeningPack
           id={pack.id}
           pictureUrl={pack.pictureUrl}
-          onError={useRouter}
+          onError={onError}
           onOpening={setCards}
           isOpen={!cards}
         />

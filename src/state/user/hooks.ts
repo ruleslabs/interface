@@ -19,13 +19,11 @@ const CURRENT_USER_QUERY = gql`
         amount
         l1Recipient
       }
-      nextPackToBuy {
-        slug
-      }
       starknetWallet {
         address
+        publicKey
         signerEscapeTriggeredAt
-        needsSignerPublicKeyUpdate
+        lockingReason
         transactionVersion
         needsUpgrade
         rulesPrivateKey {
@@ -37,7 +35,8 @@ const CURRENT_USER_QUERY = gql`
       hasTwoFactorAuthActivated
       profile {
         pictureUrl(derivative: "width=320")
-        certifiedPictureUrl(derivative: "width=320")
+        customAvatarUrl(derivative: "width=320")
+        fallbackUrl(derivative: "width=320")
         twitterUsername
         instagramUsername
         isDiscordVisible
@@ -57,6 +56,7 @@ const SEARCH_USER_CONTENT = `
   slug
   profile {
     pictureUrl(derivative: "width=320")
+    fallbackUrl(derivative: "width=320")
     certified
     twitterUsername
     instagramUsername
@@ -67,6 +67,7 @@ const SEARCH_USER_CONTENT = `
   }
   starknetWallet {
     address
+    publicKey
   }
 `
 

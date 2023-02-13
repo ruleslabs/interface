@@ -1,14 +1,12 @@
-import { useMemo, useCallback, useState, useEffect } from 'react'
+import { useMemo, useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { useQuery, gql } from '@apollo/client'
+import { useLazyQuery, gql } from '@apollo/client'
 import { t } from '@lingui/macro'
 
-import Modal from '@/components/Modal'
+import Modal, { ModalHeader } from '@/components/Modal'
 import { useModalOpen, useDeckInsertionModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import Column from '@/components/Column'
-import Row from '@/components/Row'
-import { TYPE } from '@/styles/theme'
 import Section from '@/components/Section'
 import { SearchBar } from '@/components/Input'
 import Grid from '@/components/Grid'
@@ -16,52 +14,48 @@ import { useSearchCards } from '@/state/search/hooks'
 import { useDeckState, useDeckActionHandlers } from '@/state/deck/hooks'
 import useDebounce from '@/hooks/useDebounce'
 import useWindowSize from '@/hooks/useWindowSize'
+import CardModel from '@/components/CardModel'
+import useInfiniteScroll from '@/hooks/useInfiniteScroll'
+import { PaginationSpinner } from '@/components/Spinner'
 
-import Close from '@/images/close.svg'
-
-const QUERY_CARDS = gql`
+const CARDS_QUERY = gql`
   query ($ids: [ID!]!) {
     cardsByIds(ids: $ids) {
       id
       slug
       serialNumber
+      onSale
       cardModel {
         slug
-        pictureUrl(derivative: "width=512")
+        season
+        pictureUrl(derivative: "width=1024")
+        videoUrl
+        artist {
+          displayName
+        }
       }
     }
   }
 `
 
 const StyledDeckInsertionModal = styled.div<{ windowHeight?: number }>`
-  padding: 16px;
+  padding: 16px 40px;
   background: ${({ theme }) => theme.bg1};
   width: 100vw;
   height: ${({ windowHeight }) => windowHeight}px;
   overflow: scroll;
-`
 
-const CardPicture = styled.img`
-  width: 100%;
-  cursor: pointer;
-  border-radius: 4.44%/3.17%;
-`
-
-const CardName = styled(TYPE.body)`
-  width: 100%;
-`
-const StyledClose = styled(Close)`
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
+  ${({ theme }) => theme.media.medium`
+    padding: 16px;
+  `}
 `
 
 interface DeckInsertionModalProps {
-  userId: string
+  starknetWalletAddress: string
   cardIndex: number
 }
 
-export default function DeckInsertionModal({ userId, cardIndex }: DeckInsertionModalProps) {
+export default function DeckInsertionModal({ starknetWalletAddress, cardIndex }: DeckInsertionModalProps) {
   // search bar
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 200)
@@ -82,7 +76,6 @@ export default function DeckInsertionModal({ userId, cardIndex }: DeckInsertionM
   const handleCardInsertion = useCallback(
     (card: any) => {
       setCards([])
-      setCardsTable([])
       setSearch('')
       onInsertion({ card, cardIndex })
       toggleDeckInsertionModal()
@@ -90,10 +83,7 @@ export default function DeckInsertionModal({ userId, cardIndex }: DeckInsertionM
     [onInsertion, toggleDeckInsertionModal]
   )
 
-  // result
-  const [cards, setCards] = useState<any[]>([])
-  const [cardsTable, setCardsTable] = useState<{ [key: string]: any }>({})
-
+  // cards already in deck
   const dashedDeckCardIds = useMemo(
     () =>
       Object.keys(deck).reduce<string[]>((acc, key: string) => {
@@ -103,61 +93,51 @@ export default function DeckInsertionModal({ userId, cardIndex }: DeckInsertionM
     [deck]
   )
 
-  const {
-    hits: cardsHits,
-    loading: cardsHitsLoading,
-    error: cardsHitsError,
-  } = useSearchCards({
-    facets: { ownerUserId: userId, cardId: dashedDeckCardIds },
-    search: debouncedSearch,
-    skip: !isOpen,
+  // tables
+  const [cards, setCards] = useState<any[]>([])
+
+  // query cards data
+  const onCardsQueryCompleted = useCallback(
+    (data: any) => {
+      setCards(cards.concat(data.cardsByIds))
+    },
+    [cards.length]
+  )
+  const [queryCardsData, cardsQuery] = useLazyQuery(CARDS_QUERY, {
+    onCompleted: onCardsQueryCompleted,
+    fetchPolicy: 'cache-and-network',
   })
 
-  const cardIds = useMemo(
-    () =>
-      (cardsHits ?? []).reduce<string[]>((acc, hit: any) => {
-        acc.push(hit.cardId)
+  // search cards
+  const onPageFetched = useCallback(
+    (hits, { pageNumber }) => {
+      if (!pageNumber) setCards([])
 
-        return acc
-      }, []),
-    [cardsHits]
+      queryCardsData({ variables: { ids: hits.map((hit: any) => hit.objectID) } })
+    },
+    [queryCardsData]
   )
+  const cardsSearch = useSearchCards({
+    facets: { ownerStarknetAddress: starknetWalletAddress, cardId: dashedDeckCardIds },
+    search: debouncedSearch,
+    skip: !isOpen,
+    onPageFetched,
+  })
 
-  useEffect(() => {
-    if (cardsHitsLoading) return
+  // loading
+  const isLoading = cardsSearch.loading || cardsQuery.loading
 
-    setCards(cardsHits ?? [])
-  }, [cardsHits, setCards])
-
-  const {
-    data: cardsData,
-    loading: cardsLoading,
-    error: cardsError,
-  } = useQuery(QUERY_CARDS, { variables: { ids: cardIds }, skip: !cardIds.length || !isOpen })
-
-  useEffect(() => {
-    if (cardsLoading) return
-
-    setCardsTable(
-      ((cardsData?.cardsByIds ?? []) as any[]).reduce<{ [key: string]: any }>((acc, card: any) => {
-        acc[card.id] = card
-        return acc
-      }, {})
-    )
-  }, [cardsData?.cardsByIds, setCardsTable])
+  // infinite scroll
+  const lastTxRef = useInfiniteScroll({ nextPage: cardsSearch.nextPage, loading: isLoading })
 
   // window size
   const windowSize = useWindowSize()
 
-  const isValid = !cardsHitsError && !cardsError
-  const isLoading = cardsHitsLoading || cardsLoading
-
   return (
     <Modal onDismiss={onDismiss} isOpen={isOpen}>
       <StyledDeckInsertionModal windowHeight={windowSize.height}>
-        <Row justify="flex-end">
-          <StyledClose onClick={onDismiss} />
-        </Row>
+        <ModalHeader onDismiss={onDismiss} />
+
         <Section marginTop="16px">
           <Column gap={32}>
             <SearchBar
@@ -168,20 +148,22 @@ export default function DeckInsertionModal({ userId, cardIndex }: DeckInsertionM
             />
 
             <Grid gap={64} maxWidth={256}>
-              {cards.map((hit: any, index: number) => {
-                const card = cardsTable[hit.cardId]
-
-                return (
-                  <Column key={`deck-insertion-card-${index}`} gap={12}>
-                    <CardPicture src={card?.cardModel.pictureUrl} onClick={() => handleCardInsertion(card)} />
-                    <CardName textAlign="center" spanColor="text2">
-                      {hit.artistName}
-                      <span> # {card?.serialNumber}</span>
-                    </CardName>
-                  </Column>
-                )
-              })}
+              {cards.map((card, index) => (
+                <CardModel
+                  key={card.slug}
+                  innerRef={index + 1 === cards.length ? lastTxRef : undefined}
+                  cardModelSlug={card.cardModel.slug}
+                  pictureUrl={card.cardModel.pictureUrl}
+                  serialNumber={card.serialNumber}
+                  season={card.cardModel.season}
+                  artistName={card.cardModel.artist.displayName}
+                  onSale={card.onSale}
+                  onClick={() => handleCardInsertion(card)}
+                />
+              ))}
             </Grid>
+
+            <PaginationSpinner loading={isLoading} />
           </Column>
         </Section>
       </StyledDeckInsertionModal>

@@ -57,7 +57,7 @@ msgstr "Connexion"
 
 #: src/components/AccountStatus/index.tsx
 msgid "Sign up"
-msgstr "Inscription"
+msgstr "Créer un compte"
 
 #: src/components/AuthModal/SignInForm.tsx
 msgid "or"
@@ -185,8 +185,7 @@ msgstr "Ton nouveau mot de passe doit être différent de l'ancien"
 msgid "Passwords do not match"
 msgstr "Les mots de passe ne correspondent pas"
 
-# Payment errors
-
+#: Payment errors
 msgid "Payment method already used by another user"
 msgstr "Cette carte est déjà utilisée par un autre utilisateur"
 
@@ -247,8 +246,8 @@ msgid "Buy - {0} ETH ({1}€)"
 msgstr "Acheter - {0} ETH ({1}€)"
 
 #: src/components/CardOwnership/index.tsx
-msgid "Close offer - {0} ETH ({1}€)"
-msgstr "Arrêter la vente - {0} ETH ({1}€)"
+msgid "Close offer"
+msgstr "Arrêter la vente"
 
 #: src/components/CardOwnership/index.tsx
 msgid "Gift"
@@ -391,8 +390,8 @@ msgid "Platinium"
 msgstr "Platine"
 
 #: src/components/OffersSelector/index.tsx
-msgid "{0, plural, =1 {{0} available} other {{0} available}}"
-msgstr "{0, plural, =1 {{0} disponible} other {{0} disponibles}}"
+msgid "{offersCount, plural, =1 {{offersCount} available} other {{offersCount} available}}"
+msgstr "{offersCount, plural, =1 {{offersCount} disponible} other {{offersCount} disponibles}}"
 
 #: src/components/OffersSelector/index.tsx
 msgid "Select a card"
@@ -441,6 +440,9 @@ msgstr "{0, plural, =1 {Saison} other {Saisons}}"
 #: Packs names
 msgid "Starter Pack Season 1"
 msgstr "Starter Pack Saison 1"
+
+msgid "The pack detected by telescope."
+msgstr "Le pack détecté par télescope."
 
 #: src/components/PackBreakdown/index.tsx
 msgid "Buy - {0}€"
@@ -543,8 +545,24 @@ msgid "Newest"
 msgstr "Plus récentes"
 
 #: src/pages/user/[username]/cards.tsx
-msgid "{0, plural, =1 {{0} card} other {{0} cards}}"
-msgstr "{0, plural, =1 {{0} carte} other {{0} cartes}}"
+msgid "Low serial"
+msgstr "Serial bas"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "High serial"
+msgstr "Serial haut"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "Alphabetical A-Z"
+msgstr "Alphabétique A-Z"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "Alphabetical Z-A"
+msgstr "Alphabétique Z-A"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "{cardsCount, plural, =1 {{cardsCount} card} other {{cardsCount} cards}}"
+msgstr "{cardsCount, plural, =1 {{cardsCount} carte} other {{cardsCount} cartes}}"
 
 #: src/pages/user/[username]/packs.tsx
 msgid "{packsCount, plural, =1 {{packsCount} pack} other {{packsCount} packs}}"
@@ -595,8 +613,8 @@ msgid "Disconnect this session"
 msgstr "Déconnecter cette session"
 
 #: src/components/Footer/index.tsx
-msgid "© Rules 2022 - <0>Terms & Conditions</0>{separator}<1>Confidentiality</1>{separator}<2>Cookies</2>{separator}Contact: <3>support@rules.art</3>"
-msgstr "© Rules 2022 - <0>CGU</0>{separator}<1>Confidentialité</1>{separator}<2>Cookies</2>{separator}Contact: <3>support@rules.art</3>"
+msgid "© Rules 2023 - <0>Terms & Conditions</0>{separator}<1>Confidentiality</1>{separator}<2>Cookies</2>{separator}Contact: <3>support@rules.art</3>"
+msgstr "© Rules 2023 - <0>CGU</0>{separator}<1>Confidentialité</1>{separator}<2>Cookies</2>{separator}Contact: <3>support@rules.art</3>"
 
 #: src/components/PackPurchaseModal/index.tsx
 msgid "Payment being processed"
@@ -1125,8 +1143,8 @@ msgid "{0} ETH transfer to your Ethereum wallet"
 msgstr "Transfert de {0} ETH sur ton portefeuille Ethereum"
 
 #: src/components/WithdrawModal/Retrieve.tsx
-msgid "Your {0} ETH transfer is on its way"
-msgstr "Ton transfert de {0} ETH est en route"
+msgid "Your ETH transfer is on its way"
+msgstr "Ton transfert d'ETH est en route"
 
 #: src/components/WithdrawModal/Retrieve.tsx
 msgid "Confirm transfer"
@@ -1194,7 +1212,7 @@ msgstr "Paramètres avancés du portefeuille"
 
 #: src/components/WalletModal/AdvanceWalletSettings.tsx
 msgid "Wallet address"
-msgstr "Address du portefeuille"
+msgstr "Adresse du portefeuille"
 
 #: src/components/WalletModal/AdvanceWalletSettings.tsx
 msgid "Private key"
@@ -1207,3 +1225,160 @@ msgstr "NE PARTAGE JAMAIS ta clef privée avec quelqu'un<0/><1>elle pourrait êt
 #: src/components/WalletModal/AdvanceWalletSettings.tsx
 msgid "Reveal the private key"
 msgstr "Révéler la clef privée"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "<0> </0>for {0} ETH"
+msgstr "<0> </0>pour {0} ETH"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "<0>{0}</0><1/>opened {1}<2> </2><3>{2}</3>"
+msgstr "<0>{0}</0><1/>a ouvert {1}<2> </2><3>{2}</3>"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "puts on sale"
+msgstr "a mis en vente"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "cancelled the sale of"
+msgstr "a annulé la vente de"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "Season"
+msgstr "Saison"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "offered"
+msgstr "a offert"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "sent"
+msgstr "a envoyé"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "to"
+msgstr "à"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "Wallet upgraded"
+msgstr "Portefeuille mis à jour"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "Wallet deployed"
+msgstr "Portefeuille déployé"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "Password update completed"
+msgstr "Mot de passe mis à jour"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "Password update triggered"
+msgstr "Mise à jour du mot de passe déclanchée"
+
+#: src/components/TransactionRow/Message.tsx
+msgid "withdrawn {0} ETH to"
+msgstr "a retiré {0} ETH vers"
+
+#: src/components/TransactionRow/index.tsx
+msgid "See transaction"
+msgstr "Afficher la transaction"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Wallet deployment"
+msgstr "Déploiement du portefeuille"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Wallet password update"
+msgstr "Changement du mot de passe du portefeuille"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Wallet password update triggering"
+msgstr "Déclanchement du changement de mot de passe du portefeuille"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Wallet upgrade"
+msgstr "Mise à jour du portefeuille"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Pack cards delivery"
+msgstr "Livraison des carte d'un pack"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Pack delivery"
+msgstr "Livraison d'un pack"
+
+#: src/components/CardsTransfersHistory/table.tsx
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Pack opening"
+msgstr "Ouverture d'un pack"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Offer acceptance"
+msgstr "Acceptation d'une offre"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Offer cancellation"
+msgstr "Annulation d'une offre"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Offer creation"
+msgstr "Création d'une offre"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "ETH Withdraw"
+msgstr "Retrait d'ETH"
+
+#: src/components/TransactionRow/OffchainAction.tsx
+msgid "Card transfer"
+msgstr "Transfert de carte"
+
+#: src/components/TransactionRow/Event.tsx
+msgid "Rules (service fee + artists fee)"
+msgstr "Rules (frais service + commission artiste)"
+
+#: src/components/StarknetSigner/Signer.tsx
+msgid "Enter your password"
+msgstr "Entre ton mot de passe"
+
+#: src/components/Maintenance/index.tsx
+msgid "Update in progress..."
+msgstr "Mise à jour en cours..."
+
+#: src/pages/index.tsx
+msgid "Live"
+msgstr "En direct"
+
+#: src/pages/index.tsx
+msgid "Last offers"
+msgstr "Dernières offres"
+
+#: src/pages/index.tsx
+msgid "Hall of fame"
+msgstr "Hall of fame"
+
+#: src/pages/index.tsx
+msgid "Community creations"
+msgstr "Créé par la commu"
+
+#: src/pages/index.tsx
+msgid "Artists fund"
+msgstr "Cagnotte"
+
+#: src/components/Homepage/HallOfFame.tsx
+msgid "Collection {0}% complete. This collector has {1} cards."
+msgstr "Collection complétée à {0}%. Ce collectionneur possède {1} cartes."
+
+#: src/components/Homepage/Live.tsx
+msgid "Card offered"
+msgstr "Carte offerte"
+
+#: src/components/Homepage/ArtistsFund.tsx
+msgid "donated to independent artists"
+msgstr "reversés aux artistes indés"
+
+#: src/components/Homepage/HallOfFame.tsx
+msgid "Your rank: {currentUserRank}"
+msgstr "Ton classement: {currentUserRank}"
+
+#: src/components/LockedWallet/index.tsx
+msgid "We are performing a manual upgrade of your wallet. For this purpose, your wallet has to be locked. Your access will be recovered in a few days."
+msgstr "Nous opérons une mise à jour manuelle de ton portefeuille. Pour ce faire, ton portefeuille est temporairement bloqué. Tu y retrouveras l'accès dans quelques jours."

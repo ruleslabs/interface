@@ -31,6 +31,7 @@ const CERTIFIED_USERS_QUERY = gql`
       profile {
         certified
         pictureUrl(derivative: "width=256")
+        fallbackUrl(derivative: "width=256")
       }
     }
   }
@@ -48,7 +49,12 @@ const UsersRow = ({ loading = false, users }: CustomUsersRowProps) => {
         ? 'loading'
         : users.map((user: any) => (
             <Link key={`user-${user.slug}`} href={`/user/${user.slug}`}>
-              <User username={user.username} pictureUrl={user.profile.pictureUrl} certified={user.profile.certified} />
+              <User
+                username={user.username}
+                pictureUrl={user.profile.pictureUrl}
+                fallbackUrl={user.profile.fallbackUrl}
+                certified={user.profile.certified}
+              />
             </Link>
           ))}
     </StyledUsersRow>

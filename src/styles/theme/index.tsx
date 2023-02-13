@@ -95,6 +95,8 @@ export function colors(darkMode: boolean): Colors {
     error: '#CB222C',
     green1: '#0EA63B',
     green2: '#06AC77',
+    purple: '#6E36E7',
+    pink: '#CB49CE',
   }
 }
 
@@ -207,3 +209,5 @@ export const TYPE = {
     return <TextWrapper fontWeight={700} fontSize={26} color={'text1'} {...props} />
   },
 }
+
+export type CssDirection = 'left' | 'right' | 'bottom' | 'top'

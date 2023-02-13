@@ -72,15 +72,19 @@ const QUERY_CARD = gql`
           username
           profile {
             pictureUrl(derivative: "width=128")
+            fallbackUrl(derivative: "width=128")
           }
         }
       }
       cardModel {
         id
+        slug
         videoUrl
         pictureUrl(derivative: "width=1024")
         season
         youtubePreviewId
+        lowestAsk
+        averageSale
         artist {
           displayName
           user {
@@ -118,18 +122,15 @@ export default function CardBreakout() {
   const onSuccessfulOfferAcceptance = useCallback(() => setPendingStatus(CardPendingStatus.IN_OFFER_ACCEPTANCE), [])
 
   // card price
-  const offerSearch = useSearchOffers({ facets: { cardId: card?.id }, skip: !card?.id })
+  const offerSearch = useSearchOffers({ facets: { cardId: card?.id }, skip: !card?.id, hitsPerPage: 1 })
   const cardPrice = useMemo(
     () => (offerSearch?.hits?.[0]?.price ? `0x${offerSearch?.hits?.[0]?.price}` : null),
     [offerSearch?.hits?.[0]?.price]
   )
 
-  // if (cardQuery.error || cardQuery.loading) {
-  //   if (cardQuery.error) console.error(cardQuery.error)
-  //   return null
-  // }
+  if (cardQuery.error) return <TYPE.body>Card not found</TYPE.body>
 
-  if (!card) return <TYPE.body>Card not found</TYPE.body>
+  if (!card) return null
 
   return (
     <>
@@ -153,6 +154,7 @@ export default function CardBreakout() {
               scarcityName={card.cardModel.scarcity.name}
               maxSupply={card.cardModel.scarcity.maxSupply}
               serial={card.serialNumber}
+              slug={card.cardModel.slug}
             />
           </Card>
           <div>
@@ -162,6 +164,7 @@ export default function CardBreakout() {
                   ownerSlug={card.owner.user.slug}
                   ownerUsername={card.owner.user.username}
                   ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
+                  ownerProfileFallbackUrl={card.owner.user.profile.fallbackUrl}
                   pendingStatus={pendingStatus ?? undefined}
                   price={cardPrice ?? undefined}
                 />
@@ -194,6 +197,8 @@ export default function CardBreakout() {
         artistName={card.cardModel.artist.displayName}
         scarcityName={card.cardModel.scarcity.name}
         scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
+        lowestAsk={card.cardModel.lowestAsk}
+        averageSale={card.cardModel.averageSale}
         season={card.cardModel.season}
         serialNumber={card.serialNumber}
         pictureUrl={card.cardModel.pictureUrl}
