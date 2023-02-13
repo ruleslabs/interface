@@ -4,11 +4,10 @@ import { Trans } from '@lingui/macro'
 import { TYPE } from '@/styles/theme'
 import Row from '@/components/Row'
 import { ColumnCenter } from '@/components/Column'
-import Certified from '@/components/Certified'
+import { Certified, TopCollector } from './Badge'
 import { useAvatarEditModalToggle } from '@/state/application/hooks'
-import AvatarEditModal from '@/components/AvatarEditModal'
-import { useDefaultAvatarIdFromUrl } from '@/hooks/useDefaultAvatarUrls'
 import Avatar from '@/components/Avatar'
+import { useCScoreTopCollector } from '@/hooks/useCScore'
 
 type Size = 'sm' | 'md' | 'lg'
 
@@ -51,41 +50,41 @@ interface UserProps {
   username: string
   pictureUrl: string
   fallbackUrl: string
-  customAvatarUrl?: string
   certified: boolean
   size?: Size
   canEdit?: boolean
+  cScore?: number
 }
 
 export default function User({
   username,
   pictureUrl,
   fallbackUrl,
-  customAvatarUrl,
   certified,
   size = 'md',
   canEdit = false,
+  cScore = 0,
 }: UserProps) {
   const toggleAvatarEditModal = useAvatarEditModalToggle()
-  const defaultAvatarId = useDefaultAvatarIdFromUrl(pictureUrl)
+
+  // top collector
+  const isTopCollector = useCScoreTopCollector(cScore)
 
   return (
-    <>
-      <ColumnCenter>
-        <UserAvatarWrapper size={size}>
-          <Avatar src={pictureUrl} fallbackSrc={fallbackUrl} />
-          {canEdit && (
-            <UserAvatarEdit onClick={toggleAvatarEditModal}>
-              <Trans>edit</Trans>
-            </UserAvatarEdit>
-          )}
-        </UserAvatarWrapper>
-        <Row gap={4}>
-          <TYPE.body>{username}</TYPE.body>
-          {certified && <Certified />}
-        </Row>
-      </ColumnCenter>
-      {canEdit && <AvatarEditModal currentAvatarId={defaultAvatarId} customAvatarUrl={customAvatarUrl} />}
-    </>
+    <ColumnCenter>
+      <UserAvatarWrapper size={size}>
+        <Avatar src={pictureUrl} fallbackSrc={fallbackUrl} />
+        {canEdit && (
+          <UserAvatarEdit onClick={toggleAvatarEditModal}>
+            <Trans>edit</Trans>
+          </UserAvatarEdit>
+        )}
+      </UserAvatarWrapper>
+      <Row gap={4}>
+        <TYPE.body>{username}</TYPE.body>
+        {certified && <Certified />}
+        {isTopCollector && <TopCollector />}
+      </Row>
+    </ColumnCenter>
   )
 }

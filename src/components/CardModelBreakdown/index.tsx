@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
-import Certified from '@/components/Certified'
+import { Certified } from '@/components/User/Badge'
 import Link from '@/components/Link'
 
 const UserLogin = styled(RowCenter)`

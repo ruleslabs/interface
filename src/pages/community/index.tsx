@@ -28,6 +28,7 @@ const CERTIFIED_USERS_QUERY = gql`
     certifiedUsersOverview {
       slug
       username
+      cScore
       profile {
         certified
         pictureUrl(derivative: "width=256")
@@ -48,12 +49,13 @@ const UsersRow = ({ loading = false, users }: CustomUsersRowProps) => {
       {loading
         ? 'loading'
         : users.map((user: any) => (
-            <Link key={`user-${user.slug}`} href={`/user/${user.slug}`}>
+            <Link key={user.id} href={`/user/${user.slug}`}>
               <User
                 username={user.username}
                 pictureUrl={user.profile.pictureUrl}
                 fallbackUrl={user.profile.fallbackUrl}
                 certified={user.profile.certified}
+                cScore={user.cScore}
               />
             </Link>
           ))}

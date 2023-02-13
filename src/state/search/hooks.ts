@@ -16,6 +16,7 @@ const SEARCHED_USERS_QUERY = gql`
       searchedUsers {
         slug
         username
+        cScore
         profile {
           pictureUrl(derivative: "width=512")
           fallbackUrl(derivative: "width=512")
@@ -191,6 +192,7 @@ interface AlgoliaSearchProps {
   hitsPerPage: number
   onPageFetched?: PageFetchedCallback
   skip: boolean
+  page?: number
 }
 
 function useAlgoliaSearch({
@@ -201,9 +203,10 @@ function useAlgoliaSearch({
   hitsPerPage,
   onPageFetched,
   skip,
+  page,
 }: AlgoliaSearchProps): AlgoliaSearch {
   const [searchResult, setSearchResult] = useState<AlgoliaSearch>({ loading: false, error: null })
-  const [nextPageNumber, setNextPageNumber] = useState<number | null>(ALGOLIA_FIRST_PAGE)
+  const [nextPageNumber, setNextPageNumber] = useState<number | null>(page ?? ALGOLIA_FIRST_PAGE)
 
   const facetFilters = useFacetFilters({ ...facets })
 
@@ -235,13 +238,13 @@ function useAlgoliaSearch({
   )
 
   useEffect(() => {
-    setNextPageNumber(ALGOLIA_FIRST_PAGE)
+    setNextPageNumber(page ?? ALGOLIA_FIRST_PAGE)
     setSearchResult({ loading: false, error: null })
-  }, [algoliaIndex, search])
+  }, [algoliaIndex, search, page])
 
   useEffect(() => {
-    if (!skip) runSearch(ALGOLIA_FIRST_PAGE)
-  }, [skip])
+    if (!skip) runSearch(page ?? ALGOLIA_FIRST_PAGE)
+  }, [skip, page])
 
   useEffect(() => {
     if (nextPageNumber === ALGOLIA_FIRST_PAGE && !skip) runSearch()
@@ -371,6 +374,7 @@ interface SearchUsersProps {
   onPageFetched?: PageFetchedCallback
   skip?: boolean
   filters?: string
+  page?: number
   facets?: {
     username?: string
     userId?: string
@@ -385,6 +389,7 @@ export function useSearchUsers({
   hitsPerPage = 10,
   skip = false,
   onPageFetched,
+  page,
 }: SearchUsersProps) {
   return useAlgoliaSearch({
     facets: { ...facets, userId: undefined, objectID: facets.userId },
@@ -394,6 +399,7 @@ export function useSearchUsers({
     hitsPerPage,
     onPageFetched,
     skip,
+    page,
   })
 }
 

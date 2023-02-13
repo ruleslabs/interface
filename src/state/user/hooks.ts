@@ -15,6 +15,7 @@ const CURRENT_USER_QUERY = gql`
       email
       slug
       boughtStarterPack
+      cScore
       retrievableEthers {
         amount
         l1Recipient
@@ -54,6 +55,7 @@ const SEARCH_USER_CONTENT = `
   id
   username
   slug
+  cScore
   profile {
     pictureUrl(derivative: "width=320")
     fallbackUrl(derivative: "width=320")

@@ -22,8 +22,10 @@ export default function useDefaultAvatarUrls(width: number) {
   )
 }
 
-export function useDefaultAvatarIdFromUrl(url: string): number {
+export function useDefaultAvatarIdFromUrl(url?: string): number {
   let params: any | undefined
+
+  if (!url) return 0
 
   try {
     params = JSON.parse(atob(url.replace(`https://${IMAGES_DOMAIN}/`, '')))

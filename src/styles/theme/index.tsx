@@ -97,6 +97,7 @@ export function colors(darkMode: boolean): Colors {
     green2: '#06AC77',
     purple: '#6E36E7',
     pink: '#CB49CE',
+    orange: '#FF9E0D',
   }
 }
 

@@ -12,6 +12,8 @@ import User from '@/components/User'
 import { TabButton } from '@/components/Button'
 import { useSearchUser, useCurrentUser } from '@/state/user/hooks'
 import DiscordMember from '@/components/DiscordStatus/DiscordMember'
+import AvatarEditModal from '@/components/AvatarEditModal'
+import { useDefaultAvatarIdFromUrl } from '@/hooks/useDefaultAvatarUrls'
 
 import Instagram from '@/images/instagram-color.svg'
 import Twitter from '@/images/twitter-color.svg'
@@ -90,14 +92,14 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
   const userSlug = typeof username === 'string' ? username.toLowerCase() : undefined
 
   const currentUser = useCurrentUser()
-  const { searchedUser, loading, error } = useSearchUser(userSlug, currentUser?.slug === userSlug)
+  const { searchedUser, error } = useSearchUser(userSlug, currentUser?.slug === userSlug)
 
   const user = currentUser?.slug === userSlug ? currentUser : searchedUser
 
+  const defaultAvatarId = useDefaultAvatarIdFromUrl(user?.profile.pictureUrl)
+
   if (error) return <TYPE.body>User not found</TYPE.body>
   else if (!user) return null
-
-  const discordMember = user?.profile?.discordMember
 
   return (
     <>
@@ -110,10 +112,11 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
               pictureUrl={user.profile.pictureUrl}
               fallbackUrl={user.profile.fallbackUrl}
               certified={user.profile.certified}
-              customAvatarUrl={user.profile.customAvatarUrl}
               size="lg"
               canEdit={userSlug === currentUser?.slug}
+              cScore={user.cScore}
             />
+
             <RowCenter gap={8}>
               {user?.profile?.instagramUsername && (
                 <SocialLink target="_blank" href={`https://instagram.com/${user.profile.instagramUsername}`}>
@@ -144,11 +147,14 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
           ))}
         </TabBar>
       </StyledSection>
+
       {React.cloneElement(children, {
         userId: user?.id,
         address: user?.starknetWallet?.address,
         publicKey: user?.starknetWallet?.publicKey,
       })}
+
+      <AvatarEditModal currentAvatarId={defaultAvatarId} customAvatarUrl={user.profile.customAvatarUrl} />
     </>
   )
 }

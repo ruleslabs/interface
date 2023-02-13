@@ -14,6 +14,7 @@ import { PaginationSpinner } from '@/components/Spinner'
 import Tooltip from '@/components/Tooltip'
 import { useCurrentUser } from '@/state/user/hooks'
 import Avatar from '@/components/Avatar'
+import { useCScoreRank } from '@/hooks/useCScore'
 
 const USERS_QUERY = gql`
   query ($ids: [ID!]!) {
@@ -197,29 +198,11 @@ export default function HallOfFame() {
   )
   const usersSearch = useSearchUsers({ sortingKey: 'cScore', hitsPerPage: 10, onPageFetched })
 
-  // current user cscore
-  const currentUserSearch = useSearchUsers({
-    hitsPerPage: 1,
-    facets: { userId: currentUser?.id },
-    skip: !currentUser?.id,
-  })
-  const currentUserCScore = currentUserSearch?.hits?.[0]?.cScore ?? 0
-
   // current user rank
-  const currentUserRankSearch = useSearchUsers({
-    sortingKey: 'cScore',
-    hitsPerPage: 0,
-    filters: `cScore > ${currentUserCScore}`,
-    skip: !currentUserCScore,
-  })
-  const currentUserRank = useMemo(
-    () => (currentUserRankSearch?.nbHits ? currentUserRankSearch?.nbHits + 1 : 0),
-    [currentUserRankSearch?.nbHits]
-  )
+  const currentUserRank = useCScoreRank(currentUser.cScore)
 
   // loading
-  const isLoading =
-    usersSearch.loading || usersQuery.loading || currentUserSearch.loading || currentUserRankSearch.loading
+  const isLoading = usersSearch.loading || usersQuery.loading || !currentUserRank
 
   return (
     <Column gap={12}>
@@ -247,7 +230,7 @@ export default function HallOfFame() {
               pictureUrl={currentUser.profile.pictureUrl}
               fallbackUrl={currentUser.profile.fallbackUrl}
               slug={currentUser.slug}
-              cScore={currentUserCScore}
+              cScore={currentUser.cScore}
               cardModelsCount={cardModelsCount}
             />
             <TYPE.body color="text2">
