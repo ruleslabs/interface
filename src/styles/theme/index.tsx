@@ -3,24 +3,27 @@ import styled, { createGlobalStyle, css, ThemeProvider } from 'styled-components
 
 import { Colors } from './styled'
 
-const MEDIA_QUERIES_WIDTH = {
-  extraSmall: 'max-width: 481',
-  small: 'max-width: 769',
-  medium: 'max-width: 1024',
-  mediumGT: 'min-width: 1025',
-  large: 'max-width: 1200',
+const MEDIA_QUERIES = {
+  extraSmall: 'only screen and (max-width: 481px)',
+  small: 'only screen and (max-width: 769px)',
+  medium: 'only screen and (max-width: 1024px)',
+  mediumGT: 'only screen and (min-width: 1025px)',
+  large: 'only screen and (max-width: 1200px)',
+  computer: '(hover: hover) and (pointer: fine)',
 }
 
-const mediaWidth: { [breakpoint in keyof typeof MEDIA_QUERIES_WIDTH]: typeof css } = Object.keys(
-  MEDIA_QUERIES_WIDTH
-).reduce((acc: any, breakpoint) => {
-  acc[breakpoint as keyof typeof MEDIA_QUERIES_WIDTH] = (first: any, ...interpolations: any[]) => css`
-    @media only screen and (${MEDIA_QUERIES_WIDTH[breakpoint as keyof typeof MEDIA_QUERIES_WIDTH]}px) {
-      ${css(first, ...interpolations)}
-    }
-  `
-  return acc
-}, {}) as any
+const media: { [breakpoint in keyof typeof MEDIA_QUERIES]: typeof css } = Object.keys(MEDIA_QUERIES).reduce(
+  (acc: any, breakpoint: string) => {
+    acc[breakpoint] = (first: any, ...interpolations: any[]) => css`
+      @media ${MEDIA_QUERIES[breakpoint as keyof typeof MEDIA_QUERIES]} {
+        ${css(first, ...interpolations)}
+      }
+    `
+
+    return acc
+  },
+  {}
+)
 
 // BEFORE
 
@@ -58,15 +61,16 @@ const BEFORES_CSS = {
 }
 
 const before: { [before in keyof typeof BEFORES_CSS]: typeof css } = Object.keys(BEFORES_CSS).reduce(
-  (acc: any, before) => {
-    acc[before as keyof typeof BEFORES_CSS] = (first: any, ...interpolations: any[]) => css`
+  (acc: any, before: string) => {
+    acc[before] = (first: any, ...interpolations: any[]) => css`
       ${BEFORES_CSS[before as keyof typeof BEFORES_CSS]}
       ${first && interpolations && css(first, ...interpolations)}
     `
+
     return acc
   },
   {}
-) as any
+)
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function colors(darkMode: boolean): Colors {
@@ -105,7 +109,7 @@ function theme(darkMode: boolean) {
   return {
     ...colors(darkMode),
 
-    media: mediaWidth,
+    media,
 
     before,
 

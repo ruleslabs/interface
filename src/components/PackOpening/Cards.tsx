@@ -67,6 +67,7 @@ export default function PackOpeningCards({ cards, ...props }: PackOpeningCardsPr
           key={`card-${index}`}
           onClick={() => onClick(index)}
           videoUrl={card.cardModel.videoUrl}
+          pictureUrl={card.cardModel.pictureUrl}
           serialNumber={card.serialNumber}
           width={256}
           scarcityName={card.cardModel.scarcity.name}

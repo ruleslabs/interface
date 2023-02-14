@@ -40,6 +40,7 @@ const OPEN_PACK_MUTATION = gql`
         serialNumber
         cardModel {
           videoUrl
+          pictureUrl(derivative: "width=1024")
           scarcity {
             name
           }

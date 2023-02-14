@@ -20,10 +20,12 @@ const StyledCardModel = styled(ColumnCenter)<{ width?: number }>`
   border-radius: 4px;
   transition: background 200ms, transform 200ms ease-out;
 
-  :hover {
-    background: ${({ theme }) => theme.bg3}80;
-    transform: translateY(-8px) scale(1.02);
-  }
+  ${({ theme }) => theme.media.computer`
+    :hover {
+      background: ${({ theme }) => theme.bg3}80;
+      transform: translateY(-8px) scale(1.02);
+    }
+  `}
 `
 
 const Video = styled.video<{ inDelivery: boolean; pendingStatus: boolean }>`

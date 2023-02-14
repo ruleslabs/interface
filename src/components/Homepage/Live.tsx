@@ -23,6 +23,7 @@ const TRANSFERS_QUERY = gql`
       id
       slug
       videoUrl
+      pictureUrl(derivative: "width=1024")
       scarcity {
         maxSupply
         name
@@ -174,7 +175,12 @@ export default function Live() {
     <StyledLive>
       {transferHit && cardModel && fromUser && toUser && parsedPrice && (
         <ColumnCenter gap={16}>
-          <Card videoUrl={cardModel.videoUrl} scarcityName={cardModel.scarcity.name} revealed />
+          <Card
+            videoUrl={cardModel.videoUrl}
+            pictureUrl={cardModel.pictureUrl}
+            scarcityName={cardModel.scarcity.name}
+            revealed
+          />
 
           <TradePlaceholder>
             <Link href={`/card/${cardModel.slug}/${transferHit.serialNumber}`}>

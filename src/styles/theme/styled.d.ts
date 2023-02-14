@@ -40,6 +40,7 @@ declare module 'styled-components' {
       medium: ThemedCssFunction<DefaultTheme>
       mediumGT: ThemedCssFunction<DefaultTheme>
       large: ThemedCssFunction<DefaultTheme>
+      computer:  ThemedCssFunction<DefaultTheme>
     }
 
     before: {
