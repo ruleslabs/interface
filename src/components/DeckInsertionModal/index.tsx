@@ -147,12 +147,11 @@ export default function DeckInsertionModal({ starknetWalletAddress, cardIndex }:
               value={search}
             />
 
-            <Grid gap={64} maxWidth={256}>
+            <Grid>
               {cards.map((card, index) => (
                 <CardModel
                   key={card.slug}
                   innerRef={index + 1 === cards.length ? lastTxRef : undefined}
-                  cardModelSlug={card.cardModel.slug}
                   pictureUrl={card.cardModel.pictureUrl}
                   serialNumber={card.serialNumber}
                   season={card.cardModel.season}

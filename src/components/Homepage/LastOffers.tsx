@@ -183,8 +183,8 @@ const MemoizedOfferCard = React.memo(function OfferCards({
 
         <InfosWrapper gap={12}>
           <Link href={`/card/${cardModel.slug}/${serialNumber}`}>
-            <ArtistName>{cardModel.artist.displayName}</ArtistName>
-            <ShortArtistName>{shortArtistName}</ShortArtistName>
+            <ArtistName clickable>{cardModel.artist.displayName}</ArtistName>
+            <ShortArtistName clickable>{shortArtistName}</ShortArtistName>
           </Link>
 
           <TYPE.body spanColor="text2">

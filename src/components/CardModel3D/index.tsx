@@ -230,7 +230,7 @@ export default function CardModel3D({
       <CardWrapper stacked={stacked} fullscreen={fullscreen} smallWidth={cardWidth}>
         <Card
           videoUrl={videoUrl}
-          fullscreen={fullscreen}
+          pictureUrl={pictureUrl}
           scarcityName={scarcityName}
           transform={{
             rz: stacked && !fullscreen ? 3 : 0,

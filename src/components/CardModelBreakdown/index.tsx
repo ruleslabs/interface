@@ -10,10 +10,6 @@ import Link from '@/components/Link'
 const UserLogin = styled(RowCenter)`
   margin 4px 0 32px;
   gap: 4px;
-
-  svg {
-    width: 18px;
-  }
 `
 
 interface CardModelBreakdownProps {

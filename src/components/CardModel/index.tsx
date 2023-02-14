@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react'
-import styled, { css } from 'styled-components'
+import React, { useMemo, useCallback, useRef } from 'react'
+import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
@@ -14,32 +14,19 @@ import { CardPendingStatus } from '@/hooks/useCardsPendingStatus'
 
 const StyledCardModel = styled(ColumnCenter)<{ width?: number }>`
   position: relative;
-  gap: 16px;
+  gap: 12px;
   ${({ width }) => width && `width: ${width}px;`}
-`
+  padding: 8px;
+  border-radius: 4px;
+  transition: background 200ms, transform 200ms ease-out;
 
-const StyledCustomCardModelCss = css`
-  cursor: pointer;
-  transform: perspective(0);
-
-  & img {
-    transition: transform 100ms;
-  }
-
-  &:hover img:not(.spinner) {
-    transform: perspective(400px) rotateY(10deg);
+  :hover {
+    background: ${({ theme }) => theme.bg3}80;
+    transform: translateY(-8px) scale(1.02);
   }
 `
 
-const StyledCustomCardModelLink = styled(Link)`
-  ${StyledCustomCardModelCss}
-`
-
-const StyledCustomCardModelDiv = styled.div`
-  ${StyledCustomCardModelCss}
-`
-
-const Card = styled.img<{ inDelivery: boolean; pendingStatus: boolean }>`
+const Video = styled.video<{ inDelivery: boolean; pendingStatus: boolean }>`
   width: 100%;
   border-radius: 4.44%/3.17%;
   ${({ inDelivery, pendingStatus }) => (inDelivery || pendingStatus) && 'opacity: 0.3;'}
@@ -71,15 +58,16 @@ type CustomCardModelProps = LinkProps | React.HTMLAttributes<HTMLDivElement>
 
 const CustomCardModel = (props: CustomCardModelProps) =>
   (props as LinkProps).href ? (
-    <StyledCustomCardModelLink {...(props as LinkProps)} />
+    <Link {...(props as LinkProps)} />
   ) : (
-    <StyledCustomCardModelDiv {...(props as React.HTMLAttributes<HTMLDivElement>)} />
+    <div {...(props as React.HTMLAttributes<HTMLDivElement>)} />
   )
 
 interface CardModelProps {
   innerRef?: (node: any) => void
   slug?: string
-  cardModelSlug: string
+  cardModelSlug?: string
+  videoUrl?: string
   pictureUrl: string
   width?: number
   serialNumber?: number
@@ -97,9 +85,10 @@ const MemoizedCardModelPropsEqualityCheck = (prevProps: CardModelProps, nextProp
   !!prevProps.innerRef === !!nextProps.innerRef &&
   prevProps.cardModelSlug === nextProps.cardModelSlug
 
-const MemoizedCardModel = React.memo(function OfferCards({
+const MemoizedCardModel = React.memo(function CardModel({
   innerRef,
   cardModelSlug,
+  videoUrl,
   pictureUrl,
   width,
   serialNumber,
@@ -122,53 +111,74 @@ const MemoizedCardModel = React.memo(function OfferCards({
 
   // link
   const cardLink = useMemo(
-    () => (onClick ? undefined : `/card/${cardModelSlug}${!!serialNumber ? `/${serialNumber}` : ''}`),
-    [!!onClick]
+    () => (cardModelSlug ? `/card/${cardModelSlug}${!!serialNumber ? `/${serialNumber}` : ''}` : undefined),
+    [cardModelSlug, serialNumber]
   )
 
+  // card video play pause
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  const playVideo = useCallback(() => {
+    videoRef?.current?.play()
+  }, [videoRef])
+
+  const pauseVideo = useCallback(() => {
+    videoRef?.current?.pause()
+  }, [videoRef])
+
   return (
-    <StyledCardModel width={width} ref={innerRef}>
-      <CustomCardModel onClick={onClick} href={cardLink}>
-        <Card src={pictureUrl} inDelivery={inDelivery} pendingStatus={!!pendingStatus} />
+    <CustomCardModel onClick={onClick} href={cardLink}>
+      <StyledCardModel width={width} ref={innerRef} onMouseOver={playVideo} onMouseOut={pauseVideo}>
+        <Video
+          src={videoUrl}
+          inDelivery={inDelivery}
+          pendingStatus={!!pendingStatus}
+          ref={videoRef}
+          poster={pictureUrl}
+          preload="none"
+          loop
+          playsInline
+          muted
+        />
         {inDelivery && <InDelivery src={`/assets/delivery.${locale}.png`} />}
         {onSale && !pendingStatus && <OnSale src={`/assets/onsale.${locale}.png`} />}
         {pendingStatus && <StyledLargeSpinner className="spinner" />}
-      </CustomCardModel>
 
-      {pendingStatus && (
-        <ColumnCenter gap={4}>
-          <TYPE.body textAlign="center">
-            <CardPendingStatusText pendingStatus={pendingStatus} />
-          </TYPE.body>
-          <TYPE.subtitle textAlign="center">
-            <Trans>Please come back later.</Trans>
-          </TYPE.subtitle>
-        </ColumnCenter>
-      )}
+        {pendingStatus && (
+          <ColumnCenter gap={4}>
+            <TYPE.body textAlign="center">
+              <CardPendingStatusText pendingStatus={pendingStatus} />
+            </TYPE.body>
+            <TYPE.subtitle textAlign="center">
+              <Trans>Please come back later.</Trans>
+            </TYPE.subtitle>
+          </ColumnCenter>
+        )}
 
-      {season && artistName && !pendingStatus && (
-        <ColumnCenter gap={4}>
-          <TYPE.body textAlign="center">
-            {artistName} {serialNumber && `#${serialNumber}`}
-          </TYPE.body>
-          <TYPE.subtitle textAlign="center">
-            <Trans>Season {season}</Trans>
-          </TYPE.subtitle>
-        </ColumnCenter>
-      )}
+        {season && artistName && !pendingStatus && (
+          <ColumnCenter gap={4}>
+            <TYPE.body textAlign="center">
+              {artistName} {serialNumber && `#${serialNumber}`}
+            </TYPE.body>
+            <TYPE.subtitle textAlign="center">
+              <Trans>Season {season}</Trans>
+            </TYPE.subtitle>
+          </ColumnCenter>
+        )}
 
-      {parsedLowestAsk && (
-        <ColumnCenter gap={4}>
-          <TYPE.body textAlign="center">
-            <Trans>starting from</Trans>
-          </TYPE.body>
-          <TYPE.body spanColor="text2">
-            {+parsedLowestAsk.toFixed(6)} ETH&nbsp;
-            <span>{weiAmountToEURValue(parsedLowestAsk ?? undefined) ?? '0'}€</span>
-          </TYPE.body>
-        </ColumnCenter>
-      )}
-    </StyledCardModel>
+        {parsedLowestAsk && (
+          <ColumnCenter gap={4}>
+            <TYPE.body textAlign="center">
+              <Trans>starting from</Trans>
+            </TYPE.body>
+            <TYPE.body spanColor="text2" fontWeight={500}>
+              {+parsedLowestAsk.toFixed(6)} ETH&nbsp;
+              <span>{weiAmountToEURValue(parsedLowestAsk ?? undefined) ?? '0'}€</span>
+            </TYPE.body>
+          </ColumnCenter>
+        )}
+      </StyledCardModel>
+    </CustomCardModel>
   )
 },
 MemoizedCardModelPropsEqualityCheck)

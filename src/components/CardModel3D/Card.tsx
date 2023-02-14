@@ -95,9 +95,9 @@ const Glare = styled.div`
 
 export interface CardProps {
   videoUrl: string
+  pictureUrl: string
   revealed: boolean
   scarcityName: string
-  fullscreen?: boolean
   transform?: any
   width?: number
   onStart?: () => void
@@ -108,10 +108,10 @@ export interface CardProps {
 
 export default function Card({
   videoUrl,
+  pictureUrl,
   width,
   revealed,
   scarcityName,
-  fullscreen = false,
   transform = {},
   onStart,
   onRest,
@@ -317,7 +317,7 @@ export default function Card({
         onClick={onClick}
       >
         <CardBackImage src={backPictureUrl} alt="card-back" />
-        <CardFrontVideo src={videoUrl} width={width} playsInline loop autoPlay muted />
+        <CardFrontVideo src={videoUrl} width={width} poster={pictureUrl} playsInline loop autoPlay muted />
         {scarcityName !== 'Common' && (
           <HoloWrapper
             as={animated.div}

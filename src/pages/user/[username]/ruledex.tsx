@@ -68,7 +68,7 @@ const LockableCardModel = styled(Column)<{ locked?: boolean }>`
       color: ${theme.text2};
     }
 
-    img {
+    video {
       filter: grayscale(1);
       opacity: 0.3;
     }

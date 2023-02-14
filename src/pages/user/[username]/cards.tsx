@@ -36,6 +36,7 @@ const CARDS_QUERY = gql`
       cardModel {
         slug
         pictureUrl(derivative: "width=1024")
+        videoUrl
         season
         artist {
           displayName
@@ -249,7 +250,7 @@ function Cards({ userId, address }: CardsProps) {
         </GridHeader>
       )}
 
-      <Grid gap={64}>
+      <Grid>
         {cardsInDelivery.map((card: any) => (
           <CardModel
             key={card.slug}
@@ -267,6 +268,7 @@ function Cards({ userId, address }: CardsProps) {
             innerRef={index + 1 === cards.length ? lastTxRef : undefined}
             cardModelSlug={card.cardModel.slug}
             pictureUrl={card.cardModel.pictureUrl}
+            videoUrl={card.cardModel.videoUrl}
             onSale={card.onSale}
             pendingStatus={pendingsStatus[index] ?? undefined}
             serialNumber={card.serialNumber}

@@ -22,7 +22,7 @@ const MainSection = styled(Section)`
 `
 
 const MarketplaceBody = styled.div`
-  margin: 0 64px 32px 347px;
+  margin: 0 32px 32px 315px;
 
   ${({ theme }) => theme.media.medium`
     margin: 0 32px 32px;
@@ -62,6 +62,7 @@ const CARD_MODELS_ON_SALE_QUERY = gql`
       slug
       lowestAsk
       pictureUrl(derivative: "width=720")
+      videoUrl
       season
       scarcity {
         name
@@ -153,8 +154,9 @@ export default function Marketplace() {
           </GridHeader>
           <StyledGrid>
             {cardModels.map((cardModel: any, index: number) => (
-              <ColumnCenter gap={12} key={`mktp-card-${index}`}>
+              <ColumnCenter gap={12} key={index}>
                 <CardModel
+                  videoUrl={cardModel.videoUrl}
                   pictureUrl={cardModel.pictureUrl}
                   cardModelSlug={cardModel.slug}
                   lowestAsk={cardModel.lowestAsk}
