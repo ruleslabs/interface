@@ -11,7 +11,10 @@ export function useCScoreRank(cScore: number): number {
     filters: `cScore > ${cScore}`,
     skip: !cScore,
   })
-  const userRank = useMemo(() => (userRankSearch?.nbHits ? userRankSearch?.nbHits + 1 : 0), [userRankSearch?.nbHits])
+  const userRank = useMemo(
+    () => (userRankSearch?.nbHits !== undefined ? userRankSearch?.nbHits + 1 : 0),
+    [userRankSearch?.nbHits]
+  )
 
   return userRank
 }

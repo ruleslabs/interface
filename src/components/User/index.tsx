@@ -1,13 +1,17 @@
+import { useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
-import Row from '@/components/Row'
+import Row, { RowCenter } from '@/components/Row'
 import { ColumnCenter } from '@/components/Column'
 import { Certified, TopCollector } from './Badge'
 import { useAvatarEditModalToggle } from '@/state/application/hooks'
 import Avatar from '@/components/Avatar'
-import { useCScoreTopCollector } from '@/hooks/useCScore'
+import { useCScoreTopCollector, useCScoreRank } from '@/hooks/useCScore'
+import { TOP_COLLECTOR_RANK_MAX } from '@/constants/misc'
+
+import Crown from '@/images/crown.svg'
 
 type Size = 'sm' | 'md' | 'lg'
 
@@ -46,6 +50,20 @@ const UserAvatarEdit = styled(TYPE.body)`
   cursor: pointer;
 `
 
+const Rank = styled(RowCenter)<{ topCollector: boolean }>`
+  gap: 4px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 9px;
+  background: ${({ theme, topCollector }) => (topCollector ? theme.orange : theme.bg3)};
+  margin-left: 4px;
+
+  svg {
+    width: 8px;
+    fill: #fff;
+  }
+`
+
 interface UserProps {
   username: string
   pictureUrl: string
@@ -54,6 +72,7 @@ interface UserProps {
   size?: Size
   canEdit?: boolean
   cScore?: number
+  displayRank?: boolean
 }
 
 export default function User({
@@ -64,11 +83,16 @@ export default function User({
   size = 'md',
   canEdit = false,
   cScore = 0,
+  displayRank = false,
 }: UserProps) {
   const toggleAvatarEditModal = useAvatarEditModalToggle()
 
-  // top collector
-  const isTopCollector = useCScoreTopCollector(cScore)
+  // rank
+  const rank = useCScoreRank(displayRank ? cScore : 0)
+
+  // top collector (if we dont have rank is not displayed, use algolia)
+  let isTopCollector = useCScoreTopCollector(displayRank ? 0 : cScore)
+  isTopCollector = useMemo(() => (rank ? rank <= TOP_COLLECTOR_RANK_MAX : isTopCollector), [isTopCollector, rank])
 
   return (
     <ColumnCenter>
@@ -83,7 +107,13 @@ export default function User({
       <Row gap={4}>
         <TYPE.body>{username}</TYPE.body>
         {certified && <Certified />}
-        {isTopCollector && <TopCollector />}
+        {!rank && isTopCollector && <TopCollector />}
+        {rank ? (
+          <Rank topCollector={isTopCollector}>
+            {isTopCollector && <Crown />}
+            <TYPE.body fontSize={12}>{rank}</TYPE.body>
+          </Rank>
+        ) : null}
       </Row>
     </ColumnCenter>
   )

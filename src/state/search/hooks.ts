@@ -240,7 +240,7 @@ function useAlgoliaSearch({
   useEffect(() => {
     setNextPageNumber(page ?? ALGOLIA_FIRST_PAGE)
     setSearchResult({ loading: false, error: null })
-  }, [algoliaIndex, search, page])
+  }, [algoliaIndex, search, filters, page])
 
   useEffect(() => {
     if (!skip) runSearch(page ?? ALGOLIA_FIRST_PAGE)

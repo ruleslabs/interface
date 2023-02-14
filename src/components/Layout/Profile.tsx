@@ -115,6 +115,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
               size="lg"
               canEdit={userSlug === currentUser?.slug}
               cScore={user.cScore}
+              displayRank
             />
 
             <RowCenter gap={8}>
