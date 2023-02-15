@@ -199,10 +199,10 @@ export default function HallOfFame() {
   const usersSearch = useSearchUsers({ sortingKey: 'cScore', hitsPerPage: 10, onPageFetched })
 
   // current user rank
-  const currentUserRank = useCScoreRank(currentUser.cScore)
+  const currentUserRank = useCScoreRank(currentUser?.cScore)
 
   // loading
-  const isLoading = usersSearch.loading || usersQuery.loading || !currentUserRank
+  const isLoading = usersSearch.loading || usersQuery.loading
 
   return (
     <Column gap={12}>

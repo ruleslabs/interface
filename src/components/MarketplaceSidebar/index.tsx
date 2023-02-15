@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Seasons, ScarcityName } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
@@ -7,12 +7,7 @@ import Column from '@/components/Column'
 import Checkbox from '@/components/Checkbox'
 import Slider from '@/components/Slider'
 import { TYPE } from '@/styles/theme'
-import {
-  useMarketplaceFilters,
-  useMarketplaceScarcityFilterToggler,
-  useMarketplaceSeasonsFilterToggler,
-  useMarketplaceSetMaximumPrice,
-} from '@/state/search/hooks'
+import { useMarketplaceFilters, useMarketplaceFiltersHandlers } from '@/state/search/hooks'
 
 import Close from '@/images/close.svg'
 
@@ -85,9 +80,29 @@ interface MarketplaceSidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 export default function MarketplaceSidebar({ dispatch, maximumPriceUpperBound, ...props }: MarketplaceSidebarProps) {
   const filters = useMarketplaceFilters()
 
-  const toggleTierFilter = useMarketplaceScarcityFilterToggler()
-  const toggleSeasonFilter = useMarketplaceSeasonsFilterToggler()
-  const setMaximumPrice = useMarketplaceSetMaximumPrice()
+  const {
+    toggleScarcityFilter,
+    toggleSeasonFilter,
+    toggleLowSerialsFilter,
+    setMaximumPrice: setMarketplaceMaximumPrice,
+  } = useMarketplaceFiltersHandlers()
+
+  // max price
+  const [maximumPrice, setMaximumPrice] = useState(maximumPriceUpperBound)
+
+  // max price debounce
+  const debounceMaximumPrice = useCallback(() => setMarketplaceMaximumPrice(maximumPrice), [maximumPrice])
+  const handleDebouncedMaximumPriceUpdate = useCallback((value: number) => {
+    setMaximumPrice(value)
+    setMarketplaceMaximumPrice(value)
+  }, [])
+
+  useEffect(() => {
+    if (!filters.maximumPrice || filters.maximumPrice > maximumPriceUpperBound) {
+      setMarketplaceMaximumPrice(maximumPriceUpperBound)
+      setMaximumPrice(maximumPriceUpperBound)
+    }
+  }, [setMarketplaceMaximumPrice, maximumPriceUpperBound, filters.maximumPrice])
 
   return (
     <StyledMarketplaceSidebar {...props}>
@@ -104,7 +119,7 @@ export default function MarketplaceSidebar({ dispatch, maximumPriceUpperBound, .
           {Object.keys(Seasons).map((season: string) => (
             <Checkbox
               key={`checkbox-season-${season}`}
-              value={filters.seasons.includes(+season)}
+              value={!filters.seasons.includes(+season)}
               onChange={() => toggleSeasonFilter(+season)}
             >
               <TYPE.body>
@@ -118,15 +133,26 @@ export default function MarketplaceSidebar({ dispatch, maximumPriceUpperBound, .
           <FilterName>
             <Trans>Scarcities</Trans>
           </FilterName>
-          {ScarcityName.map((scarcity: string) => (
+          {ScarcityName.map((scarcity: string, index) => (
             <Checkbox
               key={`checkbox-tier-${scarcity}`}
-              value={filters.scarcities.includes(scarcity)}
-              onChange={() => toggleTierFilter(scarcity)}
+              value={!filters.scarcities.includes(index)}
+              onChange={() => toggleScarcityFilter(index)}
             >
               <Trans id={scarcity} render={({ translation }) => <TYPE.body>{translation}</TYPE.body>} />
             </Checkbox>
           ))}
+        </Column>
+
+        <Column gap={12}>
+          <FilterName>
+            <Trans>Serial numbers</Trans>
+          </FilterName>
+          <Checkbox value={filters.lowSerials} onChange={toggleLowSerialsFilter}>
+            <TYPE.body>
+              <Trans>Low serials</Trans>
+            </TYPE.body>
+          </Checkbox>
         </Column>
 
         <Column gap={16}>
@@ -137,8 +163,10 @@ export default function MarketplaceSidebar({ dispatch, maximumPriceUpperBound, .
             unit="€"
             min={0}
             max={maximumPriceUpperBound}
-            onChange={setMaximumPrice}
-            value={filters.maximumPrice ?? maximumPriceUpperBound}
+            onInputChange={handleDebouncedMaximumPriceUpdate}
+            onSlidingChange={setMaximumPrice}
+            value={maximumPrice}
+            onSliderRelease={debounceMaximumPrice}
           />
         </Column>
       </SidebarContent>

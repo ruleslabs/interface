@@ -6,11 +6,12 @@ import { WeiAmount } from '@rulesorg/sdk-core'
 import { useActiveLocale } from '@/hooks/useActiveLocale'
 import Link, { LinkProps } from '@/components/Link'
 import { TYPE } from '@/styles/theme'
-import { ColumnCenter } from '@/components/Column'
+import Column, { ColumnCenter } from '@/components/Column'
 import { LargeSpinner } from '@/components/Spinner'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import CardPendingStatusText from '@/components/CardPendingStatusText'
 import { CardPendingStatus } from '@/hooks/useCardsPendingStatus'
+import Badges, { Badge } from './Badges'
 
 const StyledCardModel = styled(ColumnCenter)<{ width?: number }>`
   position: relative;
@@ -56,6 +57,20 @@ const StyledLargeSpinner = styled(LargeSpinner)`
   top: 41.5%;
 `
 
+const BadgesWrapper = styled(Column)`
+  gap: 16px;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+
+  & > svg {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    box-shadow: 0px 4px 4px #00000040;
+  }
+`
+
 type CustomCardModelProps = LinkProps | React.HTMLAttributes<HTMLDivElement>
 
 const CustomCardModel = (props: CustomCardModelProps) =>
@@ -80,12 +95,14 @@ interface CardModelProps {
   artistName?: string
   lowestAsk?: string
   onClick?: () => void
+  badges?: Badge[]
 }
 
 const MemoizedCardModelPropsEqualityCheck = (prevProps: CardModelProps, nextProps: CardModelProps) =>
   prevProps.slug === nextProps.slug &&
   !!prevProps.innerRef === !!nextProps.innerRef &&
-  prevProps.cardModelSlug === nextProps.cardModelSlug
+  prevProps.cardModelSlug === nextProps.cardModelSlug &&
+  prevProps.lowestAsk === nextProps.lowestAsk
 
 const MemoizedCardModel = React.memo(function CardModel({
   innerRef,
@@ -101,6 +118,7 @@ const MemoizedCardModel = React.memo(function CardModel({
   artistName,
   lowestAsk,
   onClick,
+  badges,
 }: CardModelProps) {
   // locale
   const locale = useActiveLocale()
@@ -178,6 +196,12 @@ const MemoizedCardModel = React.memo(function CardModel({
               <span>{weiAmountToEURValue(parsedLowestAsk ?? undefined) ?? '0'}€</span>
             </TYPE.body>
           </ColumnCenter>
+        )}
+
+        {badges && (
+          <BadgesWrapper>
+            <Badges badges={badges} />
+          </BadgesWrapper>
         )}
       </StyledCardModel>
     </CustomCardModel>

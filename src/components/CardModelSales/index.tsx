@@ -23,7 +23,7 @@ interface CardModelSalesProps {
 
 export default function CardModelSales({ slug, cardModelId, lowestAsk, averageSale }: CardModelSalesProps) {
   // get cards on sale count
-  const offersSearch = useSearchOffers({ facets: { cardModelId }, skip: !cardModelId })
+  const offersSearch = useSearchOffers({ facets: { cardModelId }, skip: !cardModelId, hitsPerPage: 1 })
 
   return (
     <Column gap={36}>

@@ -1,14 +1,17 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 import { useQuery, useLazyQuery, gql } from '@apollo/client'
 import algoliasearch from 'algoliasearch'
+import { Unit } from '@rulesorg/sdk-core'
 
 import { NULL_PRICE } from '@/constants/misc'
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
 import {
   updateMarketplaceScarcityFilter,
   updateMarketplaceSeasonsFilter,
+  updateMarketplaceLowSerialsFilter,
   updateMarketplaceMaximumPrice,
 } from './actions'
+import { useEurAmountToWeiAmount } from '@/hooks/useFiatPrice'
 
 const SEARCHED_USERS_QUERY = gql`
   query {
@@ -65,21 +68,20 @@ export function useMarketplaceFilters() {
   return useAppSelector((state) => state.search.filters)
 }
 
-export function useMarketplaceScarcityFilterToggler(): (scarcity: string) => void {
+export function useMarketplaceFiltersHandlers(): {
+  toggleScarcityFilter: (scarcity: number) => void
+  toggleSeasonFilter: (season: number) => void
+  toggleLowSerialsFilter: () => void
+  setMaximumPrice: (price: number) => void
+} {
   const dispatch = useAppDispatch()
 
-  const toggleTierFilter = useCallback(
-    (scarcity: string) => {
+  const toggleScarcityFilter = useCallback(
+    (scarcity: number) => {
       dispatch(updateMarketplaceScarcityFilter({ scarcity }))
     },
     [dispatch]
   )
-
-  return toggleTierFilter
-}
-
-export function useMarketplaceSeasonsFilterToggler(): (season: number) => void {
-  const dispatch = useAppDispatch()
 
   const toggleSeasonFilter = useCallback(
     (season: number) => {
@@ -88,11 +90,9 @@ export function useMarketplaceSeasonsFilterToggler(): (season: number) => void {
     [dispatch]
   )
 
-  return toggleSeasonFilter
-}
-
-export function useMarketplaceSetMaximumPrice(): (price: number) => void {
-  const dispatch = useAppDispatch()
+  const toggleLowSerialsFilter = useCallback(() => {
+    dispatch(updateMarketplaceLowSerialsFilter())
+  }, [dispatch])
 
   const setMaximumPrice = useCallback(
     (price: number) => {
@@ -101,7 +101,37 @@ export function useMarketplaceSetMaximumPrice(): (price: number) => void {
     [dispatch]
   )
 
-  return setMaximumPrice
+  return {
+    toggleScarcityFilter,
+    toggleSeasonFilter,
+    toggleLowSerialsFilter,
+    setMaximumPrice,
+  }
+}
+
+export function useAlgoliaFormatedMarketplaceFilters() {
+  const filters = useMarketplaceFilters()
+
+  // maximum price in gwei
+  const eurAmountToWeiAmount = useEurAmountToWeiAmount()
+  const gweiMaximumPrice = useMemo(
+    () => +(eurAmountToWeiAmount(filters.maximumPrice ?? undefined)?.toUnitFixed(Unit.GWEI, 0) ?? 0),
+    [filters.maximumPrice, eurAmountToWeiAmount]
+  )
+
+  return useMemo(
+    () => ({
+      facets: {
+        scarcity: filters.scarcities.map((scarcity) => `-${scarcity}`),
+        season: filters.seasons.map((season) => `-${season}`),
+        lowestAsk: filters.lowSerials ? undefined : '-0',
+        lowSerialLowestAsk: filters.lowSerials ? '-0' : undefined,
+      },
+      filters: `${filters.lowSerials ? 'gweiLowSerialLowestAsk' : 'gweiLowestAsk'} <= ${gweiMaximumPrice}`,
+      skip: !gweiMaximumPrice,
+    }),
+    [JSON.stringify(filters.scarcities), JSON.stringify(filters.seasons), filters.lowSerials, gweiMaximumPrice]
+  )
 }
 
 // algolia
@@ -121,6 +151,12 @@ const algoliaIndexes = {
     lastPriceAsc: client.initIndex('cards-last-price-asc'),
     artistDesc: client.initIndex('cards-artist-desc'),
     artistAsc: client.initIndex('cards-artist-asc'),
+  },
+  cardModels: {
+    lowestAskDesc: client.initIndex('card-models-lowest-ask-desc'),
+    lowestAskAsc: client.initIndex('card-models-lowest-ask-asc'),
+    lowSerialLowestAskDesc: client.initIndex('card-models-low-serial-lowest-ask-desc'),
+    lowSerialLowestAskAsc: client.initIndex('card-models-low-serial-lowest-ask-asc'),
   },
   offers: {
     priceDesc: client.initIndex('offers-price-desc'),
@@ -142,6 +178,7 @@ export type PageFetchedCallback = (hits: any[], data: PageFetchedCallbackData) =
 
 export type TransfersSortingKey = keyof typeof algoliaIndexes.transfers
 export type CardsSortingKey = keyof typeof algoliaIndexes.cards
+export type CardModelsSortingKey = keyof typeof algoliaIndexes.cardModels
 export type OffersSortingKey = keyof typeof algoliaIndexes.offers
 export type UsersSortingKey = keyof typeof algoliaIndexes.users
 
@@ -240,7 +277,7 @@ function useAlgoliaSearch({
   useEffect(() => {
     setNextPageNumber(page ?? ALGOLIA_FIRST_PAGE)
     setSearchResult({ loading: false, error: null })
-  }, [algoliaIndex, search, filters, page])
+  }, [algoliaIndex, search, filters, JSON.stringify(facetFilters), page])
 
   useEffect(() => {
     if (!skip) runSearch(page ?? ALGOLIA_FIRST_PAGE)
@@ -324,6 +361,48 @@ export function useSearchCards({
       objectID: facets.cardId,
     },
     algoliaIndex: algoliaIndexes.cards[sortingKey],
+    hitsPerPage,
+    onPageFetched,
+    skip,
+    search,
+  })
+}
+
+// CARD MODELS
+
+interface SearchCardModelsProps {
+  facets?: {
+    season?: string[]
+    scarcity?: string[]
+    lowestAsk?: string
+    lowSerialLowestAsk?: string
+    cardModelId?: string | string[]
+  }
+  filters?: string
+  sortingKey?: CardModelsSortingKey
+  search?: string
+  skip?: boolean
+  hitsPerPage?: number
+  onPageFetched?: PageFetchedCallback
+}
+
+export function useSearchCardModels({
+  search = '',
+  facets = {},
+  filters,
+  sortingKey = Object.keys(algoliaIndexes.cardModels)[0] as CardModelsSortingKey,
+  hitsPerPage = 32,
+  onPageFetched,
+  skip = false,
+}: SearchCardModelsProps): AlgoliaSearch {
+  return useAlgoliaSearch({
+    facets: {
+      ...facets,
+      cardModelId: undefined,
+      objectID: facets.cardModelId,
+    },
+    filters,
+    algoliaIndex: algoliaIndexes.cardModels[sortingKey],
     hitsPerPage,
     onPageFetched,
     skip,

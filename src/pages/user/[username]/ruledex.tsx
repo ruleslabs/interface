@@ -13,13 +13,8 @@ import CardModel from '@/components/CardModel'
 import Row, { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
-import { RULEDEX_LOW_SERIAL_MAXS, RULEDEX_CARDS_COUNT_LEVELS_MINS } from '@/constants/misc'
-
-import RuledexBadgeLowSerial from '@/images/ruledex-badge-low-serial.svg'
-import RuledexBadgeCardsCountLevel1 from '@/images/ruledex-badge-cards-count-level-1.svg'
-import RuledexBadgeCardsCountLevel2 from '@/images/ruledex-badge-cards-count-level-2.svg'
-import RuledexBadgeCardsCountLevel3 from '@/images/ruledex-badge-cards-count-level-3.svg'
-import RuledexBadgeCardsCountLevel4 from '@/images/ruledex-badge-cards-count-level-4.svg'
+import { RULEDEX_CARDS_COUNT_LEVELS_MINS } from '@/constants/misc'
+import { Badge } from '@/components/CardModel/Badges'
 
 const ScarcitySelectorWrapper = styled(Row)`
   gap: 42px;
@@ -84,20 +79,6 @@ const CardModelId = styled(TYPE.body)`
   border-radius: 3px;
 `
 
-const Badges = styled(Column)`
-  gap: 16px;
-  position: absolute;
-  top: -16px;
-  right: -16px;
-
-  & > svg {
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    box-shadow: 0px 4px 4px #00000040;
-  }
-`
-
 const ALL_CARD_MODELS_QUERY = gql`
   query {
     allCardModels {
@@ -120,6 +101,7 @@ const USER_OWNED_CARD_MODELS_QUERY = gql`
           uid
           scarcity {
             name
+            maxLowSerial
           }
         }
       }
@@ -151,25 +133,28 @@ function Ruledex({ address }: RuledexProps) {
   // owned card models
   const cardModelsBadges = useMemo(
     () =>
-      (ownedCardModels as any[]).reduce<{ [uid: number]: any }>((acc, ownedCardModel) => {
+      (ownedCardModels as any[]).reduce<{ [uid: number]: Badge[] }>((acc, ownedCardModel) => {
         // skip if needed
         if (!ownedCardModel.serialNumbers.length) return acc
 
         // init badges
-        acc[ownedCardModel.cardModel.uid] = acc[ownedCardModel.cardModel.uid] ?? { level: 0 }
+        acc[ownedCardModel.cardModel.uid] = acc[ownedCardModel.cardModel.uid] ?? []
 
         // low serial badge
         for (const serialNumber of ownedCardModel.serialNumbers) {
-          if (serialNumber <= RULEDEX_LOW_SERIAL_MAXS[ownedCardModel.cardModel.scarcity.name]) {
-            acc[ownedCardModel.cardModel.uid].lowSerial = true
+          if (serialNumber <= ownedCardModel.cardModel.scarcity.maxLowSerial) {
+            acc[ownedCardModel.cardModel.uid].push(Badge.LOW_SERIAL)
             break
           }
         }
 
         // card counts badges
+        let level = 0
         for (const cardCountMin of RULEDEX_CARDS_COUNT_LEVELS_MINS) {
-          if (ownedCardModel.serialNumbers.length >= cardCountMin) ++acc[ownedCardModel.cardModel.uid].level
+          if (ownedCardModel.serialNumbers.length >= cardCountMin) ++level
         }
+
+        acc[ownedCardModel.cardModel.uid].push(Badge[`CARDS_COUNT_LEVEL_${level}` as keyof typeof Badge])
 
         return acc
       }, {}),
@@ -229,17 +214,13 @@ function Ruledex({ address }: RuledexProps) {
           .sort((a: any, b: any) => a.uid - b.uid)
           .map((cardModel: any) => (
             <LockableCardModel key={cardModel.slug} locked={!cardModelsBadges[cardModel.uid]}>
-              <CardModel cardModelSlug={cardModel.slug} pictureUrl={cardModel.pictureUrl} />
+              <CardModel
+                cardModelSlug={cardModel.slug}
+                pictureUrl={cardModel.pictureUrl}
+                badges={cardModelsBadges[cardModel.uid]}
+              />
 
               <CardModelId>#{cardModel.uid.toString().padStart(3, '0')}</CardModelId>
-
-              <Badges>
-                {cardModelsBadges[cardModel.uid]?.lowSerial && <RuledexBadgeLowSerial />}
-                {cardModelsBadges[cardModel.uid]?.level === 1 && <RuledexBadgeCardsCountLevel1 />}
-                {cardModelsBadges[cardModel.uid]?.level === 2 && <RuledexBadgeCardsCountLevel2 />}
-                {cardModelsBadges[cardModel.uid]?.level === 3 && <RuledexBadgeCardsCountLevel3 />}
-                {cardModelsBadges[cardModel.uid]?.level === 4 && <RuledexBadgeCardsCountLevel4 />}
-              </Badges>
             </LockableCardModel>
           ))}
       </StyledGrid>

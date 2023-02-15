@@ -55,10 +55,12 @@ interface SliderProps {
   unit?: string
   min?: number
   max: number
-  onChange: (value: number) => void
+  onSlidingChange: (value: number) => void
+  onInputChange: (value: number) => void
+  onSliderRelease?: () => void
 }
 
-export default function Slider({ value, unit = '', min = 0, max, onChange }: SliderProps) {
+export default function Slider({ value, min = 0, max, onSlidingChange, onInputChange, onSliderRelease }: SliderProps) {
   const theme = useTheme()
 
   const sliderStyle = useMemo(
@@ -70,14 +72,15 @@ export default function Slider({ value, unit = '', min = 0, max, onChange }: Sli
     [value, min, max, theme]
   )
 
-  const handleInputUpdate = useCallback((value: string) => onChange(+value), [])
+  const handleInputUpdate = useCallback((value: string) => onInputChange(+value), [onInputChange])
 
   const handleSlidingUpdate = useCallback(
     (event) => {
       const newValue = event.target.value
-      if (newValue === '' || /^([0-9]+)$/.test(newValue)) onChange(newValue.length > 0 ? Math.min(+newValue, max) : 0)
+      if (newValue === '' || /^([0-9]+)$/.test(newValue))
+        onSlidingChange(newValue.length > 0 ? Math.min(+newValue, max) : 0)
     },
-    [max, onChange]
+    [max, onSlidingChange]
   )
 
   return (
@@ -90,6 +93,8 @@ export default function Slider({ value, unit = '', min = 0, max, onChange }: Sli
         step="1"
         onChange={handleSlidingUpdate}
         style={sliderStyle}
+        onMouseUp={onSliderRelease}
+        onTouchEnd={onSliderRelease}
       />
       <SliderInput type="text" value={value} onUserInput={handleInputUpdate} placeholder="0" unit="€" />
     </>

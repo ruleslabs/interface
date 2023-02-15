@@ -3,7 +3,7 @@ import 'moment/locale/fr'
 import React, { useMemo, useState, useCallback } from 'react'
 import moment from 'moment'
 import styled from 'styled-components'
-import { WeiAmount } from '@rulesorg/sdk-core'
+import { WeiAmount, Unit } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import Link from '@/components/Link'
@@ -177,7 +177,7 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
   const reducedHash = useReduceHash(hash)
 
   // parsed fee
-  const parsedFee = useMemo(() => (actualFee ? WeiAmount.fromRawAmount(actualFee, 'gwei') : undefined), [actualFee])
+  const parsedFee = useMemo(() => (actualFee ? WeiAmount.fromRawAmount(actualFee) : undefined), [actualFee])
 
   return (
     <StyledTransactionRow offchain={status === 'RECEIVED' || status === 'REJECTED'} {...props}>
@@ -272,7 +272,7 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
         </div>
 
         <div>
-          <TYPE.small>{parsedFee ? `${parsedFee.toFixed(0)} Gwei` : 'N/A'}</TYPE.small>
+          <TYPE.small>{parsedFee ? `${parsedFee.toUnitFixed(Unit.GWEI, 0)} Gwei` : 'N/A'}</TYPE.small>
         </div>
 
         <div>

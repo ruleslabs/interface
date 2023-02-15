@@ -1,13 +1,12 @@
 import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { useLazyQuery, useQuery, gql } from '@apollo/client'
-import { t, Trans, Plural } from '@lingui/macro'
+import { t, Plural } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
 import DefaultLayout from '@/components/Layout'
 import ProfileLayout from '@/components/Layout/Profile'
 import { RowBetween } from '@/components/Row'
-import Column from '@/components/Column'
 import Section from '@/components/Section'
 import CardModel from '@/components/CardModel'
 import Grid from '@/components/Grid'
@@ -16,10 +15,9 @@ import { TYPE } from '@/styles/theme'
 import EmptyTab, { EmptyCardsTabOfCurrentUser } from '@/components/EmptyTab'
 import { useCurrentUser } from '@/state/user/hooks'
 import useCardsPendingStatus from '@/hooks/useCardsPendingStatus'
-import { RowButton } from '@/components/Button'
-import Hover from '@/components/AnimatedIcon/hover'
 import { PaginationSpinner } from '@/components/Spinner'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
+import SortButton, { SortsData } from '@/components/Button/SortButton'
 
 // css
 
@@ -69,84 +67,15 @@ const GridHeader = styled(RowBetween)`
   align-items: center;
 `
 
-const SortButton = styled(RowButton)`
-  position: relative;
-  border: solid 1px ${({ theme }) => theme.text2}80;
-  border-radius: 3px;
-  padding: 8px 16px;
-
-  &:hover {
-    border-color: ${({ theme }) => theme.text2};
-  }
-`
-
-const Dropdown = styled(Column)<{ isOpen: boolean }>`
-  ${({ isOpen }) => !isOpen && 'display: none;'}
-  position: absolute;
-  background: ${({ theme }) => theme.bg2};
-  top: 38px;
-  right: 0;
-  padding: 8px 0;
-  min-width: 250px;
-  z-index: 1;
-
-  & > * {
-    padding: 12px 40px;
-    white-space: nowrap;
-    width: 100%;
-    text-align: right;
-  }
-
-  & > *:hover {
-    background: ${({ theme }) => theme.bg3};
-  }
-`
-
-const sorts: Array<{
-  name: string
-  key: CardsSortingKey
-  desc: boolean
-}> = [
-  {
-    name: 'Newest',
-    key: 'txIndexDesc',
-    desc: true,
-  },
-  {
-    name: 'Oldest',
-    key: 'txIndexAsc',
-    desc: false,
-  },
-  {
-    name: 'Low serial',
-    key: 'serialAsc',
-    desc: false,
-  },
-  {
-    name: 'High serial',
-    key: 'serialDesc',
-    desc: true,
-  },
-  {
-    name: 'Price: low to high',
-    key: 'lastPriceAsc',
-    desc: false,
-  },
-  {
-    name: 'Price: high to low',
-    key: 'lastPriceDesc',
-    desc: true,
-  },
-  {
-    name: 'Alphabetical A-Z',
-    key: 'artistAsc',
-    desc: false,
-  },
-  {
-    name: 'Alphabetical Z-A',
-    key: 'artistDesc',
-    desc: true,
-  },
+const sortsData: SortsData<CardsSortingKey> = [
+  { name: 'Newest', key: 'txIndexDesc', desc: true },
+  { name: 'Oldest', key: 'txIndexAsc', desc: false },
+  { name: 'Low serial', key: 'serialAsc', desc: false },
+  { name: 'High serial', key: 'serialDesc', desc: true },
+  { name: 'Price: low to high', key: 'lastPriceAsc', desc: false },
+  { name: 'Price: high to low', key: 'lastPriceDesc', desc: true },
+  { name: 'Alphabetical A-Z', key: 'artistAsc', desc: false },
+  { name: 'Alphabetical Z-A', key: 'artistDesc', desc: true },
 ]
 
 interface CardsProps {
@@ -166,10 +95,6 @@ function Cards({ userId, address }: CardsProps) {
 
   // tables
   const [cards, setCards] = useState<any[]>([])
-
-  // sort button
-  const [sortDropdownOpen, setSortDropdownOpen] = useState(false)
-  const toggleSortDropdown = useCallback(() => setSortDropdownOpen(!sortDropdownOpen), [sortDropdownOpen])
 
   // sort
   const [sortIndex, setSortIndex] = useState(0)
@@ -210,7 +135,7 @@ function Cards({ userId, address }: CardsProps) {
   )
   const cardsSearch = useSearchCards({
     facets: { ownerStarknetAddress: address },
-    sortingKey: sorts[sortIndex].key,
+    sortingKey: sortsData[sortIndex].key,
     skip: !address,
     onPageFetched,
   })
@@ -232,21 +157,7 @@ function Cards({ userId, address }: CardsProps) {
             <Plural value={cardsCount} _1="{cardsCount} card" other="{cardsCount} cards" />
           </TYPE.body>
 
-          <SortButton onClick={toggleSortDropdown}>
-            <TYPE.body>
-              <Trans id={sorts[sortIndex].name} render={({ translation }) => <>{translation}</>} />
-            </TYPE.body>
-
-            <Hover width="16" height="16" reverse={!sorts[sortIndex].desc} />
-
-            <Dropdown isOpen={sortDropdownOpen}>
-              {sorts.map((sort, index) => (
-                <TYPE.body key={index} onClick={() => setSortIndex(index)}>
-                  <Trans id={sort.name} render={({ translation }) => <>{translation}</>} />
-                </TYPE.body>
-              ))}
-            </Dropdown>
-          </SortButton>
+          <SortButton sortsData={sortsData} onChange={setSortIndex} sortIndex={sortIndex} />
         </GridHeader>
       )}
 

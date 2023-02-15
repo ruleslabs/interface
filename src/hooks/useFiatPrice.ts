@@ -11,3 +11,13 @@ export function useWeiAmountToEURValue(): (amount?: WeiAmount) => string | null 
     [etherEURprice]
   )
 }
+
+export function useEurAmountToWeiAmount(): (amount?: number) => WeiAmount | null {
+  const etherEURprice = useEtherPrice()
+
+  return useCallback(
+    (amount?: number) =>
+      etherEURprice && amount ? WeiAmount.fromEtherAmount(amount / Math.round(etherEURprice)) : null,
+    [etherEURprice]
+  )
+}

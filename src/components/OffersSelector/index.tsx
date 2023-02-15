@@ -211,8 +211,6 @@ export default function OffersSelector({
     (hits: any, { pageNumber, totalHitsCount }) => {
       if (!pageNumber) setOffersHits([])
 
-      console.log('test')
-
       queryOffersData({
         variables: {
           starknetAddresses: hits.map((hit: any) => hit.sellerStarknetAddress),

@@ -32,7 +32,7 @@
     "@ramp-network/ramp-instant-sdk": "^3.0.0",
     "@reach/dialog": "^0.16.2",
     "@reduxjs/toolkit": "^1.6.2",
-    "@rulesorg/sdk-core": "^0.10.12",
+    "@rulesorg/sdk-core": "^0.10.15",
     "@rulesorg/starknet-redux-multicall": "0.1.1",
     "@stripe/react-stripe-js": "^1.7.1",
     "@stripe/stripe-js": "^1.27.0",

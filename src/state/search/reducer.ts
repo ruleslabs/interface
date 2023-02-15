@@ -1,25 +1,27 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { Seasons, ScarcityName } from '@rulesorg/sdk-core'
 
 import {
   updateMarketplaceScarcityFilter,
   updateMarketplaceSeasonsFilter,
+  updateMarketplaceLowSerialsFilter,
   updateMarketplaceMaximumPrice,
 } from './actions'
 
 export interface MarketplaceState {
   filters: {
-    scarcities: string[]
+    scarcities: number[]
     seasons: number[]
     maximumPrice: number | null
+    lowSerials: boolean
   }
 }
 
 export const initialState: MarketplaceState = {
   filters: {
-    scarcities: ScarcityName,
-    seasons: Object.keys(Seasons).map((season) => +season),
+    scarcities: [],
+    seasons: [],
     maximumPrice: null,
+    lowSerials: false,
   },
 }
 
@@ -36,6 +38,9 @@ export default createReducer(initialState, (builder) =>
 
       if (seasons.includes(season)) state.filters.seasons = seasons.filter((e) => e !== season)
       else seasons.push(season)
+    })
+    .addCase(updateMarketplaceLowSerialsFilter, (state) => {
+      state.filters.lowSerials = !state.filters.lowSerials
     })
     .addCase(updateMarketplaceMaximumPrice, (state, { payload: { price } }) => {
       state.filters.maximumPrice = price
