@@ -7,7 +7,6 @@ import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'
 import Column from '@/components/Column'
 import Card from '@/components/Card'
-import { TYPE } from '@/styles/theme'
 import CardModelBreakdown from '@/components/CardModelBreakdown'
 import CardOwnership from '@/components/CardOwnership'
 import CardTransfersHistory from '@/components/CardsTransfersHistory/card'
@@ -20,6 +19,8 @@ import CancelOfferModal from '@/components/MarketplaceModal/CancelOffer'
 import AcceptOfferModal from '@/components/MarketplaceModal/AcceptOffer'
 import { useSearchOffers } from '@/state/search/hooks'
 import useCardsPendingStatus, { CardPendingStatus } from '@/hooks/useCardsPendingStatus'
+import { useSearchCardModels } from '@/state/search/hooks'
+import { PaginationSpinner } from '@/components/Spinner'
 
 const MainSection = styled(Section)`
   position: relative;
@@ -83,7 +84,6 @@ const QUERY_CARD = gql`
         pictureUrl(derivative: "width=1024")
         season
         youtubePreviewId
-        lowestAsk
         averageSale
         artist {
           displayName
@@ -105,9 +105,14 @@ export default function CardBreakout() {
   const { cardModelSlug, serialNumber } = router.query
   const cardSlug = `${cardModelSlug}-${serialNumber}`
 
+  // hits
+  const [cardModelHit, setCardModelHit] = useState<any | null>(null)
+
+  // card query
   const cardQuery = useQuery(QUERY_CARD, { variables: { slug: cardSlug }, skip: !cardSlug })
   const card = cardQuery.data?.card
 
+  // card's back
   const backPictureUrl = useCardsBackPictureUrl(512)
 
   // pending status
@@ -128,9 +133,16 @@ export default function CardBreakout() {
     [offerSearch?.hits?.[0]?.price]
   )
 
-  if (cardQuery.error) return <TYPE.body>Card not found</TYPE.body>
+  // card model search
+  const onPageFetched = useCallback((hits) => setCardModelHit(hits[0] ?? null), [])
+  const cardModelSearch = useSearchCardModels({
+    facets: { cardModelId: card?.cardModel?.id },
+    skip: !card?.cardModel?.id,
+    onPageFetched,
+  })
 
-  if (!card) return null
+  // loading
+  const isLoading = cardModelSearch.loading || cardQuery.loading
 
   return (
     <>
@@ -138,97 +150,103 @@ export default function CardBreakout() {
         <BackButton onClick={router.back} />
       </Section>
 
-      <MainSection size="sm">
-        <CardModel3D
-          videoUrl={card.cardModel.videoUrl}
-          pictureUrl={card.cardModel.pictureUrl}
-          backPictureUrl={backPictureUrl}
-          scarcityName={card.cardModel.scarcity.name}
-        />
-        <MainSectionCardsWrapper>
-          <Card>
-            <CardModelBreakdown
-              artistName={card.cardModel.artist.displayName}
-              artistUsername={card.cardModel.artist.user?.username}
-              season={card.cardModel.season}
+      {card && cardModelHit && (
+        <>
+          <MainSection size="sm">
+            <CardModel3D
+              videoUrl={card.cardModel.videoUrl}
+              pictureUrl={card.cardModel.pictureUrl}
+              backPictureUrl={backPictureUrl}
               scarcityName={card.cardModel.scarcity.name}
-              maxSupply={card.cardModel.scarcity.maxSupply}
-              serial={card.serialNumber}
-              slug={card.cardModel.slug}
             />
-          </Card>
-          <div>
-            {card.owner && (
+            <MainSectionCardsWrapper>
               <Card>
-                <CardOwnership
-                  ownerSlug={card.owner.user.slug}
-                  ownerUsername={card.owner.user.username}
-                  ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
-                  ownerProfileFallbackUrl={card.owner.user.profile.fallbackUrl}
-                  pendingStatus={pendingStatus ?? undefined}
-                  price={cardPrice ?? undefined}
+                <CardModelBreakdown
+                  artistName={card.cardModel.artist.displayName}
+                  artistUsername={card.cardModel.artist.user?.username}
+                  season={card.cardModel.season}
+                  scarcityName={card.cardModel.scarcity.name}
+                  maxSupply={card.cardModel.scarcity.maxSupply}
+                  serial={card.serialNumber}
+                  slug={card.cardModel.slug}
                 />
               </Card>
-            )}
-          </div>
-        </MainSectionCardsWrapper>
-      </MainSection>
+              <div>
+                {card.owner && (
+                  <Card>
+                    <CardOwnership
+                      ownerSlug={card.owner.user.slug}
+                      ownerUsername={card.owner.user.username}
+                      ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
+                      ownerProfileFallbackUrl={card.owner.user.profile.fallbackUrl}
+                      pendingStatus={pendingStatus ?? undefined}
+                      price={cardPrice ?? undefined}
+                    />
+                  </Card>
+                )}
+              </div>
+            </MainSectionCardsWrapper>
+          </MainSection>
 
-      <Section size="sm">
-        <Column gap={64}>
-          <CardTransfersHistoryWrapper>
-            <CardTransfersHistory cardModelId={card.cardModel.id} serialNumber={card.serialNumber} />
-          </CardTransfersHistoryWrapper>
-          <YoutubeEmbed embedId={card.cardModel.youtubePreviewId} style={{ minWidth: '100%' }} />
-        </Column>
-      </Section>
+          <Section size="sm">
+            <Column gap={64}>
+              <CardTransfersHistoryWrapper>
+                <CardTransfersHistory cardModelId={card.cardModel.id} serialNumber={card.serialNumber} />
+              </CardTransfersHistoryWrapper>
+              <YoutubeEmbed embedId={card.cardModel.youtubePreviewId} style={{ minWidth: '100%' }} />
+            </Column>
+          </Section>
 
-      <GiftModal
-        artistName={card.cardModel.artist.displayName}
-        scarcityName={card.cardModel.scarcity.name}
-        scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
-        season={card.cardModel.season}
-        serialNumber={card.serialNumber}
-        pictureUrl={card.cardModel.pictureUrl}
-        onSuccess={onSuccessfulGift}
-      />
-
-      <CreateOfferModal
-        artistName={card.cardModel.artist.displayName}
-        scarcityName={card.cardModel.scarcity.name}
-        scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
-        lowestAsk={card.cardModel.lowestAsk}
-        averageSale={card.cardModel.averageSale}
-        season={card.cardModel.season}
-        serialNumber={card.serialNumber}
-        pictureUrl={card.cardModel.pictureUrl}
-        onSuccess={onSuccessfulOfferCreation}
-      />
-
-      {cardPrice && (
-        <>
-          <CancelOfferModal
+          <GiftModal
             artistName={card.cardModel.artist.displayName}
             scarcityName={card.cardModel.scarcity.name}
             scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
             season={card.cardModel.season}
             serialNumber={card.serialNumber}
             pictureUrl={card.cardModel.pictureUrl}
-            onSuccess={onSuccessfulOfferCancelation}
+            onSuccess={onSuccessfulGift}
           />
 
-          <AcceptOfferModal
+          <CreateOfferModal
             artistName={card.cardModel.artist.displayName}
             scarcityName={card.cardModel.scarcity.name}
             scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
+            lowestAsk={cardModelHit.lowestAsk}
+            averageSale={card.cardModel.averageSale}
             season={card.cardModel.season}
             serialNumber={card.serialNumber}
             pictureUrl={card.cardModel.pictureUrl}
-            price={cardPrice}
-            onSuccess={onSuccessfulOfferAcceptance}
+            onSuccess={onSuccessfulOfferCreation}
           />
+
+          {cardPrice && (
+            <>
+              <CancelOfferModal
+                artistName={card.cardModel.artist.displayName}
+                scarcityName={card.cardModel.scarcity.name}
+                scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
+                season={card.cardModel.season}
+                serialNumber={card.serialNumber}
+                pictureUrl={card.cardModel.pictureUrl}
+                onSuccess={onSuccessfulOfferCancelation}
+              />
+
+              <AcceptOfferModal
+                artistName={card.cardModel.artist.displayName}
+                scarcityName={card.cardModel.scarcity.name}
+                scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
+                season={card.cardModel.season}
+                serialNumber={card.serialNumber}
+                pictureUrl={card.cardModel.pictureUrl}
+                price={cardPrice}
+                onSuccess={onSuccessfulOfferAcceptance}
+              />
+            </>
+          )}
         </>
       )}
+
+      <PaginationSpinner loading={isLoading} />
     </>
   )
 }
