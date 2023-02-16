@@ -32,15 +32,24 @@ export default createReducer(initialState, (builder) =>
 
       if (scarcities.includes(scarcity)) state.filters.scarcities = scarcities.filter((e) => e !== scarcity)
       else scarcities.push(scarcity)
+
+      // reset max price
+      state.filters.maximumPrice = null
     })
     .addCase(updateMarketplaceSeasonsFilter, (state, { payload: { season } }) => {
       const seasons = state.filters.seasons
 
       if (seasons.includes(season)) state.filters.seasons = seasons.filter((e) => e !== season)
       else seasons.push(season)
+
+      // reset max price
+      state.filters.maximumPrice = null
     })
     .addCase(updateMarketplaceLowSerialsFilter, (state) => {
       state.filters.lowSerials = !state.filters.lowSerials
+
+      // reset max price
+      state.filters.maximumPrice = null
     })
     .addCase(updateMarketplaceMaximumPrice, (state, { payload: { price } }) => {
       state.filters.maximumPrice = price

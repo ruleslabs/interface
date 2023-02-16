@@ -98,11 +98,9 @@ export default function MarketplaceSidebar({ dispatch, maximumPriceUpperBound, .
   }, [])
 
   useEffect(() => {
-    if (!filters.maximumPrice || filters.maximumPrice > maximumPriceUpperBound) {
-      setMarketplaceMaximumPrice(maximumPriceUpperBound)
-      setMaximumPrice(maximumPriceUpperBound)
-    }
-  }, [setMarketplaceMaximumPrice, maximumPriceUpperBound, filters.maximumPrice])
+    setMarketplaceMaximumPrice(maximumPriceUpperBound)
+    setMaximumPrice(maximumPriceUpperBound)
+  }, [setMarketplaceMaximumPrice, maximumPriceUpperBound])
 
   return (
     <StyledMarketplaceSidebar {...props}>

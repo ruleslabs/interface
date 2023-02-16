@@ -444,6 +444,9 @@ msgstr "Starter Pack Saison 1"
 msgid "The pack detected by telescope."
 msgstr "Le pack détecté par télescope."
 
+msgid "This pack comes from a distant planet..."
+msgstr "Ce pack provient d'une planète éloignée..."
+
 #: src/components/PackBreakdown/index.tsx
 msgid "Buy - {0}€"
 msgstr "Acheter - {0}€"
