@@ -1370,6 +1370,10 @@ msgstr "Cagnotte"
 msgid "Collection {0}% complete. This collector has {1} cards."
 msgstr "Collection complétée à {0}%. Ce collectionneur possède {1} cartes."
 
+#: src/components/Homepage/HallOfFame/UserRow.tsx
+msgid "Collection complétée à {0}%."
+msgstr "Collection {0}% complete."
+
 #: src/components/Homepage/Live.tsx
 msgid "Card offered"
 msgstr "Carte offerte"

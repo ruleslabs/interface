@@ -1,20 +1,14 @@
-import React, { useState, useCallback, useMemo } from 'react'
-import styled from 'styled-components'
+import React, { useState, useCallback } from 'react'
 import { useLazyQuery, gql } from '@apollo/client'
-import { parseCScore } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
-import shortenUsername from '@/utils/shortenUsername'
 import { TYPE } from '@/styles/theme'
 import { useSearchUsers } from '@/state/search/hooks'
-import Link from '@/components/Link'
 import Column from '@/components/Column'
-import { RowCenter } from '@/components/Row'
 import { PaginationSpinner } from '@/components/Spinner'
-import Tooltip from '@/components/Tooltip'
 import { useCurrentUser } from '@/state/user/hooks'
-import Avatar from '@/components/Avatar'
 import { useCScoreRank } from '@/hooks/useCScore'
+import UserRow from './UserRow'
 
 const USERS_QUERY = gql`
   query ($ids: [ID!]!) {
@@ -30,124 +24,6 @@ const USERS_QUERY = gql`
     cardModelsCount
   }
 `
-
-const StyledUserRow = styled(RowCenter)`
-  gap: 12px;
-  position: relative;
-
-  img {
-    border-radius: 50%;
-    width: 26px;
-    height: 26px;
-  }
-`
-
-const Medal = styled(TYPE.medium)`
-  position: absolute;
-  top: 8px;
-  left: 14px;
-`
-
-const Rank = styled(RowCenter)`
-  background: ${({ theme }) => theme.bg1};
-  border-radius: 50%;
-  width: 26px;
-  height: 26px;
-
-  * {
-    width: 100%;
-    text-align: center;
-  }
-`
-
-const StyledTooltip = styled(Tooltip)`
-  width: 212px;
-  right: -234px;
-  bottom: 10px;
-  box-shadow: 0 0 4px #00000020;
-  transform: translateY(50%);
-`
-
-const CScore = styled(TYPE.body)`
-  position: relative;
-
-  &:hover > div {
-    display: unset;
-  }
-`
-
-interface UserRowProps {
-  cScore: number
-  cardModelsCount: number
-  username: string
-  pictureUrl: string
-  fallbackUrl: string
-  slug: string
-  rank?: number
-}
-
-const MemoizedUserRowPropsEqualityCheck = (prevProps: UserRowProps, nextProps: UserRowProps) =>
-  prevProps.slug === nextProps.slug
-
-const MemoizedUserRow = React.memo(function UserRow({
-  cScore,
-  cardModelsCount,
-  username,
-  pictureUrl,
-  fallbackUrl,
-  slug,
-  rank = 0,
-}: UserRowProps) {
-  // shorten username
-  const shortUsername = useMemo(() => shortenUsername(username), [username])
-
-  // parsed price
-  const parsedCScore = useMemo(() => {
-    const parsedCScore = parseCScore(cScore)
-
-    return {
-      cardsCount: parsedCScore.cardsCount,
-      cardModelsPercentage: cardModelsCount ? (parsedCScore.cardModelsCount / cardModelsCount) * 100 : 0,
-    }
-  }, [cScore, cardModelsCount])
-
-  return (
-    <StyledUserRow>
-      <Link href={`/user/${slug}`}>
-        {rank <= 3 ? (
-          <>
-            <Avatar src={pictureUrl} fallbackSrc={fallbackUrl} />
-            {!!rank && <Medal>{rank === 1 ? '🥇' : rank === 2 ? '🥈' : '🥉'}</Medal>}
-          </>
-        ) : (
-          <Rank>
-            <TYPE.body>{rank}.</TYPE.body>
-          </Rank>
-        )}
-      </Link>
-
-      <Link href={`/user/${slug}`}>
-        <TYPE.body clickable>{shortUsername}</TYPE.body>
-      </Link>
-
-      <CScore>
-        <TYPE.body color="text2">
-          {parsedCScore.cardModelsPercentage.toFixed(0)}% - {parsedCScore.cardsCount}
-        </TYPE.body>
-
-        <StyledTooltip direction="left">
-          <TYPE.body>
-            <Trans>
-              Collection {parsedCScore.cardModelsPercentage.toFixed(0)}% complete. This collector has{' '}
-              {parsedCScore.cardsCount} cards.
-            </Trans>
-          </TYPE.body>
-        </StyledTooltip>
-      </CScore>
-    </StyledUserRow>
-  )
-},
-MemoizedUserRowPropsEqualityCheck)
 
 export default function HallOfFame() {
   // current user
@@ -209,7 +85,7 @@ export default function HallOfFame() {
       {usersHits
         .filter((hit) => usersTable[hit.objectID] && cardModelsCount && hit.rank)
         .map((hit) => (
-          <MemoizedUserRow
+          <UserRow
             key={hit.objectID}
             username={usersTable[hit.objectID].username}
             pictureUrl={usersTable[hit.objectID].profile.pictureUrl}
@@ -225,7 +101,7 @@ export default function HallOfFame() {
         <>
           <div />
           <Column gap={4}>
-            <MemoizedUserRow
+            <UserRow
               username={currentUser.username}
               pictureUrl={currentUser.profile.pictureUrl}
               fallbackUrl={currentUser.profile.fallbackUrl}
