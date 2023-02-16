@@ -53,6 +53,7 @@ const QUERY_CARD_MODEL = gql`
       scarcity {
         name
         maxSupply
+        maxLowSerial
       }
       artist {
         displayName
@@ -102,6 +103,7 @@ export default function Buy() {
               acceptedOfferIds={acceptedOfferIds}
               selectedOfferId={selectedOffer?.id}
               onSelection={onSelection}
+              scarcityMaxLowSerial={cardModel.scarcity.maxLowSerial}
             />
             <OffersSelectorBreakdownCard>
               <OffersSelectorBreakdown

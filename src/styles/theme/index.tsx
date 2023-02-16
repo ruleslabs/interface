@@ -96,6 +96,8 @@ export function colors(darkMode: boolean): Colors {
     platinium: '#E7E7E7',
     halloween: '#AF4027',
 
+    lowSerial: '#44DD53',
+
     error: '#CB222C',
     green1: '#0EA63B',
     green2: '#06AC77',

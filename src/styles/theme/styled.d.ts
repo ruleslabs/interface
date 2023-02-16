@@ -22,6 +22,8 @@ export interface Colors {
   platinium: string
   halloween: string
 
+  lowSerial: string
+
   error: string
 
   green1: string

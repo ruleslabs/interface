@@ -68,7 +68,7 @@ export default function CardModelPriceStats({ lowestAsk, averageSale, ...props }
         <TYPE.large fontSize={fiatMode ? 26 : 22}>
           {fiatMode
             ? `${weiAmountToEURValue(parsedLowestAsk ?? undefined) ?? '0'}€`
-            : `${parsedLowestAsk?.toSignificant(6) ?? '0'}Ξ`}
+            : `${+(parsedLowestAsk?.toFixed(6) ?? 0)}Ξ`}
         </TYPE.large>
       </PriceInfo>
 
@@ -79,7 +79,7 @@ export default function CardModelPriceStats({ lowestAsk, averageSale, ...props }
         <TYPE.large fontSize={fiatMode ? 26 : 22}>
           {fiatMode
             ? `${weiAmountToEURValue(parsedAverageSale ?? undefined) ?? '0'}€`
-            : `${parsedAverageSale?.toSignificant(6) ?? '0'}Ξ`}
+            : `${+(parsedAverageSale?.toFixed(6) ?? 0)}Ξ`}
         </TYPE.large>
       </PriceInfo>
 

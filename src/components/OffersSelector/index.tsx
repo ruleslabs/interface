@@ -1,20 +1,16 @@
 import React, { useState, useCallback, useMemo } from 'react'
-import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { useLazyQuery, gql } from '@apollo/client'
 import { Plural, Trans } from '@lingui/macro'
-import { WeiAmount } from '@rulesorg/sdk-core'
 
 import { TYPE } from '@/styles/theme'
 import { RowBetween } from '@/components/Row'
-import { useSearchOffers } from '@/state/search/hooks'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
+import { OffersSortingKey, useMarketplaceFilters, useSearchOffers } from '@/state/search/hooks'
 import Table from '@/components/Table'
-import { RadioButton } from '@/components/Button'
 import Caret from '@/components/Caret'
-import Link from '@/components/Link'
 import { PaginationSpinner } from '@/components/Spinner'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
+import OfferRow from './OfferRow'
 
 const OFFERS_USERS_QUERY = gql`
   query ($starknetAddresses: [String!]!) {
@@ -57,106 +53,18 @@ const StyledTable = styled(Table)`
   `}
 `
 
-const StyledCaret = styled(Caret)`
+const StyledCaret = styled(Caret)<{ selected: boolean }>`
   width: 10px;
   height: 10px;
   margin-left: 8px;
+  ${({ theme, selected }) => !selected && `fill: ${theme.text2}80;`}
 `
-
-const RadioButtonWrapper = styled.td`
-  width: 72px;
-
-  ${({ theme }) => theme.media.medium`
-    width: 48px;
-  `}
-
-  ${({ theme }) => theme.media.small`
-    padding-left: 12px !important;
-    padding-right: 8px !important;
-  `}
-`
-
-const Price = styled.div`
-  display: flex;
-  gap: 8px;
-
-  div {
-    white-space: nowrap;
-  }
-
-  ${({ theme }) => theme.media.small`
-    flex-direction: column;
-    gap: 4px;
-    padding-right: 12px;
-  `}
-`
-
-interface OfferRowProps {
-  innerRef?: (node: any) => void
-  selected: boolean
-  offerId: string
-  onSelection: (offerId: string, serialNumber: number) => void
-  username?: string
-  userSlug?: string
-  serialNumber: number
-  price: string
-}
-
-const MemoizedOfferRowPropsEqualityCheck = (prevProps: OfferRowProps, nextProps: OfferRowProps) =>
-  prevProps.offerId === nextProps.offerId &&
-  !!prevProps.innerRef === !!nextProps.innerRef &&
-  prevProps.selected === nextProps.selected
-
-const MemoizedOfferRow = React.memo(function OfferRows({
-  innerRef,
-  selected,
-  offerId,
-  onSelection,
-  username,
-  userSlug,
-  serialNumber,
-  price,
-}: OfferRowProps) {
-  const { asPath } = useRouter()
-
-  // parsed price
-  const parsedPrice = useMemo(() => WeiAmount.fromRawAmount(`0x${price}`), [price])
-
-  // fiat
-  const weiAmountToEURValue = useWeiAmountToEURValue()
-
-  return (
-    <tr ref={innerRef}>
-      <RadioButtonWrapper>
-        <RadioButton selected={selected} onChange={() => onSelection(offerId, serialNumber)} />
-      </RadioButtonWrapper>
-      <td onClick={() => onSelection(offerId, serialNumber)}>
-        <Price>
-          <TYPE.body fontWeight={700}>{`${parsedPrice?.toSignificant(6) ?? 0} ETH`}</TYPE.body>
-          <TYPE.body color="text2">{`${(parsedPrice && weiAmountToEURValue(parsedPrice)) ?? 0}€`}</TYPE.body>
-        </Price>
-      </td>
-      <td>
-        <Link href={`${asPath.replace(/buy$/, `${serialNumber}`)}`}>
-          <TYPE.body clickable>#{serialNumber}</TYPE.body>
-        </Link>
-      </td>
-      <td>
-        {username && (
-          <Link href={`/user/${userSlug}`}>
-            <TYPE.body clickable>{username}</TYPE.body>
-          </Link>
-        )}
-      </td>
-    </tr>
-  )
-},
-MemoizedOfferRowPropsEqualityCheck)
 
 interface OffersSelectorProps extends React.HTMLAttributes<HTMLDivElement> {
   cardModelId: string
   acceptedOfferIds: string[]
   selectedOfferId?: string
+  scarcityMaxLowSerial: number
   onSelection: (offerId: string, serialNumber: number) => void
 }
 
@@ -165,13 +73,30 @@ export default function OffersSelector({
   acceptedOfferIds,
   selectedOfferId,
   onSelection,
+  scarcityMaxLowSerial,
   ...props
 }: OffersSelectorProps) {
-  // sort
-  const [sortDesc, setSortDesc] = useState(false)
-  const toggleSort = useCallback(() => {
-    setSortDesc(!sortDesc)
-  }, [setSortDesc, sortDesc])
+  // marketplace filters for low serial sorting
+  const marketplaceFilters = useMarketplaceFilters()
+
+  // sorts
+  const [sortsDesc, setSortsDesc] = useState<any>({ price: false, serial: false })
+  const [selectedSort, setSelectedSort] = useState(marketplaceFilters.lowSerials ? 'serial' : 'price')
+
+  const toggleSortDesc = useCallback(
+    (sort: string) => {
+      // if sort is already selected, update its direction
+      if (selectedSort === sort) setSortsDesc({ ...sortsDesc, [sort]: !sortsDesc[sort] })
+      else setSelectedSort(sort)
+    },
+    [JSON.stringify(sortsDesc), selectedSort]
+  )
+
+  /// *Not very clean, should update this*
+  const sortingKey = useMemo(
+    () => `${selectedSort}${sortsDesc[selectedSort] ? 'Desc' : 'Asc'}` as OffersSortingKey,
+    [selectedSort, sortsDesc[selectedSort]]
+  )
 
   // exclude accepted offers
   const dashedObjectIds = useMemo(() => acceptedOfferIds.map((offerId: string) => `-${offerId}`), [acceptedOfferIds])
@@ -224,7 +149,7 @@ export default function OffersSelector({
   )
   const offersSearch = useSearchOffers({
     facets: { cardModelId, objectID: dashedObjectIds },
-    sortingKey: sortDesc ? 'priceDesc' : 'priceAsc',
+    sortingKey,
     onPageFetched,
   })
 
@@ -251,15 +176,24 @@ export default function OffersSelector({
             <td />
 
             <td>
-              <TYPE.medium onClick={toggleSort} style={{ cursor: 'pointer' }}>
+              <TYPE.medium onClick={() => toggleSortDesc('price')} style={{ cursor: 'pointer' }}>
                 <Trans>Price</Trans>
-                <StyledCaret direction={sortDesc ? 'bottom' : 'top'} filled />
+                <StyledCaret
+                  direction={sortsDesc.price ? 'bottom' : 'top'}
+                  selected={selectedSort === 'price'}
+                  filled
+                />
               </TYPE.medium>
             </td>
 
             <td>
-              <TYPE.medium>
+              <TYPE.medium onClick={() => toggleSortDesc('serial')} style={{ cursor: 'pointer' }}>
                 <Trans>Serial</Trans>
+                <StyledCaret
+                  direction={sortsDesc.serial ? 'bottom' : 'top'}
+                  selected={selectedSort === 'serial'}
+                  filled
+                />
               </TYPE.medium>
             </td>
 
@@ -276,7 +210,7 @@ export default function OffersSelector({
           {offersHits
             .filter((hit) => usersTable[hit.sellerStarknetAddress])
             .map((hit, index) => (
-              <MemoizedOfferRow
+              <OfferRow
                 innerRef={index + 1 === offersHits.length ? lastOfferRef : undefined}
                 key={hit.cardId}
                 selected={selectedOfferId === hit.objectID}
@@ -285,6 +219,7 @@ export default function OffersSelector({
                 username={usersTable[hit.sellerStarknetAddress].username}
                 userSlug={usersTable[hit.sellerStarknetAddress].slug}
                 serialNumber={hit.serialNumber}
+                scarcityMaxLowSerial={scarcityMaxLowSerial}
                 price={hit.price}
               />
             ))}

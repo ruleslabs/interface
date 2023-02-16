@@ -161,6 +161,8 @@ const algoliaIndexes = {
   offers: {
     priceDesc: client.initIndex('offers-price-desc'),
     priceAsc: client.initIndex('offers-price-asc'),
+    serialDesc: client.initIndex('offers-serial-desc'),
+    serialAsc: client.initIndex('offers-serial-asc'),
     txIndexDesc: client.initIndex('offers-tx-index-desc'),
   },
   users: {
