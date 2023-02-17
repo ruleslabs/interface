@@ -29,6 +29,11 @@ const StyledCardModel = styled(ColumnCenter)<{ width?: number }>`
   `}
 `
 
+const VideoWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`
+
 const Video = styled.video<{ inDelivery: boolean; pendingStatus: boolean }>`
   width: 100%;
   border-radius: 4.44%/3.17%;
@@ -102,7 +107,8 @@ const MemoizedCardModelPropsEqualityCheck = (prevProps: CardModelProps, nextProp
   prevProps.slug === nextProps.slug &&
   !!prevProps.innerRef === !!nextProps.innerRef &&
   prevProps.cardModelSlug === nextProps.cardModelSlug &&
-  prevProps.lowestAsk === nextProps.lowestAsk
+  prevProps.lowestAsk === nextProps.lowestAsk &&
+  prevProps.badges?.length === nextProps.badges?.length
 
 const MemoizedCardModel = React.memo(function CardModel({
   innerRef,
@@ -149,20 +155,22 @@ const MemoizedCardModel = React.memo(function CardModel({
   return (
     <CustomCardModel onClick={onClick} href={cardLink}>
       <StyledCardModel width={width} ref={innerRef} onMouseOver={playVideo} onMouseOut={pauseVideo}>
-        <Video
-          src={videoUrl}
-          inDelivery={inDelivery}
-          pendingStatus={!!pendingStatus}
-          ref={videoRef}
-          poster={pictureUrl}
-          preload="none"
-          loop
-          playsInline
-          muted
-        />
-        {inDelivery && <InDelivery src={`/assets/delivery.${locale}.png`} />}
-        {onSale && !pendingStatus && <OnSale src={`/assets/onsale.${locale}.png`} />}
-        {pendingStatus && <StyledLargeSpinner className="spinner" />}
+        <VideoWrapper>
+          <Video
+            src={videoUrl}
+            inDelivery={inDelivery}
+            pendingStatus={!!pendingStatus}
+            ref={videoRef}
+            poster={pictureUrl}
+            preload="none"
+            loop
+            playsInline
+            muted
+          />
+          {inDelivery && <InDelivery src={`/assets/delivery.${locale}.png`} />}
+          {onSale && !pendingStatus && <OnSale src={`/assets/onsale.${locale}.png`} />}
+          {pendingStatus && <StyledLargeSpinner className="spinner" />}
+        </VideoWrapper>
 
         {pendingStatus && (
           <ColumnCenter gap={4}>

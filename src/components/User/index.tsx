@@ -12,6 +12,7 @@ import { useCScoreTopCollector, useCScoreRank } from '@/hooks/useCScore'
 import { TOP_COLLECTOR_RANK_MAX } from '@/constants/misc'
 
 import Crown from '@/images/crown.svg'
+import RankIcon from '@/images/rank.svg'
 
 type Size = 'sm' | 'md' | 'lg'
 
@@ -59,9 +60,16 @@ const Rank = styled(RowCenter)<{ topCollector: boolean }>`
   margin-left: 4px;
 
   svg {
-    width: 8px;
     fill: #fff;
   }
+`
+
+const StyledRankIcon = styled(RankIcon)`
+  width: 10px;
+`
+
+const StyledCrown = styled(Crown)`
+  width: 8px;
 `
 
 interface UserProps {
@@ -110,7 +118,7 @@ export default function User({
         {!rank && isTopCollector && <TopCollector />}
         {rank ? (
           <Rank topCollector={isTopCollector}>
-            {isTopCollector && <Crown />}
+            {isTopCollector ? <StyledCrown /> : <StyledRankIcon />}
             <TYPE.body fontSize={12}>{rank}</TYPE.body>
           </Rank>
         ) : null}

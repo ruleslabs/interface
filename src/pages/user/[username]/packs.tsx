@@ -6,16 +6,13 @@ import { Plural, t } from '@lingui/macro'
 
 import DefaultLayout from '@/components/Layout'
 import ProfileLayout from '@/components/Layout/Profile'
-import GridHeader from '@/components/GridHeader'
 import Section from '@/components/Section'
 import Grid from '@/components/Grid'
-import PackCard from '@/components/PackCard'
+import PackCard from '@/components/Pack'
 import { TYPE } from '@/styles/theme'
+import { RowBetween } from '@/components/Row'
 import { useCurrentUser } from '@/state/user/hooks'
 import EmptyTab, { EmptyPacksTabOfCurrentUser } from '@/components/EmptyTab'
-import PackOpeningPreparationModal from '@/components/PackOpeningPreparationModal'
-import { usePackOpeningPreparationModalToggle } from '@/state/application/hooks'
-import { useSetPackToPrepare } from '@/state/packOpening/hooks'
 
 const USER_PACKS_BALANCES_QUERY = gql`
   query ($slug: String!) {
@@ -23,6 +20,7 @@ const USER_PACKS_BALANCES_QUERY = gql`
       packsBalances {
         balance
         inDeliveryBalance
+        openedBalance
         pack {
           id
           slug
@@ -35,38 +33,15 @@ const USER_PACKS_BALANCES_QUERY = gql`
   }
 `
 
+const GridHeader = styled(RowBetween)`
+  margin-bottom: 32px;
+  padding: 0 8px;
+  align-items: center;
+`
+
 const StyledPackCard = styled(PackCard)`
   width: 100%;
 `
-
-interface CustomPackCardProps {
-  packBalance: any
-  state: 'inDelivery' | 'delivered'
-  isOwner: boolean
-}
-
-const CustomPackCard = ({ packBalance, state, isOwner }: CustomPackCardProps) => {
-  const togglePackOpeningPreparationModal = usePackOpeningPreparationModalToggle()
-  const setPackToPrepare = useSetPackToPrepare()
-
-  const onClick = useCallback(() => {
-    togglePackOpeningPreparationModal()
-    setPackToPrepare(packBalance.pack)
-  }, [packBalance.pack, togglePackOpeningPreparationModal])
-
-  return (
-    <StyledPackCard
-      slug={packBalance.pack.slug}
-      name={packBalance.pack.displayName}
-      releaseDate={packBalance.pack.releaseDate}
-      pictureUrl={packBalance.pack.pictureUrl}
-      soldout={false}
-      state={state}
-      isOwner={isOwner}
-      onOpeningPreparation={onClick}
-    />
-  )
-}
 
 function Packs() {
   // current user
@@ -95,9 +70,14 @@ function Packs() {
   // packs count
   const packsCount = useMemo(
     () =>
-      (packsBalances as any[]).reduce<number>(
-        (acc, packBalance) => acc + packBalance.balance + packBalance.inDeliveryBalance,
-        0
+      (packsBalances as any[]).reduce<{ opened: number; sealed: number }>(
+        (acc, packBalance) => {
+          acc.opened += packBalance.openedBalance
+          acc.sealed += packBalance.balance + packBalance.inDeliveryBalance
+
+          return acc
+        },
+        { opened: 0, sealed: 0 }
       ),
     [packsBalances]
   )
@@ -105,38 +85,39 @@ function Packs() {
   return (
     <>
       <Section>
-        <GridHeader sortTexts={['Newest', 'Oldest']} sortValue={increaseSort} onSortUpdate={toggleSort}>
-          <TYPE.body>
-            {isLoading ? (
-              'Loading...'
-            ) : !isValid ? (
-              t`An error has occured`
-            ) : (
-              <Plural value={packsCount} _1="{packsCount} pack" other="{packsCount} packs" />
-            )}
-          </TYPE.body>
-        </GridHeader>
-        {packsCount ? (
-          <Grid maxWidth={256}>
-            {packsBalances.map((packBalance: any, index: number) => (
+        {packsCount.sealed > 0 && (
+          <GridHeader>
+            <TYPE.body>
+              <Plural value={packsCount.sealed} _1="{0} sealed pack" other="{0} sealed packs" />
+            </TYPE.body>
+          </GridHeader>
+        )}
+
+        {packsCount.sealed ? (
+          <Grid>
+            {packsBalances.map((packBalance: any) => (
               <>
                 {Array(packBalance.inDeliveryBalance)
                   .fill(0)
                   .map((_, index: number) => (
-                    <CustomPackCard
-                      key={`in-delivery-${index}`}
-                      packBalance={packBalance}
+                    <StyledPackCard
+                      key={index}
+                      slug={packBalance.pack.slug}
+                      name={packBalance.pack.displayName}
+                      releaseDate={packBalance.pack.releaseDate}
+                      pictureUrl={packBalance.pack.pictureUrl}
                       state="inDelivery"
-                      isOwner={isCurrentUserProfile}
                     />
                   ))}
                 {Array(packBalance.balance)
                   .fill(0)
                   .map((_, index: number) => (
-                    <CustomPackCard
-                      key={`delivered-${index}`}
-                      packBalance={packBalance}
-                      state="delivered"
+                    <StyledPackCard
+                      key={index}
+                      slug={packBalance.pack.slug}
+                      name={packBalance.pack.displayName}
+                      releaseDate={packBalance.pack.releaseDate}
+                      pictureUrl={packBalance.pack.pictureUrl}
                       isOwner={isCurrentUserProfile}
                     />
                   ))}
@@ -147,7 +128,38 @@ function Packs() {
           !isLoading && (isCurrentUserProfile ? <EmptyPacksTabOfCurrentUser /> : <EmptyTab emptyText={t`No packs`} />)
         )}
       </Section>
-      <PackOpeningPreparationModal onSuccess={packsBalancesQuery.refetch} />
+
+      <Section>
+        {packsCount.opened > 0 && (
+          <GridHeader>
+            <TYPE.body>
+              <Plural value={packsCount.opened} _1="{0} opened pack" other="{0} opened packs" />
+            </TYPE.body>
+          </GridHeader>
+        )}
+
+        {packsCount.opened ? (
+          <Grid>
+            {packsBalances.map((packBalance: any) =>
+              Array(packBalance.openedBalance)
+                .fill(0)
+                .map((_, index: number) => (
+                  <StyledPackCard
+                    key={index}
+                    slug={packBalance.pack.slug}
+                    name={packBalance.pack.displayName}
+                    releaseDate={packBalance.pack.releaseDate}
+                    pictureUrl={packBalance.pack.pictureUrl}
+                    isOwner={isCurrentUserProfile}
+                    state="opened"
+                  />
+                ))
+            )}
+          </Grid>
+        ) : (
+          !isLoading && (isCurrentUserProfile ? <EmptyPacksTabOfCurrentUser /> : <EmptyTab emptyText={t`No packs`} />)
+        )}
+      </Section>
     </>
   )
 }

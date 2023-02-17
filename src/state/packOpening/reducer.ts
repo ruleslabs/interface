@@ -1,7 +1,6 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 
 import {
-  setPackToPrepare,
   updateSoundFetchingState,
   addSoundAudioData,
   updateAudioContext,
@@ -9,7 +8,6 @@ import {
   updateLoopSourceNode,
   updateGainNode,
   updateGain,
-  PackPayload,
   FetchingState,
   Sound,
   SoundFetchingStatePayload,
@@ -49,10 +47,6 @@ export const initialState: PackOpeningState = {
 
 export default createReducer(initialState, (builder) =>
   builder
-    .addCase(setPackToPrepare, (state, action: PayloadAction<PackPayload>) => {
-      const { pack } = action.payload
-      state.packToPrepare = pack
-    })
     .addCase(updateSoundFetchingState, (state, action: PayloadAction<SoundFetchingStatePayload>) => {
       const { sound, fetchingState } = action.payload
       state.soundsFetchingState[sound] = fetchingState

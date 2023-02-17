@@ -84,10 +84,6 @@ export function useAvatarEditModalToggle(): () => void {
   return useToggleModal(ApplicationModal.AVATAR_EDIT)
 }
 
-export function usePackOpeningPreparationModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.PACK_OPENING_PREPARATION)
-}
-
 export function useOfferModalToggle(): () => void {
   return useToggleModal(ApplicationModal.OFFER)
 }
