@@ -567,10 +567,6 @@ msgstr "Alphabétique Z-A"
 msgid "{cardsCount, plural, =1 {{cardsCount} card} other {{cardsCount} cards}}"
 msgstr "{cardsCount, plural, =1 {{cardsCount} carte} other {{cardsCount} cartes}}"
 
-#: src/pages/user/[username]/packs.tsx
-msgid "{packsCount, plural, =1 {{packsCount} pack} other {{packsCount} packs}}"
-msgstr "{packsCount, plural, =1 {{packsCount} pack} other {{packsCount} packs}}"
-
 #: src/components/MarketplaceSidebar/index.tsx
 msgid "Filters"
 msgstr "Filtres"
@@ -875,10 +871,6 @@ msgstr "Ouverture prête."
 #: src/components/PackCard/index.tsx
 msgid "Click to see your cards"
 msgstr "Clique pour dévoiler les cartes"
-
-#: src/pages/pack/[packSlug]/open.tsx
-msgid "See my cards"
-msgstr "Dévoiler les cartes"
 
 #: src/pages/user/[username]/index.tsx
 msgid "Remove from deck"
@@ -1397,3 +1389,11 @@ msgstr "Numéros de série"
 #: src/components/MarketplaceSidebar/index.tsx
 msgid "Low serials"
 msgstr "Serial bas"
+
+#: src/pages/user/[username]/packs.tsx
+msgid "{0, plural, =1 {{0} opened pack} other {{0} opened packs}}"
+msgstr "{0, plural, =1 {{0} pack ouvert} other {{0} packs ouverts}}"
+
+#: src/pages/user/[username]/packs.tsx
+msgid "{0, plural, =1 {{0} sealed pack} other {{0} sealed packs}}"
+msgstr "{0, plural, =1 {{0} pack scellé} other {{0} packs scellés}}"

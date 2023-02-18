@@ -5,10 +5,10 @@ import { useRouter } from 'next/router'
 
 import Link from '@/components/Link'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-import { RadioButton } from '@/components/Button'
 import { TYPE } from '@/styles/theme'
+import Checkbox from '@/components/Checkbox'
 
-const RadioButtonWrapper = styled.td`
+const CheckboxWrapper = styled.td`
   width: 72px;
 
   ${({ theme }) => theme.media.medium`
@@ -39,8 +39,7 @@ const Price = styled.div`
 interface OfferRowProps {
   innerRef?: (node: any) => void
   selected: boolean
-  offerId: string
-  onSelection: (offerId: string, serialNumber: number) => void
+  toggleSelection: (serialNumber: number, price: string) => void
   username?: string
   userSlug?: string
   serialNumber: number
@@ -49,15 +48,15 @@ interface OfferRowProps {
 }
 
 const MemoizedOfferRowPropsEqualityCheck = (prevProps: OfferRowProps, nextProps: OfferRowProps) =>
-  prevProps.offerId === nextProps.offerId &&
+  prevProps.serialNumber === nextProps.serialNumber &&
   !!prevProps.innerRef === !!nextProps.innerRef &&
-  prevProps.selected === nextProps.selected
+  prevProps.selected === nextProps.selected &&
+  prevProps.toggleSelection === nextProps.toggleSelection
 
 const MemoizedOfferRow = React.memo(function OfferRows({
   innerRef,
   selected,
-  offerId,
-  onSelection,
+  toggleSelection,
   username,
   userSlug,
   serialNumber,
@@ -74,10 +73,10 @@ const MemoizedOfferRow = React.memo(function OfferRows({
 
   return (
     <tr ref={innerRef}>
-      <RadioButtonWrapper>
-        <RadioButton selected={selected} onChange={() => onSelection(offerId, serialNumber)} />
-      </RadioButtonWrapper>
-      <td onClick={() => onSelection(offerId, serialNumber)}>
+      <CheckboxWrapper>
+        <Checkbox value={selected} onChange={() => toggleSelection(serialNumber, price)} />
+      </CheckboxWrapper>
+      <td onClick={() => toggleSelection(serialNumber, price)}>
         <Price>
           <TYPE.body fontWeight={700}>{`${parsedPrice?.toSignificant(6) ?? 0} ETH`}</TYPE.body>
           <TYPE.body color="text2">{`${(parsedPrice && weiAmountToEURValue(parsedPrice)) ?? 0}€`}</TYPE.body>

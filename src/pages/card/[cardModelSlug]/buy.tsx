@@ -1,13 +1,15 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
+import { WeiAmount, Unit } from '@rulesorg/sdk-core'
 
 import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'
 import OffersSelectorBreakdown from '@/components/OffersSelectorBreakdown'
 import OffersSelector from '@/components/OffersSelector'
 import Card from '@/components/Card'
+import { PaginationSpinner } from '@/components/Spinner'
 
 const MainSection = styled(Section)`
   display: flex;
@@ -52,7 +54,6 @@ const QUERY_CARD_MODEL = gql`
       season
       scarcity {
         name
-        maxSupply
         maxLowSerial
       }
       artist {
@@ -68,10 +69,32 @@ export default function Buy() {
   const { cardModelSlug } = router.query
 
   // offer selection
-  const [selectedOffer, setSelectedOffer] = useState<{ id: string; serialNumber: number } | null>(null)
-  const onSelection = useCallback(
-    (offerId: string, serialNumber: number) => setSelectedOffer({ id: offerId, serialNumber }),
-    []
+  const [selectedOffers, setSelectedOffers] = useState<Array<{ serialNumber: number; price: string }>>([])
+  const selectedSerialNumbers = useMemo(
+    () => selectedOffers.map(({ serialNumber }) => serialNumber),
+    [selectedOffers.length]
+  )
+
+  // offer selection handler
+  const toggleOfferSelection = useCallback(
+    (serialNumber: number, price: string) => {
+      if (selectedSerialNumbers.includes(serialNumber))
+        setSelectedOffers(selectedOffers.filter((offer) => offer.serialNumber !== serialNumber))
+      else setSelectedOffers(selectedOffers.concat({ serialNumber, price }))
+    },
+    [selectedOffers.length, selectedSerialNumbers.length]
+  )
+
+  // price
+  const selectedOffersPriceTotal = useMemo(
+    () =>
+      selectedOffers
+        .reduce<WeiAmount>(
+          (acc, { price }) => acc.add(WeiAmount.fromRawAmount(`0x${price}`)),
+          WeiAmount.fromRawAmount(0)
+        )
+        .toUnitFixed(Unit.WEI),
+    [selectedOffers.length]
   )
 
   // query
@@ -80,13 +103,12 @@ export default function Buy() {
   const cardModel = cardModelQuery?.data?.cardModel
 
   // on successful offer acceptance
-  const [acceptedOfferIds, setAcceptedOfferIds] = useState<string[]>([])
+  const [acceptedSerialNumbers, setAcceptedSerialNumbers] = useState<number[]>([])
   const onSuccessfulOfferAcceptance = useCallback(() => {
-    if (selectedOffer?.id) setAcceptedOfferIds([...acceptedOfferIds, selectedOffer.id])
-    setSelectedOffer(null)
-  }, [acceptedOfferIds, selectedOffer?.id])
+    setAcceptedSerialNumbers(acceptedSerialNumbers.concat(selectedSerialNumbers))
+    setSelectedOffers([])
+  }, [acceptedSerialNumbers.length, selectedSerialNumbers.length])
 
-  const isValid = !cardModelQuery.error
   const isLoading = cardModelQuery.loading
 
   return (
@@ -96,13 +118,13 @@ export default function Buy() {
       </Section>
 
       <MainSection>
-        {isValid && !isLoading && cardModel && (
+        {cardModel && (
           <>
             <StyledOffersSelector
               cardModelId={cardModel.id}
-              acceptedOfferIds={acceptedOfferIds}
-              selectedOfferId={selectedOffer?.id}
-              onSelection={onSelection}
+              acceptedSerialNumbers={acceptedSerialNumbers}
+              selectedSerialNumbers={selectedSerialNumbers}
+              toggleSelection={toggleOfferSelection}
               scarcityMaxLowSerial={cardModel.scarcity.maxLowSerial}
             />
             <OffersSelectorBreakdownCard>
@@ -110,15 +132,16 @@ export default function Buy() {
                 artistName={cardModel.artist.displayName}
                 season={cardModel.season}
                 scarcityName={cardModel.scarcity.name}
-                scarcityMaxSupply={cardModel.scarcity.maxSupply}
                 pictureUrl={cardModel.pictureUrl}
-                serialNumber={selectedOffer?.serialNumber}
-                offerId={selectedOffer?.id}
+                serialNumbers={selectedSerialNumbers}
+                price={selectedOffersPriceTotal}
                 onSuccessfulOfferAcceptance={onSuccessfulOfferAcceptance}
               />
             </OffersSelectorBreakdownCard>
           </>
         )}
+
+        <PaginationSpinner loading={isLoading} />
       </MainSection>
     </>
   )

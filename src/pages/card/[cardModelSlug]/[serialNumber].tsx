@@ -234,9 +234,8 @@ export default function CardBreakout() {
               <AcceptOfferModal
                 artistName={card.cardModel.artist.displayName}
                 scarcityName={card.cardModel.scarcity.name}
-                scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
                 season={card.cardModel.season}
-                serialNumber={card.serialNumber}
+                serialNumbers={[card.serialNumber]}
                 pictureUrl={card.cardModel.pictureUrl}
                 price={cardPrice}
                 onSuccess={onSuccessfulOfferAcceptance}

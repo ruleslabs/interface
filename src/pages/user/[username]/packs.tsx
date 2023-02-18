@@ -13,6 +13,7 @@ import { TYPE } from '@/styles/theme'
 import { RowBetween } from '@/components/Row'
 import { useCurrentUser } from '@/state/user/hooks'
 import EmptyTab, { EmptyPacksTabOfCurrentUser } from '@/components/EmptyTab'
+import { PaginationSpinner } from '@/components/Spinner'
 
 const USER_PACKS_BALANCES_QUERY = gql`
   query ($slug: String!) {
@@ -64,7 +65,6 @@ function Packs() {
   const packsBalances = user.packsBalances ?? []
 
   // loading / error
-  const isValid = !packsBalancesQuery.error
   const isLoading = packsBalancesQuery.loading
 
   // packs count
@@ -127,37 +127,37 @@ function Packs() {
         ) : (
           !isLoading && (isCurrentUserProfile ? <EmptyPacksTabOfCurrentUser /> : <EmptyTab emptyText={t`No packs`} />)
         )}
+
+        <PaginationSpinner loading={isLoading} />
       </Section>
 
       <Section>
         {packsCount.opened > 0 && (
-          <GridHeader>
-            <TYPE.body>
-              <Plural value={packsCount.opened} _1="{0} opened pack" other="{0} opened packs" />
-            </TYPE.body>
-          </GridHeader>
-        )}
+          <>
+            <GridHeader>
+              <TYPE.body>
+                <Plural value={packsCount.opened} _1="{0} opened pack" other="{0} opened packs" />
+              </TYPE.body>
+            </GridHeader>
 
-        {packsCount.opened ? (
-          <Grid>
-            {packsBalances.map((packBalance: any) =>
-              Array(packBalance.openedBalance)
-                .fill(0)
-                .map((_, index: number) => (
-                  <StyledPackCard
-                    key={index}
-                    slug={packBalance.pack.slug}
-                    name={packBalance.pack.displayName}
-                    releaseDate={packBalance.pack.releaseDate}
-                    pictureUrl={packBalance.pack.pictureUrl}
-                    isOwner={isCurrentUserProfile}
-                    state="opened"
-                  />
-                ))
-            )}
-          </Grid>
-        ) : (
-          !isLoading && (isCurrentUserProfile ? <EmptyPacksTabOfCurrentUser /> : <EmptyTab emptyText={t`No packs`} />)
+            <Grid>
+              {packsBalances.map((packBalance: any) =>
+                Array(packBalance.openedBalance)
+                  .fill(0)
+                  .map((_, index: number) => (
+                    <StyledPackCard
+                      key={index}
+                      slug={packBalance.pack.slug}
+                      name={packBalance.pack.displayName}
+                      releaseDate={packBalance.pack.releaseDate}
+                      pictureUrl={packBalance.pack.pictureUrl}
+                      isOwner={isCurrentUserProfile}
+                      state="opened"
+                    />
+                  ))
+              )}
+            </Grid>
+          </>
         )}
       </Section>
     </>

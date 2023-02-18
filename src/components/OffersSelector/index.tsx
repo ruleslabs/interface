@@ -62,17 +62,17 @@ const StyledCaret = styled(Caret)<{ selected: boolean }>`
 
 interface OffersSelectorProps extends React.HTMLAttributes<HTMLDivElement> {
   cardModelId: string
-  acceptedOfferIds: string[]
-  selectedOfferId?: string
+  acceptedSerialNumbers: number[]
+  selectedSerialNumbers: number[]
   scarcityMaxLowSerial: number
-  onSelection: (offerId: string, serialNumber: number) => void
+  toggleSelection: (serialNumber: number, price: string) => void
 }
 
 export default function OffersSelector({
   cardModelId,
-  acceptedOfferIds,
-  selectedOfferId,
-  onSelection,
+  acceptedSerialNumbers,
+  selectedSerialNumbers,
+  toggleSelection,
   scarcityMaxLowSerial,
   ...props
 }: OffersSelectorProps) {
@@ -99,7 +99,10 @@ export default function OffersSelector({
   )
 
   // exclude accepted offers
-  const dashedObjectIds = useMemo(() => acceptedOfferIds.map((offerId: string) => `-${offerId}`), [acceptedOfferIds])
+  const dashedObjectIds = useMemo(
+    () => acceptedSerialNumbers.map((serialNumber) => `-${serialNumber}`),
+    [acceptedSerialNumbers.length]
+  )
 
   // count
   const [offersCount, setOffersCount] = useState(0)
@@ -213,9 +216,8 @@ export default function OffersSelector({
               <OfferRow
                 innerRef={index + 1 === offersHits.length ? lastOfferRef : undefined}
                 key={hit.cardId}
-                selected={selectedOfferId === hit.objectID}
-                offerId={hit.objectID}
-                onSelection={onSelection}
+                selected={selectedSerialNumbers.includes(hit.serialNumber)}
+                toggleSelection={toggleSelection}
                 username={usersTable[hit.sellerStarknetAddress].username}
                 userSlug={usersTable[hit.sellerStarknetAddress].slug}
                 serialNumber={hit.serialNumber}

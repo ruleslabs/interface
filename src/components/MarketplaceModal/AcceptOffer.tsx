@@ -11,7 +11,7 @@ import { useModalOpen, useAcceptOfferModalToggle, useWalletModalToggle } from '@
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
-import { RowCenter } from '@/components/Row'
+import Row, { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import { ErrorCard } from '@/components/Card'
@@ -21,6 +21,7 @@ import { ETH_ADDRESSES, MARKETPLACE_ADDRESSES } from '@/constants/addresses'
 import { networkId } from '@/constants/networks'
 import { useETHBalances, useAcceptOfferMutation } from '@/state/wallet/hooks'
 import { PurchaseBreakdown } from './PriceBreakdown'
+import Tag from '@/components/Tag'
 
 const CardBreakdown = styled(RowCenter)`
   gap: 16px;
@@ -34,12 +35,16 @@ const CardBreakdown = styled(RowCenter)`
   }
 `
 
+const SerialNumbersWrapper = styled(Row)`
+  gap: 4px;
+  flex-wrap: wrap;
+`
+
 interface AcceptOfferModalProps {
   artistName: string
   season: number
   scarcityName: string
-  scarcityMaxSupply?: number
-  serialNumber: number
+  serialNumbers: number[]
   pictureUrl: string
   price: string
   onSuccess(): void
@@ -49,8 +54,7 @@ export default function AcceptOfferModal({
   artistName,
   season,
   scarcityName,
-  scarcityMaxSupply,
-  serialNumber,
+  serialNumbers,
   pictureUrl,
   price,
   onSuccess,
@@ -58,10 +62,13 @@ export default function AcceptOfferModal({
   // current user
   const currentUser = useCurrentUser()
 
-  // token id
-  const tokenId: string = useMemo(
-    () => getStarknetCardId(artistName, season, ScarcityName.indexOf(scarcityName), serialNumber),
-    [artistName, season, scarcityName, serialNumber]
+  // tokens ids
+  const tokenIds = useMemo(
+    () =>
+      serialNumbers.map((serialNumber) =>
+        getStarknetCardId(artistName, season, ScarcityName.indexOf(scarcityName), serialNumber)
+      ),
+    [artistName, season, scarcityName, serialNumbers.length]
   )
 
   // modal
@@ -82,21 +89,23 @@ export default function AcceptOfferModal({
   // call
   const [calls, setCalls] = useState<Call[] | null>(null)
   const handleConfirmation = useCallback(() => {
-    const uint256TokenId = uint256HexFromStrHex(tokenId)
-
     setCalls([
       {
         contractAddress: ETH_ADDRESSES[networkId],
         entrypoint: 'increaseAllowance',
         calldata: [MARKETPLACE_ADDRESSES[networkId], price, 0],
       },
-      {
-        contractAddress: MARKETPLACE_ADDRESSES[networkId],
-        entrypoint: 'acceptOffer',
-        calldata: [uint256TokenId.low, uint256TokenId.high],
-      },
+      ...tokenIds.map((tokenId) => {
+        const uint256TokenId = uint256HexFromStrHex(tokenId)
+
+        return {
+          contractAddress: MARKETPLACE_ADDRESSES[networkId],
+          entrypoint: 'acceptOffer',
+          calldata: [uint256TokenId.low, uint256TokenId.high],
+        }
+      }),
     ])
-  }, [tokenId])
+  }, [tokenIds.length])
 
   // error
   const [error, setError] = useState<string | null>(null)
@@ -109,7 +118,7 @@ export default function AcceptOfferModal({
   const onSignature = useCallback(
     (signature: Signature, maxFee: string, nonce: string) => {
       acceptOfferMutation({
-        variables: { tokenId, maxFee, nonce, signature: JSON.stringify(signature) },
+        variables: { tokenIds, maxFee, nonce, signature: JSON.stringify(signature) },
       })
         .then((res?: any) => {
           const hash = res?.data?.acceptOffer?.hash
@@ -128,7 +137,7 @@ export default function AcceptOfferModal({
           console.error(error)
         })
     },
-    [tokenId, onSuccess]
+    [tokenIds.length, onSuccess]
   )
 
   // on close modal
@@ -159,14 +168,17 @@ export default function AcceptOfferModal({
           <Column gap={32}>
             <CardBreakdown>
               <img src={pictureUrl} />
-              <Column gap={4}>
-                <TYPE.body spanColor="text2">
+              <Column gap={8}>
+                <TYPE.medium>
                   {artistName} S{season}&nbsp;
                   <Trans id={scarcityName} render={({ translation }) => <>{translation}</>} />
-                </TYPE.body>
-                <TYPE.subtitle>
-                  #{serialNumber} / {scarcityMaxSupply ?? '4000'}
-                </TYPE.subtitle>
+                </TYPE.medium>
+
+                <SerialNumbersWrapper gap={4}>
+                  {serialNumbers.map((serialNumber) => (
+                    <Tag key={serialNumber}>#{serialNumber}</Tag>
+                  ))}
+                </SerialNumbersWrapper>
               </Column>
             </CardBreakdown>
 

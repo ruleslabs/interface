@@ -118,7 +118,7 @@ export default function PackOpeningPack({ pictureUrl, id, onOpening, onError, is
         </ColumnCenter>
       ) : (
         <OpenPackButton onClick={openPack} large>
-          <Trans>See my cards</Trans>
+          <Trans>Open pack</Trans>
         </OpenPackButton>
       )}
     </Column>

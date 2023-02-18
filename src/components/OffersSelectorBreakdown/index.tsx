@@ -1,8 +1,7 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
-import { useQuery, gql } from '@apollo/client'
 
 import { TYPE } from '@/styles/theme'
 import Row from '@/components/Row'
@@ -17,22 +16,13 @@ const CardModelImage = styled.img`
   border-radius: 5px;
 `
 
-const OFFER_QUERY = gql`
-  query ($id: ID!) {
-    offerById(id: $id) {
-      price
-    }
-  }
-`
-
 interface OffersSelectorBreakdownProps {
   artistName: string
   season: number
   scarcityName: string
-  scarcityMaxSupply: number
   pictureUrl: string
-  serialNumber?: number
-  offerId?: string
+  serialNumbers: number[]
+  price: string
   onSuccessfulOfferAcceptance(): void
 }
 
@@ -40,10 +30,9 @@ export default function OffersSelectorBreakdown({
   artistName,
   season,
   scarcityName,
-  scarcityMaxSupply,
   pictureUrl,
-  serialNumber,
-  offerId,
+  serialNumbers,
+  price,
   onSuccessfulOfferAcceptance,
 }: OffersSelectorBreakdownProps) {
   // modal
@@ -52,21 +41,8 @@ export default function OffersSelectorBreakdown({
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
-  // query offer
-  const offerQuery = useQuery(OFFER_QUERY, { variables: { id: offerId }, skip: !offerId })
-  const offer = offerQuery?.data?.offerById
-
   // price
-  const parsedPrice = useMemo(() => (offer?.price ? WeiAmount.fromRawAmount(offer.price) : null), [offer?.price])
-
-  // serialNumber
-  const [serialNumberModal, setSerialNumberModal] = useState<number | null>(null)
-  const [priceModal, setPriceModal] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (serialNumber) setSerialNumberModal(serialNumber)
-    if (offer?.price) setPriceModal(offer.price)
-  }, [serialNumber, offer?.price])
+  const parsedPrice = useMemo(() => WeiAmount.fromRawAmount(price), [price])
 
   return (
     <>
@@ -81,22 +57,21 @@ export default function OffersSelectorBreakdown({
             <Trans id={scarcityName} render={({ translation }) => <TYPE.body>{translation}</TYPE.body>} />
           </Column>
         </Row>
-        <PrimaryButton onClick={toggleAcceptOfferModal} disabled={!offer} large>
-          {parsedPrice
+        <PrimaryButton onClick={toggleAcceptOfferModal} disabled={!serialNumbers.length} large>
+          {serialNumbers.length
             ? t`Buy - ${parsedPrice.toSignificant(6)} ETH (${weiAmountToEURValue(parsedPrice) ?? 0}€)`
             : t`Select a card`}
         </PrimaryButton>
       </Column>
 
-      {priceModal && serialNumberModal && (
+      {price && (
         <AcceptOfferModal
           artistName={artistName}
           scarcityName={scarcityName}
-          scarcityMaxSupply={scarcityMaxSupply}
           season={season}
-          serialNumber={serialNumberModal}
+          serialNumbers={serialNumbers}
           pictureUrl={pictureUrl}
-          price={priceModal}
+          price={price}
           onSuccess={onSuccessfulOfferAcceptance}
         />
       )}

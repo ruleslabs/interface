@@ -58,8 +58,8 @@ const CANCEL_OFFER_MUTATION = gql`
 `
 
 const ACCEPT_OFFER_MUTATION = gql`
-  mutation ($tokenId: String!, $maxFee: String!, $nonce: String!, $signature: String!) {
-    acceptOffer(input: { tokenId: $tokenId, maxFee: $maxFee, nonce: $nonce, signature: $signature }) {
+  mutation ($tokenIds: [String!]!, $maxFee: String!, $nonce: String!, $signature: String!) {
+    acceptOffer(input: { tokenIds: $tokenIds, maxFee: $maxFee, nonce: $nonce, signature: $signature }) {
       hash
     }
   }
