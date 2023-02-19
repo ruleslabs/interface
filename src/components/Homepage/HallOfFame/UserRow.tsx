@@ -12,8 +12,8 @@ import { TYPE } from '@/styles/theme'
 import Tooltip from '@/components/Tooltip'
 
 const StyledTooltip = styled(Tooltip)`
-  width: 212px;
-  right: -234px;
+  width: 236px;
+  right: -258px;
   bottom: 10px;
   box-shadow: 0 0 4px #00000020;
   transform: translateY(50%);
@@ -86,7 +86,7 @@ const MemoizedUserRow = React.memo(function UserRow({
     const parsedCScore = parseCScore(cScore)
 
     return {
-      lowestSerialsTotal: parsedCScore.lowestSerialsTotal,
+      averageSerialNumber: Math.round(parsedCScore.lowestSerialsTotal / parsedCScore.cardModelsCount),
       cardModelsPercentage: cardModelsCount ? (parsedCScore.cardModelsCount / cardModelsCount) * 100 : 0,
     }
   }, [cScore, cardModelsCount])
@@ -112,7 +112,7 @@ const MemoizedUserRow = React.memo(function UserRow({
 
       <CScore>
         <TYPE.body color="text2">
-          {parsedCScore.cardModelsPercentage.toFixed(0)}% - {parsedCScore.lowestSerialsTotal.toLocaleString('en-US')}
+          {parsedCScore.cardModelsPercentage.toFixed(0)}% - #{parsedCScore.averageSerialNumber}
         </TYPE.body>
 
         <StyledTooltip direction="left">
@@ -121,7 +121,9 @@ const MemoizedUserRow = React.memo(function UserRow({
               <Trans>Collection {parsedCScore.cardModelsPercentage.toFixed(0)}% complete.</Trans>
             </TYPE.body>
 
-            <TYPE.body>Serials score: {parsedCScore.lowestSerialsTotal.toLocaleString('en-US')}.</TYPE.body>
+            <TYPE.body>
+              <Trans>Average serial: #{parsedCScore.averageSerialNumber}</Trans>
+            </TYPE.body>
           </Column>
         </StyledTooltip>
       </CScore>

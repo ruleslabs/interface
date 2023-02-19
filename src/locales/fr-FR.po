@@ -1397,3 +1397,7 @@ msgstr "{0, plural, =1 {{0} pack ouvert} other {{0} packs ouverts}}"
 #: src/pages/user/[username]/packs.tsx
 msgid "{0, plural, =1 {{0} sealed pack} other {{0} sealed packs}}"
 msgstr "{0, plural, =1 {{0} pack scellé} other {{0} packs scellés}}"
+
+#: src/components/Homepage/HallOfFame/UserRow.tsx
+msgid "Average serial: #{0}"
+msgstr "Serial moyen: #{0}"
