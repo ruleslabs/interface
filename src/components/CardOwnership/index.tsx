@@ -18,7 +18,7 @@ import {
 } from '@/state/application/hooks'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import CardPendingStatusText from '@/components/CardPendingStatusText'
-import { CardPendingStatus } from '@/hooks/useCardsPendingStatus'
+import { CardPendingStatus } from '@/hooks/useCardsPendingStatusMap'
 import Avatar from '@/components/Avatar'
 
 import Present from '@/images/present.svg'

@@ -17,19 +17,16 @@ import { useCurrentUser } from '@/state/user/hooks'
 import { useDeckInsertionModalToggle } from '@/state/application/hooks'
 import { SecondaryButton } from '@/components/Button'
 
-const SHOWCASED_DECK_MAX_COUNT = 5
-const DECK_CARDS_GAP = 32
-
 const ShowcaseSection = styled(Section)`
   position: relative;
-  margin: 48px auto 0;
+  margin: 80px auto 0;
 
   ${({ theme }) => theme.media.small`
-    margin-top: 0 !important;
+    margin-top: 32px !important;
   `}
 
   ${({ theme }) => theme.media.medium`
-    margin-top: 32px;
+    margin-top: 64px;
   `}
 `
 

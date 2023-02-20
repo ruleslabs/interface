@@ -1,6 +1,5 @@
 import JSBI from 'jsbi'
 import { useState, useCallback, useEffect, useMemo } from 'react'
-import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
 import { uint256HexFromStrHex, getStarknetCardId, ScarcityName } from '@rulesorg/sdk-core'
 import { ApolloError } from '@apollo/client'
@@ -11,34 +10,15 @@ import { useModalOpen, useAcceptOfferModalToggle, useWalletModalToggle } from '@
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
-import Row, { RowCenter } from '@/components/Row'
-import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
 import StarknetSigner from '@/components/StarknetSigner'
 import { ETH_ADDRESSES, MARKETPLACE_ADDRESSES } from '@/constants/addresses'
 import { networkId } from '@/constants/networks'
-import { useETHBalances, useAcceptOfferMutation } from '@/state/wallet/hooks'
+import { useETHBalances, useAcceptOffersMutation } from '@/state/wallet/hooks'
 import { PurchaseBreakdown } from './PriceBreakdown'
-import Tag from '@/components/Tag'
-
-const CardBreakdown = styled(RowCenter)`
-  gap: 16px;
-  background: ${({ theme }) => theme.bg5};
-  width: 100%;
-  padding: 12px;
-
-  & img {
-    width: 64px;
-    border-radius: 4px;
-  }
-`
-
-const SerialNumbersWrapper = styled(Row)`
-  gap: 4px;
-  flex-wrap: wrap;
-`
+import CardBreakdown from './CardBreakdown'
 
 interface AcceptOfferModalProps {
   artistName: string
@@ -112,12 +92,12 @@ export default function AcceptOfferModal({
   const onError = useCallback((error: string) => setError(error), [])
 
   // signature
-  const [acceptOfferMutation] = useAcceptOfferMutation()
+  const [acceptOffersMutation] = useAcceptOffersMutation()
   const [txHash, setTxHash] = useState<string | null>(null)
 
   const onSignature = useCallback(
     (signature: Signature, maxFee: string, nonce: string) => {
-      acceptOfferMutation({
+      acceptOffersMutation({
         variables: { tokenIds, maxFee, nonce, signature: JSON.stringify(signature) },
       })
         .then((res?: any) => {
@@ -166,21 +146,13 @@ export default function AcceptOfferModal({
           onError={onError}
         >
           <Column gap={32}>
-            <CardBreakdown>
-              <img src={pictureUrl} />
-              <Column gap={8}>
-                <TYPE.medium>
-                  {artistName} S{season}&nbsp;
-                  <Trans id={scarcityName} render={({ translation }) => <>{translation}</>} />
-                </TYPE.medium>
-
-                <SerialNumbersWrapper gap={4}>
-                  {serialNumbers.map((serialNumber) => (
-                    <Tag key={serialNumber}>#{serialNumber}</Tag>
-                  ))}
-                </SerialNumbersWrapper>
-              </Column>
-            </CardBreakdown>
+            <CardBreakdown
+              pictureUrl={pictureUrl}
+              season={season}
+              artistName={artistName}
+              serialNumbers={serialNumbers}
+              scarcityName={scarcityName}
+            />
 
             <PurchaseBreakdown price={price} />
 

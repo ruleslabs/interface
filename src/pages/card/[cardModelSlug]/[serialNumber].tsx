@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { useQuery, gql } from '@apollo/client'
+import { gql, useLazyQuery } from '@apollo/client'
 import { useRouter } from 'next/router'
 
 import Section from '@/components/Section'
@@ -18,7 +18,7 @@ import CreateOfferModal from '@/components/MarketplaceModal/CreateOffer'
 import CancelOfferModal from '@/components/MarketplaceModal/CancelOffer'
 import AcceptOfferModal from '@/components/MarketplaceModal/AcceptOffer'
 import { useSearchOffers } from '@/state/search/hooks'
-import useCardsPendingStatus, { CardPendingStatus } from '@/hooks/useCardsPendingStatus'
+import useCardsPendingStatusMap from '@/hooks/useCardsPendingStatusMap'
 import { useSearchCardModels } from '@/state/search/hooks'
 import { PaginationSpinner } from '@/components/Spinner'
 
@@ -58,7 +58,7 @@ const CardTransfersHistoryWrapper = styled(Card)`
   `}
 `
 
-const QUERY_CARD = gql`
+const CARD_QUERY = gql`
   query ($slug: String!) {
     card(slug: $slug) {
       id
@@ -108,23 +108,55 @@ export default function CardBreakout() {
   // hits
   const [cardModelHit, setCardModelHit] = useState<any | null>(null)
 
-  // card query
-  const cardQuery = useQuery(QUERY_CARD, { variables: { slug: cardSlug }, skip: !cardSlug })
-  const card = cardQuery.data?.card
+  // card
+  const [card, setCard] = useState<any | null>(null)
+
+  // query cards data
+  const onCardsQueryCompleted = useCallback((data: any) => setCard(data.card), [])
+  const [queryCardData, cardQuery] = useLazyQuery(CARD_QUERY, {
+    onCompleted: onCardsQueryCompleted,
+    fetchPolicy: 'cache-and-network',
+  })
+
+  useEffect(() => {
+    if (cardSlug) queryCardData({ variables: { slug: cardSlug } })
+  }, [queryCardData, cardSlug])
 
   // card's back
   const backPictureUrl = useCardsBackPictureUrl(512)
 
   // pending status
-  const [pendingStatus, setPendingStatus] = useState<CardPendingStatus | null>(null)
-  const pendingsStatus = useCardsPendingStatus([card])
-  useEffect(() => setPendingStatus(pendingsStatus[0] ?? null), [pendingsStatus[0]])
+  const pendingStatus = useCardsPendingStatusMap([card])
 
   // actions callbacks
-  const onSuccessfulGift = useCallback(() => setPendingStatus(CardPendingStatus.IN_TRANSFER), [])
-  const onSuccessfulOfferCreation = useCallback(() => setPendingStatus(CardPendingStatus.IN_OFFER_CREATION), [])
-  const onSuccessfulOfferCancelation = useCallback(() => setPendingStatus(CardPendingStatus.IN_OFFER_CANCELATION), [])
-  const onSuccessfulOfferAcceptance = useCallback(() => setPendingStatus(CardPendingStatus.IN_OFFER_ACCEPTANCE), [])
+  const onSuccessfulGift = useCallback(
+    () =>
+      setCard((state: any | null) => {
+        if (state) return { ...state, inTransfer: true }
+      }),
+    []
+  )
+  const onSuccessfulOfferCreation = useCallback(
+    () =>
+      setCard((state: any | null) => {
+        if (state) return { ...state, inOfferCreation: true }
+      }),
+    []
+  )
+  const onSuccessfulOfferCancelation = useCallback(
+    () =>
+      setCard((state: any | null) => {
+        if (state) return { ...state, inOfferCancelation: true }
+      }),
+    []
+  )
+  const onSuccessfulOfferAcceptance = useCallback(
+    () =>
+      setCard((state: any | null) => {
+        if (state) return { ...state, inOfferAcceptance: true }
+      }),
+    []
+  )
 
   // card price
   const offerSearch = useSearchOffers({ facets: { cardId: card?.id }, skip: !card?.id, hitsPerPage: 1 })
@@ -179,7 +211,7 @@ export default function CardBreakout() {
                       ownerUsername={card.owner.user.username}
                       ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
                       ownerProfileFallbackUrl={card.owner.user.profile.fallbackUrl}
-                      pendingStatus={pendingStatus ?? undefined}
+                      pendingStatus={pendingStatus[card.id]}
                       price={cardPrice ?? undefined}
                     />
                   </Card>
@@ -207,17 +239,7 @@ export default function CardBreakout() {
             onSuccess={onSuccessfulGift}
           />
 
-          <CreateOfferModal
-            artistName={card.cardModel.artist.displayName}
-            scarcityName={card.cardModel.scarcity.name}
-            scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
-            lowestAsk={cardModelHit.lowestAsk}
-            averageSale={card.cardModel.averageSale}
-            season={card.cardModel.season}
-            serialNumber={card.serialNumber}
-            pictureUrl={card.cardModel.pictureUrl}
-            onSuccess={onSuccessfulOfferCreation}
-          />
+          <CreateOfferModal cardsIds={[card.id]} onSuccess={onSuccessfulOfferCreation} />
 
           {cardPrice && (
             <>

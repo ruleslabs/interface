@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
-import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
 import { uint256HexFromStrHex, getStarknetCardId, ScarcityName } from '@rulesorg/sdk-core'
 import { ApolloError } from '@apollo/client'
@@ -10,8 +9,6 @@ import { useModalOpen, useCancelOfferModalToggle } from '@/state/application/hoo
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
-import { RowCenter } from '@/components/Row'
-import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
@@ -19,18 +16,7 @@ import StarknetSigner from '@/components/StarknetSigner'
 import { MARKETPLACE_ADDRESSES } from '@/constants/addresses'
 import { useCancelOfferMutation } from '@/state/wallet/hooks'
 import { networkId } from '@/constants/networks'
-
-const CardBreakdown = styled(RowCenter)`
-  gap: 16px;
-  background: ${({ theme }) => theme.bg5};
-  width: 100%;
-  padding: 12px;
-
-  & img {
-    width: 64px;
-    border-radius: 4px;
-  }
-`
+import CardBreakdown from './CardBreakdown'
 
 interface CancelOfferModalProps {
   artistName: string
@@ -136,18 +122,13 @@ export default function CancelOfferModal({
           onError={onError}
         >
           <Column gap={32}>
-            <CardBreakdown>
-              <img src={pictureUrl} />
-              <Column gap={4}>
-                <TYPE.body spanColor="text2">
-                  {artistName} S{season}&nbsp;
-                  <Trans id={scarcityName} render={({ translation }) => <>{translation}</>} />
-                </TYPE.body>
-                <TYPE.subtitle>
-                  #{serialNumber} / {scarcityMaxSupply ?? '4000'}
-                </TYPE.subtitle>
-              </Column>
-            </CardBreakdown>
+            <CardBreakdown
+              pictureUrl={pictureUrl}
+              season={season}
+              artistName={artistName}
+              serialNumbers={[serialNumber]}
+              scarcityName={scarcityName}
+            />
 
             {!!currentUser?.starknetWallet.lockingReason && (
               <ErrorCard>

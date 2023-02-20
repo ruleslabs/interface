@@ -23,10 +23,7 @@ const StyledSection = styled(Section)`
   height: 397px;
   position: relative;
   display: inline-block;
-
-  ${({ theme }) => theme.media.medium`
-    margin-bottom: 28px;
-  `}
+  margin-bottom: 0;
 
   ${({ theme }) => theme.media.small`
     height: 463px;
@@ -36,6 +33,7 @@ const StyledSection = styled(Section)`
 const UserSection = styled(Section)`
   z-index: 2;
   margin-top: -104px;
+  margin-bottom: 0;
   display: flex;
   justify-content: space-between;
 

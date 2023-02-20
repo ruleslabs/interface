@@ -84,7 +84,7 @@ function Packs() {
 
   return (
     <>
-      <Section>
+      <Section marginTop="32px">
         {packsCount.sealed > 0 && (
           <GridHeader>
             <TYPE.body>

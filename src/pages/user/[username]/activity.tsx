@@ -37,7 +37,7 @@ function Explorer({ address, publicKey, userId }: ExplorerProps) {
   const lastTxRef = useInfiniteScroll({ nextPage: starknetTransactionQuery.nextPage, loading: isLoading })
 
   return (
-    <Section>
+    <Section marginTop="32px">
       <Column gap={16}>
         {starknetTransactions.map((starknetTransaction, index) => (
           <TransactionRow

@@ -41,9 +41,11 @@ const TRANSFER_CARD_MUTATION = gql`
   }
 `
 
-const CREATE_OFFER_MUTATION = gql`
-  mutation ($tokenId: String!, $price: String!, $maxFee: String!, $nonce: String!, $signature: String!) {
-    createOffer(input: { tokenId: $tokenId, price: $price, maxFee: $maxFee, nonce: $nonce, signature: $signature }) {
+const CREATE_OFFERS_MUTATION = gql`
+  mutation ($tokenIds: [String!]!, $prices: [String!]!, $maxFee: String!, $nonce: String!, $signature: String!) {
+    createOffers(
+      input: { tokenIds: $tokenIds, prices: $prices, maxFee: $maxFee, nonce: $nonce, signature: $signature }
+    ) {
       hash
     }
   }
@@ -57,9 +59,9 @@ const CANCEL_OFFER_MUTATION = gql`
   }
 `
 
-const ACCEPT_OFFER_MUTATION = gql`
+const ACCEPT_OFFERS_MUTATION = gql`
   mutation ($tokenIds: [String!]!, $maxFee: String!, $nonce: String!, $signature: String!) {
-    acceptOffer(input: { tokenIds: $tokenIds, maxFee: $maxFee, nonce: $nonce, signature: $signature }) {
+    acceptOffers(input: { tokenIds: $tokenIds, maxFee: $maxFee, nonce: $nonce, signature: $signature }) {
       hash
     }
   }
@@ -158,16 +160,16 @@ export function useTransferCardMutation() {
   return useMutation(TRANSFER_CARD_MUTATION)
 }
 
-export function useCreateOfferMutation() {
-  return useMutation(CREATE_OFFER_MUTATION)
+export function useCreateOffersMutation() {
+  return useMutation(CREATE_OFFERS_MUTATION)
 }
 
 export function useCancelOfferMutation() {
   return useMutation(CANCEL_OFFER_MUTATION)
 }
 
-export function useAcceptOfferMutation() {
-  return useMutation(ACCEPT_OFFER_MUTATION)
+export function useAcceptOffersMutation() {
+  return useMutation(ACCEPT_OFFERS_MUTATION)
 }
 
 export function useWithdrawEtherMutation() {

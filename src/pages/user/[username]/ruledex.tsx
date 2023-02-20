@@ -189,7 +189,7 @@ function Ruledex({ address }: RuledexProps) {
   )
 
   return (
-    <Section>
+    <Section marginTop="32px">
       <ScarcitySelectorWrapper>
         {ScarcityName.map((scarcityName) => (
           <ScarcitySelector

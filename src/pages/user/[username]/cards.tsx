@@ -1,12 +1,12 @@
 import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { useLazyQuery, useQuery, gql } from '@apollo/client'
-import { t, Plural } from '@lingui/macro'
+import { t, Trans, Plural } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
 import DefaultLayout from '@/components/Layout'
 import ProfileLayout from '@/components/Layout/Profile'
-import { RowBetween } from '@/components/Row'
+import Row, { RowBetween, RowCenter } from '@/components/Row'
 import Section from '@/components/Section'
 import CardModel from '@/components/CardModel'
 import Grid from '@/components/Grid'
@@ -14,16 +14,21 @@ import { useSearchCards, CardsSortingKey } from '@/state/search/hooks'
 import { TYPE } from '@/styles/theme'
 import EmptyTab, { EmptyCardsTabOfCurrentUser } from '@/components/EmptyTab'
 import { useCurrentUser } from '@/state/user/hooks'
-import useCardsPendingStatus from '@/hooks/useCardsPendingStatus'
+import useCardsPendingStatusMap from '@/hooks/useCardsPendingStatusMap'
 import { PaginationSpinner } from '@/components/Spinner'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 import SortButton, { SortsData } from '@/components/Button/SortButton'
+import { PrimaryButton, SecondaryButton } from '@/components/Button'
+import { ColumnCenter } from '@/components/Column'
+import CreateOfferModal from '@/components/MarketplaceModal/CreateOffer'
+import { useCreateOfferModalToggle } from '@/state/application/hooks'
 
 // css
 
 const CARDS_QUERY = gql`
   query ($ids: [ID!]!) {
     cardsByIds(ids: $ids) {
+      id
       slug
       serialNumber
       onSale
@@ -47,6 +52,7 @@ const CARDS_QUERY = gql`
 const CARDS_IN_DELIVERY_QUERY = gql`
   query ($userId: ID!) {
     cardsInDeliveryForUser(userId: $userId) {
+      id
       slug
       serialNumber
       cardModel {
@@ -61,10 +67,61 @@ const CARDS_IN_DELIVERY_QUERY = gql`
   }
 `
 
+const StickyWrapper = styled.div`
+  margin: 16px 0;
+  position: sticky;
+  z-index: 1;
+  top: ${({ theme }) => theme.size.headerHeight}px;
+  background: ${({ theme }) => theme.bg1};
+  box-shadow: 0 4px 4px ${({ theme }) => theme.bg1}80;
+
+  ${({ theme }) => theme.media.medium`
+    top: ${theme.size.headerHeightMedium}px;
+  `}
+`
+
 const GridHeader = styled(RowBetween)`
-  margin-bottom: 32px;
-  padding: 0 8px;
   align-items: center;
+  padding: 12px 16px;
+`
+
+const SelectionButton = styled(SecondaryButton)`
+  padding: 4px 12px;
+  min-height: unset;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 400;
+  background: ${({ theme }) => theme.bg3}80;
+
+  :hover {
+    background: ${({ theme }) => theme.bg3};
+  }
+`
+
+const SelectedCardsActionWrapper = styled(Row)<{ active: boolean }>`
+  position: fixed;
+  left: 0;
+  right: 0;
+  justify-content: center;
+
+  ${({ active }) =>
+    active
+      ? `
+        bottom: 24px;
+        transition: bottom 300ms cubic-bezier(0.3, 0.1, 0.5, 1.6);
+      `
+      : `
+        bottom: -100px;
+        transition: bottom 500ms cubic-bezier(1, -1.1, 0.5, 0.8);
+      `}
+`
+
+const SelectedCardsAction = styled(RowCenter)`
+  background: ${({ theme }) => theme.bg2};
+  gap: 16px;
+  padding: 8px 8px 8px 16px;
+  border-radius: 3px;
+  box-shadow: 0 0 8px ${({ theme }) => theme.black}80;
 `
 
 const sortsData: SortsData<CardsSortingKey> = [
@@ -92,6 +149,9 @@ function Cards({ userId, address }: CardsProps) {
   // current user
   const currentUser = useCurrentUser()
   const isCurrentUserProfile = currentUser?.slug === userSlug
+
+  // modals
+  const toggleCreateOfferModal = useCreateOfferModalToggle()
 
   // tables
   const [cards, setCards] = useState<any[]>([])
@@ -141,7 +201,7 @@ function Cards({ userId, address }: CardsProps) {
   })
 
   // pending status
-  const pendingsStatus = useCardsPendingStatus(cards)
+  const pendingsStatus = useCardsPendingStatusMap(cards)
 
   // loading
   const isLoading = cardsSearch.loading || cardsQuery.loading || cardsInDelivery.loading
@@ -149,52 +209,110 @@ function Cards({ userId, address }: CardsProps) {
   // infinite scroll
   const lastTxRef = useInfiniteScroll({ nextPage: cardsSearch.nextPage, loading: isLoading })
 
+  // Selection feature
+  const [selectionModeEnabled, setSelectionModeEnabled] = useState(false)
+  const [selectedCardsIds, setSelectedCardsSlugs] = useState<string[]>([])
+
+  // toggle selection mode
+  const toggleSelectionMode = useCallback(() => {
+    if (selectionModeEnabled) setSelectedCardsSlugs([]) // clear selection
+    setSelectionModeEnabled(!selectionModeEnabled) // disable selection mode
+  }, [selectionModeEnabled])
+
+  // cards selection
+  const toggleCardSelection = useCallback(
+    (cardId: string) => {
+      if (selectedCardsIds.includes(cardId)) setSelectedCardsSlugs(selectedCardsIds.filter((id) => cardId !== id))
+      else setSelectedCardsSlugs(selectedCardsIds.concat(cardId))
+    },
+    [selectedCardsIds.length]
+  )
+
+  // offer creation
+  const onSuccessfulOfferCreation = useCallback(() => {
+    const selectedCardsIdsSet = new Set(selectedCardsIds)
+
+    toggleSelectionMode()
+    setCards((state) =>
+      state.map((card) => (selectedCardsIdsSet.has(card.id) ? { ...card, inOfferCreation: true } : card))
+    )
+  }, [toggleSelectionMode, selectedCardsIds.length])
+
   return (
-    <Section>
-      {cardsCount > 0 && (
-        <GridHeader>
+    <>
+      <StickyWrapper>
+        {cardsCount > 0 && (
+          <Section marginBottom="0px">
+            <GridHeader>
+              <ColumnCenter gap={6}>
+                <TYPE.body>
+                  <Plural value={cardsCount} _1="{cardsCount} card" other="{cardsCount} cards" />
+                </TYPE.body>
+
+                <SelectionButton onClick={toggleSelectionMode}>
+                  {selectionModeEnabled ? t`Cancel` : t`Select`}
+                </SelectionButton>
+              </ColumnCenter>
+
+              <SortButton sortsData={sortsData} onChange={setSortIndex} sortIndex={sortIndex} />
+            </GridHeader>
+          </Section>
+        )}
+      </StickyWrapper>
+
+      <Section>
+        <Grid>
+          {cardsInDelivery.map((card: any) => (
+            <CardModel
+              key={card.slug}
+              cardModelSlug={card.cardModel.slug}
+              pictureUrl={card.cardModel.pictureUrl}
+              serialNumber={card.serialNumber}
+              season={card.cardModel.season}
+              artistName={card.cardModel.artist.displayName}
+              inDelivery
+            />
+          ))}
+          {cards.map((card: any, index) => (
+            <CardModel
+              key={card.slug}
+              innerRef={index + 1 === cards.length ? lastTxRef : undefined}
+              cardModelSlug={card.cardModel.slug}
+              pictureUrl={card.cardModel.pictureUrl}
+              videoUrl={card.cardModel.videoUrl}
+              onSale={card.onSale}
+              pendingStatus={pendingsStatus[card.id] ?? undefined}
+              serialNumber={card.serialNumber}
+              season={card.cardModel.season}
+              artistName={card.cardModel.artist.displayName}
+              selectable={selectionModeEnabled && !pendingsStatus[card.id]}
+              selected={selectedCardsIds.includes(card.id)}
+              onClick={selectionModeEnabled ? () => toggleCardSelection(card.id) : undefined}
+            />
+          ))}
+        </Grid>
+
+        {!isLoading &&
+          !cardsCount &&
+          (isCurrentUserProfile ? <EmptyCardsTabOfCurrentUser /> : <EmptyTab emptyText={t`No cards`} />)}
+
+        <PaginationSpinner loading={isLoading} />
+      </Section>
+
+      <SelectedCardsActionWrapper active={selectedCardsIds.length > 0}>
+        <SelectedCardsAction>
           <TYPE.body>
-            <Plural value={cardsCount} _1="{cardsCount} card" other="{cardsCount} cards" />
+            <Plural value={selectedCardsIds.length} _1="{0} card selected" other="{0} cards selected" />
           </TYPE.body>
 
-          <SortButton sortsData={sortsData} onChange={setSortIndex} sortIndex={sortIndex} />
-        </GridHeader>
-      )}
+          <PrimaryButton onClick={toggleCreateOfferModal}>
+            <Trans>Place for Sale</Trans>
+          </PrimaryButton>
+        </SelectedCardsAction>
+      </SelectedCardsActionWrapper>
 
-      <Grid>
-        {cardsInDelivery.map((card: any) => (
-          <CardModel
-            key={card.slug}
-            cardModelSlug={card.cardModel.slug}
-            pictureUrl={card.cardModel.pictureUrl}
-            serialNumber={card.serialNumber}
-            season={card.cardModel.season}
-            artistName={card.cardModel.artist.displayName}
-            inDelivery
-          />
-        ))}
-        {cards.map((card: any, index) => (
-          <CardModel
-            key={card.slug}
-            innerRef={index + 1 === cards.length ? lastTxRef : undefined}
-            cardModelSlug={card.cardModel.slug}
-            pictureUrl={card.cardModel.pictureUrl}
-            videoUrl={card.cardModel.videoUrl}
-            onSale={card.onSale}
-            pendingStatus={pendingsStatus[index] ?? undefined}
-            serialNumber={card.serialNumber}
-            season={card.cardModel.season}
-            artistName={card.cardModel.artist.displayName}
-          />
-        ))}
-      </Grid>
-
-      {!isLoading &&
-        !cardsCount &&
-        (isCurrentUserProfile ? <EmptyCardsTabOfCurrentUser /> : <EmptyTab emptyText={t`No cards`} />)}
-
-      <PaginationSpinner loading={isLoading} />
-    </Section>
+      <CreateOfferModal cardsIds={selectedCardsIds} onSuccess={onSuccessfulOfferCreation} />
+    </>
   )
 }
 

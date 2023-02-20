@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
@@ -13,7 +13,7 @@ export const BaseButton = styled.button<{ large?: boolean }>`
   border: none;
   border-radius: ${({ large = false }) => (large ? '4px' : '3px')};
   font-size: 16px;
-  min-height: ${({ large = false }) => (large ? '54px' : '44px')};
+  min-height: ${({ large = false }) => (large ? '54px' : '40px')};
   padding: 8px 20px;
   cursor: pointer;
   font-weight: 500;
@@ -184,18 +184,18 @@ const StyledRadioButton = styled(RowCenter)<{ selected?: boolean }>`
   }
 `
 
-interface RadioButtonProps {
+interface RadioButtonProps extends React.HTMLAttributes<HTMLDivElement> {
   selected?: boolean
   onChange?: () => void
 }
 
-export function RadioButton({ selected, onChange }: RadioButtonProps) {
+export function RadioButton({ selected, onChange, ...props }: RadioButtonProps) {
   const handleChange = useCallback(() => {
     onChange && onChange()
   }, [onChange])
 
   return (
-    <StyledRadioButton onClick={handleChange} selected={selected}>
+    <StyledRadioButton onClick={handleChange} selected={selected} {...props}>
       <Checkmark />
     </StyledRadioButton>
   )

@@ -28,7 +28,7 @@ const Separator = styled.div`
 
 interface SaleBreakdownProps {
   price: string
-  artistName: string
+  artistName?: string
 }
 
 export function SaleBreakdown({ price, artistName }: SaleBreakdownProps) {
@@ -55,7 +55,13 @@ export function SaleBreakdown({ price, artistName }: SaleBreakdownProps) {
           <Trans>Artist fee ({ARTIST_FEE_PERCENTAGE / 10_000}%)</Trans>
         </TYPE.body>
 
-        <InfoTooltip text={t`This fee will go to ${artistName} and his team.`} />
+        <InfoTooltip
+          text={
+            artistName
+              ? t`This fee will go to ${artistName} and his team.`
+              : t`This fee will go to artists and their team.`
+          }
+        />
 
         <Row gap={8}>
           <TYPE.subtitle>{weiAmountToEURValue(artistFee) ?? 0}€</TYPE.subtitle>
@@ -92,11 +98,11 @@ export function SaleBreakdown({ price, artistName }: SaleBreakdownProps) {
   )
 }
 
-interface PurchaseBreakdownProps {
+interface PurchaseBreakdownProps extends React.HTMLAttributes<HTMLDivElement> {
   price: string
 }
 
-export function PurchaseBreakdown({ price }: PurchaseBreakdownProps) {
+export function PurchaseBreakdown({ price, children, ...props }: PurchaseBreakdownProps) {
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
@@ -104,11 +110,9 @@ export function PurchaseBreakdown({ price }: PurchaseBreakdownProps) {
   const parsedPrice = useMemo(() => WeiAmount.fromRawAmount(price), [price])
 
   return (
-    <Column gap={12}>
+    <Column gap={12} {...props}>
       <PriceBreakdownLine>
-        <TYPE.medium>
-          <Trans>You Pay</Trans>
-        </TYPE.medium>
+        <TYPE.medium>{children || <Trans>You Pay</Trans>}</TYPE.medium>
 
         <Row gap={8}>
           <TYPE.medium color="text2">{weiAmountToEURValue(parsedPrice) ?? 0}€</TYPE.medium>

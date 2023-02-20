@@ -7,6 +7,7 @@ import { ModalHeader } from '@/components/Modal'
 import { useWaitingTransactionQuery } from '@/state/wallet/hooks'
 import Confirmation from './Confirmation'
 import Signer from './Signer'
+import { PaginationSpinner } from '../Spinner'
 
 const DummyFocusInput = styled.input`
   max-height: 0;
@@ -51,7 +52,6 @@ export default function StarknetSigner({
   // wallet lazyness
   const waitingTransactionQuery = useWaitingTransactionQuery()
   const waitingTransaction = waitingTransactionQuery.data?.waitingTransaction
-  const loading = waitingTransactionQuery.loading
 
   useEffect(() => {
     if (waitingTransactionQuery.error) onError('An error has occurred, please refresh the page and try again.')
@@ -65,7 +65,7 @@ export default function StarknetSigner({
   const [waitingForTx, setWaitingForTx] = useState(false)
   const onConfirmation = useCallback(() => setWaitingForTx(true), [])
 
-  if (loading) return null
+  const isLoading = waitingTransactionQuery.loading
 
   return (
     <>
@@ -73,12 +73,14 @@ export default function StarknetSigner({
 
       <DummyFocusInput type="text" />
 
-      {waitingTransaction ? (
+      {!!waitingTransaction && (
         <Confirmation
           txHash={waitingTransaction.hash}
           confirmationText={t`Your wallet is already processing another transaction`}
         />
-      ) : txHash || waitingForTx || waitingForFees ? (
+      )}
+
+      {txHash || waitingForTx || waitingForFees ? (
         <Confirmation
           txHash={txHash ?? undefined}
           error={error ?? undefined}
@@ -88,8 +90,10 @@ export default function StarknetSigner({
           success={!!txHash}
         />
       ) : (
-        !calls && children
+        !calls && !isLoading && children
       )}
+
+      <PaginationSpinner loading={isLoading} />
 
       <Signer
         onDismiss={onDismiss}

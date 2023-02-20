@@ -1,19 +1,24 @@
 import React, { useMemo, useCallback, useRef } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
 import { useActiveLocale } from '@/hooks/useActiveLocale'
-import Link, { LinkProps } from '@/components/Link'
+import Link from '@/components/Link'
 import { TYPE } from '@/styles/theme'
 import Column, { ColumnCenter } from '@/components/Column'
 import { LargeSpinner } from '@/components/Spinner'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import CardPendingStatusText from '@/components/CardPendingStatusText'
-import { CardPendingStatus } from '@/hooks/useCardsPendingStatus'
+import { CardPendingStatus } from '@/hooks/useCardsPendingStatusMap'
 import Badges, { Badge } from './Badges'
 
-const StyledCardModel = styled(ColumnCenter)<{ width?: number }>`
+const ActiveCardModelStyle = css`
+  background: ${({ theme }) => theme.bg3}80;
+  transform: translateY(-8px) scale(1.02);
+`
+
+const StyledCardModel = styled(ColumnCenter)<{ width?: number; selected: boolean; selectable: boolean }>`
   position: relative;
   gap: 12px;
   ${({ width }) => width && `width: ${width}px;`}
@@ -21,12 +26,21 @@ const StyledCardModel = styled(ColumnCenter)<{ width?: number }>`
   border-radius: 4px;
   transition: background 200ms, transform 200ms ease-out;
 
-  ${({ theme }) => theme.media.computer`
+  ${({ theme, selectable, selected }) => theme.media.computer`
     :hover {
-      background: ${({ theme }) => theme.bg3}80;
-      transform: translateY(-8px) scale(1.02);
+      ${ActiveCardModelStyle}
+      ${selectable && !selected && 'opacity: 0.7;'}
     }
   `}
+
+  ${({ selectable, selected }) => selectable && selected && ActiveCardModelStyle}
+
+  ${({ selectable, selected }) =>
+    selectable &&
+    !selected &&
+    `
+      opacity: 0.3;
+    `}
 `
 
 const VideoWrapper = styled.div`
@@ -76,15 +90,6 @@ const BadgesWrapper = styled(Column)`
   }
 `
 
-type CustomCardModelProps = LinkProps | React.HTMLAttributes<HTMLDivElement>
-
-const CustomCardModel = (props: CustomCardModelProps) =>
-  (props as LinkProps).href ? (
-    <Link {...(props as LinkProps)} />
-  ) : (
-    <div {...(props as React.HTMLAttributes<HTMLDivElement>)} />
-  )
-
 interface CardModelProps {
   innerRef?: (node: any) => void
   slug?: string
@@ -101,6 +106,9 @@ interface CardModelProps {
   lowestAsk?: string
   onClick?: () => void
   badges?: Badge[]
+  selectable?: boolean
+  selected?: boolean
+  onSelection?: (slug: string) => void
 }
 
 const MemoizedCardModelPropsEqualityCheck = (prevProps: CardModelProps, nextProps: CardModelProps) =>
@@ -108,6 +116,9 @@ const MemoizedCardModelPropsEqualityCheck = (prevProps: CardModelProps, nextProp
   !!prevProps.innerRef === !!nextProps.innerRef &&
   prevProps.cardModelSlug === nextProps.cardModelSlug &&
   prevProps.lowestAsk === nextProps.lowestAsk &&
+  prevProps.selectable === nextProps.selectable &&
+  prevProps.selected === nextProps.selected &&
+  prevProps.onClick === nextProps.onClick &&
   prevProps.badges?.length === nextProps.badges?.length
 
 const MemoizedCardModel = React.memo(function CardModel({
@@ -125,6 +136,8 @@ const MemoizedCardModel = React.memo(function CardModel({
   lowestAsk,
   onClick,
   badges,
+  selectable = false,
+  selected = false,
 }: CardModelProps) {
   // locale
   const locale = useActiveLocale()
@@ -137,24 +150,31 @@ const MemoizedCardModel = React.memo(function CardModel({
 
   // link
   const cardLink = useMemo(
-    () => (cardModelSlug ? `/card/${cardModelSlug}${!!serialNumber ? `/${serialNumber}` : ''}` : undefined),
-    [cardModelSlug, serialNumber]
+    () =>
+      cardModelSlug && !selectable
+        ? `/card/${cardModelSlug}${!!serialNumber ? `/${serialNumber}` : ''}`
+        : 'javascript: void(0)',
+    [cardModelSlug, serialNumber, selectable]
   )
 
   // card video play pause
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  const playVideo = useCallback(() => {
-    videoRef?.current?.play()
-  }, [videoRef])
+  const playVideo = useCallback(() => videoRef?.current?.play(), [videoRef])
+  const pauseVideo = useCallback(() => videoRef?.current?.pause(), [videoRef])
 
-  const pauseVideo = useCallback(() => {
-    videoRef?.current?.pause()
-  }, [videoRef])
+  // selection
 
   return (
-    <CustomCardModel onClick={onClick} href={cardLink}>
-      <StyledCardModel width={width} ref={innerRef} onMouseOver={playVideo} onMouseOut={pauseVideo}>
+    <Link onClick={onClick} href={cardLink}>
+      <StyledCardModel
+        width={width}
+        ref={innerRef}
+        onMouseOver={playVideo}
+        onMouseOut={pauseVideo}
+        selected={selected}
+        selectable={selectable}
+      >
         <VideoWrapper>
           <Video
             src={videoUrl}
@@ -167,6 +187,7 @@ const MemoizedCardModel = React.memo(function CardModel({
             playsInline
             muted
           />
+
           {inDelivery && <InDelivery src={`/assets/delivery.${locale}.png`} />}
           {onSale && !pendingStatus && <OnSale src={`/assets/onsale.${locale}.png`} />}
           {pendingStatus && <StyledLargeSpinner className="spinner" />}
@@ -212,7 +233,7 @@ const MemoizedCardModel = React.memo(function CardModel({
           </BadgesWrapper>
         )}
       </StyledCardModel>
-    </CustomCardModel>
+    </Link>
   )
 },
 MemoizedCardModelPropsEqualityCheck)

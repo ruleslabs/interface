@@ -202,13 +202,20 @@ interface ApolloSearch {
 function useFacetFilters(facets: any) {
   return useMemo(
     () =>
-      Object.keys(facets).reduce<string[]>((acc, facetKey) => {
+      Object.keys(facets).reduce<(string | string[])[]>((acc, facetKey) => {
         const facet = facets[facetKey]
 
         if (!facet) {
           return acc
         } else if (Array.isArray(facet)) {
-          for (const value of facet) acc.push(`${facetKey}:${value}`)
+          const arr: string[] = []
+
+          // push dashed facets in the root array and the rest in a child array
+          for (const value of facet) {
+            ;(value.indexOf('-') === 0 ? acc : arr).push(`${facetKey}:${value}`)
+          }
+
+          if (arr.length) acc.push(arr)
         } else {
           acc.push(`${facetKey}:${facet}`)
         }

@@ -1401,3 +1401,27 @@ msgstr "{0, plural, =1 {{0} pack scellé} other {{0} packs scellés}}"
 #: src/components/Homepage/HallOfFame/UserRow.tsx
 msgid "Average serial: #{0}"
 msgstr "Serial moyen: #{0}"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "Select"
+msgstr "Sélectionner"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "Cancel"
+msgstr "Annuler"
+
+#: src/components/MarketplaceModal/PriceBreakdown.tsx
+msgid "This fee will go to artists and their team."
+msgstr "Cette comission sera versée aux artistes et leur équipe."
+
+#: src/pages/user/[username]/cards.tsx
+msgid "{0, plural, =1 {{0} card selected} other {{0} cards selected}}"
+msgstr "{0, plural, =1 {{0} carte sélectionnée} other {{0} cartes sélectionnées}}"
+
+#: src/components/MarketplaceModal/CreateOffer.tsx
+msgid "Offers overview"
+msgstr "Résumé des ventes"
+
+#: src/components/MarketplaceModal/CreateOffer.tsx
+msgid "{0, plural, =1 {Total ({0} card)} other {Total ({0} cards)}}"
+msgstr "{0, plural, =1 {Total ({0} carte)} other {Total ({0} cartes)}}"

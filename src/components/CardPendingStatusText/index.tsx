@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 
-import { CardPendingStatus } from '@/hooks/useCardsPendingStatus'
+import { CardPendingStatus } from '@/hooks/useCardsPendingStatusMap'
 
 interface CardPendingStatusProps {
   pendingStatus: CardPendingStatus
