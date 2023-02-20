@@ -19,7 +19,6 @@ import CancelOfferModal from '@/components/MarketplaceModal/CancelOffer'
 import AcceptOfferModal from '@/components/MarketplaceModal/AcceptOffer'
 import { useSearchOffers } from '@/state/search/hooks'
 import useCardsPendingStatusMap from '@/hooks/useCardsPendingStatusMap'
-import { useSearchCardModels } from '@/state/search/hooks'
 import { PaginationSpinner } from '@/components/Spinner'
 
 const MainSection = styled(Section)`
@@ -105,9 +104,6 @@ export default function CardBreakout() {
   const { cardModelSlug, serialNumber } = router.query
   const cardSlug = `${cardModelSlug}-${serialNumber}`
 
-  // hits
-  const [cardModelHit, setCardModelHit] = useState<any | null>(null)
-
   // card
   const [card, setCard] = useState<any | null>(null)
 
@@ -165,16 +161,8 @@ export default function CardBreakout() {
     [offerSearch?.hits?.[0]?.price]
   )
 
-  // card model search
-  const onPageFetched = useCallback((hits) => setCardModelHit(hits[0] ?? null), [])
-  const cardModelSearch = useSearchCardModels({
-    facets: { cardModelId: card?.cardModel?.id },
-    skip: !card?.cardModel?.id,
-    onPageFetched,
-  })
-
   // loading
-  const isLoading = cardModelSearch.loading || cardQuery.loading
+  const isLoading = cardQuery.loading
 
   return (
     <>
@@ -182,7 +170,7 @@ export default function CardBreakout() {
         <BackButton onClick={router.back} />
       </Section>
 
-      {card && cardModelHit && (
+      {card && (
         <>
           <MainSection size="sm">
             <CardModel3D
