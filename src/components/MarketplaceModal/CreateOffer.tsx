@@ -106,6 +106,11 @@ export default function CreateOfferModal({ cardsIds, onSuccess }: CreateOfferMod
     [cardsIds.length, cardIndex, needsOverview]
   )
 
+  // overview init
+  useEffect(() => {
+    setNeedsOverview(cardsIds.length > 1) // overview not needed for a single offer creation
+  }, [cardsIds.length])
+
   // price
   const [price, setPrice] = useState<string>('')
   const parsedPrice = useMemo(() => tryParseWeiAmount(price), [price])
@@ -180,7 +185,7 @@ export default function CreateOfferModal({ cardsIds, onSuccess }: CreateOfferMod
         },
       })
         .then((res?: any) => {
-          const hash = res?.data?.createOffer?.hash
+          const hash = res?.data?.createOffers?.hash
           if (!hash) {
             onError('Transaction not received')
             return
@@ -231,9 +236,8 @@ export default function CreateOfferModal({ cardsIds, onSuccess }: CreateOfferMod
       setParsedPrices([])
       setParsedPricesTotal(WeiAmount.fromRawAmount(0))
       setLowestAsks({})
-      setNeedsOverview(cardsIds.length > 1) // overview not needed for a single offer creation
     }
-  }, [isOpen, cardsIds.length])
+  }, [isOpen])
 
   // loading
   const isLoading = cardsQuery.loading || cardModelSearch.loading

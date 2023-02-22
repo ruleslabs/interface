@@ -26,11 +26,17 @@ const MainSection = styled(Section)`
 `
 
 const OffersSelectorBreakdownCard = styled(Card)`
+  position: sticky;
   width: 350px;
   height: fit-content;
+  top: ${({ theme }) => theme.size.headerHeight + 16}px;
 
   ${({ theme }) => theme.media.small`
     width: 100%;
+  `}
+
+  ${({ theme }) => theme.media.medium`
+    top: ${theme.size.headerHeightMedium + 16}px;
   `}
 `
 

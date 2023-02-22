@@ -119,6 +119,7 @@ const MemoizedCardModelPropsEqualityCheck = (prevProps: CardModelProps, nextProp
   prevProps.selectable === nextProps.selectable &&
   prevProps.selected === nextProps.selected &&
   prevProps.onClick === nextProps.onClick &&
+  prevProps.pendingStatus === nextProps.pendingStatus &&
   prevProps.badges?.length === nextProps.badges?.length
 
 const MemoizedCardModel = React.memo(function CardModel({

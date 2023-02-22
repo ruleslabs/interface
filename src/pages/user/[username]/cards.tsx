@@ -19,7 +19,6 @@ import { PaginationSpinner } from '@/components/Spinner'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 import SortButton, { SortsData } from '@/components/Button/SortButton'
 import { PrimaryButton, SecondaryButton } from '@/components/Button'
-import { ColumnCenter } from '@/components/Column'
 import CreateOfferModal from '@/components/MarketplaceModal/CreateOffer'
 import { useCreateOfferModalToggle } from '@/state/application/hooks'
 
@@ -83,6 +82,15 @@ const StickyWrapper = styled.div`
 const GridHeader = styled(RowBetween)`
   align-items: center;
   padding: 12px 16px;
+`
+
+const SelectionButtonWrapper = styled(RowCenter)`
+  gap: 12px;
+
+  ${({ theme }) => theme.media.extraSmall`
+    flex-direction: column;
+    gap: 6px
+  `}
 `
 
 const SelectionButton = styled(SecondaryButton)`
@@ -244,15 +252,17 @@ function Cards({ userId, address }: CardsProps) {
         {cardsCount > 0 && (
           <Section marginBottom="0px">
             <GridHeader>
-              <ColumnCenter gap={6}>
+              <SelectionButtonWrapper>
                 <TYPE.body>
                   <Plural value={cardsCount} _1="{cardsCount} card" other="{cardsCount} cards" />
                 </TYPE.body>
 
-                <SelectionButton onClick={toggleSelectionMode}>
-                  {selectionModeEnabled ? t`Cancel` : t`Select`}
-                </SelectionButton>
-              </ColumnCenter>
+                {isCurrentUserProfile && (
+                  <SelectionButton onClick={toggleSelectionMode}>
+                    {selectionModeEnabled ? t`Cancel` : t`Select`}
+                  </SelectionButton>
+                )}
+              </SelectionButtonWrapper>
 
               <SortButton sortsData={sortsData} onChange={setSortIndex} sortIndex={sortIndex} />
             </GridHeader>

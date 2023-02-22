@@ -16,10 +16,6 @@ msgid "Community"
 msgstr "Communauté"
 
 #: src/components/Header/index.tsx
-msgid "Marketplace"
-msgstr "Échange"
-
-#: src/components/Header/index.tsx
 msgid "Packs"
 msgstr "Packs"
 
@@ -446,6 +442,9 @@ msgstr "Le pack détecté par télescope."
 
 msgid "This pack comes from a distant planet..."
 msgstr "Ce pack provient d'une planète éloignée..."
+
+msgid "Extracted from the depths..."
+msgstr "Extrait des profondeurs..."
 
 #: src/components/PackBreakdown/index.tsx
 msgid "Buy - {0}€"
@@ -1425,3 +1424,7 @@ msgstr "Résumé des ventes"
 #: src/components/MarketplaceModal/CreateOffer.tsx
 msgid "{0, plural, =1 {Total ({0} card)} other {Total ({0} cards)}}"
 msgstr "{0, plural, =1 {Total ({0} carte)} other {Total ({0} cartes)}}"
+
+#: src/components/Homepage/HallOfFame/UserRow.tsx
+msgid "Collection score: {0}"
+msgstr "Score de la collection: {0}"

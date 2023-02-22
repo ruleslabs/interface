@@ -101,7 +101,7 @@ export default function AcceptOfferModal({
         variables: { tokenIds, maxFee, nonce, signature: JSON.stringify(signature) },
       })
         .then((res?: any) => {
-          const hash = res?.data?.acceptOffer?.hash
+          const hash = res?.data?.acceptOffers?.hash
           if (!hash) {
             onError('Transaction not received')
             return

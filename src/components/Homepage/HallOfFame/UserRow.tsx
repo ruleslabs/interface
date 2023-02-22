@@ -1,12 +1,10 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { parseCScore } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import shortenUsername from '@/utils/shortenUsername'
 import Link from '@/components/Link'
 import { RowCenter } from '@/components/Row'
-import Column from '@/components/Column'
 import Avatar from '@/components/Avatar'
 import { TYPE } from '@/styles/theme'
 import Tooltip from '@/components/Tooltip'
@@ -83,13 +81,11 @@ const MemoizedUserRow = React.memo(function UserRow({
 
   // parsed price
   const parsedCScore = useMemo(() => {
-    const parsedCScore = parseCScore(cScore)
-
-    return {
-      averageSerialNumber: Math.round(parsedCScore.lowestSerialsTotal / parsedCScore.cardModelsCount),
-      cardModelsPercentage: cardModelsCount ? (parsedCScore.cardModelsCount / cardModelsCount) * 100 : 0,
-    }
-  }, [cScore, cardModelsCount])
+    return Intl.NumberFormat('en-US', {
+      notation: 'compact',
+      maximumFractionDigits: 2,
+    }).format(cScore)
+  }, [cScore])
 
   return (
     <StyledUserRow>
@@ -111,20 +107,12 @@ const MemoizedUserRow = React.memo(function UserRow({
       </Link>
 
       <CScore>
-        <TYPE.body color="text2">
-          {parsedCScore.cardModelsPercentage.toFixed(0)}% - #{parsedCScore.averageSerialNumber}
-        </TYPE.body>
+        <TYPE.body color="text2">{parsedCScore}</TYPE.body>
 
         <StyledTooltip direction="left">
-          <Column gap={8}>
-            <TYPE.body>
-              <Trans>Collection {parsedCScore.cardModelsPercentage.toFixed(0)}% complete.</Trans>
-            </TYPE.body>
-
-            <TYPE.body>
-              <Trans>Average serial: #{parsedCScore.averageSerialNumber}</Trans>
-            </TYPE.body>
-          </Column>
+          <TYPE.body>
+            <Trans>Collection score: {cScore.toLocaleString('en-US')}</Trans>
+          </TYPE.body>
         </StyledTooltip>
       </CScore>
     </StyledUserRow>
