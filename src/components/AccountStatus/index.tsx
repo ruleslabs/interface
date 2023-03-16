@@ -125,12 +125,12 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
           </>
         ) : (
           <>
-            <PrimaryButton onClick={toggleSignInModal}>
+            <SecondaryButton onClick={toggleSignInModal}>
               <Trans>Sign in</Trans>
-            </PrimaryButton>
-            <SecondaryButton onClick={toggleSignUpModal}>
-              <Trans>Sign up</Trans>
             </SecondaryButton>
+            <PrimaryButton onClick={toggleSignUpModal}>
+              <Trans>Sign up</Trans>
+            </PrimaryButton>
           </>
         )}
       </StyledAccountStatus>

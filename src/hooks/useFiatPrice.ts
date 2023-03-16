@@ -3,11 +3,12 @@ import { WeiAmount } from '@rulesorg/sdk-core'
 
 import { useEtherPrice } from '@/state/application/hooks'
 
-export function useWeiAmountToEURValue(): (amount?: WeiAmount) => string | null {
+export function useWeiAmountToEURValue(): (amount?: WeiAmount) => number | null {
   const etherEURprice = useEtherPrice()
 
   return useCallback(
-    (amount?: WeiAmount) => (etherEURprice && amount ? amount.multiply(Math.round(etherEURprice)).toFixed(2) : null),
+    (amount?: WeiAmount) =>
+      etherEURprice && amount ? Math.round(+amount.toFixed(6) * etherEURprice * 100) / 100 : null,
     [etherEURprice]
   )
 }

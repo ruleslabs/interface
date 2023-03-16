@@ -13,10 +13,10 @@ export function useEtherEURPrice() {
 
   const fetchEthPrice = useCallback(
     () =>
-      fetch('https://api.coinbase.com/v2/prices/ETH-EUR/spot')
+      fetch('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=EUR')
         .then((res) => res.json())
         .then((res: any) => {
-          const amount = res?.data?.amount
+          const amount = res?.EUR
 
           dispatch(updateEtherPrice({ price: !!amount ? +amount : undefined }))
         })
