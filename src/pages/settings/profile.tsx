@@ -1,10 +1,12 @@
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
 
 import DefaultLayout from '@/components/Layout'
 import SettingsLayout from '@/components/Layout/Settings'
 import Column from '@/components/Column'
-import DiscordSettings from '@/components/Settings/Discord'
 import SocialAccountsSettings from '@/components/Settings/SocialAccounts'
+import Title from '@/components/Settings/Title'
+import DiscordStatus from '@/components/Settings/DiscordStatus'
 
 const StyledProfileEditor = styled(Column)`
   width: 100%;
@@ -14,7 +16,10 @@ const StyledProfileEditor = styled(Column)`
 function Profile() {
   return (
     <StyledProfileEditor>
-      <DiscordSettings />
+      <Title value={t`Discord`} />
+      <DiscordStatus redirectPath="/settings/profile" />
+
+      <Title value={t`Social accounts`} />
       <SocialAccountsSettings />
     </StyledProfileEditor>
   )

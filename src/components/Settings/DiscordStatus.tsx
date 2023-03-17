@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from 'react'
+import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
 import { ApolloError } from '@apollo/client'
@@ -23,8 +23,32 @@ import DiscordIcon from '@/images/discord.svg'
 import { PaginationSpinner } from '../Spinner'
 import Column from '../Column'
 
+const DiscordStatusWrapper = styled(Column)`
+  gap: 16px;
+
+  ${({ theme }) => theme.media.small`
+    max-width: 300px;
+    margin: 0 auto;
+  `}
+`
+
 const ConnectedDiscordWrapper = styled(RowBetween)`
   align-items: center;
+
+  ${({ theme }) => theme.media.small`
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+
+    & button {
+      width: unset;
+      flex-grow: 1;
+    }
+
+    & > * {
+      width: 100%;
+    }
+  `}
 `
 
 const DiscordAvatar = styled(Avatar)`
@@ -33,21 +57,11 @@ const DiscordAvatar = styled(Avatar)`
   border-radius: 4px;
 `
 
-const DiscordDisconnect = styled(SecondaryButton)`
-  height: 30px;
-`
-
-const DiscordDisconnectWrapper = styled(Row)`
-  gap: 24px;
-  width: fit-content;
-  justify-content: center;
-`
-
-interface DiscordStatusProps {
+interface DiscordStatusProps extends React.HTMLAttributes<HTMLDivElement> {
   redirectPath: string
 }
 
-export default function DiscordStatus({ redirectPath }: DiscordStatusProps) {
+export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusProps) {
   const currentUser = useCurrentUser()
   const queryCurrentUser = useQueryCurrentUser()
 
@@ -151,11 +165,11 @@ export default function DiscordStatus({ redirectPath }: DiscordStatusProps) {
   const discordMember = currentUser?.profile?.discordMember
 
   return (
-    <>
+    <div {...props}>
       {!loading && (
         <>
           {discordMember ? (
-            <Column gap={16}>
+            <DiscordStatusWrapper gap={16}>
               <ConnectedDiscordWrapper>
                 <RowCenter gap={12}>
                   <DiscordAvatar
@@ -185,7 +199,7 @@ export default function DiscordStatus({ redirectPath }: DiscordStatusProps) {
                   <Trans>Public</Trans>
                 </TYPE.body>
               </Checkbox>
-            </Column>
+            </DiscordStatusWrapper>
           ) : (
             <Link href={discordOAuthRedirectUrl}>
               <ThirdPartyButton
@@ -209,6 +223,6 @@ export default function DiscordStatus({ redirectPath }: DiscordStatusProps) {
       )}
 
       <PaginationSpinner loading={loading} />
-    </>
+    </div>
   )
 }

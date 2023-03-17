@@ -5,7 +5,7 @@ import { Trans } from '@lingui/macro'
 import { TYPE } from '@/styles/theme'
 import { ColumnCenter } from '@/components/Column'
 import { PageBody, SkipButton } from './SubComponents'
-import DiscordStatus from '@/components/DiscordStatus'
+import DiscordStatus from '@/components/Settings/DiscordStatus'
 import { useSetOnboardingPage } from '@/state/onboarding/hooks'
 import { OnboardingPage } from '@/state/onboarding/actions'
 

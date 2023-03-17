@@ -7,7 +7,6 @@ import { PrimaryButton } from '@/components/Button'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
 import { useCurrentUser, useQueryCurrentUser, useSetSocialLinksMutation } from '@/state/user/hooks'
-import { Title } from './SubComponents'
 
 export default function SocialAccountsSettings() {
   const currentUser = useCurrentUser()
@@ -81,8 +80,6 @@ export default function SocialAccountsSettings() {
 
   return (
     <Column gap={16}>
-      <Title value={t`Social accounts`} />
-
       <Column gap={12}>
         <TYPE.body>Instagram</TYPE.body>
         <Input value={instagramUsername} onUserInput={handleInstagramInput} prefix="@" />

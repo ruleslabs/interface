@@ -13,7 +13,7 @@ interface TitleProps {
   value: string
 }
 
-export function Title({ value }: TitleProps) {
+export default function Title({ value }: TitleProps) {
   return (
     <>
       <TYPE.large>{value}</TYPE.large>

@@ -13,11 +13,14 @@ import ShieldIcon from '@/images/shield.svg'
 import { useCurrentUser } from '@/state/user/hooks'
 
 const StyledSection = styled(Section)`
-  gp: 32px;
   margin-top: 64px;
   display: flex;
   gap: 64px;
   justify-content: start;
+
+  ${({ theme }) => theme.media.medium`
+    gap: 32px;
+  `}
 `
 
 const Article = styled.article`
@@ -26,7 +29,7 @@ const Article = styled.article`
 `
 
 const AsideSettings = styled.aside`
-  width: 200px;
+  min-width: 150px;
   display: flex;
   flex-direction: column;
   gap: 4px;
