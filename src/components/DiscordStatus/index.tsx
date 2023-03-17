@@ -2,26 +2,39 @@ import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
 import { ApolloError } from '@apollo/client'
-import { Trans } from '@lingui/macro'
+import { Trans, t } from '@lingui/macro'
 
 import Link from '@/components/Link'
-import { PrimaryButton } from '@/components/Button'
-import Row from '@/components/Row'
+import { PrimaryButton, SecondaryButton, ThirdPartyButton } from '@/components/Button'
+import Row, { RowBetween, RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
 import {
   useCurrentUser,
   useQueryCurrentUser,
   useConnectDiscordAccountMutation,
   useDisconnectDiscordAccountMutation,
+  useRefreshDiscordRolesMutation,
+  useSetDiscordVisibilityMutation,
 } from '@/state/user/hooks'
+import Avatar from '@/components/Avatar'
+import Checkbox from '@/components/Checkbox'
 
-const DiscordConnect = styled(PrimaryButton)`
-  width: 100%;
+import DiscordIcon from '@/images/discord.svg'
+import { PaginationSpinner } from '../Spinner'
+import Column from '../Column'
+
+const ConnectedDiscordWrapper = styled(RowBetween)`
+  align-items: center;
 `
 
-const DiscordDisconnect = styled(TYPE.body)`
-  color: ${({ theme }) => theme.error};
-  font-weight: 700;
+const DiscordAvatar = styled(Avatar)`
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+`
+
+const DiscordDisconnect = styled(SecondaryButton)`
+  height: 30px;
 `
 
 const DiscordDisconnectWrapper = styled(Row)`
@@ -32,11 +45,9 @@ const DiscordDisconnectWrapper = styled(Row)`
 
 interface DiscordStatusProps {
   redirectPath: string
-  connectionText: string
-  onConnect?: () => void
 }
 
-export default function DiscordStatus({ redirectPath, connectionText, onConnect }: DiscordStatusProps) {
+export default function DiscordStatus({ redirectPath }: DiscordStatusProps) {
   const currentUser = useCurrentUser()
   const queryCurrentUser = useQueryCurrentUser()
 
@@ -44,11 +55,19 @@ export default function DiscordStatus({ redirectPath, connectionText, onConnect 
   const discordCode = router?.query?.code
 
   // loading
-  const [discordLoading, setDiscordLoading] = useState(!!discordCode || !!currentUser?.profile?.discordId)
+  const [loading, setLoading] = useState(!!discordCode || !!currentUser?.profile?.discordId)
+
+  // error
+  const [error, setError] = useState<string | null>(null)
+
+  // discord visibility
+  const [isDiscordVisible, setIsDiscordVisible] = useState<boolean>(currentUser?.profile?.isDiscordVisible ?? false)
 
   // mutation
   const [connectDiscordAccountMutation] = useConnectDiscordAccountMutation()
   const [disconnectDiscordAccountMutation] = useDisconnectDiscordAccountMutation()
+  const [refreshDiscordRolesMutation] = useRefreshDiscordRolesMutation()
+  const [setDiscordVisibilityMutation] = useSetDiscordVisibilityMutation()
 
   const discordOAuthRedirectUrl = useMemo(
     () =>
@@ -58,77 +77,138 @@ export default function DiscordStatus({ redirectPath, connectionText, onConnect 
     [redirectPath]
   )
 
-  const [discordMember, setDiscordMember] = useState<any | null>(currentUser?.profile?.discordMember)
-
+  // handle connection on code reception
   useEffect(() => {
-    if (!discordCode) return
+    if (!discordCode || !router.replace) return
 
-    setDiscordLoading(true)
+    setLoading(true)
+    setError(null)
 
     router.replace(redirectPath, undefined, { shallow: true })
     connectDiscordAccountMutation({ variables: { code: discordCode, redirectPath } })
       .then((res: any) => {
-        setDiscordMember(res?.data?.connectDiscordAccount ?? null)
-
         queryCurrentUser()
-        setDiscordLoading(false)
-        if (onConnect) onConnect()
+        setLoading(false)
       })
       .catch((connectDiscordAccountError: ApolloError) => {
-        console.error(connectDiscordAccountError) // TODO: handle error
-        setDiscordLoading(false)
-      })
-  }, [
-    discordCode,
-    router,
-    connectDiscordAccountMutation,
-    queryCurrentUser,
-    setDiscordLoading,
-    setDiscordMember,
-    redirectPath,
-    onConnect,
-  ])
+        console.error(connectDiscordAccountError)
+        setError(connectDiscordAccountError.message ?? 'An error has occured, please contact support on Discord')
 
+        setLoading(false)
+      })
+  }, [discordCode, connectDiscordAccountMutation, queryCurrentUser, redirectPath, router.replace])
+
+  // handle disconnection
   const handleDiscordDisconnect = useCallback(() => {
-    setDiscordLoading(true)
+    setLoading(true)
+    setError(null)
 
     disconnectDiscordAccountMutation()
       .then((res: any) => {
-        setDiscordMember(null)
         queryCurrentUser()
-        setDiscordLoading(false)
+        setLoading(false)
       })
       .catch((disconnectDiscordAccountError: ApolloError) => {
-        console.error(disconnectDiscordAccountError) // TODO: handle error
-        setDiscordLoading(false)
+        console.error(disconnectDiscordAccountError)
+        setError(disconnectDiscordAccountError.message ?? 'An error has occured, please contact support on Discord')
+
+        setLoading(false)
       })
   }, [disconnectDiscordAccountMutation, queryCurrentUser])
 
+  // handle discord refresh
+  const handleDiscordRefresh = useCallback(() => {
+    setLoading(true)
+    setError(null)
+
+    refreshDiscordRolesMutation()
+      .then((res: any) => {
+        queryCurrentUser()
+        setLoading(false)
+      })
+      .catch((refreshDiscordAccountError: ApolloError) => {
+        console.error(refreshDiscordAccountError)
+        setError(refreshDiscordAccountError.message ?? 'An error has occured, please contact support on Discord')
+
+        setLoading(false)
+      })
+  }, [refreshDiscordRolesMutation, queryCurrentUser])
+
+  // handle discord visibility
+  const toggleDiscordVisibility = useCallback(() => {
+    setIsDiscordVisible(!isDiscordVisible)
+
+    setDiscordVisibilityMutation({ variables: { visible: !isDiscordVisible } })
+      .then(() => {
+        queryCurrentUser()
+      })
+      .catch((setDiscordVisibilityError: ApolloError) => {
+        console.error(setDiscordVisibilityError) // TODO: handle error
+      })
+  }, [isDiscordVisible, setDiscordVisibilityMutation, queryCurrentUser])
+
+  // discord member object
+  const discordMember = currentUser?.profile?.discordMember
+
   return (
     <>
-      {discordMember?.username && discordMember?.discriminator ? (
+      {!loading && (
         <>
-          <DiscordDisconnectWrapper>
-            <TYPE.body spanColor="text2">
-              <Trans>Connected as {discordMember.username}</Trans>
-              <span>#{discordMember.discriminator}</span>
-            </TYPE.body>
-            {discordLoading ? (
-              <TYPE.subtitle>Loading ...</TYPE.subtitle>
-            ) : (
-              <DiscordDisconnect onClick={handleDiscordDisconnect} clickable>
-                <Trans>Disconnect</Trans>
-              </DiscordDisconnect>
-            )}
-          </DiscordDisconnectWrapper>
+          {discordMember ? (
+            <Column gap={16}>
+              <ConnectedDiscordWrapper>
+                <RowCenter gap={12}>
+                  <DiscordAvatar
+                    src={discordMember.guildAvatarUrl ?? discordMember.avatarUrl}
+                    fallbackSrc={currentUser.profile.fallbackSrc}
+                  />
+
+                  <Column gap={4}>
+                    <TYPE.medium>{discordMember.username}</TYPE.medium>
+                    <TYPE.body color="text2">#{discordMember.discriminator}</TYPE.body>
+                  </Column>
+                </RowCenter>
+
+                <Row gap={16}>
+                  <PrimaryButton onClick={handleDiscordRefresh}>
+                    <Trans>Refresh</Trans>
+                  </PrimaryButton>
+
+                  <SecondaryButton onClick={handleDiscordDisconnect}>
+                    <Trans>Unlink</Trans>
+                  </SecondaryButton>
+                </Row>
+              </ConnectedDiscordWrapper>
+
+              <Checkbox value={isDiscordVisible} onChange={toggleDiscordVisibility}>
+                <TYPE.body>
+                  <Trans>Public</Trans>
+                </TYPE.body>
+              </Checkbox>
+            </Column>
+          ) : (
+            <Link href={discordOAuthRedirectUrl}>
+              <ThirdPartyButton
+                title={t`Link Discord`}
+                subtitle={t`Link your discord account to get access to exclusive channels`}
+              >
+                <DiscordIcon />
+              </ThirdPartyButton>
+            </Link>
+          )}
         </>
-      ) : (
-        <Link href={discordOAuthRedirectUrl}>
-          <DiscordConnect disabled={discordLoading} large>
-            {discordLoading ? 'Loading ...' : connectionText}
-          </DiscordConnect>
-        </Link>
       )}
+
+      {error && (
+        <TYPE.body color="error">
+          <Trans>
+            Discord connection failed for the following reason:&nbsp;
+            <strong>{error}</strong>
+          </Trans>
+        </TYPE.body>
+      )}
+
+      <PaginationSpinner loading={loading} />
     </>
   )
 }

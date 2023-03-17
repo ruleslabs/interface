@@ -35,6 +35,7 @@ export default function DepositModal() {
           title="Ramp"
           subtitle={t`Buy ETH with your credit card or a bank transfer`}
           onClick={rampSdk?.show}
+          disbaled={!rampSdk?.show}
         >
           <RampIcon />
         </ThirdPartyButton>

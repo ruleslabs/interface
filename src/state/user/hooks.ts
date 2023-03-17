@@ -45,6 +45,8 @@ const CURRENT_USER_QUERY = gql`
         discordMember {
           username
           discriminator
+          avatarUrl(derivative: "width=320")
+          guildAvatarUrl(derivative: "width=320")
         }
       }
     }

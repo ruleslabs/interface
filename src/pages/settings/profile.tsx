@@ -1,20 +1,31 @@
 import styled from 'styled-components'
 
-import ProfileEditor from '@/components/ProfileEditor'
-import Section from '@/components/Section'
+import DefaultLayout from '@/components/Layout'
+import SettingsLayout from '@/components/Layout/Settings'
+import Column from '@/components/Column'
+import DiscordSettings from '@/components/Settings/Discord'
+import SocialAccountsSettings from '@/components/Settings/SocialAccounts'
 
-const StyledSection = styled(Section)`
-  margin-top: 64px;
-
-  ${({ theme }) => theme.media.small`
-    margin-top: 40px;
-  `}
+const StyledProfileEditor = styled(Column)`
+  width: 100%;
+  gap: 24px;
 `
 
-export default function Profile() {
+function Profile() {
   return (
-    <StyledSection>
-      <ProfileEditor />
-    </StyledSection>
+    <StyledProfileEditor>
+      <DiscordSettings />
+      <SocialAccountsSettings />
+    </StyledProfileEditor>
   )
 }
+
+Profile.getLayout = (page: JSX.Element) => {
+  return (
+    <DefaultLayout>
+      <SettingsLayout>{page}</SettingsLayout>
+    </DefaultLayout>
+  )
+}
+
+export default Profile

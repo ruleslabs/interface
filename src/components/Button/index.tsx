@@ -269,12 +269,13 @@ const StyledThirdPartyButton = styled(SecondaryButton)<{ active: boolean }>`
 interface ThirdPartyButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   title: string
   subtitle?: string
-  children: React.ReactNode
+  disbaled?: boolean
+  children: React.HTMLAttributes<HTMLButtonElement>['children']
 }
 
-export const ThirdPartyButton = ({ title, subtitle, children, ...props }: ThirdPartyButtonProps) => {
+export const ThirdPartyButton = ({ title, subtitle, children, disbaled = false, ...props }: ThirdPartyButtonProps) => {
   return (
-    <StyledThirdPartyButton active={!!props.onClick} {...props}>
+    <StyledThirdPartyButton active={!disbaled} {...props}>
       {children}
       <Column gap={4}>
         <TYPE.body>{title}</TYPE.body>

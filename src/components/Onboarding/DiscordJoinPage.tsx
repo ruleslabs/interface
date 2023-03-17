@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
 import styled from 'styled-components'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
-import Column, { ColumnCenter } from '@/components/Column'
+import { ColumnCenter } from '@/components/Column'
 import { PageBody, SkipButton } from './SubComponents'
 import DiscordStatus from '@/components/DiscordStatus'
 import { useSetOnboardingPage } from '@/state/onboarding/hooks'
@@ -44,17 +44,17 @@ const PageWrapper = styled(ColumnCenter)`
   `}
 `
 
-const PageContent = styled(Column)`
+const PageContent = styled(ColumnCenter)`
   width: 440px;
   gap: 16px;
-
-  * {
-    width: 100%;
-  }
 
   ${({ theme }) => theme.media.small`
     width: 100%;
   `}
+`
+
+const StyledDiscordStatus = styled(DiscordStatus)`
+  width: 100%;
 `
 
 interface DiscordJoinPageProps {
@@ -71,11 +71,13 @@ export default function DiscordJoinPage({ nextPage }: DiscordJoinPageProps) {
         <TYPE.large textAlign="center">
           <Trans>Connect your Discord account</Trans>
         </TYPE.large>
+
         <DiscordScreenWrapper>
           <img src="/assets/discord-connect.png" />
         </DiscordScreenWrapper>
+
         <PageContent>
-          <DiscordStatus redirectPath="/onboard" connectionText={t`Connect`} onConnect={handleNextPage} />
+          <StyledDiscordStatus redirectPath="/onboard" />
           <SkipButton onClick={handleNextPage}>
             <Trans>Skip</Trans>
           </SkipButton>

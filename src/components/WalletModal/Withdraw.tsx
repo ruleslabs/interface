@@ -27,7 +27,7 @@ export default function WithdrawModal() {
         <ThirdPartyButton
           title="Layerswap"
           subtitle={t`Move your ETH directly to an exchange (e.g. Binance, Coinbase, Kraken...)`}
-          onClick={undefined}
+          disbaled={true}
         >
           <LayerswapIcon />
         </ThirdPartyButton>
