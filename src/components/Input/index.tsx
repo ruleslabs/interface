@@ -23,6 +23,7 @@ const InputWrapper = styled(RowCenter)<{ prefixed: boolean; $valid: boolean }>`
   border-radius: 4px;
   box-sizing: border-box;
   padding: ${({ prefixed }) => (prefixed ? '0 20px 0 12px' : '0 20px')};
+  height: 55px;
 
   :focus-within {
     outline: ${({ theme }) => theme.primary1} solid 2px;
@@ -34,7 +35,6 @@ const StyledInput = styled(InputBase)`
   border: none;
   background: transparent;
   font-size: 16px;
-  height: 55px;
   width: 100%;
   outline: none;
 
@@ -75,6 +75,29 @@ const StyledSearchBar = styled(InputBase)`
   }
 `
 
+const StyledSmallInput = styled(InputBase)`
+  background: ${({ theme }) => theme.black}40;
+  border: 1px solid ${({ theme }) => theme.bg3};
+  border-radius: 3px;
+  height: 32px;
+  outline: none;
+  color: ${({ theme }) => theme.text1};
+  padding: 4px 12px;
+  font-size: 16px;
+
+  &::placeholder {
+    color: ${({ theme }) => theme.text1}80;
+  }
+
+  :focus {
+    border-color: ${({ theme }) => theme.primary1};
+  }
+
+  :focus-visible {
+    box-shadow: inset 0 0 0 1px ${({ theme }) => theme.primary1};
+  }
+`
+
 const StyledSpinner = styled(Spinner)`
   position: absolute;
   right: 16px;
@@ -106,4 +129,8 @@ interface SearchBarProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export function SearchBar({ onUserInput, ...props }: SearchBarProps) {
   return <StyledSearchBar type="text" onUserInput={onUserInput} {...props} />
+}
+
+export function SmallInput({ onUserInput, ...props }: SearchBarProps) {
+  return <StyledSmallInput type="text" onUserInput={onUserInput} {...props} />
 }

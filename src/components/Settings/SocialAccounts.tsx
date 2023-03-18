@@ -1,12 +1,42 @@
 import { useState, useCallback, useEffect } from 'react'
+import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
 import { t } from '@lingui/macro'
 
-import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import Column from '@/components/Column'
-import Input from '@/components/Input'
+import { SmallInput } from '@/components/Input'
 import { useCurrentUser, useQueryCurrentUser, useSetSocialLinksMutation } from '@/state/user/hooks'
+import { RowCenter } from '../Row'
+
+import InstagramIcon from '@/images/instagram.svg'
+import TwitterIcon from '@/images/twitter-color.svg'
+import Subtitle from './Subtitle'
+
+const InputWithIcon = styled(RowCenter)`
+  gap: 8px;
+  max-width: 400px;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    fill: ${({ theme }) => theme.bg3};
+  }
+
+  & input {
+    width: 100%;
+  }
+`
+
+const SaveChangesButton = styled(PrimaryButton)`
+  margin-top: 16px;
+  max-width: 300px;
+  width: 100%;
+
+  ${({ theme }) => theme.media.extraSmall`
+    max-width: unset;
+  `}
+`
 
 export default function SocialAccountsSettings() {
   const currentUser = useCurrentUser()
@@ -79,20 +109,22 @@ export default function SocialAccountsSettings() {
   if (!currentUser) return null
 
   return (
-    <Column gap={16}>
-      <Column gap={12}>
-        <TYPE.body>Instagram</TYPE.body>
-        <Input value={instagramUsername} onUserInput={handleInstagramInput} prefix="@" />
-      </Column>
+    <Column gap={12}>
+      <Subtitle value={t`Social accounts`} />
 
-      <Column gap={12}>
-        <TYPE.body>Twitter</TYPE.body>
-        <Input value={twitterUsername} onUserInput={handleTiwtterInput} prefix="@" />
-      </Column>
+      <InputWithIcon>
+        <InstagramIcon />
+        <SmallInput value={instagramUsername} onUserInput={handleInstagramInput} />
+      </InputWithIcon>
 
-      <PrimaryButton onClick={saveChanges} disabled={!socialLinksModified || setSocialLinksLoading} large>
+      <InputWithIcon>
+        <TwitterIcon />
+        <SmallInput value={twitterUsername} onUserInput={handleTiwtterInput} />
+      </InputWithIcon>
+
+      <SaveChangesButton onClick={saveChanges} disabled={!socialLinksModified || setSocialLinksLoading}>
         {setSocialLinksLoading ? 'Loading ...' : socialLinksModified ? t`Save changes` : t`No changes to save`}
-      </PrimaryButton>
+      </SaveChangesButton>
     </Column>
   )
 }

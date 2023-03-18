@@ -10,17 +10,21 @@ import DiscordStatus from '@/components/Settings/DiscordStatus'
 
 const StyledProfileEditor = styled(Column)`
   width: 100%;
-  gap: 24px;
+  gap: 48px;
 `
 
 function Profile() {
   return (
     <StyledProfileEditor>
-      <Title value={t`Discord`} />
-      <DiscordStatus redirectPath="/settings/profile" />
+      <Column gap={24}>
+        <Title value={t`Discord`} />
+        <DiscordStatus redirectPath="/settings/profile" />
+      </Column>
 
-      <Title value={t`Social accounts`} />
-      <SocialAccountsSettings />
+      <Column gap={24}>
+        <Title value={t`Public profile`} />
+        <SocialAccountsSettings />
+      </Column>
     </StyledProfileEditor>
   )
 }
