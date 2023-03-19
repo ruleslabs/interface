@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useLazyQuery, gql } from '@apollo/client'
 import { t } from '@lingui/macro'
 
-import Modal, { ModalHeader } from '@/components/Modal'
+import ClassicModal, { ModalHeader } from '@/components/Modal/Classic'
 import { useModalOpen, useDeckInsertionModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import Column from '@/components/Column'
@@ -134,7 +134,7 @@ export default function DeckInsertionModal({ starknetWalletAddress, cardIndex }:
   const windowSize = useWindowSize()
 
   return (
-    <Modal onDismiss={onDismiss} isOpen={isOpen}>
+    <ClassicModal onDismiss={onDismiss} isOpen={isOpen}>
       <StyledDeckInsertionModal windowHeight={windowSize.height}>
         <ModalHeader onDismiss={onDismiss} />
 
@@ -166,6 +166,6 @@ export default function DeckInsertionModal({ starknetWalletAddress, cardIndex }:
           </Column>
         </Section>
       </StyledDeckInsertionModal>
-    </Modal>
+    </ClassicModal>
   )
 }

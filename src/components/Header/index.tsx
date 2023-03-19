@@ -7,7 +7,8 @@ import { RowCenter } from '@/components/Row'
 import Link, { ActiveLink } from '@/components/Link'
 import { useOpenModal, useCloseModal, useModalOpen } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
-import NavModal from '@/components/NavModal'
+import NavModalMobile from '@/components/NavModal/Mobile'
+import NavModalDesktop from '@/components/NavModal/Desktop'
 import { useCurrentUser } from '@/state/user/hooks'
 
 import Logo from '@/public/assets/logo.svg'
@@ -15,6 +16,10 @@ import Hamburger from '@/images/hamburger.svg'
 import GearIcon from '@/images/gear.svg'
 import Close from '@/images/close.svg'
 import ExternalLinkIcon from '@/images/external-link.svg'
+
+const GearButtonWrapper = styled.div`
+  position: relative;
+`
 
 const RotatingIconButton = styled(IconButton)`
   & svg {
@@ -45,7 +50,7 @@ const HamburgerWrapper = styled.div<{ alert?: boolean; notifications?: number }>
   }
 `
 
-const MobileNavWrapper = styled.div`
+const NavMobileWrapper = styled.div`
   display: none;
 
   ${({ theme }) => theme.media.medium`
@@ -122,7 +127,8 @@ export default function Header() {
   const currentUser = useCurrentUser()
 
   // modal
-  const openNavModal = useOpenModal(ApplicationModal.NAV)
+  const openNavModalMobile = useOpenModal(ApplicationModal.NAV_MOBILE)
+  const openNavModalDesktop = useOpenModal(ApplicationModal.NAV_DESKTOP)
   const closeModal = useCloseModal()
   const allModalsClosed = useModalOpen(null)
 
@@ -157,24 +163,26 @@ export default function Header() {
       <StyledAccountStatus />
 
       {currentUser && (
-        <Link href="/settings/profile">
-          <RotatingIconButton>
+        <GearButtonWrapper>
+          <RotatingIconButton onClick={openNavModalDesktop}>
             <GearIcon />
           </RotatingIconButton>
-        </Link>
+
+          <NavModalDesktop />
+        </GearButtonWrapper>
       )}
 
-      <MobileNavWrapper>
+      <NavMobileWrapper>
         {allModalsClosed ? (
           <HamburgerWrapper>
-            <Hamburger onClick={openNavModal} />
+            <Hamburger onClick={openNavModalMobile} />
           </HamburgerWrapper>
         ) : (
           <StyledClose onClick={closeModal} />
         )}
 
-        <NavModal />
-      </MobileNavWrapper>
+        <NavModalMobile />
+      </NavMobileWrapper>
     </StyledHeader>
   )
 }

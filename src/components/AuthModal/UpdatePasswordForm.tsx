@@ -5,7 +5,7 @@ import { Trans, t } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
 import { passwordHasher, validatePassword, PasswordError } from '@/utils/password'
-import { ModalHeader } from '@/components/Modal'
+import { ModalHeader } from '@/components/Modal/Classic'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'

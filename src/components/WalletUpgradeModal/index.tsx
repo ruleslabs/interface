@@ -3,7 +3,7 @@ import { t, Trans } from '@lingui/macro'
 import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
-import Modal, { ModalContent } from '@/components/Modal'
+import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
 import { useModalOpen, useUpgradeWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
@@ -82,7 +82,7 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
   }, [isOpen])
 
   return (
-    <Modal onDismiss={toggleUpgradeWalletModal} isOpen={isOpen}>
+    <ClassicModal onDismiss={toggleUpgradeWalletModal} isOpen={isOpen}>
       <ModalContent>
         <StarknetSigner
           modalHeaderChildren={t`Upgrade your wallet`}
@@ -129,6 +129,6 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
           </Column>
         </StarknetSigner>
       </ModalContent>
-    </Modal>
+    </ClassicModal>
   )
 }

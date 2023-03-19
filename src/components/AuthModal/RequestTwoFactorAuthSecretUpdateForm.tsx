@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
 
-import { ModalHeader } from '@/components/Modal'
+import { ModalHeader } from '@/components/Modal/Classic'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { AuthMode } from '@/state/auth/actions'

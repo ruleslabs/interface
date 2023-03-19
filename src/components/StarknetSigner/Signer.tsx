@@ -5,7 +5,7 @@ import { t, Trans } from '@lingui/macro'
 import { ec, number, Account, Call, EstimateFee, Signature, KeyPair } from 'starknet'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
-import { ModalHeader } from '@/components/Modal'
+import { ModalHeader } from '@/components/Modal/Classic'
 import { useWalletModalToggle } from '@/state/application/hooks'
 import { useETHBalances } from '@/state/wallet/hooks'
 import Column, { ColumnCenter } from '@/components/Column'

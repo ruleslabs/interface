@@ -5,7 +5,7 @@ import { uint256HexFromStrHex, getStarknetCardId, ScarcityName } from '@rulesorg
 import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
-import Modal, { ModalContent } from '@/components/Modal'
+import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
 import { useModalOpen, useOfferModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import UsersSearchBar from '@/components/UsersSearchBar'
@@ -206,7 +206,7 @@ export default function GiftModal({
   }, [isOpen])
 
   return (
-    <Modal onDismiss={toggleOfferModal} isOpen={isOpen}>
+    <ClassicModal onDismiss={toggleOfferModal} isOpen={isOpen}>
       <ModalContent>
         <StarknetSigner
           modalHeaderChildren={t`Offer this card`}
@@ -284,6 +284,6 @@ export default function GiftModal({
           </Column>
         </StarknetSigner>
       </ModalContent>
-    </Modal>
+    </ClassicModal>
   )
 }

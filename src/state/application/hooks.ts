@@ -72,8 +72,12 @@ export function usePackPurchaseModalToggle(): () => void {
   return useToggleModal(ApplicationModal.PACK_PURCHASE)
 }
 
-export function useNavModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.NAV)
+export function useNavModalMobileToggle(): () => void {
+  return useToggleModal(ApplicationModal.NAV_MOBILE)
+}
+
+export function useNavModalDesktopToggle(): () => void {
+  return useToggleModal(ApplicationModal.NAV_DESKTOP)
 }
 
 export function useWalletModalToggle(): () => void {

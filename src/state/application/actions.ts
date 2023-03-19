@@ -2,7 +2,8 @@ import { createAction } from '@reduxjs/toolkit'
 
 export enum ApplicationModal {
   SETTINGS,
-  NAV,
+  NAV_MOBILE,
+  NAV_DESKTOP,
   AUTH,
   DECK_INSERTION,
   PACK_PURCHASE,

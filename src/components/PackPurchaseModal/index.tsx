@@ -4,7 +4,7 @@ import { Elements } from '@stripe/react-stripe-js'
 import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
-import Modal, { ModalHeader } from '@/components/Modal'
+import ClassicModal, { ModalHeader } from '@/components/Modal/Classic'
 import { useModalOpen, usePackPurchaseModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useStripePromise, useCreatePaymentIntent } from '@/state/stripe/hooks'
@@ -107,7 +107,7 @@ export default function PackPurchaseModal({
   }, [isOpen])
 
   return (
-    <Modal onDismiss={togglePackPurchaseModal} isOpen={isOpen}>
+    <ClassicModal onDismiss={togglePackPurchaseModal} isOpen={isOpen}>
       <StyledPackPurchaseModal gap={26}>
         <ModalHeader onDismiss={togglePackPurchaseModal} onBack={error ? onRetry : undefined}>
           {!success && !error && !processing && (
@@ -136,6 +136,6 @@ export default function PackPurchaseModal({
           />
         </Elements>
       </StyledPackPurchaseModal>
-    </Modal>
+    </ClassicModal>
   )
 }

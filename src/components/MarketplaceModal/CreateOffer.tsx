@@ -5,7 +5,7 @@ import { uint256HexFromStrHex, getStarknetCardId, ScarcityName, WeiAmount } from
 import { ApolloError, useQuery, gql } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
-import Modal, { ModalContent } from '@/components/Modal'
+import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
 import { useModalOpen, useCreateOfferModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
@@ -243,7 +243,7 @@ export default function CreateOfferModal({ cardsIds, onSuccess }: CreateOfferMod
   const isLoading = cardsQuery.loading || cardModelSearch.loading
 
   return (
-    <Modal onDismiss={toggleCreateOfferModal} isOpen={isOpen}>
+    <ClassicModal onDismiss={toggleCreateOfferModal} isOpen={isOpen}>
       <ModalContent>
         <StarknetSigner
           modalHeaderChildren={displayOverview ? t`Offers overview` : t`Enter an asking price`}
@@ -318,6 +318,6 @@ export default function CreateOfferModal({ cardsIds, onSuccess }: CreateOfferMod
           <PaginationSpinner loading={isLoading} />
         </StarknetSigner>
       </ModalContent>
-    </Modal>
+    </ClassicModal>
   )
 }

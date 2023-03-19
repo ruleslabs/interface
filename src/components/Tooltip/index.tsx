@@ -23,6 +23,13 @@ const CaretWrapper = styled(RowCenter)<{ direction: CssDirection }>`
   left: 0;
   right: 0;
 
+  svg {
+    position: absolute;
+    width: 18px;
+    z-index: 1;
+    fill: ${({ theme }) => theme.bg5};
+  }
+
   ${({ direction }) => {
     switch (direction) {
       case 'top':
@@ -54,15 +61,17 @@ const CaretWrapper = styled(RowCenter)<{ direction: CssDirection }>`
   }}
 `
 
-const StyledCaret = styled(Caret)`
-  position: absolute;
-  width: 18px;
-  z-index: 1;
+interface TooltipCaretProps extends React.HTMLAttributes<HTMLDivElement> {
+  direction: CssDirection
+}
 
-  & * {
-    fill: ${({ theme }) => theme.bg5} !important;
-  }
-`
+export function TooltipCaret({ direction, ...props }: TooltipCaretProps) {
+  return (
+    <CaretWrapper direction={direction} {...props}>
+      <Caret filled direction={direction} />
+    </CaretWrapper>
+  )
+}
 
 interface TooltipProps extends React.HTMLAttributes<HTMLDivElement> {
   direction?: CssDirection
@@ -72,9 +81,7 @@ export default function Tooltip({ children, direction = 'bottom', ...props }: To
   return (
     <StyledTooltip {...props}>
       {children}
-      <CaretWrapper direction={direction}>
-        <StyledCaret filled direction={direction} />
-      </CaretWrapper>
+      <TooltipCaret direction={direction} />
     </StyledTooltip>
   )
 }
@@ -111,7 +118,7 @@ const Info = styled(TYPE.body)`
   box-shadow: 0px 4px 4px #00000040;
 `
 
-const StyledInfoCaret = styled(StyledCaret)`
+const StyledInfoCaret = styled(Caret)`
   position: absolute;
   bottom: 22px;
   width: 18px;

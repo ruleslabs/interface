@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
-import Modal, { ModalHeader } from '@/components/Modal'
+import ClassicModal, { ModalHeader } from '@/components/Modal/Classic'
 
 export const WHITELIST = [
   'chqrles',
@@ -43,12 +43,12 @@ interface ComingSoonModalProps {
 
 export default function ComingSoonModal({ onDismiss, isOpen }: ComingSoonModalProps) {
   return (
-    <Modal onDismiss={onDismiss} isOpen={isOpen}>
+    <ClassicModal onDismiss={onDismiss} isOpen={isOpen}>
       <StyledComingSoonModal>
         <ModalHeader onDismiss={onDismiss} />
 
         <Trans>Coming Soon</Trans>
       </StyledComingSoonModal>
-    </Modal>
+    </ClassicModal>
   )
 }

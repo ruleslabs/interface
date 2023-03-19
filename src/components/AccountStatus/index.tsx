@@ -14,7 +14,7 @@ import WalletModal from '@/components/WalletModal'
 import WalletUpgradeModal from '@/components/WalletUpgradeModal'
 import { TYPE } from '@/styles/theme'
 import { useETHBalances } from '@/state/wallet/hooks'
-import Avatar from '../Avatar'
+import Avatar from '@/components/Avatar'
 
 const AvatarWrapper = styled.div`
   height: 38px;

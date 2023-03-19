@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { Trans, t } from '@lingui/macro'
 
-import Modal, { ModalHeader, ModalContent } from '@/components/Modal'
+import ClassicModal, { ModalHeader, ModalContent } from '@/components/Modal/Classic'
 import { useModalOpen, useWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
@@ -126,7 +126,7 @@ export default function WalletModal() {
   const toggleAdvancedMode = useCallback(() => setAdvancedMode(!advancedMode), [advancedMode])
 
   return (
-    <Modal onDismiss={toggleWalletModal} isOpen={isOpen}>
+    <ClassicModal onDismiss={toggleWalletModal} isOpen={isOpen}>
       <ModalContent>
         <ModalHeader onDismiss={toggleWalletModal} onBack={advancedMode ? toggleAdvancedMode : undefined}>
           {advancedMode && t`Advanced wallet settings`}
@@ -181,6 +181,6 @@ export default function WalletModal() {
           </>
         )}
       </ModalContent>
-    </Modal>
+    </ClassicModal>
   )
 }

@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
 
-import Modal from '@/components/Modal'
+import ClassicModal from '@/components/Modal/Classic'
 import Column from '@/components/Column'
 import { useModalOpen, useAuthModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
@@ -79,8 +79,8 @@ export default function AuthModal() {
   }
 
   return (
-    <Modal onDismiss={toggleAuthModal} isOpen={isOpen}>
+    <ClassicModal onDismiss={toggleAuthModal} isOpen={isOpen}>
       <StyledAuthModal gap={26}>{renderModal(authMode)}</StyledAuthModal>
-    </Modal>
+    </ClassicModal>
   )
 }

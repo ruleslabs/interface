@@ -4,7 +4,7 @@ import { ApolloError } from '@apollo/client'
 import { Trans } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
-import { ModalHeader } from '@/components/Modal'
+import { ModalHeader } from '@/components/Modal/Classic'
 import Column, { ColumnCenter } from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { useRemoveTwoFactorAuthSecretMutation } from '@/state/auth/hooks'

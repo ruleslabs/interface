@@ -4,7 +4,7 @@ import GoogleLogin from 'react-google-login'
 import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
 
-import { ModalHeader } from '@/components/Modal'
+import { ModalHeader } from '@/components/Modal/Classic'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'

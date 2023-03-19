@@ -5,7 +5,7 @@ import { uint256HexFromStrHex, getStarknetCardId, ScarcityName } from '@rulesorg
 import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
-import Modal, { ModalContent } from '@/components/Modal'
+import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
 import { useModalOpen, useAcceptOfferModalToggle, useWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
@@ -130,7 +130,7 @@ export default function AcceptOfferModal({
   }, [isOpen])
 
   return (
-    <Modal onDismiss={toggleAcceptOfferModal} isOpen={isOpen}>
+    <ClassicModal onDismiss={toggleAcceptOfferModal} isOpen={isOpen}>
       <ModalContent>
         <StarknetSigner
           modalHeaderChildren={t`Confirm purchase`}
@@ -182,6 +182,6 @@ export default function AcceptOfferModal({
           </Column>
         </StarknetSigner>
       </ModalContent>
-    </Modal>
+    </ClassicModal>
   )
 }

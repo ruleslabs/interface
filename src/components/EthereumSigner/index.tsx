@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ModalHeader } from '@/components/Modal'
+import { ModalHeader } from '@/components/Modal/Classic'
 import Confirmation from './Confirmation'
 
 interface EthereumSignerProps {

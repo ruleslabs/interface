@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { ApolloError } from '@apollo/client'
 
-import Modal, { ModalHeader } from '@/components/Modal'
+import ClassicModal, { ModalHeader } from '@/components/Modal/Classic'
 import { useAvatarEditModalToggle, useModalOpen } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import useDefaultAvatarUrls from '@/hooks/useDefaultAvatarUrls'
@@ -113,7 +113,7 @@ export default function AvatarEditModal({ currentAvatarId, customAvatarUrl }: Av
   )
 
   return (
-    <Modal onDismiss={toggleAvatarEditModal} isOpen={isOpen}>
+    <ClassicModal onDismiss={toggleAvatarEditModal} isOpen={isOpen}>
       <StyledAvatarEditModal>
         <ModalHeader onDismiss={toggleAvatarEditModal}>{t`Choose an avatar`}</ModalHeader>
         <AvatarsWrapper>
@@ -135,6 +135,6 @@ export default function AvatarEditModal({ currentAvatarId, customAvatarUrl }: Av
           )}
         </AvatarsWrapper>
       </StyledAvatarEditModal>
-    </Modal>
+    </ClassicModal>
   )
 }

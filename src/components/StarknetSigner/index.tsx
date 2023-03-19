@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Call, Signature } from 'starknet'
 import { t } from '@lingui/macro'
 
-import { ModalHeader } from '@/components/Modal'
+import { ModalHeader } from '@/components/Modal/Classic'
 import { useWaitingTransactionQuery } from '@/state/wallet/hooks'
 import Confirmation from './Confirmation'
 import Signer from './Signer'

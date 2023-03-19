@@ -4,10 +4,10 @@ import { Trans } from '@lingui/macro'
 
 import { ActiveLink } from '@/components/Link'
 import { useCurrentUser } from '@/state/user/hooks'
-import Modal from '@/components/Modal'
+import SidebarModal from '@/components/Modal/Sidebar'
 import { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
-import { useNavModalToggle, useModalOpen, useAuthModalToggle } from '@/state/application/hooks'
+import { useNavModalMobileToggle, useModalOpen, useAuthModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
 import { ApplicationModal } from '@/state/application/actions'
@@ -24,7 +24,7 @@ const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
   fill: ${({ theme }) => theme.text2};
 `
 
-const StyledNavModal = styled.div<{ windowHeight?: number }>`
+const StyledNavModalMobile = styled.div<{ windowHeight?: number }>`
   margin-top: ${({ theme }) => theme.size.headerHeightMedium}px;
   height: ${({ theme, windowHeight = 0 }) => windowHeight - theme.size.headerHeightMedium}px;
   width: 280px;
@@ -63,11 +63,11 @@ const Notifiable = styled.div<{ notifications?: number }>`
     `}
 `
 
-export default function NavModal() {
+export default function NavModalMobile() {
   const currentUser = useCurrentUser()
 
-  const toggleNavModal = useNavModalToggle()
-  const isOpen = useModalOpen(ApplicationModal.NAV)
+  const toggleNavModalMobile = useNavModalMobileToggle()
+  const isOpen = useModalOpen(ApplicationModal.NAV_MOBILE)
 
   // Auth modal
   const toggleAuthModal = useAuthModalToggle()
@@ -88,11 +88,11 @@ export default function NavModal() {
   const windowSize = useWindowSize()
 
   return (
-    <Modal onDismiss={toggleNavModal} isOpen={isOpen} sidebar>
-      <StyledNavModal windowHeight={windowSize.height}>
+    <SidebarModal onDismiss={toggleNavModalMobile} isOpen={isOpen}>
+      <StyledNavModalMobile windowHeight={windowSize.height}>
         <NavWrapper gap={16}>
           {currentUser && (
-            <ActiveLink href={`/user/${currentUser.slug}`} onClick={toggleNavModal}>
+            <ActiveLink href={`/user/${currentUser.slug}`} onClick={toggleNavModalMobile}>
               <StyledNavButton>{currentUser.username}</StyledNavButton>
             </ActiveLink>
           )}
@@ -101,7 +101,7 @@ export default function NavModal() {
             <ActiveLink
               key={menuLink.link}
               href={menuLink.link}
-              onClick={toggleNavModal}
+              onClick={toggleNavModalMobile}
               target={menuLink.external ? '_blank' : undefined}
             >
               <StyledNavButton>
@@ -123,7 +123,7 @@ export default function NavModal() {
 
           <StyledLanguageSelector />
         </NavWrapper>
-      </StyledNavModal>
-    </Modal>
+      </StyledNavModalMobile>
+    </SidebarModal>
   )
 }
