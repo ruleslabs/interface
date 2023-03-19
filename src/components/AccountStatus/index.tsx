@@ -5,28 +5,33 @@ import { WeiAmount } from '@rulesorg/sdk-core'
 
 import { ActiveLink } from '@/components/Link'
 import { useCurrentUser, useSetCurrentUser } from '@/state/user/hooks'
-import { useSettingsModalToggle, useAuthModalToggle, useWalletModalToggle } from '@/state/application/hooks'
+import { useAuthModalToggle, useWalletModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
-import SettingsModal from '@/components/SettingsModal'
 import AuthModal from '@/components/AuthModal'
 import { PrimaryButton, SecondaryButton } from '@/components/Button'
 import WalletModal from '@/components/WalletModal'
 import WalletUpgradeModal from '@/components/WalletUpgradeModal'
-import useNeededActions from '@/hooks/useNeededActions'
 import { TYPE } from '@/styles/theme'
 import { useETHBalances } from '@/state/wallet/hooks'
+import Avatar from '../Avatar'
 
-const ProfileButton = styled(SecondaryButton)`
-  height: 42px;
-  background: transparent;
-  padding: 0 16px;
-  border: 1px solid ${({ theme }) => theme.bg3};
-  font-weight: 500;
+const AvatarWrapper = styled.div`
+  height: 38px;
+  width: 38px;
+  padding: 2px;
+  border: 1px solid ${({ theme }) => theme.bg3}80;
+  border-radius: 50%;
+  transition: border-color 100ms;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
 
   &.active,
   &:hover {
-    background: ${({ theme }) => theme.bg3}80;
+    border-color: ${({ theme }) => theme.text1};
   }
 `
 
@@ -75,11 +80,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
   // current user
   const currentUser = useCurrentUser()
 
-  // needed actions
-  const neededActions = useNeededActions()
-
   // modal
-  const toggleSettingsModal = useSettingsModalToggle()
   const toggleWalletModal = useWalletModalToggle()
 
   // auth modal
@@ -113,15 +114,17 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
       <StyledAccountStatus {...props}>
         {!!currentUser ? (
           <>
-            <ActiveLink href={`/user/${currentUser.slug}`}>
-              <ProfileButton>{currentUser.username}</ProfileButton>
-            </ActiveLink>
-
             {currentUser?.starknetWallet.address && (
               <WalletButton onClick={toggleWalletModal}>
                 <TYPE.body>{balance ? `${balance.toFixed(6)} Ξ` : 'Loading...'}</TYPE.body>
               </WalletButton>
             )}
+
+            <ActiveLink href={`/user/${currentUser.slug}`}>
+              <AvatarWrapper>
+                <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackSrc} />
+              </AvatarWrapper>
+            </ActiveLink>
           </>
         ) : (
           <>
@@ -135,7 +138,6 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
         )}
       </StyledAccountStatus>
 
-      <SettingsModal currentUser={currentUser} />
       <WalletModal />
       <WalletUpgradeModal onSuccess={onSuccessfulWalletUpgrade} />
       <AuthModal />

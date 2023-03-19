@@ -5,7 +5,7 @@ import AccountStatus from '@/components/AccountStatus'
 import { NavButton, IconButton } from '@/components/Button'
 import { RowCenter } from '@/components/Row'
 import Link, { ActiveLink } from '@/components/Link'
-import { useOpenModal, useCloseModal, useModalOpen, useSettingsModalToggle } from '@/state/application/hooks'
+import { useOpenModal, useCloseModal, useModalOpen } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import NavModal from '@/components/NavModal'
 import { useCurrentUser } from '@/state/user/hooks'
@@ -13,7 +13,7 @@ import useNeededActions from '@/hooks/useNeededActions'
 
 import Logo from '@/public/assets/logo.svg'
 import Hamburger from '@/images/hamburger.svg'
-import Settings from '@/images/settings.svg'
+import GearIcon from '@/images/gear.svg'
 import Close from '@/images/close.svg'
 import ExternalLinkIcon from '@/images/external-link.svg'
 
@@ -39,6 +39,11 @@ const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
 
 const HamburgerWrapper = styled.div<{ alert?: boolean; notifications?: number }>`
   cursor: pointer;
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
 
   ${({ theme, alert = false }) => !!alert && theme.before.alert``}
   ${({ theme, notifications = 0 }) => !!notifications && theme.before.notifications``}
@@ -89,7 +94,7 @@ const StyledLogo = styled(Logo)`
 `
 
 const StyledClose = styled(Close)`
-  width: 20px;
+  width: 24px;
   height: 20px;
   cursor: pointer;
 `
@@ -113,6 +118,7 @@ export const menuLinks = [
   { name: 'Marketplace', link: '/marketplace' },
   { name: 'Community', link: '/community' },
   { name: 'Discord', link: 'https://discord.gg/DrfezKYUhH', external: true },
+  { name: 'Settings', link: '/settings/profile', desktop: false },
 ] // TODO: move it somewhere else as a single source of truth
 
 export default function Header() {
@@ -120,7 +126,6 @@ export default function Header() {
   const currentUser = useCurrentUser()
 
   // modal
-  const toggleSettingsModal = useSettingsModalToggle()
   const openNavModal = useOpenModal(ApplicationModal.NAV)
   const closeModal = useCloseModal()
   const allModalsClosed = useModalOpen(null)
@@ -135,17 +140,23 @@ export default function Header() {
       </Link>
 
       <NavBar>
-        {menuLinks.map((menuLink, index: number) => (
-          <ActiveLink key={`nav-link-${index}`} href={menuLink.link} target={menuLink.external ? '_blank' : undefined}>
-            <NavButton>
-              <RowCenter gap={4}>
-                <Trans id={menuLink.name} render={({ translation }) => <>{translation}</>} />
+        {menuLinks
+          .filter(({ desktop = true }) => desktop)
+          .map((menuLink, index: number) => (
+            <ActiveLink
+              key={`nav-link-${index}`}
+              href={menuLink.link}
+              target={menuLink.external ? '_blank' : undefined}
+            >
+              <NavButton>
+                <RowCenter gap={4}>
+                  <Trans id={menuLink.name} render={({ translation }) => <>{translation}</>} />
 
-                {menuLink.external && <StyledExternalLinkIcon />}
-              </RowCenter>
-            </NavButton>
-          </ActiveLink>
-        ))}
+                  {menuLink.external && <StyledExternalLinkIcon />}
+                </RowCenter>
+              </NavButton>
+            </ActiveLink>
+          ))}
       </NavBar>
 
       <div style={{ margin: 'auto' }} />
@@ -153,13 +164,11 @@ export default function Header() {
       <StyledAccountStatus />
 
       {currentUser && (
-        <RotatingIconButton
-          onClick={toggleSettingsModal}
-          alert={!!currentUser?.starknetWallet.lockingReason}
-          notifications={neededActions.total}
-        >
-          <Settings />
-        </RotatingIconButton>
+        <Link href="/settings/profile">
+          <RotatingIconButton alert={!!currentUser?.starknetWallet.lockingReason} notifications={neededActions.total}>
+            <GearIcon />
+          </RotatingIconButton>
+        </Link>
       )}
 
       <MobileNavWrapper>

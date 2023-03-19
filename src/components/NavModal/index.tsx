@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
@@ -11,12 +11,9 @@ import { useNavModalToggle, useModalOpen, useAuthModalToggle } from '@/state/app
 import { useSetAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
 import { ApplicationModal } from '@/state/application/actions'
-import { BackButton } from '@/components/Button'
-import Settings from '@/components/SettingsModal/Settings'
 import LanguageSelector from '@/components/LanguageSelector'
 import { SecondaryButton, PrimaryButton, NavButton } from '@/components/Button'
 import { menuLinks } from '@/components/Header'
-import useNeededActions from '@/hooks/useNeededActions'
 import useWindowSize from '@/hooks/useWindowSize'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
@@ -66,19 +63,8 @@ const Notifiable = styled.div<{ notifications?: number }>`
     `}
 `
 
-const StyledSettings = styled(Column)`
-  gap: 24px;
-  padding-left: 12px;
-`
-
 export default function NavModal() {
   const currentUser = useCurrentUser()
-
-  // needed actions
-  const neededActions = useNeededActions()
-
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-  const toggleSettings = useCallback(() => setIsSettingsOpen(!isSettingsOpen), [isSettingsOpen])
 
   const toggleNavModal = useNavModalToggle()
   const isOpen = useModalOpen(ApplicationModal.NAV)
@@ -105,54 +91,35 @@ export default function NavModal() {
     <Modal onDismiss={toggleNavModal} isOpen={isOpen} sidebar>
       <StyledNavModal windowHeight={windowSize.height}>
         <NavWrapper gap={16}>
-          {isSettingsOpen && currentUser ? (
-            <StyledSettings>
-              <BackButton onClick={toggleSettings} style={{ padding: '12px 0' }} />
-              <Settings dispatch={toggleNavModal} />
-            </StyledSettings>
-          ) : (
-            <>
-              {currentUser && (
-                <ActiveLink href={`/user/${currentUser.slug}`} onClick={toggleNavModal}>
-                  <StyledNavButton>{currentUser.username}</StyledNavButton>
-                </ActiveLink>
-              )}
-
-              {menuLinks.map((menuLink) => (
-                <ActiveLink
-                  key={menuLink.link}
-                  href={menuLink.link}
-                  onClick={toggleNavModal}
-                  target={menuLink.external ? '_blank' : undefined}
-                >
-                  <StyledNavButton>
-                    <RowCenter gap={4}>
-                      <Trans id={menuLink.name} render={({ translation }) => <>{translation}</>} />
-
-                      {menuLink.external && <StyledExternalLinkIcon />}
-                    </RowCenter>
-                  </StyledNavButton>
-                </ActiveLink>
-              ))}
-
-              {currentUser ? (
-                <StyledNavButton onClick={toggleSettings} alert={!!currentUser?.starknetWallet.lockingReason}>
-                  <Trans>Settings</Trans>
-                  <Notifiable notifications={neededActions.total} />
-                </StyledNavButton>
-              ) : (
-                <>
-                  <div style={{ margin: 'auto' }} />
-                  <Column gap={18}>
-                    <PrimaryButton onClick={toggleSignInModal}>Sign in</PrimaryButton>
-                    <SecondaryButton onClick={toggleSignUpModal}>Sign up</SecondaryButton>
-                  </Column>
-                </>
-              )}
-            </>
+          {currentUser && (
+            <ActiveLink href={`/user/${currentUser.slug}`} onClick={toggleNavModal}>
+              <StyledNavButton>{currentUser.username}</StyledNavButton>
+            </ActiveLink>
           )}
 
-          {currentUser && <div style={{ margin: 'auto' }} />}
+          {menuLinks.map((menuLink) => (
+            <ActiveLink
+              key={menuLink.link}
+              href={menuLink.link}
+              onClick={toggleNavModal}
+              target={menuLink.external ? '_blank' : undefined}
+            >
+              <StyledNavButton>
+                <RowCenter gap={4}>
+                  <Trans id={menuLink.name} render={({ translation }) => <>{translation}</>} />
+
+                  {menuLink.external && <StyledExternalLinkIcon />}
+                </RowCenter>
+              </StyledNavButton>
+            </ActiveLink>
+          ))}
+
+          <div style={{ margin: 'auto' }} />
+
+          <Column gap={18}>
+            <PrimaryButton onClick={toggleSignInModal}>Sign in</PrimaryButton>
+            <SecondaryButton onClick={toggleSignUpModal}>Sign up</SecondaryButton>
+          </Column>
 
           <StyledLanguageSelector />
         </NavWrapper>

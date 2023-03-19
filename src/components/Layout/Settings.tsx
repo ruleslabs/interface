@@ -81,14 +81,14 @@ const categories = [
     icon: UserIcon,
   },
   {
-    name: 'Ethereum',
-    slug: 'ethereum',
-    icon: EthereumIcon,
-  },
-  {
     name: 'Security',
     slug: 'security',
     icon: ShieldIcon,
+  },
+  {
+    name: 'Ethereum',
+    slug: 'ethereum',
+    icon: EthereumIcon,
   },
 ] // TODO: move it somewhere else as a single source of truth
 
