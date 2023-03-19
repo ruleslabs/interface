@@ -1,32 +1,40 @@
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
 
 import DefaultLayout from '@/components/Layout'
 import SettingsLayout from '@/components/Layout/Settings'
-import Section from '@/components/Section'
 import Column from '@/components/Column'
-import TwoFactorAuthManager from '@/components/TwoFactorAuthManager'
-import SessionsManager from '@/components/SessionsManager'
+import Title from '@/components/Settings/Title'
+import TwoFactorStatus from '@/components/Settings/TwoFactorStatus'
+import { useCurrentUser } from '@/state/user/hooks'
+import Label from '@/components/Label'
 
-const StyledSection = styled(Section)`
-  margin-top: 64px;
-
-  ${({ theme }) => theme.media.small`
-    margin-top: 40px;
-  `}
+const StyledSecuritySettings = styled(Column)`
+  width: 100%;
+  gap: 48px;
 `
 
-function Security() {
+function SecuritySettings() {
+  // current user
+  const currentUser = useCurrentUser()
+
   return (
-    <StyledSection>
-      <Column gap={32}>
-        <TwoFactorAuthManager />
-        <SessionsManager />
+    <StyledSecuritySettings>
+      <Column gap={24}>
+        <Title value={t`Two-Factor Authentication (2FA)`}>
+          {currentUser?.hasTwoFactorAuthActivated ? (
+            <Label value={t`Enabled`} color="primary1" uppercased />
+          ) : (
+            <Label value={t`Disabled`} color="error" uppercased />
+          )}
+        </Title>
+        <TwoFactorStatus />
       </Column>
-    </StyledSection>
+    </StyledSecuritySettings>
   )
 }
 
-Security.getLayout = (page: JSX.Element) => {
+SecuritySettings.getLayout = (page: JSX.Element) => {
   return (
     <DefaultLayout>
       <SettingsLayout>{page}</SettingsLayout>
@@ -34,4 +42,4 @@ Security.getLayout = (page: JSX.Element) => {
   )
 }
 
-export default Security
+export default SecuritySettings

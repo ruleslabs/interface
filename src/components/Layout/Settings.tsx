@@ -21,6 +21,11 @@ const StyledSection = styled(Section)`
   ${({ theme }) => theme.media.medium`
     gap: 32px;
   `}
+
+  ${({ theme }) => theme.media.small`
+  margin-top: 32px;
+    flex-direction: column;
+  `}
 `
 
 const Article = styled.article`

@@ -23,7 +23,6 @@ const InputWrapper = styled(RowCenter)<{ prefixed: boolean; $valid: boolean }>`
   border-radius: 4px;
   box-sizing: border-box;
   padding: ${({ prefixed }) => (prefixed ? '0 20px 0 12px' : '0 20px')};
-  height: 55px;
 
   :focus-within {
     outline: ${({ theme }) => theme.primary1} solid 2px;
@@ -37,6 +36,7 @@ const StyledInput = styled(InputBase)`
   font-size: 16px;
   width: 100%;
   outline: none;
+  height: 55px;
 
   :disabled {
     color: ${({ theme }) => theme.text2};
@@ -113,9 +113,16 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   prefix?: string
 }
 
-export default function Input({ $valid = true, loading = false, prefix, onUserInput, ...props }: InputProps) {
+export default function Input({
+  $valid = true,
+  loading = false,
+  prefix,
+  onUserInput,
+  className,
+  ...props
+}: InputProps) {
   return (
-    <InputWrapper $valid={$valid} prefixed={!!prefix}>
+    <InputWrapper $valid={$valid} prefixed={!!prefix} className={className}>
       {prefix && <TYPE.subtitle>{prefix}&nbsp;</TYPE.subtitle>}
       {loading && <StyledSpinner fill="text2" />}
       <StyledInput onUserInput={onUserInput} disabled={loading} {...props} />

@@ -12,7 +12,7 @@ import { useActiveLocale } from '@/hooks/useActiveLocale'
 import { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
 import { NETWORKS, networkId } from '@/constants/networks'
-import Badge from './Badge'
+import Status from './Status'
 import useReduceHash from '@/hooks/useReduceHash'
 import Caret from '@/components/Caret'
 import Card from '@/components/Card'
@@ -264,11 +264,11 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
         </div>
 
         <div>
-          <Badge type="status" value={code ?? status} />
+          <Status type="status" value={code ?? status} />
         </div>
 
         <div>
-          <Badge type="origin" value={address === fromAddress} />
+          <Status type="origin" value={address === fromAddress} />
         </div>
 
         <div>

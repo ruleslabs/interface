@@ -1,32 +1,27 @@
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
 
 import DefaultLayout from '@/components/Layout'
 import SettingsLayout from '@/components/Layout/Settings'
-import Section from '@/components/Section'
 import Column from '@/components/Column'
-import TwoFactorAuthManager from '@/components/TwoFactorAuthManager'
-import SessionsManager from '@/components/SessionsManager'
+import Title from '@/components/Settings/Title'
 
-const StyledSection = styled(Section)`
-  margin-top: 64px;
-
-  ${({ theme }) => theme.media.small`
-    margin-top: 40px;
-  `}
+const StyledEthereumSettings = styled(Column)`
+  width: 100%;
+  gap: 48px;
 `
 
-function Security() {
+function EthereumSettings() {
   return (
-    <StyledSection>
-      <Column gap={32}>
-        <TwoFactorAuthManager />
-        <SessionsManager />
+    <StyledEthereumSettings>
+      <Column gap={24}>
+        <Title value={t`Comming Soon`} />
       </Column>
-    </StyledSection>
+    </StyledEthereumSettings>
   )
 }
 
-Security.getLayout = (page: JSX.Element) => {
+EthereumSettings.getLayout = (page: JSX.Element) => {
   return (
     <DefaultLayout>
       <SettingsLayout>{page}</SettingsLayout>
@@ -34,4 +29,4 @@ Security.getLayout = (page: JSX.Element) => {
   )
 }
 
-export default Security
+export default EthereumSettings

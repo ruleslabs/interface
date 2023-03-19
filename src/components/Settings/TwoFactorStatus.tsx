@@ -1,11 +1,10 @@
 import { useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Trans } from '@lingui/macro'
+import { Trans, t } from '@lingui/macro'
 import { QRCodeSVG } from 'qrcode.react'
 import { ApolloError } from '@apollo/client'
 
 import useTheme from '@/hooks/useTheme'
-import Card from '@/components/Card'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import Input from '@/components/Input'
@@ -13,26 +12,24 @@ import useNewTwoFactorAuthSecret from '@/hooks/useNewTwoFactorAuthSecret'
 import { TWO_FACTOR_AUTH_CODE_LENGTH } from '@/constants/misc'
 import { useSetTwoFactorAuthSecretMutation } from '@/state/auth/hooks'
 import { useCurrentUser, useQueryCurrentUser } from '@/state/user/hooks'
+import { RowCenter } from '../Row'
 
-const StyledTwoFactorAuthManager = styled(Card)`
-  margin: 0;
-  padding: 64px;
-  width: 100%;
+const TwoFactorSetter = styled(RowCenter)`
+  gap: 32px;
 
-  ${({ theme }) => theme.media.medium`
-    height: 100%;
-    padding: 28px;
+  ${({ theme }) => theme.media.small`
+    flex-direction: column;
   `}
 `
 
-const TwoFactorAuthSetter = styled(Column)`
-  max-width: 350px;
-  margin: 16px auto 0;
+const CodeInput = styled(Input)`
+  max-width: 100px;
+  height: 42px;
 `
 
 const QRCodeWrapper = styled.div`
-  background: ${({ theme }) => theme.bg5};
-  padding: 24px 0;
+  background: ${({ theme }) => theme.black}20;
+  padding: 16px;
   border: 1px solid ${({ theme }) => theme.bg3};
   border-radius: 4px;
 
@@ -42,14 +39,7 @@ const QRCodeWrapper = styled.div`
   }
 `
 
-const Enabled = styled(TYPE.body)`
-  background: ${({ theme }) => theme.primary1};
-  padding: 0 8px;
-  border-radius: 2px;
-  font-weight: 400;
-`
-
-export default function TwoFactorAuthManager() {
+export default function TwoFactorStatus() {
   // currentUser
   const currentUser = useCurrentUser()
   const queryCurrentUser = useQueryCurrentUser()
@@ -112,55 +102,44 @@ export default function TwoFactorAuthManager() {
   )
 
   return (
-    <StyledTwoFactorAuthManager>
-      <Column gap={32}>
-        <Column gap={16}>
-          <TYPE.large>
-            <Trans>Two-Factor Authentication (2FA)</Trans>
-          </TYPE.large>
-          <TYPE.body>
-            <Trans>
-              Two-Factor Authentication adds an additional layer of security to your account by requiring a code when
-              you sign in.
-            </Trans>
-          </TYPE.body>
-          {currentUser?.hasTwoFactorAuthActivated ? (
-            <Enabled>
-              <Trans>2FA Enabled</Trans>
-            </Enabled>
-          ) : (
-            <TwoFactorAuthSetter gap={16}>
-              <TYPE.subtitle>
-                <Trans>
-                  Scan this QR Code with your authenticator app and enter the verification code below to setup the
-                  Two-Factor Authentication on your Rules account.
-                </Trans>
-              </TYPE.subtitle>
+    <Column gap={32}>
+      <TYPE.body>
+        <Trans>
+          Two-Factor Authentication adds an additional layer of security to your account by requiring a code when you
+          sign in.
+        </Trans>
+      </TYPE.body>
 
-              <QRCodeWrapper>
-                <QRCodeSVG value={twoFactorAuthSecret?.url ?? ''} bgColor={`${theme.bg5}`} fgColor={theme.text1} />
-              </QRCodeWrapper>
+      {!currentUser?.hasTwoFactorAuthActivated && (
+        <TwoFactorSetter>
+          <QRCodeWrapper>
+            <QRCodeSVG value={twoFactorAuthSecret?.url ?? ''} bgColor={`${theme.bg1}`} fgColor={theme.text1} />
+          </QRCodeWrapper>
 
-              <Input
-                id="twoFactorAuthCode"
-                value={twoFactorAuthCode}
-                placeholder="Code"
-                type="text"
-                onUserInput={onTwoFactorAuthInput}
-                loading={(twoFactorAuthCode.length > 0 && loading) || !twoFactorAuthSecret}
-                $valid={error.id !== 'twoFactorAuthCode' || loading}
-              />
+          <Column gap={16}>
+            <TYPE.subtitle>
+              <Trans>
+                Scan this QR Code with your authenticator app and enter the verification code below to setup the
+                Two-Factor Authentication on your Rules account.
+              </Trans>
+            </TYPE.subtitle>
 
-              {error.message && (
-                <Trans
-                  id={error.message}
-                  render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
-                />
-              )}
-            </TwoFactorAuthSetter>
-          )}
-        </Column>
-      </Column>
-    </StyledTwoFactorAuthManager>
+            <CodeInput
+              id="twoFactorAuthCode"
+              value={twoFactorAuthCode}
+              placeholder={t`Code`}
+              type="text"
+              onUserInput={onTwoFactorAuthInput}
+              loading={(twoFactorAuthCode.length > 0 && loading) || !twoFactorAuthSecret}
+              $valid={error.id !== 'twoFactorAuthCode' || loading}
+            />
+          </Column>
+        </TwoFactorSetter>
+      )}
+
+      {error.message && (
+        <Trans id={error.message} render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>} />
+      )}
+    </Column>
   )
 }

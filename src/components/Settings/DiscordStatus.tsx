@@ -26,6 +26,10 @@ import Column from '../Column'
 const DiscordStatusWrapper = styled(Column)`
   gap: 16px;
 
+  & label {
+    width: fit-content;
+  }
+
   ${({ theme }) => theme.media.small`
     max-width: 300px;
     margin: 0 auto;

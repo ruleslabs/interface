@@ -114,12 +114,12 @@ export default function SocialAccountsSettings() {
 
       <InputWithIcon>
         <InstagramIcon />
-        <SmallInput value={instagramUsername} onUserInput={handleInstagramInput} />
+        <SmallInput value={instagramUsername} onUserInput={handleInstagramInput} placeholder={t`Instagram username`} />
       </InputWithIcon>
 
       <InputWithIcon>
         <TwitterIcon />
-        <SmallInput value={twitterUsername} onUserInput={handleTiwtterInput} />
+        <SmallInput value={twitterUsername} onUserInput={handleTiwtterInput} placeholder={t`Twitter username`} />
       </InputWithIcon>
 
       <SaveChangesButton onClick={saveChanges} disabled={!socialLinksModified || setSocialLinksLoading}>

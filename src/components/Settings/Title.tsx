@@ -1,6 +1,8 @@
+import React from 'react'
 import styled from 'styled-components'
 
 import { TYPE } from '@/styles/theme'
+import { RowBetween } from '../Row'
 
 const StyledHr = styled.div`
   margin-top: 12px;
@@ -9,14 +11,18 @@ const StyledHr = styled.div`
   background: ${({ theme }) => theme.bg3}80;
 `
 
-interface TitleProps {
+interface TitleProps extends React.HTMLAttributes<HTMLDivElement> {
   value: string
 }
 
-export default function Title({ value }: TitleProps) {
+export default function Title({ value, children }: TitleProps) {
   return (
     <div>
-      <TYPE.large>{value}</TYPE.large>
+      <RowBetween alignItems="center" gap={16}>
+        <TYPE.large>{value}</TYPE.large>
+        {children}
+      </RowBetween>
+
       <StyledHr />
     </div>
   )

@@ -8,14 +8,14 @@ import SocialAccountsSettings from '@/components/Settings/SocialAccounts'
 import Title from '@/components/Settings/Title'
 import DiscordStatus from '@/components/Settings/DiscordStatus'
 
-const StyledProfileEditor = styled(Column)`
+const StyledProfileSettings = styled(Column)`
   width: 100%;
   gap: 48px;
 `
 
-function Profile() {
+function ProfileSettings() {
   return (
-    <StyledProfileEditor>
+    <StyledProfileSettings>
       <Column gap={24}>
         <Title value={t`Discord`} />
         <DiscordStatus redirectPath="/settings/profile" />
@@ -25,11 +25,11 @@ function Profile() {
         <Title value={t`Public profile`} />
         <SocialAccountsSettings />
       </Column>
-    </StyledProfileEditor>
+    </StyledProfileSettings>
   )
 }
 
-Profile.getLayout = (page: JSX.Element) => {
+ProfileSettings.getLayout = (page: JSX.Element) => {
   return (
     <DefaultLayout>
       <SettingsLayout>{page}</SettingsLayout>
@@ -37,4 +37,4 @@ Profile.getLayout = (page: JSX.Element) => {
   )
 }
 
-export default Profile
+export default ProfileSettings
