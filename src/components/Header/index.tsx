@@ -9,7 +9,6 @@ import { useOpenModal, useCloseModal, useModalOpen } from '@/state/application/h
 import { ApplicationModal } from '@/state/application/actions'
 import NavModal from '@/components/NavModal'
 import { useCurrentUser } from '@/state/user/hooks'
-import useNeededActions from '@/hooks/useNeededActions'
 
 import Logo from '@/public/assets/logo.svg'
 import Hamburger from '@/images/hamburger.svg'
@@ -44,9 +43,6 @@ const HamburgerWrapper = styled.div<{ alert?: boolean; notifications?: number }>
     width: 24px;
     height: 24px;
   }
-
-  ${({ theme, alert = false }) => !!alert && theme.before.alert``}
-  ${({ theme, notifications = 0 }) => !!notifications && theme.before.notifications``}
 `
 
 const MobileNavWrapper = styled.div`
@@ -130,9 +126,6 @@ export default function Header() {
   const closeModal = useCloseModal()
   const allModalsClosed = useModalOpen(null)
 
-  // needed actions
-  const neededActions = useNeededActions()
-
   return (
     <StyledHeader>
       <Link href="/">
@@ -165,7 +158,7 @@ export default function Header() {
 
       {currentUser && (
         <Link href="/settings/profile">
-          <RotatingIconButton alert={!!currentUser?.starknetWallet.lockingReason} notifications={neededActions.total}>
+          <RotatingIconButton>
             <GearIcon />
           </RotatingIconButton>
         </Link>
@@ -173,7 +166,7 @@ export default function Header() {
 
       <MobileNavWrapper>
         {allModalsClosed ? (
-          <HamburgerWrapper alert={!!currentUser?.starknetWallet.lockingReason} notifications={neededActions.total}>
+          <HamburgerWrapper>
             <Hamburger onClick={openNavModal} />
           </HamburgerWrapper>
         ) : (

@@ -35,28 +35,23 @@ const AvatarWrapper = styled.div`
   }
 `
 
-const WalletButton = styled(SecondaryButton)`
+const WalletButton = styled(PrimaryButton)<{ alert: boolean }>`
   width: unset;
   padding: 0 16px;
-  height: 42px;
-  background: ${({ theme }) => theme.primary1}20;
-  border: 1px solid ${({ theme }) => theme.primary1}80;
-  border-radius: 3px;
-
-  & * {
-    color: ${({ theme }) => theme.primary1};
-    font-size: 20px;
-    font-weight: 700;
-  }
-
-  &.active,
-  &:hover {
-    background: ${({ theme }) => theme.primary1}40;
-  }
+  height: 38px;
+  border-radius: 4px;
 
   ${({ theme }) => theme.media.medium`
     padding: 0 12px;
   `}
+
+  ${({ theme, alert }) =>
+    !!alert &&
+    theme.before.alert`
+      ::before {
+        top: -4px;
+      }
+    `}
 `
 
 const StyledAccountStatus = styled.div`
@@ -115,8 +110,8 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
         {!!currentUser ? (
           <>
             {currentUser?.starknetWallet.address && (
-              <WalletButton onClick={toggleWalletModal}>
-                <TYPE.body>{balance ? `${balance.toFixed(6)} Ξ` : 'Loading...'}</TYPE.body>
+              <WalletButton onClick={toggleWalletModal} alert={!!currentUser?.starknetWallet.lockingReason}>
+                <TYPE.body fontWeight={500}>{balance ? `${balance.toFixed(4)} ETH` : 'Loading...'}</TYPE.body>
               </WalletButton>
             )}
 

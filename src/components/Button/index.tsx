@@ -17,6 +17,10 @@ export const BaseButton = styled.button<{ large?: boolean }>`
   padding: 8px 20px;
   cursor: pointer;
   font-weight: 500;
+
+  &:hover {
+    opacity: 0.9;
+  }
 `
 
 export const PrimaryButton = styled(BaseButton)`

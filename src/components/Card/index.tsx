@@ -18,6 +18,7 @@ export default Card
 export const ErrorCard = styled(TYPE.body)`
   background: ${({ theme }) => theme.error}26;
   border: 1px solid ${({ theme }) => theme.error};
+  color: ${({ theme }) => theme.error};
   border-radius: 3px;
   padding: 24px;
   width: 100%;

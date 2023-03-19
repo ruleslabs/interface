@@ -23,6 +23,8 @@ import Retrieve from './Retrieve'
 import AdvanceWalletSettings from './AdvanceWalletSettings'
 
 import Dots from '@/images/dots.svg'
+import LockedWallet from '../LockedWallet'
+import { ErrorCard } from '../Card'
 
 const AdvancedSettingsButton = styled(IconButton)`
   position: absolute;
@@ -138,9 +140,17 @@ export default function WalletModal() {
               <Dots />
             </AdvancedSettingsButton>
 
-            <Column gap={8}>
-              <ETHBalance>{balance ? `${balance.toFixed(6)} ETH` : '- ETH'}</ETHBalance>
-              <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)} EUR` : '- €'}</FiatBalance>
+            <Column gap={16}>
+              <Column gap={8}>
+                <ETHBalance>{balance ? `${balance.toFixed(6)} ETH` : '- ETH'}</ETHBalance>
+                <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)} EUR` : '- €'}</FiatBalance>
+              </Column>
+
+              {currentUser?.starknetWallet.lockingReason && (
+                <ErrorCard>
+                  <LockedWallet />
+                </ErrorCard>
+              )}
             </Column>
 
             <ModeSelectorBar>
