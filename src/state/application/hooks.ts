@@ -76,8 +76,12 @@ export function useNavModalMobileToggle(): () => void {
   return useToggleModal(ApplicationModal.NAV_MOBILE)
 }
 
-export function useNavModalDesktopToggle(): () => void {
-  return useToggleModal(ApplicationModal.NAV_DESKTOP)
+export function useNavModalUserDesktopToggle(): () => void {
+  return useToggleModal(ApplicationModal.NAV_USER_DESKTOP)
+}
+
+export function useNavModalUserMobileToggle(): () => void {
+  return useToggleModal(ApplicationModal.NAV_USER_MOBILE)
 }
 
 export function useWalletModalToggle(): () => void {

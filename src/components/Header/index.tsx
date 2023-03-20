@@ -2,75 +2,32 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
 import AccountStatus from '@/components/AccountStatus'
-import { NavButton, IconButton } from '@/components/Button'
+import { NavButton } from '@/components/Button'
 import { RowCenter } from '@/components/Row'
 import Link, { ActiveLink } from '@/components/Link'
-import { useOpenModal, useCloseModal, useModalOpen } from '@/state/application/hooks'
+import { useOpenModal } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import NavModalMobile from '@/components/NavModal/Mobile'
-import NavModalDesktop from '@/components/NavModal/Desktop'
 import { useCurrentUser } from '@/state/user/hooks'
+import { NAV_LINKS } from '@/constants/nav'
 
 import Logo from '@/public/assets/logo.svg'
+import SmallLogo from '@/images/logo-plain.svg'
 import Hamburger from '@/images/hamburger.svg'
-import GearIcon from '@/images/gear.svg'
-import Close from '@/images/close.svg'
 import ExternalLinkIcon from '@/images/external-link.svg'
-
-const GearButtonWrapper = styled.div`
-  position: relative;
-`
-
-const RotatingIconButton = styled(IconButton)`
-  & svg {
-    transition: transform 100ms ease-out;
-  }
-
-  &:hover svg {
-    transform: rotate(45deg);
-  }
-
-  ${({ theme }) => theme.media.medium`
-    display: none;
-  `}
-`
-
-const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
-  width: 12px;
-  height: 12px;
-  fill: ${({ theme }) => theme.text2};
-`
-
-const HamburgerWrapper = styled.div<{ alert?: boolean; notifications?: number }>`
-  cursor: pointer;
-
-  svg {
-    width: 24px;
-    height: 24px;
-  }
-`
-
-const NavMobileWrapper = styled.div`
-  display: none;
-
-  ${({ theme }) => theme.media.medium`
-    display: unset;
-  `}
-`
 
 const StyledHeader = styled.header`
   height: ${({ theme }) => theme.size.headerHeight}px;
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: ${({ theme }) => theme.bg1};
   display: flex;
   align-items: center;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.15);
   position: sticky;
   width: 100%;
   top: 0;
   left: 0;
   right: 0;
   z-index: 3;
-  padding: 0 32px 0 64px;
+  padding: 0 32px;
 
   ${({ theme }) => theme.media.medium`
     padding: 0 16px;
@@ -84,20 +41,28 @@ const StyledHeader = styled.header`
   `}
 `
 
-const StyledLogo = styled(Logo)`
-  height: 24px;
-  fill: ${({ theme }) => theme.white};
-  margin-right: 8px;
-
-  ${({ theme }) => theme.media.extraSmall`
-    height: 20px;
-  `}
+const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
+  width: 12px;
+  height: 12px;
+  fill: ${({ theme }) => theme.text2};
 `
 
-const StyledClose = styled(Close)`
-  width: 24px;
-  height: 20px;
+const HamburgerWrapper = styled.div<{ alert?: boolean; notifications?: number }>`
   cursor: pointer;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+`
+
+const NavMobileWrapper = styled.div`
+  display: none;
+  margin-right: 12px;
+
+  ${({ theme }) => theme.media.medium`
+    display: unset;
+  `}
 `
 
 const NavBar = styled.nav`
@@ -110,17 +75,34 @@ const NavBar = styled.nav`
   `}
 `
 
-const StyledAccountStatus = styled(AccountStatus)`
-  margin-right: 20px;
+// LOGO
+
+const StyledSmallLogo = styled(SmallLogo)`
+  height: 32px;
+  fill: ${({ theme }) => theme.white};
+  margin-right: 8px;
+  display: none;
+
+  ${({ theme }) => theme.media.extraSmall`
+    display: unset;
+  `}
 `
 
-export const menuLinks = [
-  { name: 'Packs', link: '/packs' },
-  { name: 'Marketplace', link: '/marketplace' },
-  { name: 'Community', link: '/community' },
-  { name: 'Discord', link: 'https://discord.gg/DrfezKYUhH', external: true },
-  { name: 'Settings', link: '/settings/profile', desktop: false },
-] // TODO: move it somewhere else as a single source of truth
+const StyledLogo = styled(Logo)`
+  height: 24px;
+  fill: ${({ theme }) => theme.white};
+  margin-right: 8px;
+
+  ${({ theme }) => theme.media.medium`
+    height: 18px;
+  `}
+`
+
+const NotLoggedLogo = styled(StyledLogo)`
+  ${({ theme }) => theme.media.extraSmall`
+    display: none;
+  `}
+`
 
 export default function Header() {
   // current user
@@ -128,61 +110,47 @@ export default function Header() {
 
   // modal
   const openNavModalMobile = useOpenModal(ApplicationModal.NAV_MOBILE)
-  const openNavModalDesktop = useOpenModal(ApplicationModal.NAV_DESKTOP)
-  const closeModal = useCloseModal()
-  const allModalsClosed = useModalOpen(null)
 
   return (
     <StyledHeader>
+      <NavMobileWrapper>
+        <HamburgerWrapper>
+          <Hamburger onClick={openNavModalMobile} />
+        </HamburgerWrapper>
+
+        <NavModalMobile />
+      </NavMobileWrapper>
+
       <Link href="/">
-        <StyledLogo />
+        {currentUser ? (
+          <StyledLogo />
+        ) : (
+          <>
+            <NotLoggedLogo />
+            <StyledSmallLogo />
+          </>
+        )}
       </Link>
 
       <NavBar>
-        {menuLinks
-          .filter(({ desktop = true }) => desktop)
-          .map((menuLink, index: number) => (
-            <ActiveLink
-              key={`nav-link-${index}`}
-              href={menuLink.link}
-              target={menuLink.external ? '_blank' : undefined}
-            >
+        {NAV_LINKS.map((navLink) =>
+          navLink.map((navLink) => (
+            <ActiveLink key={navLink.name} href={navLink.link} target={navLink.external ? '_blank' : undefined}>
               <NavButton>
                 <RowCenter gap={4}>
-                  <Trans id={menuLink.name} render={({ translation }) => <>{translation}</>} />
+                  <Trans id={navLink.name} render={({ translation }) => <>{translation}</>} />
 
-                  {menuLink.external && <StyledExternalLinkIcon />}
+                  {navLink.external && <StyledExternalLinkIcon />}
                 </RowCenter>
               </NavButton>
             </ActiveLink>
-          ))}
+          ))
+        )}
       </NavBar>
 
       <div style={{ margin: 'auto' }} />
 
-      <StyledAccountStatus />
-
-      {currentUser && (
-        <GearButtonWrapper>
-          <RotatingIconButton onClick={openNavModalDesktop}>
-            <GearIcon />
-          </RotatingIconButton>
-
-          <NavModalDesktop />
-        </GearButtonWrapper>
-      )}
-
-      <NavMobileWrapper>
-        {allModalsClosed ? (
-          <HamburgerWrapper>
-            <Hamburger onClick={openNavModalMobile} />
-          </HamburgerWrapper>
-        ) : (
-          <StyledClose onClick={closeModal} />
-        )}
-
-        <NavModalMobile />
-      </NavMobileWrapper>
+      <AccountStatus />
     </StyledHeader>
   )
 }

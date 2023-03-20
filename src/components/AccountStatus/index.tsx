@@ -3,18 +3,61 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
-import { ActiveLink } from '@/components/Link'
 import { useCurrentUser, useSetCurrentUser } from '@/state/user/hooks'
-import { useAuthModalToggle, useWalletModalToggle } from '@/state/application/hooks'
+import {
+  useAuthModalToggle,
+  useNavModalUserDesktopToggle,
+  useNavModalUserMobileToggle,
+  useWalletModalToggle,
+} from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
 import AuthModal from '@/components/AuthModal'
-import { PrimaryButton, SecondaryButton } from '@/components/Button'
+import { IconButton, PrimaryButton, SecondaryButton } from '@/components/Button'
 import WalletModal from '@/components/WalletModal'
 import WalletUpgradeModal from '@/components/WalletUpgradeModal'
 import { TYPE } from '@/styles/theme'
 import { useETHBalances } from '@/state/wallet/hooks'
 import Avatar from '@/components/Avatar'
+import NavModalUserDesktop from '@/components/NavModal/UserDesktop'
+import NavModalUserMobile from '@/components/NavModal/UserMobile'
+
+import BellIcon from '@/images/bell.svg'
+import WalletIcon from '@/images/wallet.svg'
+
+const StyledAccountStatus = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 100%;
+
+  ${({ theme }) => theme.media.small`
+    gap: 16px;
+    flex-direction row-reverse;
+
+    & ${IconButton} {
+      background: transparent;
+      width: fit-content;
+      height: fit-content;
+    }
+  `}
+`
+
+const SignUpButton = styled(PrimaryButton)`
+  font-size: 16px;
+  font-weight: 700;
+  flex-shrink: 0;
+  padding: 8px;
+`
+
+const SignInButton = styled(SecondaryButton)`
+  font-size: 16px;
+  font-weight: 700;
+  flex-shrink: 0;
+  padding: 8px 12px;
+  color: ${({ theme }) => theme.bg1};
+  background-color: ${({ theme }) => theme.white};
+`
 
 const AvatarWrapper = styled.div`
   height: 38px;
@@ -45,6 +88,10 @@ const WalletButton = styled(PrimaryButton)<{ alert: boolean }>`
     padding: 0 12px;
   `}
 
+  ${({ theme }) => theme.media.small`
+    display: none;
+  `}
+
   ${({ theme, alert }) =>
     !!alert &&
     theme.before.alert`
@@ -54,20 +101,30 @@ const WalletButton = styled(PrimaryButton)<{ alert: boolean }>`
     `}
 `
 
-const StyledAccountStatus = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  height: 100%;
+const AvatarButtonWrapperDesktop = styled.div`
+  position: relative;
+  cursor: pointer;
 
   ${({ theme }) => theme.media.medium`
-    & > * {
-      display: none;
-    }
+    display: none;
+  `}
+`
 
-    & ${WalletButton} {
-      display: unset;
-    }
+const AvatarButtonWrapperMobile = styled.div`
+  position: relative;
+  cursor: pointer;
+  display: none;
+
+  ${({ theme }) => theme.media.medium`
+    display: unset;
+  `}
+`
+
+const MobileIconButton = styled(IconButton)`
+  display: none;
+
+  ${({ theme }) => theme.media.small`
+    display: unset
   `}
 `
 
@@ -77,6 +134,10 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
 
   // modal
   const toggleWalletModal = useWalletModalToggle()
+
+  // nav modal
+  const toggleNavModalUserDesktop = useNavModalUserDesktopToggle()
+  const toggleNavModalUserMobile = useNavModalUserMobileToggle()
 
   // auth modal
   const toggleAuthModal = useAuthModalToggle()
@@ -115,20 +176,40 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
               </WalletButton>
             )}
 
-            <ActiveLink href={`/user/${currentUser.slug}`}>
+            <AvatarButtonWrapperDesktop onClick={toggleNavModalUserDesktop}>
               <AvatarWrapper>
                 <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackSrc} />
               </AvatarWrapper>
-            </ActiveLink>
+
+              <NavModalUserDesktop />
+            </AvatarButtonWrapperDesktop>
+
+            <AvatarButtonWrapperMobile onClick={toggleNavModalUserMobile}>
+              <AvatarWrapper>
+                <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackSrc} />
+              </AvatarWrapper>
+
+              <NavModalUserMobile />
+            </AvatarButtonWrapperMobile>
+
+            {currentUser?.starknetWallet.address && (
+              <MobileIconButton onClick={toggleWalletModal} alert={!!currentUser?.starknetWallet.lockingReason}>
+                <WalletIcon />
+              </MobileIconButton>
+            )}
+
+            <IconButton notifications={3}>
+              <BellIcon />
+            </IconButton>
           </>
         ) : (
           <>
-            <SecondaryButton onClick={toggleSignInModal}>
-              <Trans>Sign in</Trans>
-            </SecondaryButton>
-            <PrimaryButton onClick={toggleSignUpModal}>
-              <Trans>Sign up</Trans>
-            </PrimaryButton>
+            <SignInButton onClick={toggleSignInModal}>
+              <Trans>SIGN IN</Trans>
+            </SignInButton>
+            <SignUpButton onClick={toggleSignUpModal}>
+              <Trans>SIGN UP</Trans>
+            </SignUpButton>
           </>
         )}
       </StyledAccountStatus>

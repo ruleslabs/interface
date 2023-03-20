@@ -52,6 +52,11 @@ const Notifications = css<{ notifications?: number }>`
   ::before {
     background: ${({ theme }) => theme.primary1};
     content: '${({ notifications = 0 }) => notifications}';
+    top: -6px;
+    right: -6px;
+    font-size: 14px;
+    width: 17px;
+    height: 17px;
   }
 `
 

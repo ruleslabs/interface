@@ -63,7 +63,7 @@ const TabBar = styled(Row)`
   bottom: 0;
   left: 0;
   right: 0;
-  gap: 12px 32px;
+  gap: 12px 24px;
   flex-wrap: wrap;
 `
 

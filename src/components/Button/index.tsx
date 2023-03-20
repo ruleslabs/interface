@@ -80,7 +80,7 @@ export const IconButton = styled.button<{ alert?: boolean; notifications?: numbe
   ${({ theme, notifications = 0 }) => notifications && theme.before.notifications``}
 `
 
-export const NavButton = styled(TYPE.body)<{ alert?: boolean; notifications?: number }>`
+export const NavButton = styled(TYPE.body)`
   display: flex;
   padding: 0 20px;
   height: 100%;
@@ -96,22 +96,38 @@ export const NavButton = styled(TYPE.body)<{ alert?: boolean; notifications?: nu
   &.active {
     font-weight: 700;
   }
-
-  ${({ theme, alert = false }) => alert && theme.before.alert``}
-  ${({ theme, notifications = 0 }) => notifications && theme.before.notifications``}
 `
 
-export const TabButton = styled(TYPE.body)`
-  padding-bottom: 8px;
-  cursor: pointer;
-  border-width: 0 0 1px;
-  border-style: solid;
-  border-color: transparent;
-  transition: 100ms ease border-color;
+export const SidebarNavButton = styled(NavButton)`
+  width: 100%;
+  height: fit-content;
+  padding: 6px 8px 6px 16px;
+  border-radius: 3px;
+
+  &.active,
+  &:hover {
+    background: ${({ theme }) => theme.bg3}40;
+  }
 
   &.active {
     font-weight: 700;
-    border-color: ${({ theme }) => theme.white};
+  }
+`
+
+export const TabButton = styled(TYPE.body)`
+  cursor: pointer;
+  padding: 0 4px;
+
+  &.active::after {
+    content: '';
+    display: block;
+    margin-top: 6px;
+    height: 2px;
+    width: 100%;
+    background: ${({ theme }) => theme.primary1};
+    border-radius: 2px;
+    padding: 0 8px;
+    margin-left: -8px;
   }
 `
 

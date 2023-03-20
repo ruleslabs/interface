@@ -1428,3 +1428,11 @@ msgstr "{0, plural, =1 {Total ({0} carte)} other {Total ({0} cartes)}}"
 #: src/components/Homepage/HallOfFame/UserRow.tsx
 msgid "Collection score: {0}"
 msgstr "Score de la collection: {0}"
+
+#: src/components/AccountStatus/index.tsx
+msgid "SIGN IN"
+msgstr "SE CONNECTER"
+
+#: src/components/AccountStatus/index.tsx
+msgid "SIGN UP"
+msgstr "S'INSCRIRE"

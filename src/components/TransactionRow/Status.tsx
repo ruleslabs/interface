@@ -15,23 +15,23 @@ export default function Status({ type, value }: StatusProps) {
 
         switch (value) {
           case 'PENDING':
-            return [valueText, "green1"]
+            return [valueText, 'green1']
 
           case 'ACCEPTED_ON_L2':
-            return [valueText, "green2"]
+            return [valueText, 'green2']
 
           case 'ACCEPTED_ON_L1':
-            return [valueText, "primary1"]
+            return [valueText, 'primary1']
 
           case 'RECEIVED':
-            return [valueText, "text2"]
+            return [valueText, 'text2']
 
           default:
-            return [valueText, "error"]
+            return [valueText, 'error']
         }
 
       case 'origin':
-        return value ? ['IN', "pink"] : ['OUT', "purple"]
+        return value ? ['IN', 'pink'] : ['OUT', 'purple']
     }
   }, [type, value])
 

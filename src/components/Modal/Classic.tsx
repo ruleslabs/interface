@@ -1,6 +1,6 @@
 import '@reach/dialog/styles.css'
 
-import React from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { DialogOverlay, DialogContent } from '@reach/dialog'
 import { animated, useTransition } from 'react-spring'
@@ -12,6 +12,7 @@ import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
 
 import Close from '@/images/close.svg'
+import { round } from '@/utils/math'
 
 // overlay
 
@@ -60,12 +61,14 @@ export default function ClassicModal({ children, isOpen, onDismiss }: ClassicMod
   // close modal if current url change
   useCloseModalOnNavigation({ isOpen, onDismiss })
 
+  const opacityInterpolation = useCallback((opacity) => round(opacity, 2), [])
+
   return (
     <>
       {transitions(
         (styles, isOpen) =>
           isOpen && (
-            <ClassicDialogOverlay onDismiss={onDismiss} style={{ opacity: styles.opacity }}>
+            <ClassicDialogOverlay onDismiss={onDismiss} style={{ opacity: styles.opacity.to(opacityInterpolation) }}>
               <ClassicDialogContent aria-label="dialog content">{children}</ClassicDialogContent>
             </ClassicDialogOverlay>
           )
@@ -105,13 +108,6 @@ const StyledBackButton = styled(BackButton)`
   left: 16px;
 `
 
-const ModalTitle = styled(TYPE.large)`
-  ${({ theme }) => theme.media.medium`
-    width: 100%;
-    text-align: center;
-  `}
-`
-
 const ModalHeaderWrapper = styled.div`
   margin: 32px 0 24px;
 `
@@ -126,10 +122,6 @@ const CloseButton = styled(IconButton)`
     width: 16px;
     height: 16px;
   }
-
-  ${({ theme }) => theme.media.medium`
-    display: none;
-  `}
 `
 
 interface ModalHeaderProps {
@@ -144,7 +136,7 @@ export function ModalHeader({ children, onDismiss, onBack }: ModalHeaderProps) {
       {onBack && <StyledBackButton onClick={onBack} />}
       {children ? (
         <ModalHeaderWrapper>
-          {typeof children === 'string' ? <ModalTitle>{children}</ModalTitle> : children}
+          {typeof children === 'string' ? <TYPE.large>{children}</TYPE.large> : children}
         </ModalHeaderWrapper>
       ) : (
         <div />

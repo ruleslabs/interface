@@ -6,6 +6,9 @@ import { AppState } from '@/state'
 import { getApolloClient } from '@/apollo/apollo'
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
 import { setCurrentUser, updateUserLocale } from './actions'
+import { useRevokeSessionMutation } from '@/state/auth/hooks'
+import { storeAccessToken } from '@/utils/accessToken'
+import { useRouter } from 'next/router'
 
 const CURRENT_USER_QUERY = gql`
   query {
@@ -249,4 +252,22 @@ export function useUserLocaleManager(): [AppState['user']['userLocale'], (newLoc
   )
 
   return [locale, setLocale]
+}
+
+export function useLogout() {
+  // router
+  const router = useRouter()
+
+  const [revokeSessionMutation] = useRevokeSessionMutation()
+  const removeCurrentUser = useRemoveCurrentUser()
+
+  return useCallback(() => {
+    revokeSessionMutation({ variables: { payload: null } })
+      .catch((error) => console.error(error))
+      .finally(() => {
+        storeAccessToken('')
+        removeCurrentUser()
+        router.replace('/')
+      })
+  }, [storeAccessToken, removeCurrentUser, revokeSessionMutation, router.replace])
 }
