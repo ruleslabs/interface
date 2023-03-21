@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
@@ -19,8 +19,8 @@ export interface LinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
   href: string
   target?: string
   color?: string
-  children: React.ReactNode
   underline?: boolean
+  children: React.ReactElement
 }
 
 export default function Link({ href, color, target, children, underline = false, ...props }: LinkProps) {
@@ -35,10 +35,7 @@ export default function Link({ href, color, target, children, underline = false,
 
 // Active Link
 
-interface ActiveLinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
-  children: React.ReactElement
-  href: string
-  target?: string
+export interface ActiveLinkProps extends LinkProps {
   perfectMatch?: boolean
 }
 
@@ -46,10 +43,15 @@ export function ActiveLink({ children, href, perfectMatch = false, ...props }: A
   const { asPath } = useRouter()
   const childClassName = children.props.className ?? ''
 
-  const className =
-    (perfectMatch && asPath === href) || (!perfectMatch && asPath.indexOf(href) === 0)
-      ? `${childClassName} active`.trim()
-      : childClassName
+  const className = useMemo(
+    () =>
+      (perfectMatch && asPath === href) || (!perfectMatch && asPath.indexOf(href) === 0)
+        ? `${childClassName} active`.trim()
+        : childClassName,
+    []
+  )
+
+  if (!children) return null
 
   return (
     <Link href={href} {...props}>

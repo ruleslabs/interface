@@ -8,8 +8,9 @@ import { TYPE } from '@/styles/theme'
 import Column from '../Column'
 import { TooltipCaret } from '../Tooltip'
 import Link from '../Link'
-import { useCurrentUser, useLogout } from '@/state/user/hooks'
-import { NAV_USER_LINKS } from '@/constants/nav'
+import { useCurrentUser } from '@/state/user/hooks'
+import { useNavUserLinks } from '@/hooks/useNav'
+import Actionable from './Actionable'
 
 const StyledNavModalUserDesktop = styled.div`
   z-index: 100;
@@ -78,8 +79,8 @@ export default function NavModalUserDesktop() {
   const toggleNavModalUserDesktop = useNavModalUserDesktopToggle()
   const isOpen = useModalOpen(ApplicationModal.NAV_USER_DESKTOP)
 
-  // logout
-  const logout = useLogout()
+  // nav links
+  const navLinks = useNavUserLinks(currentUser.slug)
 
   if (!currentUser) return null
 
@@ -96,27 +97,17 @@ export default function NavModalUserDesktop() {
             </UsernameMenuButton>
           </Link>
 
-          <StyledHr />
-
-          {NAV_USER_LINKS.map((navLinks) => (
+          {navLinks.map((navLinks) => (
             <>
-              {navLinks.map((navLink) => (
-                <Link key={navLink.name} href={navLink.link.replace('{slug}', currentUser.slug)}>
-                  <Trans id={navLink.name} render={({ translation }) => <MenuButton>{translation}</MenuButton>} />
-                </Link>
-              ))}
-
               <StyledHr />
+
+              {navLinks.map((navLink) => (
+                <Actionable key={navLink.name} link={navLink.link} handler={navLink.handler}>
+                  <Trans id={navLink.name} render={({ translation }) => <MenuButton>{translation}</MenuButton>} />
+                </Actionable>
+              ))}
             </>
           ))}
-
-          <MenuButton>
-            <Trans>Upgrade wallet</Trans>
-          </MenuButton>
-
-          <StyledHr />
-
-          <MenuButton onClick={logout}>Logout</MenuButton>
         </Column>
       </StyledNavModalUserDesktop>
     </HintModal>

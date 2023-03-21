@@ -5,11 +5,12 @@ import { useModalOpen, useNavModalUserMobileToggle } from '@/state/application/h
 import { ApplicationModal } from '@/state/application/actions'
 import { TYPE } from '@/styles/theme'
 import { ActiveLink } from '@/components/Link'
-import { useCurrentUser, useLogout } from '@/state/user/hooks'
+import { useCurrentUser } from '@/state/user/hooks'
 import SidebarModal, { ModalHeader, ModalBody } from '@/components/Modal/Sidebar'
 import useWindowSize from '@/hooks/useWindowSize'
-import { NAV_USER_LINKS } from '@/constants/nav'
 import { SidebarNavButton } from '@/components/Button'
+import { useNavUserLinks } from '@/hooks/useNav'
+import Actionable from './Actionable'
 
 const StyledNavModalUserMobile = styled.div<{ windowHeight?: number }>`
   height: ${({ windowHeight = 0 }) => windowHeight}px;
@@ -50,8 +51,8 @@ export default function NavModalUserMobile() {
   // window size
   const windowSize = useWindowSize()
 
-  // logout
-  const logout = useLogout()
+  // nav links
+  const navLinks = useNavUserLinks(currentUser.slug)
 
   if (!currentUser) return null
 
@@ -67,29 +68,19 @@ export default function NavModalUserMobile() {
             </UsernameMenuButton>
           </ActiveLink>
 
-          <StyledHr />
-
-          {NAV_USER_LINKS.map((navLinks) => (
+          {navLinks.map((navLinks) => (
             <>
+              <StyledHr />
+
               {navLinks.map((navLink) => (
-                <ActiveLink key={navLink.name} href={navLink.link.replace('{slug}', currentUser.slug)} perfectMatch>
+                <Actionable key={navLink.name} link={navLink.link} handler={navLink.handler} perfectMatch>
                   <SidebarNavButton>
                     <Trans id={navLink.name} render={({ translation }) => <>{translation}</>} />
                   </SidebarNavButton>
-                </ActiveLink>
+                </Actionable>
               ))}
-
-              <StyledHr />
             </>
           ))}
-
-          <SidebarNavButton>
-            <Trans>Upgrade wallet</Trans>
-          </SidebarNavButton>
-
-          <StyledHr />
-
-          <SidebarNavButton onClick={logout}>Logout</SidebarNavButton>
         </ModalBody>
       </StyledNavModalUserMobile>
     </SidebarModal>

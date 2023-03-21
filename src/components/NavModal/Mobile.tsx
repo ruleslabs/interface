@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
-import { ActiveLink } from '@/components/Link'
 import SidebarModal, { ModalHeader, ModalBody } from '@/components/Modal/Sidebar'
 import { RowCenter } from '@/components/Row'
 import { useNavModalMobileToggle, useModalOpen } from '@/state/application/hooks'
@@ -10,7 +9,8 @@ import { ApplicationModal } from '@/state/application/actions'
 import LanguageSelector from '@/components/LanguageSelector'
 import { SidebarNavButton } from '@/components/Button'
 import useWindowSize from '@/hooks/useWindowSize'
-import { NAV_LINKS } from '@/constants/nav'
+import { useNavLinks } from '@/hooks/useNav'
+import Actionable from './Actionable'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
 
@@ -45,19 +45,22 @@ export default function NavModalMobile() {
   // window size
   const windowSize = useWindowSize()
 
+  // nav links
+  const navLinks = useNavLinks()
+
   return (
     <SidebarModal onDismiss={toggleNavModalMobile} isOpen={isOpen} position="left">
       <StyledNavModalMobile windowHeight={windowSize.height}>
         <ModalHeader onDismiss={toggleNavModalMobile} />
 
         <ModalBody gap={8}>
-          {NAV_LINKS.map((navLinks) => (
+          {navLinks.map((navLinks) => (
             <>
               {navLinks.map((navLink) => (
-                <ActiveLink
-                  key={navLink.link}
-                  href={navLink.link}
-                  onClick={toggleNavModalMobile}
+                <Actionable
+                  key={navLink.name}
+                  link={navLink.link}
+                  handler={navLink.handler}
                   target={navLink.external ? '_blank' : undefined}
                 >
                   <SidebarNavButton>
@@ -67,7 +70,7 @@ export default function NavModalMobile() {
                       {navLink.external && <StyledExternalLinkIcon />}
                     </RowCenter>
                   </SidebarNavButton>
-                </ActiveLink>
+                </Actionable>
               ))}
 
               <StyledHr />

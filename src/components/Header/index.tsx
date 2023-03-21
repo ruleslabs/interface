@@ -9,7 +9,7 @@ import { useOpenModal } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import NavModalMobile from '@/components/NavModal/Mobile'
 import { useCurrentUser } from '@/state/user/hooks'
-import { NAV_LINKS } from '@/constants/nav'
+import { useNavLinks } from '@/hooks/useNav'
 
 import Logo from '@/public/assets/logo.svg'
 import SmallLogo from '@/images/logo-plain.svg'
@@ -111,6 +111,9 @@ export default function Header() {
   // modal
   const openNavModalMobile = useOpenModal(ApplicationModal.NAV_MOBILE)
 
+  // nav links
+  const navLinks = useNavLinks()
+
   return (
     <StyledHeader>
       <NavMobileWrapper>
@@ -133,9 +136,9 @@ export default function Header() {
       </Link>
 
       <NavBar>
-        {NAV_LINKS.map((navLink) =>
+        {navLinks.map((navLink) =>
           navLink.map((navLink) => (
-            <ActiveLink key={navLink.name} href={navLink.link} target={navLink.external ? '_blank' : undefined}>
+            <ActiveLink key={navLink.name} href={navLink.link!} target={navLink.external ? '_blank' : undefined}>
               <NavButton>
                 <RowCenter gap={4}>
                   <Trans id={navLink.name} render={({ translation }) => <>{translation}</>} />
