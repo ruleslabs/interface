@@ -40,15 +40,15 @@ export interface ActiveLinkProps extends LinkProps {
 }
 
 export function ActiveLink({ children, href, perfectMatch = false, ...props }: ActiveLinkProps) {
-  const { asPath } = useRouter()
+  const router = useRouter()
   const childClassName = children.props.className ?? ''
 
   const className = useMemo(
     () =>
-      (perfectMatch && asPath === href) || (!perfectMatch && asPath.indexOf(href) === 0)
+      (perfectMatch && router.asPath === href) || (!perfectMatch && router.asPath.indexOf(href) === 0)
         ? `${childClassName} active`.trim()
         : childClassName,
-    []
+    [perfectMatch, childClassName, href, router.asPath]
   )
 
   if (!children) return null

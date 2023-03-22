@@ -4,7 +4,7 @@ import { t } from '@lingui/macro'
 import DefaultLayout from '@/components/Layout'
 import SettingsLayout from '@/components/Layout/Settings'
 import Column from '@/components/Column'
-import Title from '@/components/Settings/Title'
+import Title from '@/components/Text/Title'
 
 const StyledEthereumSettings = styled(Column)`
   width: 100%;

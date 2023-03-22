@@ -50,7 +50,7 @@ function UserBadge({ color, children }: UserBadgeProps) {
   )
 }
 
-export function Certified() {
+export function CertifiedBadge() {
   return (
     <UserBadge color="primary1">
       <StyledCheckmark />
@@ -58,7 +58,7 @@ export function Certified() {
   )
 }
 
-export function TopCollector() {
+export function TopCollectorBadge() {
   return (
     <UserBadge color="orange">
       <StyledCrown />

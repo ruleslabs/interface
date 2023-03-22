@@ -116,7 +116,13 @@ export const SidebarNavButton = styled(NavButton)`
 
 export const TabButton = styled(TYPE.body)`
   cursor: pointer;
-  padding: 0 4px;
+  color: ${({ theme }) => theme.text2};
+  font-weight: 500;
+
+  &.active {
+    color: ${({ theme }) => theme.text1};
+    font-weight: 700;
+  }
 
   &.active::after {
     content: '';

@@ -10,7 +10,7 @@ import { useSearchUsers } from '@/state/search/hooks'
 import useDebounce from '@/hooks/useDebounce'
 import { TYPE } from '@/styles/theme'
 import { useCurrentUser } from '@/state/user/hooks'
-import { Certified } from '@/components/User/Badge'
+import { CertifiedBadge } from '@/components/User/Badge'
 import Avatar from '@/components/Avatar'
 
 const USERS_QUERY = gql`
@@ -86,7 +86,7 @@ const SearchSuggestedUser = styled(RowCenter)`
   }
 `
 
-const StyledCertified = styled(Certified)`
+const StyledCertified = styled(CertifiedBadge)`
   position: absolute;
   top: 6px;
   left: 47px;

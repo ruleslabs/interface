@@ -11,7 +11,7 @@ import { RowCenter } from '../Row'
 
 import InstagramIcon from '@/images/instagram.svg'
 import TwitterIcon from '@/images/twitter-color.svg'
-import Subtitle from './Subtitle'
+import Subtitle from '../Text/Subtitle'
 
 const InputWithIcon = styled(RowCenter)`
   gap: 8px;

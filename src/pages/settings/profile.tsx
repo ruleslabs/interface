@@ -5,7 +5,7 @@ import DefaultLayout from '@/components/Layout'
 import SettingsLayout from '@/components/Layout/Settings'
 import Column from '@/components/Column'
 import SocialAccountsSettings from '@/components/Settings/SocialAccounts'
-import Title from '@/components/Settings/Title'
+import Title from '@/components/Text/Title'
 import DiscordStatus from '@/components/Settings/DiscordStatus'
 
 const StyledProfileSettings = styled(Column)`

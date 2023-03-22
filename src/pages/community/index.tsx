@@ -1,26 +1,30 @@
 import { useCallback } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
 import Link from '@/components/Link'
 import Section from '@/components/Section'
-import Row from '@/components/Row'
-import User from '@/components/User'
+import Row, { RowCenter } from '@/components/Row'
 import { useSearchedUsers } from '@/state/search/hooks'
 import UsersSearchBar from '@/components/UsersSearchBar'
+import Avatar from '@/components/Avatar'
+import { CertifiedBadge, TopCollectorBadge } from '@/components/User/Badge'
+import { useCScoreTopCollector } from '@/hooks/useCScore'
+import Column, { ColumnCenter } from '@/components/Column'
+import { PaginationSpinner } from '@/components/Spinner'
+import Subtitle from '@/components/Text/Subtitle'
+import { TYPE } from '@/styles/theme'
 
-const UsersHeading = styled.h3`
-  font-size: 18px;
-  margin: 0 0 16px;
-`
-
-const StyledUsersRow = styled(Row)`
-  margin-bottom: 60px;
+const UsersRow = styled(Row)`
   width: 100%;
-  overflow: scroll;
+  flex-wrap: wrap;
   gap: 32px;
+
+  img {
+    width: 145px;
+  }
 `
 
 const CERTIFIED_USERS_QUERY = gql`
@@ -39,41 +43,49 @@ const CERTIFIED_USERS_QUERY = gql`
 `
 
 interface CustomUsersRowProps {
-  loading?: boolean
-  users: any[]
+  username: string
+  pictureUrl: string
+  fallbackUrl: string
+  certified: boolean
+  cScore: number
 }
 
-const UsersRow = ({ loading = false, users }: CustomUsersRowProps) => {
+function User({ username, pictureUrl, fallbackUrl, certified, cScore }: CustomUsersRowProps) {
+  const isTopCollector = useCScoreTopCollector(cScore)
+
   return (
-    <StyledUsersRow>
-      {loading
-        ? 'loading'
-        : users.map((user: any) => (
-            <Link key={user.id} href={`/user/${user.slug}`}>
-              <User
-                username={user.username}
-                pictureUrl={user.profile.pictureUrl}
-                fallbackUrl={user.profile.fallbackUrl}
-                certified={user.profile.certified}
-                cScore={user.cScore}
-              />
-            </Link>
-          ))}
-    </StyledUsersRow>
+    <ColumnCenter gap={8}>
+      <Link href={`/user/${username}`}>
+        <Avatar src={pictureUrl} fallbackSrc={fallbackUrl} />
+      </Link>
+
+      <RowCenter gap={4}>
+        <Link href={`/user/${username}`}>
+          <TYPE.body clickable>{username}</TYPE.body>
+        </Link>
+
+        {certified && <CertifiedBadge />}
+        {isTopCollector && <TopCollectorBadge />}
+      </RowCenter>
+    </ColumnCenter>
   )
 }
 
 export default function Community() {
-  // certified
-  const { data: certifiedUsersData, loading: certifiedUsersLoading } = useQuery(CERTIFIED_USERS_QUERY)
-  const certifiedUsers = certifiedUsersData?.certifiedUsersOverview ?? []
-
   // search history
-  const { searchedUsers, loading: searchedUsersLoading } = useSearchedUsers()
+  const searchedUsersQuery = useSearchedUsers()
+  const searchedUsers = searchedUsersQuery.searchedUsers
+
+  // certified
+  const certifiedUsersQuery = useQuery(CERTIFIED_USERS_QUERY)
+  const certifiedUsers = (certifiedUsersQuery.data?.certifiedUsersOverview ?? []) as any[]
 
   // search
   const router = useRouter()
   const handleUserSelection = useCallback((user: any) => router.push(`/user/${user.slug}`), [router])
+
+  // loading
+  const isLoading = searchedUsersQuery.loading || certifiedUsersQuery.loading
 
   return (
     <>
@@ -81,18 +93,45 @@ export default function Community() {
         <UsersSearchBar onSelect={handleUserSelection} />
       </Section>
       <Section>
-        {searchedUsers.length > 0 && (
-          <>
-            <UsersHeading>
-              <Trans>Seen recently</Trans>
-            </UsersHeading>
-            <UsersRow loading={searchedUsersLoading} users={searchedUsers} />
-          </>
+        {!isLoading && (
+          <Column gap={64}>
+            <Column gap={16}>
+              <Subtitle value={t`Seen recently`} />
+
+              <UsersRow>
+                {searchedUsers.map((user) => (
+                  <User
+                    key={user.username}
+                    username={user.username}
+                    pictureUrl={user.profile.pictureUrl}
+                    fallbackUrl={user.profile.fallbackUrl}
+                    certified={user.profile.certified}
+                    cScore={user.cScore}
+                  />
+                ))}
+              </UsersRow>
+            </Column>
+
+            <Column gap={16}>
+              <Subtitle value={t`Verified collectors`} />
+
+              <UsersRow>
+                {certifiedUsers.map((user) => (
+                  <User
+                    key={user.username}
+                    username={user.username}
+                    pictureUrl={user.profile.pictureUrl}
+                    fallbackUrl={user.profile.fallbackUrl}
+                    certified={user.profile.certified}
+                    cScore={user.cScore}
+                  />
+                ))}
+              </UsersRow>
+            </Column>
+          </Column>
         )}
-        <UsersHeading>
-          <Trans>Verified collectors</Trans>
-        </UsersHeading>
-        <UsersRow loading={certifiedUsersLoading} users={certifiedUsers} />
+
+        <PaginationSpinner loading={isLoading} />
       </Section>
     </>
   )
