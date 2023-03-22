@@ -10,15 +10,17 @@ const StyledSlider = styled.input`
   height: 2px;
   border-radius: 1px;
   outline: none;
-  margin-bottom: 8px;
+  margin: 0 0 8px;
+  position: relative;
+  z-index: 1;
 
   &::before {
-    width: 100%;
     height: 2px;
     background: ${({ theme }) => theme.text1};
     border-radius: 1px;
     content: '';
-    left: 2px;
+    left: 0;
+    right: 0;
     position: absolute;
     display: block;
     z-index: -1;

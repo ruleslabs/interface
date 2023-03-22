@@ -4,7 +4,7 @@ import { t, Trans } from '@lingui/macro'
 import Column from '@/components/Column'
 import { ThirdPartyButton } from '@/components/Button'
 import { TYPE } from '@/styles/theme'
-import Separator from '@/components/Separator'
+import Separator from '@/components/Text/Separator'
 import { useSetWalletModalMode } from '@/state/wallet/hooks'
 import { WalletModalMode } from '@/state/wallet/actions'
 

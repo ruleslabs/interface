@@ -11,6 +11,7 @@ import { SidebarNavButton } from '@/components/Button'
 import useWindowSize from '@/hooks/useWindowSize'
 import { useNavLinks } from '@/hooks/useNav'
 import Actionable from './Actionable'
+import Divider from '@/components/Divider'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
 
@@ -19,12 +20,6 @@ const StyledNavModalMobile = styled.div<{ windowHeight?: number }>`
   width: 280px;
   background: ${({ theme }) => theme.bg1};
   position: relative;
-`
-
-const StyledHr = styled.div`
-  width: 100%;
-  height: 1px;
-  background: ${({ theme }) => theme.bg3}80;
 `
 
 const StyledLanguageSelector = styled(LanguageSelector)`
@@ -73,7 +68,7 @@ export default function NavModalMobile() {
                 </Actionable>
               ))}
 
-              <StyledHr />
+              <Divider />
             </>
           ))}
 

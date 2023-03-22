@@ -11,6 +11,8 @@ import useWindowSize from '@/hooks/useWindowSize'
 import { SidebarNavButton } from '@/components/Button'
 import { useNavUserLinks } from '@/hooks/useNav'
 import Actionable from './Actionable'
+import Divider from '@/components/Divider'
+import Column from '@/components/Column'
 
 const StyledNavModalUserMobile = styled.div<{ windowHeight?: number }>`
   height: ${({ windowHeight = 0 }) => windowHeight}px;
@@ -31,13 +33,6 @@ const UsernameMenuButton = styled(TYPE.body)`
   &.active {
     background: ${({ theme }) => theme.bg3}40;
   }
-`
-
-const StyledHr = styled.div`
-  margin: 6px 0;
-  background: ${({ theme }) => theme.bg3};
-  height: 1px;
-  width: 100%;
 `
 
 export default function NavModalUserMobile() {
@@ -61,7 +56,7 @@ export default function NavModalUserMobile() {
       <StyledNavModalUserMobile windowHeight={windowSize.height}>
         <ModalHeader onDismiss={toggleNavModalUserMobile} />
 
-        <ModalBody>
+        <ModalBody gap={6}>
           <ActiveLink href={`/user/${currentUser.slug}`} perfectMatch>
             <UsernameMenuButton>
               <Trans>{currentUser.username}</Trans>
@@ -70,15 +65,17 @@ export default function NavModalUserMobile() {
 
           {navLinks.map((navLinks) => (
             <>
-              <StyledHr />
+              <Divider />
 
-              {navLinks.map((navLink) => (
-                <Actionable key={navLink.name} link={navLink.link} handler={navLink.handler} perfectMatch>
-                  <SidebarNavButton>
-                    <Trans id={navLink.name} render={({ translation }) => <>{translation}</>} />
-                  </SidebarNavButton>
-                </Actionable>
-              ))}
+              <Column>
+                {navLinks.map((navLink) => (
+                  <Actionable key={navLink.name} link={navLink.link} handler={navLink.handler} perfectMatch>
+                    <SidebarNavButton>
+                      <Trans id={navLink.name} render={({ translation }) => <>{translation}</>} />
+                    </SidebarNavButton>
+                  </Actionable>
+                ))}
+              </Column>
             </>
           ))}
         </ModalBody>

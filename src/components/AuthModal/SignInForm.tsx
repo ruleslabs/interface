@@ -19,7 +19,7 @@ import {
   useSetTwoFactorAuthToken,
 } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
-import Separator from '@/components/Separator'
+import Separator from '@/components/Text/Separator'
 import { passwordHasher } from '@/utils/password'
 
 const StyledForm = styled.form`

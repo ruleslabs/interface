@@ -6,7 +6,7 @@ import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import useRampSdk from '@/hooks/useRampSdk'
 import { ThirdPartyButton } from '@/components/Button'
-import Separator from '@/components/Separator'
+import Separator from '@/components/Text/Separator'
 import { useSetWalletModalMode } from '@/state/wallet/hooks'
 import { WalletModalMode } from '@/state/wallet/actions'
 

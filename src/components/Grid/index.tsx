@@ -14,7 +14,6 @@ const StyledGrid = styled.div<{ cols: number; gap: number }>`
 `
 
 interface GridProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode
   gap?: number
   maxWidth?: number
 }

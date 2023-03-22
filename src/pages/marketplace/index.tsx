@@ -3,15 +3,14 @@ import styled from 'styled-components'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { gql, useLazyQuery } from '@apollo/client'
 
-import MarketplaceSidebar from '@/components/MarketplaceSidebar'
+import MarketplaceFilters from '@/components/MarketplaceFilters'
 import Section from '@/components/Section'
 import CardModel from '@/components/CardModel'
-import { ColumnCenter } from '@/components/Column'
-import { RowBetween } from '@/components/Row'
+import Column, { ColumnCenter } from '@/components/Column'
+import Row, { RowBetween } from '@/components/Row'
 import Grid from '@/components/Grid'
 import {
   useMarketplaceFilters,
-  useMarketplaceFiltersHandlers,
   useSearchCardModels,
   useAlgoliaFormatedMarketplaceFilters,
   CardModelsSortingKey,
@@ -21,50 +20,56 @@ import { PaginationSpinner } from '@/components/Spinner'
 import SortButton, { SortData } from '@/components/Button/SortButton'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 import { Badge } from '@/components/CardModel/Badges'
-import { TYPE } from '@/styles/theme'
+import { IconButton } from '@/components/Button'
+import { useToggleMarketplaceFiltersModal } from '@/state/application/hooks'
 
-const MainSection = styled(Section)`
-  margin-top: 32px;
+import HopperIcon from '@/images/hopper.svg'
+import MarketplaceFiltersModal from '@/components/MarketplaceFiltersModal'
+
+const StyledSection = styled(Section)`
+  width: 100%;
+  max-width: unset;
+  padding: 0 32px;
+  gap: 32px;
+  margin: 32px 0 0;
+  position: sticky;
+
+  ${({ theme }) => theme.media.small`
+    padding: 0 16px;
+  `}
 `
 
-const MarketplaceBody = styled.div`
-  margin: 0 32px 32px 315px;
+const HopperIconButton = styled(IconButton)`
+  visibility: hidden;
+
+  svg {
+    margin-top: 2px; // needed to make it looks better centered
+  }
 
   ${({ theme }) => theme.media.medium`
-    margin: 0 32px 32px;
+    visibility: visible;
   `}
+`
 
-  ${({ theme }) => theme.media.extraSmall`
-    margin: 0 16px 32px;
+const FiltersWrapper = styled.div`
+  height: fit-content;
+  position: sticky;
+  top: ${({ theme }) => theme.size.headerHeight + 32}px;
+  min-width: 200px;
+
+  ${({ theme }) => theme.media.medium`
+    display: none;
   `}
+`
+
+const GridWrapper = styled(Column)`
+  width: 100%;
 `
 
 const GridHeader = styled(RowBetween)`
   margin-bottom: 16px;
   padding: 0 8px;
   align-items: center;
-`
-
-const StyledGrid = styled(Grid)`
-  ${({ theme }) => theme.media.extraSmall`
-    grid-template-columns: repeat(2, 1fr);
-    gap: 28px;
-  `}
-`
-
-const FiltersButton = styled(TYPE.body)`
-  visibility: hidden;
-  font-weight: 700;
-  cursor: pointer;
-  ${({ theme }) => theme.media.medium`
-    visibility: visible;
-  `}
-`
-
-const StyledMarketplaceSidebar = styled(MarketplaceSidebar)<{ isOpenOnMobile?: boolean }>`
-  ${({ theme, isOpenOnMobile }) => theme.media.medium`
-    ${!isOpenOnMobile && 'display: none;'}
-  `}
 `
 
 const CARD_MODELS_QUERY = gql`
@@ -99,6 +104,9 @@ export default function Marketplace() {
   const marketplaceFilters = useMarketplaceFilters()
   const algoliaFormatedMarketplaceFilters = useAlgoliaFormatedMarketplaceFilters()
 
+  // filters modal
+  const toggleMarketplaceFiltersModal = useToggleMarketplaceFiltersModal()
+
   // sort
   const [sortIndex, setSortIndex] = useState(0)
   const sortingKey = useMemo(
@@ -109,15 +117,6 @@ export default function Marketplace() {
     () => (marketplaceFilters.lowSerials ? 'lowSerialLowestAskDesc' : 'lowestAskDesc'),
     [marketplaceFilters.lowSerials]
   )
-
-  // maximum price
-  const { setMaximumPrice } = useMarketplaceFiltersHandlers()
-
-  // filters sidebar
-  const [isFiltersSidebarOpenOnMobile, setIsFiltersSidebarOpenOnMobile] = useState(false)
-  const toggleFiltersOnMobile = useCallback(() => {
-    setIsFiltersSidebarOpenOnMobile(!isFiltersSidebarOpenOnMobile)
-  }, [isFiltersSidebarOpenOnMobile, setIsFiltersSidebarOpenOnMobile])
 
   // hits
   const [cardModelsHits, setCardModelsHits] = useState<any[]>([])
@@ -190,41 +189,47 @@ export default function Marketplace() {
 
   return (
     <>
-      <StyledMarketplaceSidebar
-        maximumPriceUpperBound={highestLowestAsk}
-        isOpenOnMobile={isFiltersSidebarOpenOnMobile}
-        dispatch={toggleFiltersOnMobile}
-      />
-      <MainSection size="max">
-        <MarketplaceBody>
-          <GridHeader>
-            <FiltersButton onClick={toggleFiltersOnMobile}>Filters</FiltersButton>
-            <SortButton sortsData={sortsData} onChange={setSortIndex} sortIndex={sortIndex} />
-          </GridHeader>
+      <StyledSection>
+        <GridHeader>
+          <HopperIconButton onClick={toggleMarketplaceFiltersModal}>
+            <HopperIcon />
+          </HopperIconButton>
 
-          <StyledGrid>
-            {cardModelsHits
-              .filter((hit) => cardModelsTable[hit.objectID])
-              .map((hit: any, index: number) => (
-                <ColumnCenter
-                  gap={12}
-                  key={index}
-                  ref={index + 1 === cardModelsHits.length ? lastCardModelRef : undefined}
-                >
-                  <CardModel
-                    videoUrl={cardModelsTable[hit.objectID].videoUrl}
-                    pictureUrl={cardModelsTable[hit.objectID].pictureUrl}
-                    cardModelSlug={cardModelsTable[hit.objectID].slug}
-                    lowestAsk={marketplaceFilters.lowSerials ? hit.lowSerialLowestAsk : hit.lowestAsk}
-                    badges={marketplaceFilters.lowSerials ? [Badge.LOW_SERIAL] : undefined}
-                  />
-                </ColumnCenter>
-              ))}
-          </StyledGrid>
+          <SortButton sortsData={sortsData} onChange={setSortIndex} sortIndex={sortIndex} />
+        </GridHeader>
 
-          <PaginationSpinner loading={isLoading} />
-        </MarketplaceBody>
-      </MainSection>
+        <Row gap={32}>
+          <FiltersWrapper>
+            <MarketplaceFilters maximumPriceUpperBound={highestLowestAsk} />
+          </FiltersWrapper>
+
+          <GridWrapper>
+            <Grid>
+              {cardModelsHits
+                .filter((hit) => cardModelsTable[hit.objectID])
+                .map((hit: any, index: number) => (
+                  <ColumnCenter
+                    gap={12}
+                    key={index}
+                    ref={index + 1 === cardModelsHits.length ? lastCardModelRef : undefined}
+                  >
+                    <CardModel
+                      videoUrl={cardModelsTable[hit.objectID].videoUrl}
+                      pictureUrl={cardModelsTable[hit.objectID].pictureUrl}
+                      cardModelSlug={cardModelsTable[hit.objectID].slug}
+                      lowestAsk={marketplaceFilters.lowSerials ? hit.lowSerialLowestAsk : hit.lowestAsk}
+                      badges={marketplaceFilters.lowSerials ? [Badge.LOW_SERIAL] : undefined}
+                    />
+                  </ColumnCenter>
+                ))}
+            </Grid>
+
+            <PaginationSpinner loading={isLoading} />
+          </GridWrapper>
+        </Row>
+      </StyledSection>
+
+      <MarketplaceFiltersModal maximumPriceUpperBound={highestLowestAsk} />
     </>
   )
 }

@@ -111,3 +111,7 @@ export function useAcceptOfferModalToggle(): () => void {
 export function useUpgradeWalletModalToggle(): () => void {
   return useToggleModal(ApplicationModal.UPGRADE_WALLET)
 }
+
+export function useToggleMarketplaceFiltersModal(): () => void {
+  return useToggleModal(ApplicationModal.MARKETPLACE_FILTERS)
+}

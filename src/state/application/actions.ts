@@ -15,6 +15,7 @@ export enum ApplicationModal {
   CANCEL_OFFER,
   ACCEPT_OFFER,
   UPGRADE_WALLET,
+  MARKETPLACE_FILTERS,
 }
 
 export const HomepageTabs = {

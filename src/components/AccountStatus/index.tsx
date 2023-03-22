@@ -36,7 +36,8 @@ const StyledAccountStatus = styled.div`
     flex-direction row-reverse;
 
     & ${IconButton} {
-      background: transparent;
+      border: none;
+      background: none;
       width: fit-content;
       height: fit-content;
     }

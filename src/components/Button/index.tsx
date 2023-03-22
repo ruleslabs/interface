@@ -58,22 +58,23 @@ export const SecondaryButton = styled(BaseButton)`
 export const IconButton = styled.button<{ alert?: boolean; notifications?: number }>`
   width: 32px;
   height: 32px;
-  background-color: ${({ theme }) => theme.bg3};
-  cursor: pointer;
-  border: none;
+  border: 1px solid ${({ theme }) => theme.bg3};
+  background: ${({ theme }) => theme.bg3}80;
   border-radius: 50%;
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   outline: none;
 
+  :hover {
+    background: ${({ theme }) => theme.bg3}40;
+  }
+
   & > svg {
     width: 20px;
     height: 20px;
-
-    * {
-      fill: ${({ theme }) => theme.text1};
-    }
+    fill: ${({ theme }) => theme.text1};
   }
 
   ${({ theme, alert = false }) => alert && theme.before.alert``}

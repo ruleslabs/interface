@@ -11,6 +11,7 @@ import Link from '../Link'
 import { useCurrentUser } from '@/state/user/hooks'
 import { useNavUserLinks } from '@/hooks/useNav'
 import Actionable from './Actionable'
+import Divider from '@/components/Divider'
 
 const StyledNavModalUserDesktop = styled.div`
   z-index: 100;
@@ -64,13 +65,6 @@ const UsernameMenuButton = styled(MenuButton)`
   text-align: center;
 `
 
-const StyledHr = styled.div`
-  margin: 6px 0;
-  background: ${({ theme }) => theme.bg3};
-  height: 1px;
-  width: 100%;
-`
-
 export default function NavModalUserDesktop() {
   // current user
   const currentUser = useCurrentUser()
@@ -90,7 +84,7 @@ export default function NavModalUserDesktop() {
         <BorderTooltipCaret direction="top" />
         <FillTooltipCaret direction="top" />
 
-        <Column>
+        <Column gap={6}>
           <Link href={`/user/${currentUser.slug}`}>
             <UsernameMenuButton>
               <Trans>{currentUser.username}</Trans>
@@ -99,13 +93,15 @@ export default function NavModalUserDesktop() {
 
           {navLinks.map((navLinks) => (
             <>
-              <StyledHr />
+              <Divider />
 
-              {navLinks.map((navLink) => (
-                <Actionable key={navLink.name} link={navLink.link} handler={navLink.handler}>
-                  <Trans id={navLink.name} render={({ translation }) => <MenuButton>{translation}</MenuButton>} />
-                </Actionable>
-              ))}
+              <Column>
+                {navLinks.map((navLink) => (
+                  <Actionable key={navLink.name} link={navLink.link} handler={navLink.handler}>
+                    <Trans id={navLink.name} render={({ translation }) => <MenuButton>{translation}</MenuButton>} />
+                  </Actionable>
+                ))}
+              </Column>
             </>
           ))}
         </Column>
