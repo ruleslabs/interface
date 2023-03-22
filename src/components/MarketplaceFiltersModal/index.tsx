@@ -1,3 +1,5 @@
+import { t } from '@lingui/macro'
+
 import ClassicModal, { ModalContent, ModalHeader } from '@/components/Modal/Classic'
 import MarketplaceFilters from '@/components/MarketplaceFilters'
 import { useModalOpen, useToggleMarketplaceFiltersModal } from '@/state/application/hooks'
@@ -15,7 +17,7 @@ export default function MarketplaceFiltersModal({ maximumPriceUpperBound }: Mark
   return (
     <ClassicModal onDismiss={toggleMarketplaceFiltersModal} isOpen={isOpen}>
       <ModalContent>
-        <ModalHeader onDismiss={toggleMarketplaceFiltersModal} />
+        <ModalHeader onDismiss={toggleMarketplaceFiltersModal}>{t`Filters`}</ModalHeader>
 
         <MarketplaceFilters maximumPriceUpperBound={maximumPriceUpperBound} />
       </ModalContent>

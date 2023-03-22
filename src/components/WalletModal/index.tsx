@@ -13,7 +13,9 @@ import Column from '@/components/Column'
 import Row from '@/components/Row'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import { TYPE } from '@/styles/theme'
-import { IconButton } from '@/components/Button'
+import { IconButton, TabButton } from '@/components/Button'
+import LockedWallet from '@/components/LockedWallet'
+import { ErrorCard } from '@/components/Card'
 
 import Deposit from './Deposit'
 import StarkgateDeposit from './StarkgateDeposit'
@@ -22,21 +24,12 @@ import StarkgateWithdraw from './StarkgateWithdraw'
 import Retrieve from './Retrieve'
 import AdvanceWalletSettings from './AdvanceWalletSettings'
 
-import Dots from '@/images/dots.svg'
-import LockedWallet from '../LockedWallet'
-import { ErrorCard } from '../Card'
+import DotsIcon from '@/images/dots.svg'
 
 const AdvancedSettingsButton = styled(IconButton)`
   position: absolute;
   top: 10px;
   left: 10px;
-  border: solid 1px ${({ theme }) => theme.bg3}80;
-  background: transparent;
-  border-radius: 3px;
-
-  &:hover {
-    background: ${({ theme }) => theme.bg5};
-  }
 `
 
 const ETHBalance = styled(TYPE.medium)`
@@ -52,25 +45,12 @@ const FiatBalance = styled(TYPE.subtitle)`
   font-size: 16px;
 `
 
-const ModeSelectorBar = styled(Row)`
+const TabBar = styled(Row)`
+  justify-content: space-around;
+  border-color: ${({ theme }) => theme.bg3}80;
+  border-style: solid;
+  border-width: 0 0 1px;
   margin: 16px -26px 16px -26px;
-  box-shadow: 0 10px 10px 0px ${({ theme }) => theme.black}40;
-`
-
-const ModeSelector = styled(TYPE.medium)<{ selected: boolean }>`
-  width: 100%;
-  text-align: center;
-  padding: 16px 0;
-  cursor: pointer;
-
-  ${({ selected, theme }) =>
-    selected &&
-    `
-      border-style: solid;
-      border-width: 0 0 2px;
-      border-color: ${theme.primary1};
-      color: ${theme.primary1};
-    `}
 `
 
 const ModeContent = styled.div`
@@ -136,8 +116,8 @@ export default function WalletModal() {
           <AdvanceWalletSettings />
         ) : (
           <>
-            <AdvancedSettingsButton onClick={toggleAdvancedMode}>
-              <Dots />
+            <AdvancedSettingsButton onClick={toggleAdvancedMode} square>
+              <DotsIcon />
             </AdvancedSettingsButton>
 
             <Column gap={16}>
@@ -153,29 +133,33 @@ export default function WalletModal() {
               )}
             </Column>
 
-            <ModeSelectorBar>
-              <ModeSelector
-                selected={
+            <TabBar>
+              <TabButton
+                onClick={onDepositMode}
+                className={
                   walletModalMode === null ||
                   walletModalMode === WalletModalMode.DEPOSIT ||
                   walletModalMode === WalletModalMode.STARKGATE_DEPOSIT
+                    ? 'active'
+                    : undefined
                 }
-                onClick={onDepositMode}
               >
                 <Trans>Deposit</Trans>
-              </ModeSelector>
+              </TabButton>
 
-              <ModeSelector
-                selected={
+              <TabButton
+                onClick={onWithdrawMode}
+                className={
                   walletModalMode === WalletModalMode.WITHDRAW ||
                   walletModalMode === WalletModalMode.STARKGATE_WITHDRAW ||
                   walletModalMode === WalletModalMode.RETRIEVE
+                    ? 'active'
+                    : undefined
                 }
-                onClick={onWithdrawMode}
               >
                 <Trans>Withdraw</Trans>
-              </ModeSelector>
-            </ModeSelectorBar>
+              </TabButton>
+            </TabBar>
 
             <ModeContent>{renderModal()}</ModeContent>
           </>

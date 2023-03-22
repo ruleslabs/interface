@@ -87,7 +87,7 @@ export function colors(darkMode: boolean): Colors {
     primary2: '#7C03AE',
 
     bg1: '#0D1114',
-    bg2: '#202326',
+    bg2: '#191B1D',
     bg3: '#535458',
     bg4: '#AFAFAF',
     bg5: '#2e3033',
@@ -130,6 +130,8 @@ function theme(darkMode: boolean) {
 
 const ThemedGlobalStyle = createGlobalStyle`
   body {
+    background-attachment: fixed;
+    background-image: ${({ theme }) => `linear-gradient(180deg, ${theme.primary1}15 0, ${theme.bg1} 300px)`};
     background-color: ${({ theme }) => theme.bg1};
   }
 

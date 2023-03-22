@@ -191,7 +191,7 @@ export default function Marketplace() {
     <>
       <StyledSection>
         <GridHeader>
-          <HopperIconButton onClick={toggleMarketplaceFiltersModal}>
+          <HopperIconButton onClick={toggleMarketplaceFiltersModal} square>
             <HopperIcon />
           </HopperIconButton>
 

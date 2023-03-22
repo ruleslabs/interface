@@ -9,6 +9,7 @@ import { InfoTooltip } from '@/components/Tooltip'
 import { TYPE } from '@/styles/theme'
 import { ARTIST_FEE_PERCENTAGE, MARKETPLACE_FEE_PERCENTAGE } from '@/constants/misc'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
+import Divider from '@/components/Divider'
 
 const PriceBreakdownLine = styled(Row)`
   width: 100%;
@@ -17,13 +18,6 @@ const PriceBreakdownLine = styled(Row)`
   & > div:last-child {
     margin-left: auto;
   }
-`
-
-const Separator = styled.div`
-  background: ${({ theme }) => theme.bg3};
-  margin: 8px 0;
-  width: 100%;
-  height: 3px;
 `
 
 interface SaleBreakdownProps {
@@ -49,40 +43,42 @@ export function SaleBreakdown({ price, artistName }: SaleBreakdownProps) {
   }, [price])
 
   return (
-    <Column gap={12}>
-      <PriceBreakdownLine>
-        <TYPE.body>
-          <Trans>Artist fee ({ARTIST_FEE_PERCENTAGE / 10_000}%)</Trans>
-        </TYPE.body>
+    <Column gap={24}>
+      <Column gap={12}>
+        <PriceBreakdownLine>
+          <TYPE.body>
+            <Trans>Artist fee ({ARTIST_FEE_PERCENTAGE / 10_000}%)</Trans>
+          </TYPE.body>
 
-        <InfoTooltip
-          text={
-            artistName
-              ? t`This fee will go to ${artistName} and his team.`
-              : t`This fee will go to artists and their team.`
-          }
-        />
+          <InfoTooltip
+            text={
+              artistName
+                ? t`This fee will go to ${artistName} and his team.`
+                : t`This fee will go to artists and their team.`
+            }
+          />
 
-        <Row gap={8}>
-          <TYPE.subtitle>{weiAmountToEURValue(artistFee) ?? 0}€</TYPE.subtitle>
-          <TYPE.body>{artistFee?.toSignificant(6) ?? 0} ETH</TYPE.body>
-        </Row>
-      </PriceBreakdownLine>
+          <Row gap={8}>
+            <TYPE.subtitle>{weiAmountToEURValue(artistFee) ?? 0}€</TYPE.subtitle>
+            <TYPE.body>{artistFee?.toSignificant(6) ?? 0} ETH</TYPE.body>
+          </Row>
+        </PriceBreakdownLine>
 
-      <PriceBreakdownLine>
-        <TYPE.body>
-          <Trans>Marketplace fee ({MARKETPLACE_FEE_PERCENTAGE / 10_000}%)</Trans>
-        </TYPE.body>
+        <PriceBreakdownLine>
+          <TYPE.body>
+            <Trans>Marketplace fee ({MARKETPLACE_FEE_PERCENTAGE / 10_000}%)</Trans>
+          </TYPE.body>
 
-        <InfoTooltip text={t`This fee will help Rules' further development.`} />
+          <InfoTooltip text={t`This fee will help Rules' further development.`} />
 
-        <Row gap={8}>
-          <TYPE.subtitle>{weiAmountToEURValue(marketplaceFee) ?? 0}€</TYPE.subtitle>
-          <TYPE.body>{marketplaceFee?.toSignificant(6) ?? 0} ETH</TYPE.body>
-        </Row>
-      </PriceBreakdownLine>
+          <Row gap={8}>
+            <TYPE.subtitle>{weiAmountToEURValue(marketplaceFee) ?? 0}€</TYPE.subtitle>
+            <TYPE.body>{marketplaceFee?.toSignificant(6) ?? 0} ETH</TYPE.body>
+          </Row>
+        </PriceBreakdownLine>
+      </Column>
 
-      <Separator />
+      <Divider />
 
       <PriceBreakdownLine>
         <TYPE.body>

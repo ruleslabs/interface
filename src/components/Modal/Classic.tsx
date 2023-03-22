@@ -18,12 +18,12 @@ import { round } from '@/utils/math'
 
 const ClassicDialogOverlay = styled(animated(DialogOverlay))`
   &[data-reach-dialog-overlay] {
-    z-index: 99;
+    z-index: 9999;
     position: fixed;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: ${({ theme }) => theme.bg1}80;
+    background-color: ${({ theme }) => theme.black}80;
   }
 `
 
@@ -35,10 +35,9 @@ const ClassicDialogContent = styled(DialogContent)`
   padding: 0;
   margin: 0;
   position: fixed;
-  box-shadow: 0 4px 8px ${({ theme }) => theme.black}40;
 
   ${({ theme }) => theme.media.medium`
-    top: ${theme.size.headerHeightMedium}px;
+    top: 0;
     bottom: 0;
     width: 100%;
   `}
@@ -82,8 +81,10 @@ export default function ClassicModal({ children, isOpen, onDismiss }: ClassicMod
 export const ModalContent = styled(Column)<{ width?: number }>`
   width: ${({ width = 546 }) => width}px;
   padding: 26px;
-  background: ${({ theme }) => theme.bg2};
-  border-radius: 4px;
+  background: ${({ theme }) => theme.bg1};
+  border-radius: 10px;
+  border: 1px solid ${({ theme }) => theme.bg3}80;
+  box-shadow: 0 4px 8px ${({ theme }) => theme.black}40;
 
   ${({ theme }) => theme.media.medium`
     width: 100%;
@@ -92,6 +93,7 @@ export const ModalContent = styled(Column)<{ width?: number }>`
     padding: 16px;
     overflow-y: scroll;
     overflow-x: hidden;
+    border: none;
   `}
 `
 

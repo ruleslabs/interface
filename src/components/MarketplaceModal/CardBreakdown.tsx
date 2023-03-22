@@ -7,9 +7,11 @@ import Tag from '@/components/Tag'
 
 const StyledCardBreakdown = styled(RowCenter)`
   gap: 16px;
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg2};
+  border: 1px solid ${({ theme }) => theme.bg3}80;
   width: 100%;
   padding: 12px;
+  border-radius: 3px;
 
   & img {
     width: 64px;

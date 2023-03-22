@@ -20,29 +20,15 @@ import StarknetSigner from '@/components/StarknetSigner'
 import { RULES_TOKENS_ADDRESSES } from '@/constants/addresses'
 import { useTransferCardMutation } from '@/state/wallet/hooks'
 import { networkId } from '@/constants/networks'
+import CardBreakdown from '@/components/MarketplaceModal/CardBreakdown'
 
 import Arrow from '@/images/arrow.svg'
-
-const CardBreakdown = styled(RowCenter)`
-  gap: 16px;
-  background: ${({ theme }) => theme.bg5};
-  width: 100%;
-  padding: 12px;
-
-  & img {
-    width: 64px;
-    border-radius: 4px;
-  }
-`
-
-const Avatar = styled.img`
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-`
+import Avatar from '../Avatar'
 
 const TransferSummary = styled(RowCenter)`
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg2};
+  border: 1px solid ${({ theme }) => theme.bg3}80;
+  border-radius: 3px;
   padding: 16px 12px;
   gap: 16px;
 
@@ -205,6 +191,8 @@ export default function GiftModal({
     }
   }, [isOpen])
 
+  if (!currentUser) return null
+
   return (
     <ClassicModal onDismiss={toggleOfferModal} isOpen={isOpen}>
       <ModalContent>
@@ -220,20 +208,15 @@ export default function GiftModal({
           onError={onError}
         >
           <Column gap={24}>
-            <CardBreakdown>
-              <img src={pictureUrl} />
-              <Column gap={4}>
-                <TYPE.body spanColor="text2">
-                  {artistName} S{season}&nbsp;
-                  <Trans id={scarcityName} render={({ translation }) => <>{translation}</>} />
-                </TYPE.body>
-                <TYPE.subtitle>
-                  #{serialNumber} / {scarcityMaxSupply ?? '4000'}
-                </TYPE.subtitle>
-              </Column>
-            </CardBreakdown>
+            <CardBreakdown
+              pictureUrl={pictureUrl}
+              season={season}
+              artistName={artistName}
+              serialNumbers={[serialNumber]}
+              scarcityName={scarcityName}
+            />
 
-            {currentUser?.starknetWallet.lockingReason ? (
+            {currentUser.starknetWallet.lockingReason ? (
               <ErrorCard>
                 <LockedWallet />
               </ErrorCard>
@@ -249,7 +232,7 @@ export default function GiftModal({
                 <Column gap={12}>
                   <TransferSummary>
                     <RowCenter gap={12}>
-                      <img src={currentUser?.profile.pictureUrl} />
+                      <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackSrc} />
                       <TYPE.body fontSize={14}>
                         <Trans>My account</Trans>
                       </TYPE.body>
@@ -262,7 +245,7 @@ export default function GiftModal({
                     <RowCenter gap={12}>
                       {recipient && (
                         <>
-                          <img src={recipient.profile.pictureUrl} />
+                          <Avatar src={recipient.profile.pictureUrl} fallbackSrc={recipient.profile.fallbackSrc} />
                           <TYPE.body fontSize={14}>{recipient.username}</TYPE.body>
                         </>
                       )}

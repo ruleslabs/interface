@@ -84,11 +84,6 @@ const StyledModalHeader = styled(RowBetween)`
 
 const CloseButton = styled(IconButton)`
   cursor: pointer;
-
-  svg {
-    width: 12px;
-    height: 12px;
-  }
 `
 
 interface ModalHeaderProps {

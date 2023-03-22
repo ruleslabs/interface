@@ -55,17 +55,26 @@ export const SecondaryButton = styled(BaseButton)`
   }
 `
 
-export const IconButton = styled.button<{ alert?: boolean; notifications?: number }>`
+export const IconButton = styled.button<{ alert?: boolean; notifications?: number; square?: boolean }>`
   width: 32px;
   height: 32px;
   border: 1px solid ${({ theme }) => theme.bg3};
-  background: ${({ theme }) => theme.bg3}80;
-  border-radius: 50%;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   outline: none;
+
+  ${({ theme, square = false }) =>
+    square
+      ? `
+      border-radius: 3px;
+      background: none;
+    `
+      : `
+      border-radius: 50%;
+      background: ${theme.bg3}80;
+    `}
 
   :hover {
     background: ${({ theme }) => theme.bg3}40;
@@ -271,7 +280,7 @@ const StyledThirdPartyButton = styled(SecondaryButton)<{ active: boolean }>`
   align-items: center;
   padding: 8px 12px 8px 16px;
   border: 1px solid ${({ theme }) => theme.bg3};
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg3}80;
   gap: 16px;
   height: 60px;
   transition: background 100ms ease;
@@ -284,7 +293,7 @@ const StyledThirdPartyButton = styled(SecondaryButton)<{ active: boolean }>`
     active
       ? `
         :hover {
-          background: ${theme.bg3};
+          background: ${theme.bg3}40;
         }
       `
       : `
