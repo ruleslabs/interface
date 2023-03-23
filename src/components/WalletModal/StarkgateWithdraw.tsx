@@ -128,7 +128,6 @@ export default function WithdrawModal() {
 
   return (
     <StarknetSigner
-      onBack={onBack}
       confirmationText={t`Your ${withdrawAmount} ETH withdraw is on its way`}
       confirmationActionText={t`Confirm withdraw`}
       transactionText={t`${withdrawAmount} ETH withdraw to your Ethereum wallet`}

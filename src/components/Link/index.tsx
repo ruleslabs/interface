@@ -20,7 +20,6 @@ export interface LinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
   target?: string
   color?: string
   underline?: boolean
-  children: React.ReactElement
 }
 
 export default function Link({ href, color, target, children, underline = false, ...props }: LinkProps) {
@@ -37,6 +36,7 @@ export default function Link({ href, color, target, children, underline = false,
 
 export interface ActiveLinkProps extends LinkProps {
   perfectMatch?: boolean
+  children: React.ReactElement
 }
 
 export function ActiveLink({ children, href, perfectMatch = false, ...props }: ActiveLinkProps) {

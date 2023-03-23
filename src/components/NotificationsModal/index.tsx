@@ -24,7 +24,7 @@ export default function NotificationsModal() {
   const isOpen = useModalOpen(ApplicationModal.NOTIFICATIONS)
 
   return (
-    <SidebarModal onDismiss={toggleNotificationsModal} isOpen={isOpen} width={350}>
+    <SidebarModal onDismiss={toggleNotificationsModal} isOpen={isOpen} width={350} fullscreen>
       <ModalContent>
         <ModalHeader onDismiss={toggleNotificationsModal} title={t`Notifications`} />
 

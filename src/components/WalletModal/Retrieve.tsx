@@ -17,8 +17,7 @@ import { useEthereumMulticallContract, useEthereumStarkgateContract } from '@/ho
 import Link from '@/components/Link'
 import { desiredChainId } from '@/constants/connectors'
 import { CHAINS } from '@/constants/networks'
-import { useRetrieveEtherMutation, useSetWalletModalMode } from '@/state/wallet/hooks'
-import { WalletModalMode } from '@/state/wallet/actions'
+import { useRetrieveEtherMutation } from '@/state/wallet/hooks'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
 
@@ -55,10 +54,6 @@ export default function Retrieve() {
   // current user
   const currentUser = useCurrentUser()
   const setCurrentUser = useSetCurrentUser()
-
-  // modal mode
-  const setWalletModalMode = useSetWalletModalMode()
-  const onBack = useCallback(() => setWalletModalMode(WalletModalMode.WITHDRAW), [])
 
   // amount
   const parsedAmounts = useMemo(
@@ -142,7 +137,6 @@ export default function Retrieve() {
 
   return (
     <EthereumSigner
-      onBack={onBack}
       confirmationText={t`Your ETH transfer is on its way`}
       transactionText={t`${totalParsedAmount?.toSignificant(6)} ETH transfer to your Ethereum wallet`}
       waitingForTx={waitingForTx}

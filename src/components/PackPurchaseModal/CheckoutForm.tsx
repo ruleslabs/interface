@@ -282,7 +282,7 @@ export default function CheckoutForm({
                 <Trans>
                   I acknowledge having read and accepted the&nbsp;
                   <Link href="https://stripe.com/fr/legal/checkout" target="_blank" underline>
-                    <Trans>terms and conditions</Trans>
+                    terms and conditions
                   </Link>
                   <span>&nbsp;</span>
                   of Stripe.
@@ -295,7 +295,7 @@ export default function CheckoutForm({
                 <Trans>
                   I expressly agree that your services will be provided to me upon my acceptance of the&nbsp;
                   <Link href="/terms" target="_blank" underline>
-                    <Trans>terms and conditions</Trans>
+                    terms and conditions
                   </Link>
                   <span>&nbsp;</span>
                   and I waive my right of retract.

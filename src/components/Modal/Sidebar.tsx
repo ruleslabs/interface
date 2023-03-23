@@ -43,8 +43,14 @@ interface SidebarModalProps {
   isOpen: boolean
   onDismiss: () => void
   position?: 'left' | 'right'
-  width: number
+  width?: number
+  fullscreen?: boolean
 }
+
+/**
+ * Sidebar modal component
+ * @param fullscreen  - fullscreen modal on small devices when true
+ **/
 
 export default function SidebarModal({
   children,
@@ -52,6 +58,7 @@ export default function SidebarModal({
   onDismiss,
   position = 'right',
   width = DEFAULT_SIDEBAR_WIDTH,
+  fullscreen = false,
 }: SidebarModalProps) {
   const transitions = useTransition(isOpen, {
     config: { duration: 150 },

@@ -98,7 +98,6 @@ export default function DepositModal() {
 
   return (
     <EthereumSigner
-      onBack={onBack}
       confirmationText={t`Your ${depositAmount} ETH deposit is on its way`}
       transactionText={t`${depositAmount} ETH deposit to your Rules wallet`}
       waitingForTx={waitingForTx}
