@@ -1,25 +1,22 @@
 import styled from 'styled-components'
 
 import Row from '@/components/Row'
-import { BaseButton } from '@/components/Button'
+import { IconButton } from '@/components/Button'
 
-const SmallButton = styled(BaseButton)`
-  color: ${({ theme }) => theme.text1};
-  background: ${({ theme }) => theme.bg5};
-  box-shadow: inset 0 4px 4px rgba(255, 255, 255, 0.04);
-  padding: 0;
-  width: 46px;
-  height: 40px;
+const SmallButton = styled(IconButton)`
   font-size: 24px;
+  height: 40px;
+  width: 40px;
+  color: ${({ theme }) => theme.text1};
 
   :disabled {
-    cursor: default;
-    color: ${({ theme }) => theme.text2};
-    box-shadow: none;
+    opacity: 0.2;
+    cursor: not-allowed;
+    pointer-events: all;
   }
 
-  :active:enabled {
-    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.02);
+  :disabled:hover {
+    background: none;
   }
 `
 
@@ -44,11 +41,11 @@ interface InputStepCounterProps {
 export default function InputStepCounter({ value, max, min, onIncrement, onDecrement }: InputStepCounterProps) {
   return (
     <Row gap={12}>
-      <SmallButton disabled={value <= min} onClick={onDecrement}>
+      <SmallButton disabled={value <= min} onClick={onDecrement} square>
         -
       </SmallButton>
       <NumericalInput value={value} disabled />
-      <SmallButton disabled={value >= max} onClick={onIncrement}>
+      <SmallButton disabled={value >= max} onClick={onIncrement} square>
         +
       </SmallButton>
     </Row>
