@@ -66,6 +66,8 @@ const OnSale = styled.img`
   top: 22.2%;
   right: 0;
   width: 80%;
+  mix-blend-mode: hard-light;
+  filter: contrast(1.3) brightness(1.3) drop-shadow(2px 4px 6px ${({ theme }) => theme.black});
 `
 
 const StyledLargeSpinner = styled(LargeSpinner)`
