@@ -3,14 +3,26 @@ import styled, { createGlobalStyle, css, ThemeProvider } from 'styled-components
 
 import { Colors } from './styled'
 
-const MEDIA_QUERIES = {
-  extraSmall: 'only screen and (max-width: 481px)',
-  small: 'only screen and (max-width: 769px)',
-  medium: 'only screen and (max-width: 1024px)',
-  mediumGT: 'only screen and (min-width: 1025px)',
-  large: 'only screen and (max-width: 1200px)',
+const MISC_MEDIA_QUERIES = {
   computer: '(hover: hover) and (pointer: fine)',
 }
+
+const MEDIA_QUERIES_BREAKPOINTS = {
+  extraSmall: 481,
+  small: 769,
+  medium: 1024,
+  large: 1200,
+}
+
+export const MEDIA_QUERIES: { [key in keyof typeof MEDIA_QUERIES_BREAKPOINTS]: string } & {
+  [key in keyof typeof MISC_MEDIA_QUERIES]: string
+} = Object.keys(MEDIA_QUERIES_BREAKPOINTS).reduce((acc: any, key: string) => {
+  acc[key] = `only screen and (max-width: ${
+    MEDIA_QUERIES_BREAKPOINTS[key as keyof typeof MEDIA_QUERIES_BREAKPOINTS]
+  }px)`
+
+  return acc
+}, MISC_MEDIA_QUERIES)
 
 const media: { [breakpoint in keyof typeof MEDIA_QUERIES]: typeof css } = Object.keys(MEDIA_QUERIES).reduce(
   (acc: any, breakpoint: string) => {

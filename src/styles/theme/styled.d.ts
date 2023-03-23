@@ -1,5 +1,7 @@
 import { ThemedCssFunction } from 'styled-components'
 
+import { MEDIA_QUERIES } from './index'
+
 export interface Colors {
   white: string
   black: string
@@ -36,14 +38,7 @@ export interface Colors {
 
 declare module 'styled-components' {
   export interface DefaultTheme extends Colors {
-    media: {
-      extraSmall: ThemedCssFunction<DefaultTheme>
-      small: ThemedCssFunction<DefaultTheme>
-      medium: ThemedCssFunction<DefaultTheme>
-      mediumGT: ThemedCssFunction<DefaultTheme>
-      large: ThemedCssFunction<DefaultTheme>
-      computer:  ThemedCssFunction<DefaultTheme>
-    }
+    media: { [key in keyof typeof MEDIA_QUERIES]: ThemedCssFunction<DefaultTheme> }
 
     before: {
       alert: ThemedCssFunction<DefaultTheme>
