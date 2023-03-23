@@ -45,10 +45,6 @@ export default function CardModelHistory({ cardModelId, ...props }: CardModelHis
 
   const transfersSearch = useSearchTransfers({ facets: { cardModelId }, sortingKey, onlySales: true })
 
-  console.log(transfersSearch)
-
-  console.log(transfersSearch)
-
   return (
     <>
       <SortingTitle>

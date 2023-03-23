@@ -3,6 +3,12 @@ import styled from 'styled-components'
 
 import useTheme from '@/hooks/useTheme'
 import SliderInput from '@/components/Input/SliderInput'
+import Column from '@/components/Column'
+
+const SliderWrapper = styled(Column)`
+  z-index: 1;
+  gap: 24px;
+`
 
 const StyledSlider = styled.input`
   -webkit-appearance: none;
@@ -10,9 +16,7 @@ const StyledSlider = styled.input`
   height: 2px;
   border-radius: 1px;
   outline: none;
-  margin: 0 0 8px;
   position: relative;
-  z-index: 1;
 
   &::before {
     height: 2px;
@@ -86,7 +90,7 @@ export default function Slider({ value, min = 0, max, onSlidingChange, onInputCh
   )
 
   return (
-    <>
+    <SliderWrapper>
       <StyledSlider
         type="range"
         min={min}
@@ -99,6 +103,6 @@ export default function Slider({ value, min = 0, max, onSlidingChange, onInputCh
         onTouchEnd={onSliderRelease}
       />
       <SliderInput type="text" value={value} onUserInput={handleInputUpdate} placeholder="0" unit="€" />
-    </>
+    </SliderWrapper>
   )
 }

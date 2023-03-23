@@ -9,6 +9,7 @@ import { TYPE } from '@/styles/theme'
 import { useMarketplaceFilters, useMarketplaceFiltersHandlers } from '@/state/search/hooks'
 import Subtitle from '@/components/Text/Subtitle'
 import Divider from '@/components/Divider'
+import usePrevious from '@/hooks/usePrevious'
 
 interface MarketplaceFiltersProps extends React.HTMLAttributes<HTMLDivElement> {
   maximumPriceUpperBound: number
@@ -24,8 +25,8 @@ export default function MarketplaceFilters({ maximumPriceUpperBound, ...props }:
     setMaximumPrice: setMarketplaceMaximumPrice,
   } = useMarketplaceFiltersHandlers()
 
-  // max price
-  const [maximumPrice, setMaximumPrice] = useState(maximumPriceUpperBound)
+  // max price (only update filtered maximum price when this value get debounced)
+  const [maximumPrice, setMaximumPrice] = useState(filters.maximumPrice ?? maximumPriceUpperBound)
 
   // max price debounce
   const debounceMaximumPrice = useCallback(() => setMarketplaceMaximumPrice(maximumPrice), [maximumPrice])
@@ -34,10 +35,15 @@ export default function MarketplaceFilters({ maximumPriceUpperBound, ...props }:
     setMarketplaceMaximumPrice(value)
   }, [])
 
+  // update maximum price on highest low update but not on component mount
+  const previousMaximumPriceUpperBound = usePrevious(maximumPriceUpperBound)
+
   useEffect(() => {
-    setMarketplaceMaximumPrice(maximumPriceUpperBound)
-    setMaximumPrice(maximumPriceUpperBound)
-  }, [setMarketplaceMaximumPrice, maximumPriceUpperBound])
+    if (previousMaximumPriceUpperBound !== undefined && previousMaximumPriceUpperBound !== maximumPriceUpperBound) {
+      setMarketplaceMaximumPrice(maximumPriceUpperBound)
+      setMaximumPrice(maximumPriceUpperBound)
+    }
+  }, [setMarketplaceMaximumPrice, maximumPriceUpperBound, previousMaximumPriceUpperBound])
 
   return (
     <Column gap={24} {...props}>
