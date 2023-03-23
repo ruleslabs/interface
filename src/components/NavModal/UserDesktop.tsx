@@ -91,8 +91,8 @@ export default function NavModalUserDesktop() {
             </UsernameMenuButton>
           </Link>
 
-          {navLinks.map((navLinks) => (
-            <>
+          {navLinks.map((navLinks, index) => (
+            <Column key={`nav-links-${index}`} gap={6}>
               <Divider />
 
               <Column>
@@ -102,7 +102,7 @@ export default function NavModalUserDesktop() {
                   </Actionable>
                 ))}
               </Column>
-            </>
+            </Column>
           ))}
         </Column>
       </StyledNavModalUserDesktop>

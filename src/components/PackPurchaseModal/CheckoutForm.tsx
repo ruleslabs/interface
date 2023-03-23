@@ -195,9 +195,6 @@ export default function CheckoutForm({
             onSuccess()
             return
           }
-
-          console.log(res)
-          throw { failure: res?.error?.message ?? 'Invalid response after confirmation' }
         })
         .then((res: any) => {
           if (res?.paymentIntent?.error) throw { failure: res.paymentIntent.error?.message }
@@ -285,7 +282,7 @@ export default function CheckoutForm({
                 <Trans>
                   I acknowledge having read and accepted the&nbsp;
                   <Link href="https://stripe.com/fr/legal/checkout" target="_blank" underline>
-                    terms and conditions
+                    <Trans>terms and conditions</Trans>
                   </Link>
                   <span>&nbsp;</span>
                   of Stripe.
@@ -298,7 +295,7 @@ export default function CheckoutForm({
                 <Trans>
                   I expressly agree that your services will be provided to me upon my acceptance of the&nbsp;
                   <Link href="/terms" target="_blank" underline>
-                    Terms and Conditions
+                    <Trans>terms and conditions</Trans>
                   </Link>
                   <span>&nbsp;</span>
                   and I waive my right of retract.

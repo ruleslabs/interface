@@ -3,7 +3,8 @@ import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
 import { Trans } from '@lingui/macro'
 
-import { ModalHeader } from '@/components/Modal/Classic'
+import { ModalHeader } from '@/components/Modal'
+import { ModalContent, ModalBody } from '@/components/Modal/Classic'
 import { EMAIL_VERIFICATION_CODE_LENGTH } from '@/constants/misc'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
@@ -153,48 +154,50 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
   )
 
   return (
-    <>
+    <ModalContent>
       <ModalHeader onDismiss={toggleAuthModal} onBack={() => setAuthMode(AuthMode.SIGN_UP)} />
 
-      <Column gap={26}>
-        <TYPE.large>
-          <Trans>Enter the code to confirm your registration</Trans>
-        </TYPE.large>
+      <ModalBody>
+        <Column gap={26}>
+          <TYPE.large>
+            <Trans>Enter the code to confirm your registration</Trans>
+          </TYPE.large>
 
-        <Column gap={12}>
-          <Input
-            id="emailVerificationCode"
-            value={emailVerificationCode}
-            placeholder="Code"
-            type="text"
-            onUserInput={onEmailVerificationCodeInput}
-            loading={emailVerificationCode.length > 0 && loading}
-            $valid={error.id !== 'emailVerificationCode' || loading}
-          />
-
-          {error.message && (
-            <Trans
-              id={error.message}
-              render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
+          <Column gap={12}>
+            <Input
+              id="emailVerificationCode"
+              value={emailVerificationCode}
+              placeholder="Code"
+              type="text"
+              onUserInput={onEmailVerificationCodeInput}
+              loading={emailVerificationCode.length > 0 && loading}
+              $valid={error.id !== 'emailVerificationCode' || loading}
             />
-          )}
-        </Column>
 
-        <Column gap={8}>
-          <TYPE.body>
-            <Trans>The code has been emailed to {email}</Trans>
-          </TYPE.body>
-          {countdown?.seconds ? (
-            <TYPE.subtitle>
-              <Trans>New code in {countdown.seconds} seconds</Trans>
-            </TYPE.subtitle>
-          ) : (
-            <ResendCode onClick={handleNewCode}>
-              <Trans>Resend the code</Trans>
-            </ResendCode>
-          )}
+            {error.message && (
+              <Trans
+                id={error.message}
+                render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
+              />
+            )}
+          </Column>
+
+          <Column gap={8}>
+            <TYPE.body>
+              <Trans>The code has been emailed to {email}</Trans>
+            </TYPE.body>
+            {countdown?.seconds ? (
+              <TYPE.subtitle>
+                <Trans>New code in {countdown.seconds} seconds</Trans>
+              </TYPE.subtitle>
+            ) : (
+              <ResendCode onClick={handleNewCode}>
+                <Trans>Resend the code</Trans>
+              </ResendCode>
+            )}
+          </Column>
         </Column>
-      </Column>
-    </>
+      </ModalBody>
+    </ModalContent>
   )
 }

@@ -4,16 +4,13 @@ import styled from 'styled-components'
 import useCloseModalOnNavigation from '@/hooks/useCloseModalOnNavigation'
 
 const Overlay = styled.div`
-  ::before {
-    content: '';
-    z-index: 99;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    cursor: default;
-  }
+  z-index: 99;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  cursor: default;
 `
 
 interface HintModalProps {

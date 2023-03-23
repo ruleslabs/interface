@@ -5,6 +5,7 @@ import { uint256HexFromStrHex, getStarknetCardId, ScarcityName, WeiAmount } from
 import { ApolloError, useQuery, gql } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
+import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
 import { useModalOpen, useCreateOfferModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
@@ -245,15 +246,18 @@ export default function CreateOfferModal({ cardsIds, onSuccess }: CreateOfferMod
   return (
     <ClassicModal onDismiss={toggleCreateOfferModal} isOpen={isOpen}>
       <ModalContent>
+        <ModalHeader
+          onDismiss={toggleCreateOfferModal}
+          title={calls ? undefined : displayOverview ? t`Offers overview` : t`Enter an asking price`}
+        />
+
         <StarknetSigner
-          modalHeaderChildren={displayOverview ? t`Offers overview` : t`Enter an asking price`}
           confirmationText={t`Your offer will be created`}
           confirmationActionText={t`Confirm offer creation`}
           transactionText={t`offer creation.`}
           calls={calls ?? undefined}
           txHash={txHash ?? undefined}
           error={error ?? undefined}
-          onDismiss={toggleCreateOfferModal}
           onSignature={onSignature}
           onError={onError}
         >

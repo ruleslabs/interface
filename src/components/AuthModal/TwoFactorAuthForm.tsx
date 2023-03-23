@@ -2,7 +2,8 @@ import { useState, useCallback } from 'react'
 import { Trans } from '@lingui/macro'
 import { ApolloError } from '@apollo/client'
 
-import { ModalHeader } from '@/components/Modal/Classic'
+import { ModalHeader } from '@/components/Modal'
+import { ModalContent, ModalBody } from '@/components/Modal/Classic'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'
@@ -64,39 +65,39 @@ export default function TwoFactorAuthForm({ onSuccessfulConnection }: TwoFactorA
   )
 
   return (
-    <>
+    <ModalContent>
       <ModalHeader onDismiss={toggleAuthModal} onBack={() => setAuthMode(AuthMode.SIGN_IN)} />
 
-      <Column gap={26}>
-        <TYPE.large>
-          <Trans>Enter the 2FA code to sign in</Trans>
-        </TYPE.large>
+      <ModalBody>
+        <Column gap={26}>
+          <TYPE.large>
+            <Trans>Enter the 2FA code to sign in</Trans>
+          </TYPE.large>
 
-        <Column gap={12}>
-          <Input
-            id="twoFactorAuthCode"
-            value={twoFactorAuthCode}
-            placeholder="Code"
-            type="text"
-            onUserInput={onTwoFactorAuthInput}
-            loading={twoFactorAuthCode.length > 0 && loading}
-            $valid={error.id !== 'twoFactorAuthCode' || loading}
-          />
-
-          {error.message && (
-            <Trans
-              id={error.message}
-              render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
+          <Column gap={12}>
+            <Input
+              id="twoFactorAuthCode"
+              value={twoFactorAuthCode}
+              placeholder="Code"
+              type="text"
+              onUserInput={onTwoFactorAuthInput}
+              loading={twoFactorAuthCode.length > 0 && loading}
+              $valid={error.id !== 'twoFactorAuthCode' || loading}
             />
-          )}
-        </Column>
-      </Column>
 
-      <Column gap={12} style={{ padding: '0 8px' }}>
-        <TYPE.subtitle onClick={() => setAuthMode(AuthMode.REQUEST_TWO_FACTOR_AUTH_UPDATE)} clickable>
-          <Trans>Lost your 2FA access ?</Trans>
-        </TYPE.subtitle>
-      </Column>
-    </>
+            {error.message && (
+              <Trans
+                id={error.message}
+                render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
+              />
+            )}
+
+            <TYPE.subtitle onClick={() => setAuthMode(AuthMode.REQUEST_TWO_FACTOR_AUTH_UPDATE)} clickable>
+              <Trans>Lost your 2FA access ?</Trans>
+            </TYPE.subtitle>
+          </Column>
+        </Column>
+      </ModalBody>
+    </ModalContent>
   )
 }

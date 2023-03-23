@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Call, Signature } from 'starknet'
 import { t } from '@lingui/macro'
 
-import { ModalHeader } from '@/components/Modal/Classic'
+import { ModalBody } from '@/components/Modal/Classic'
 import { useWaitingTransactionQuery } from '@/state/wallet/hooks'
 import Confirmation from './Confirmation'
 import Signer from './Signer'
@@ -18,7 +18,6 @@ const DummyFocusInput = styled.input`
 
 interface StarknetSignerProps {
   children: React.ReactNode
-  modalHeaderChildren?: string | React.ReactNode
   confirmationText: string
   confirmationActionText?: string
   transactionText: string
@@ -27,13 +26,10 @@ interface StarknetSignerProps {
   txHash?: string
   error?: string
   onSignature(signature: Signature, maxFee: string, nonce: string): void
-  onDismiss?: () => void
   onError(error: string): void
-  onBack?: () => void
 }
 
 export default function StarknetSigner({
-  modalHeaderChildren,
   confirmationText,
   confirmationActionText,
   transactionText,
@@ -42,13 +38,9 @@ export default function StarknetSigner({
   txHash,
   error,
   onSignature,
-  onDismiss,
   onError,
-  onBack,
   children,
 }: StarknetSignerProps) {
-  // password prompt
-
   // wallet lazyness
   const waitingTransactionQuery = useWaitingTransactionQuery()
   const waitingTransaction = waitingTransactionQuery.data?.waitingTransaction
@@ -68,9 +60,7 @@ export default function StarknetSigner({
   const isLoading = waitingTransactionQuery.loading
 
   return (
-    <>
-      {!calls && <ModalHeader onDismiss={onDismiss}>{modalHeaderChildren}</ModalHeader>}
-
+    <ModalBody>
       <DummyFocusInput type="text" />
 
       {!!waitingTransaction && (
@@ -96,9 +86,6 @@ export default function StarknetSigner({
       <PaginationSpinner loading={isLoading} />
 
       <Signer
-        onDismiss={onDismiss}
-        onBack={onBack}
-        modalHeaderChildren={modalHeaderChildren}
         confirmationActionText={confirmationActionText}
         isOpen={!txHash && !waitingForTx && !waitingForFees && !!calls}
         transactionValue={transactionValue}
@@ -108,6 +95,6 @@ export default function StarknetSigner({
         onError={onError}
         calls={calls ?? undefined}
       />
-    </>
+    </ModalBody>
   )
 }

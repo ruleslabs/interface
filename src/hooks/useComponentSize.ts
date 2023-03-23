@@ -20,7 +20,7 @@ export default function useComponentSize<T extends HTMLElement>(ref: RefObject<T
     return () => {
       window.removeEventListener('resize', handleResize)
     }
-  }, [ref])
+  }, [ref.current])
 
   return size
 }

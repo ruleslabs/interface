@@ -5,6 +5,7 @@ import { uint256HexFromStrHex, getStarknetCardId, ScarcityName } from '@rulesorg
 import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
+import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
 import { useModalOpen, useOfferModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
@@ -85,7 +86,6 @@ interface GiftModalProps {
   artistName: string
   season: number
   scarcityName: string
-  scarcityMaxSupply?: number
   serialNumber: number
   pictureUrl: string
   onSuccess(): void
@@ -95,7 +95,6 @@ export default function GiftModal({
   artistName,
   season,
   scarcityName,
-  scarcityMaxSupply,
   serialNumber,
   pictureUrl,
   onSuccess,
@@ -196,14 +195,14 @@ export default function GiftModal({
   return (
     <ClassicModal onDismiss={toggleOfferModal} isOpen={isOpen}>
       <ModalContent>
+        <ModalHeader onDismiss={toggleOfferModal} title={calls ? undefined : t`Offer this card`} />
+
         <StarknetSigner
-          modalHeaderChildren={t`Offer this card`}
           confirmationText={t`Your card is on its way`}
           transactionText={t`card transfer.`}
           calls={calls ?? undefined}
           txHash={txHash ?? undefined}
           error={error ?? undefined}
-          onDismiss={toggleOfferModal}
           onSignature={onSignature}
           onError={onError}
         >

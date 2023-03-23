@@ -56,7 +56,7 @@ const TxGrid = styled.div<{ isOpen?: boolean }>`
 `
 
 const HeaderRow = styled.div`
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg3}40;
   gap: 16px;
 `
 

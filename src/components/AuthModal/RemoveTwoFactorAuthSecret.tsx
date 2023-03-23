@@ -4,7 +4,8 @@ import { ApolloError } from '@apollo/client'
 import { Trans } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
-import { ModalHeader } from '@/components/Modal/Classic'
+import { ModalHeader } from '@/components/Modal'
+import { ModalContent, ModalBody } from '@/components/Modal/Classic'
 import Column, { ColumnCenter } from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { useRemoveTwoFactorAuthSecretMutation } from '@/state/auth/hooks'
@@ -102,47 +103,49 @@ export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }
   }, [])
 
   return (
-    <>
-      <ModalHeader onDismiss={toggleAuthModal}>{''}</ModalHeader>
+    <ModalContent>
+      <ModalHeader onDismiss={toggleAuthModal} />
 
-      <ColumnCenter gap={32}>
-        {error.message && (
-          <Column gap={24}>
-            <StyledFail />
-
-            <Column gap={8}>
-              <Subtitle>
-                <Trans>The Two-Factor Authentication has not been removed.</Trans>
-              </Subtitle>
-              <Trans
-                id={error.message}
-                render={({ translation }) => <Subtitle color="error">{translation}</Subtitle>}
-              />
-            </Column>
-          </Column>
-        )}
-        {!error.message && !loading && (
-          <>
+      <ModalBody>
+        <ColumnCenter gap={32}>
+          {error.message && (
             <Column gap={24}>
-              <StyledCheckmark />
+              <StyledFail />
 
               <Column gap={8}>
                 <Subtitle>
-                  <Trans>The Two-Factor Authentication has been successfully removed.</Trans>
+                  <Trans>The Two-Factor Authentication has not been removed.</Trans>
                 </Subtitle>
+                <Trans
+                  id={error.message}
+                  render={({ translation }) => <Subtitle color="error">{translation}</Subtitle>}
+                />
               </Column>
             </Column>
+          )}
+          {!error.message && !loading && (
+            <>
+              <Column gap={24}>
+                <StyledCheckmark />
 
-            <ConfigureTwoFactorAuthButtonWrapper>
-              <Link href="/settings/security">
-                <PrimaryButton large>
-                  <Trans>Setup a new one</Trans>
-                </PrimaryButton>
-              </Link>
-            </ConfigureTwoFactorAuthButtonWrapper>
-          </>
-        )}
-      </ColumnCenter>
-    </>
+                <Column gap={8}>
+                  <Subtitle>
+                    <Trans>The Two-Factor Authentication has been successfully removed.</Trans>
+                  </Subtitle>
+                </Column>
+              </Column>
+
+              <ConfigureTwoFactorAuthButtonWrapper>
+                <Link href="/settings/security">
+                  <PrimaryButton large>
+                    <Trans>Setup a new one</Trans>
+                  </PrimaryButton>
+                </Link>
+              </ConfigureTwoFactorAuthButtonWrapper>
+            </>
+          )}
+        </ColumnCenter>
+      </ModalBody>
+    </ModalContent>
   )
 }

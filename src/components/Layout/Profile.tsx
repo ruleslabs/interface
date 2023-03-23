@@ -57,7 +57,7 @@ const AvatarEditButton = styled(RowCenter)`
   bottom: 0;
   left: 0;
   justify-content: center;
-  background: ${({ theme }) => theme.black}80;
+  background: ${({ theme }) => theme.bg1}a0;
   opacity: 0;
   border-radius: 50%;
   cursor: pointer;
@@ -140,9 +140,9 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
 
               {userSlug === currentUser?.slug && (
                 <AvatarEditButton onClick={toggleAvatarEditModal}>
-                  <TYPE.body>
+                  <TYPE.medium>
                     <Trans>Edit</Trans>
-                  </TYPE.body>
+                  </TYPE.medium>
                 </AvatarEditButton>
               )}
             </AvatarWrapper>

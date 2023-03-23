@@ -11,10 +11,10 @@ interface ActionableProps extends ActionablePropsBase {
   children: React.ReactElement
 }
 
-export default function Actionable({ link, handler, children, ...props }: ActionableProps) {
+export default function Actionable({ link, handler, children, perfectMatch, ...props }: ActionableProps) {
   if (link) {
     return (
-      <ActiveLink href={link} {...props}>
+      <ActiveLink href={link} perfectMatch={perfectMatch} {...props}>
         {children}
       </ActiveLink>
     )

@@ -1,9 +1,7 @@
 import { useCallback } from 'react'
-import styled from 'styled-components'
 import { useRouter } from 'next/router'
 
 import ClassicModal from '@/components/Modal/Classic'
-import Column from '@/components/Column'
 import { useModalOpen, useAuthModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useAuthMode } from '@/state/auth/hooks'
@@ -19,18 +17,6 @@ import RemoveTwoFactorAuthSecret from './RemoveTwoFactorAuthSecret'
 import RequestPasswordUpdateForm from './RequestPasswordUpdateForm'
 import RequestTwoFactorAuthSecretUpdateForm from './RequestTwoFactorAuthSecretUpdateForm'
 import TwoFactorAuthForm from './TwoFactorAuthForm'
-
-const StyledAuthModal = styled(Column)`
-  width: 546px;
-  padding: 26px;
-  background: ${({ theme }) => theme.bg2};
-  border-radius: 4px;
-
-  ${({ theme }) => theme.media.medium`
-    width: 100%;
-    height: 100%;
-  `}
-`
 
 export default function AuthModal() {
   const router = useRouter()
@@ -60,18 +46,25 @@ export default function AuthModal() {
     switch (authMode) {
       case AuthMode.SIGN_IN:
         return <SignInForm onSuccessfulConnection={onSuccessfulConnection} />
+
       case AuthMode.SIGN_UP:
         return <SignUpForm />
+
       case AuthMode.EMAIL_VERIFICATION:
         return <EmailVerificationForm onSuccessfulConnection={onSuccessfulConnection} />
+
       case AuthMode.REQUEST_PASSWORD_UPDATE:
         return <RequestPasswordUpdateForm />
+
       case AuthMode.REQUEST_TWO_FACTOR_AUTH_UPDATE:
         return <RequestTwoFactorAuthSecretUpdateForm />
+
       case AuthMode.UPDATE_PASSWORD:
         return <UpdatePasswordForm onSuccessfulConnection={onSuccessfulConnection} />
+
       case AuthMode.REMOVE_TWO_FACTOR_AUTH_SECRET:
         return <RemoveTwoFactorAuthSecret onSuccessfulConnection={onSuccessfulConnection} />
+
       case AuthMode.TWO_FACTOR_AUTH:
         return <TwoFactorAuthForm onSuccessfulConnection={onSuccessfulConnection} />
     }
@@ -80,7 +73,7 @@ export default function AuthModal() {
 
   return (
     <ClassicModal onDismiss={toggleAuthModal} isOpen={isOpen}>
-      <StyledAuthModal gap={26}>{renderModal(authMode)}</StyledAuthModal>
+      {renderModal(authMode)}
     </ClassicModal>
   )
 }

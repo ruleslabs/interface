@@ -3,17 +3,16 @@ import styled from 'styled-components'
 import { useLazyQuery, gql } from '@apollo/client'
 import { t } from '@lingui/macro'
 
-import ClassicModal, { ModalHeader } from '@/components/Modal/Classic'
+import { ModalHeader } from '@/components/Modal'
+import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classic'
 import { useModalOpen, useDeckInsertionModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import Column from '@/components/Column'
-import Section from '@/components/Section'
 import { SearchBar } from '@/components/Input'
 import Grid from '@/components/Grid'
 import { useSearchCards } from '@/state/search/hooks'
 import { useDeckState, useDeckActionHandlers } from '@/state/deck/hooks'
 import useDebounce from '@/hooks/useDebounce'
-import useWindowSize from '@/hooks/useWindowSize'
 import CardModel from '@/components/CardModel'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 import { PaginationSpinner } from '@/components/Spinner'
@@ -130,15 +129,12 @@ export default function DeckInsertionModal({ starknetWalletAddress, cardIndex }:
   // infinite scroll
   const lastTxRef = useInfiniteScroll({ nextPage: cardsSearch.nextPage, loading: isLoading })
 
-  // window size
-  const windowSize = useWindowSize()
-
   return (
     <ClassicModal onDismiss={onDismiss} isOpen={isOpen}>
-      <StyledDeckInsertionModal windowHeight={windowSize.height}>
+      <ModalContent fullscreen>
         <ModalHeader onDismiss={onDismiss} />
 
-        <Section marginTop="16px">
+        <ModalBody>
           <Column gap={32}>
             <SearchBar
               style={{ width: '100%' }}
@@ -153,6 +149,7 @@ export default function DeckInsertionModal({ starknetWalletAddress, cardIndex }:
                   key={card.slug}
                   innerRef={index + 1 === cards.length ? lastTxRef : undefined}
                   pictureUrl={card.cardModel.pictureUrl}
+                  videoUrl={card.cardModel.videoUrl}
                   serialNumber={card.serialNumber}
                   season={card.cardModel.season}
                   artistName={card.cardModel.artist.displayName}
@@ -164,8 +161,8 @@ export default function DeckInsertionModal({ starknetWalletAddress, cardIndex }:
 
             <PaginationSpinner loading={isLoading} />
           </Column>
-        </Section>
-      </StyledDeckInsertionModal>
+        </ModalBody>
+      </ModalContent>
     </ClassicModal>
   )
 }

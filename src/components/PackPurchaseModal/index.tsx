@@ -1,35 +1,14 @@
 import { useCallback, useState, useEffect } from 'react'
-import styled from 'styled-components'
 import { Elements } from '@stripe/react-stripe-js'
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/macro'
 
-import { TYPE } from '@/styles/theme'
-import ClassicModal, { ModalHeader } from '@/components/Modal/Classic'
+import { ModalHeader } from '@/components/Modal'
+import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classic'
 import { useModalOpen, usePackPurchaseModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useStripePromise, useCreatePaymentIntent } from '@/state/stripe/hooks'
-import Column from '@/components/Column'
-import { RowCenter } from '@/components/Row'
 import CheckoutForm from './CheckoutForm'
 import Confirmation from './Confirmation'
-
-import Lock from '@/images/lock.svg'
-
-const StyledPackPurchaseModal = styled(Column)`
-  width: 560px;
-  padding: 26px;
-  background: ${({ theme }) => theme.bg2};
-  border-radius: 4px;
-
-  ${({ theme }) => theme.media.medium`
-    width: 100%;
-    height: 100%;
-  `}
-`
-
-const StyeldLock = styled(Lock)`
-  width: 16px;
-`
 
 interface PackPurchaseModalProps {
   price: number
@@ -108,34 +87,27 @@ export default function PackPurchaseModal({
 
   return (
     <ClassicModal onDismiss={togglePackPurchaseModal} isOpen={isOpen}>
-      <StyledPackPurchaseModal gap={26}>
-        <ModalHeader onDismiss={togglePackPurchaseModal} onBack={error ? onRetry : undefined}>
-          {!success && !error && !processing && (
-            <RowCenter gap={16}>
-              <TYPE.large>
-                <Trans>Secured Payment</Trans>
-              </TYPE.large>
-              <StyeldLock />
-            </RowCenter>
+      <ModalContent>
+        <ModalHeader onDismiss={togglePackPurchaseModal} title={t`Secured Payment`} />
+
+        <ModalBody>
+          {(!!error || success || processing) && (
+            <Confirmation packName={packName} amountPaid={price} error={error ?? undefined} success={success} />
           )}
-        </ModalHeader>
 
-        {(!!error || success || processing) && (
-          <Confirmation packName={packName} amountPaid={price} error={error ?? undefined} success={success} />
-        )}
-
-        <Elements stripe={stripePromise}>
-          <CheckoutForm
-            isOpen={!success && !error && !processing}
-            paymentIntent={paymentIntent}
-            paymentIntentError={paymentIntentError}
-            amount={price * quantity}
-            onError={onError}
-            onConfirm={onConfirm}
-            onSuccess={onSuccess}
-          />
-        </Elements>
-      </StyledPackPurchaseModal>
+          <Elements stripe={stripePromise}>
+            <CheckoutForm
+              isOpen={!success && !error && !processing}
+              paymentIntent={paymentIntent}
+              paymentIntentError={paymentIntentError}
+              amount={price * quantity}
+              onError={onError}
+              onConfirm={onConfirm}
+              onSuccess={onSuccess}
+            />
+          </Elements>
+        </ModalBody>
+      </ModalContent>
     </ClassicModal>
   )
 }

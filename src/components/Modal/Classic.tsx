@@ -5,14 +5,12 @@ import styled from 'styled-components'
 import { DialogOverlay, DialogContent } from '@reach/dialog'
 import { animated, useTransition } from 'react-spring'
 
-import { BackButton, IconButton } from '@/components/Button'
 import Column from '@/components/Column'
 import useCloseModalOnNavigation from '@/hooks/useCloseModalOnNavigation'
-import { TYPE } from '@/styles/theme'
-import { RowCenter } from '@/components/Row'
-
-import Close from '@/images/close.svg'
 import { round } from '@/utils/math'
+import useWindowSize from '@/hooks/useWindowSize'
+
+const DEFAULT_MODAL_WIDTH = 540
 
 // overlay
 
@@ -23,7 +21,7 @@ const ClassicDialogOverlay = styled(animated(DialogOverlay))`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: ${({ theme }) => theme.black}80;
+    background-color: ${({ theme }) => theme.black}a0;
   }
 `
 
@@ -78,76 +76,56 @@ export default function ClassicModal({ children, isOpen, onDismiss }: ClassicMod
 
 // Modal content
 
-export const ModalContent = styled(Column)<{ width?: number }>`
-  width: ${({ width = 546 }) => width}px;
-  padding: 26px;
+const StyledModalContent = styled(Column)<{ width: number; height?: number; fullscreen: boolean }>`
+  width: ${({ width }) => width}px;
+  ${({ height }) => height && `height: ${height}px;`}
   background: ${({ theme }) => theme.bg1};
-  border-radius: 10px;
-  border: 1px solid ${({ theme }) => theme.bg3}80;
-  box-shadow: 0 4px 8px ${({ theme }) => theme.black}40;
+
+  ${({ theme, fullscreen }) =>
+    fullscreen
+      ? `
+        & > div {
+          overflow: scroll;
+        }
+      `
+      : `
+        border: 1px solid ${theme.bg3}80;
+        box-shadow: 0 4px 8px ${theme.black}40;
+        border-radius: 10px;
+      `}
 
   ${({ theme }) => theme.media.medium`
     width: 100%;
     height: 100%;
     border-radius: 0;
-    padding: 16px;
     overflow-y: scroll;
     overflow-x: hidden;
     border: none;
   `}
 `
 
-// Modal header
-
-const StyledModalHeader = styled(RowCenter)`
-  justify-content: center;
-  min-height: 16px;
-`
-
-const StyledBackButton = styled(BackButton)`
-  position: absolute;
-  top: 16px;
-  left: 16px;
-`
-
-const ModalHeaderWrapper = styled.div`
-  margin: 32px 0 24px;
-`
-
-const CloseButton = styled(IconButton)`
-  cursor: pointer;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-
-  svg {
-    width: 16px;
-    height: 16px;
-  }
-`
-
-interface ModalHeaderProps {
-  onDismiss?: () => void
-  onBack?: () => void
-  children?: React.ReactNode
+interface ModalContentProps extends React.HTMLAttributes<HTMLDivElement> {
+  width?: number
+  fullscreen?: boolean
 }
 
-export function ModalHeader({ children, onDismiss, onBack }: ModalHeaderProps) {
+export function ModalContent({ children, width = DEFAULT_MODAL_WIDTH, fullscreen = false }: ModalContentProps) {
+  const windowSize = useWindowSize()
+
   return (
-    <StyledModalHeader>
-      {onBack && <StyledBackButton onClick={onBack} />}
-      {children ? (
-        <ModalHeaderWrapper>
-          {typeof children === 'string' ? <TYPE.large>{children}</TYPE.large> : children}
-        </ModalHeaderWrapper>
-      ) : (
-        <div />
-      )}
-      {onDismiss && (
-        <CloseButton onClick={onDismiss}>
-          <Close />
-        </CloseButton>
-      )}
-    </StyledModalHeader>
+    <StyledModalContent
+      width={fullscreen ? windowSize.width ?? 0 : width}
+      height={fullscreen ? windowSize.height : undefined}
+      fullscreen={fullscreen}
+    >
+      {children}
+    </StyledModalContent>
   )
 }
+
+// MODAL BODY
+
+export const ModalBody = styled.div`
+  width: 100%;
+  padding: 24px;
+`

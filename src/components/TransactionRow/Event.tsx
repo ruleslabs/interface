@@ -26,7 +26,8 @@ import EthereumIcon from '@/images/ethereum.svg'
 const StyledEvent = styled(RowCenter)`
   padding: 12px 20px;
   border-radius: 3px;
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg3}40;
+  border: 1px solid ${({ theme }) => theme.bg3}80;
   gap: 16px;
 
   img,
@@ -242,7 +243,9 @@ function OfferCreationAndCancelEvent({ parsedEvent }: OfferCreationAndCancelEven
         {parsedPrice ? <Trans>puts on sale</Trans> : <Trans>cancelled the sale of</Trans>}
 
         <span> </span>
-        <Link href={card.href}>{card.name}</Link>
+        <Link href={card.href}>
+          <>{card.name}</>
+        </Link>
 
         {parsedPrice && (
           <Trans>

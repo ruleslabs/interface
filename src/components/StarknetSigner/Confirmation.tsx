@@ -11,11 +11,6 @@ import { NETWORKS, networkId } from '@/constants/networks'
 import Checkmark from '@/images/checkmark.svg'
 import Close from '@/images/close.svg'
 
-const StyledConfirmation = styled(ColumnCenter)`
-  padding-bottom: 8px;
-  gap: 32px;
-`
-
 const StyledCheckmark = styled(Checkmark)`
   border-radius: 50%;
   overflow: visible;
@@ -93,7 +88,7 @@ export default function Confirmation({
   success = false,
 }: ConfirmationProps) {
   return (
-    <StyledConfirmation>
+    <ColumnCenter gap={32}>
       <Column gap={24}>
         {success ? <StyledCheckmark /> : error ? <StyledFail /> : <StyledSpinner fill="primary1" />}
 
@@ -133,6 +128,6 @@ export default function Confirmation({
           </Link>
         </EtherscanButtonWrapper>
       )}
-    </StyledConfirmation>
+    </ColumnCenter>
   )
 }

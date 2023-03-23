@@ -69,6 +69,7 @@ const AvatarWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.bg3}80;
   border-radius: 50%;
   transition: border-color 100ms;
+  cursor: pointer;
 
   img {
     width: 100%;
@@ -106,7 +107,6 @@ const WalletButton = styled(PrimaryButton)<{ alert: boolean }>`
 
 const AvatarButtonWrapperDesktop = styled.div`
   position: relative;
-  cursor: pointer;
 
   ${({ theme }) => theme.media.medium`
     display: none;
@@ -115,7 +115,6 @@ const AvatarButtonWrapperDesktop = styled.div`
 
 const AvatarButtonWrapperMobile = styled.div`
   position: relative;
-  cursor: pointer;
   display: none;
 
   ${({ theme }) => theme.media.medium`
@@ -182,16 +181,16 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
               </WalletButton>
             )}
 
-            <AvatarButtonWrapperDesktop onClick={toggleNavModalUserDesktop}>
-              <AvatarWrapper>
+            <AvatarButtonWrapperDesktop>
+              <AvatarWrapper onClick={toggleNavModalUserDesktop}>
                 <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackSrc} />
               </AvatarWrapper>
 
               <NavModalUserDesktop />
             </AvatarButtonWrapperDesktop>
 
-            <AvatarButtonWrapperMobile onClick={toggleNavModalUserMobile}>
-              <AvatarWrapper>
+            <AvatarButtonWrapperMobile>
+              <AvatarWrapper onClick={toggleNavModalUserMobile}>
                 <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackSrc} />
               </AvatarWrapper>
 
@@ -213,6 +212,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
             <SignInButton onClick={toggleSignInModal}>
               <Trans>SIGN IN</Trans>
             </SignInButton>
+
             <SignUpButton onClick={toggleSignUpModal}>
               <Trans>SIGN UP</Trans>
             </SignUpButton>

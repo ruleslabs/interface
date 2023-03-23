@@ -19,6 +19,7 @@ import { networkId } from '@/constants/networks'
 import { useETHBalances, useAcceptOffersMutation } from '@/state/wallet/hooks'
 import { PurchaseBreakdown } from './PriceBreakdown'
 import CardBreakdown from './CardBreakdown'
+import { ModalHeader } from '@/components/Modal'
 
 interface AcceptOfferModalProps {
   artistName: string
@@ -132,8 +133,9 @@ export default function AcceptOfferModal({
   return (
     <ClassicModal onDismiss={toggleAcceptOfferModal} isOpen={isOpen}>
       <ModalContent>
+        <ModalHeader onDismiss={toggleAcceptOfferModal} title={calls ? undefined : t`Confirm purchase`} />
+
         <StarknetSigner
-          modalHeaderChildren={t`Confirm purchase`}
           confirmationText={t`Your purchase will be accepted`}
           confirmationActionText={t`Confirm purchase`}
           transactionText={t`offer acceptance.`}
@@ -141,7 +143,6 @@ export default function AcceptOfferModal({
           calls={calls ?? undefined}
           txHash={txHash ?? undefined}
           error={error ?? undefined}
-          onDismiss={toggleAcceptOfferModal}
           onSignature={onSignature}
           onError={onError}
         >

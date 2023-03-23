@@ -27,8 +27,7 @@ const StyledMainSection = styled(Section)`
 
 const StyledGrid = styled(Grid)`
   ${({ theme }) => theme.media.extraSmall`
-    grid-template-columns: repeat(1, 1fr);
-    padding: 0 32px;
+    grid-template-columns: repeat(2, 1fr);
   `}
 `
 
@@ -177,11 +176,12 @@ export default function Pack() {
               </CardsColumn>
             </Row>
           </StyledMainSection>
+
           <Section>
             <CardModelsSelectionTitle>
               <Trans>Example of possible cards</Trans>
             </CardModelsSelectionTitle>
-            <StyledGrid gap={44}>
+            <StyledGrid gap={16}>
               {(pack.cardModelsOverview ?? []).map((packCardModel: any, index: number) => (
                 <CardModel
                   key={`pack-rules-${index}`}

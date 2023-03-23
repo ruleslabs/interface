@@ -100,7 +100,7 @@ export default function PackBreakdown({
             <Plural value={cardsPerPack} _1="Includes {cardsPerPack} card" other="Includes {cardsPerPack} cards" />
           </TYPE.body>
         </Column>
-        {released && (availableSupply === undefined || availableSupply > 0) && availableQuantity ? (
+        {released /*&& (availableSupply === undefined || availableSupply > 0) && availableQuantity*/ ? (
           <Column gap={12}>
             <InputStepCounter
               value={quantity}

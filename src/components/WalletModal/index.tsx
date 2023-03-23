@@ -1,9 +1,10 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import styled from 'styled-components'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { Trans, t } from '@lingui/macro'
 
-import ClassicModal, { ModalHeader, ModalContent } from '@/components/Modal/Classic'
+import { ModalHeader } from '@/components/Modal'
+import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classic'
 import { useModalOpen, useWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
@@ -13,7 +14,7 @@ import Column from '@/components/Column'
 import Row from '@/components/Row'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import { TYPE } from '@/styles/theme'
-import { IconButton, TabButton } from '@/components/Button'
+import { TabButton } from '@/components/Button'
 import LockedWallet from '@/components/LockedWallet'
 import { ErrorCard } from '@/components/Card'
 
@@ -22,15 +23,6 @@ import StarkgateDeposit from './StarkgateDeposit'
 import Withdraw from './Withdraw'
 import StarkgateWithdraw from './StarkgateWithdraw'
 import Retrieve from './Retrieve'
-import AdvanceWalletSettings from './AdvanceWalletSettings'
-
-import DotsIcon from '@/images/dots.svg'
-
-const AdvancedSettingsButton = styled(IconButton)`
-  position: absolute;
-  top: 10px;
-  left: 10px;
-`
 
 const ETHBalance = styled(TYPE.medium)`
   font-size: 32px;
@@ -50,12 +42,7 @@ const TabBar = styled(Row)`
   border-color: ${({ theme }) => theme.bg3}80;
   border-style: solid;
   border-width: 0 0 1px;
-  margin: 16px -26px 16px -26px;
-`
-
-const ModeContent = styled.div`
-  position: relative;
-  padding-top: 36px;
+  margin: 32px -16px;
 `
 
 export default function WalletModal() {
@@ -72,7 +59,6 @@ export default function WalletModal() {
 
   const onDepositMode = useCallback(() => setWalletModalMode(WalletModalMode.DEPOSIT), [setWalletModalMode])
   const onWithdrawMode = useCallback(() => setWalletModalMode(WalletModalMode.WITHDRAW), [setWalletModalMode])
-  const onRetrieveMode = useCallback(() => setWalletModalMode(WalletModalMode.RETRIEVE), [setWalletModalMode])
 
   // ETH balance
   const weiAmountToEURValue = useWeiAmountToEURValue()
@@ -98,72 +84,57 @@ export default function WalletModal() {
       case WalletModalMode.RETRIEVE:
         return <Retrieve />
     }
-    return null
   }, [walletModalMode])
-
-  // advanced
-  const [advancedMode, setAdvancedMode] = useState(false)
-  const toggleAdvancedMode = useCallback(() => setAdvancedMode(!advancedMode), [advancedMode])
 
   return (
     <ClassicModal onDismiss={toggleWalletModal} isOpen={isOpen}>
       <ModalContent>
-        <ModalHeader onDismiss={toggleWalletModal} onBack={advancedMode ? toggleAdvancedMode : undefined}>
-          {advancedMode && t`Advanced wallet settings`}
-        </ModalHeader>
+        <ModalHeader onDismiss={toggleWalletModal} title={t`Wallet`} />
 
-        {advancedMode ? (
-          <AdvanceWalletSettings />
-        ) : (
-          <>
-            <AdvancedSettingsButton onClick={toggleAdvancedMode} square>
-              <DotsIcon />
-            </AdvancedSettingsButton>
-
-            <Column gap={16}>
-              <Column gap={8}>
-                <ETHBalance>{balance ? `${balance.toFixed(6)} ETH` : '- ETH'}</ETHBalance>
-                <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)} EUR` : '- €'}</FiatBalance>
-              </Column>
-
-              {currentUser?.starknetWallet.lockingReason && (
-                <ErrorCard>
-                  <LockedWallet />
-                </ErrorCard>
-              )}
+        <ModalBody>
+          <Column gap={16}>
+            <Column gap={8}>
+              <ETHBalance>{balance ? `${balance.toFixed(6)} ETH` : '- ETH'}</ETHBalance>
+              <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)} EUR` : '- €'}</FiatBalance>
             </Column>
 
-            <TabBar>
-              <TabButton
-                onClick={onDepositMode}
-                className={
-                  walletModalMode === null ||
-                  walletModalMode === WalletModalMode.DEPOSIT ||
-                  walletModalMode === WalletModalMode.STARKGATE_DEPOSIT
-                    ? 'active'
-                    : undefined
-                }
-              >
-                <Trans>Deposit</Trans>
-              </TabButton>
+            {currentUser?.starknetWallet.lockingReason && (
+              <ErrorCard>
+                <LockedWallet />
+              </ErrorCard>
+            )}
+          </Column>
 
-              <TabButton
-                onClick={onWithdrawMode}
-                className={
-                  walletModalMode === WalletModalMode.WITHDRAW ||
-                  walletModalMode === WalletModalMode.STARKGATE_WITHDRAW ||
-                  walletModalMode === WalletModalMode.RETRIEVE
-                    ? 'active'
-                    : undefined
-                }
-              >
-                <Trans>Withdraw</Trans>
-              </TabButton>
-            </TabBar>
+          <TabBar>
+            <TabButton
+              onClick={onDepositMode}
+              className={
+                walletModalMode === null ||
+                walletModalMode === WalletModalMode.DEPOSIT ||
+                walletModalMode === WalletModalMode.STARKGATE_DEPOSIT
+                  ? 'active'
+                  : undefined
+              }
+            >
+              <Trans>Deposit</Trans>
+            </TabButton>
 
-            <ModeContent>{renderModal()}</ModeContent>
-          </>
-        )}
+            <TabButton
+              onClick={onWithdrawMode}
+              className={
+                walletModalMode === WalletModalMode.WITHDRAW ||
+                walletModalMode === WalletModalMode.STARKGATE_WITHDRAW ||
+                walletModalMode === WalletModalMode.RETRIEVE
+                  ? 'active'
+                  : undefined
+              }
+            >
+              <Trans>Withdraw</Trans>
+            </TabButton>
+          </TabBar>
+
+          {renderModal()}
+        </ModalBody>
       </ModalContent>
     </ClassicModal>
   )

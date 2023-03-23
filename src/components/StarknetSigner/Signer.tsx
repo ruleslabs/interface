@@ -1,11 +1,10 @@
 import JSBI from 'jsbi'
 import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import { t, Trans } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 import { ec, number, Account, Call, EstimateFee, Signature, KeyPair } from 'starknet'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
-import { ModalHeader } from '@/components/Modal/Classic'
 import { useWalletModalToggle } from '@/state/application/hooks'
 import { useETHBalances } from '@/state/wallet/hooks'
 import Column, { ColumnCenter } from '@/components/Column'
@@ -39,7 +38,8 @@ const StyledForm = styled.form`
 const FeeWrapper = styled(RowCenter)`
   justify-content: space-between;
   padding: 24px;
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg2};
+  border: 1px solid ${({ theme }) => theme.bg3}80;
   border-radius: 4px;
 
   ${({ theme }) => theme.media.extraSmall`
@@ -56,9 +56,6 @@ interface SignerProps {
   onConfirmation(): void
   onSignature(signature: Signature, maxFee: string, nonce: string): void
   onError(error: string): void
-  onDismiss?: () => void
-  modalHeaderChildren?: string | React.ReactNode
-  onBack?: () => void
 }
 
 export default function Signer({
@@ -70,9 +67,6 @@ export default function Signer({
   onConfirmation,
   onSignature,
   onError,
-  onDismiss,
-  modalHeaderChildren,
-  onBack,
 }: SignerProps) {
   // deposit modal
   const toggleWalletModal = useWalletModalToggle()
@@ -114,7 +108,6 @@ export default function Signer({
 
   // tx
   const { provider } = useStarknet()
-  const [waitingForTx, setWaitingForTx] = useState(false)
 
   // prepare transaction
   const prepareTransaction = useCallback(
@@ -207,68 +200,62 @@ export default function Signer({
   if (!isOpen) return null
 
   return (
-    <>
-      <ModalHeader onDismiss={onDismiss} onBack={onBack}>
-        {keyPair ? modalHeaderChildren : t`Enter your password`}
-      </ModalHeader>
-
-      <StyledSigner>
-        {parsedNetworkFee ? (
-          <StyledForm onSubmit={handleSignature}>
-            <Column gap={20}>
-              <Column gap={12}>
-                <FeeWrapper>
-                  <TYPE.body fontWeight={700}>
-                    <Trans>Network fee</Trans>
+    <StyledSigner>
+      {parsedNetworkFee ? (
+        <StyledForm onSubmit={handleSignature}>
+          <Column gap={20}>
+            <Column gap={12}>
+              <FeeWrapper>
+                <TYPE.body fontWeight={700}>
+                  <Trans>Network fee</Trans>
+                </TYPE.body>
+                <Column gap={8} alignItems="end">
+                  <TYPE.body>
+                    {parsedNetworkFee.fee.toSignificant(4)} ETH ({weiAmountToEURValue(parsedNetworkFee.fee)}€)
                   </TYPE.body>
-                  <Column gap={8} alignItems="end">
-                    <TYPE.body>
-                      {parsedNetworkFee.fee.toSignificant(4)} ETH ({weiAmountToEURValue(parsedNetworkFee.fee)}€)
-                    </TYPE.body>
-                    <TYPE.subtitle fontSize={12}>
-                      Max {parsedNetworkFee.maxFee.toSignificant(4)} ETH ({weiAmountToEURValue(parsedNetworkFee.maxFee)}
-                      €)
-                    </TYPE.subtitle>
-                  </Column>
-                </FeeWrapper>
-              </Column>
-
-              {parsedTotalCost && transactionValue && (
-                <FeeWrapper>
-                  <TYPE.body fontWeight={700}>
-                    <Trans>Total</Trans>
-                  </TYPE.body>
-                  <Column gap={8} alignItems="end">
-                    <TYPE.body>
-                      {parsedTotalCost.cost.toSignificant(4)} ETH ({weiAmountToEURValue(parsedTotalCost.cost)}€)
-                    </TYPE.body>
-                    <TYPE.subtitle fontSize={12}>
-                      Max {parsedTotalCost.maxCost.toSignificant(4)} ETH ({weiAmountToEURValue(parsedTotalCost.maxCost)}
-                      €)
-                    </TYPE.subtitle>
-                  </Column>
-                </FeeWrapper>
-              )}
-
-              {!canPayTransaction && (
-                <ErrorCard textAlign="center">
-                  <Trans>
-                    You do not have enough ETH in your Rules wallet to pay for network fees on Starknet.
-                    <br />
-                    <span onClick={toggleWalletModal}>Buy ETH or deposit from another wallet.</span>
-                  </Trans>
-                </ErrorCard>
-              )}
-
-              <SubmitButton type="submit" disabled={!canPayTransaction} large>
-                {confirmationActionText ?? <Trans>Confirm</Trans>}
-              </SubmitButton>
+                  <TYPE.subtitle fontSize={12}>
+                    Max {parsedNetworkFee.maxFee.toSignificant(4)} ETH ({weiAmountToEURValue(parsedNetworkFee.maxFee)}
+                    €)
+                  </TYPE.subtitle>
+                </Column>
+              </FeeWrapper>
             </Column>
-          </StyledForm>
-        ) : (
-          <PrivateKeyDecipherForm onPrivateKeyDeciphered={prepareTransaction} />
-        )}
-      </StyledSigner>
-    </>
+
+            {parsedTotalCost && transactionValue && (
+              <FeeWrapper>
+                <TYPE.body fontWeight={700}>
+                  <Trans>Total</Trans>
+                </TYPE.body>
+                <Column gap={8} alignItems="end">
+                  <TYPE.body>
+                    {parsedTotalCost.cost.toSignificant(4)} ETH ({weiAmountToEURValue(parsedTotalCost.cost)}€)
+                  </TYPE.body>
+                  <TYPE.subtitle fontSize={12}>
+                    Max {parsedTotalCost.maxCost.toSignificant(4)} ETH ({weiAmountToEURValue(parsedTotalCost.maxCost)}
+                    €)
+                  </TYPE.subtitle>
+                </Column>
+              </FeeWrapper>
+            )}
+
+            {!canPayTransaction && (
+              <ErrorCard textAlign="center">
+                <Trans>
+                  You do not have enough ETH in your Rules wallet to pay for network fees on Starknet.
+                  <br />
+                  <span onClick={toggleWalletModal}>Buy ETH or deposit from another wallet.</span>
+                </Trans>
+              </ErrorCard>
+            )}
+
+            <SubmitButton type="submit" disabled={!canPayTransaction} large>
+              {confirmationActionText ?? <Trans>Confirm</Trans>}
+            </SubmitButton>
+          </Column>
+        </StyledForm>
+      ) : (
+        <PrivateKeyDecipherForm onPrivateKeyDeciphered={prepareTransaction} />
+      )}
+    </StyledSigner>
   )
 }

@@ -631,8 +631,8 @@ msgid "I acknowledge having read and accepted the <0>terms and conditions</0><1
 msgstr "Je reconnais avoir pris connaissance et accepté les <0>conditions générales</0><1> </1>de Stripe."
 
 #: src/components/PackPurchaseModal/checkoutForm.tsx
-msgid "I expressly agree that your services will be provided to me upon my acceptance of the <0>Terms and Conditions</0><1> </1>and I waive my right of retract."
-msgstr "J’accepte expressément que vos services me soient fournis dès mon acceptation des <0>Conditions Générales</0><1> </1>et je renonce à mon droit de rétractation."
+msgid "I expressly agree that your services will be provided to me upon my acceptance of the <0>terms and conditions</0><1> </1>and I waive my right of retract."
+msgstr "J’accepte expressément que vos services me soient fournis dès mon acceptation des <0>conditions générales</0><1> </1>et je renonce à mon droit de rétractation."
 
 #: src/components/PackPurchaseModal/checkoutForm.tsx
 msgid "Payment being processed"

@@ -4,7 +4,8 @@ import GoogleLogin from 'react-google-login'
 import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
 
-import { ModalHeader } from '@/components/Modal/Classic'
+import { ModalHeader } from '@/components/Modal'
+import { ModalContent, ModalBody } from '@/components/Modal/Classic'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'
@@ -111,71 +112,73 @@ export default function SignInForm({ onSuccessfulConnection }: SignInFormProps) 
   )
 
   return (
-    <>
-      <ModalHeader onDismiss={toggleAuthModal}>{t`Connection`}</ModalHeader>
+    <ModalContent>
+      <ModalHeader onDismiss={toggleAuthModal} title={t`Connection`} />
 
-      <StyledForm key="sign-in-form" onSubmit={handleSignIn} noValidate>
-        <Column gap={20}>
-          {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
-            <>
-              <GoogleLogin
-                render={(renderProps) => <CustomGoogleLogin {...renderProps} />}
-                clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
-                onSuccess={handleGoogleLogin}
-                onFailure={handleGoogleLogin}
-                cookiePolicy={'single_host_origin'}
-              />
-              <Separator>
-                <Trans>or</Trans>
-              </Separator>
-            </>
-          )}
-
-          <Column gap={12}>
-            <Input
-              id="email"
-              value={email}
-              placeholder="E-mail"
-              type="email"
-              autoComplete="email"
-              onUserInput={onEmailInput}
-              $valid={error?.id !== 'email' || loading}
-            />
-            <Input
-              id="password"
-              value={password}
-              placeholder={t`Password`}
-              type="password"
-              autoComplete="current-password"
-              onUserInput={onPasswordInput}
-              $valid={error?.id !== 'password' || loading}
-            />
-
-            {error.message && (
-              <Trans
-                id={error.message}
-                render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
-              />
+      <ModalBody>
+        <StyledForm key="sign-in-form" onSubmit={handleSignIn} noValidate>
+          <Column gap={20}>
+            {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
+              <>
+                <GoogleLogin
+                  render={(renderProps) => <CustomGoogleLogin {...renderProps} />}
+                  clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
+                  onSuccess={handleGoogleLogin}
+                  onFailure={handleGoogleLogin}
+                  cookiePolicy={'single_host_origin'}
+                />
+                <Separator>
+                  <Trans>or</Trans>
+                </Separator>
+              </>
             )}
+
+            <Column gap={12}>
+              <Input
+                id="email"
+                value={email}
+                placeholder="E-mail"
+                type="email"
+                autoComplete="email"
+                onUserInput={onEmailInput}
+                $valid={error?.id !== 'email' || loading}
+              />
+              <Input
+                id="password"
+                value={password}
+                placeholder={t`Password`}
+                type="password"
+                autoComplete="current-password"
+                onUserInput={onPasswordInput}
+                $valid={error?.id !== 'password' || loading}
+              />
+
+              {error.message && (
+                <Trans
+                  id={error.message}
+                  render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
+                />
+              )}
+            </Column>
+
+            <SubmitButton type="submit" large>
+              {loading ? 'Loading ...' : t`Sign in`}
+            </SubmitButton>
           </Column>
+        </StyledForm>
 
-          <SubmitButton type="submit" large>
-            {loading ? 'Loading ...' : t`Sign in`}
-          </SubmitButton>
+        <Column gap={12} style={{ padding: '0 8px' }}>
+          <TYPE.subtitle onClick={() => setAuthMode(AuthMode.REQUEST_PASSWORD_UPDATE)} clickable>
+            <Trans>Forgot your password?</Trans>
+          </TYPE.subtitle>
+          <TYPE.subtitle>
+            <Trans>
+              No account?&nbsp;
+              <SwitchAuthModeButton onClick={() => setAuthMode(AuthMode.SIGN_UP)}>Join Rules</SwitchAuthModeButton>
+            </Trans>
+          </TYPE.subtitle>
         </Column>
-      </StyledForm>
-
-      <Column gap={12} style={{ padding: '0 8px' }}>
-        <TYPE.subtitle onClick={() => setAuthMode(AuthMode.REQUEST_PASSWORD_UPDATE)} clickable>
-          <Trans>Forgot your password?</Trans>
-        </TYPE.subtitle>
-        <TYPE.subtitle>
-          <Trans>
-            No account?&nbsp;
-            <SwitchAuthModeButton onClick={() => setAuthMode(AuthMode.SIGN_UP)}>Join Rules</SwitchAuthModeButton>
-          </Trans>
-        </TYPE.subtitle>
-      </Column>
-    </>
+      </ModalBody>
+    </ModalContent>
   )
 }

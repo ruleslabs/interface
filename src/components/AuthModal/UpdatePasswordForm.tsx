@@ -4,8 +4,9 @@ import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
+import { ModalHeader } from '@/components/Modal'
+import { ModalContent, ModalBody } from '@/components/Modal/Classic'
 import { passwordHasher, validatePassword, PasswordError } from '@/utils/password'
-import { ModalHeader } from '@/components/Modal/Classic'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'
@@ -131,47 +132,49 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePas
   )
 
   return (
-    <>
-      <ModalHeader onDismiss={toggleAuthModal}>{t`Update password`}</ModalHeader>
+    <ModalContent>
+      <ModalHeader onDismiss={toggleAuthModal} title={t`Update password`} />
 
-      <StyledForm key="update-password" onSubmit={handlePasswordUpdate} noValidate>
-        <Column gap={26}>
-          <Column gap={12}>
-            <input id="email" type="text" value={email} style={{ display: 'none' }} readOnly />
+      <ModalBody>
+        <StyledForm key="update-password" onSubmit={handlePasswordUpdate} noValidate>
+          <Column gap={26}>
+            <Column gap={12}>
+              <input id="email" type="text" value={email} style={{ display: 'none' }} readOnly />
 
-            <Input
-              id="password"
-              value={password}
-              placeholder={t`New password`}
-              type="password"
-              autoComplete="new-password"
-              onUserInput={onPasswordInput}
-              $valid={error?.id !== 'password' || loading}
-            />
-
-            <Input
-              id="password-confirmation"
-              value={confirmPassword}
-              placeholder={t`Confirm password`}
-              type="password"
-              autoComplete="new-password"
-              onUserInput={onConfirmPasswordInput}
-              $valid={error?.id !== 'passwordConfirmation' || loading}
-            />
-
-            {error.message && (
-              <Trans
-                id={error.message}
-                render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
+              <Input
+                id="password"
+                value={password}
+                placeholder={t`New password`}
+                type="password"
+                autoComplete="new-password"
+                onUserInput={onPasswordInput}
+                $valid={error?.id !== 'password' || loading}
               />
-            )}
-          </Column>
 
-          <SubmitButton type="submit" onClick={handlePasswordUpdate} disabled={loading} large>
-            {loading && !error ? 'Loading ...' : t`Submit`}
-          </SubmitButton>
-        </Column>
-      </StyledForm>
-    </>
+              <Input
+                id="password-confirmation"
+                value={confirmPassword}
+                placeholder={t`Confirm password`}
+                type="password"
+                autoComplete="new-password"
+                onUserInput={onConfirmPasswordInput}
+                $valid={error?.id !== 'passwordConfirmation' || loading}
+              />
+
+              {error.message && (
+                <Trans
+                  id={error.message}
+                  render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
+                />
+              )}
+            </Column>
+
+            <SubmitButton type="submit" onClick={handlePasswordUpdate} disabled={loading} large>
+              {loading && !error ? 'Loading ...' : t`Submit`}
+            </SubmitButton>
+          </Column>
+        </StyledForm>
+      </ModalBody>
+    </ModalContent>
   )
 }

@@ -3,6 +3,7 @@ import { t, Trans } from '@lingui/macro'
 import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
+import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
 import { useModalOpen, useUpgradeWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
@@ -84,15 +85,15 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
   return (
     <ClassicModal onDismiss={toggleUpgradeWalletModal} isOpen={isOpen}>
       <ModalContent>
+        <ModalHeader onDismiss={toggleUpgradeWalletModal} title={calls ? undefined : t`Wallet upgrade`} />
+
         <StarknetSigner
-          modalHeaderChildren={t`Upgrade your wallet`}
           confirmationText={t`Your wallet will be upgraded`}
           confirmationActionText={t`Confirm wallet upgrade`}
           transactionText={t`wallet upgrade.`}
           calls={calls ?? undefined}
           txHash={txHash ?? undefined}
           error={error ?? undefined}
-          onDismiss={toggleUpgradeWalletModal}
           onSignature={onSignature}
           onError={onError}
         >
@@ -109,7 +110,7 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
                     target="_blank"
                     underline
                   >
-                    Starknet released the Alpha 0.10.0
+                    <Trans>Starknet released the Alpha 0.10.0</Trans>
                   </Link>{' '}
                   and it implies some changes for your wallet. If you don&apos;t hold ETHs, the upgrade is not mandatory
                   but still recommended.

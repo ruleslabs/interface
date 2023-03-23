@@ -4,6 +4,7 @@ import { uint256HexFromStrHex, getStarknetCardId, ScarcityName } from '@rulesorg
 import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
+import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
 import { useModalOpen, useCancelOfferModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
@@ -22,7 +23,6 @@ interface CancelOfferModalProps {
   artistName: string
   season: number
   scarcityName: string
-  scarcityMaxSupply?: number
   serialNumber: number
   pictureUrl: string
   onSuccess(): void
@@ -32,7 +32,6 @@ export default function CancelOfferModal({
   artistName,
   season,
   scarcityName,
-  scarcityMaxSupply,
   serialNumber,
   pictureUrl,
   onSuccess,
@@ -109,15 +108,15 @@ export default function CancelOfferModal({
   return (
     <ClassicModal onDismiss={toggleCancelOfferModal} isOpen={isOpen}>
       <ModalContent>
+        <ModalHeader onDismiss={toggleCancelOfferModal} title={calls ? undefined : t`Confirm offer cancelation`} />
+
         <StarknetSigner
-          modalHeaderChildren={t`Confirm offer cancelation`}
           confirmationText={t`Your offer will be canceled`}
           confirmationActionText={t`Confirm offer cancelation`}
           transactionText={t`offer cancelation.`}
           calls={calls ?? undefined}
           txHash={txHash ?? undefined}
           error={error ?? undefined}
-          onDismiss={toggleCancelOfferModal}
           onSignature={onSignature}
           onError={onError}
         >

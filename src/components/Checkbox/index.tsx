@@ -39,7 +39,7 @@ const CheckboxLabel = styled.label`
   display: block;
   position: relative;
   padding: 3px 0 0 36px;
-  height: 24px;
+  min-height: 24px;
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;

@@ -220,7 +220,6 @@ export default function CardBreakout() {
           <GiftModal
             artistName={card.cardModel.artist.displayName}
             scarcityName={card.cardModel.scarcity.name}
-            scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
             season={card.cardModel.season}
             serialNumber={card.serialNumber}
             pictureUrl={card.cardModel.pictureUrl}
@@ -234,7 +233,6 @@ export default function CardBreakout() {
               <CancelOfferModal
                 artistName={card.cardModel.artist.displayName}
                 scarcityName={card.cardModel.scarcity.name}
-                scarcityMaxSupply={card.cardModel.scarcity.maxSupply}
                 season={card.cardModel.season}
                 serialNumber={card.serialNumber}
                 pictureUrl={card.cardModel.pictureUrl}

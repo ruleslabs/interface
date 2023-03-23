@@ -11,8 +11,11 @@ import { TYPE } from '@/styles/theme'
 import { IconButton } from '@/components/Button'
 import { RowBetween } from '@/components/Row'
 import Column from '@/components/Column'
+import useWindowSize from '@/hooks/useWindowSize'
 
 import CloseIcon from '@/images/close.svg'
+
+const DEFAULT_SIDEBAR_WIDTH = 280
 
 const SidebarDialogOverlay = styled(animated(DialogOverlay))`
   &[data-reach-dialog-overlay] {
@@ -20,7 +23,7 @@ const SidebarDialogOverlay = styled(animated(DialogOverlay))`
   }
 `
 
-const SidebarDialogContent = styled(animated(DialogContent))`
+const SidebarDialogContent = styled(animated(DialogContent))<{ width: number }>`
   background: transparent;
   width: fit-content;
   padding: 0;
@@ -29,6 +32,10 @@ const SidebarDialogContent = styled(animated(DialogContent))`
   box-shadow: -10px 4px 20px ${({ theme }) => theme.black}40;
   top: 0;
   bottom: 0;
+
+  & > div {
+    width: ${({ width }) => width}px;
+  }
 `
 
 interface SidebarModalProps {
@@ -36,14 +43,21 @@ interface SidebarModalProps {
   isOpen: boolean
   onDismiss: () => void
   position?: 'left' | 'right'
+  width: number
 }
 
-export default function SidebarModal({ children, isOpen, onDismiss, position = 'right' }: SidebarModalProps) {
+export default function SidebarModal({
+  children,
+  isOpen,
+  onDismiss,
+  position = 'right',
+  width = DEFAULT_SIDEBAR_WIDTH,
+}: SidebarModalProps) {
   const transitions = useTransition(isOpen, {
     config: { duration: 150 },
-    from: { y: -340, opacity: 0 },
+    from: { y: -width, opacity: 0 },
     enter: { y: 0, opacity: 0.5 },
-    leave: { y: -340, opacity: 0 },
+    leave: { y: -width, opacity: 0 },
   })
 
   const translationInterpolation = useCallback((y) => `${round(y)}px`, [])
@@ -64,6 +78,7 @@ export default function SidebarModal({ children, isOpen, onDismiss, position = '
               <SidebarDialogContent
                 aria-label="dialog content"
                 style={{ [position]: styles.y.to(translationInterpolation) }}
+                width={width}
               >
                 {children}
               </SidebarDialogContent>
@@ -74,12 +89,38 @@ export default function SidebarModal({ children, isOpen, onDismiss, position = '
   )
 }
 
+// MODAL CONTENT
+
+const StyledModalContent = styled.div<{ windowHeight?: number }>`
+  height: ${({ windowHeight = 0 }) => windowHeight}px;
+  background: ${({ theme }) => theme.bg1};
+  position: relative;
+  width: 280px;
+`
+
+export function ModalContent({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  const windowSize = useWindowSize()
+
+  return (
+    <StyledModalContent windowHeight={windowSize.height} {...props}>
+      {children}
+    </StyledModalContent>
+  )
+}
+
 // MODAL HEADER
 
 const StyledModalHeader = styled(RowBetween)`
   height: 64px;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 8px;
+  border-style: solid;
+  border-color: ${({ theme }) => theme.bg3}80;
+  border-width: 0 0 1px;
+
+  & > div {
+    min-width: 32px;
+  }
 `
 
 const CloseButton = styled(IconButton)`
@@ -94,6 +135,8 @@ interface ModalHeaderProps {
 export function ModalHeader({ title, onDismiss }: ModalHeaderProps) {
   return (
     <StyledModalHeader>
+      <div />
+
       <TYPE.medium>{title}</TYPE.medium>
 
       <CloseButton onClick={onDismiss}>
@@ -108,7 +151,4 @@ export function ModalHeader({ title, onDismiss }: ModalHeaderProps) {
 export const ModalBody = styled(Column)`
   width: 100%;
   padding: 8px;
-  border-style: solid;
-  border-color: ${({ theme }) => theme.bg3}80;
-  border-width: 1px 0 0;
 `

@@ -6,21 +6,12 @@ import { ApplicationModal } from '@/state/application/actions'
 import { TYPE } from '@/styles/theme'
 import { ActiveLink } from '@/components/Link'
 import { useCurrentUser } from '@/state/user/hooks'
-import SidebarModal, { ModalHeader, ModalBody } from '@/components/Modal/Sidebar'
-import useWindowSize from '@/hooks/useWindowSize'
+import SidebarModal, { ModalHeader, ModalBody, ModalContent } from '@/components/Modal/Sidebar'
 import { SidebarNavButton } from '@/components/Button'
 import { useNavUserLinks } from '@/hooks/useNav'
 import Actionable from './Actionable'
 import Divider from '@/components/Divider'
 import Column from '@/components/Column'
-
-const StyledNavModalUserMobile = styled.div<{ windowHeight?: number }>`
-  height: ${({ windowHeight = 0 }) => windowHeight}px;
-  width: 280px;
-  background: ${({ theme }) => theme.bg1};
-  position: relative;
-  width: 280px;
-`
 
 const UsernameMenuButton = styled(TYPE.body)`
   width: 100%;
@@ -43,9 +34,6 @@ export default function NavModalUserMobile() {
   const toggleNavModalUserMobile = useNavModalUserMobileToggle()
   const isOpen = useModalOpen(ApplicationModal.NAV_USER_MOBILE)
 
-  // window size
-  const windowSize = useWindowSize()
-
   // nav links
   const navLinks = useNavUserLinks(currentUser.slug)
 
@@ -53,7 +41,7 @@ export default function NavModalUserMobile() {
 
   return (
     <SidebarModal onDismiss={toggleNavModalUserMobile} isOpen={isOpen} position="right">
-      <StyledNavModalUserMobile windowHeight={windowSize.height}>
+      <ModalContent>
         <ModalHeader onDismiss={toggleNavModalUserMobile} />
 
         <ModalBody gap={6}>
@@ -63,8 +51,8 @@ export default function NavModalUserMobile() {
             </UsernameMenuButton>
           </ActiveLink>
 
-          {navLinks.map((navLinks) => (
-            <>
+          {navLinks.map((navLinks, index) => (
+            <Column key={`nav-links-${index}`} gap={6}>
               <Divider />
 
               <Column>
@@ -76,10 +64,10 @@ export default function NavModalUserMobile() {
                   </Actionable>
                 ))}
               </Column>
-            </>
+            </Column>
           ))}
         </ModalBody>
-      </StyledNavModalUserMobile>
+      </ModalContent>
     </SidebarModal>
   )
 }
