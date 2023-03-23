@@ -16,6 +16,7 @@ export enum ApplicationModal {
   ACCEPT_OFFER,
   UPGRADE_WALLET,
   MARKETPLACE_FILTERS,
+  NOTIFICATIONS,
 }
 
 export const HomepageTabs = {

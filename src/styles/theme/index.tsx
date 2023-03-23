@@ -131,7 +131,7 @@ function theme(darkMode: boolean) {
 const ThemedGlobalStyle = createGlobalStyle`
   body {
     background-attachment: fixed;
-    background-image: ${({ theme }) => `linear-gradient(180deg, ${theme.primary1}15 0, ${theme.bg1} 300px)`};
+    background-image: ${({ theme }) => `linear-gradient(180deg, ${theme.primary1}15 0, ${theme.primary1}00 300px)`};
     background-color: ${({ theme }) => theme.bg1};
   }
 

@@ -115,3 +115,7 @@ export function useUpgradeWalletModalToggle(): () => void {
 export function useToggleMarketplaceFiltersModal(): () => void {
   return useToggleModal(ApplicationModal.MARKETPLACE_FILTERS)
 }
+
+export function useToggleNotificationsModal(): () => void {
+  return useToggleModal(ApplicationModal.NOTIFICATIONS)
+}

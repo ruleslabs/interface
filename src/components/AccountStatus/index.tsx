@@ -8,6 +8,7 @@ import {
   useAuthModalToggle,
   useNavModalUserDesktopToggle,
   useNavModalUserMobileToggle,
+  useToggleNotificationsModal,
   useWalletModalToggle,
 } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
@@ -21,6 +22,7 @@ import { useETHBalances } from '@/state/wallet/hooks'
 import Avatar from '@/components/Avatar'
 import NavModalUserDesktop from '@/components/NavModal/UserDesktop'
 import NavModalUserMobile from '@/components/NavModal/UserMobile'
+import NotificationsModal from '@/components/NotificationsModal'
 
 import BellIcon from '@/images/bell.svg'
 import WalletIcon from '@/images/wallet.svg'
@@ -140,6 +142,9 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
   const toggleNavModalUserDesktop = useNavModalUserDesktopToggle()
   const toggleNavModalUserMobile = useNavModalUserMobileToggle()
 
+  // notifications modal
+  const toggleNotificationsModal = useToggleNotificationsModal()
+
   // auth modal
   const toggleAuthModal = useAuthModalToggle()
   const setAuthMode = useSetAuthMode()
@@ -199,7 +204,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
               </MobileIconButton>
             )}
 
-            <IconButton notifications={3}>
+            <IconButton notifications={3} onClick={toggleNotificationsModal}>
               <BellIcon />
             </IconButton>
           </>
@@ -217,6 +222,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
 
       <WalletModal />
       <WalletUpgradeModal onSuccess={onSuccessfulWalletUpgrade} />
+      <NotificationsModal />
       <AuthModal />
     </>
   )
