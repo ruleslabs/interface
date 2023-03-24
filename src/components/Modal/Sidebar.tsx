@@ -1,13 +1,13 @@
 import '@reach/dialog/styles.css'
 
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { DialogOverlay, DialogContent } from '@reach/dialog'
 import { animated, useTransition } from 'react-spring'
 
 import useCloseModalOnNavigation from '@/hooks/useCloseModalOnNavigation'
 import { round } from '@/utils/math'
-import { TYPE } from '@/styles/theme'
+import { MEDIA_QUERIES_BREAKPOINTS, TYPE } from '@/styles/theme'
 import { IconButton } from '@/components/Button'
 import { RowBetween } from '@/components/Row'
 import Column from '@/components/Column'
@@ -60,6 +60,13 @@ export default function SidebarModal({
   width = DEFAULT_SIDEBAR_WIDTH,
   fullscreen = false,
 }: SidebarModalProps) {
+  const windowSize = useWindowSize()
+
+  width = useMemo(() => {
+    if (fullscreen && windowSize.width && windowSize.width <= MEDIA_QUERIES_BREAKPOINTS.small) return windowSize.width
+    else return width
+  }, [fullscreen, width, windowSize.width])
+
   const transitions = useTransition(isOpen, {
     config: { duration: 150 },
     from: { y: -width, opacity: 0 },

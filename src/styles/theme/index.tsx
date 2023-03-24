@@ -7,7 +7,7 @@ const MISC_MEDIA_QUERIES = {
   computer: '(hover: hover) and (pointer: fine)',
 }
 
-const MEDIA_QUERIES_BREAKPOINTS = {
+export const MEDIA_QUERIES_BREAKPOINTS = {
   extraSmall: 481,
   small: 769,
   medium: 1024,
