@@ -5,7 +5,7 @@ import { t } from '@lingui/macro'
 
 import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classic'
-import { useModalOpen, useDeckInsertionModalToggle } from '@/state/application/hooks'
+import { useModalOpened, useDeckInsertionModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import Column from '@/components/Column'
 import { SearchBar } from '@/components/Input'
@@ -61,7 +61,7 @@ export default function DeckInsertionModal({ starknetWalletAddress, cardIndex }:
   const onSearchBarInput = useCallback((value) => setSearch(value), [setSearch])
 
   // modal
-  const isOpen = useModalOpen(ApplicationModal.DECK_INSERTION)
+  const isOpen = useModalOpened(ApplicationModal.DECK_INSERTION)
   const toggleDeckInsertionModal = useDeckInsertionModalToggle()
   const onDismiss = useCallback(() => {
     setSearch('')

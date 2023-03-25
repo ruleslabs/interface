@@ -6,7 +6,7 @@ import { Call, Signature } from 'starknet'
 
 import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
-import { useModalOpen, useCancelOfferModalToggle } from '@/state/application/hooks'
+import { useModalOpened, useCancelOfferModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
@@ -46,7 +46,7 @@ export default function CancelOfferModal({
   )
 
   // modal
-  const isOpen = useModalOpen(ApplicationModal.CANCEL_OFFER)
+  const isOpen = useModalOpened(ApplicationModal.CANCEL_OFFER)
   const toggleCancelOfferModal = useCancelOfferModalToggle()
 
   // call

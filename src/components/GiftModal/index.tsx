@@ -7,7 +7,7 @@ import { Call, Signature } from 'starknet'
 
 import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
-import { useModalOpen, useOfferModalToggle } from '@/state/application/hooks'
+import { useModalOpened, useOfferModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import UsersSearchBar from '@/components/UsersSearchBar'
 import { useCurrentUser } from '@/state/user/hooks'
@@ -109,7 +109,7 @@ export default function GiftModal({
   )
 
   // modal
-  const isOpen = useModalOpen(ApplicationModal.OFFER)
+  const isOpen = useModalOpened(ApplicationModal.OFFER)
   const toggleOfferModal = useOfferModalToggle()
 
   // generate calls

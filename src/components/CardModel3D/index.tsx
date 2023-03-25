@@ -102,16 +102,16 @@ const StyledClose = styled(Close)`
   cursor: pointer;
 `
 
-const CardsStack = styled.div<{ smallHeight?: number }>`
+const CardsStack = styled.div<{ $smallHeight?: number }>`
   img {
     position: absolute;
     z-index: -1;
     height: 100%;
   }
 
-  ${({ theme, smallHeight }) => theme.media.small`
+  ${({ theme, $smallHeight }) => theme.media.small`
     & img {
-      ${smallHeight && `height: ${smallHeight}px;`}
+      ${$smallHeight && `height: ${$smallHeight}px;`}
     }
   `}
 `
@@ -194,7 +194,7 @@ export default function CardModel3D({
   return (
     <StyledCardModel3D fullscreen={fullscreen} scarcityName={scarcityName} {...props}>
       {stacked && (
-        <CardsStack smallHeight={stackHeight} as={animated.div} style={{ opacity: styles.stackOpacity }}>
+        <CardsStack $smallHeight={stackHeight} as={animated.div} style={{ opacity: styles.stackOpacity }}>
           <img src={`/assets/${scarcityName.toLowerCase()}-stack.png`} />
           <StackImageTop src={pictureUrl} />
         </CardsStack>

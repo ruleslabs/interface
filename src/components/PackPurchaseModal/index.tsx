@@ -4,7 +4,7 @@ import { t } from '@lingui/macro'
 
 import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classic'
-import { useModalOpen, usePackPurchaseModalToggle } from '@/state/application/hooks'
+import { useModalOpened, usePackPurchaseModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useStripePromise, useCreatePaymentIntent } from '@/state/stripe/hooks'
 import CheckoutForm from './CheckoutForm'
@@ -26,7 +26,7 @@ export default function PackPurchaseModal({
   packName,
 }: PackPurchaseModalProps) {
   // modal
-  const isOpen = useModalOpen(ApplicationModal.PACK_PURCHASE)
+  const isOpen = useModalOpened(ApplicationModal.PACK_PURCHASE)
   const togglePackPurchaseModal = usePackPurchaseModalToggle()
 
   // error

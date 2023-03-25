@@ -3,7 +3,14 @@ import { useWeb3React } from '@web3-react/core'
 
 import { AppState } from '@/state'
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
-import { setOpenModal, setHomepageTabKey, ApplicationModal, HomepageTabKey } from './actions'
+import {
+  setOpenedModal,
+  setOpenedSidebarModal,
+  setHomepageTabKey,
+  ApplicationModal,
+  HomepageTabKey,
+  ApplicationSidebarModal,
+} from './actions'
 
 // BLOCK NUMBER
 
@@ -35,26 +42,55 @@ export function useSetHomepageTab(): (tabKey: HomepageTabKey) => void {
 
 // MODAL
 
-export function useModalOpen(modal: ApplicationModal | null): boolean {
-  const openModal = useAppSelector((state) => state.application.openModal)
-  return openModal === modal
+// GETTERS
+
+export function useModalOpened(modal: ApplicationModal | ApplicationSidebarModal): boolean {
+  const openedModal = useAppSelector((state) => state.application.openedModal)
+  return openedModal === modal
 }
 
-export function useCloseModal(): () => void {
-  const dispatch = useAppDispatch()
-  return useCallback(() => dispatch(setOpenModal({ modal: null })), [dispatch])
+export function useSidebarModalOpened(modal: ApplicationSidebarModal): boolean {
+  const openedSidebarModal = useAppSelector((state) => state.application.openedSidebarModal)
+  return openedSidebarModal === modal
 }
+
+// OPEN
 
 export function useOpenModal(modal: ApplicationModal): () => void {
   const dispatch = useAppDispatch()
-  return useCallback(() => dispatch(setOpenModal({ modal })), [dispatch, modal])
+  return useCallback(() => dispatch(setOpenedModal({ modal })), [dispatch, modal])
 }
 
-export function useToggleModal(modal: ApplicationModal): () => void {
-  const open = useModalOpen(modal)
+export function useOpenSidebarModal(modal: ApplicationSidebarModal): () => void {
   const dispatch = useAppDispatch()
-  return useCallback(() => dispatch(setOpenModal({ modal: open ? null : modal })), [dispatch, modal, open])
+  return useCallback(() => dispatch(setOpenedSidebarModal({ modal })), [dispatch, modal])
 }
+
+// CLOSE
+
+export function useCloseModal(): () => void {
+  const dispatch = useAppDispatch()
+  return useCallback(() => {
+    dispatch(setOpenedModal({ modal: null }))
+    dispatch(setOpenedSidebarModal({ modal: null }))
+  }, [dispatch])
+}
+
+// TOGGLE
+
+export function useToggleModal(modal: ApplicationModal): () => void {
+  const isOpen = useModalOpened(modal)
+  const dispatch = useAppDispatch()
+  return useCallback(() => dispatch(setOpenedModal({ modal: isOpen ? null : modal })), [dispatch, modal, isOpen])
+}
+
+export function useToggleSidebarModal(modal: ApplicationSidebarModal): () => void {
+  const isOpen = useSidebarModalOpened(modal)
+  const dispatch = useAppDispatch()
+  return useCallback(() => dispatch(setOpenedSidebarModal({ modal: isOpen ? null : modal })), [dispatch, modal, isOpen])
+}
+
+// CLASSIC
 
 export function useSettingsModalToggle(): () => void {
   return useToggleModal(ApplicationModal.SETTINGS)
@@ -72,16 +108,8 @@ export function usePackPurchaseModalToggle(): () => void {
   return useToggleModal(ApplicationModal.PACK_PURCHASE)
 }
 
-export function useNavModalMobileToggle(): () => void {
-  return useToggleModal(ApplicationModal.NAV_MOBILE)
-}
-
 export function useNavModalUserDesktopToggle(): () => void {
   return useToggleModal(ApplicationModal.NAV_USER_DESKTOP)
-}
-
-export function useNavModalUserMobileToggle(): () => void {
-  return useToggleModal(ApplicationModal.NAV_USER_MOBILE)
 }
 
 export function useWalletModalToggle(): () => void {
@@ -116,6 +144,16 @@ export function useToggleMarketplaceFiltersModal(): () => void {
   return useToggleModal(ApplicationModal.MARKETPLACE_FILTERS)
 }
 
+// SIDEBAR
+
 export function useToggleNotificationsModal(): () => void {
-  return useToggleModal(ApplicationModal.NOTIFICATIONS)
+  return useToggleSidebarModal(ApplicationSidebarModal.NOTIFICATIONS)
+}
+
+export function useNavModalMobileToggle(): () => void {
+  return useToggleSidebarModal(ApplicationSidebarModal.NAV_MOBILE)
+}
+
+export function useNavModalUserMobileToggle(): () => void {
+  return useToggleSidebarModal(ApplicationSidebarModal.NAV_USER_MOBILE)
 }

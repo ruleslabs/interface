@@ -2,9 +2,7 @@ import { createAction } from '@reduxjs/toolkit'
 
 export enum ApplicationModal {
   SETTINGS,
-  NAV_MOBILE,
   NAV_USER_DESKTOP,
-  NAV_USER_MOBILE,
   AUTH,
   DECK_INSERTION,
   PACK_PURCHASE,
@@ -16,6 +14,11 @@ export enum ApplicationModal {
   ACCEPT_OFFER,
   UPGRADE_WALLET,
   MARKETPLACE_FILTERS,
+}
+
+export enum ApplicationSidebarModal {
+  NAV_MOBILE,
+  NAV_USER_MOBILE,
   NOTIFICATIONS,
 }
 
@@ -27,7 +30,12 @@ export const HomepageTabs = {
 export type HomepageTabKey = keyof typeof HomepageTabs
 
 export const setHomepageTabKey = createAction<{ tabKey: HomepageTabKey }>('application/setHomepageTabKey')
-export const setOpenModal = createAction<{ modal: ApplicationModal | null }>('application/setOpenModal')
+
+export const setOpenedModal = createAction<{ modal: ApplicationModal | null }>('application/setOpenModal')
+export const setOpenedSidebarModal = createAction<{ modal: ApplicationSidebarModal | null }>(
+  'application/setOpenSidebarModal'
+)
+
 export const updateEtherPrice = createAction<{ price?: number }>('application/updateEtherPrice')
 export const updateBlockNumber = createAction<{ blockNumber: number }>('application/updateBlockNumber')
 export const updateEthereumBlockNumber = createAction<{ chainId: number; blockNumber: number }>(

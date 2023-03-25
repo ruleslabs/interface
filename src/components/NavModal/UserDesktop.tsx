@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
 import HintModal from '@/components/Modal/Hint'
-import { useModalOpen, useNavModalUserDesktopToggle } from '@/state/application/hooks'
+import { useModalOpened, useNavModalUserDesktopToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { TYPE } from '@/styles/theme'
 import Column from '../Column'
@@ -87,7 +87,7 @@ export default function NavModalUserDesktop() {
 
   // modal
   const toggleNavModalUserDesktop = useNavModalUserDesktopToggle()
-  const isOpen = useModalOpen(ApplicationModal.NAV_USER_DESKTOP)
+  const isOpen = useModalOpened(ApplicationModal.NAV_USER_DESKTOP)
 
   // nav links
   const navLinks = useNavUserLinks(currentUser.slug)

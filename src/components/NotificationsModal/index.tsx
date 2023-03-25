@@ -1,9 +1,9 @@
 import { Trans, t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { useModalOpen, useToggleNotificationsModal } from '@/state/application/hooks'
+import { useSidebarModalOpened, useToggleNotificationsModal } from '@/state/application/hooks'
 import SidebarModal, { ModalContent, ModalHeader, ModalBody } from '@/components/Modal/Sidebar'
-import { ApplicationModal } from '@/state/application/actions'
+import { ApplicationSidebarModal } from '@/state/application/actions'
 import { TYPE } from '@/styles/theme'
 import { ColumnCenter } from '@/components/Column'
 
@@ -21,7 +21,7 @@ const EmptyBox = styled(ColumnCenter)`
 export default function NotificationsModal() {
   // modal
   const toggleNotificationsModal = useToggleNotificationsModal()
-  const isOpen = useModalOpen(ApplicationModal.NOTIFICATIONS)
+  const isOpen = useSidebarModalOpened(ApplicationSidebarModal.NOTIFICATIONS)
 
   return (
     <SidebarModal onDismiss={toggleNotificationsModal} isOpen={isOpen} width={350} fullscreen>

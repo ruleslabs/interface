@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
-import { useModalOpen, useNavModalUserMobileToggle, useWalletModalToggle } from '@/state/application/hooks'
-import { ApplicationModal } from '@/state/application/actions'
+import { useSidebarModalOpened, useNavModalUserMobileToggle, useWalletModalToggle } from '@/state/application/hooks'
+import { ApplicationSidebarModal } from '@/state/application/actions'
 import { TYPE } from '@/styles/theme'
 import { useCurrentUser } from '@/state/user/hooks'
 import SidebarModal, { ModalHeader, ModalBody, ModalContent } from '@/components/Modal/Sidebar'
@@ -61,7 +61,7 @@ export default function NavModalUserMobile() {
 
   // modal
   const toggleNavModalUserMobile = useNavModalUserMobileToggle()
-  const isOpen = useModalOpen(ApplicationModal.NAV_USER_MOBILE)
+  const isOpen = useSidebarModalOpened(ApplicationSidebarModal.NAV_USER_MOBILE)
 
   // wallet modal
   const toggleWalletModal = useWalletModalToggle()

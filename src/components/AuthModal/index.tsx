@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useRouter } from 'next/router'
 
 import ClassicModal from '@/components/Modal/Classic'
-import { useModalOpen, useAuthModalToggle } from '@/state/application/hooks'
+import { useModalOpened, useAuthModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
@@ -22,7 +22,7 @@ export default function AuthModal() {
   const router = useRouter()
 
   // modal
-  const isOpen = useModalOpen(ApplicationModal.AUTH)
+  const isOpen = useModalOpened(ApplicationModal.AUTH)
   const toggleAuthModal = useAuthModalToggle()
 
   const authMode = useAuthMode()

@@ -4,8 +4,8 @@ import { Trans } from '@lingui/macro'
 
 import SidebarModal, { ModalHeader, ModalBody, ModalContent } from '@/components/Modal/Sidebar'
 import { RowCenter } from '@/components/Row'
-import { useNavModalMobileToggle, useModalOpen } from '@/state/application/hooks'
-import { ApplicationModal } from '@/state/application/actions'
+import { useNavModalMobileToggle, useSidebarModalOpened } from '@/state/application/hooks'
+import { ApplicationSidebarModal } from '@/state/application/actions'
 import LanguageSelector from '@/components/LanguageSelector'
 import { SidebarNavButton } from '@/components/Button'
 import { useNavLinks } from '@/hooks/useNav'
@@ -28,7 +28,7 @@ const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
 export default function NavModalMobile() {
   // modal
   const toggleNavModalMobile = useNavModalMobileToggle()
-  const isOpen = useModalOpen(ApplicationModal.NAV_MOBILE)
+  const isOpen = useSidebarModalOpened(ApplicationSidebarModal.NAV_MOBILE)
 
   // nav links
   const navLinks = useNavLinks()

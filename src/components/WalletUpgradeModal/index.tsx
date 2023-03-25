@@ -5,7 +5,7 @@ import { Call, Signature } from 'starknet'
 
 import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
-import { useModalOpen, useUpgradeWalletModalToggle } from '@/state/application/hooks'
+import { useModalOpened, useUpgradeWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
@@ -27,7 +27,7 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
   const currentUser = useCurrentUser()
 
   // modal
-  const isOpen = useModalOpen(ApplicationModal.UPGRADE_WALLET)
+  const isOpen = useModalOpened(ApplicationModal.UPGRADE_WALLET)
   const toggleUpgradeWalletModal = useUpgradeWalletModalToggle()
 
   // call

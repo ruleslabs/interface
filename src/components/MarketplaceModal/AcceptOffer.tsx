@@ -6,7 +6,7 @@ import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
-import { useModalOpen, useAcceptOfferModalToggle, useWalletModalToggle } from '@/state/application/hooks'
+import { useModalOpened, useAcceptOfferModalToggle, useWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
@@ -53,7 +53,7 @@ export default function AcceptOfferModal({
   )
 
   // modal
-  const isOpen = useModalOpen(ApplicationModal.ACCEPT_OFFER)
+  const isOpen = useModalOpened(ApplicationModal.ACCEPT_OFFER)
   const toggleAcceptOfferModal = useAcceptOfferModalToggle()
   const toggleWalletModal = useWalletModalToggle()
 

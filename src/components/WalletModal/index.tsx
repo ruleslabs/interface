@@ -5,7 +5,7 @@ import { Trans, t } from '@lingui/macro'
 
 import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classic'
-import { useModalOpen, useWalletModalToggle } from '@/state/application/hooks'
+import { useModalOpened, useWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
 import { useWalletModalMode, useSetWalletModalMode, useETHBalances } from '@/state/wallet/hooks'
@@ -57,7 +57,7 @@ export default function WalletModal() {
   const currentUser = useCurrentUser()
 
   // modal
-  const isOpen = useModalOpen(ApplicationModal.WALLET)
+  const isOpen = useModalOpened(ApplicationModal.WALLET)
   const toggleWalletModal = useWalletModalToggle()
 
   // modal mode

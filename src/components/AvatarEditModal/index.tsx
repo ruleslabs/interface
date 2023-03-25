@@ -5,7 +5,7 @@ import { ApolloError } from '@apollo/client'
 
 import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classic'
-import { useAvatarEditModalToggle, useModalOpen } from '@/state/application/hooks'
+import { useAvatarEditModalToggle, useModalOpened } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import useDefaultAvatarUrls from '@/hooks/useDefaultAvatarUrls'
 import { useEditAvatarMutation, useQueryCurrentUser } from '@/state/user/hooks'
@@ -45,7 +45,7 @@ interface AvatarEditModalProps {
 
 export default function AvatarEditModal({ currentAvatarId, customAvatarUrl }: AvatarEditModalProps) {
   const toggleAvatarEditModal = useAvatarEditModalToggle()
-  const isOpen = useModalOpen(ApplicationModal.AVATAR_EDIT)
+  const isOpen = useModalOpened(ApplicationModal.AVATAR_EDIT)
 
   const [selectedAvatarId, setSelectedAvatarId] = useState(currentAvatarId)
 

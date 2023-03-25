@@ -5,8 +5,8 @@ import AccountStatus from '@/components/AccountStatus'
 import { NavButton } from '@/components/Button'
 import { RowCenter } from '@/components/Row'
 import Link, { ActiveLink } from '@/components/Link'
-import { useOpenModal } from '@/state/application/hooks'
-import { ApplicationModal } from '@/state/application/actions'
+import { useOpenSidebarModal } from '@/state/application/hooks'
+import { ApplicationSidebarModal } from '@/state/application/actions'
 import NavModalMobile from '@/components/NavModal/Mobile'
 import { useCurrentUser } from '@/state/user/hooks'
 import { useNavLinks } from '@/hooks/useNav'
@@ -109,7 +109,7 @@ export default function Header() {
   const currentUser = useCurrentUser()
 
   // modal
-  const openNavModalMobile = useOpenModal(ApplicationModal.NAV_MOBILE)
+  const openNavModalMobile = useOpenSidebarModal(ApplicationSidebarModal.NAV_MOBILE)
 
   // nav links
   const navLinks = useNavLinks()
