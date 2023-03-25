@@ -11,7 +11,7 @@ import { useCurrentUser } from '@/state/user/hooks'
 import { useWalletModalMode, useSetWalletModalMode, useETHBalances } from '@/state/wallet/hooks'
 import { WalletModalMode } from '@/state/wallet/actions'
 import Column from '@/components/Column'
-import Row from '@/components/Row'
+import Row, { RowCenter } from '@/components/Row'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import { TYPE } from '@/styles/theme'
 import { TabButton } from '@/components/Button'
@@ -24,11 +24,18 @@ import Withdraw from './Withdraw'
 import StarkgateWithdraw from './StarkgateWithdraw'
 import Retrieve from './Retrieve'
 
-const ETHBalance = styled(TYPE.medium)`
-  font-size: 32px;
+import EthereumIcon from '@/images/ethereum-plain.svg'
+
+const ETHBalance = styled(RowCenter)`
   width: 100%;
-  text-align: center;
   margin-top: 16px;
+  gap: 8px;
+  justify-content: center;
+
+  & svg {
+    fill: ${({ theme }) => theme.text1};
+    height: 32px;
+  }
 `
 
 const FiatBalance = styled(TYPE.subtitle)`
@@ -94,7 +101,11 @@ export default function WalletModal() {
         <ModalBody>
           <Column gap={16}>
             <Column gap={8}>
-              <ETHBalance>{balance ? `${balance.toFixed(6)} ETH` : '- ETH'}</ETHBalance>
+              <ETHBalance>
+                <TYPE.medium fontSize={32}>{balance ? `${balance.toFixed(6)}` : 'Loading ...'}</TYPE.medium>
+                <EthereumIcon />
+              </ETHBalance>
+
               <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)} EUR` : '- €'}</FiatBalance>
             </Column>
 

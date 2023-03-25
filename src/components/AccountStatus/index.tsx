@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
-import { WeiAmount } from '@rulesorg/sdk-core'
 
 import { useCurrentUser, useSetCurrentUser } from '@/state/user/hooks'
 import {
@@ -17,8 +16,6 @@ import AuthModal from '@/components/AuthModal'
 import { IconButton, PrimaryButton, SecondaryButton } from '@/components/Button'
 import WalletModal from '@/components/WalletModal'
 import WalletUpgradeModal from '@/components/WalletUpgradeModal'
-import { TYPE } from '@/styles/theme'
-import { useETHBalances } from '@/state/wallet/hooks'
 import Avatar from '@/components/Avatar'
 import NavModalUserDesktop from '@/components/NavModal/UserDesktop'
 import NavModalUserMobile from '@/components/NavModal/UserMobile'
@@ -26,6 +23,7 @@ import NotificationsModal from '@/components/NotificationsModal'
 
 import BellIcon from '@/images/bell.svg'
 import WalletIcon from '@/images/wallet.svg'
+import WalletBalanceButton from './WalletBalanceButton'
 
 const StyledAccountStatus = styled.div`
   display: flex;
@@ -62,6 +60,12 @@ const SignInButton = styled(SecondaryButton)`
   background-color: ${({ theme }) => theme.white};
 `
 
+const StyledWalletBalanceButton = styled(WalletBalanceButton)`
+  ${({ theme }) => theme.media.small`
+    display: none;
+  `}
+`
+
 const AvatarWrapper = styled.div`
   height: 38px;
   width: 38px;
@@ -80,29 +84,6 @@ const AvatarWrapper = styled.div`
   &:hover {
     border-color: ${({ theme }) => theme.text1};
   }
-`
-
-const WalletButton = styled(PrimaryButton)<{ alert: boolean }>`
-  width: unset;
-  padding: 0 16px;
-  height: 38px;
-  border-radius: 4px;
-
-  ${({ theme }) => theme.media.medium`
-    padding: 0 12px;
-  `}
-
-  ${({ theme }) => theme.media.small`
-    display: none;
-  `}
-
-  ${({ theme, alert }) =>
-    !!alert &&
-    theme.before.alert`
-      ::before {
-        top: -4px;
-      }
-    `}
 `
 
 const AvatarButtonWrapperDesktop = styled.div`
@@ -166,20 +147,12 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
     [setCurrentUser, currentUser]
   )
 
-  // ETH balance
-  let balance = useETHBalances([currentUser?.starknetWallet.address])[currentUser?.starknetWallet.address]
-  balance = currentUser?.starknetWallet.address ? balance : WeiAmount.fromRawAmount(0)
-
   return (
     <>
       <StyledAccountStatus {...props}>
         {!!currentUser ? (
           <>
-            {currentUser?.starknetWallet.address && (
-              <WalletButton onClick={toggleWalletModal} alert={!!currentUser?.starknetWallet.lockingReason}>
-                <TYPE.body fontWeight={500}>{balance ? `${balance.toFixed(4)} ETH` : 'Loading...'}</TYPE.body>
-              </WalletButton>
-            )}
+            {currentUser?.starknetWallet.address && <StyledWalletBalanceButton onClick={toggleWalletModal} />}
 
             <AvatarButtonWrapperDesktop>
               <AvatarWrapper onClick={toggleNavModalUserDesktop}>

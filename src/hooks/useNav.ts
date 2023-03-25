@@ -25,7 +25,18 @@ export function useNavLinks(): MenuLinks {
   )
 }
 
-export function useNavUserLinks(userSlug?: string): MenuLinks {
+export interface NavUserSublinks {
+  name?: string
+  links: NavLink[]
+}
+
+export interface NavUserLinks {
+  profile: NavUserSublinks
+  wallet: NavUserSublinks
+  misc: NavUserSublinks
+}
+
+export function useNavUserLinks(userSlug?: string): NavUserLinks {
   // logout
   const logoutHanlder = useLogout()
 
@@ -33,19 +44,27 @@ export function useNavUserLinks(userSlug?: string): MenuLinks {
   const toggleUpgradeWalletModal = useUpgradeWalletModalToggle()
 
   return useMemo(
-    () => [
-      [
-        { name: 'Your cards', link: `/user/${userSlug}/cards` },
-        { name: 'Yout packs', link: `/user/${userSlug}/packs` },
-        { name: 'Your Rulédex', link: `/user/${userSlug}/ruledex` },
-        { name: 'Your Activity', link: `/user/${userSlug}/activity` },
-      ],
-      [{ name: 'Upgrade wallet', handler: toggleUpgradeWalletModal }],
-      [
-        { name: 'Settings', link: '/settings/profile' },
-        { name: 'Logout', handler: logoutHanlder },
-      ],
-    ],
+    () => ({
+      profile: {
+        name: 'Profile',
+        links: [
+          { name: 'Cards', link: `/user/${userSlug}/cards` },
+          { name: 'Packs', link: `/user/${userSlug}/packs` },
+          { name: 'Rulédex', link: `/user/${userSlug}/ruledex` },
+          { name: 'Activity', link: `/user/${userSlug}/activity` },
+        ],
+      },
+      wallet: {
+        name: 'Wallet',
+        links: [{ name: 'Upgrade wallet', handler: toggleUpgradeWalletModal }],
+      },
+      misc: {
+        links: [
+          { name: 'Settings', link: '/settings/profile' },
+          { name: 'Logout', handler: logoutHanlder },
+        ],
+      },
+    }),
     [userSlug]
   )
 }

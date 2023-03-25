@@ -8,6 +8,7 @@ import { RowCenter } from '@/components/Row'
 import Avatar from '@/components/Avatar'
 import { TYPE } from '@/styles/theme'
 import Tooltip from '@/components/Tooltip'
+import useParsedCScore from '@/hooks/useParsedCScore'
 
 const StyledTooltip = styled(Tooltip)`
   width: 236px;
@@ -56,7 +57,6 @@ const Rank = styled(RowCenter)`
 
 interface UserRowProps {
   cScore: number
-  cardModelsCount: number
   username: string
   pictureUrl: string
   fallbackUrl: string
@@ -69,7 +69,6 @@ const MemoizedUserRowPropsEqualityCheck = (prevProps: UserRowProps, nextProps: U
 
 const MemoizedUserRow = React.memo(function UserRow({
   cScore,
-  cardModelsCount,
   username,
   pictureUrl,
   fallbackUrl,
@@ -79,13 +78,9 @@ const MemoizedUserRow = React.memo(function UserRow({
   // shorten username
   const shortUsername = useMemo(() => shortenUsername(username), [username])
 
-  // parsed price
-  const parsedCScore = useMemo(() => {
-    return Intl.NumberFormat('en-US', {
-      notation: 'compact',
-      maximumFractionDigits: 2,
-    }).format(cScore)
-  }, [cScore])
+  // parsed C-Score
+  const roundedParsedCScore = useParsedCScore(cScore)
+  const fullParsedCScore = useParsedCScore(cScore, { rounded: false })
 
   return (
     <StyledUserRow>
@@ -107,11 +102,11 @@ const MemoizedUserRow = React.memo(function UserRow({
       </Link>
 
       <CScore>
-        <TYPE.body color="text2">{parsedCScore}</TYPE.body>
+        <TYPE.body color="text2">{roundedParsedCScore}</TYPE.body>
 
         <StyledTooltip direction="left">
           <TYPE.body>
-            <Trans>Collection score: {cScore.toLocaleString('en-US')}</Trans>
+            <Trans>Collection score: {fullParsedCScore}</Trans>
           </TYPE.body>
         </StyledTooltip>
       </CScore>

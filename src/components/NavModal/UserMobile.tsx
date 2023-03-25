@@ -1,30 +1,59 @@
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
-import { useModalOpen, useNavModalUserMobileToggle } from '@/state/application/hooks'
+import { useModalOpen, useNavModalUserMobileToggle, useWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { TYPE } from '@/styles/theme'
-import { ActiveLink } from '@/components/Link'
 import { useCurrentUser } from '@/state/user/hooks'
 import SidebarModal, { ModalHeader, ModalBody, ModalContent } from '@/components/Modal/Sidebar'
 import { SidebarNavButton } from '@/components/Button'
-import { useNavUserLinks } from '@/hooks/useNav'
+import { useNavUserLinks, NavUserSublinks } from '@/hooks/useNav'
 import Actionable from './Actionable'
 import Divider from '@/components/Divider'
 import Column from '@/components/Column'
+import Avatar from '@/components/Avatar'
+import { RowCenter } from '@/components/Row'
+import useParsedCScore from '@/hooks/useParsedCScore'
+import { ActiveLink } from '@/components/Link'
+import WalletBalanceButton from '@/components/AccountStatus/WalletBalanceButton'
 
-const UsernameMenuButton = styled(TYPE.body)`
-  width: 100%;
-  font-weight: 500;
-  font-size: 18px;
-  text-align: center;
-  padding: 6px 8px 6px 16px;
-  cursor: pointer;
+const ProfileRow = styled(RowCenter)`
+  gap: 8px;
+  padding: 8px;
+  border-radius: 3px;
+
+  & img {
+    width: 48px;
+    height: 48px;
+  }
 
   &.active {
     background: ${({ theme }) => theme.bg3}40;
   }
 `
+
+const WalletRow = styled(RowCenter)`
+  padding: 8px;
+  justify-content: space-between;
+`
+
+interface NavUserSublinksMobileProps {
+  navSublinks: NavUserSublinks
+}
+
+function NavUserSublinksMobile({ navSublinks }: NavUserSublinksMobileProps) {
+  return (
+    <Column>
+      {navSublinks.links.map((navLink) => (
+        <Actionable key={navLink.name} link={navLink.link} handler={navLink.handler} perfectMatch>
+          <SidebarNavButton>
+            <Trans id={navLink.name} render={({ translation }) => <>{translation}</>} />
+          </SidebarNavButton>
+        </Actionable>
+      ))}
+    </Column>
+  )
+}
 
 export default function NavModalUserMobile() {
   // current user
@@ -34,8 +63,14 @@ export default function NavModalUserMobile() {
   const toggleNavModalUserMobile = useNavModalUserMobileToggle()
   const isOpen = useModalOpen(ApplicationModal.NAV_USER_MOBILE)
 
+  // wallet modal
+  const toggleWalletModal = useWalletModalToggle()
+
   // nav links
   const navLinks = useNavUserLinks(currentUser.slug)
+
+  // parsed cScore
+  const parsedCScore = useParsedCScore(currentUser.cScore, { rounded: false })
 
   if (!currentUser) return null
 
@@ -46,26 +81,37 @@ export default function NavModalUserMobile() {
 
         <ModalBody gap={6}>
           <ActiveLink href={`/user/${currentUser.slug}`} perfectMatch>
-            <UsernameMenuButton>
-              <Trans>{currentUser.username}</Trans>
-            </UsernameMenuButton>
+            <ProfileRow>
+              <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackUrl} />
+
+              <Column gap={4}>
+                <TYPE.body fontWeight={500}>{currentUser.username}</TYPE.body>
+                <TYPE.subtitle>{parsedCScore}</TYPE.subtitle>
+              </Column>
+            </ProfileRow>
           </ActiveLink>
 
-          {navLinks.map((navLinks, index) => (
-            <Column key={`nav-links-${index}`} gap={6}>
-              <Divider />
+          <Divider />
 
-              <Column>
-                {navLinks.map((navLink) => (
-                  <Actionable key={navLink.name} link={navLink.link} handler={navLink.handler} perfectMatch>
-                    <SidebarNavButton>
-                      <Trans id={navLink.name} render={({ translation }) => <>{translation}</>} />
-                    </SidebarNavButton>
-                  </Actionable>
-                ))}
-              </Column>
-            </Column>
-          ))}
+          <WalletRow onClick={toggleWalletModal}>
+            <TYPE.body fontWeight={500}>
+              <Trans>Your wallet</Trans>
+            </TYPE.body>
+
+            <WalletBalanceButton />
+          </WalletRow>
+
+          <Divider />
+
+          <NavUserSublinksMobile navSublinks={navLinks.profile} />
+
+          <Divider />
+
+          <NavUserSublinksMobile navSublinks={navLinks.wallet} />
+
+          <Divider />
+
+          <NavUserSublinksMobile navSublinks={navLinks.misc} />
         </ModalBody>
       </ModalContent>
     </SidebarModal>

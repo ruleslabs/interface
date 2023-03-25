@@ -20,6 +20,7 @@ const DEFAULT_SIDEBAR_WIDTH = 280
 const SidebarDialogOverlay = styled(animated(DialogOverlay))`
   &[data-reach-dialog-overlay] {
     z-index: 9999;
+    background-color: ${({ theme }) => theme.black}a0;
   }
 `
 

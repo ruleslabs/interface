@@ -9,7 +9,7 @@ import Column from '../Column'
 import { TooltipCaret } from '../Tooltip'
 import Link from '../Link'
 import { useCurrentUser } from '@/state/user/hooks'
-import { useNavUserLinks } from '@/hooks/useNav'
+import { NavUserSublinks, useNavUserLinks } from '@/hooks/useNav'
 import Actionable from './Actionable'
 import Divider from '@/components/Divider'
 
@@ -65,6 +65,22 @@ const UsernameMenuButton = styled(MenuButton)`
   text-align: center;
 `
 
+interface NavUserSublinksDesktopProps {
+  navSublinks: NavUserSublinks
+}
+
+function NavUserSublinksDesktop({ navSublinks }: NavUserSublinksDesktopProps) {
+  return (
+    <Column>
+      {navSublinks.links.map((navLink) => (
+        <Actionable key={navLink.name} link={navLink.link} handler={navLink.handler}>
+          <Trans id={navLink.name} render={({ translation }) => <MenuButton>{translation}</MenuButton>} />
+        </Actionable>
+      ))}
+    </Column>
+  )
+}
+
 export default function NavModalUserDesktop() {
   // current user
   const currentUser = useCurrentUser()
@@ -91,19 +107,17 @@ export default function NavModalUserDesktop() {
             </UsernameMenuButton>
           </Link>
 
-          {navLinks.map((navLinks, index) => (
-            <Column key={`nav-links-${index}`} gap={6}>
-              <Divider />
+          <Divider />
 
-              <Column>
-                {navLinks.map((navLink) => (
-                  <Actionable key={navLink.name} link={navLink.link} handler={navLink.handler}>
-                    <Trans id={navLink.name} render={({ translation }) => <MenuButton>{translation}</MenuButton>} />
-                  </Actionable>
-                ))}
-              </Column>
-            </Column>
-          ))}
+          <NavUserSublinksDesktop navSublinks={navLinks.profile} />
+
+          <Divider />
+
+          <NavUserSublinksDesktop navSublinks={navLinks.wallet} />
+
+          <Divider />
+
+          <NavUserSublinksDesktop navSublinks={navLinks.misc} />
         </Column>
       </StyledNavModalUserDesktop>
     </HintModal>
