@@ -22,15 +22,6 @@ export enum ApplicationSidebarModal {
   NOTIFICATIONS,
 }
 
-export const HomepageTabs = {
-  aside: 'Home',
-  'last-offers': 'Last offers',
-}
-
-export type HomepageTabKey = keyof typeof HomepageTabs
-
-export const setHomepageTabKey = createAction<{ tabKey: HomepageTabKey }>('application/setHomepageTabKey')
-
 export const setOpenedModal = createAction<{ modal: ApplicationModal | null }>('application/setOpenModal')
 export const setOpenedSidebarModal = createAction<{ modal: ApplicationSidebarModal | null }>(
   'application/setOpenSidebarModal'

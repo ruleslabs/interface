@@ -1,7 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit'
 
 import {
-  setHomepageTabKey,
   setOpenedModal,
   setOpenedSidebarModal,
   updateEtherPrice,
@@ -9,8 +8,6 @@ import {
   updateEthereumBlockNumber,
   ApplicationModal,
   ApplicationSidebarModal,
-  HomepageTabs,
-  HomepageTabKey,
 } from './actions'
 
 export interface ApplicationState {
@@ -19,7 +16,6 @@ export interface ApplicationState {
   readonly etherPrice?: number
   readonly blockNumber?: number
   readonly ethereumBlockNumber: { readonly [chainId: number]: number }
-  readonly homepageTabKey: HomepageTabKey
 }
 
 export const initialState: ApplicationState = {
@@ -27,14 +23,10 @@ export const initialState: ApplicationState = {
   openedSidebarModal: null,
   blockNumber: 1, // set blockNumber to 1 to run the call listeners cause `get_block` is very slow atm
   ethereumBlockNumber: {},
-  homepageTabKey: Object.keys(HomepageTabs)[0] as HomepageTabKey,
 }
 
 export default createReducer(initialState, (builder) =>
   builder
-    .addCase(setHomepageTabKey, (state, { payload: { tabKey } }) => {
-      state.homepageTabKey = tabKey
-    })
     .addCase(setOpenedModal, (state, { payload: { modal } }) => {
       state.openedModal = modal
     })

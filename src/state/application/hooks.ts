@@ -3,14 +3,7 @@ import { useWeb3React } from '@web3-react/core'
 
 import { AppState } from '@/state'
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
-import {
-  setOpenedModal,
-  setOpenedSidebarModal,
-  setHomepageTabKey,
-  ApplicationModal,
-  HomepageTabKey,
-  ApplicationSidebarModal,
-} from './actions'
+import { setOpenedModal, setOpenedSidebarModal, ApplicationModal, ApplicationSidebarModal } from './actions'
 
 // BLOCK NUMBER
 
@@ -27,17 +20,6 @@ export function useEthereumBlockNumber(): number | undefined {
 
 export function useEtherPrice(): number | undefined {
   return useAppSelector((state: AppState) => state.application.etherPrice)
-}
-
-// HOMEPAGE
-
-export function useHomepageTab(): AppState['application']['homepageTabKey'] {
-  return useAppSelector((state: AppState) => state.application.homepageTabKey)
-}
-
-export function useSetHomepageTab(): (tabKey: HomepageTabKey) => void {
-  const dispatch = useAppDispatch()
-  return useCallback((tabKey: HomepageTabKey) => dispatch(setHomepageTabKey({ tabKey })), [dispatch])
 }
 
 // MODAL
