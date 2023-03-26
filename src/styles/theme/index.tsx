@@ -186,6 +186,7 @@ const Text = styled.div<TextProps>`
   ${({ fontSize }) => fontSize && `font-size: ${fontSize}px;`}
   ${({ fontWeight }) => fontWeight && `font-weight: ${fontWeight};`};
   ${({ textAlign }) => textAlign && `text-align: ${textAlign};`}
+  ${({ textAlign }) => textAlign === 'center' && `width: 100%;`}
   ${({ underline }) => underline && 'text-decoration: underline;'}
   ${({ clickable = false }) =>
     clickable &&

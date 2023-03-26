@@ -4,7 +4,7 @@ import { ApolloError } from '@apollo/client'
 import { Call, Signature } from 'starknet'
 
 import { ModalHeader } from '@/components/Modal'
-import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
+import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classic'
 import { useModalOpened, useUpgradeWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useCurrentUser } from '@/state/user/hooks'
@@ -16,7 +16,6 @@ import StarknetSigner from '@/components/StarknetSigner'
 import { ACCOUNT_CLASS_HASH } from '@/constants/addresses'
 import { useUpgradeWalletMutation } from '@/state/wallet/hooks'
 import { TYPE } from '@/styles/theme'
-import Link from '@/components/Link'
 
 interface UpgradeWalletModalProps {
   onSuccess(): void
@@ -87,48 +86,52 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
       <ModalContent>
         <ModalHeader onDismiss={toggleUpgradeWalletModal} title={calls ? undefined : t`Wallet upgrade`} />
 
-        <StarknetSigner
-          confirmationText={t`Your wallet will be upgraded`}
-          confirmationActionText={t`Confirm wallet upgrade`}
-          transactionText={t`wallet upgrade.`}
-          calls={calls ?? undefined}
-          txHash={txHash ?? undefined}
-          error={error ?? undefined}
-          onSignature={onSignature}
-          onError={onError}
-        >
-          <Column gap={32}>
-            <Column gap={16}>
-              <TYPE.medium>
-                <Trans>You need to update your wallet to keep your ETHs safe</Trans>
-              </TYPE.medium>
+        {currentUser.needsUpgrade ? (
+          <StarknetSigner
+            confirmationText={t`Your wallet will be upgraded`}
+            confirmationActionText={t`Confirm wallet upgrade`}
+            transactionText={t`wallet upgrade.`}
+            calls={calls ?? undefined}
+            txHash={txHash ?? undefined}
+            error={error ?? undefined}
+            onSignature={onSignature}
+            onError={onError}
+          >
+            <Column gap={32}>
+              <Column gap={16}>
+                <TYPE.large>
+                  <Trans>Your wallet needs to be upgraded.</Trans>
+                </TYPE.large>
 
-              <TYPE.body>
-                <Trans>
-                  <Link
-                    href="https://medium.com/starkware/starknet-alpha-0-10-0-923007290470"
-                    target="_blank"
-                    underline
-                  >
-                    <Trans>Starknet released the Alpha 0.10.0</Trans>
-                  </Link>{' '}
-                  and it implies some changes for your wallet. If you don&apos;t hold ETHs, the upgrade is not mandatory
-                  but still recommended.
-                </Trans>
-              </TYPE.body>
+                <TYPE.body>
+                  <Trans>
+                    Starknet released a new update to improve the network, and it implies some changes for your wallet.
+                    To keep on working, your wallet needs to be upgraded as soon as possible.
+                    <br />
+                    <br />
+                    If you don&apos;t perform the upgrade on time, your wallet will be temporarily locked.
+                  </Trans>
+                </TYPE.body>
+              </Column>
+
+              {!!currentUser?.starknetWallet.lockingReason && (
+                <ErrorCard>
+                  <LockedWallet />
+                </ErrorCard>
+              )}
+
+              <PrimaryButton onClick={handleConfirmation} disabled={!!currentUser?.starknetWallet.lockingReason} large>
+                <Trans>Upgrade</Trans>
+              </PrimaryButton>
             </Column>
-
-            {!!currentUser?.starknetWallet.lockingReason && (
-              <ErrorCard>
-                <LockedWallet />
-              </ErrorCard>
-            )}
-
-            <PrimaryButton onClick={handleConfirmation} disabled={!!currentUser?.starknetWallet.lockingReason} large>
-              <Trans>Upgrade</Trans>
-            </PrimaryButton>
-          </Column>
-        </StarknetSigner>
+          </StarknetSigner>
+        ) : (
+          <ModalBody>
+            <TYPE.large textAlign="center">
+              <Trans>Your wallet is up-to-date 🎉</Trans>
+            </TYPE.large>
+          </ModalBody>
+        )}
       </ModalContent>
     </ClassicModal>
   )
