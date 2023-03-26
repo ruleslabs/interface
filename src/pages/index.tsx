@@ -43,6 +43,38 @@ const LogoOutlineWrapper = styled(RowCenter)<{ windowHeight?: number }>`
     max-width: 1024px;
     transform: translateY(-32px);
     fill: ${({ theme }) => theme.white};
+
+    #logo-outline-ru {
+      animation: flicker 5s linear infinite;
+    }
+
+    #logo-outline-e1,
+    #logo-outline-e2,
+    #logo-outline-e3 {
+      animation: flicker 3s linear infinite;
+    }
+
+    @keyframes flicker {
+      0%,
+      19.999%,
+      22%,
+      62.999%,
+      64%,
+      64.999%,
+      70%,
+      100% {
+        opacity: 0.99;
+      }
+
+      20%,
+      21.999%,
+      63%,
+      63.999%,
+      65%,
+      69.999% {
+        opacity: 0.4;
+      }
+    }
   }
 `
 
@@ -91,7 +123,7 @@ interface ArticleProps extends React.HTMLAttributes<HTMLDivElement> {
 function Article({ title, children, ...props }: ArticleProps) {
   return (
     <Column gap={12} {...props}>
-      <TYPE.large>{title}</TYPE.large>
+      <TYPE.large fontSize={32}>{title}</TYPE.large>
       {children}
     </Column>
   )

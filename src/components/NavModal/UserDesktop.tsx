@@ -63,6 +63,7 @@ const UsernameMenuButton = styled(MenuButton)`
   font-size: 18px;
   padding: 6px 8px;
   text-align: center;
+  word-break: break-all;
 `
 
 interface NavUserSublinksDesktopProps {
