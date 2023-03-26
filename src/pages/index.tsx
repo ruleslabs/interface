@@ -12,37 +12,42 @@ import DefaultLayout from '@/components/Layout'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
-import useWindowSize from '@/hooks/useWindowSize'
+import { RowCenter } from '@/components/Row'
 
-const BackgroundVideo = styled.video<{ windowHeight?: number }>`
+import LogoOutline from '@/images/logo-outline.svg'
+
+const BackgroundWrapper = styled.div`
+  position: relative;
   height: 40vh;
   z-index: -1;
-  position: fixed;
   width: 100%;
-  top: ${({ theme }) => theme.size.headerHeight}px;
-  object-fit: cover;
+
+  & > * {
+    position: absolute;
+    width: 100%;
+    height: 40vh;
+  }
+
+  & > video {
+    object-fit: cover;
+  }
+`
+
+const LogoOutlineWrapper = styled(RowCenter)<{ windowHeight?: number }>`
+  justify-content: center;
+  position: absolute;
+  mix-blend-mode: overlay;
+
+  & svg {
+    width: 80%;
+    max-width: 1024px;
+    transform: translateY(-32px);
+    fill: ${({ theme }) => theme.white};
+  }
 `
 
 const BackgroundVideoGradient = styled.div`
-  height: 40vh;
-  z-index: -1;
-  position: absolute;
-  width: 100%;
-  top: ${({ theme }) => theme.size.headerHeight}px;
   background: ${({ theme }) => `linear-gradient(0deg, ${theme.bg1} 0, ${theme.bg1}00 300px)`};
-`
-
-const BackgroundVideoOffset = styled.div`
-  height: 40vh;
-`
-
-const HomeWrapper = styled.div`
-  width: 100%;
-  background: ${({ theme }) => theme.bg1};
-`
-
-const HomeContent = styled.div`
-  transform: translateY(-64px);
 `
 
 const StyledHome = styled(Section)`
@@ -50,9 +55,9 @@ const StyledHome = styled(Section)`
   display: flex;
   justify-content: center;
   gap: 32px;
+  transform: translateY(-64px);
 
   ${({ theme }) => theme.media.small`
-    margin-top: 32px;
     flex-direction: column;
   `}
 `
@@ -122,61 +127,51 @@ function Home() {
     }
   }, [])
 
-  // window size
-  const windowSize = useWindowSize()
-
   return (
     <>
-      <BackgroundVideo
-        windowHeight={windowSize.height}
-        src="https://videos.rules.art/mp4/homepage.mp4"
-        playsInline
-        loop
-        autoPlay
-        muted
-      />
+      <BackgroundWrapper>
+        <video src="https://videos.rules.art/mp4/homepage.mp4" playsInline loop autoPlay muted />
 
-      <BackgroundVideoGradient />
+        <LogoOutlineWrapper>
+          <LogoOutline />
+        </LogoOutlineWrapper>
 
-      <BackgroundVideoOffset />
+        <BackgroundVideoGradient />
+      </BackgroundWrapper>
 
-      <HomeWrapper>
-        <HomeContent>
-          <StyledHome>
-            <Aside>
-              <Article title={t`Live`}>
-                <StyledCard>
-                  <HOMEPAGE.Live />
-                </StyledCard>
-              </Article>
+      <StyledHome>
+        <Aside>
+          <Article title={t`Live`}>
+            <StyledCard>
+              <HOMEPAGE.Live />
+            </StyledCard>
+          </Article>
 
-              <Article title={t`Hall of fame`}>
-                <StyledCard>
-                  <HOMEPAGE.HallOfFame />
-                </StyledCard>
-              </Article>
+          <Article title={t`Hall of fame`}>
+            <StyledCard>
+              <HOMEPAGE.HallOfFame />
+            </StyledCard>
+          </Article>
 
-              <Article title={t`Artists fund`}>
-                <StyledCard>
-                  <HOMEPAGE.ArtistsFund />
-                </StyledCard>
-              </Article>
+          <Article title={t`Artists fund`}>
+            <StyledCard>
+              <HOMEPAGE.ArtistsFund />
+            </StyledCard>
+          </Article>
 
-              <Article title={t`Community creations`}>
-                <StyledCard>
-                  <HOMEPAGE.CommunityCreations />
-                </StyledCard>
-              </Article>
-            </Aside>
+          <Article title={t`Community creations`}>
+            <StyledCard>
+              <HOMEPAGE.CommunityCreations />
+            </StyledCard>
+          </Article>
+        </Aside>
 
-            <LastOffersColumn>
-              <Article title={t`Last offers`}>
-                <HOMEPAGE.LastOffers />
-              </Article>
-            </LastOffersColumn>
-          </StyledHome>
-        </HomeContent>
-      </HomeWrapper>
+        <LastOffersColumn>
+          <Article title={t`Last offers`}>
+            <HOMEPAGE.LastOffers />
+          </Article>
+        </LastOffersColumn>
+      </StyledHome>
     </>
   )
 }
