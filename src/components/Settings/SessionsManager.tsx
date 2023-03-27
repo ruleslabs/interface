@@ -39,7 +39,6 @@ const RevokeButton = styled(SecondaryButton)`
 
   &:hover {
     background: ${({ theme }) => theme.error};
-    border-color: ${({ theme }) => theme.error};
     color: ${({ theme }) => theme.text1};
   }
 `

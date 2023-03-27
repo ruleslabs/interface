@@ -126,6 +126,10 @@ export function useToggleMarketplaceFiltersModal(): () => void {
   return useToggleModal(ApplicationModal.MARKETPLACE_FILTERS)
 }
 
+export function useToggleStarknetAccountPrivateKeyModal(): () => void {
+  return useToggleModal(ApplicationModal.STARKNET_ACCOUNT_PRIVATE_KEY)
+}
+
 // SIDEBAR
 
 export function useToggleNotificationsModal(): () => void {

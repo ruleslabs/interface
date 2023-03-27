@@ -12,6 +12,7 @@ import UserIcon from '@/images/user.svg'
 import EthereumIcon from '@/images/ethereum-plain.svg'
 import ShieldIcon from '@/images/shield.svg'
 import SessionsIcon from '@/images/sessions.svg'
+import StarknetIcon from '@/images/starknet.svg'
 
 const StyledSection = styled(Section)`
   margin-top: 64px;
@@ -90,6 +91,11 @@ const categories = [
     name: 'Sessions',
     slug: 'sessions',
     icon: SessionsIcon,
+  },
+  {
+    name: 'Starknet',
+    slug: 'starknet',
+    icon: StarknetIcon,
   },
   {
     name: 'Ethereum',

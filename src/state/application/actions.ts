@@ -14,6 +14,7 @@ export enum ApplicationModal {
   ACCEPT_OFFER,
   UPGRADE_WALLET,
   MARKETPLACE_FILTERS,
+  STARKNET_ACCOUNT_PRIVATE_KEY,
 }
 
 export enum ApplicationSidebarModal {
