@@ -81,6 +81,8 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
     }
   }, [isOpen])
 
+  if (!currentUser) return null
+
   return (
     <ClassicModal onDismiss={toggleUpgradeWalletModal} isOpen={isOpen}>
       <ModalContent>

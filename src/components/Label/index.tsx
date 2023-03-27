@@ -19,7 +19,7 @@ interface LabelProps {
   uppercased?: boolean
 }
 
-export default function Status({ value, color, uppercased = false }: LabelProps) {
+export default function Label({ value, color, uppercased = false }: LabelProps) {
   const finalValue = useMemo(() => (uppercased ? value.toUpperCase() : value), [value])
 
   return <StyledLabel color={color}>{finalValue}</StyledLabel>

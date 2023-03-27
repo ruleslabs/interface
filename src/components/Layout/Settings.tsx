@@ -6,11 +6,12 @@ import { TYPE } from '@/styles/theme'
 import Section from '@/components/Section'
 import { ActiveLink } from '@/components/Link'
 import { RowCenter } from '@/components/Row'
+import { useCurrentUser } from '@/state/user/hooks'
 
 import UserIcon from '@/images/user.svg'
 import EthereumIcon from '@/images/ethereum-plain.svg'
 import ShieldIcon from '@/images/shield.svg'
-import { useCurrentUser } from '@/state/user/hooks'
+import SessionsIcon from '@/images/sessions.svg'
 
 const StyledSection = styled(Section)`
   margin-top: 64px;
@@ -84,6 +85,11 @@ const categories = [
     name: 'Security',
     slug: 'security',
     icon: ShieldIcon,
+  },
+  {
+    name: 'Sessions',
+    slug: 'sessions',
+    icon: SessionsIcon,
   },
   {
     name: 'Ethereum',
