@@ -5,9 +5,11 @@ import { t, Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { ApolloError } from '@apollo/client'
 
+import ClassicModal, { ModalBody, ModalContent } from '@/components/Modal/Classic'
+import { ModalHeader } from '@/components/Modal'
 import { useCurrentUser, useSetCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
-import Row, { RowBetween } from '@/components/Row'
+import { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import Metamask from '@/components/Metamask'
@@ -18,42 +20,45 @@ import Link from '@/components/Link'
 import { desiredChainId } from '@/constants/connectors'
 import { CHAINS } from '@/constants/networks'
 import { useRetrieveEtherMutation } from '@/state/wallet/hooks'
+import { useModalOpened, useRetrieveEthersModalToggle } from '@/state/application/hooks'
+import { ApplicationModal } from '@/state/application/actions'
+import LongHex from '@/components/Text/LongHex'
+import Subtitle from '@/components/Text/Subtitle'
+import Divider from '@/components/Divider'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
 
-const RetrievableWrapper = styled(RowBetween)`
+const RetrievableWrapper = styled(Column)`
   width: 100%;
-  padding: 16px;
-  background: ${({ theme }) => theme.bg5};
-  border: 1px solid ${({ theme }) => theme.bg3};
-  border-radius: 4px;
+  padding: 12px 20px;
+  background: ${({ theme }) => theme.bg3}40;
+  border: 1px solid ${({ theme }) => theme.bg3}80;
+  border-radius: 3px;
+  gap: 16px;
 `
 
-const RetrievableAddress = styled(Link)`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: ${({ theme }) => theme.bg3};
-  border-radius: 3px;
-  margin-left: auto;
-  cursor: pointer;
+const SeeOnEtherscanWrapper = styled(RowCenter)`
+  gap: 4px;
 
   & svg {
     width: 16px;
     height: 16px;
-    fill: ${({ theme }) => theme.text1};
+    fill: ${({ theme }) => theme.text2};
   }
 
-  &:hover * {
-    text-decoration: underline;
+  & div {
+    white-space: nowrap;
   }
 `
 
-export default function Retrieve() {
+export default function EtherRetrieveModal() {
   // current user
   const currentUser = useCurrentUser()
   const setCurrentUser = useSetCurrentUser()
+
+  // modal
+  const toggleRetrieveEthersModal = useRetrieveEthersModalToggle()
+  const isOpen = useModalOpened(ApplicationModal.RETRIEVE_ETHERS)
 
   // amount
   const parsedAmounts = useMemo(
@@ -136,47 +141,60 @@ export default function Retrieve() {
   }, [ethereumMulticallContract, ethereumStarkgateContract, currentUser?.retrievableEthers])
 
   return (
-    <EthereumSigner
-      confirmationText={t`Your ETH transfer is on its way`}
-      transactionText={t`${totalParsedAmount?.toSignificant(6)} ETH transfer to your Ethereum wallet`}
-      waitingForTx={waitingForTx}
-      txHash={txHash ?? undefined}
-      error={error ?? undefined}
-    >
-      <Column gap={26}>
-        {(currentUser?.retrievableEthers ?? []).map((retrievableEther: any, index: number) => (
-          <RetrievableWrapper key={`retrievable-ether-${index}`}>
-            <Column gap={8}>
-              <TYPE.body>
-                <Trans>Amount to transfer</Trans>
-              </TYPE.body>
+    <ClassicModal isOpen={isOpen} onDismiss={toggleRetrieveEthersModal}>
+      <ModalContent>
+        <ModalHeader title={t`Retrieve pending ETH`} onDismiss={toggleRetrieveEthersModal} />
 
-              <Row gap={12}>
-                <TYPE.medium>{parsedAmounts[index]?.toSignificant(6) ?? 0} ETH</TYPE.medium>
-                <TYPE.medium color="text2">{weiAmountToEURValue(parsedAmounts[index]) ?? 0}€</TYPE.medium>
-              </Row>
+        <ModalBody>
+          <EthereumSigner
+            confirmationText={t`Your ETH transfer is on its way`}
+            transactionText={t`${totalParsedAmount?.toSignificant(6)} ETH transfer to your Ethereum wallet`}
+            waitingForTx={waitingForTx}
+            txHash={txHash ?? undefined}
+            error={error ?? undefined}
+          >
+            <Column gap={24}>
+              {(currentUser?.retrievableEthers ?? []).map((retrievableEther: any, index: number) => (
+                <RetrievableWrapper key={`retrievable-ether-${index}`}>
+                  <Column gap={8}>
+                    <Subtitle value={t`Recipient`} />
+
+                    <Column gap={8}>
+                      <LongHex value={retrievableEther.l1Recipient} />
+
+                      <Link
+                        target="_blank"
+                        href={`${CHAINS[desiredChainId].explorerBaseUrl}/address/${retrievableEther.l1Recipient}`}
+                      >
+                        <SeeOnEtherscanWrapper>
+                          <TYPE.subtitle clickable>
+                            <Trans>See on Etherscan</Trans>
+                          </TYPE.subtitle>
+
+                          <ExternalLinkIcon />
+                        </SeeOnEtherscanWrapper>
+                      </Link>
+                    </Column>
+                  </Column>
+
+                  <Divider />
+
+                  <RowCenter gap={8}>
+                    <TYPE.medium color="primary1">+ {parsedAmounts[index]?.toSignificant(6) ?? 0} ETH</TYPE.medium>
+                    <TYPE.body color="text2">{weiAmountToEURValue(parsedAmounts[index]) ?? 0}€</TYPE.body>
+                  </RowCenter>
+                </RetrievableWrapper>
+              ))}
+
+              <Metamask>
+                <PrimaryButton onClick={onRetrieve} large>
+                  <Trans>Validate all</Trans>
+                </PrimaryButton>
+              </Metamask>
             </Column>
-
-            <RetrievableAddress
-              target="_blank"
-              href={`${CHAINS[desiredChainId].explorerBaseUrl}/address/${retrievableEther.l1Recipient}`}
-            >
-              <TYPE.body>
-                {retrievableEther.l1Recipient.substring(0, 5)}...
-                {retrievableEther.l1Recipient.substring(retrievableEther.l1Recipient.length - 4)}
-              </TYPE.body>
-
-              <ExternalLinkIcon />
-            </RetrievableAddress>
-          </RetrievableWrapper>
-        ))}
-
-        <Metamask>
-          <PrimaryButton onClick={onRetrieve} large>
-            <Trans>Validate all</Trans>
-          </PrimaryButton>
-        </Metamask>
-      </Column>
-    </EthereumSigner>
+          </EthereumSigner>
+        </ModalBody>
+      </ModalContent>
+    </ClassicModal>
   )
 }

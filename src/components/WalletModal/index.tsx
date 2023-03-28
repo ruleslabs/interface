@@ -22,7 +22,6 @@ import Deposit from './Deposit'
 import StarkgateDeposit from './StarkgateDeposit'
 import Withdraw from './Withdraw'
 import StarkgateWithdraw from './StarkgateWithdraw'
-import Retrieve from './Retrieve'
 
 import EthereumIcon from '@/images/ethereum-plain.svg'
 
@@ -87,9 +86,6 @@ export default function WalletModal() {
 
       case WalletModalMode.STARKGATE_WITHDRAW:
         return <StarkgateWithdraw />
-
-      case WalletModalMode.RETRIEVE:
-        return <Retrieve />
     }
   }, [walletModalMode])
 
@@ -133,9 +129,7 @@ export default function WalletModal() {
             <TabButton
               onClick={onWithdrawMode}
               className={
-                walletModalMode === WalletModalMode.WITHDRAW ||
-                walletModalMode === WalletModalMode.STARKGATE_WITHDRAW ||
-                walletModalMode === WalletModalMode.RETRIEVE
+                walletModalMode === WalletModalMode.WITHDRAW || walletModalMode === WalletModalMode.STARKGATE_WITHDRAW
                   ? 'active'
                   : undefined
               }

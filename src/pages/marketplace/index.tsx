@@ -21,7 +21,7 @@ import SortButton, { SortData } from '@/components/Button/SortButton'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 import { Badge } from '@/components/CardModel/Badges'
 import { IconButton } from '@/components/Button'
-import { useToggleMarketplaceFiltersModal } from '@/state/application/hooks'
+import { useMarketplaceFiltersModalToggle } from '@/state/application/hooks'
 
 import HopperIcon from '@/images/hopper.svg'
 import MarketplaceFiltersModal from '@/components/MarketplaceFiltersModal'
@@ -105,7 +105,7 @@ export default function Marketplace() {
   const algoliaFormatedMarketplaceFilters = useAlgoliaFormatedMarketplaceFilters()
 
   // filters modal
-  const toggleMarketplaceFiltersModal = useToggleMarketplaceFiltersModal()
+  const toggleMarketplaceFiltersModal = useMarketplaceFiltersModalToggle()
 
   // sort
   const [sortIndex, setSortIndex] = useState(0)

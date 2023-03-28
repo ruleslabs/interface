@@ -15,6 +15,7 @@ export enum ApplicationModal {
   UPGRADE_WALLET,
   MARKETPLACE_FILTERS,
   STARKNET_ACCOUNT_PRIVATE_KEY,
+  RETRIEVE_ETHERS,
 }
 
 export enum ApplicationSidebarModal {

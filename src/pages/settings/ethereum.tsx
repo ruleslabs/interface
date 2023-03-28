@@ -5,6 +5,7 @@ import DefaultLayout from '@/components/Layout'
 import SettingsLayout from '@/components/Layout/Settings'
 import Column from '@/components/Column'
 import Title from '@/components/Text/Title'
+import EtherRetriever from '@/components/Settings/EtherRetriever'
 
 const StyledEthereumSettings = styled(Column)`
   width: 100%;
@@ -15,7 +16,9 @@ function EthereumSettings() {
   return (
     <StyledEthereumSettings>
       <Column gap={24}>
-        <Title value={t`Comming Soon`} />
+        <Title value={t`Retrieve pending ETH`} />
+
+        <EtherRetriever />
       </Column>
     </StyledEthereumSettings>
   )

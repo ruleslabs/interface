@@ -7,7 +7,7 @@ import {
   useAuthModalToggle,
   useNavModalUserDesktopToggle,
   useNavModalUserMobileToggle,
-  useToggleNotificationsModal,
+  useNotificationsModalToggle,
   useWalletModalToggle,
 } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
@@ -123,7 +123,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
   const toggleNavModalUserMobile = useNavModalUserMobileToggle()
 
   // notifications modal
-  const toggleNotificationsModal = useToggleNotificationsModal()
+  const toggleNotificationsModal = useNotificationsModalToggle()
 
   // auth modal
   const toggleAuthModal = useAuthModalToggle()

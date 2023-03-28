@@ -122,17 +122,21 @@ export function useUpgradeWalletModalToggle(): () => void {
   return useToggleModal(ApplicationModal.UPGRADE_WALLET)
 }
 
-export function useToggleMarketplaceFiltersModal(): () => void {
+export function useMarketplaceFiltersModalToggle(): () => void {
   return useToggleModal(ApplicationModal.MARKETPLACE_FILTERS)
 }
 
-export function useToggleStarknetAccountPrivateKeyModal(): () => void {
+export function useStarknetAccountPrivateKeyModalToggle(): () => void {
   return useToggleModal(ApplicationModal.STARKNET_ACCOUNT_PRIVATE_KEY)
+}
+
+export function useRetrieveEthersModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.RETRIEVE_ETHERS)
 }
 
 // SIDEBAR
 
-export function useToggleNotificationsModal(): () => void {
+export function useNotificationsModalToggle(): () => void {
   return useToggleSidebarModal(ApplicationSidebarModal.NOTIFICATIONS)
 }
 

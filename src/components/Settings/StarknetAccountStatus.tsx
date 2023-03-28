@@ -9,7 +9,7 @@ import Link from '@/components/Link'
 import { NETWORKS, networkId } from '@/constants/networks'
 import Row from '@/components/Row'
 import Subtitle from '@/components/Text/Subtitle'
-import { useToggleStarknetAccountPrivateKeyModal } from '@/state/application/hooks'
+import { useStarknetAccountPrivateKeyModalToggle } from '@/state/application/hooks'
 import StarknetAccountPrivateKeyModal from '@/components/StarknetAccountPrivateKeyModal'
 
 const ButtonsWrapper = styled(Row)`
@@ -32,7 +32,7 @@ export default function StarknetAccountStatus() {
   const currentUser = useCurrentUser()
 
   // private key modal
-  const toggleStarknetAccountPrivateKeyModal = useToggleStarknetAccountPrivateKeyModal()
+  const toggleStarknetAccountPrivateKeyModal = useStarknetAccountPrivateKeyModalToggle()
 
   return (
     <>

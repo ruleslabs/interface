@@ -1,7 +1,7 @@
 import { Trans, t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { useSidebarModalOpened, useToggleNotificationsModal } from '@/state/application/hooks'
+import { useSidebarModalOpened, useNotificationsModalToggle } from '@/state/application/hooks'
 import SidebarModal, { ModalContent, ModalHeader, ModalBody } from '@/components/Modal/Sidebar'
 import { ApplicationSidebarModal } from '@/state/application/actions'
 import { TYPE } from '@/styles/theme'
@@ -20,7 +20,7 @@ const EmptyBox = styled(ColumnCenter)`
 
 export default function NotificationsModal() {
   // modal
-  const toggleNotificationsModal = useToggleNotificationsModal()
+  const toggleNotificationsModal = useNotificationsModalToggle()
   const isOpen = useSidebarModalOpened(ApplicationSidebarModal.NOTIFICATIONS)
 
   return (

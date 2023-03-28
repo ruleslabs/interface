@@ -4,7 +4,7 @@ import { Trans, t } from '@lingui/macro'
 
 import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalBody, ModalContent } from '@/components/Modal/Classic'
-import { useModalOpened, useToggleStarknetAccountPrivateKeyModal } from '@/state/application/hooks'
+import { useModalOpened, useStarknetAccountPrivateKeyModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import Column from '@/components/Column'
 import { ErrorCard } from '@/components/Card'
@@ -27,7 +27,7 @@ const PrivateKeyWarning = styled(ErrorCard)`
 export default function StarknetAccountPrivateKeyModal() {
   // modal
   const isOpen = useModalOpened(ApplicationModal.STARKNET_ACCOUNT_PRIVATE_KEY)
-  const toggleStarknetAccountPrivateKeyModal = useToggleStarknetAccountPrivateKeyModal()
+  const toggleStarknetAccountPrivateKeyModal = useStarknetAccountPrivateKeyModalToggle()
 
   // private key
   const [privateKey, setPrivateKey] = useState<string | null>(null)
