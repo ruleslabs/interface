@@ -25,6 +25,8 @@ const Dropdown = styled(Column)<{ isOpen: boolean }>`
   ${({ isOpen }) => !isOpen && 'display: none;'}
   position: absolute;
   background: ${({ theme }) => theme.bg2};
+  border: 1px solid ${({ theme }) => theme.bg3}80;
+  border-radius: 3px;
   top: 38px;
   right: 0;
   padding: 8px 0;
@@ -39,7 +41,7 @@ const Dropdown = styled(Column)<{ isOpen: boolean }>`
   }
 
   & > *:hover {
-    background: ${({ theme }) => theme.bg3};
+    background: ${({ theme }) => theme.bg3}40;
   }
 `
 
