@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
-import { Trans } from '@lingui/macro'
+import { Plural, Trans } from '@lingui/macro'
 
 import Column from '@/components/Column'
 import { PrimaryButton } from '../Button'
@@ -39,7 +39,13 @@ export default function StarknetAccountStatus() {
           <>
             <TYPE.body>
               <Trans>
-                You have <strong>{totalAmountToRetrieve} ETH</strong> to retrieve to your Ethereum wallet.
+                You have
+                <span> </span>
+                <Plural value={currentUser.retrievableEthers.length} _1="a withdraw" other="{0} withdraws" />
+                <span> </span>
+                to retrieve
+                <span> </span>
+                <strong>({totalAmountToRetrieve} ETH)</strong> to your Ethereum wallet.
               </Trans>
             </TYPE.body>
 

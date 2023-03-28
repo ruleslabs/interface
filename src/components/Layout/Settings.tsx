@@ -118,7 +118,7 @@ export default function SettingsLayout({ children }: React.HTMLAttributes<HTMLDi
             <SettingsCategoryButton>
               {category.icon()}
               <TYPE.body>
-                <Trans>{category.name}</Trans>
+                <Trans id={category.name} render={({ translation }) => <>{translation}</>} />
               </TYPE.body>
             </SettingsCategoryButton>
           </ActiveLink>

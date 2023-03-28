@@ -16,7 +16,7 @@ function EthereumSettings() {
   return (
     <StyledEthereumSettings>
       <Column gap={24}>
-        <Title value={t`Retrieve pending ETH`} />
+        <Title value={t`ETH retrieve`} />
 
         <EtherRetriever />
       </Column>

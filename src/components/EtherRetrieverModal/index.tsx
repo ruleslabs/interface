@@ -143,7 +143,7 @@ export default function EtherRetrieveModal() {
   return (
     <ClassicModal isOpen={isOpen} onDismiss={toggleRetrieveEthersModal}>
       <ModalContent>
-        <ModalHeader title={t`Retrieve pending ETH`} onDismiss={toggleRetrieveEthersModal} />
+        <ModalHeader title={t`ETH retrieve`} onDismiss={toggleRetrieveEthersModal} />
 
         <ModalBody>
           <EthereumSigner

@@ -11,6 +11,116 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
+###############
+# AUTH ERRORS #
+###############
+
+msgid "Unknown email"
+msgstr "Email inconnu "
+
+msgid "Unknown error"
+msgstr "Erreur inconnue"
+
+msgid "Invalid password"
+msgstr "Mot de passe invalide"
+
+msgid "Invalid token"
+msgstr "Token invalide"
+
+msgid "Failed to sign in"
+msgstr "Echec de connexion"
+
+msgid "Too many requests, wait a few moments"
+msgstr "Trop de requêtes, merci d'attendre un moment"
+
+msgid "Email verification code has expired"
+msgstr "Le code de verification a expiré"
+
+msgid "Too many failed email verification attemps"
+msgstr "Trop d'échecs de vérification de l'email"
+
+msgid "Wrong email verification code"
+msgstr "Code de verification erroné"
+
+msgid "Email already in use"
+msgstr "Email déjà utilisé"
+
+msgid "Username already in use"
+msgstr "Nom d'utilisateur déjà utilisé"
+
+msgid "Invalid or unauthorized email address"
+msgstr "Email invalide ou non autorisé "
+
+msgid "Invalid username"
+msgstr "Nom d'utilisateur invalide"
+
+msgid "Password should be at least 6 characters long"
+msgstr "Le mot de passe doit comporter au moins 6 caractères"
+
+msgid "Password too similar to your email or username"
+msgstr "Mot de passe trop similaire à ton email ou nom d'utilisateur"
+
+msgid "This password appears in a public data breach, please choose a stronger password"
+msgstr "Ce mot de passe apparaît dans une base de données de mot de passe volés, merci de choisir un mot de passe plus fort"
+
+msgid "You must accept the terms and conditions"
+msgstr "Tu dois accepter les condition générales d'utilisation"
+
+msgid "Sorry, Rules is not available in your country"
+msgstr "Désolé, Rules n'est pas disponible dans ton pays"
+
+msgid "Your new password cannot be the same as your old password"
+msgstr "Ton nouveau mot de passe doit être différent de l'ancien"
+
+msgid "Passwords do not match"
+msgstr "Les mots de passe ne correspondent pas"
+
+##################
+# PAYMENT ERRORS #
+##################
+
+msgid "Payment method already used by another user"
+msgstr "Cette carte est déjà utilisée par un autre utilisateur"
+
+msgid "Invalid payment method"
+msgstr "Méthode de paiement invalide"
+
+msgid "Failed to verify your payment method please try again"
+msgstr "Échec de la vérification de ton moyen de paiement, merci de réessayer"
+
+msgid "You must accept the payment provider terms and conditions"
+msgstr "tu dois accepter les conditions générales d'utilisation de Stripe"
+
+msgid "You must accept the right to retract policy"
+msgstr "Tu dois accepter la politique de droit de retractation"
+
+#################
+# SETTINGS TABS #
+#################
+
+msgid "Security"
+msgstr "Sécurité"
+
+######################
+# PACKS DESCRIPTIONS #
+######################
+
+msgid "Starter Pack Season 1"
+msgstr "Starter Pack Saison 1"
+
+msgid "The pack detected by telescope."
+msgstr "Le pack détecté par télescope."
+
+msgid "This pack comes from a distant planet..."
+msgstr "Ce pack provient d'une planète éloignée..."
+
+msgid "Extracted from the depths..."
+msgstr "Extrait des profondeurs..."
+
+##################
+# DETECTED TRANS #
+##################
+
 #: src/components/Header/index.tsx
 msgid "Community"
 msgstr "Communauté"
@@ -119,83 +229,6 @@ msgstr "Prévenez-moi des sorties de packs et nouveautés"
 #: src/components/AuthModal/EmailVerificationForm.tsx
 msgid "Enter the code to confirm your registration"
 msgstr "Entre le code pour confirmer ton inscription"
-
-#: Auth errors
-msgid "Unknown email"
-msgstr "Email inconnu "
-
-msgid "Unknown error"
-msgstr "Erreur inconnue"
-
-msgid "Invalid password"
-msgstr "Mot de passe invalide"
-
-msgid "Invalid token"
-msgstr "Token invalide"
-
-msgid "Failed to sign in"
-msgstr "Echec de connexion"
-
-msgid "Too many requests, wait a few moments"
-msgstr "Trop de requêtes, merci d'attendre un moment"
-
-msgid "Email verification code has expired"
-msgstr "Le code de verification a expiré"
-
-msgid "Too many failed email verification attemps"
-msgstr "Trop d'échecs de vérification de l'email"
-
-msgid "Wrong email verification code"
-msgstr "Code de verification erroné"
-
-msgid "Email already in use"
-msgstr "Email déjà utilisé"
-
-msgid "Username already in use"
-msgstr "Nom d'utilisateur déjà utilisé"
-
-msgid "Invalid or unauthorized email address"
-msgstr "Email invalide ou non autorisé "
-
-msgid "Invalid username"
-msgstr "Nom d'utilisateur invalide"
-
-msgid "Password should be at least 6 characters long"
-msgstr "Le mot de passe doit comporter au moins 6 caractères"
-
-msgid "Password too similar to your email or username"
-msgstr "Mot de passe trop similaire à ton email ou nom d'utilisateur"
-
-msgid "This password appears in a public data breach, please choose a stronger password"
-msgstr "Ce mot de passe apparaît dans une base de données de mot de passe volés, merci de choisir un mot de passe plus fort"
-
-msgid "You must accept the terms and conditions"
-msgstr "Tu dois accepter les condition générales d'utilisation"
-
-msgid "Sorry, Rules is not available in your country"
-msgstr "Désolé, Rules n'est pas disponible dans ton pays"
-
-msgid "Your new password cannot be the same as your old password"
-msgstr "Ton nouveau mot de passe doit être différent de l'ancien"
-
-msgid "Passwords do not match"
-msgstr "Les mots de passe ne correspondent pas"
-
-#: Payment errors
-msgid "Payment method already used by another user"
-msgstr "Cette carte est déjà utilisée par un autre utilisateur"
-
-msgid "Invalid payment method"
-msgstr "Méthode de paiement invalide"
-
-msgid "Failed to verify your payment method please try again"
-msgstr "Échec de la vérification de ton moyen de paiement, merci de réessayer"
-
-msgid "You must accept the payment provider terms and conditions"
-msgstr "tu dois accepter les conditions générales d'utilisation de Stripe"
-
-msgid "You must accept the right to retract policy"
-msgstr "Tu dois accepter la politique de droit de retractation"
 
 #: src/components/CardModelBreakdown
 msgid "Limited edition"
@@ -433,19 +466,6 @@ msgstr "{cardsPerPack, plural, =1 {Contient {cardsPerPack} carte} other {Contien
 msgid "{0, plural, =1 {Season} other {Seasons}}"
 msgstr "{0, plural, =1 {Saison} other {Saisons}}"
 
-#: Packs names
-msgid "Starter Pack Season 1"
-msgstr "Starter Pack Saison 1"
-
-msgid "The pack detected by telescope."
-msgstr "Le pack détecté par télescope."
-
-msgid "This pack comes from a distant planet..."
-msgstr "Ce pack provient d'une planète éloignée..."
-
-msgid "Extracted from the depths..."
-msgstr "Extrait des profondeurs..."
-
 #: src/components/PackBreakdown/index.tsx
 msgid "Buy - {0}€"
 msgstr "Acheter - {0}€"
@@ -508,7 +528,7 @@ msgstr "Connecté en tant que {0}"
 
 #: src/components/ProfileEditor/index.tsx
 msgid "Public"
-msgstr "Publique"
+msgstr "Public"
 
 #: src/pages/community/index.tsx
 msgid "Look for a collector..."
@@ -1448,3 +1468,67 @@ msgstr "Starknet a publié une mise à jour afin d'améliorer le réseau, et ça
 #: src/components/WalletUpgradeModal/index.tsx
 msgid "Your wallet is up-to-date 🎉"
 msgstr "Ton portefeuille est à jour 🎉"
+
+#: src/components/Settings/EtherRetriever.tsx
+msgid "You have<0> </0>{0, plural, =1 {a withdraw} other {{0} withdraws}}<1> </1>to retrieve<2> </2><3>({totalAmountToRetrieve} ETH)</3> to your Ethereum wallet."
+msgstr "Tu as<0> </0>{0, plural, =1 {un retrait} other {{0} retraits}}<1> </1>à récupérer<2> </2><3>({totalAmountToRetrieve} ETH)</3> sur ton portefeuille Ethereum."
+
+#: src/components/Settings/EtherRetriever.tsx
+msgid "Retrieve my ETH"
+msgstr "Récupérer mes ETH"
+
+#: src/components/Settings/EtherRetriever.tsx
+msgid "ETH retrieve"
+msgstr "Récupération de l'ETH"
+
+#: src/components/EtherRetrieverModal/index.tsx
+msgid "Recipient"
+msgstr "Destinataire"
+
+#: src/components/Settings/StarknetAccountStatus.tsx
+msgid "See my private key"
+msgstr "Voir ma clef privée"
+
+#: src/pages/settings/sessions.tsx
+msgid "Active sessions"
+msgstr "Sessions actives"
+
+#: src/components/Settings/SessionsManager.tsx
+msgid "A session is a device your account is currently logged into. You can disconnect these sessions from this device."
+msgstr "Une session est un appareil actuellement connecté à ton compte. Tu peux déconnecter ces sessions depuis cet appareil."
+
+#: src/pages/settings/security.tsx
+msgid "Enabled"
+msgstr "Activé"
+
+#: src/pages/settings/security.tsx
+msgid "Disabled"
+msgstr "Désactivé"
+
+#: src/pages/settings/profile.tsx
+msgid "Public profile"
+msgstr "Profile public"
+
+#: src/components/Settings/SocialAccounts.tsx
+msgid "Social accounts"
+msgstr "Réseaux sociaux"
+
+#: src/components/Settings/DiscordStatus.tsx
+msgid "Refresh"
+msgstr "Rafraîchir"
+
+#: src/components/Settings/DiscordStatus.tsx
+msgid "Unlink"
+msgstr "Déconnecter"
+
+#: src/components/Settings/EtherRetriever.tsx
+msgid "Nothing to retrieve yet !"
+msgstr "Rien à récupérer pour le moment !"
+
+#: src/components/NotificationsModal/index.tsx
+msgid "No notifications yet"
+msgstr "Pas de notifications pour le moment"
+
+#: src/components/WalletModal/index.tsx
+msgid "Wallet"
+msgstr "Portefeuille"
