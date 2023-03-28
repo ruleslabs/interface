@@ -5,13 +5,20 @@ import HintModal from '@/components/Modal/Hint'
 import { useModalOpened, useNavModalUserDesktopToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { TYPE } from '@/styles/theme'
-import Column from '../Column'
+import Column from '@/components/Column'
 import { TooltipCaret } from '../Tooltip'
-import Link from '../Link'
+import Link from '@/components/Link'
 import { useCurrentUser } from '@/state/user/hooks'
 import { NavUserSublinks, useNavUserLinks } from '@/hooks/useNav'
 import Actionable from './Actionable'
 import Divider from '@/components/Divider'
+import NavProfile from './NavProfile'
+
+const StyledNavProfile = styled(NavProfile)`
+  &:hover {
+    background: ${({ theme }) => theme.bg3}40;
+  }
+`
 
 const StyledNavModalUserDesktop = styled.div`
   z-index: 100;
@@ -58,14 +65,6 @@ const MenuButton = styled(TYPE.body)`
   }
 `
 
-const UsernameMenuButton = styled(MenuButton)`
-  font-weight: 500;
-  font-size: 18px;
-  padding: 6px 8px;
-  text-align: center;
-  word-break: break-all;
-`
-
 interface NavUserSublinksDesktopProps {
   navSublinks: NavUserSublinks
 }
@@ -103,9 +102,7 @@ export default function NavModalUserDesktop() {
 
         <Column gap={6}>
           <Link href={`/user/${currentUser.slug}`}>
-            <UsernameMenuButton>
-              <Trans>{currentUser.username}</Trans>
-            </UsernameMenuButton>
+            <StyledNavProfile />
           </Link>
 
           <Divider />

@@ -11,26 +11,10 @@ import { useNavUserLinks, NavUserSublinks } from '@/hooks/useNav'
 import Actionable from './Actionable'
 import Divider from '@/components/Divider'
 import Column from '@/components/Column'
-import Avatar from '@/components/Avatar'
 import { RowCenter } from '@/components/Row'
-import useParsedCScore from '@/hooks/useParsedCScore'
 import { ActiveLink } from '@/components/Link'
 import WalletBalanceButton from '@/components/AccountStatus/WalletBalanceButton'
-
-const ProfileRow = styled(RowCenter)`
-  gap: 8px;
-  padding: 8px;
-  border-radius: 3px;
-
-  & img {
-    width: 48px;
-    height: 48px;
-  }
-
-  &.active {
-    background: ${({ theme }) => theme.bg3}40;
-  }
-`
+import NavProfile from './NavProfile'
 
 const WalletRow = styled(RowCenter)`
   padding: 8px;
@@ -69,9 +53,6 @@ export default function NavModalUserMobile() {
   // nav links
   const navLinks = useNavUserLinks(currentUser.slug)
 
-  // parsed cScore
-  const parsedCScore = useParsedCScore(currentUser.cScore, { rounded: false })
-
   if (!currentUser) return null
 
   return (
@@ -81,14 +62,7 @@ export default function NavModalUserMobile() {
 
         <ModalBody gap={6}>
           <ActiveLink href={`/user/${currentUser.slug}`} perfectMatch>
-            <ProfileRow>
-              <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackUrl} />
-
-              <Column gap={4}>
-                <TYPE.body fontWeight={500}>{currentUser.username}</TYPE.body>
-                <TYPE.subtitle>{parsedCScore}</TYPE.subtitle>
-              </Column>
-            </ProfileRow>
+            <NavProfile />
           </ActiveLink>
 
           <Divider />
