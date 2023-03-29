@@ -180,7 +180,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
               </MobileIconButton>
             )}
 
-            <IconButton notifications={3} onClick={toggleNotificationsModal}>
+            <IconButton notifications={currentUser.unreadNotificationsCount} onClick={toggleNotificationsModal}>
               <BellIcon />
             </IconButton>
           </>

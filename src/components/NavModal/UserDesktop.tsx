@@ -10,7 +10,7 @@ import { TooltipCaret } from '../Tooltip'
 import Link from '@/components/Link'
 import { useCurrentUser } from '@/state/user/hooks'
 import { NavUserSublinks, useNavUserLinks } from '@/hooks/useNav'
-import Actionable from './Actionable'
+import Actionable from '../Actionable'
 import Divider from '@/components/Divider'
 import NavProfile from './NavProfile'
 

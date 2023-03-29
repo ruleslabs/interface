@@ -1,14 +1,10 @@
-import 'moment/locale/fr'
-
 import React, { useMemo, useState, useCallback } from 'react'
-import moment from 'moment'
 import styled from 'styled-components'
 import { WeiAmount, Unit } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import Link from '@/components/Link'
 import Column from '@/components/Column'
-import { useActiveLocale } from '@/hooks/useActiveLocale'
 import { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
 import { NETWORKS, networkId } from '@/constants/networks'
@@ -19,6 +15,7 @@ import Card from '@/components/Card'
 import Event from './Event'
 import Message from './Message'
 import OffchainAction from './OffchainAction'
+import useAge from '@/hooks/useAge'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
 
@@ -128,50 +125,8 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
     [areBlockchainDetailsOpen]
   )
 
-  // get locale
-  const locale = useActiveLocale()
-
   // tx age
-  const transactionAge = useMemo(() => {
-    if (!blockTimestamp) return
-
-    moment.locale('en', {
-      relativeTime: {
-        future: 'in %s',
-        past: '%s',
-        s: '1s',
-        ss: '%ss',
-        m: '1min',
-        mm: '%dmin',
-        h: '1h',
-        hh: '%dh',
-        d: '1d',
-        dd: '%dd',
-      },
-    })
-
-    moment.locale('fr', {
-      relativeTime: {
-        future: 'in %s',
-        past: '%s ago',
-        s: '1s',
-        ss: '%ss',
-        m: '1min',
-        mm: '%dmin',
-        h: '1h',
-        hh: '%dh',
-        d: '1j',
-        dd: '%dj',
-      },
-    })
-
-    moment.relativeTimeThreshold('s', 60)
-    moment.relativeTimeThreshold('m', 60)
-    moment.relativeTimeThreshold('h', 24)
-    moment.relativeTimeThreshold('d', 100_000_000) // any number big enough
-
-    return moment(blockTimestamp).locale(locale).fromNow(true)
-  }, [blockTimestamp, locale])
+  const transactionAge = useAge(blockTimestamp)
 
   // reduce hash
   const reducedHash = useReduceHash(hash)

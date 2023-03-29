@@ -62,6 +62,26 @@ const ALL_STARKNET_TRANSACTION_FOR_USER_QUERY = gql`
   }
 `
 
+const ALL_CURRENT_USER_NOTIFICATIONS_QUERY = gql`
+  query ($after: String) {
+    currentUser {
+      notifications(after: $after) {
+        nodes {
+          __typename
+          ... on EtherRetrieveNotification {
+            createdAt
+            amount
+          }
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+      }
+    }
+  }
+`
+
 // Marketplace
 
 export function useMarketplaceFilters() {
@@ -541,6 +561,47 @@ export function useStarknetTransactionsForAddress(userId: string, address?: stri
   return {
     nextPage: hasNextPage ? nextPage : undefined,
     data: starknetTransactions,
+    loading,
+    error,
+  }
+}
+
+export function useCurrentUserNotifications(): ApolloSearch {
+  // pagination cursor and page
+  const [endCursor, setEndCursor] = useState<string | null>(null)
+  const [hasNextPage, setHasNextPage] = useState(false)
+  const [notifications, setNotifications] = useState<any[]>([])
+
+  // on query completed
+  const onQueryCompleted = useCallback(
+    (data: any) => {
+      setEndCursor(data.currentUser.notifications.pageInfo.endCursor)
+      setHasNextPage(data.currentUser.notifications.pageInfo.hasNextPage)
+
+      setNotifications(notifications.concat(data.currentUser.notifications.nodes))
+    },
+    [notifications.length]
+  )
+
+  // get callable query
+  const [getAllCurrentUserNotifications, { loading, error }] = useLazyQuery(ALL_CURRENT_USER_NOTIFICATIONS_QUERY, {
+    onCompleted: onQueryCompleted,
+  })
+
+  // nextPage
+  const nextPage = useCallback(() => {
+    const options: any = { variables: { after: endCursor } }
+
+    getAllCurrentUserNotifications(options)
+  }, [getAllCurrentUserNotifications, endCursor])
+
+  useEffect(() => {
+    nextPage()
+  }, [])
+
+  return {
+    nextPage: hasNextPage ? nextPage : undefined,
+    data: notifications,
     loading,
     error,
   }

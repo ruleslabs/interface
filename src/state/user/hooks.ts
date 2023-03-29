@@ -19,6 +19,7 @@ const CURRENT_USER_QUERY = gql`
       slug
       boughtStarterPack
       cScore
+      unreadNotificationsCount
       retrievableEthers {
         amount
         l1Recipient

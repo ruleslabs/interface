@@ -1,21 +1,11 @@
-import styled from 'styled-components'
-
 import DefaultLayout from '@/components/Layout'
 import ProfileLayout from '@/components/Layout/Profile'
 import { useStarknetTransactionsForAddress } from '@/state/search/hooks'
 import Section from '@/components/Section'
 import Column from '@/components/Column'
 import TransactionRow from '@/components/TransactionRow'
-import Spinner from '@/components/Spinner'
+import { PaginationSpinner } from '@/components/Spinner'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
-
-// css
-
-const StyledSpinner = styled(Spinner)`
-  width: 32px;
-  margin: 16px auto;
-  display: block;
-`
 
 // Main Component
 
@@ -58,7 +48,8 @@ function Explorer({ address, publicKey, userId }: ExplorerProps) {
           />
         ))}
       </Column>
-      {isLoading && <StyledSpinner />}
+
+      <PaginationSpinner loading={isLoading} />
     </Section>
   )
 }

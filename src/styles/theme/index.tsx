@@ -176,6 +176,7 @@ export interface TextWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
 export interface TextProps extends TextWrapperProps {
   fontSize?: number
   fontWeight?: number
+  fontStyle?: string
   textAlign?: string
   clickable?: boolean
   underline?: boolean
@@ -185,6 +186,7 @@ const Text = styled.div<TextProps>`
   width: fit-content;
   ${({ fontSize }) => fontSize && `font-size: ${fontSize}px;`}
   ${({ fontWeight }) => fontWeight && `font-weight: ${fontWeight};`};
+  ${({ fontStyle }) => fontStyle && `font-style: ${fontStyle};`};
   ${({ textAlign }) => textAlign && `text-align: ${textAlign};`}
   ${({ textAlign }) => textAlign === 'center' && `width: 100%;`}
   ${({ underline }) => underline && 'text-decoration: underline;'}

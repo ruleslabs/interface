@@ -9,7 +9,7 @@ import { ApplicationSidebarModal } from '@/state/application/actions'
 import LanguageSelector from '@/components/LanguageSelector'
 import { SidebarNavButton } from '@/components/Button'
 import { useNavLinks } from '@/hooks/useNav'
-import Actionable from './Actionable'
+import Actionable from '../Actionable'
 import Divider from '@/components/Divider'
 import Column from '@/components/Column'
 
