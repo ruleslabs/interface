@@ -13,24 +13,38 @@ import { useAuthModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
 import { RowCenter } from '@/components/Row'
+import { useCurrentUser } from '@/state/user/hooks'
+import YoutubeEmbed from '@/components/YoutubeEmbed'
 
 import LogoOutline from '@/images/logo-outline.svg'
 
-const BackgroundWrapper = styled.div`
+const BackgroundWrapper = styled(RowCenter)<{ large: boolean }>`
   position: relative;
-  height: 40vh;
-  z-index: -1;
+  height: ${({ large }) => (large ? '80vh' : '40vh')};
   width: 100%;
+  justify-content: center;
 
   & > * {
     position: absolute;
     width: 100%;
-    height: 40vh;
+    height: ${({ large }) => (large ? '80vh' : '40vh')};
   }
 
   & > video {
     object-fit: cover;
   }
+`
+
+const TrailerYoutubeEmbed = styled(YoutubeEmbed)`
+  width: 720px;
+  display: block;
+  height: unset;
+  transform: translateY(-64px);
+
+  ${({ theme }) => theme.media.small`
+    width: 100%;
+    padding: 0 16px;
+  `}
 `
 
 const LogoOutlineWrapper = styled(RowCenter)<{ windowHeight?: number }>`
@@ -133,6 +147,9 @@ function Home() {
   // router
   const router = useRouter()
 
+  // current user
+  const currentUser = useCurrentUser()
+
   // modal
   const toggleAuthModal = useAuthModalToggle()
   const setAuthMode = useSetAuthMode()
@@ -161,14 +178,18 @@ function Home() {
 
   return (
     <>
-      <BackgroundWrapper>
+      <BackgroundWrapper large={!currentUser}>
         <video src="https://videos.rules.art/mp4/homepage.mp4" playsInline loop autoPlay muted />
 
-        <LogoOutlineWrapper>
-          <LogoOutline />
-        </LogoOutlineWrapper>
-
         <BackgroundVideoGradient />
+
+        {currentUser ? (
+          <LogoOutlineWrapper>
+            <LogoOutline />
+          </LogoOutlineWrapper>
+        ) : (
+          <TrailerYoutubeEmbed embedId="m0lYtWPhJVo" />
+        )}
       </BackgroundWrapper>
 
       <StyledHome>
