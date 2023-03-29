@@ -48,7 +48,7 @@ const SignUpButton = styled(PrimaryButton)`
   font-size: 16px;
   font-weight: 700;
   flex-shrink: 0;
-  padding: 8px;
+  padding: 8px 12px;
 `
 
 const SignInButton = styled(SecondaryButton)`
@@ -56,8 +56,12 @@ const SignInButton = styled(SecondaryButton)`
   font-weight: 700;
   flex-shrink: 0;
   padding: 8px 12px;
-  color: ${({ theme }) => theme.bg1};
-  background-color: ${({ theme }) => theme.white};
+  background: transparent;
+  border: 1px solid ${({ theme }) => theme.text2};
+
+  &:hover {
+    border-color: ${({ theme }) => theme.text1};
+  }
 `
 
 const StyledWalletBalanceButton = styled(WalletBalanceButton)`

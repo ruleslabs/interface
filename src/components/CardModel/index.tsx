@@ -12,6 +12,7 @@ import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import CardPendingStatusText from '@/components/CardPendingStatusText'
 import { CardPendingStatus } from '@/hooks/useCardsPendingStatusMap'
 import Badges, { Badge } from './Badges'
+import { RowCenter } from '../Row'
 
 const ActiveCardModelStyle = css`
   background: ${({ theme }) => theme.bg3}80;
@@ -223,10 +224,11 @@ const MemoizedCardModel = React.memo(function CardModel({
             <TYPE.body textAlign="center">
               <Trans>starting from</Trans>
             </TYPE.body>
-            <TYPE.body spanColor="text2" fontWeight={500}>
-              {+parsedLowestAsk.toFixed(6)} ETH&nbsp;
-              <span>{weiAmountToEURValue(parsedLowestAsk ?? undefined) ?? '0'}€</span>
-            </TYPE.body>
+
+            <RowCenter gap={4}>
+              <TYPE.medium fontSize={16}>{+parsedLowestAsk.toFixed(6)} ETH</TYPE.medium>
+              <TYPE.subtitle>{weiAmountToEURValue(parsedLowestAsk ?? undefined) ?? '0'}€</TYPE.subtitle>
+            </RowCenter>
           </ColumnCenter>
         )}
 
