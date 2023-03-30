@@ -47,6 +47,7 @@ const AvatarWrapper = styled.div`
   img {
     width: 100%;
     border: 10px solid ${({ theme }) => theme.bg1};
+    background-color: ${({ theme }) => theme.bg1};
   }
 `
 

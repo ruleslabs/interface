@@ -69,7 +69,7 @@ export default function NavModalUserMobile() {
 
           <WalletRow onClick={toggleWalletModal}>
             <TYPE.body fontWeight={500}>
-              <Trans>Your wallet</Trans>
+              <Trans>My wallet</Trans>
             </TYPE.body>
 
             <WalletBalanceButton />
