@@ -59,7 +59,7 @@ export default function NotificationsModal() {
   const lastNotificationRef = useInfiniteScroll({ nextPage: notificationsQuery.nextPage, loading: isLoading })
 
   useEffect(() => {
-    if (isOpen && currentUser.unreadNotificationsCount > 0) {
+    if (isOpen && (currentUser?.unreadNotificationsCount ?? 0) > 0) {
       markNotificationsAsReadMutation()
         .then((res: any) => {
           setCurrentUser({ ...currentUser, unreadNotificationsCount: 0 })
@@ -68,7 +68,7 @@ export default function NotificationsModal() {
           console.error(markNotificationsAsReadError) // TODO: handle error
         })
     }
-  }, [isOpen, markNotificationsAsReadMutation, currentUser.unreadNotificationsCount])
+  }, [isOpen, markNotificationsAsReadMutation, currentUser?.unreadNotificationsCount])
 
   return (
     <SidebarModal onDismiss={toggleNotificationsModal} isOpen={isOpen} width={350} fullscreen>

@@ -64,6 +64,7 @@ export const IconButton = styled.button<{ alert?: boolean; notifications?: numbe
   justify-content: center;
   align-items: center;
   outline: none;
+  padding: 0;
 
   ${({ theme, square = false }) =>
     square
@@ -282,7 +283,7 @@ const StyledThirdPartyButton = styled(SecondaryButton)<{ active: boolean }>`
   border: 1px solid ${({ theme }) => theme.bg3};
   background: ${({ theme }) => theme.bg3}80;
   gap: 16px;
-  height: 60px;
+  min-height: 60px;
   transition: background 100ms ease;
 
   svg {

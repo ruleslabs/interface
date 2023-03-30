@@ -14,7 +14,6 @@ import MetamaskIcon from '@/images/metamask.svg'
 export default function WithdrawModal() {
   // modal mode
   const setWalletModalMode = useSetWalletModalMode()
-  const onRetrieve = useCallback(() => setWalletModalMode(WalletModalMode.RETRIEVE), [])
   const onStarkgateWithdraw = useCallback(() => setWalletModalMode(WalletModalMode.STARKGATE_WITHDRAW), [])
 
   return (

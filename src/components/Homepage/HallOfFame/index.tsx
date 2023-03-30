@@ -93,7 +93,6 @@ export default function HallOfFame() {
             slug={usersTable[hit.objectID].slug}
             cScore={hit.cScore}
             rank={hit.rank}
-            cardModelsCount={cardModelsCount}
           />
         ))}
 
@@ -107,7 +106,6 @@ export default function HallOfFame() {
               fallbackUrl={currentUser.profile.fallbackUrl}
               slug={currentUser.slug}
               cScore={currentUser.cScore}
-              cardModelsCount={cardModelsCount}
             />
             <TYPE.body color="text2">
               <Trans>Your rank: {currentUserRank}</Trans>

@@ -1,6 +1,6 @@
 import { useCallback, useState, useMemo } from 'react'
 import styled from 'styled-components'
-import { t, Trans, Plural } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 import { Call, Signature } from 'starknet'
 import { ApolloError } from '@apollo/client'
 
@@ -11,17 +11,16 @@ import CurrencyInput from '@/components/Input/CurrencyInput'
 import { metaMaskHooks } from '@/constants/connectors'
 import { useCurrentUser } from '@/state/user/hooks'
 import StarknetSigner from '@/components/StarknetSigner'
-import { useETHBalances, useWithdrawEtherMutation, useSetWalletModalMode } from '@/state/wallet/hooks'
+import { useETHBalances, useWithdrawEtherMutation } from '@/state/wallet/hooks'
 import { L2_STARKGATE_ADDRESSES, ETH_ADDRESSES } from '@/constants/addresses'
 import { networkId } from '@/constants/networks'
 import Wallet from '@/components/Wallet'
 import Metamask from '@/components/Metamask'
 import { InfoCard } from '@/components/Card'
-import { WalletModalMode } from '@/state/wallet/actions'
 
 import Arrow from '@/images/arrow.svg'
 
-const { useAccount, useChainId } = metaMaskHooks
+const { useAccount } = metaMaskHooks
 
 const ArrowWrapper = styled(Column)`
   width: 36px;
@@ -46,14 +45,8 @@ export default function WithdrawModal() {
   // current user
   const currentUser = useCurrentUser()
 
-  // modal mode
-  const setWalletModalMode = useSetWalletModalMode()
-  const onBack = useCallback(() => setWalletModalMode(WalletModalMode.WITHDRAW), [])
-  const onRetrieve = useCallback(() => setWalletModalMode(WalletModalMode.RETRIEVE), [])
-
   // metamask
   const account = useAccount()
-  const chainId = useChainId()
 
   // balance
   const balance = useETHBalances([currentUser?.starknetWallet.address])[currentUser?.starknetWallet.address]
@@ -140,19 +133,9 @@ export default function WithdrawModal() {
     >
       <Metamask>
         <Column gap={32}>
-          {currentUser?.retrievableEthers.length ? (
-            <PrimaryButton onClick={onRetrieve} large>
-              <Plural
-                value={currentUser.retrievableEthers.length}
-                _1="Validate my transactions ({0} available)"
-                other="Validate my transactions ({0} available)"
-              />
-            </PrimaryButton>
-          ) : (
-            <InfoCard textAlign="center">
-              <Trans>An additional step will be required to transfer the funds.</Trans>
-            </InfoCard>
-          )}
+          <InfoCard textAlign="center">
+            <Trans>An additional step will be required to transfer the funds.</Trans>
+          </InfoCard>
 
           <Column>
             <CurrencyInput

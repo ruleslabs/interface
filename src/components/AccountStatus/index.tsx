@@ -32,11 +32,12 @@ const StyledAccountStatus = styled.div`
   height: 100%;
 
   ${({ theme }) => theme.media.small`
-    gap: 16px;
+    gap: 28px;
     flex-direction row-reverse;
 
     & ${IconButton} {
       border: none;
+      border-radius: 0;
       background: none;
       width: fit-content;
       height: fit-content;
