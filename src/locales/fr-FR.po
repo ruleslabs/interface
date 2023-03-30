@@ -1532,3 +1532,11 @@ msgstr "Pas de notifications pour le moment"
 #: src/components/WalletModal/index.tsx
 msgid "Wallet"
 msgstr "Portefeuille"
+
+#: src/components/NotificationsModal/NotificationRow.tsx
+msgid "ETH Retrive"
+msgstr "Retrait d'ETH"
+
+#: src/components/NotificationsModal/NotificationRow.tsx
+msgid "Your {0} ETH withdraw has been accepted. You can retrieve your funds now."
+msgstr "Ton retrait de {0} ETH est validé. Tu peux récupérer tes fonds dès maintenant."

@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Trans, t } from '@lingui/macro'
 import styled from 'styled-components'
 
@@ -7,10 +8,12 @@ import { ApplicationSidebarModal } from '@/state/application/actions'
 import { TYPE } from '@/styles/theme'
 import Column, { ColumnCenter } from '@/components/Column'
 import { useCurrentUserNotifications } from '@/state/search/hooks'
-
-import GhostIcon from '@/images/ghost.svg'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 import NotificationRow from './NotificationRow'
+import { useCurrentUser, useMarkNotificationsAsReadMutation, useSetCurrentUser } from '@/state/user/hooks'
+
+import GhostIcon from '@/images/ghost.svg'
+import { ApolloError } from 'apollo-client'
 
 const StyledModalBody = styled(ModalBody)`
   padding: 0;
@@ -34,9 +37,16 @@ const NotificationsWrapper = styled(Column)`
 `
 
 export default function NotificationsModal() {
+  // current user
+  const currentUser = useCurrentUser()
+  const setCurrentUser = useSetCurrentUser()
+
   // modal
   const toggleNotificationsModal = useNotificationsModalToggle()
   const isOpen = useSidebarModalOpened(ApplicationSidebarModal.NOTIFICATIONS)
+
+  // read notifications
+  const [markNotificationsAsReadMutation] = useMarkNotificationsAsReadMutation()
 
   // get notifications
   const notificationsQuery = useCurrentUserNotifications()
@@ -47,6 +57,18 @@ export default function NotificationsModal() {
 
   // infinite scroll
   const lastNotificationRef = useInfiniteScroll({ nextPage: notificationsQuery.nextPage, loading: isLoading })
+
+  useEffect(() => {
+    if (isOpen && currentUser.unreadNotificationsCount > 0) {
+      markNotificationsAsReadMutation()
+        .then((res: any) => {
+          setCurrentUser({ ...currentUser, unreadNotificationsCount: 0 })
+        })
+        .catch((markNotificationsAsReadError: ApolloError) => {
+          console.error(markNotificationsAsReadError) // TODO: handle error
+        })
+    }
+  }, [isOpen, markNotificationsAsReadMutation, currentUser.unreadNotificationsCount])
 
   return (
     <SidebarModal onDismiss={toggleNotificationsModal} isOpen={isOpen} width={350} fullscreen>

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
 
 import Column from '@/components/Column'
 import { RowCenter } from '@/components/Row'
@@ -62,8 +63,8 @@ const MemoizedNotificationRow = React.memo(function NotificationRow({ innerRef, 
 
         return {
           icon: EthereumIcon(),
-          title: 'ETH Retrive',
-          subtitle: `Your ${parsedAmount.toSignificant(
+          title: t`ETH Retrive`,
+          subtitle: t`Your ${parsedAmount.toSignificant(
             6
           )} ETH withdraw has been accepted. You can retrieve your funds now.`,
           link: '/settings/ethereum',
@@ -92,6 +93,6 @@ const MemoizedNotificationRow = React.memo(function NotificationRow({ innerRef, 
       </StyledNotificationRow>
     </Actionable>
   )
-})
+}, MemoizedNotificationRowPropsEqualityCheck)
 
 export default MemoizedNotificationRow

@@ -140,6 +140,12 @@ const EDIT_AVATAR_MUTATION = gql`
   }
 `
 
+const MARK_NOTIFICATIONS_AS_READ_MUTATION = gql`
+  mutation {
+    markNotificationsAsRead
+  }
+`
+
 export function useRemoveCurrentUser() {
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setCurrentUser({ user: null })), [dispatch, setCurrentUser])
@@ -236,6 +242,11 @@ export function useRefreshDiscordRolesMutation() {
 export function useEditAvatarMutation() {
   return useMutation(EDIT_AVATAR_MUTATION)
 }
+
+export function useMarkNotificationsAsReadMutation() {
+  return useMutation(MARK_NOTIFICATIONS_AS_READ_MUTATION)
+}
+
 // Locales
 export function useUserLocale(): AppState['user']['userLocale'] {
   return useAppSelector((state) => state.user.userLocale)
