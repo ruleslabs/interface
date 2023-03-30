@@ -167,10 +167,14 @@ export default function Marketplace() {
 
   const onHighestLowestAskPageFetched = useCallback(
     (hits) => {
-      const fiatValue = weiAmountToEURValue(
-        WeiAmount.fromRawAmount(marketplaceFilters.lowSerials ? hits[0].lowSerialLowestAsk : hits[0].lowestAsk)
-      )
-      setHighestLowestAsk(Math.ceil(+(fiatValue ?? 0)))
+      if (!hits[0]) {
+        setHighestLowestAsk(0)
+      } else {
+        const fiatValue = weiAmountToEURValue(
+          WeiAmount.fromRawAmount(marketplaceFilters.lowSerials ? hits[0].lowSerialLowestAsk : hits[0].lowestAsk)
+        )
+        setHighestLowestAsk(Math.ceil(+(fiatValue ?? 0)))
+      }
     },
     [weiAmountToEURValue, marketplaceFilters.lowSerials]
   )

@@ -258,7 +258,7 @@ interface AlgoliaSearchProps {
   hitsPerPage: number
   onPageFetched?: PageFetchedCallback
   skip: boolean
-  page?: number
+  pageNumber?: number
 }
 
 function useAlgoliaSearch({
@@ -269,29 +269,30 @@ function useAlgoliaSearch({
   hitsPerPage,
   onPageFetched,
   skip,
-  page,
+  pageNumber = ALGOLIA_FIRST_PAGE,
 }: AlgoliaSearchProps): AlgoliaSearch {
   const [searchResult, setSearchResult] = useState<AlgoliaSearch>({ loading: false, error: null })
-  const [nextPageNumber, setNextPageNumber] = useState<number | null>(page ?? ALGOLIA_FIRST_PAGE)
+  const [pageOffset, setPageOffset] = useState<number | null>(0)
 
   const facetFilters = useFacetFilters({ ...facets })
 
+  // search callback
   const runSearch = useCallback(
-    (forcedNextPageNumber: number | null = null) => {
-      if ((forcedNextPageNumber ?? nextPageNumber) === null) return
-
-      setSearchResult({ ...searchResult, loading: true, error: null })
+    (pageNumber: number) => {
+      setSearchResult((searchResult) => ({ ...searchResult, loading: true, error: null }))
 
       algoliaIndex
-        .search(search, { facetFilters, filters, page: forcedNextPageNumber ?? nextPageNumber, hitsPerPage })
+        .search(search, { facetFilters, filters, page: pageNumber, hitsPerPage })
         .then((res: any) => {
-          setSearchResult({
+          setSearchResult((searchResult) => ({
             hits: onPageFetched ? [] : (searchResult.hits ?? []).concat(res.hits),
             nbHits: res.nbHits,
             loading: false,
             error: null,
-          })
-          setNextPageNumber(res.page + 1 < res.nbPages ? res.page + 1 : null)
+          }))
+
+          // increase page offset if possible
+          setPageOffset((pageOffset) => (res.page + 1 < res.nbPages ? (pageOffset ?? 0) + 1 : null))
 
           if (onPageFetched) onPageFetched(res.hits, { pageNumber: res.page, totalHitsCount: res.nbHits })
         })
@@ -300,24 +301,24 @@ function useAlgoliaSearch({
           console.error(err)
         })
     },
-    [algoliaIndex, nextPageNumber, facetFilters, hitsPerPage, searchResult.hits, filters, search]
+    [algoliaIndex, facetFilters, hitsPerPage, filters, search, onPageFetched]
   )
 
-  useEffect(() => {
-    setNextPageNumber(page ?? ALGOLIA_FIRST_PAGE)
-    setSearchResult({ loading: false, error: null })
-  }, [algoliaIndex, search, filters, JSON.stringify(facetFilters), page])
+  // next page callback
+  const nextPage = useCallback(() => {
+    if (pageOffset !== null) runSearch(pageNumber + pageOffset)
+  }, [runSearch, pageNumber, pageOffset])
 
+  // refresh
   useEffect(() => {
-    if (!skip) runSearch(page ?? ALGOLIA_FIRST_PAGE)
-  }, [skip, page])
-
-  useEffect(() => {
-    if (nextPageNumber === ALGOLIA_FIRST_PAGE && !skip) runSearch()
-  }, [nextPageNumber])
+    if (!skip) {
+      setPageOffset(0)
+      runSearch(pageNumber)
+    }
+  }, [skip, runSearch])
 
   return {
-    nextPage: nextPageNumber === null ? undefined : runSearch,
+    nextPage: pageOffset === null ? undefined : nextPage,
     ...searchResult,
   }
 }
@@ -482,7 +483,7 @@ interface SearchUsersProps {
   onPageFetched?: PageFetchedCallback
   skip?: boolean
   filters?: string
-  page?: number
+  pageNumber?: number
   facets?: {
     username?: string
     userId?: string
@@ -497,7 +498,7 @@ export function useSearchUsers({
   hitsPerPage = 10,
   skip = false,
   onPageFetched,
-  page,
+  pageNumber,
 }: SearchUsersProps) {
   return useAlgoliaSearch({
     facets: { ...facets, userId: undefined, objectID: facets.userId },
@@ -507,7 +508,7 @@ export function useSearchUsers({
     hitsPerPage,
     onPageFetched,
     skip,
-    page,
+    pageNumber,
   })
 }
 

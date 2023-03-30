@@ -45,6 +45,13 @@ export default function MarketplaceFilters({ maximumPriceUpperBound, ...props }:
     }
   }, [setMarketplaceMaximumPrice, maximumPriceUpperBound, previousMaximumPriceUpperBound])
 
+  // reset maximum price filter value when null
+  useEffect(() => {
+    if (filters.maximumPrice === null) {
+      setMarketplaceMaximumPrice(maximumPriceUpperBound)
+    }
+  }, [filters.maximumPrice, maximumPriceUpperBound])
+
   return (
     <Column gap={24} {...props}>
       <Column gap={12}>

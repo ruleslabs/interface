@@ -24,7 +24,7 @@ export function useCScoreTopCollector(cScore: number): boolean {
   const userTopCollectorSearch = useSearchUsers({
     sortingKey: 'cScore',
     hitsPerPage: 1,
-    page: TOP_COLLECTOR_RANK_MAX,
+    pageNumber: TOP_COLLECTOR_RANK_MAX,
     skip: !cScore,
   })
   const isTopCollector = useMemo(
