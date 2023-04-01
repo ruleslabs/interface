@@ -37,7 +37,7 @@ function App({ Component, pageProps }: AppProps) {
     <ReduxProvider store={store}>
       <LanguageProvider>
         <React.Fragment>
-          <StarknetProvider network={process.env.NEXT_PUBLIC_STARKNET_NETWORK}>
+          <StarknetProvider>
             <Web3ReactProvider connectors={connectors}>
               <Updaters />
               <Head>

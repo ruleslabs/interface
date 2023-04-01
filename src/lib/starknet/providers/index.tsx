@@ -4,9 +4,8 @@ import { StarknetLibraryProvider } from './starknet'
 
 interface StarknetProviderProps {
   children: React.ReactNode
-  network?: string
 }
 
-export function StarknetProvider({ children, network }: StarknetProviderProps) {
-  return <StarknetLibraryProvider network={network}>{children}</StarknetLibraryProvider>
+export function StarknetProvider({ children }: StarknetProviderProps) {
+  return <StarknetLibraryProvider>{children}</StarknetLibraryProvider>
 }

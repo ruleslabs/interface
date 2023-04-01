@@ -8,8 +8,8 @@ interface StarknetLibraryProviderProps {
   network?: string
 }
 
-export function StarknetLibraryProvider({ children, network }: StarknetLibraryProviderProps) {
-  const state = useStarknetManager({ network })
+export function StarknetLibraryProvider({ children }: StarknetLibraryProviderProps) {
+  const state = useStarknetManager()
 
   return <StarknetContext.Provider value={state}>{children}</StarknetContext.Provider>
 }

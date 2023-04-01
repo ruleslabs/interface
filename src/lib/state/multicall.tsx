@@ -1,6 +1,6 @@
 import { combineReducers, createStore } from 'redux'
 
-import { createMulticall } from '@rulesorg/starknet-redux-multicall'
+import { createMulticall } from '@rulesorg/serum'
 import { useMulticallContract } from '@/hooks/useContract'
 import { useBlockNumber } from '@/state/application/hooks'
 

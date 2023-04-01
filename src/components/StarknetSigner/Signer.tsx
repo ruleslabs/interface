@@ -2,7 +2,7 @@ import JSBI from 'jsbi'
 import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
-import { ec, number, Account, Call, EstimateFee, Signature, KeyPair } from 'starknet'
+import { num, Account, Call, EstimateFee, Signature, hash } from 'starknet'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
 import { useWalletModalToggle } from '@/state/application/hooks'
@@ -15,9 +15,6 @@ import { useStarknet } from '@/lib/starknet'
 import { useCurrentUser } from '@/state/user/hooks'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import { ErrorCard } from '@/components/Card'
-import getNonce from '@/utils/getNonce'
-import estimateFee from '@/utils/estimateFee'
-import signTransaction from '@/utils/signTransaction'
 import PrivateKeyDecipherForm from './PrivateKeyDecipherForm'
 
 const StyledSigner = styled(ColumnCenter)`
@@ -74,11 +71,9 @@ export default function Signer({
   // wallet
   const currentUser = useCurrentUser()
   const address = currentUser.starknetWallet.address
-  const transactionVersion = currentUser.starknetWallet.transactionVersion
 
   // starknet account
   const [account, setAccount] = useState<Account | null>(null)
-  const [keyPair, setKeyPair] = useState<KeyPair | null>(null)
 
   // balance
   const balance =
@@ -114,19 +109,18 @@ export default function Signer({
     (privateKey: string) => {
       if (!calls) return
 
-      const keyPair = ec.getKeyPair(privateKey)
-      if (!keyPair || !provider) {
+      if (!provider) {
         onError('Failed to sign transaction')
         return
       }
-      const account = new Account(provider, address, keyPair)
+      const account = new Account(provider, address, privateKey)
 
       setAccount(account)
-      setKeyPair(keyPair)
 
       onWaitingForFees(true)
 
-      estimateFee(account, keyPair, calls, transactionVersion)
+      account
+        .estimateFee(calls)
         .then((estimatedFees?: EstimateFee) => {
           const maxFee = estimatedFees?.suggestedMaxFee.toString() ?? '0'
           const fee = estimatedFees?.overall_fee.toString() ?? '0'
@@ -145,7 +139,7 @@ export default function Signer({
           onError(error.message)
         })
     },
-    [address, provider, calls, onError, onWaitingForFees, transactionVersion]
+    [address, provider, calls, onError, onWaitingForFees]
   )
 
   // tx signature
@@ -153,31 +147,30 @@ export default function Signer({
     (event) => {
       event.preventDefault()
 
-      if (!account || !keyPair || !parsedNetworkFee?.maxFee || !calls) return
+      if (!account || !parsedNetworkFee?.maxFee || !calls) return
 
       onConfirmation()
 
       let nonce: string | null
 
-      getNonce(account, transactionVersion)
+      account
+        .getNonce()
         .catch((error: Error) => {
           console.error(error)
 
           onError('Failed to get next nonce')
           return Promise.reject()
         })
-        .then((nonceBN: number.BigNumberish) => {
-          nonce = number.toHex(number.toBN(nonceBN))
+        .then(async (nonceBN: num.BigNumberish) => {
+          nonce = num.toHex(num.toBigInt(nonceBN))
 
-          const signerDetails = {
+          return account.signer.signTransaction(calls, {
             walletAddress: account.address,
             maxFee: parsedNetworkFee.maxFee.quotient.toString(),
-            version: number.toBN(transactionVersion),
-            chainId: account.chainId,
+            version: num.toBigInt(hash.transactionVersion),
+            chainId: await account.getChainId(),
             nonce,
-          }
-
-          return signTransaction(calls, signerDetails, transactionVersion, { keyPair, signer: account.signer })
+          })
         })
         .then((signature?: Signature) => {
           if (!signature) {
@@ -194,7 +187,7 @@ export default function Signer({
           onError(`Failed to sign transaction: ${error.message}`)
         })
     },
-    [onError, calls, account, keyPair, parsedNetworkFee?.maxFee, onSignature, transactionVersion]
+    [onError, calls, account, parsedNetworkFee?.maxFee, onSignature]
   )
 
   if (!isOpen) return null

@@ -15,14 +15,10 @@ function reducer(state: StarknetStateManager, action: Action): StarknetStateMana
   return state // empty reducer for the moment
 }
 
-interface UseStarknetManagerProps {
-  network?: string
-}
-
-export function useStarknetManager({ network }: UseStarknetManagerProps): StarknetState {
+export function useStarknetManager(): StarknetState {
   const networkUrl = ProviderUrlNetworksMap[networkId]
 
-  const [state, dispatch] = useReducer(reducer, {
+  const [state] = useReducer(reducer, {
     provider: new Provider(
       networkUrl ? { sequencer: { baseUrl: networkUrl, feederGatewayUrl: 'feeder_gateway' } } : undefined
     ),
