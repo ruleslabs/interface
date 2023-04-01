@@ -15,7 +15,7 @@ export interface WalletInfos {
 export default function useCreateWallet(): (password: string) => Promise<WalletInfos> {
   return useCallback(async (password: string): Promise<WalletInfos> => {
     const privateKey = encode.buf2hex(ec.starkCurve.utils.randomPrivateKey())
-    const publicKey = encode.buf2hex(ec.starkCurve.getPublicKey(privateKey))
+    const publicKey = ec.starkCurve.getStarkKey(privateKey)
 
     const salt = generateSalt()
     const iv = generateIV()
@@ -24,7 +24,7 @@ export default function useCreateWallet(): (password: string) => Promise<WalletI
     const encryptedPrivateKey = await encryptWithPassword(password, iv, salt, encodedPrivateKey)
 
     return {
-      starkPub: getChecksumAddress(`0x${publicKey}`),
+      starkPub: getChecksumAddress(publicKey),
       userKey: { encryptedPrivateKey, salt, iv },
     }
   }, [])

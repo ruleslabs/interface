@@ -24,6 +24,8 @@ const StyledModalHeader = styled(RowBetween)`
 
 const BackButton = styled(IconButton)`
   svg {
+    width: 16px;
+    height: 16px;
     margin-right: 2px; // needed to make it looks better centered
   }
 `
