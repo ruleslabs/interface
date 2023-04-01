@@ -23,6 +23,8 @@ const StatusStyle = css`
   position: absolute;
   left: 6.25%;
   width: 87.5%;
+  mix-blend-mode: hard-light;
+  filter: contrast(1.3) brightness(1.3) drop-shadow(2px 4px 6px ${({ theme }) => theme.black});
 `
 
 const InDelivery = styled.img`
@@ -54,11 +56,11 @@ const StyledPack = styled(ColumnCenter)<{ width?: number; disabled: boolean }>`
     disabled &&
     `
       ${Image} {
-        opacity: 0.3;
+        opacity: 0.5;
       }
 
       :hover ${Image} {
-        opacity: 0.6;
+        opacity: 0.7;
       }
     `}
 

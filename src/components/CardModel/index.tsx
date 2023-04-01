@@ -52,10 +52,16 @@ const VideoWrapper = styled.div`
 const Video = styled.video<{ inDelivery: boolean; pendingStatus: boolean }>`
   width: 100%;
   border-radius: 4.44%/3.17%;
-  ${({ inDelivery, pendingStatus }) => (inDelivery || pendingStatus) && 'opacity: 0.3;'}
+  ${({ inDelivery, pendingStatus }) => (inDelivery || pendingStatus) && 'opacity: 0.5;'}
+`
+
+const PlasticEffect = css`
+  mix-blend-mode: hard-light;
+  filter: contrast(1.3) brightness(1.3) drop-shadow(2px 4px 6px ${({ theme }) => theme.black});
 `
 
 const InDelivery = styled.img`
+  ${PlasticEffect}
   position: absolute;
   left: 0;
   width: 100%;
@@ -63,12 +69,11 @@ const InDelivery = styled.img`
 `
 
 const OnSale = styled.img`
+  ${PlasticEffect}
   position: absolute;
   top: 22.2%;
   right: 0;
   width: 80%;
-  mix-blend-mode: hard-light;
-  filter: contrast(1.3) brightness(1.3) drop-shadow(2px 4px 6px ${({ theme }) => theme.black});
 `
 
 const StyledLargeSpinner = styled(LargeSpinner)`
