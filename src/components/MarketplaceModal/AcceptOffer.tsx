@@ -3,7 +3,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react'
 import { t, Trans } from '@lingui/macro'
 import { uint256HexFromStrHex, getStarknetCardId, ScarcityName } from '@rulesorg/sdk-core'
 import { ApolloError } from '@apollo/client'
-import { Call, Signature } from 'starknet'
+import { Call, Signature, stark } from 'starknet'
 
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
 import { useModalOpened, useAcceptOfferModalToggle, useWalletModalToggle } from '@/state/application/hooks'
@@ -99,7 +99,7 @@ export default function AcceptOfferModal({
   const onSignature = useCallback(
     (signature: Signature, maxFee: string, nonce: string) => {
       acceptOffersMutation({
-        variables: { tokenIds, maxFee, nonce, signature: JSON.stringify(signature) },
+        variables: { tokenIds, maxFee, nonce, signature: stark.signatureToDecimalArray(signature) },
       })
         .then((res?: any) => {
           const hash = res?.data?.acceptOffers?.hash

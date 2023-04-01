@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Plural, t, Trans } from '@lingui/macro'
 import { uint256HexFromStrHex, getStarknetCardId, ScarcityName, WeiAmount } from '@rulesorg/sdk-core'
 import { ApolloError, useQuery, gql } from '@apollo/client'
-import { Call, Signature } from 'starknet'
+import { Call, Signature, stark } from 'starknet'
 
 import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
@@ -182,7 +182,7 @@ export default function CreateOfferModal({ cardsIds, onSuccess }: CreateOfferMod
           prices: parsedPrices.map((parsedPrice) => parsedPrice.quotient.toString()),
           maxFee,
           nonce,
-          signature: JSON.stringify(signature),
+          signature: stark.signatureToDecimalArray(signature),
         },
       })
         .then((res?: any) => {

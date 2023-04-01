@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
 import { uint256HexFromStrHex, getStarknetCardId, ScarcityName } from '@rulesorg/sdk-core'
 import { ApolloError } from '@apollo/client'
-import { Call, Signature } from 'starknet'
+import { Call, Signature, stark } from 'starknet'
 
 import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
@@ -157,7 +157,7 @@ export default function GiftModal({
           recipientAddress: recipient.starknetWallet.address,
           maxFee,
           nonce,
-          signature: JSON.stringify(signature),
+          signature: stark.signatureToDecimalArray(signature),
         },
       })
         .then((res?: any) => {

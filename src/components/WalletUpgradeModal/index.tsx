@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { t, Trans } from '@lingui/macro'
 import { ApolloError } from '@apollo/client'
-import { Call, Signature } from 'starknet'
+import { Call, Signature, stark } from 'starknet'
 
 import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classic'
@@ -51,7 +51,7 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
 
   const onSignature = useCallback(
     (signature: Signature, maxFee: string, nonce: string) => {
-      upgradeWalletMutation({ variables: { maxFee, nonce, signature: JSON.stringify(signature) } })
+      upgradeWalletMutation({ variables: { maxFee, nonce, signature: stark.signatureToDecimalArray(signature) } })
         .then((res?: any) => {
           const hash = res?.data?.upgradeWallet?.hash
           if (!hash) {

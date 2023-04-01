@@ -1,7 +1,7 @@
 import { useCallback, useState, useMemo } from 'react'
 import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
-import { Call, Signature } from 'starknet'
+import { Call, Signature, stark } from 'starknet'
 import { ApolloError } from '@apollo/client'
 
 import Column from '@/components/Column'
@@ -92,7 +92,7 @@ export default function WithdrawModal() {
       const amount = parsedWithdrawAmount.quotient.toString()
 
       withdrawEtherMutation({
-        variables: { amount, l1Recipient: account, maxFee, nonce, signature: JSON.stringify(signature) },
+        variables: { amount, l1Recipient: account, maxFee, nonce, signature: stark.signatureToDecimalArray(signature) },
       })
         .then((res?: any) => {
           const hash = res?.data?.withdrawEther?.hash

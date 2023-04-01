@@ -25,7 +25,7 @@ const WAITING_TRANSACTION_QUERY = gql`
 `
 
 const TRANSFER_CARD_MUTATION = gql`
-  mutation ($tokenId: String!, $recipientAddress: String!, $maxFee: String!, $nonce: String!, $signature: String!) {
+  mutation ($tokenId: String!, $recipientAddress: String!, $maxFee: String!, $nonce: String!, $signature: [String!]!) {
     transferCard(
       input: {
         tokenId: $tokenId
@@ -42,7 +42,7 @@ const TRANSFER_CARD_MUTATION = gql`
 `
 
 const CREATE_OFFERS_MUTATION = gql`
-  mutation ($tokenIds: [String!]!, $prices: [String!]!, $maxFee: String!, $nonce: String!, $signature: String!) {
+  mutation ($tokenIds: [String!]!, $prices: [String!]!, $maxFee: String!, $nonce: String!, $signature: [String!]!) {
     createOffers(
       input: { tokenIds: $tokenIds, prices: $prices, maxFee: $maxFee, nonce: $nonce, signature: $signature }
     ) {
@@ -52,7 +52,7 @@ const CREATE_OFFERS_MUTATION = gql`
 `
 
 const CANCEL_OFFER_MUTATION = gql`
-  mutation ($tokenId: String!, $maxFee: String!, $nonce: String!, $signature: String!) {
+  mutation ($tokenId: String!, $maxFee: String!, $nonce: String!, $signature: [String!]!) {
     cancelOffer(input: { tokenId: $tokenId, maxFee: $maxFee, nonce: $nonce, signature: $signature }) {
       hash
     }
@@ -60,7 +60,7 @@ const CANCEL_OFFER_MUTATION = gql`
 `
 
 const ACCEPT_OFFERS_MUTATION = gql`
-  mutation ($tokenIds: [String!]!, $maxFee: String!, $nonce: String!, $signature: String!) {
+  mutation ($tokenIds: [String!]!, $maxFee: String!, $nonce: String!, $signature: [String!]!) {
     acceptOffers(input: { tokenIds: $tokenIds, maxFee: $maxFee, nonce: $nonce, signature: $signature }) {
       hash
     }
@@ -68,7 +68,7 @@ const ACCEPT_OFFERS_MUTATION = gql`
 `
 
 const WITHDRAW_ETHER_MUTATION = gql`
-  mutation ($l1Recipient: String!, $amount: String!, $maxFee: String!, $nonce: String!, $signature: String!) {
+  mutation ($l1Recipient: String!, $amount: String!, $maxFee: String!, $nonce: String!, $signature: [String!]!) {
     withdrawEther(
       input: { l1Recipient: $l1Recipient, amount: $amount, maxFee: $maxFee, nonce: $nonce, signature: $signature }
     ) {
@@ -84,7 +84,7 @@ const RETRIEVE_ETHER_MUTATION = gql`
 `
 
 const UPGRADE_WALLET_MUTATION = gql`
-  mutation ($maxFee: String!, $nonce: String!, $signature: String!) {
+  mutation ($maxFee: String!, $nonce: String!, $signature: [String!]!) {
     upgradeWallet(input: { maxFee: $maxFee, nonce: $nonce, signature: $signature }) {
       hash
     }
