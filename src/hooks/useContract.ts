@@ -61,9 +61,7 @@ export function useEthereumContract(
   return useMemo(() => {
     if (!chainId || !provider || !abi) return null
 
-    let address: string | undefined
-    if (typeof addressOrAddressesMap === 'string') address = addressOrAddressesMap
-    else address = addressOrAddressesMap[chainId]
+    const address = typeof addressOrAddressesMap === 'string' ? addressOrAddressesMap : addressOrAddressesMap[chainId]
     if (!address) return null
 
     try {
@@ -76,7 +74,7 @@ export function useEthereumContract(
       console.error('Failed to get contract', error)
       return null
     }
-  }, [addressOrAddressesMap, chainId, provider])
+  }, [addressOrAddressesMap, chainId, provider, account])
 }
 
 export function useEthereumStarkgateContract(): EthereumContract | null {

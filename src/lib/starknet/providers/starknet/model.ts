@@ -1,7 +1,7 @@
-import { Provider } from 'starknet'
+import { SequencerProvider } from 'starknet'
 
 export interface StarknetState {
-  provider?: Provider
+  provider?: SequencerProvider
   network?: string
 }
 

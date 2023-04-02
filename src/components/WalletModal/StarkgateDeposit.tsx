@@ -7,17 +7,20 @@ import Column from '@/components/Column'
 import CurrencyInput from '@/components/Input/CurrencyInput'
 import { metaMaskHooks } from '@/constants/connectors'
 import { PrimaryButton } from '@/components/Button'
-import { useEthereumETHBalance, useSetWalletModalMode } from '@/state/wallet/hooks'
+import { useEthereumETHBalance } from '@/state/wallet/hooks'
 import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
 import { useEthereumStarkgateContract } from '@/hooks/useContract'
 import Wallet from '@/components/Wallet'
 import Metamask from '@/components/Metamask'
 import EthereumSigner from '@/components/EthereumSigner'
-import { WalletModalMode } from '@/state/wallet/actions'
+import { useStarknet } from '@/lib/starknet'
+import { L2_STARKGATE_ADDRESSES } from '@/constants/addresses'
+import { networkId } from '@/constants/networks'
+import { L2_STARKGATE_DEPOSIT_HANDLER_SELECTOR_NAME } from '@/constants/misc'
 
 import Arrow from '@/images/arrow.svg'
 
-const { useAccount, useChainId } = metaMaskHooks
+const { useAccount } = metaMaskHooks
 
 const ArrowWrapper = styled(Column)`
   width: 36px;
@@ -42,13 +45,11 @@ export default function DepositModal() {
   // current user
   const currentUser = useCurrentUser()
 
-  // modal mode
-  const setWalletModalMode = useSetWalletModalMode()
-  const onBack = useCallback(() => setWalletModalMode(WalletModalMode.DEPOSIT), [])
+  // starknet
+  const { provider } = useStarknet()
 
   // metamask
   const account = useAccount()
-  const chainId = useChainId()
 
   // deposit amount
   const [depositAmount, setDepositAmount] = useState('')
@@ -67,28 +68,47 @@ export default function DepositModal() {
 
   // deposit
   const ethereumStarkgateContract = useEthereumStarkgateContract()
-  const onDeposit = useCallback(() => {
-    if (!ethereumStarkgateContract || !parsedDepositAmount || !currentUser?.starknetWallet.address) return
+  const deposit = useCallback(async () => {
+    if (!ethereumStarkgateContract || !parsedDepositAmount || !currentUser?.starknetWallet.address || !provider) return
 
     setWaitingForTx(true)
 
+    const amount = parsedDepositAmount.quotient.toString()
+
+    const messageFee = await provider.estimateMessageFee({
+      from_address: ethereumStarkgateContract.address,
+      to_address: L2_STARKGATE_ADDRESSES[networkId],
+      entry_point_selector: L2_STARKGATE_DEPOSIT_HANDLER_SELECTOR_NAME,
+      payload: [currentUser.starknetWallet.address, amount, '0x0'],
+    })
+
+    const parsedMessageFee = (messageFee as any).overall_fee?.toString()
+    if (!parsedMessageFee) throw 'Failed to estimate message fee'
+
+    const payableAmount = parsedDepositAmount.add(parsedMessageFee)
+
     const estimate = ethereumStarkgateContract.estimateGas.deposit
     const method = ethereumStarkgateContract.deposit
-    const args: Array<string | string[] | number> = [currentUser.starknetWallet.address]
-    const value = parsedDepositAmount.quotient.toString()
+    const args: Array<string | string[] | number> = [amount, currentUser.starknetWallet.address]
+    const value = payableAmount.quotient.toString()
 
-    estimate(...args, value ? { value } : {})
-      .then((estimatedGasLimit) =>
-        method(...args, { ...(value ? { value } : {}), gasLimit: estimatedGasLimit }).then((response: any) => {
-          setTxHash(response.hash)
-        })
-      )
-      .catch((error: any) => {
-        setError(error.message)
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (error?.code !== 4001) console.error(error)
-      })
-  }, [parsedDepositAmount, ethereumStarkgateContract, currentUser?.starknetWallet.address])
+    try {
+      const estimatedGasLimit = await estimate(...args, value ? { value } : {})
+      const response = await method(...args, { ...(value ? { value } : {}), gasLimit: estimatedGasLimit })
+
+      setTxHash(response.hash)
+    } catch (error: any) {
+      // we only care if the error is something _other_ than the user rejected the tx
+      if (error?.code !== 4001) throw error
+      setWaitingForTx(false)
+    }
+  }, [parsedDepositAmount, ethereumStarkgateContract, currentUser?.starknetWallet.address, provider])
+  const onDeposit = useCallback(() => {
+    deposit().catch((error: any) => {
+      console.error(error)
+      setError(error.message ?? error)
+    })
+  }, [deposit])
 
   // next step check
   const canDeposit = useMemo(

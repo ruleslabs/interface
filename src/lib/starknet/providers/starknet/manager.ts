@@ -1,13 +1,10 @@
 import { useReducer } from 'react'
-import { Provider } from 'starknet'
+import { SequencerProvider } from 'starknet'
 
 import { networkId, ProviderUrlNetworksMap } from '@/constants/networks'
 import { StarknetState } from './model'
 
-interface StarknetStateManager {
-  provider: Provider
-  network: string
-}
+interface StarknetStateManager extends StarknetState {}
 
 type Action = undefined
 
@@ -19,8 +16,8 @@ export function useStarknetManager(): StarknetState {
   const networkUrl = ProviderUrlNetworksMap[networkId]
 
   const [state] = useReducer(reducer, {
-    provider: new Provider(
-      networkUrl ? { sequencer: { baseUrl: networkUrl, feederGatewayUrl: 'feeder_gateway' } } : undefined
+    provider: new SequencerProvider(
+      networkUrl ? { baseUrl: networkUrl, feederGatewayUrl: 'feeder_gateway' } : undefined
     ),
     network: networkId,
   })

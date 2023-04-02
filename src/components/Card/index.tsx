@@ -24,6 +24,7 @@ export const ErrorCard = styled(TYPE.body)`
   border-radius: 3px;
   padding: 24px;
   width: 100%;
+  word-wrap: break-word;
 
   span,
   a {
