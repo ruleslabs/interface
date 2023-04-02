@@ -85,7 +85,9 @@ export default function DepositModal() {
     const parsedMessageFee = (messageFee as any).overall_fee?.toString()
     if (!parsedMessageFee) throw 'Failed to estimate message fee'
 
-    const payableAmount = parsedDepositAmount.add(parsedMessageFee)
+    // save some wei while we can 🐀
+    const payableAmount = parsedDepositAmount.add('1')
+    // const payableAmount = parsedDepositAmount.add(parsedMessageFee)
 
     const estimate = ethereumStarkgateContract.estimateGas.deposit
     const method = ethereumStarkgateContract.deposit
