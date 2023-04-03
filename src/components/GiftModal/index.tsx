@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
 import { uint256HexFromStrHex, getStarknetCardId, ScarcityName } from '@rulesorg/sdk-core'
-import { ApolloError } from '@apollo/client'
+import { ApolloError, gql, useQuery } from '@apollo/client'
 import { Call, Signature, stark } from 'starknet'
 
 import { ModalHeader } from '@/components/Modal'
@@ -22,9 +22,11 @@ import { RULES_TOKENS_ADDRESSES } from '@/constants/addresses'
 import { useTransferCardMutation } from '@/state/wallet/hooks'
 import { networkId } from '@/constants/networks'
 import CardBreakdown from '@/components/MarketplaceModal/CardBreakdown'
+import Avatar from '@/components/Avatar'
 
 import Arrow from '@/images/arrow.svg'
-import Avatar from '../Avatar'
+
+const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
 
 const TransferSummary = styled(RowCenter)`
   background: ${({ theme }) => theme.bg2};
@@ -82,35 +84,102 @@ const ArrowWrapper = styled(Column)`
   }
 `
 
+const CardBreakdownsWrapper = styled.div<{ needsScroll: boolean }>`
+  & > div {
+    gap: 16px;
+  }
+
+  ${({ theme, needsScroll }) =>
+    needsScroll &&
+    `
+    border-radius: 3px;
+    position: relative;
+
+    ::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(0deg, ${theme.bg1} 0, ${theme.bg1}00 150px);
+      pointer-events: none;
+    }
+
+    & > div {
+      max-height: 250px;
+      overflow: scroll;
+      padding: 0 0 64px;
+    }
+  `}
+`
+
+const CARDS_QUERY = gql`
+  query ($ids: [ID!]!) {
+    cardsByIds(ids: $ids) {
+      serialNumber
+      cardModel {
+        id
+        pictureUrl(derivative: "width=256px")
+        season
+        scarcity {
+          name
+        }
+        artist {
+          displayName
+        }
+      }
+    }
+  }
+`
+
 interface GiftModalProps {
-  artistName: string
-  season: number
-  scarcityName: string
-  serialNumber: number
-  pictureUrl: string
+  cardsIds: string[]
   onSuccess(): void
 }
 
-export default function GiftModal({
-  artistName,
-  season,
-  scarcityName,
-  serialNumber,
-  pictureUrl,
-  onSuccess,
-}: GiftModalProps) {
+export default function GiftModal({ cardsIds, onSuccess }: GiftModalProps) {
   // current user
   const currentUser = useCurrentUser()
-
-  // token id
-  const tokenId: string = useMemo(
-    () => getStarknetCardId(artistName, season, ScarcityName.indexOf(scarcityName), serialNumber),
-    [artistName, season, scarcityName, serialNumber]
-  )
 
   // modal
   const isOpen = useModalOpened(ApplicationModal.OFFER)
   const toggleOfferModal = useOfferModalToggle()
+
+  // cards query
+  const cardsQuery = useQuery(CARDS_QUERY, { variables: { ids: cardsIds }, skip: !isOpen })
+  const cards = cardsQuery.data?.cardsByIds ?? []
+  const cardModelsMap = useMemo(
+    () =>
+      (cards as any[]).reduce<any>((acc, card) => {
+        acc[card.cardModel.id] = acc[card.cardModel.id] ?? {
+          pictureUrl: card.cardModel.pictureUrl,
+          artistName: card.cardModel.artist.displayName,
+          season: card.cardModel.season,
+          scarcityName: card.cardModel.scarcity.name,
+          serialNumbers: [],
+        }
+
+        acc[card.cardModel.id].serialNumbers.push(card.serialNumber)
+
+        return acc
+      }, {}),
+    [cards.length]
+  )
+
+  // token ids
+  const tokenIds: string[] = useMemo(
+    () =>
+      cards.map((card: any) =>
+        getStarknetCardId(
+          card.cardModel.artist.displayName,
+          card.cardModel.season,
+          ScarcityName.indexOf(card.cardModel.scarcity.name),
+          card.serialNumber
+        )
+      ),
+    [cards.length]
+  )
 
   // generate calls
   const [recipient, setRecipient] = useState<any | null>(null)
@@ -119,25 +188,29 @@ export default function GiftModal({
   const handleConfirmation = useCallback(() => {
     if (!currentUser?.starknetWallet.address || !recipient?.starknetWallet.address) return
 
-    const uint256TokenId = uint256HexFromStrHex(tokenId)
-
     setCalls([
       {
         contractAddress: RULES_TOKENS_ADDRESSES[networkId],
-        entrypoint: 'safeTransferFrom',
+        entrypoint: 'safeBatchTransferFrom',
         calldata: [
           currentUser.starknetWallet.address,
           recipient.starknetWallet.address,
-          uint256TokenId.low,
-          uint256TokenId.high,
-          1, // amount.low
-          0, // amount.high
+
+          tokenIds.length, // ids len
+          ...tokenIds.flatMap((tokenId) => {
+            const uint256TokenId = uint256HexFromStrHex(tokenId)
+            return [uint256TokenId.low, uint256TokenId.high]
+          }), // ids
+
+          tokenIds.length, // amounts len
+          ...tokenIds.flatMap(() => [1, 0]), // amount.low, amount.high
+
           1, // data len
           0, // data
         ],
       },
     ])
-  }, [tokenId, currentUser?.starknetWallet.address, recipient?.starknetWallet.address])
+  }, [tokenIds.length, currentUser?.starknetWallet.address, recipient?.starknetWallet.address])
 
   // error
   const [error, setError] = useState<string | null>(null)
@@ -153,7 +226,7 @@ export default function GiftModal({
 
       transferCardMutation({
         variables: {
-          tokenId,
+          tokenIds,
           recipientAddress: recipient.starknetWallet.address,
           maxFee,
           nonce,
@@ -177,7 +250,7 @@ export default function GiftModal({
           console.error(error)
         })
     },
-    [recipient?.starknetWallet.address, tokenId, onSuccess]
+    [recipient?.starknetWallet.address, tokenIds.length, onSuccess]
   )
 
   // on close modal
@@ -207,13 +280,22 @@ export default function GiftModal({
           onError={onError}
         >
           <Column gap={24}>
-            <CardBreakdown
-              pictureUrl={pictureUrl}
-              season={season}
-              artistName={artistName}
-              serialNumbers={[serialNumber]}
-              scarcityName={scarcityName}
-            />
+            <CardBreakdownsWrapper
+              needsScroll={Object.keys(cardModelsMap).length > MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING}
+            >
+              <Column>
+                {Object.keys(cardModelsMap).map((cardModelId) => (
+                  <CardBreakdown
+                    key={cardModelId}
+                    pictureUrl={cardModelsMap[cardModelId].pictureUrl}
+                    season={cardModelsMap[cardModelId].season}
+                    artistName={cardModelsMap[cardModelId].artistName}
+                    serialNumbers={cardModelsMap[cardModelId].serialNumbers}
+                    scarcityName={cardModelsMap[cardModelId].scarcityName}
+                  />
+                ))}
+              </Column>
+            </CardBreakdownsWrapper>
 
             {currentUser.starknetWallet.lockingReason ? (
               <ErrorCard>

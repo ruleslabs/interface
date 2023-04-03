@@ -25,10 +25,16 @@ const WAITING_TRANSACTION_QUERY = gql`
 `
 
 const TRANSFER_CARD_MUTATION = gql`
-  mutation ($tokenId: String!, $recipientAddress: String!, $maxFee: String!, $nonce: String!, $signature: [String!]!) {
+  mutation (
+    $tokenIds: [String!]!
+    $recipientAddress: String!
+    $maxFee: String!
+    $nonce: String!
+    $signature: [String!]!
+  ) {
     transferCard(
       input: {
-        tokenId: $tokenId
+        tokenIds: $tokenIds
         recipientAddress: $recipientAddress
         quantity: 1
         maxFee: $maxFee

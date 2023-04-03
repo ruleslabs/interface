@@ -20,7 +20,10 @@ import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 import SortButton, { SortsData } from '@/components/Button/SortButton'
 import { PrimaryButton, SecondaryButton } from '@/components/Button'
 import CreateOfferModal from '@/components/MarketplaceModal/CreateOffer'
-import { useCreateOfferModalToggle } from '@/state/application/hooks'
+import { useCreateOfferModalToggle, useOfferModalToggle } from '@/state/application/hooks'
+
+import Present from '@/images/present.svg'
+import GiftModal from '@/components/GiftModal'
 
 // css
 
@@ -66,6 +69,11 @@ const CARDS_IN_DELIVERY_QUERY = gql`
   }
 `
 
+const StyledPresent = styled(Present)`
+  width: 16px;
+  fill: ${({ theme }) => theme.text1};
+`
+
 const StickyWrapper = styled.div`
   margin: 16px 0;
   position: sticky;
@@ -108,9 +116,10 @@ const SelectionButton = styled(SecondaryButton)`
 
 const SelectedCardsActionWrapper = styled(Row)<{ active: boolean }>`
   position: fixed;
-  left: 0;
-  right: 0;
+  left: 16px;
+  right: 16px;
   justify-content: center;
+  z-index: 1;
 
   ${({ active }) =>
     active
@@ -130,6 +139,25 @@ const SelectedCardsAction = styled(RowCenter)`
   padding: 8px 8px 8px 16px;
   border-radius: 3px;
   box-shadow: 0 0 8px ${({ theme }) => theme.black}80;
+
+  ${({ theme }) => theme.media.small`
+    flex-direction: column;
+    padding: 12px;
+  `}
+`
+
+const SelectedCardsButtonsWrapper = styled(Row)`
+  gap: 8px;
+
+  & > * {
+    flex: 1;
+    flex-basis: auto;
+  }
+
+  ${({ theme }) => theme.media.small`
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  `}
 `
 
 const sortsData: SortsData<CardsSortingKey> = [
@@ -160,6 +188,7 @@ function Cards({ userId, address }: CardsProps) {
 
   // modals
   const toggleCreateOfferModal = useCreateOfferModalToggle()
+  const toggleOfferModal = useOfferModalToggle()
 
   // tables
   const [cards, setCards] = useState<any[]>([])
@@ -237,14 +266,20 @@ function Cards({ userId, address }: CardsProps) {
   )
 
   // offer creation
-  const onSuccessfulOfferCreation = useCallback(() => {
-    const selectedCardsIdsSet = new Set(selectedCardsIds)
+  const onSuccessfulAction = useCallback(
+    (cardStateKey: string) => {
+      const selectedCardsIdsSet = new Set(selectedCardsIds)
 
-    toggleSelectionMode()
-    setCards((state) =>
-      state.map((card) => (selectedCardsIdsSet.has(card.id) ? { ...card, inOfferCreation: true } : card))
-    )
-  }, [toggleSelectionMode, selectedCardsIds.length])
+      toggleSelectionMode()
+      setCards((state) =>
+        state.map((card) => (selectedCardsIdsSet.has(card.id) ? { ...card, [cardStateKey]: true } : card))
+      )
+    },
+    [toggleSelectionMode, selectedCardsIds.length]
+  )
+
+  const onSuccessfulOfferCreation = useCallback(() => onSuccessfulAction('inOfferCreation'), [onSuccessfulAction])
+  const onSuccessfulGift = useCallback(() => onSuccessfulAction('inTransfer'), [onSuccessfulAction])
 
   return (
     <>
@@ -315,13 +350,23 @@ function Cards({ userId, address }: CardsProps) {
             <Plural value={selectedCardsIds.length} _1="{0} card selected" other="{0} cards selected" />
           </TYPE.body>
 
-          <PrimaryButton onClick={toggleCreateOfferModal}>
-            <Trans>Place for Sale</Trans>
-          </PrimaryButton>
+          <SelectedCardsButtonsWrapper>
+            <PrimaryButton onClick={toggleCreateOfferModal}>
+              <Trans>Place for Sale</Trans>
+            </PrimaryButton>
+
+            <SecondaryButton onClick={toggleOfferModal}>
+              <RowCenter justify="center" gap={4}>
+                <StyledPresent />
+                <Trans>Gift</Trans>
+              </RowCenter>
+            </SecondaryButton>
+          </SelectedCardsButtonsWrapper>
         </SelectedCardsAction>
       </SelectedCardsActionWrapper>
 
       <CreateOfferModal cardsIds={selectedCardsIds} onSuccess={onSuccessfulOfferCreation} />
+      <GiftModal cardsIds={selectedCardsIds} onSuccess={onSuccessfulGift} />
     </>
   )
 }

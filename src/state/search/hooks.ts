@@ -532,6 +532,8 @@ export function useStarknetTransactionsForAddress(userId: string, address?: stri
   // on query completed
   const onQueryCompleted = useCallback(
     (data: any) => {
+      if (!data) return
+
       setEndCursor(data.allStarknetTransactionsForAddressOrUserId.pageInfo.endCursor)
       setHasNextPage(data.allStarknetTransactionsForAddressOrUserId.pageInfo.hasNextPage)
 

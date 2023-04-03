@@ -217,14 +217,7 @@ export default function CardBreakout() {
             </Column>
           </Section>
 
-          <GiftModal
-            artistName={card.cardModel.artist.displayName}
-            scarcityName={card.cardModel.scarcity.name}
-            season={card.cardModel.season}
-            serialNumber={card.serialNumber}
-            pictureUrl={card.cardModel.pictureUrl}
-            onSuccess={onSuccessfulGift}
-          />
+          <GiftModal cardsIds={[card.id]} onSuccess={onSuccessfulGift} />
 
           <CreateOfferModal cardsIds={[card.id]} onSuccess={onSuccessfulOfferCreation} />
 

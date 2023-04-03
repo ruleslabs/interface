@@ -65,7 +65,6 @@ const CARDS_QUERY = gql`
 `
 
 interface CreateOfferModalProps {
-  // lowestAsk?: string
   cardsIds: string[]
   onSuccess(): void
 }

@@ -15,14 +15,11 @@ msgstr ""
 # AUTH ERRORS #
 ###############
 
-msgid "Unknown email"
-msgstr "Email inconnu "
-
 msgid "Unknown error"
 msgstr "Erreur inconnue"
 
-msgid "Invalid password"
-msgstr "Mot de passe invalide"
+msgid "Invalid email or password"
+msgstr "Email ou mot de passe invalide"
 
 msgid "Invalid token"
 msgstr "Token invalide"

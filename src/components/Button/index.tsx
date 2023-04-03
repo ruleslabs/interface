@@ -288,6 +288,7 @@ const StyledThirdPartyButton = styled(SecondaryButton)<{ active: boolean }>`
 
   svg {
     width: 32px;
+    height: 32px;
   }
 
   ${({ active, theme }) =>
