@@ -1,7 +1,8 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
+import GoogleReCAPTCHA from 'react-google-recaptcha'
 
 import { ModalHeader } from '@/components/Modal'
 import { ModalContent, ModalBody } from '@/components/Modal/Classic'
@@ -18,6 +19,7 @@ import {
 import { useAuthModalToggle } from '@/state/application/hooks'
 import useCountdown from '@/hooks/useCountdown'
 import { PrimaryButton } from '@/components/Button'
+import ReCAPTCHA, { RecaptchaPolicy } from '../Recaptcha'
 
 const SubmitButton = styled(PrimaryButton)`
   height: 55px;
@@ -38,8 +40,6 @@ export default function RequestPasswordUpdateForm() {
   // email
   const { email: emailFromState } = useAuthForm()
   const [email, setEmail] = useState(emailFromState)
-  const [recipient, setRecipient] = useState<string | null>(null)
-  const onEmailInput = useCallback((email: string) => setEmail(email), [setEmail])
 
   // Countdown
   const newAuthUpdateLinkTime = useNewAuthUpdateLinkTime()
@@ -49,6 +49,9 @@ export default function RequestPasswordUpdateForm() {
   // errors
   const [error, setError] = useState<{ message?: string; id?: string }>({})
 
+  // recaptcha
+  const recaptchaRef = useRef<GoogleReCAPTCHA>(null)
+
   // new code
   const handleNewLink = useCallback(
     async (event?: any) => {
@@ -56,11 +59,13 @@ export default function RequestPasswordUpdateForm() {
 
       setLoading(true)
 
-      requestTwoFactorAuthSecretRemovalMutation({ variables: { email } })
-        .then((res: any) => {
+      recaptchaRef.current?.reset()
+      const recaptchaTokenV2 = await recaptchaRef.current?.executeAsync()
+
+      requestTwoFactorAuthSecretRemovalMutation({ variables: { email, recaptchaTokenV2 } })
+        .then(() => {
           setLoading(false)
           refreshNewAuthUpdateLinkTime()
-          setRecipient(email)
           setError({})
         })
         .catch((prepareSignUpError: ApolloError) => {
@@ -70,10 +75,9 @@ export default function RequestPasswordUpdateForm() {
 
           console.error(prepareSignUpError)
           setLoading(false)
-          setRecipient(null)
         })
     },
-    [email, requestTwoFactorAuthSecretRemovalMutation, setRecipient, setLoading, setError]
+    [email, requestTwoFactorAuthSecretRemovalMutation, recaptchaRef.current]
   )
 
   useEffect(() => {
@@ -93,6 +97,8 @@ export default function RequestPasswordUpdateForm() {
             </Trans>
           </TYPE.body>
 
+          <RecaptchaPolicy />
+
           {error.message && (
             <TYPE.body color="error">
               <Trans id={error.message} render={({ translation }) => <>{translation}</>} />
@@ -106,9 +112,13 @@ export default function RequestPasswordUpdateForm() {
               </TYPE.subtitle>
             )}
 
-            <SubmitButton type="submit" onClick={handleNewLink} disabled={!!countdown?.seconds || loading} large>
-              {loading ? 'Loading ...' : t`Send`}
-            </SubmitButton>
+            <Column>
+              <ReCAPTCHA ref={recaptchaRef} />
+
+              <SubmitButton type="submit" onClick={handleNewLink} disabled={!!countdown?.seconds || loading} large>
+                {loading ? 'Loading ...' : t`Send`}
+              </SubmitButton>
+            </Column>
           </Column>
         </Column>
       </ModalBody>

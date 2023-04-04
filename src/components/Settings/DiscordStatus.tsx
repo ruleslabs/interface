@@ -169,7 +169,7 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
   const discordMember = currentUser?.profile?.discordMember
 
   return (
-    <div {...props}>
+    <Column gap={16} {...props}>
       {!loading && (
         <>
           {discordMember ? (
@@ -219,14 +219,13 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
 
       {error && (
         <TYPE.body color="error">
-          <Trans>
-            Discord connection failed for the following reason:&nbsp;
-            <strong>{error}</strong>
-          </Trans>
+          <Trans>Discord connection failed for the following reason:</Trans>
+          <span> </span>
+          <strong>{error}</strong>
         </TYPE.body>
       )}
 
       <PaginationSpinner loading={loading} />
-    </div>
+    </Column>
   )
 }

@@ -1515,6 +1515,10 @@ msgid "Refresh"
 msgstr "Rafraîchir"
 
 #: src/components/Settings/DiscordStatus.tsx
+msgid "Discord connection failed for the following reason:"
+msgstr "La connexion à Discord a échoué pour la raison suivante:"
+
+#: src/components/Settings/DiscordStatus.tsx
 msgid "Unlink"
 msgstr "Déconnecter"
 
@@ -1541,3 +1545,7 @@ msgstr "Ton retrait de {0} ETH est validé. Tu peux récupérer tes fonds dès m
 #: src/components/NavModal/UserMobile.tsx
 msgid "My wallet"
 msgstr "Mon portefeuille"
+
+#: src/components/Recaptcha/index.tsx
+msgid "This site is protected by reCAPTCHA. The Google<0> </0><1>Privacy Policy</1><2> </2>and<3> </3><4>Terms of Service</4><5> </5>apply."
+msgstr "Ce site est protégé par reCAPTCHA. Les<0> </0><1>règles de confidentialité</1><2> </2>et les<3> </3><4>conditions d'utilisation</4><5> </5>de Google s'appliquent."

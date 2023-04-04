@@ -1,7 +1,8 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
+import GoogleReCAPTCHA from 'react-google-recaptcha'
 
 import { ModalHeader } from '@/components/Modal'
 import { ModalContent, ModalBody } from '@/components/Modal/Classic'
@@ -21,6 +22,7 @@ import { useAuthModalToggle } from '@/state/application/hooks'
 import Checkbox from '@/components/Checkbox'
 import Link from '@/components/Link'
 import { validatePassword, PasswordError } from '@/utils/password'
+import ReCAPTCHA, { RecaptchaPolicy } from '@/components/Recaptcha'
 
 const StyledForm = styled.form`
   width: 100%;
@@ -71,6 +73,9 @@ export default function SignUpForm() {
   // errors
   const [error, setError] = useState<{ message?: string; id?: string }>({})
 
+  // recaptcha
+  const recaptchaRef = useRef<GoogleReCAPTCHA>(null)
+
   //signup
   const handleSignUp = useCallback(
     async (event) => {
@@ -103,7 +108,10 @@ export default function SignUpForm() {
 
       setLoading(true)
 
-      prepareSignUpMutation({ variables: { username, email } })
+      recaptchaRef.current?.reset()
+      const recaptchaTokenV2 = await recaptchaRef.current?.executeAsync()
+
+      prepareSignUpMutation({ variables: { username, email, recaptchaTokenV2 } })
         .then((res: any) => {
           if (!res?.data?.prepareSignUp?.error) setAuthMode(AuthMode.EMAIL_VERIFICATION)
           else setLoading(false)
@@ -118,7 +126,7 @@ export default function SignUpForm() {
           setLoading(false)
         })
     },
-    [email, username, password, prepareSignUpMutation, setAuthMode, acceptTos]
+    [email, username, password, prepareSignUpMutation, setAuthMode, acceptTos, recaptchaRef.current]
   )
 
   return (
@@ -154,6 +162,8 @@ export default function SignUpForm() {
                 $valid={error?.id !== 'password' || loading}
               />
 
+              <RecaptchaPolicy />
+
               {error.message && (
                 <Trans
                   id={error.message}
@@ -168,7 +178,7 @@ export default function SignUpForm() {
                   <Trans>
                     I agree to Rules&nbsp;
                     <Link href="/terms" underline>
-                      <>terms and conditions</>
+                      terms and conditions
                     </Link>
                   </Trans>
                 </TYPE.body>
@@ -180,20 +190,22 @@ export default function SignUpForm() {
               </Checkbox>
             </Column>
 
-            <SubmitButton type="submit" large>
-              {loading ? 'Loading ...' : t`Sign up`}
-            </SubmitButton>
+            <Column>
+              <ReCAPTCHA ref={recaptchaRef} />
+
+              <SubmitButton type="submit" large>
+                {loading ? 'Loading ...' : t`Sign up`}
+              </SubmitButton>
+            </Column>
           </Column>
         </StyledForm>
 
-        <div style={{ padding: '0 8px' }}>
-          <TYPE.subtitle>
-            <Trans>
-              Already have an account?&nbsp;
-              <SwitchAuthModeButton onClick={() => setAuthMode(AuthMode.SIGN_IN)}>Connect</SwitchAuthModeButton>
-            </Trans>
-          </TYPE.subtitle>
-        </div>
+        <TYPE.subtitle>
+          <Trans>
+            Already have an account?&nbsp;
+            <SwitchAuthModeButton onClick={() => setAuthMode(AuthMode.SIGN_IN)}>Connect</SwitchAuthModeButton>
+          </Trans>
+        </TYPE.subtitle>
       </ModalBody>
     </ModalContent>
   )

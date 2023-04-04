@@ -22,8 +22,8 @@ const REVOKE_SESSION = gql`
 `
 
 const PREPARE_SIGN_UP_MUTATION = gql`
-  mutation ($email: String!, $username: String!) {
-    prepareSignUp(input: { email: $email, username: $username })
+  mutation ($email: String!, $username: String!, $recaptchaTokenV2: String!) {
+    prepareSignUp(input: { email: $email, username: $username, recaptchaTokenV2: $recaptchaTokenV2 })
   }
 `
 
@@ -71,14 +71,14 @@ const SIGN_UP_MUTATION = gql`
 `
 
 const REQUEST_PASSWORD_UPDATE_MUTATION = gql`
-  mutation ($email: String!) {
-    requestPasswordUpdate(email: $email)
+  mutation ($email: String!, $recaptchaTokenV2: String!) {
+    requestPasswordUpdate(input: { email: $email, recaptchaTokenV2: $recaptchaTokenV2 })
   }
 `
 
 const REQUEST_TWO_FACTOR_AUTH_SECRET_REMOVAL_MUTATION = gql`
-  mutation ($email: String!) {
-    requestTwoFactorAuthSecretRemoval(email: $email)
+  mutation ($email: String!, $recaptchaTokenV2: String!) {
+    requestTwoFactorAuthSecretRemoval(input: { email: $email, recaptchaTokenV2: $recaptchaTokenV2 })
   }
 `
 

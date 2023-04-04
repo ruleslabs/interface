@@ -1,7 +1,8 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
+import GoogleReCAPTCHA from 'react-google-recaptcha'
 
 import { ModalHeader } from '@/components/Modal'
 import { ModalContent, ModalBody } from '@/components/Modal/Classic'
@@ -19,13 +20,7 @@ import {
 import { useAuthModalToggle } from '@/state/application/hooks'
 import useCountdown from '@/hooks/useCountdown'
 import { PrimaryButton } from '@/components/Button'
-
-const ResendLink = styled(TYPE.subtitle)`
-  display: inline;
-  text-decoration: underline;
-  font-weight: 500;
-  cursor: pointer;
-`
+import ReCAPTCHA, { RecaptchaPolicy } from '@/components/Recaptcha'
 
 const SubmitButton = styled(PrimaryButton)`
   height: 55px;
@@ -57,6 +52,9 @@ export default function RequestPasswordUpdateForm() {
   // errors
   const [error, setError] = useState<{ message?: string; id?: string }>({})
 
+  // recaptcha
+  const recaptchaRef = useRef<GoogleReCAPTCHA>(null)
+
   // new code
   const handleNewLink = useCallback(
     async (event) => {
@@ -64,8 +62,11 @@ export default function RequestPasswordUpdateForm() {
 
       setLoading(true)
 
-      requestPasswordUpdateMutation({ variables: { email } })
-        .then((res: any) => {
+      recaptchaRef.current?.reset()
+      const recaptchaTokenV2 = await recaptchaRef.current?.executeAsync()
+
+      requestPasswordUpdateMutation({ variables: { email, recaptchaTokenV2 } })
+        .then(() => {
           setLoading(false)
           refreshNewAuthUpdateLinkTime()
           setRecipient(email)
@@ -81,7 +82,7 @@ export default function RequestPasswordUpdateForm() {
           setRecipient(null)
         })
     },
-    [email, requestPasswordUpdateMutation, setRecipient, setLoading, setError]
+    [email, requestPasswordUpdateMutation, recaptchaRef.current]
   )
 
   return (
@@ -108,6 +109,8 @@ export default function RequestPasswordUpdateForm() {
               $valid={error?.id !== 'email' || loading}
             />
 
+            <RecaptchaPolicy />
+
             {error.message && (
               <Trans
                 id={error.message}
@@ -129,9 +132,13 @@ export default function RequestPasswordUpdateForm() {
               </TYPE.subtitle>
             )}
 
-            <SubmitButton type="submit" onClick={handleNewLink} disabled={!!countdown?.seconds} large>
-              {loading ? 'Loading ...' : t`Send`}
-            </SubmitButton>
+            <Column>
+              <ReCAPTCHA ref={recaptchaRef} />
+
+              <SubmitButton type="submit" onClick={handleNewLink} disabled={!!countdown?.seconds} large>
+                {loading ? 'Loading ...' : t`Send`}
+              </SubmitButton>
+            </Column>
           </Column>
         </Column>
       </ModalBody>
