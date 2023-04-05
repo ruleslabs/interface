@@ -184,6 +184,8 @@ export interface TextProps extends TextWrapperProps {
 
 const Text = styled.div<TextProps>`
   width: fit-content;
+  word-wrap: break-word;
+
   ${({ fontSize }) => fontSize && `font-size: ${fontSize}px;`}
   ${({ fontWeight }) => fontWeight && `font-weight: ${fontWeight};`};
   ${({ fontStyle }) => fontStyle && `font-style: ${fontStyle};`};
