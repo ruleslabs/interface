@@ -13,6 +13,7 @@ import EthereumIcon from '@/images/ethereum-plain.svg'
 import ShieldIcon from '@/images/shield.svg'
 import SessionsIcon from '@/images/sessions.svg'
 import StarknetIcon from '@/images/starknet.svg'
+import TicketIcon from '@/images/ticket.svg'
 
 const StyledSection = styled(Section)`
   margin-top: 64px;
@@ -101,6 +102,11 @@ const categories = [
     name: 'Ethereum',
     slug: 'ethereum',
     icon: EthereumIcon,
+  },
+  {
+    name: 'Live events',
+    slug: 'live-events',
+    icon: TicketIcon,
   },
 ] // TODO: move it somewhere else as a single source of truth
 
