@@ -21,6 +21,11 @@ export const BaseButton = styled.button<{ large?: boolean }>`
   &:hover {
     opacity: 0.9;
   }
+
+  &:disabled,
+  &[disabled] {
+    opacity: 0.5;
+  }
 `
 
 export const PrimaryButton = styled(BaseButton)`

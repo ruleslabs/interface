@@ -9,19 +9,19 @@ import { RowCenter } from '@/components/Row'
 import { SecondaryButton, PrimaryButton } from '@/components/Button'
 import { PaginationSpinner } from '@/components/Spinner'
 
-const StyledLiveRewardRow = styled(ColumnCenter)<{ claimed: boolean; closed: boolean }>`
+const StyledLiveRewardRow = styled(ColumnCenter)<{ claimed?: boolean; closed: boolean }>`
   width: 100%;
   gap: 16px;
   justify-content: space-between;
   background: ${({ theme }) => theme.bg3}40;
-  border: 1px solid ${({ theme, claimed }) => (claimed ? theme.primary1 : `${theme.bg3}80`)};
+  border: 1px solid ${({ theme, claimed = false }) => (claimed ? theme.primary1 : `${theme.bg3}80`)};
   border-radius: 5px;
   overflow: hidden;
   background: ${({ theme }) => theme.black};
 
   ${({ closed }) => closed && 'opacity: 0.3;'}
 
-  ${({ theme, claimed }) => claimed && `box-shadow: 0 0 16px 10px ${theme.primary1}40;`}
+  ${({ theme, claimed = false }) => claimed && `box-shadow: 0 0 16px 10px ${theme.primary1}40;`}
 
   img {
     aspect-ratio: 3 / 1;
@@ -37,8 +37,9 @@ const LiveRewardButtonsWrapper = styled(RowCenter)`
   gap: 32px;
   width: fit-content;
 
-  button {
+  & > * {
     min-width: 150px;
+    height: 40px;
   }
 
   ${({ theme }) => theme.media.extraSmall`
@@ -51,7 +52,7 @@ const ClaimButton = styled(SecondaryButton)`
   color: ${({ theme }) => theme.bg1};
 `
 
-const ProgressBar = styled.div<{ value: number }>`
+const StyledProgressBar = styled.div<{ value: number }>`
   width: 100%;
   height: 5px;
   position: relative;
@@ -61,15 +62,18 @@ const ProgressBar = styled.div<{ value: number }>`
   margin-top: 32px;
 
   & > * {
-    position: absolute;
-    left: 8px;
-    top: -28px;
-    font-family: Inconsolata, monospace;
-    background: ${({ theme }) => theme.bg3}80;
-    font-size: 14px;
-    padding: 2px 4px;
-    border-radius: 2px;
   }
+`
+
+const ProgressBarText = styled(TYPE.body)<{ position: 'left' | 'right' }>`
+  position: absolute;
+  ${({ position }) => position}: 8px;
+  top: -28px;
+  font-family: Inconsolata, monospace;
+  background: ${({ theme }) => theme.bg3}80;
+  font-size: 14px;
+  padding: 2px 4px;
+  border-radius: 2px;
 `
 
 const GET_ALL_LIVE_EVENTS = gql`
@@ -82,17 +86,33 @@ const GET_ALL_LIVE_EVENTS = gql`
       totalSlotsCount
       claimedSlotsCount
       eligible
+      claimed
     }
   }
 `
+
+interface ProgressBarProps {
+  value: number
+  leftText?: string
+  rightText?: string
+}
+
+const ProgressBar = ({ value, leftText, rightText }: ProgressBarProps) => {
+  return (
+    <StyledProgressBar value={value}>
+      {!!leftText && <ProgressBarText position="left">{leftText}</ProgressBarText>}
+      {!!rightText && <ProgressBarText position="right">{rightText}</ProgressBarText>}
+    </StyledProgressBar>
+  )
+}
 
 interface LiveRewardRowProps {
   liveReward: {
     pictureUrl: string
     totalSlotsCount: number
     claimedSlotsCount: number
-    claimed: boolean
-    eligible: boolean
+    claimed?: boolean
+    eligible?: boolean
   }
 }
 
@@ -102,45 +122,62 @@ const LiveRewardRow = ({ liveReward }: LiveRewardRowProps) => {
     [liveReward.claimedSlotsCount, liveReward.totalSlotsCount]
   )
 
+  const statusText = useMemo(() => {
+    if (closed) return 'Ended'
+    if (liveReward.claimed) return 'Claimed'
+    if (!liveReward.eligible) return 'Not eligible'
+    return
+  }, [closed, liveReward.eligible, liveReward.claimed])
+
   return (
     <StyledLiveRewardRow claimed={liveReward.claimed} closed={closed}>
       <img src={liveReward.pictureUrl} />
 
       <LiveRewardButtonsWrapper>
-        <PrimaryButton>Claim</PrimaryButton>
-        <SecondaryButton>Learn more</SecondaryButton>
+        <PrimaryButton disabled={!liveReward.eligible || !!liveReward.claimed}>
+          <Trans>Claim</Trans>
+        </PrimaryButton>
+
+        <SecondaryButton>
+          <Trans>See more</Trans>
+        </SecondaryButton>
       </LiveRewardButtonsWrapper>
 
-      <ProgressBar value={(liveReward.claimedSlotsCount / liveReward.totalSlotsCount) * 100}>
-        <TYPE.body>
-          {liveReward.claimedSlotsCount} / {liveReward.totalSlotsCount}
-        </TYPE.body>
-      </ProgressBar>
+      <ProgressBar
+        value={(liveReward.claimedSlotsCount / liveReward.totalSlotsCount) * 100}
+        leftText={`${liveReward.claimedSlotsCount} / ${liveReward.totalSlotsCount}`}
+        rightText={statusText}
+      />
     </StyledLiveRewardRow>
   )
 }
 
 export default function LiveRewards() {
-  const allLiveEventsQuery = useQuery(GET_ALL_LIVE_EVENTS)
-  const liveEvents: any[] = allLiveEventsQuery.data?.allLiveRewards ?? []
+  const allLiveRewardsQuery = useQuery(GET_ALL_LIVE_EVENTS)
+  const liveRewards: any[] = allLiveRewardsQuery.data?.allLiveRewards ?? []
 
-  const eligibilityCount = useMemo(
-    () => liveEvents.reduce<number>((acc, liveEvent) => acc + (liveEvent.eligilbe ? 1 : 0), 0),
-    [liveEvents.length]
+  const openEligibilityCount = useMemo(
+    () =>
+      liveRewards.reduce<number>(
+        (acc, liveReward) =>
+          acc + (liveReward.totalSlotsCount > liveReward.claimedSlotsCount && liveReward.eligible ? 1 : 0),
+        0
+      ),
+    [liveRewards.length]
   )
 
-  const isLoading = allLiveEventsQuery.loading
+  const isLoading = allLiveRewardsQuery.loading
 
   return (
     <Column gap={24}>
       {!isLoading && (
         <>
           <TYPE.body>
-            {eligibilityCount ? (
+            {openEligibilityCount ? (
               <Trans>
                 You are eligible to
                 <span> </span>
-                <Plural value={eligibilityCount} _1="a live reward" other="{eligibilityCount} live rewards" />!
+                <Plural value={openEligibilityCount} _1="a live reward" other="{openEligibilityCount} live rewards" />!
               </Trans>
             ) : (
               <Trans>No open live rewards you&apos;re eligible to.</Trans>
@@ -148,7 +185,7 @@ export default function LiveRewards() {
           </TYPE.body>
 
           <Column gap={16}>
-            {liveEvents.map((liveReward, index) => (
+            {liveRewards.map((liveReward, index) => (
               <LiveRewardRow key={index} liveReward={liveReward} />
             ))}
           </Column>
