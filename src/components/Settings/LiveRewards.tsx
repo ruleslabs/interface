@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { gql } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import styled from 'styled-components'
 import { Plural, Trans } from '@lingui/macro'
 
@@ -7,6 +7,7 @@ import Column, { ColumnCenter } from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
 import { SecondaryButton, PrimaryButton } from '@/components/Button'
+import { PaginationSpinner } from '@/components/Spinner'
 
 const StyledLiveRewardRow = styled(ColumnCenter)<{ claimed: boolean; closed: boolean }>`
   width: 100%;
@@ -71,45 +72,48 @@ const ProgressBar = styled.div<{ value: number }>`
   }
 `
 
-const GET_ACTIVE_SESSIONS = gql`
+const GET_ALL_LIVE_EVENTS = gql`
   query {
-    allLiveEvents {
-      bannerUrl(derivative: "width=2048")
-      rewardsCount
-      claimedRewardsCount
-      claimed
+    allLiveRewards {
+      pictureUrl(derivative: "width=1568")
+      date
+      location
+      displayName
+      totalSlotsCount
+      claimedSlotsCount
+      eligible
     }
   }
 `
 
 interface LiveRewardRowProps {
-  liveEvent: {
-    bannerUrl: string
-    totalRewardsCount: number
-    claimedRewardsCount: number
+  liveReward: {
+    pictureUrl: string
+    totalSlotsCount: number
+    claimedSlotsCount: number
     claimed: boolean
     eligible: boolean
   }
 }
 
-const LiveRewardRow = ({ liveEvent }: LiveRewardRowProps) => {
+const LiveRewardRow = ({ liveReward }: LiveRewardRowProps) => {
   const closed = useMemo(
-    () => liveEvent.claimedRewardsCount >= liveEvent.totalRewardsCount,
-    [liveEvent.claimedRewardsCount, liveEvent.totalRewardsCount]
+    () => liveReward.claimedSlotsCount >= liveReward.totalSlotsCount,
+    [liveReward.claimedSlotsCount, liveReward.totalSlotsCount]
   )
 
   return (
-    <StyledLiveRewardRow claimed={liveEvent.claimed} closed={closed}>
-      <img src={liveEvent.bannerUrl} />
+    <StyledLiveRewardRow claimed={liveReward.claimed} closed={closed}>
+      <img src={liveReward.pictureUrl} />
 
       <LiveRewardButtonsWrapper>
         <PrimaryButton>Claim</PrimaryButton>
         <SecondaryButton>Learn more</SecondaryButton>
       </LiveRewardButtonsWrapper>
 
-      <ProgressBar value={(liveEvent.claimedRewardsCount / liveEvent.totalRewardsCount) * 100}>
+      <ProgressBar value={(liveReward.claimedSlotsCount / liveReward.totalSlotsCount) * 100}>
         <TYPE.body>
-          {liveEvent.claimedRewardsCount} / {liveEvent.totalRewardsCount}
+          {liveReward.claimedSlotsCount} / {liveReward.totalSlotsCount}
         </TYPE.body>
       </ProgressBar>
     </StyledLiveRewardRow>
@@ -117,47 +121,41 @@ const LiveRewardRow = ({ liveEvent }: LiveRewardRowProps) => {
 }
 
 export default function LiveRewards() {
-  const liveEvents = [
-    {
-      bannerUrl: '/assets/banner.png',
-      totalRewardsCount: 200,
-      claimedRewardsCount: 75,
-      claimed: false,
-      eligilbe: true,
-    },
-    {
-      bannerUrl: '/assets/twitter-card.jpg',
-      totalRewardsCount: 100,
-      claimedRewardsCount: 100,
-      claimed: true,
-      eligilbe: false,
-    },
-  ]
+  const allLiveEventsQuery = useQuery(GET_ALL_LIVE_EVENTS)
+  const liveEvents: any[] = allLiveEventsQuery.data?.allLiveRewards ?? []
 
   const eligibilityCount = useMemo(
     () => liveEvents.reduce<number>((acc, liveEvent) => acc + (liveEvent.eligilbe ? 1 : 0), 0),
     [liveEvents.length]
   )
 
+  const isLoading = allLiveEventsQuery.loading
+
   return (
     <Column gap={24}>
-      <TYPE.body>
-        {eligibilityCount ? (
-          <Trans>
-            You are eligible to
-            <span> </span>
-            <Plural value={eligibilityCount} _1="a live reward" other="{eligibilityCount} live rewards" />!
-          </Trans>
-        ) : (
-          <Trans>No open live rewards you&apos;re eligible to.</Trans>
-        )}
-      </TYPE.body>
+      {!isLoading && (
+        <>
+          <TYPE.body>
+            {eligibilityCount ? (
+              <Trans>
+                You are eligible to
+                <span> </span>
+                <Plural value={eligibilityCount} _1="a live reward" other="{eligibilityCount} live rewards" />!
+              </Trans>
+            ) : (
+              <Trans>No open live rewards you&apos;re eligible to.</Trans>
+            )}
+          </TYPE.body>
 
-      <Column gap={16}>
-        {liveEvents.map((liveEvent, index) => (
-          <LiveRewardRow key={index} liveEvent={liveEvent} />
-        ))}
-      </Column>
+          <Column gap={16}>
+            {liveEvents.map((liveReward, index) => (
+              <LiveRewardRow key={index} liveReward={liveReward} />
+            ))}
+          </Column>
+        </>
+      )}
+
+      <PaginationSpinner loading={isLoading} />
     </Column>
   )
 }
