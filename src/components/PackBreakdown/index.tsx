@@ -1,7 +1,6 @@
 import 'moment/locale/fr'
 
-import { useMemo, useCallback, useState, useEffect } from 'react'
-import moment from 'moment'
+import { useCallback, useState, useEffect } from 'react'
 import { Plural, Trans, t } from '@lingui/macro'
 
 import { useCurrentUser } from '@/state/user/hooks'
@@ -12,7 +11,6 @@ import Placeholder from '@/components/Placeholder'
 import PackPurchaseModal from '@/components/PackPurchaseModal'
 import { usePackPurchaseModalToggle } from '@/state/application/hooks'
 import InputStepCounter from '@/components/Input/StepCounter'
-import { useActiveLocale } from '@/hooks/useActiveLocale'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'

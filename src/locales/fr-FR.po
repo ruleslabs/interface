@@ -1549,3 +1549,51 @@ msgstr "Mon portefeuille"
 #: src/components/Recaptcha/index.tsx
 msgid "This site is protected by reCAPTCHA. The Google<0> </0><1>Privacy Policy</1><2> </2>and<3> </3><4>Terms of Service</4><5> </5>apply."
 msgstr "Ce site est protégé par reCAPTCHA. Les<0> </0><1>règles de confidentialité</1><2> </2>et les<3> </3><4>conditions d'utilisation</4><5> </5>de Google s'appliquent."
+
+#: src/components/Settings/LiveReward/index.tsx
+msgid "No open live rewards you're eligible to."
+msgstr "Pas de récompense IRL auxquelles tu es éligible."
+
+#: src/components/Settings/LiveReward/index.tsx
+msgid "You are eligible to<0> </0>{openEligibilityCount, plural, =1 {a live reward} other {{openEligibilityCount} live rewards}}!"
+msgstr "Tu es éligible à<0> </0>{openEligibilityCount, plural, =1 {une récompense IRL} other {{openEligibilityCount} récompenses IRL}}!"
+
+#: src/components/Settings/LiveReward/LiveRewardRow.tsx
+msgid "See more"
+msgstr "En savoir plus"
+
+#: src/components/LiveRewardDetailsModal/index.tsx
+msgid "PRACTICAL INFORMATION"
+msgstr "INFOS PRATIQUES"
+
+#: src/components/LiveRewardDetailsModal/index.tsx
+msgid "ELIGIBILITY REQUIREMENTS"
+msgstr "PRÉREQUIS"
+
+#: src/components/LiveRewardDetailsModal/index.tsx
+msgid "Purchased packs"
+msgstr "Packs achetés"
+
+#: src/components/MarketplaceModal/CardBreakdown.tsx
+msgid "Any serial"
+msgstr "Any serial"
+
+#: src/components/LiveRewardDetailsModal/index.tsx
+msgid "REWARD"
+msgstr "RÉCOMPENSE"
+
+#: src/components/Settings/LiveReward/LiveRewardRow.tsx
+msgid "Claimed"
+msgstr "Réclamée"
+
+#: src/components/Settings/LiveReward/LiveRewardRow.tsx
+msgid "Claim"
+msgstr "Réclamer"
+
+#: src/components/Settings/LiveReward/LiveRewardRow.tsx
+msgid "Not eligible"
+msgstr "Non éligible"
+
+#: src/components/Settings/LiveReward/LiveRewardRow.tsx
+msgid "Ended"
+msgstr "Terminée"

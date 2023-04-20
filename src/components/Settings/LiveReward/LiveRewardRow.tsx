@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import { Trans } from '@lingui/macro'
+import { Trans, t } from '@lingui/macro'
 
 import { ColumnCenter } from '@/components/Column'
 import { TYPE } from '@/styles/theme'
@@ -102,9 +102,9 @@ export default function LiveRewardRow({ liveReward, onSelected }: LiveRewardRowP
   )
 
   const statusText = useMemo(() => {
-    if (closed) return 'Ended'
-    if (liveReward.claimed) return 'Claimed'
-    if (!liveReward.eligible) return 'Not eligible'
+    if (closed) return t`Ended`
+    if (liveReward.claimed) return t`Claimed`
+    if (!liveReward.eligible) return t`Not eligible`
     return
   }, [closed, liveReward.eligible, liveReward.claimed])
 
