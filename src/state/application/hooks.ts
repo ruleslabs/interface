@@ -134,6 +134,14 @@ export function useRetrieveEthersModalToggle(): () => void {
   return useToggleModal(ApplicationModal.RETRIEVE_ETHERS)
 }
 
+export function useLiveRewardDetailsModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.LIVE_REWARD_DETAILS)
+}
+
+export function useLiveRewardTicketModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.LIVE_REWARD_TICKET)
+}
+
 // SIDEBAR
 
 export function useNotificationsModalToggle(): () => void {

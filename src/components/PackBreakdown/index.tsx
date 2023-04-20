@@ -16,6 +16,7 @@ import { useActiveLocale } from '@/hooks/useActiveLocale'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
+import useFormatedDate from '@/hooks/useFormatedDate'
 
 interface PackBreakdownProps {
   name: string
@@ -59,17 +60,8 @@ export default function PackBreakdown({
   }, [!!currentUser, togglePackPurchaseModal, toggleSignUpModal])
 
   // release
-  const locale = useActiveLocale()
+  const releaseDateFormatted = useFormatedDate(releaseDate)
   const released = releaseDate ? +releaseDate - +new Date() <= 0 : true
-
-  const releaseDateFormatted = useMemo(() => {
-    if (released) return null
-
-    const releaseMoment = moment(releaseDate)
-    releaseMoment.locale(locale)
-
-    return releaseMoment.format('dddd D MMMM LT')
-  }, [released, releaseDate, locale])
 
   // quantity
   const [quantity, setQuantity] = useState(1)

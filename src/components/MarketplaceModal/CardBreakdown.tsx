@@ -49,9 +49,13 @@ export default function CardBreakdown({
         </TYPE.medium>
 
         <SerialNumbersWrapper gap={4}>
-          {serialNumbers.map((serialNumber) => (
-            <Tag key={serialNumber}>#{serialNumber}</Tag>
-          ))}
+          {serialNumbers.length ? (
+            serialNumbers.map((serialNumber) => <Tag key={serialNumber}>#{serialNumber}</Tag>)
+          ) : (
+            <Tag>
+              <Trans>Any serial</Trans>
+            </Tag>
+          )}
         </SerialNumbersWrapper>
       </Column>
     </StyledCardBreakdown>

@@ -16,6 +16,8 @@ export enum ApplicationModal {
   MARKETPLACE_FILTERS,
   STARKNET_ACCOUNT_PRIVATE_KEY,
   RETRIEVE_ETHERS,
+  LIVE_REWARD_DETAILS,
+  LIVE_REWARD_TICKET,
 }
 
 export enum ApplicationSidebarModal {

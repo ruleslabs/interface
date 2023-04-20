@@ -5,7 +5,7 @@ import DefaultLayout from '@/components/Layout'
 import SettingsLayout from '@/components/Layout/Settings'
 import Column from '@/components/Column'
 import Title from '@/components/Text/Title'
-import LiveRewards from '@/components/Settings/LiveRewards'
+import LiveRewards from '@/components/Settings/LiveReward'
 
 const StyledSecuritySettings = styled(Column)`
   width: 100%;
