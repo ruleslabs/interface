@@ -27,6 +27,8 @@ const Ticket = styled(ColumnCenter)`
     position: absolute;
     fill: ${({ theme }) => theme.bg3}40;
     stroke: ${({ theme }) => theme.bg3}80;
+    display: block;
+    width: 300px;
   }
 `
 
