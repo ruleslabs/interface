@@ -18,6 +18,7 @@ export enum ApplicationModal {
   RETRIEVE_ETHERS,
   LIVE_REWARD_DETAILS,
   LIVE_REWARD_TICKET,
+  CLAIM_LIVE_REWARD,
 }
 
 export enum ApplicationSidebarModal {

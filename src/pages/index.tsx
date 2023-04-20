@@ -9,12 +9,13 @@ import { TYPE } from '@/styles/theme'
 import Card from '@/components/Card'
 import HOMEPAGE from '@/components/Homepage'
 import DefaultLayout from '@/components/Layout'
-import { useAuthModalToggle } from '@/state/application/hooks'
+import { useAuthModalToggle, useClaimLiveRewardModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
 import { RowCenter } from '@/components/Row'
 import { useCurrentUser } from '@/state/user/hooks'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
+import ClaimLiveRewardModal from '@/components/LiveRewardModal/Claim'
 
 import LogoOutline from '@/images/logo-outline.svg'
 
@@ -153,6 +154,7 @@ function Home() {
   // modal
   const toggleAuthModal = useAuthModalToggle()
   const setAuthMode = useSetAuthMode()
+  const toggleClaimLiveRewardModal = useClaimLiveRewardModalToggle()
 
   const togglePasswordUpdateModal = useCallback(() => {
     setAuthMode(AuthMode.UPDATE_PASSWORD)
@@ -173,6 +175,10 @@ function Home() {
 
       case 'remove-2fa':
         toggleTwoFactorAuthSecretRemovalModal()
+        break
+
+      case 'claim-live-reward':
+        toggleClaimLiveRewardModal()
     }
   }, [])
 
@@ -225,6 +231,8 @@ function Home() {
           </Article>
         </LastOffersColumn>
       </StyledHome>
+
+      <ClaimLiveRewardModal />
     </>
   )
 }

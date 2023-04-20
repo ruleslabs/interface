@@ -6,8 +6,8 @@ import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { PaginationSpinner } from '@/components/Spinner'
 import LiveRewardRow from './LiveRewardRow'
-import LiveRewardDetailsModal from '@/components/LiveRewardDetailsModal'
-import LiveRewardTicketModal from '@/components/LiveRewardTicketModal'
+import LiveRewardDetailsModal from '@/components/LiveRewardModal/Details'
+import LiveRewardTicketModal from '@/components/LiveRewardModal/Ticket'
 
 const GET_ALL_LIVE_EVENTS = gql`
   query {

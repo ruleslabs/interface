@@ -1584,11 +1584,11 @@ msgstr "RÉCOMPENSE"
 
 #: src/components/Settings/LiveReward/LiveRewardRow.tsx
 msgid "Claimed"
-msgstr "Réclamée"
+msgstr "Validée"
 
 #: src/components/Settings/LiveReward/LiveRewardRow.tsx
 msgid "Claim"
-msgstr "Réclamer"
+msgstr "Recevoir"
 
 #: src/components/Settings/LiveReward/LiveRewardRow.tsx
 msgid "Not eligible"
@@ -1597,3 +1597,11 @@ msgstr "Non éligible"
 #: src/components/Settings/LiveReward/LiveRewardRow.tsx
 msgid "Ended"
 msgstr "Terminée"
+
+#: src/components/LiveRewardModal/Claim.tsx
+msgid "Live reward | Claim"
+msgstr "Live reward | Réception"
+
+#: src/components/LiveRewardModal/Ticket.tsx
+msgid "Live reward | Ticket"
+msgstr "Live reward | Ticket"

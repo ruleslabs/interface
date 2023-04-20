@@ -142,6 +142,10 @@ export function useLiveRewardTicketModalToggle(): () => void {
   return useToggleModal(ApplicationModal.LIVE_REWARD_TICKET)
 }
 
+export function useClaimLiveRewardModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.CLAIM_LIVE_REWARD)
+}
+
 // SIDEBAR
 
 export function useNotificationsModalToggle(): () => void {
