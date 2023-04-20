@@ -10,10 +10,10 @@ import { LiveReward } from '@/components/Settings/LiveReward'
 import Column from '@/components/Column'
 import { RowCenter } from '@/components/Row'
 import useFormatedDate from '@/hooks/useFormatedDate'
+import CardBreakdown from '@/components/MarketplaceModal/CardBreakdown'
 
 import PinIcon from '@/images/pin.svg'
 import CalendarIcon from '@/images/calendar.svg'
-import CardBreakdown from '@/components/MarketplaceModal/CardBreakdown'
 
 const InformationRow = styled(RowCenter)`
   gap: 12px;

@@ -7,7 +7,7 @@ import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
 import { SecondaryButton, PrimaryButton } from '@/components/Button'
 import { LiveReward } from '.'
-import { useLiveRewardDetailsModalToggle } from '@/state/application/hooks'
+import { useLiveRewardDetailsModalToggle, useLiveRewardTicketModalToggle } from '@/state/application/hooks'
 
 const StyledLiveRewardRow = styled(ColumnCenter)<{ claimed?: boolean; closed: boolean }>`
   width: 100%;
@@ -94,6 +94,7 @@ export interface LiveRewardRowProps {
 export default function LiveRewardRow({ liveReward, onSelected }: LiveRewardRowProps) {
   // modal
   const toggleLiveRewardDetailsModal = useLiveRewardDetailsModalToggle()
+  const toggleLiveRewardTicketModal = useLiveRewardTicketModalToggle()
 
   const closed = useMemo(
     () => liveReward.claimedSlotsCount >= liveReward.totalSlotsCount,
@@ -115,7 +116,7 @@ export default function LiveRewardRow({ liveReward, onSelected }: LiveRewardRowP
 
   const onClaim = useCallback(() => {
     onSelected(liveReward)
-    toggleLiveRewardDetailsModal()
+    toggleLiveRewardTicketModal()
   }, [onSelected, JSON.stringify(liveReward)])
 
   return (

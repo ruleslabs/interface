@@ -7,10 +7,12 @@ import { TYPE } from '@/styles/theme'
 import { PaginationSpinner } from '@/components/Spinner'
 import LiveRewardRow from './LiveRewardRow'
 import LiveRewardDetailsModal from '@/components/LiveRewardDetailsModal'
+import LiveRewardTicketModal from '@/components/LiveRewardTicketModal'
 
 const GET_ALL_LIVE_EVENTS = gql`
   query {
     allLiveRewards {
+      id
       displayName
       pictureUrl(derivative: "width=1568")
       date
@@ -39,6 +41,7 @@ const GET_ALL_LIVE_EVENTS = gql`
 `
 
 export interface LiveReward {
+  id: string
   displayName: string
   date: Date
   location: string
@@ -110,6 +113,7 @@ export default function LiveRewards() {
       <PaginationSpinner loading={isLoading} />
 
       <LiveRewardDetailsModal liveReward={selectedLiveReward ?? undefined} />
+      <LiveRewardTicketModal liveReward={selectedLiveReward ?? undefined} />
     </Column>
   )
 }
