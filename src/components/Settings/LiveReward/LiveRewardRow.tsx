@@ -9,19 +9,24 @@ import { SecondaryButton, PrimaryButton } from '@/components/Button'
 import { LiveReward } from '.'
 import { useLiveRewardDetailsModalToggle, useLiveRewardTicketModalToggle } from '@/state/application/hooks'
 
-const StyledLiveRewardRow = styled(ColumnCenter)<{ claimed?: boolean; closed: boolean }>`
+const StyledLiveRewardRow = styled(ColumnCenter)<{ closed: boolean }>`
   width: 100%;
   gap: 16px;
   justify-content: space-between;
   background: ${({ theme }) => theme.bg3}40;
-  border: 1px solid ${({ theme, claimed = false }) => (claimed ? theme.primary1 : `${theme.bg3}80`)};
   border-radius: 5px;
   overflow: hidden;
   background: ${({ theme }) => theme.black};
-
-  ${({ closed }) => closed && 'opacity: 0.3;'}
-
-  ${({ theme, claimed = false }) => claimed && `box-shadow: 0 0 16px 10px ${theme.primary1}40;`}
+  ${({ theme, closed }) =>
+    closed
+      ? `
+        border: 1px solid ${theme.bg3}80;
+        opacity: 0.3;
+      `
+      : `
+        border: 1px solid ${theme.primary1};
+        box-shadow: 0 0 16px 10px ${theme.primary1}40;
+      `}
 
   img {
     aspect-ratio: 3 / 1;
@@ -121,7 +126,7 @@ export default function LiveRewardRow({ liveReward, onSelected }: LiveRewardRowP
 
   return (
     <>
-      <StyledLiveRewardRow claimed={liveReward.claimed} closed={closed}>
+      <StyledLiveRewardRow closed={closed}>
         <img src={liveReward.pictureUrl} />
 
         <LiveRewardButtonsWrapper>
