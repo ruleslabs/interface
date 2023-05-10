@@ -1443,8 +1443,8 @@ msgid "{0, plural, =1 {Total ({0} card)} other {Total ({0} cards)}}"
 msgstr "{0, plural, =1 {Total ({0} carte)} other {Total ({0} cartes)}}"
 
 #: src/components/Homepage/HallOfFame/UserRow.tsx
-msgid "Collection score: {0}"
-msgstr "Score de la collection: {0}"
+msgid "Collection score: {fullParsedCScore}"
+msgstr "Score de collection: {fullParsedCScore}"
 
 #: src/components/AccountStatus/index.tsx
 msgid "SIGN IN"
