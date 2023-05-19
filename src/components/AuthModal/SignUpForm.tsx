@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
@@ -16,13 +16,15 @@ import {
   useAuthActionHanlders,
   useSetAuthMode,
   useRefreshNewEmailVerificationCodeTime,
-  usePrepareSignUpMutation,
 } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import Checkbox from '@/components/Checkbox'
 import Link from '@/components/Link'
 import { validatePassword, PasswordError } from '@/utils/password'
 import ReCAPTCHA, { RecaptchaPolicy } from '@/components/Recaptcha'
+import { usePrepareSignUp } from '@/graphql/data/Auth'
+import { GenieError } from '@/types'
+import { formatError } from '@/utils/error'
 
 const StyledForm = styled.form`
   width: 100%;
@@ -41,11 +43,12 @@ const SubmitButton = styled(PrimaryButton)`
 `
 
 export default function SignUpForm() {
-  // Loading
-  const [loading, setLoading] = useState(false)
-
   // graphql
-  const [prepareSignUpMutation] = usePrepareSignUpMutation()
+  const [prepareSignUpMutation, { data: signUpPrepared, loading, error: mutationError }] = usePrepareSignUp()
+
+  // errors
+  const [clientError, setClientError] = useState<GenieError | null>(null)
+  const error = clientError ?? mutationError
 
   // fields
   const {
@@ -70,9 +73,6 @@ export default function SignUpForm() {
   // Countdown
   const refreshNewEmailVerificationCodeTime = useRefreshNewEmailVerificationCodeTime()
 
-  // errors
-  const [error, setError] = useState<{ message?: string; id?: string }>({})
-
   // recaptcha
   const recaptchaRef = useRef<GoogleReCAPTCHA>(null)
 
@@ -83,51 +83,32 @@ export default function SignUpForm() {
 
       // Check tos
       if (!acceptTos) {
-        setError({ message: 'You must accept the terms and conditions' })
+        setClientError(formatError('You must accept the terms and conditions'))
         return
       }
 
       // Check password
       const passwordError = await validatePassword(email, username, password)
       if (passwordError !== null) {
-        switch (passwordError) {
-          case PasswordError.LENGTH:
-            setError({ message: 'Password should be at least 6 characters long' })
-            break
-
-          case PasswordError.LEVENSHTEIN:
-            setError({ message: 'Password too similar to your email or username' })
-            break
-
-          case PasswordError.PWNED:
-            setError({ message: 'This password appears in a public data breach, please choose a stronger password' })
-            break
-        }
+        setClientError(formatError(passwordError))
         return
       }
 
-      setLoading(true)
-
       recaptchaRef.current?.reset()
       const recaptchaTokenV2 = await recaptchaRef.current?.executeAsync()
+      if (!recaptchaTokenV2) return
 
       prepareSignUpMutation({ variables: { username, email, recaptchaTokenV2 } })
-        .then((res: any) => {
-          if (!res?.data?.prepareSignUp?.error) setAuthMode(AuthMode.EMAIL_VERIFICATION)
-          else setLoading(false)
-          refreshNewEmailVerificationCodeTime()
-        })
-        .catch((prepareSignUpError: ApolloError) => {
-          const error = prepareSignUpError?.graphQLErrors?.[0]
-          if (error) setError({ message: error.message, id: error.extensions?.id as string })
-          else if (!loading) setError({})
-
-          console.error(prepareSignUpError)
-          setLoading(false)
-        })
     },
     [email, username, password, prepareSignUpMutation, setAuthMode, acceptTos, recaptchaRef.current]
   )
+
+  useEffect(() => {
+    if (signUpPrepared) {
+      setAuthMode(AuthMode.EMAIL_VERIFICATION)
+      refreshNewEmailVerificationCodeTime()
+    }
+  }, [signUpPrepared, refreshNewEmailVerificationCodeTime])
 
   return (
     <ModalContent>
@@ -143,14 +124,14 @@ export default function SignUpForm() {
                 placeholder="E-mail"
                 type="email"
                 onUserInput={onEmailInput}
-                $valid={error?.id !== 'email' || loading}
+                $valid={error?.id !== 'email'}
               />
               <Input
                 value={username}
                 placeholder={t`Username`}
                 type="text"
                 onUserInput={onUsernameInput}
-                $valid={error?.id !== 'username' || loading}
+                $valid={error?.id !== 'username'}
               />
               <Input
                 id="password"
@@ -159,17 +140,12 @@ export default function SignUpForm() {
                 type="password"
                 onUserInput={onPasswordInput}
                 autoComplete="new-password"
-                $valid={error?.id !== 'password' || loading}
+                $valid={error?.id !== 'password'}
               />
 
               <RecaptchaPolicy />
 
-              {error.message && (
-                <Trans
-                  id={error.message}
-                  render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
-                />
-              )}
+              {error?.render()}
             </Column>
 
             <Column gap={12}>

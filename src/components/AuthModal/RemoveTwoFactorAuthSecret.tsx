@@ -1,6 +1,5 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useMemo, useEffect } from 'react'
 import styled from 'styled-components'
-import { ApolloError } from '@apollo/client'
 import { Trans } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
@@ -8,7 +7,6 @@ import { ModalHeader } from '@/components/Modal'
 import { ModalContent, ModalBody } from '@/components/Modal/Classic'
 import Column, { ColumnCenter } from '@/components/Column'
 import { TYPE } from '@/styles/theme'
-import { useRemoveTwoFactorAuthSecretMutation } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import Link from '@/components/Link'
 import { PrimaryButton } from '@/components/Button'
@@ -16,6 +14,7 @@ import { PrimaryButton } from '@/components/Button'
 import Checkmark from '@/images/checkmark.svg'
 import Close from '@/images/close.svg'
 import { AuthFormProps } from './types'
+import { useRemoveTwoFactorAuthSecret } from '@/graphql/data/Auth'
 
 const StyledCheckmark = styled(Checkmark)`
   border-radius: 50%;
@@ -65,39 +64,29 @@ const ConfigureTwoFactorAuthButtonWrapper = styled(ColumnCenter)`
 `
 
 export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }: AuthFormProps) {
-  // Loading
-  const [loading, setLoading] = useState(true)
-
   // router
   const router = useRouter()
-  const { token, email: encodedEmail, username } = router.query
+  const { token, email: encodedEmail } = router.query
   const email = useMemo(() => (encodedEmail ? decodeURIComponent(encodedEmail as string) : undefined), [encodedEmail])
 
   // modal
   const toggleAuthModal = useAuthModalToggle()
 
-  // errors
-  const [error, setError] = useState<{ message?: string; id?: string }>({})
-
-  // graphql mutations
-  const [removeTwoFactorAuthSecretMutation] = useRemoveTwoFactorAuthSecretMutation()
-
   // remove 2fa
+  const [removeTwoFactorAuthSecretMutation, { data: accessToken, error }] = useRemoveTwoFactorAuthSecret()
   useEffect(() => {
-    removeTwoFactorAuthSecretMutation({ variables: { email, token } })
-      .then((res: any) => {
-        onSuccessfulConnection({ accessToken: res?.data?.removeTwoFactorAuthSecret?.accessToken })
-        setLoading(false)
-      })
-      .catch((updatePasswordError: ApolloError) => {
-        const error = updatePasswordError?.graphQLErrors?.[0]
-        if (error) setError({ message: error.message, id: error.extensions?.id as string })
-        else setError({ message: 'Unknown error' })
+    if (!email || typeof token !== 'string') {
+      toggleAuthModal()
+      return
+    }
 
-        setLoading(false)
-        console.error(updatePasswordError)
-      })
-  }, [])
+    removeTwoFactorAuthSecretMutation({ variables: { email, token } })
+  }, [removeTwoFactorAuthSecretMutation, toggleAuthModal])
+
+  // on access token retrieved
+  useEffect(() => {
+    if (accessToken) onSuccessfulConnection({ accessToken })
+  }, [accessToken, onSuccessfulConnection])
 
   return (
     <ModalContent>
@@ -105,7 +94,7 @@ export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }
 
       <ModalBody>
         <ColumnCenter gap={32}>
-          {error.message && (
+          {error ? (
             <Column gap={24}>
               <StyledFail />
 
@@ -113,14 +102,11 @@ export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }
                 <Subtitle>
                   <Trans>The Two-Factor Authentication has not been removed.</Trans>
                 </Subtitle>
-                <Trans
-                  id={error.message}
-                  render={({ translation }) => <Subtitle color="error">{translation}</Subtitle>}
-                />
+
+                {error?.render()}
               </Column>
             </Column>
-          )}
-          {!error.message && !loading && (
+          ) : accessToken && (
             <>
               <Column gap={24}>
                 <StyledCheckmark />

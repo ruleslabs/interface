@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import GoogleLogin from 'react-google-login'
 import { ApolloError } from '@apollo/client'
@@ -15,14 +15,13 @@ import {
   useAuthForm,
   useAuthActionHanlders,
   useSetAuthMode,
-  useSignInMutation,
-  useGoogleAuthMutation,
   useSetTwoFactorAuthToken,
 } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import Separator from '@/components/Text/Separator'
 import { passwordHasher } from '@/utils/password'
 import { AuthFormProps } from './types'
+import { useSignIn } from '@/graphql/data/Auth'
 
 const StyledForm = styled.form`
   width: 100%;
@@ -41,12 +40,8 @@ const SubmitButton = styled(PrimaryButton)`
 `
 
 export default function SignInForm({ onSuccessfulConnection }: AuthFormProps) {
-  // Loading
-  const [loading, setLoading] = useState(false)
-
   // graphql
-  const [signInMutation] = useSignInMutation()
-  const [googleAuthMutation] = useGoogleAuthMutation()
+  const [signInMutation, { data: signIn, loading, error }] = useSignIn()
 
   // fields
   const { email, password } = useAuthForm()
@@ -59,27 +54,6 @@ export default function SignInForm({ onSuccessfulConnection }: AuthFormProps) {
   // actions
   const setTwoFactorAuthToken = useSetTwoFactorAuthToken()
 
-  // google oauth
-  const handleGoogleLogin = useCallback(
-    async (googleData) => {
-      if (googleData.tokenId) {
-        googleAuthMutation({ variables: { token: googleData.tokenId } })
-          .then((res: any) => onSuccessfulConnection({ accessToken: res?.data?.googleAuth?.accessToken }))
-          .catch((googleAuthError: ApolloError) => {
-            const error = googleAuthError?.graphQLErrors?.[0]
-            if (error) setError({ message: error.message, id: error.extensions?.id as string })
-            else if (!loading) setError({})
-
-            console.error(googleAuthError)
-          })
-      }
-    },
-    [googleAuthMutation, onSuccessfulConnection, setLoading]
-  )
-
-  // errors
-  const [error, setError] = useState<{ message?: string; id?: string }>({})
-
   // signin
   const handleSignIn = useCallback(
     async (event) => {
@@ -87,26 +61,19 @@ export default function SignInForm({ onSuccessfulConnection }: AuthFormProps) {
 
       const hashedPassword = await passwordHasher(password)
 
-      setLoading(true)
-
       signInMutation({ variables: { email, password: hashedPassword } })
-        .then((res: any) => {
-          if (res?.data?.signIn?.twoFactorAuthToken) {
-            setTwoFactorAuthToken(res?.data?.signIn?.twoFactorAuthToken)
-            setAuthMode(AuthMode.TWO_FACTOR_AUTH)
-          } else onSuccessfulConnection({ accessToken: res?.data?.signIn?.accessToken })
-        })
-        .catch((signInError: ApolloError) => {
-          const error = signInError?.graphQLErrors?.[0]
-          if (error) setError({ message: error.message, id: error.extensions?.id as string })
-          else if (!loading) setError({})
-
-          console.error(signInError)
-          setLoading(false)
-        })
     },
-    [email, password, signInMutation, onSuccessfulConnection, setLoading, setTwoFactorAuthToken, setAuthMode]
+    [email, password, signInMutation, onSuccessfulConnection, setTwoFactorAuthToken, setAuthMode]
   )
+
+  useEffect(() => {
+    if (signIn.accessToken) {
+      onSuccessfulConnection({ accessToken: signIn.accessToken })
+    } else if (signIn.twoFactorAuthToken) {
+      setTwoFactorAuthToken(signIn.twoFactorAuthToken)
+      setAuthMode(AuthMode.TWO_FACTOR_AUTH)
+    }
+  }, [signIn.accessToken, signIn.twoFactorAuthToken, onSuccessfulConnection, setTwoFactorAuthToken, setAuthMode])
 
   return (
     <ModalContent>
@@ -115,21 +82,6 @@ export default function SignInForm({ onSuccessfulConnection }: AuthFormProps) {
       <ModalBody>
         <StyledForm key="sign-in-form" onSubmit={handleSignIn} noValidate>
           <Column gap={20}>
-            {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
-              <>
-                <GoogleLogin
-                  render={(renderProps) => <CustomGoogleLogin {...renderProps} />}
-                  clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
-                  onSuccess={handleGoogleLogin}
-                  onFailure={handleGoogleLogin}
-                  cookiePolicy={'single_host_origin'}
-                />
-                <Separator>
-                  <Trans>or</Trans>
-                </Separator>
-              </>
-            )}
-
             <Column gap={12}>
               <Input
                 id="email"
@@ -138,7 +90,7 @@ export default function SignInForm({ onSuccessfulConnection }: AuthFormProps) {
                 type="email"
                 autoComplete="email"
                 onUserInput={onEmailInput}
-                $valid={error?.id !== 'email' || loading}
+                $valid={error?.id !== 'email'}
               />
               <Input
                 id="password"
@@ -147,15 +99,10 @@ export default function SignInForm({ onSuccessfulConnection }: AuthFormProps) {
                 type="password"
                 autoComplete="current-password"
                 onUserInput={onPasswordInput}
-                $valid={error?.id !== 'password' || loading}
+                $valid={error?.id !== 'password'}
               />
 
-              {error.message && (
-                <Trans
-                  id={error.message}
-                  render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
-                />
-              )}
+              {error?.render()}
             </Column>
 
             <SubmitButton type="submit" large>

@@ -1,7 +1,7 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import styled from 'styled-components'
-import { ApolloError } from '@apollo/client'
 import { Trans } from '@lingui/macro'
+import GoogleReCAPTCHA from 'react-google-recaptcha'
 
 import { ModalHeader } from '@/components/Modal'
 import { ModalContent, ModalBody } from '@/components/Modal/Classic'
@@ -15,14 +15,15 @@ import {
   useSetAuthMode,
   useRefreshNewEmailVerificationCodeTime,
   useNewEmailVerificationCodeTime,
-  useSignUpMutation,
-  usePrepareSignUpMutation,
 } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import useCountdown from '@/hooks/useCountdown'
 import { passwordHasher } from '@/utils/password'
-import useCreateWallet, { WalletInfos } from '@/hooks/useCreateWallet'
+import useCreateWallet from '@/hooks/useCreateWallet'
 import { AuthFormProps } from './types'
+import { usePrepareSignUp, useSignUp } from '@/graphql/data/Auth'
+import { formatError } from '@/utils/error'
+import { GenieError } from '@/types'
 
 const ResendCode = styled(TYPE.subtitle)`
   display: inline;
@@ -34,14 +35,6 @@ const ResendCode = styled(TYPE.subtitle)`
 export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFormProps) {
   // Wallet
   const createWallet = useCreateWallet()
-  const [walletInfos, setWalletInfos] = useState<WalletInfos | null>(null)
-
-  // Loading
-  const [loading, setLoading] = useState(false)
-
-  // graphql mutations
-  const [signUpMutation] = useSignUpMutation()
-  const [prepareSignUpMutation] = usePrepareSignUpMutation()
 
   // form data
   const {
@@ -51,31 +44,24 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFo
     checkboxes: { acceptCommercialEmails },
   } = useAuthForm()
 
+  // captcha
+  const recaptchaRef = useRef<GoogleReCAPTCHA>(null)
+
+  // graphql mutations
+  const [signUpMutation, { data: accessToken, ...signUpQuery }] = useSignUp()
+  const [prepareSignUpMutation, { data: signUpPrepared, ...prepareSignUpQuery }] = usePrepareSignUp()
+
+  // errors
+  const [clientError, setClientError] = useState<GenieError | null>(null)
+  const error = clientError ?? prepareSignUpQuery.error ?? signUpQuery.error
+
   // signUp
   const handleSignUp = useCallback(
-    (code: string) => {
-      setLoading(true)
+    async (code: string) => {
+      const hashedPassword = await passwordHasher(password)
 
-      const signUp = async () => {
-        const hashedPassword = await passwordHasher(password)
-
-        let newWalletInfos = walletInfos
-
-        try {
-          if (!newWalletInfos) {
-            newWalletInfos = await createWallet(password)
-            setWalletInfos(newWalletInfos)
-          }
-        } catch (error: any) {
-          setError({ message: `${error.message}, contact support if the error persist.` })
-
-          console.error(error)
-          setLoading(false)
-          return
-        }
-
-        const { starkPub: starknetPub, userKey: rulesPrivateKey } = newWalletInfos
-
+      try {
+        const { starkPub: starknetPub, userKey: rulesPrivateKey } = await createWallet(password)
         signUpMutation({
           variables: {
             email,
@@ -87,18 +73,12 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFo
             acceptCommercialEmails,
           },
         })
-          .then((res: any) => onSuccessfulConnection({ accessToken: res?.data?.signUp?.accessToken }))
-          .catch((signUpError: ApolloError) => {
-            const error = signUpError?.graphQLErrors?.[0]
-            if (error) setError({ message: error.message, id: 'emailVerificationCode' })
-            else setError({})
-
-            console.error(signUpError)
-          })
+      } catch (error: any) {
+        setClientError(formatError(`${error.message}, contact support if the error persist.`))
+        return
       }
-      signUp().then(() => setLoading(false))
     },
-    [email, username, password, signUpMutation, createWallet, setWalletInfos]
+    [email, username, password, signUpMutation, createWallet]
   )
 
   // fields
@@ -122,33 +102,30 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFo
   const refreshNewEmailVerificationCodeTime = useRefreshNewEmailVerificationCodeTime()
   const countdown = useCountdown(new Date(newEmailVerificationCodeTime ?? 0))
 
-  // errors
-  const [error, setError] = useState<{ message?: string; id?: string }>({})
-
   // new code
   const handleNewCode = useCallback(
     async (event) => {
       event.preventDefault()
 
+      // get captcha
+      recaptchaRef.current?.reset()
+      const recaptchaTokenV2 = await recaptchaRef.current?.executeAsync()
+      if (!recaptchaTokenV2) return
+
       setEmailVerificationCode('')
-      setLoading(true)
 
-      prepareSignUpMutation({ variables: { username, email } })
-        .then((res: any) => {
-          setLoading(false)
-          refreshNewEmailVerificationCodeTime()
-        })
-        .catch((prepareSignUpError: ApolloError) => {
-          const error = prepareSignUpError?.graphQLErrors?.[0]
-          if (error) setError({ message: error.message, id: error.extensions?.id as string })
-          else if (!loading) setError({})
-
-          console.error(prepareSignUpError)
-          setLoading(false)
-        })
+      prepareSignUpMutation({ variables: { username, email, recaptchaTokenV2 }})
     },
     [email, username, prepareSignUpMutation, setEmailVerificationCode]
   )
+
+  useEffect(() => {
+    if (signUpPrepared) refreshNewEmailVerificationCodeTime()
+  }, [signUpPrepared, refreshNewEmailVerificationCodeTime])
+
+  useEffect(() => {
+    if (accessToken) onSuccessfulConnection({ accessToken })
+  }, [accessToken, onSuccessfulConnection])
 
   return (
     <ModalContent>
@@ -167,16 +144,11 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFo
               placeholder="Code"
               type="text"
               onUserInput={onEmailVerificationCodeInput}
-              loading={emailVerificationCode.length > 0 && loading}
-              $valid={error.id !== 'emailVerificationCode' || loading}
+              loading={signUpQuery.loading}
+              $valid={error?.id !== 'emailVerificationCode'}
             />
 
-            {error.message && (
-              <Trans
-                id={error.message}
-                render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
-              />
-            )}
+            {error?.render()}
           </Column>
 
           <Column gap={8}>

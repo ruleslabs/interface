@@ -1,20 +1,20 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
-import { ApolloError } from '@apollo/client'
-import { Trans, t } from '@lingui/macro'
+import { t } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
 import { ModalHeader } from '@/components/Modal'
 import { ModalContent, ModalBody } from '@/components/Modal/Classic'
-import { passwordHasher, validatePassword, PasswordError } from '@/utils/password'
+import { passwordHasher, validatePassword } from '@/utils/password'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
-import { TYPE } from '@/styles/theme'
-import { useUpdatePasswordMutation } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import { PrimaryButton } from '@/components/Button'
 import useCreateWallet, { WalletInfos } from '@/hooks/useCreateWallet'
 import { AuthFormProps } from './types'
+import { useUpdatePassword } from '@/graphql/data/Auth'
+import { GenieError } from '@/types'
+import { formatError } from '@/utils/error'
 
 const StyledForm = styled.form`
   width: 100%;
@@ -28,10 +28,6 @@ const SubmitButton = styled(PrimaryButton)`
 export default function UpdatePasswordForm({ onSuccessfulConnection }: AuthFormProps) {
   // Wallet
   const createWallet = useCreateWallet()
-  const [walletInfos, setWalletInfos] = useState<WalletInfos | null>(null)
-
-  // Loading
-  const [loading, setLoading] = useState(false)
 
   // router
   const router = useRouter()
@@ -41,11 +37,12 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: AuthFormP
   // modal
   const toggleAuthModal = useAuthModalToggle()
 
-  // errors
-  const [error, setError] = useState<{ message?: string; id?: string }>({})
-
   // graphql mutations
-  const [updatePasswordMutation] = useUpdatePasswordMutation()
+  const [updatePasswordMutation, { data: accessToken, loading, error: mutationError }] = useUpdatePassword()
+
+  // errors
+  const [clientError, setClientError] = useState<GenieError | null>(null)
+  const error = clientError ?? mutationError
 
   // email
   const [password, setPassword] = useState('')
@@ -58,75 +55,48 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: AuthFormP
     async (event) => {
       event.preventDefault()
 
+      if (!email || typeof username !== 'string' || typeof token !== 'string') return
+
       if (password !== confirmPassword) {
-        setError({ id: 'passwordConfirmation', message: 'Passwords do not match' })
+        setClientError(formatError('Passwords do not match', 'passwordConfirmation'))
         return
       }
 
       // Check password
-      const passwordError = await validatePassword(email as string, username as string, password)
+      const passwordError = await validatePassword(email, username, password)
       if (passwordError !== null) {
-        switch (passwordError) {
-          case PasswordError.LENGTH:
-            setError({ message: 'Password should be at least 6 characters long' })
-            break
-
-          case PasswordError.LEVENSHTEIN:
-            setError({ message: 'Password too similar to your email or username' })
-            break
-
-          case PasswordError.PWNED:
-            setError({ message: 'This password appears in a public data breach, please choose a stronger password' })
-            break
-        }
+        setClientError(formatError(passwordError))
         return
       }
-
-      setLoading(true)
 
       const updatePassword = async () => {
         const hashedPassword = await passwordHasher(password)
 
-        let newWalletInfos = walletInfos
-
         try {
-          if (!newWalletInfos) {
-            newWalletInfos = await createWallet(password)
-            setWalletInfos(newWalletInfos)
-          }
-        } catch (error: any) {
-          setError({ message: `${error.message}, contact support if the error persist.` })
+          const { starkPub: starknetPub, userKey: rulesPrivateKey } = await createWallet(password)
 
-          console.error(error)
-          setLoading(false)
+          updatePasswordMutation({
+            variables: {
+              email,
+              newPassword: hashedPassword,
+              starknetPub,
+              rulesPrivateKey,
+              token,
+            },
+          })
+        } catch (error: any) {
+          setClientError(formatError(`${error.message}, contact support if the error persist.`))
           return
         }
-
-        const { starkPub: starknetPub, userKey: rulesPrivateKey } = newWalletInfos
-
-        updatePasswordMutation({
-          variables: {
-            email,
-            newPassword: hashedPassword,
-            starknetPub,
-            rulesPrivateKey,
-            token,
-          },
-        })
-          .then((res: any) => onSuccessfulConnection({ accessToken: res?.data?.updatePassword?.accessToken }))
-          .catch((updatePasswordError: ApolloError) => {
-            const error = updatePasswordError?.graphQLErrors?.[0]
-            if (error) setError({ message: error.message, id: error.extensions?.id as string })
-            else setError({ message: 'Unknown error' })
-
-            setLoading(false)
-            console.error(updatePasswordError)
-          })
       }
       updatePassword()
     },
-    [password, confirmPassword, updatePasswordMutation, setLoading, setError, username]
+    [password, confirmPassword, updatePasswordMutation, username]
   )
+
+  useEffect(() => {
+    if (accessToken) onSuccessfulConnection({ accessToken })
+  }, [accessToken, onSuccessfulConnection])
 
   return (
     <ModalContent>
@@ -145,7 +115,7 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: AuthFormP
                 type="password"
                 autoComplete="new-password"
                 onUserInput={onPasswordInput}
-                $valid={error?.id !== 'password' || loading}
+                $valid={error?.id !== 'password'}
               />
 
               <Input
@@ -155,15 +125,10 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: AuthFormP
                 type="password"
                 autoComplete="new-password"
                 onUserInput={onConfirmPasswordInput}
-                $valid={error?.id !== 'passwordConfirmation' || loading}
+                $valid={error?.id !== 'passwordConfirmation'}
               />
 
-              {error.message && (
-                <Trans
-                  id={error.message}
-                  render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
-                />
-              )}
+              {error?.render()}
             </Column>
 
             <SubmitButton type="submit" onClick={handlePasswordUpdate} disabled={loading} large>

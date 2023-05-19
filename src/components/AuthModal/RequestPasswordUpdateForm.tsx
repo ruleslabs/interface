@@ -1,6 +1,5 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import styled from 'styled-components'
-import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
 import GoogleReCAPTCHA from 'react-google-recaptcha'
 
@@ -13,7 +12,6 @@ import { AuthMode } from '@/state/auth/actions'
 import {
   useSetAuthMode,
   useAuthForm,
-  useRequestPasswordUpdateMutation,
   useNewAuthUpdateLinkTime,
   useRefreshNewAuthUpdateLinkTime,
 } from '@/state/auth/hooks'
@@ -21,6 +19,7 @@ import { useAuthModalToggle } from '@/state/application/hooks'
 import useCountdown from '@/hooks/useCountdown'
 import { PrimaryButton } from '@/components/Button'
 import ReCAPTCHA, { RecaptchaPolicy } from '@/components/Recaptcha'
+import { useRequestPasswordUpdate } from '@/graphql/data/Auth'
 
 const SubmitButton = styled(PrimaryButton)`
   height: 55px;
@@ -28,15 +27,12 @@ const SubmitButton = styled(PrimaryButton)`
 `
 
 export default function RequestPasswordUpdateForm() {
-  // Loading
-  const [loading, setLoading] = useState(false)
-
   // modal
   const toggleAuthModal = useAuthModalToggle()
   const setAuthMode = useSetAuthMode()
 
   // graphql mutations
-  const [requestPasswordUpdateMutation] = useRequestPasswordUpdateMutation()
+  const [requestPasswordUpdateMutation, { data: requested, loading, error }] = useRequestPasswordUpdate()
 
   // email
   const { email: emailFromState } = useAuthForm()
@@ -49,9 +45,6 @@ export default function RequestPasswordUpdateForm() {
   const refreshNewAuthUpdateLinkTime = useRefreshNewAuthUpdateLinkTime()
   const countdown = useCountdown(new Date(newAuthUpdateLinkTime ?? 0))
 
-  // errors
-  const [error, setError] = useState<{ message?: string; id?: string }>({})
-
   // recaptcha
   const recaptchaRef = useRef<GoogleReCAPTCHA>(null)
 
@@ -60,30 +53,21 @@ export default function RequestPasswordUpdateForm() {
     async (event) => {
       event.preventDefault()
 
-      setLoading(true)
-
       recaptchaRef.current?.reset()
       const recaptchaTokenV2 = await recaptchaRef.current?.executeAsync()
+      if (!recaptchaTokenV2) return
 
       requestPasswordUpdateMutation({ variables: { email, recaptchaTokenV2 } })
-        .then(() => {
-          setLoading(false)
-          refreshNewAuthUpdateLinkTime()
-          setRecipient(email)
-          setError({})
-        })
-        .catch((prepareSignUpError: ApolloError) => {
-          const error = prepareSignUpError?.graphQLErrors?.[0]
-          if (error) setError({ message: error.message, id: error.extensions?.id as string })
-          else setError({ message: 'Unknown error' })
-
-          console.error(prepareSignUpError)
-          setLoading(false)
-          setRecipient(null)
-        })
     },
     [email, requestPasswordUpdateMutation, recaptchaRef.current]
   )
+
+  useEffect(() => {
+    if (requested) {
+      refreshNewAuthUpdateLinkTime()
+      setRecipient(email)
+    }
+  }, [refreshNewAuthUpdateLinkTime, setRecipient, requested, email])
 
   return (
     <ModalContent>
@@ -106,17 +90,12 @@ export default function RequestPasswordUpdateForm() {
               type="email"
               autoComplete="email"
               onUserInput={onEmailInput}
-              $valid={error?.id !== 'email' || loading}
+              $valid={error?.id !== 'email'}
             />
 
             <RecaptchaPolicy />
 
-            {error.message && (
-              <Trans
-                id={error.message}
-                render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
-              />
-            )}
+            {error?.render()}
           </Column>
 
           <Column gap={8}>

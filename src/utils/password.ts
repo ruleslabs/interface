@@ -4,9 +4,9 @@ import { PASSWORD_MIN_LEVENSHTEIN, PASSWORD_MIN_LENGTH } from '@/constants/misc'
 import { arrayToHex } from './encryption'
 
 export enum PasswordError {
-  PWNED,
-  LEVENSHTEIN,
-  LENGTH,
+  PWNED = 'This password appears in a public data breach, please choose a stronger password',
+  LEVENSHTEIN = 'Password too similar to your email or username',
+  LENGTH = 'Password should be at least 6 characters long',
 }
 
 type ValidationResult = PasswordError | null

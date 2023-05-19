@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Trans } from '@lingui/macro'
 import { ApolloError } from '@apollo/client'
 
@@ -9,16 +9,14 @@ import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'
 import { AuthMode } from '@/state/auth/actions'
 import { useAuthModalToggle } from '@/state/application/hooks'
-import { useSetAuthMode, useTwoFactorAuthSignInMutation, useTwoFactorAuthToken } from '@/state/auth/hooks'
+import { useSetAuthMode, useTwoFactorAuthToken } from '@/state/auth/hooks'
 import { TWO_FACTOR_AUTH_CODE_LENGTH } from '@/constants/misc'
 import { AuthFormProps } from './types'
+import { useTwoFactorAuthSignIn } from '@/graphql/data/Auth'
 
 export default function TwoFactorAuthForm({ onSuccessfulConnection }: AuthFormProps) {
-  // Loading
-  const [loading, setLoading] = useState(false)
-
   // graphql
-  const [twoFactorAuthSignInMutation] = useTwoFactorAuthSignInMutation()
+  const [twoFactorAuthSignInMutation, { data: accessToken, loading, error }] = useTwoFactorAuthSignIn()
 
   // form data
   const twoFactorAuthToken = useTwoFactorAuthToken()
@@ -27,27 +25,19 @@ export default function TwoFactorAuthForm({ onSuccessfulConnection }: AuthFormPr
   const toggleAuthModal = useAuthModalToggle()
   const setAuthMode = useSetAuthMode()
 
-  // errors
-  const [error, setError] = useState<{ message?: string; id?: string }>({})
-
   // signin
   const handleTwoFactorAuthSignIn = useCallback(
     async (code: string) => {
-      setLoading(true)
+      if (!twoFactorAuthToken) return
 
       twoFactorAuthSignInMutation({ variables: { token: twoFactorAuthToken, code } })
-        .then((res: any) => onSuccessfulConnection({ accessToken: res?.data?.signUp?.accessToken }))
-        .catch((twoFactorAuthSignInError: ApolloError) => {
-          const error = twoFactorAuthSignInError?.graphQLErrors?.[0]
-          if (error) setError({ message: error.message, id: error.extensions?.id as string })
-          else if (!loading) setError({})
-
-          console.error(twoFactorAuthSignInError)
-          setLoading(false)
-        })
     },
-    [twoFactorAuthToken, twoFactorAuthSignInMutation, onSuccessfulConnection, setLoading]
+    [twoFactorAuthToken, twoFactorAuthSignInMutation, onSuccessfulConnection]
   )
+
+  useEffect(() => {
+    if (accessToken) onSuccessfulConnection({ accessToken })
+  }, [accessToken, onSuccessfulConnection])
 
   // fields
   const [twoFactorAuthCode, setTwoFactorAuthCode] = useState('')
@@ -78,16 +68,11 @@ export default function TwoFactorAuthForm({ onSuccessfulConnection }: AuthFormPr
               placeholder="Code"
               type="text"
               onUserInput={onTwoFactorAuthInput}
-              loading={twoFactorAuthCode.length > 0 && loading}
-              $valid={error.id !== 'twoFactorAuthCode' || loading}
+              loading={loading}
+              $valid={error?.id !== 'twoFactorAuthCode'}
             />
 
-            {error.message && (
-              <Trans
-                id={error.message}
-                render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>}
-              />
-            )}
+            {error?.render()}
 
             <TYPE.subtitle onClick={() => setAuthMode(AuthMode.REQUEST_TWO_FACTOR_AUTH_UPDATE)} clickable>
               <Trans>Lost your 2FA access ?</Trans>

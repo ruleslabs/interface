@@ -1,4 +1,9 @@
+import { MutationFunction } from '@apollo/client'
 import { StarknetWalletLockingReason } from '@rulesorg/sdk-core'
+
+export type GenieError = { message: string, id: string | null, render: () => React.ReactNode } | null
+
+export type CleanMutationFunction<TData, TVariables> = (options: Parameters<MutationFunction<TData, TVariables>>[0]) => void
 
 export interface GenieRetrievableEthers {
   amount: string
