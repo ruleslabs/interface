@@ -22,6 +22,7 @@ import {
 import { useAuthModalToggle } from '@/state/application/hooks'
 import Separator from '@/components/Text/Separator'
 import { passwordHasher } from '@/utils/password'
+import { AuthFormProps } from './types'
 
 const StyledForm = styled.form`
   width: 100%;
@@ -39,11 +40,7 @@ const SubmitButton = styled(PrimaryButton)`
   margin: 12px 0;
 `
 
-interface SignInFormProps {
-  onSuccessfulConnection: (accessToken?: string, onboard?: boolean, toggleModal?: boolean) => void
-}
-
-export default function SignInForm({ onSuccessfulConnection }: SignInFormProps) {
+export default function SignInForm({ onSuccessfulConnection }: AuthFormProps) {
   // Loading
   const [loading, setLoading] = useState(false)
 
@@ -67,7 +64,7 @@ export default function SignInForm({ onSuccessfulConnection }: SignInFormProps) 
     async (googleData) => {
       if (googleData.tokenId) {
         googleAuthMutation({ variables: { token: googleData.tokenId } })
-          .then((res: any) => onSuccessfulConnection(res?.data?.googleAuth?.accessToken))
+          .then((res: any) => onSuccessfulConnection({ accessToken: res?.data?.googleAuth?.accessToken }))
           .catch((googleAuthError: ApolloError) => {
             const error = googleAuthError?.graphQLErrors?.[0]
             if (error) setError({ message: error.message, id: error.extensions?.id as string })
@@ -97,7 +94,7 @@ export default function SignInForm({ onSuccessfulConnection }: SignInFormProps) 
           if (res?.data?.signIn?.twoFactorAuthToken) {
             setTwoFactorAuthToken(res?.data?.signIn?.twoFactorAuthToken)
             setAuthMode(AuthMode.TWO_FACTOR_AUTH)
-          } else onSuccessfulConnection(res?.data?.signIn?.accessToken)
+          } else onSuccessfulConnection({ accessToken: res?.data?.signIn?.accessToken })
         })
         .catch((signInError: ApolloError) => {
           const error = signInError?.graphQLErrors?.[0]

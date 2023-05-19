@@ -3,7 +3,7 @@ import 'moment/locale/fr'
 import { useCallback, useState, useEffect } from 'react'
 import { Plural, Trans, t } from '@lingui/macro'
 
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
@@ -39,7 +39,7 @@ export default function PackBreakdown({
   availableQuantity,
   onSuccessfulPackPurchase,
 }: PackBreakdownProps) {
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // modal
   const togglePackPurchaseModal = usePackPurchaseModalToggle()

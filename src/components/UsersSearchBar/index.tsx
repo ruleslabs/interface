@@ -9,7 +9,7 @@ import { RowCenter } from '@/components/Row'
 import { useSearchUsers } from '@/state/search/hooks'
 import useDebounce from '@/hooks/useDebounce'
 import { TYPE } from '@/styles/theme'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import { CertifiedBadge } from '@/components/User/Badge'
 import Avatar from '@/components/Avatar'
 
@@ -99,7 +99,7 @@ interface UsersSearchBarProps {
 
 export default function UsersSearchBar({ onSelect, selfSearchAllowed = true }: UsersSearchBarProps) {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // search bar
   const [search, setSearch] = useState('')

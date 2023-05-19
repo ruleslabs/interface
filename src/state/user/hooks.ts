@@ -3,59 +3,12 @@ import { useQuery, useMutation, gql, ApolloError } from '@apollo/client'
 
 import { SupportedLocale } from '@/constants/locales'
 import { AppState } from '@/state'
-import { getApolloClient } from '@/apollo/apollo'
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
-import { setCurrentUser, updateUserLocale } from './actions'
+import { updateUserLocale } from './actions'
 import { useRevokeSessionMutation } from '@/state/auth/hooks'
 import { storeAccessToken } from '@/utils/accessToken'
 import { useRouter } from 'next/router'
-
-const CURRENT_USER_QUERY = gql`
-  query {
-    currentUser {
-      id
-      username
-      email
-      slug
-      boughtStarterPack
-      cScore
-      unreadNotificationsCount
-      retrievableEthers {
-        amount
-        l1Recipient
-      }
-      starknetWallet {
-        address
-        publicKey
-        signerEscapeTriggeredAt
-        lockingReason
-        transactionVersion
-        needsUpgrade
-        rulesPrivateKey {
-          salt
-          iv
-          encryptedPrivateKey
-        }
-      }
-      hasTwoFactorAuthActivated
-      profile {
-        pictureUrl(derivative: "width=320")
-        customAvatarUrl(derivative: "width=320")
-        fallbackUrl(derivative: "width=320")
-        twitterUsername
-        instagramUsername
-        isDiscordVisible
-        certified
-        discordMember {
-          username
-          discriminator
-          avatarUrl(derivative: "width=320")
-          guildAvatarUrl(derivative: "width=320")
-        }
-      }
-    }
-  }
-`
+import useCurrentUser from '@/hooks/useCurrentUser'
 
 const SEARCH_USER_CONTENT = `
   id
@@ -145,38 +98,6 @@ const MARK_NOTIFICATIONS_AS_READ_MUTATION = gql`
     markNotificationsAsRead
   }
 `
-
-export function useRemoveCurrentUser() {
-  const dispatch = useAppDispatch()
-  return useCallback(() => dispatch(setCurrentUser({ user: null })), [dispatch, setCurrentUser])
-}
-
-export function useCurrentUser() {
-  const currentUser = useAppSelector((state) => state.user.currentUser)
-  return currentUser
-}
-
-export function useSetCurrentUser() {
-  const dispatch = useAppDispatch()
-  return useCallback((user: any) => dispatch(setCurrentUser({ user })), [dispatch, setCurrentUser])
-}
-
-export function useQueryCurrentUser() {
-  const dispatch = useAppDispatch()
-
-  return useCallback(async () => {
-    try {
-      const response = await getApolloClient()?.query({ query: CURRENT_USER_QUERY })
-      dispatch(setCurrentUser({ user: response?.data?.currentUser ?? null }))
-
-      return response?.data?.currentUser
-    } catch {
-      dispatch(setCurrentUser({ user: null }))
-
-      return null
-    }
-  }, [dispatch, setCurrentUser, getApolloClient])
-}
 
 export function useSearchUser(userSlug?: string, skip = false) {
   const currentUser = useAppSelector((state) => state.user.currentUser)
@@ -271,15 +192,15 @@ export function useLogout() {
   const router = useRouter()
 
   const [revokeSessionMutation] = useRevokeSessionMutation()
-  const removeCurrentUser = useRemoveCurrentUser()
+  const { setCurrentUser } = useCurrentUser()
 
   return useCallback(() => {
     revokeSessionMutation({ variables: { payload: null } })
       .catch((error) => console.error(error))
       .finally(() => {
         storeAccessToken('')
-        removeCurrentUser()
+        setCurrentUser(null)
         router.replace('/')
       })
-  }, [storeAccessToken, removeCurrentUser, revokeSessionMutation, router.replace])
+  }, [storeAccessToken, setCurrentUser, revokeSessionMutation, router.replace])
 }

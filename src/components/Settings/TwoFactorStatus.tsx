@@ -11,8 +11,8 @@ import Input from '@/components/Input'
 import useNewTwoFactorAuthSecret from '@/hooks/useNewTwoFactorAuthSecret'
 import { TWO_FACTOR_AUTH_CODE_LENGTH } from '@/constants/misc'
 import { useSetTwoFactorAuthSecretMutation } from '@/state/auth/hooks'
-import { useCurrentUser, useQueryCurrentUser } from '@/state/user/hooks'
 import { RowCenter } from '../Row'
+import useCurrentUser from '@/hooks/useCurrentUser'
 
 const TwoFactorSetter = styled(RowCenter)`
   gap: 32px;
@@ -41,8 +41,7 @@ const QRCodeWrapper = styled.div`
 
 export default function TwoFactorStatus() {
   // currentUser
-  const currentUser = useCurrentUser()
-  const queryCurrentUser = useQueryCurrentUser()
+  const { currentUser, refreshCurrentUser } = useCurrentUser()
 
   // theme
   const theme = useTheme()
@@ -52,7 +51,7 @@ export default function TwoFactorStatus() {
   const [twoFactorAuthSecret, setTwoFactorAuthSecret] = useState<any | null>(null)
 
   useEffect(() => {
-    if (twoFactorAuthSecret || currentUser.hasTwoFactorAuthActivated) return
+    if (twoFactorAuthSecret || currentUser?.hasTwoFactorAuthActivated) return
     setTwoFactorAuthSecret(newTwoFactorAuthSecret())
   }, [twoFactorAuthSecret])
 
@@ -75,7 +74,7 @@ export default function TwoFactorStatus() {
       setTwoFactorAuthSecretMutation({ variables: { secret: twoFactorAuthSecret.raw, code } })
         .then(() => {
           setLoading(false)
-          queryCurrentUser()
+          refreshCurrentUser()
         })
         .catch((setTwoFactorAuthSecretError: ApolloError) => {
           const error = setTwoFactorAuthSecretError?.graphQLErrors?.[0]
@@ -86,7 +85,7 @@ export default function TwoFactorStatus() {
           setLoading(false)
         })
     },
-    [twoFactorAuthSecret, setTwoFactorAuthSecretMutation]
+    [twoFactorAuthSecret, setTwoFactorAuthSecretMutation, refreshCurrentUser]
   )
 
   // fields

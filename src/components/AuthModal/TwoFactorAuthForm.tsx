@@ -11,12 +11,9 @@ import { AuthMode } from '@/state/auth/actions'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import { useSetAuthMode, useTwoFactorAuthSignInMutation, useTwoFactorAuthToken } from '@/state/auth/hooks'
 import { TWO_FACTOR_AUTH_CODE_LENGTH } from '@/constants/misc'
+import { AuthFormProps } from './types'
 
-interface TwoFactorAuthFormProps {
-  onSuccessfulConnection: (accessToken?: string, onboard?: boolean, toggleModal?: boolean) => void
-}
-
-export default function TwoFactorAuthForm({ onSuccessfulConnection }: TwoFactorAuthFormProps) {
+export default function TwoFactorAuthForm({ onSuccessfulConnection }: AuthFormProps) {
   // Loading
   const [loading, setLoading] = useState(false)
 
@@ -39,7 +36,7 @@ export default function TwoFactorAuthForm({ onSuccessfulConnection }: TwoFactorA
       setLoading(true)
 
       twoFactorAuthSignInMutation({ variables: { token: twoFactorAuthToken, code } })
-        .then((res: any) => onSuccessfulConnection(res?.data?.signUp?.accessToken))
+        .then((res: any) => onSuccessfulConnection({ accessToken: res?.data?.signUp?.accessToken }))
         .catch((twoFactorAuthSignInError: ApolloError) => {
           const error = twoFactorAuthSignInError?.graphQLErrors?.[0]
           if (error) setError({ message: error.message, id: error.extensions?.id as string })

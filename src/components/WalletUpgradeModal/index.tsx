@@ -7,7 +7,7 @@ import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classic'
 import { useModalOpened, useUpgradeWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import Column from '@/components/Column'
 import { PrimaryButton } from '@/components/Button'
 import { ErrorCard } from '@/components/Card'
@@ -23,7 +23,7 @@ interface UpgradeWalletModalProps {
 
 export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProps) {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // modal
   const isOpen = useModalOpened(ApplicationModal.UPGRADE_WALLET)

@@ -8,7 +8,7 @@ import { useLiveRewardTicketModalToggle, useModalOpened } from '@/state/applicat
 import { ApplicationModal } from '@/state/application/actions'
 import { LiveReward } from '@/components/Settings/LiveReward'
 import useTheme from '@/hooks/useTheme'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import { TYPE } from '@/styles/theme'
 import { ColumnCenter } from '@/components/Column'
 
@@ -63,7 +63,7 @@ interface LiveRewardTicketModalProps {
 
 export default function LiveRewardTicketModal({ liveReward }: LiveRewardTicketModalProps) {
   // currentUser
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // theme
   const theme = useTheme()

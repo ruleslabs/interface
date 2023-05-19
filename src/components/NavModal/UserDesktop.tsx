@@ -8,7 +8,7 @@ import { TYPE } from '@/styles/theme'
 import Column from '@/components/Column'
 import { TooltipCaret } from '../Tooltip'
 import Link from '@/components/Link'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import { NavUserSublinks, useNavUserLinks } from '@/hooks/useNav'
 import Actionable from '../Actionable'
 import Divider from '@/components/Divider'
@@ -83,16 +83,16 @@ function NavUserSublinksDesktop({ navSublinks }: NavUserSublinksDesktopProps) {
 
 export default function NavModalUserDesktop() {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // modal
   const toggleNavModalUserDesktop = useNavModalUserDesktopToggle()
   const isOpen = useModalOpened(ApplicationModal.NAV_USER_DESKTOP)
 
   // nav links
-  const navLinks = useNavUserLinks(currentUser.slug)
+  const navLinks = useNavUserLinks(currentUser?.slug)
 
-  if (!currentUser) return null
+  if (!currentUser || !navLinks) return null
 
   return (
     <HintModal onDismiss={toggleNavModalUserDesktop} isOpen={isOpen}>

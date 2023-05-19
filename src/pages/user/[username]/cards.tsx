@@ -13,7 +13,7 @@ import Grid from '@/components/Grid'
 import { useSearchCards, CardsSortingKey } from '@/state/search/hooks'
 import { TYPE } from '@/styles/theme'
 import EmptyTab, { EmptyCardsTabOfCurrentUser } from '@/components/EmptyTab'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import useCardsPendingStatusMap from '@/hooks/useCardsPendingStatusMap'
 import { PaginationSpinner } from '@/components/Spinner'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
@@ -183,7 +183,7 @@ function Cards({ userId, address }: CardsProps) {
   const userSlug = typeof username === 'string' ? username.toLowerCase() : null
 
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
   const isCurrentUserProfile = currentUser?.slug === userSlug
 
   // modals

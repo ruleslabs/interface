@@ -117,7 +117,7 @@ const CardsStack = styled.div<{ $smallHeight?: number }>`
 `
 
 const StackImageTop = styled.img`
-  border-radius: 4.44% / 3.17%;
+  border-radius: 4.7% / 3.35%;
   transform: scale(0.97) translate(4.8%, 1.3%);
 `
 

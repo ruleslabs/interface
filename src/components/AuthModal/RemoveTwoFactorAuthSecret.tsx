@@ -15,6 +15,7 @@ import { PrimaryButton } from '@/components/Button'
 
 import Checkmark from '@/images/checkmark.svg'
 import Close from '@/images/close.svg'
+import { AuthFormProps } from './types'
 
 const StyledCheckmark = styled(Checkmark)`
   border-radius: 50%;
@@ -63,11 +64,7 @@ const ConfigureTwoFactorAuthButtonWrapper = styled(ColumnCenter)`
   }
 `
 
-interface RemoveTwoFactorAuthSecretFormProps {
-  onSuccessfulConnection: (accessToken?: string, onboard?: boolean, toggleModal?: boolean) => void
-}
-
-export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }: RemoveTwoFactorAuthSecretFormProps) {
+export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }: AuthFormProps) {
   // Loading
   const [loading, setLoading] = useState(true)
 
@@ -89,7 +86,7 @@ export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }
   useEffect(() => {
     removeTwoFactorAuthSecretMutation({ variables: { email, token } })
       .then((res: any) => {
-        onSuccessfulConnection(res?.data?.removeTwoFactorAuthSecret?.accessToken, false, false)
+        onSuccessfulConnection({ accessToken: res?.data?.removeTwoFactorAuthSecret?.accessToken })
         setLoading(false)
       })
       .catch((updatePasswordError: ApolloError) => {

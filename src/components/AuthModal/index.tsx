@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useRouter } from 'next/router'
 
 import ClassicModal from '@/components/Modal/Classic'
@@ -7,7 +7,6 @@ import { ApplicationModal } from '@/state/application/actions'
 import { useAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
 import { storeAccessToken } from '@/utils/accessToken'
-import { useQueryCurrentUser } from '@/state/user/hooks'
 
 import EmailVerificationForm from './EmailVerificationForm'
 import SignUpForm from './SignUpForm'
@@ -17,6 +16,8 @@ import RemoveTwoFactorAuthSecret from './RemoveTwoFactorAuthSecret'
 import RequestPasswordUpdateForm from './RequestPasswordUpdateForm'
 import RequestTwoFactorAuthSecretUpdateForm from './RequestTwoFactorAuthSecretUpdateForm'
 import TwoFactorAuthForm from './TwoFactorAuthForm'
+import useCurrentUser from '@/hooks/useCurrentUser'
+import { OnSuccessfulConnectionResponse } from './types'
 
 export default function AuthModal() {
   const router = useRouter()
@@ -28,19 +29,30 @@ export default function AuthModal() {
   const authMode = useAuthMode()
 
   // Current user
-  const queryCurrentUser = useQueryCurrentUser()
+  const { currentUser, refreshCurrentUser } = useCurrentUser()
   const onSuccessfulConnection = useCallback(
-    async (accessToken?: string, onboard = false, toggleModal = true) => {
-      storeAccessToken(accessToken ?? '')
-      const currentUser = await queryCurrentUser()
+    ({ accessToken }: OnSuccessfulConnectionResponse) => {
+      if (!accessToken) return // TODO handle this case
 
-      if (currentUser) {
-        if (onboard) router.push('/onboard')
-        if (toggleModal) toggleAuthModal()
-      } else window.location.reload()
+      storeAccessToken(accessToken)
+      refreshCurrentUser()
     },
-    [queryCurrentUser, toggleAuthModal, router]
+    [refreshCurrentUser, router]
   )
+
+  useEffect(() => {
+    if (currentUser) {
+      // close if connection is not emited from account recovery solution
+      if (authMode && authMode !== AuthMode.REMOVE_TWO_FACTOR_AUTH_SECRET) {
+        toggleAuthModal()
+      }
+
+      // onboard if user is new
+      if (authMode === AuthMode.EMAIL_VERIFICATION) {
+        router.push('/onboard')
+      }
+    }
+  }, [!!currentUser, toggleAuthModal])
 
   const renderModal = (authMode: AuthMode | null) => {
     switch (authMode) {

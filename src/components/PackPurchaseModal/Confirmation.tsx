@@ -6,7 +6,7 @@ import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import Link from '@/components/Link'
 import Spinner from '@/components/Spinner'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 
 import Checkmark from '@/images/checkmark.svg'
 import Close from '@/images/close.svg'
@@ -81,7 +81,7 @@ interface ConfirmationProps {
 }
 
 export default function Confirmation({ packName, amountPaid, error, success = false }: ConfirmationProps) {
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   return (
     <StyledConfirmation>

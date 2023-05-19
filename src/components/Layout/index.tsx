@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import type { AppProps } from 'next/app'
+import { shallow } from 'zustand/shallow'
 
-import { useQueryCurrentUser } from '@/state/user/hooks'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import useWindowSize from '@/hooks/useWindowSize'
 import Maintenance from '@/components/Maintenance'
+import { useCurrentUser } from '@/graphql/data/CurrentUser'
+import { useBoundStore } from '@/zustand'
 
 const MainContent = styled.main<{ windowHeight?: number }>`
   min-height: ${({ theme, windowHeight = 0 }) => windowHeight - theme.size.footerHeight}px;
@@ -19,12 +21,16 @@ interface DefaultLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export default function DefaultLayout({ children, FooterChildrenComponent }: DefaultLayoutProps) {
-  const queryCurrentUser = useQueryCurrentUser()
-  const [loading, setLoading] = useState(true)
+  const { data: currentUser, loading, refresh } = useCurrentUser()
+  const { setCurrentUser, setCurrentUserRefresher } = useBoundStore(
+    (state) => ({ setCurrentUser: state.setCurrentUser, setCurrentUserRefresher: state.setCurrentUserRefresher }),
+    shallow
+  )
 
   useEffect(() => {
-    queryCurrentUser().then(() => setLoading(false))
-  }, [queryCurrentUser, setLoading])
+    setCurrentUser(currentUser)
+    setCurrentUserRefresher(refresh)
+  }, [setCurrentUser, currentUser, refresh])
 
   // window size
   const windowSize = useWindowSize()

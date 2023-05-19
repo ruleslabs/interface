@@ -14,7 +14,7 @@ const CardTranslator = styled.div`
   touch-action: none;
 
   & * {
-    border-radius: 4.44% / 3.17%;
+    border-radius: 4.7% / 3.35%;
   }
 `
 
@@ -40,7 +40,7 @@ const CardBackImage = styled.img`
   position: absolute;
   z-index: -1;
   width: 100%;
-  border-radius: 4.44% / 3.17%;
+  border-radius: 4.7% / 3.35%;
   transform: rotateY(180deg);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;

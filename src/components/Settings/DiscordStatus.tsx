@@ -9,8 +9,6 @@ import { PrimaryButton, SecondaryButton, ThirdPartyButton } from '@/components/B
 import Row, { RowBetween, RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
 import {
-  useCurrentUser,
-  useQueryCurrentUser,
   useConnectDiscordAccountMutation,
   useDisconnectDiscordAccountMutation,
   useRefreshDiscordRolesMutation,
@@ -22,6 +20,7 @@ import Checkbox from '@/components/Checkbox'
 import DiscordIcon from '@/images/discord.svg'
 import { PaginationSpinner } from '../Spinner'
 import Column from '../Column'
+import useCurrentUser from '@/hooks/useCurrentUser'
 
 const DiscordStatusWrapper = styled(Column)`
   gap: 16px;
@@ -66,14 +65,13 @@ interface DiscordStatusProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusProps) {
-  const currentUser = useCurrentUser()
-  const queryCurrentUser = useQueryCurrentUser()
+  const { currentUser, refreshCurrentUser } = useCurrentUser()
 
   const router = useRouter()
   const discordCode = router?.query?.code
 
   // loading
-  const [loading, setLoading] = useState(!!discordCode || !!currentUser?.profile?.discordId)
+  const [loading, setLoading] = useState(!!discordCode)
 
   // error
   const [error, setError] = useState<string | null>(null)
@@ -105,7 +103,7 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
     router.replace(redirectPath, undefined, { shallow: true })
     connectDiscordAccountMutation({ variables: { code: discordCode, redirectPath } })
       .then((res: any) => {
-        queryCurrentUser()
+        refreshCurrentUser()
         setLoading(false)
       })
       .catch((connectDiscordAccountError: ApolloError) => {
@@ -114,7 +112,7 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
 
         setLoading(false)
       })
-  }, [discordCode, connectDiscordAccountMutation, queryCurrentUser, redirectPath, router.replace])
+  }, [discordCode, connectDiscordAccountMutation, refreshCurrentUser, redirectPath, router.replace])
 
   // handle disconnection
   const handleDiscordDisconnect = useCallback(() => {
@@ -123,7 +121,7 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
 
     disconnectDiscordAccountMutation()
       .then((res: any) => {
-        queryCurrentUser()
+        refreshCurrentUser()
         setLoading(false)
       })
       .catch((disconnectDiscordAccountError: ApolloError) => {
@@ -132,7 +130,7 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
 
         setLoading(false)
       })
-  }, [disconnectDiscordAccountMutation, queryCurrentUser])
+  }, [disconnectDiscordAccountMutation, refreshCurrentUser])
 
   // handle discord refresh
   const handleDiscordRefresh = useCallback(() => {
@@ -141,7 +139,7 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
 
     refreshDiscordRolesMutation()
       .then((res: any) => {
-        queryCurrentUser()
+        refreshCurrentUser()
         setLoading(false)
       })
       .catch((refreshDiscordAccountError: ApolloError) => {
@@ -150,7 +148,7 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
 
         setLoading(false)
       })
-  }, [refreshDiscordRolesMutation, queryCurrentUser])
+  }, [refreshDiscordRolesMutation, refreshCurrentUser])
 
   // handle discord visibility
   const toggleDiscordVisibility = useCallback(() => {
@@ -158,12 +156,12 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
 
     setDiscordVisibilityMutation({ variables: { visible: !isDiscordVisible } })
       .then(() => {
-        queryCurrentUser()
+        refreshCurrentUser()
       })
       .catch((setDiscordVisibilityError: ApolloError) => {
         console.error(setDiscordVisibilityError) // TODO: handle error
       })
-  }, [isDiscordVisible, setDiscordVisibilityMutation, queryCurrentUser])
+  }, [isDiscordVisible, setDiscordVisibilityMutation, refreshCurrentUser])
 
   // discord member object
   const discordMember = currentUser?.profile?.discordMember
@@ -177,8 +175,8 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
               <ConnectedDiscordWrapper>
                 <RowCenter gap={12}>
                   <DiscordAvatar
-                    src={discordMember.guildAvatarUrl ?? discordMember.avatarUrl}
-                    fallbackSrc={currentUser.profile.fallbackSrc}
+                    src={discordMember.avatarUrl ?? ''}
+                    fallbackSrc={currentUser.profile.fallbackUrl}
                   />
 
                   <Column gap={4}>

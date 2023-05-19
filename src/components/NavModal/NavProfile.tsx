@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import { RowCenter } from '@/components/Row'
 import Avatar from '@/components/Avatar'
 import Column from '@/components/Column'
@@ -29,7 +29,7 @@ const ProfileRow = styled(RowCenter)`
 
 export default function NavProfile(props: React.HTMLAttributes<HTMLDivElement>) {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // parsed cScore
   const parsedCScore = useParsedCScore(currentUser.cScore, { rounded: false })

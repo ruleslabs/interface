@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import { RowCenter } from '@/components/Row'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
@@ -57,7 +57,7 @@ export default function CardOwnership({
   price,
 }: CardOwnershipProps) {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // modal
   const toggleOfferModal = useOfferModalToggle()

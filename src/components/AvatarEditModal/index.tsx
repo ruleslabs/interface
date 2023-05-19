@@ -8,7 +8,8 @@ import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classi
 import { useAvatarEditModalToggle, useModalOpened } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import useDefaultAvatarUrls from '@/hooks/useDefaultAvatarUrls'
-import { useEditAvatarMutation, useQueryCurrentUser } from '@/state/user/hooks'
+import { useEditAvatarMutation } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 
 const AvatarsGrid = styled.div`
   margin-top: 26px;
@@ -52,20 +53,20 @@ export default function AvatarEditModal({ currentAvatarId, customAvatarUrl }: Av
   const avatarUrls = useDefaultAvatarUrls(256)
 
   // edit avatar
-  const queryCurrentUser = useQueryCurrentUser()
+  const { refreshCurrentUser } = useCurrentUser()
   const [editAvatarMutation] = useEditAvatarMutation()
   const handleAvatarEdit = useCallback(
     (avatarId: number) => {
       setSelectedAvatarId(avatarId)
       editAvatarMutation({ variables: { avatarId } })
         .then((res: any) => {
-          queryCurrentUser()
+          refreshCurrentUser()
         })
         .catch((editAvatarError: ApolloError) => {
           console.error(editAvatarError) // TODO handle error
         })
     },
-    [setSelectedAvatarId, editAvatarMutation]
+    [setSelectedAvatarId, editAvatarMutation, refreshCurrentUser]
   )
 
   return (

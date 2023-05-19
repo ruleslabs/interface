@@ -6,7 +6,7 @@ import { TYPE } from '@/styles/theme'
 import { useSearchUsers } from '@/state/search/hooks'
 import Column from '@/components/Column'
 import { PaginationSpinner } from '@/components/Spinner'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import { useCScoreRank } from '@/hooks/useCScore'
 import UserRow from './UserRow'
 
@@ -27,7 +27,7 @@ const USERS_QUERY = gql`
 
 export default function HallOfFame() {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // hits
   const [usersHits, setUsersHits] = useState<any[]>([])

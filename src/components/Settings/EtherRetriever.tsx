@@ -6,7 +6,7 @@ import Column from '@/components/Column'
 import { PrimaryButton } from '../Button'
 import { useRetrieveEthersModalToggle } from '@/state/application/hooks'
 import EtherRetrieveModal from '@/components/EtherRetrieverModal'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import { TYPE } from '@/styles/theme'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
@@ -16,7 +16,7 @@ const RetrieveButton = styled(PrimaryButton)`
 
 export default function StarknetAccountStatus() {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // private key modal
   const toggleRetrieveEthersModal = useRetrieveEthersModalToggle()

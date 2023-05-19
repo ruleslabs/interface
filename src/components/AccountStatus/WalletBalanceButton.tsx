@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import { PrimaryButton } from '@/components/Button'
 import { TYPE } from '@/styles/theme'
 import { useETHBalances } from '@/state/wallet/hooks'
@@ -38,11 +38,12 @@ const WalletButton = styled(PrimaryButton)<{ alert: boolean }>`
 
 export default function WalletBalanceButton(props: React.HTMLAttributes<HTMLButtonElement>) {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // ETH balance
-  let balance = useETHBalances([currentUser?.starknetWallet.address])[currentUser?.starknetWallet.address]
-  balance = currentUser?.starknetWallet.address ? balance : WeiAmount.fromRawAmount(0)
+  const address = currentUser?.starknetWallet.address ?? ''
+  const balances = useETHBalances([address])
+  const balance = balances?.[address] ?? WeiAmount.fromRawAmount(0)
 
   return (
     <WalletButton alert={!!currentUser?.starknetWallet.lockingReason} {...props}>

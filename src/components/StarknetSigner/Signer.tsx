@@ -12,7 +12,7 @@ import { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import { useStarknet } from '@/lib/starknet'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import { ErrorCard } from '@/components/Card'
 import PrivateKeyDecipherForm from './PrivateKeyDecipherForm'
@@ -69,7 +69,7 @@ export default function Signer({
   const toggleWalletModal = useWalletModalToggle()
 
   // wallet
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
   const address = currentUser.starknetWallet.address
 
   // starknet account

@@ -6,7 +6,7 @@ import { TYPE } from '@/styles/theme'
 import Section from '@/components/Section'
 import { ActiveLink } from '@/components/Link'
 import { RowCenter } from '@/components/Row'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 
 import UserIcon from '@/images/user.svg'
 import EthereumIcon from '@/images/ethereum-plain.svg'
@@ -112,7 +112,7 @@ const categories = [
 
 export default function SettingsLayout({ children }: React.HTMLAttributes<HTMLDivElement>) {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   if (!currentUser) return null
 

@@ -2,7 +2,7 @@ import { useCallback, useState, useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
 
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import Column from '@/components/Column'
 import CurrencyInput from '@/components/Input/CurrencyInput'
 import { metaMaskHooks } from '@/constants/connectors'
@@ -43,7 +43,7 @@ const ArrowWrapper = styled(Column)`
 
 export default function DepositModal() {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // starknet
   const { provider } = useStarknet()

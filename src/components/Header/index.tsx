@@ -8,7 +8,7 @@ import Link, { ActiveLink } from '@/components/Link'
 import { useOpenSidebarModal } from '@/state/application/hooks'
 import { ApplicationSidebarModal } from '@/state/application/actions'
 import NavModalMobile from '@/components/NavModal/Mobile'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import { useNavLinks } from '@/hooks/useNav'
 
 import Logo from '@/public/assets/logo.svg'
@@ -106,7 +106,7 @@ const NotLoggedLogo = styled(StyledLogo)`
 
 export default function Header() {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // modal
   const openNavModalMobile = useOpenSidebarModal(ApplicationSidebarModal.NAV_MOBILE)

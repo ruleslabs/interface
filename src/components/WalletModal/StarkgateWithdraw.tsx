@@ -9,7 +9,7 @@ import { PrimaryButton } from '@/components/Button'
 import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
 import CurrencyInput from '@/components/Input/CurrencyInput'
 import { metaMaskHooks } from '@/constants/connectors'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import StarknetSigner from '@/components/StarknetSigner'
 import { useETHBalances, useWithdrawEtherMutation } from '@/state/wallet/hooks'
 import { L2_STARKGATE_ADDRESSES, ETH_ADDRESSES } from '@/constants/addresses'
@@ -43,7 +43,7 @@ const ArrowWrapper = styled(Column)`
 
 export default function WithdrawModal() {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // metamask
   const account = useAccount()

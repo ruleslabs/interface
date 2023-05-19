@@ -112,7 +112,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
   const { username } = router.query
   const userSlug = typeof username === 'string' ? username.toLowerCase() : undefined
 
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
   const { searchedUser, error } = useSearchUser(userSlug, currentUser?.slug === userSlug)
 
   const user = currentUser?.slug === userSlug ? currentUser : searchedUser

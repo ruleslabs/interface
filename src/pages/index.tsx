@@ -13,7 +13,7 @@ import { useAuthModalToggle, useClaimLiveRewardModalToggle } from '@/state/appli
 import { useSetAuthMode } from '@/state/auth/hooks'
 import { AuthMode } from '@/state/auth/actions'
 import { RowCenter } from '@/components/Row'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import ClaimLiveRewardModal from '@/components/LiveRewardModal/Claim'
 
@@ -149,7 +149,7 @@ function Home() {
   const router = useRouter()
 
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // modal
   const toggleAuthModal = useAuthModalToggle()

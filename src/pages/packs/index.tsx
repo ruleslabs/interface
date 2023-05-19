@@ -3,7 +3,7 @@ import { useQuery, gql } from '@apollo/client'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import Section from '@/components/Section'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import { TYPE } from '@/styles/theme'
@@ -110,7 +110,7 @@ const PacksInfosCard = styled(Card)`
 `
 
 export default function Packs() {
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   const packsQuery = useQuery(PACKS_QUERY)
 

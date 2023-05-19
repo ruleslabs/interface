@@ -10,7 +10,7 @@ import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
 import { useModalOpened, useOfferModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import UsersSearchBar from '@/components/UsersSearchBar'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import Column from '@/components/Column'
 import { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
@@ -140,7 +140,7 @@ interface GiftModalProps {
 
 export default function GiftModal({ cardsIds, onSuccess }: GiftModalProps) {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // modal
   const isOpen = useModalOpened(ApplicationModal.OFFER)

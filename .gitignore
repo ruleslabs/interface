@@ -24,8 +24,11 @@ node_modules/
 .next
 out
 
-# MacOS desktop service store
+# misc
 .DS_Store
+.env.local
+.env.local.development
+.env.local.production
 
 # generated
 /src/locales/**/*.mjs
@@ -34,3 +37,7 @@ out
 #serverless
 .serverless
 .serverless_nextjs
+
+# generated graphql types
+/src/graphql/**/__generated__
+schema.graphql

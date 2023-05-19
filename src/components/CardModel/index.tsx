@@ -51,7 +51,7 @@ const VideoWrapper = styled.div`
 
 const Video = styled.video<{ inDelivery: boolean; pendingStatus: boolean }>`
   width: 100%;
-  border-radius: 4.44%/3.17%;
+  border-radius: 4.7% / 3.35%;
   ${({ inDelivery, pendingStatus }) => (inDelivery || pendingStatus) && 'opacity: 0.5;'}
 `
 

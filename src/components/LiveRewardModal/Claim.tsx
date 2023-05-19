@@ -91,7 +91,7 @@ export default function ClaimLiveRewardModal() {
   // claim live reward
   const [claimed, setClaimed] = useState(false)
   useEffect(() => {
-    if (claimed) return
+    if (claimed || !isOpen) return
     setClaimed(true)
 
     claimLiveRewardMutation({ variables: { liveRewardId, userId } })
@@ -103,7 +103,7 @@ export default function ClaimLiveRewardModal() {
         if (error) setError(error.message)
         else setError('Unknown error')
       })
-  }, [claimLiveRewardMutation, userId, liveRewardId, claimed])
+  }, [claimLiveRewardMutation, userId, liveRewardId, claimed, isOpen])
 
   return (
     <ClassicModal onDismiss={toggleClaimLiveRewardModal} isOpen={isOpen}>

@@ -10,10 +10,11 @@ import Column, { ColumnCenter } from '@/components/Column'
 import { useCurrentUserNotifications } from '@/state/search/hooks'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 import NotificationRow from './NotificationRow'
-import { useCurrentUser, useMarkNotificationsAsReadMutation, useSetCurrentUser } from '@/state/user/hooks'
+import { useMarkNotificationsAsReadMutation } from '@/state/user/hooks'
 
 import GhostIcon from '@/images/ghost.svg'
 import { ApolloError } from 'apollo-client'
+import useCurrentUser from '@/hooks/useCurrentUser'
 
 const StyledModalBody = styled(ModalBody)`
   padding: 0;
@@ -38,8 +39,7 @@ const NotificationsWrapper = styled(Column)`
 
 export default function NotificationsModal() {
   // current user
-  const currentUser = useCurrentUser()
-  const setCurrentUser = useSetCurrentUser()
+  const { currentUser, setCurrentUser } = useCurrentUser()
 
   // modal
   const toggleNotificationsModal = useNotificationsModalToggle()
@@ -59,7 +59,7 @@ export default function NotificationsModal() {
   const lastNotificationRef = useInfiniteScroll({ nextPage: notificationsQuery.nextPage, loading: isLoading })
 
   useEffect(() => {
-    if (isOpen && (currentUser?.unreadNotificationsCount ?? 0) > 0) {
+    if (isOpen && currentUser && currentUser.unreadNotificationsCount > 0) {
       markNotificationsAsReadMutation()
         .then((res: any) => {
           setCurrentUser({ ...currentUser, unreadNotificationsCount: 0 })

@@ -7,7 +7,7 @@ import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { decryptRulesPrivateKey } from '@/utils/wallet'
 import { PrimaryButton } from '@/components/Button'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 
 const StyledForm = styled.form`
   width: 100%;
@@ -28,7 +28,7 @@ export default function PrivateKeyDecipherForm({ onPrivateKeyDeciphered }: Priva
   const onPasswordInput = useCallback((value: string) => setPassword(value), [setPassword])
 
   // wallet
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
   const rulesPrivateKey = currentUser.starknetWallet.rulesPrivateKey
 
   // errors

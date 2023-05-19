@@ -2,7 +2,6 @@ import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
-import { useCurrentUser, useSetCurrentUser } from '@/state/user/hooks'
 import {
   useAuthModalToggle,
   useNavModalUserDesktopToggle,
@@ -24,6 +23,7 @@ import NotificationsModal from '@/components/NotificationsModal'
 import BellIcon from '@/images/bell.svg'
 import WalletIcon from '@/images/wallet.svg'
 import WalletBalanceButton from './WalletBalanceButton'
+import useCurrentUser from '@/hooks/useCurrentUser'
 
 const StyledAccountStatus = styled.div`
   display: flex;
@@ -118,7 +118,7 @@ const MobileIconButton = styled(IconButton)`
 
 export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement>) {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser, setCurrentUser } = useCurrentUser()
 
   // modal
   const toggleWalletModal = useWalletModalToggle()
@@ -146,9 +146,12 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
   const toggleSignUpModal = () => toggleAuthModalWithMode(AuthMode.SIGN_UP)
 
   // wallet upgrade
-  const setCurrentUser = useSetCurrentUser()
   const onSuccessfulWalletUpgrade = useCallback(
-    () => setCurrentUser({ ...currentUser, starknetWallet: { ...currentUser.starknetWallet, needsUpgrade: false } }),
+    () =>
+      setCurrentUser((currentUser) => {
+        if (!currentUser) return
+        currentUser.starknetWallet.needsUpgrade = false
+      }),
     [setCurrentUser, currentUser]
   )
 
@@ -161,7 +164,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
 
             <AvatarButtonWrapperDesktop>
               <AvatarWrapper onClick={toggleNavModalUserDesktop}>
-                <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackSrc} />
+                <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackUrl} />
               </AvatarWrapper>
 
               <NavModalUserDesktop />
@@ -169,7 +172,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
 
             <AvatarButtonWrapperMobile>
               <AvatarWrapper onClick={toggleNavModalUserMobile}>
-                <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackSrc} />
+                <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackUrl} />
               </AvatarWrapper>
 
               <NavModalUserMobile />

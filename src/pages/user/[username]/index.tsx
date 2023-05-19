@@ -13,7 +13,7 @@ import { RowCenter } from '@/components/Row'
 import DeckInsertionModal from '@/components/DeckInsertionModal'
 import { useDeckState, useSetDeckCards, useDeckActionHandlers } from '@/state/deck/hooks'
 import { Deck } from '@/state/deck/actions'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import { useDeckInsertionModalToggle } from '@/state/application/hooks'
 import { SecondaryButton } from '@/components/Button'
 
@@ -37,7 +37,7 @@ const DeckImage = styled.img`
 `
 
 const StyledEmptyCard = styled(RowCenter)<{ clickable: boolean }>`
-  border-radius: 4.44%/3.17%;
+  border-radius: 4.7% / 3.35%;
   transition: background 100ms ease;
 
   ${({ clickable, theme }) =>
@@ -58,7 +58,7 @@ const StyledEmptyCard = styled(RowCenter)<{ clickable: boolean }>`
 
 const CardVideo = styled.video`
   width: 100%;
-  border-radius: 4.44%/3.17%;
+  border-radius: 4.7% / 3.35%;
   display: block;
 `
 
@@ -207,7 +207,7 @@ function Profile({ address }: ProfileProps) {
   const { username } = router.query
   const userSlug = typeof username === 'string' ? username.toLowerCase() : null
 
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
   const isCurrentUserProfile = currentUser?.slug === userSlug
 
   const [cardIndexToInsert, setCardIndexToInsert] = useState(0)

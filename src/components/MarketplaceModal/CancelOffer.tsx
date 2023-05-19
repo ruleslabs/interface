@@ -8,7 +8,7 @@ import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
 import { useModalOpened, useCancelOfferModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import Column from '@/components/Column'
 import { PrimaryButton } from '@/components/Button'
 import { ErrorCard } from '@/components/Card'
@@ -37,7 +37,7 @@ export default function CancelOfferModal({
   onSuccess,
 }: CancelOfferModalProps) {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // token id
   const tokenId: string = useMemo(

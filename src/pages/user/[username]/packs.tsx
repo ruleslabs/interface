@@ -11,7 +11,7 @@ import Grid from '@/components/Grid'
 import PackCard from '@/components/Pack'
 import { TYPE } from '@/styles/theme'
 import { RowBetween } from '@/components/Row'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import EmptyTab, { EmptyPacksTabOfCurrentUser } from '@/components/EmptyTab'
 import { PaginationSpinner } from '@/components/Spinner'
 
@@ -50,7 +50,7 @@ function Packs() {
   const { username } = router.query
   const userSlug = typeof username === 'string' ? username.toLowerCase() : null
 
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
   const isCurrentUserProfile = currentUser?.slug === userSlug
 
   // sort

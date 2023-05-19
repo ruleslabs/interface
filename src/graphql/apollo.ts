@@ -1,16 +1,19 @@
-import { NextPageContext } from 'next/types'
-import { ApolloClient, InMemoryCache, NormalizedCacheObject, HttpLink, Observable } from '@apollo/client'
-import { createPersistedQueryLink } from '@apollo/client/link/persisted-queries'
-import { sha256 } from 'crypto-hash'
+import { ApolloClient, InMemoryCache, HttpLink, Observable } from '@apollo/client'
 import fetch from 'isomorphic-unfetch'
 import { setContext } from '@apollo/client/link/context'
 import { onError } from '@apollo/client/link/error'
+import { relayStylePagination } from '@apollo/client/utilities'
 
 import refreshToken from '@/utils/refreshToken'
 import { storeAccessToken, getAccessToken } from '@/utils/accessToken'
 
+const GRAPHQL_URL = process.env.NEXT_PUBLIC_GRAPHQL_URI
+if (!GRAPHQL_URL) {
+  throw new Error('GRAPHQL URI MISSING FROM ENVIRONMENT')
+}
+
 const httpLink = new HttpLink({
-  uri: process.env.NEXT_PUBLIC_GRAPHQL_URI, // must be absolute
+  uri: GRAPHQL_URL, // must be absolute
   credentials: 'include',
   fetch,
 })
@@ -70,20 +73,25 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
-export default function createApolloClient(initialState: NormalizedCacheObject = {}, ctx?: NextPageContext) {
-  return new ApolloClient({
-    ssrMode: Boolean(ctx),
-    link: createPersistedQueryLink({ sha256 }).concat(authLink.concat(errorLink.concat(httpLink))),
-    cache: new InMemoryCache().restore(initialState),
-    defaultOptions: {
-      watchQuery: {
-        fetchPolicy: 'no-cache',
-        errorPolicy: 'ignore',
-      },
-      query: {
-        fetchPolicy: 'no-cache',
-        errorPolicy: 'all',
+export const apolloClient = new ApolloClient({
+  connectToDevTools: true,
+  uri: GRAPHQL_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  link: authLink.concat(errorLink.concat(httpLink)),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          assets: relayStylePagination(),
+        },
       },
     },
-  })
-}
+  }),
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: 'cache-and-network',
+    },
+  },
+})

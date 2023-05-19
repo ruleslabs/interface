@@ -7,7 +7,7 @@ import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classic'
 import { useModalOpened, useWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import { useWalletModalMode, useSetWalletModalMode, useETHBalances } from '@/state/wallet/hooks'
 import { WalletModalMode } from '@/state/wallet/actions'
 import Column from '@/components/Column'
@@ -53,7 +53,7 @@ const TabBar = styled(Row)`
 
 export default function WalletModal() {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // modal
   const isOpen = useModalOpened(ApplicationModal.WALLET)

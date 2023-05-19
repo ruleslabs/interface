@@ -6,12 +6,13 @@ import { t } from '@lingui/macro'
 import { PrimaryButton } from '@/components/Button'
 import Column from '@/components/Column'
 import { SmallInput } from '@/components/Input'
-import { useCurrentUser, useQueryCurrentUser, useSetSocialLinksMutation } from '@/state/user/hooks'
+import { useSetSocialLinksMutation } from '@/state/user/hooks'
 import { RowCenter } from '../Row'
 
 import InstagramIcon from '@/images/instagram.svg'
 import TwitterIcon from '@/images/twitter-color.svg'
 import Subtitle from '../Text/Subtitle'
+import useCurrentUser from '@/hooks/useCurrentUser'
 
 const InputWithIcon = styled(RowCenter)`
   gap: 8px;
@@ -39,8 +40,7 @@ const SaveChangesButton = styled(PrimaryButton)`
 `
 
 export default function SocialAccountsSettings() {
-  const currentUser = useCurrentUser()
-  const queryCurrentUser = useQueryCurrentUser()
+  const { currentUser, refreshCurrentUser } = useCurrentUser()
 
   // modified
   const [socialLinksModified, setSocialLinksModified] = useState(false)
@@ -86,7 +86,7 @@ export default function SocialAccountsSettings() {
       .then((res: any) => {
         setSocialLinksModified(false)
 
-        queryCurrentUser()
+        refreshCurrentUser()
         setSetSocialLinksLoading(false)
       })
       .catch((editProfileError: ApolloError) => {
@@ -94,7 +94,7 @@ export default function SocialAccountsSettings() {
         setSetSocialLinksLoading(false)
       })
   }, [
-    queryCurrentUser,
+    refreshCurrentUser,
     setSocialLinksMutation,
     setSetSocialLinksLoading,
     setSocialLinksModified,

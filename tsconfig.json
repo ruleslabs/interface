@@ -13,7 +13,6 @@
     "composite": true,
     "incremental": true,
     "esModuleInterop": true,
-    "module": "es2020",
     "strict": true,
     "alwaysStrict": true,
     "strictNullChecks": true,

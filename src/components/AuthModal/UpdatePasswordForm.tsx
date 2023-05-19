@@ -14,6 +14,7 @@ import { useUpdatePasswordMutation } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import { PrimaryButton } from '@/components/Button'
 import useCreateWallet, { WalletInfos } from '@/hooks/useCreateWallet'
+import { AuthFormProps } from './types'
 
 const StyledForm = styled.form`
   width: 100%;
@@ -24,11 +25,7 @@ const SubmitButton = styled(PrimaryButton)`
   margin: 12px 0;
 `
 
-interface UpdatePasswordFormProps {
-  onSuccessfulConnection: (accessToken?: string, onboard?: boolean, toggleModal?: boolean) => void
-}
-
-export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePasswordFormProps) {
+export default function UpdatePasswordForm({ onSuccessfulConnection }: AuthFormProps) {
   // Wallet
   const createWallet = useCreateWallet()
   const [walletInfos, setWalletInfos] = useState<WalletInfos | null>(null)
@@ -116,7 +113,7 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: UpdatePas
             token,
           },
         })
-          .then((res: any) => onSuccessfulConnection(res?.data?.updatePassword?.accessToken, false))
+          .then((res: any) => onSuccessfulConnection({ accessToken: res?.data?.updatePassword?.accessToken }))
           .catch((updatePasswordError: ApolloError) => {
             const error = updatePasswordError?.graphQLErrors?.[0]
             if (error) setError({ message: error.message, id: error.extensions?.id as string })

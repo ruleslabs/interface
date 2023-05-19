@@ -1,7 +1,7 @@
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 
 export default function useNeededActions() {
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   const withdraw = currentUser?.retrievableEthers.length
   const upgrade = +currentUser?.starknetWallet.needsUpgrade

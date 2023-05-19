@@ -9,13 +9,13 @@ import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
 import { useModalOpened, useCreateOfferModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import Column from '@/components/Column'
 import { PrimaryButton } from '@/components/Button'
 import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
 import StarknetSigner from '@/components/StarknetSigner'
-import { MARKETPLACE_ADDRESSES, RULES_TOKENS_ADDRESSES } from '@/constants/addresses'
+import { MARKETPLACE_ADDRESSES } from '@/constants/addresses'
 import { useCreateOffersMutation } from '@/state/wallet/hooks'
 import { networkId } from '@/constants/networks'
 import EtherInput from '@/components/Input/EtherInput'
@@ -71,7 +71,7 @@ interface CreateOfferModalProps {
 
 export default function CreateOfferModal({ cardsIds, onSuccess }: CreateOfferModalProps) {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // modal
   const isOpen = useModalOpened(ApplicationModal.CREATE_OFFER)
@@ -150,11 +150,6 @@ export default function CreateOfferModal({ cardsIds, onSuccess }: CreateOfferMod
         const uint256TokenId = uint256HexFromStrHex(tokenId)
 
         return [
-          {
-            contractAddress: RULES_TOKENS_ADDRESSES[networkId],
-            entrypoint: 'approve',
-            calldata: [MARKETPLACE_ADDRESSES[networkId], uint256TokenId.low, uint256TokenId.high, 1, 0],
-          },
           {
             contractAddress: MARKETPLACE_ADDRESSES[networkId],
             entrypoint: 'createOffer',

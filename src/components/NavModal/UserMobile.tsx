@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 import { useSidebarModalOpened, useNavModalUserMobileToggle, useWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationSidebarModal } from '@/state/application/actions'
 import { TYPE } from '@/styles/theme'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import SidebarModal, { ModalHeader, ModalBody, ModalContent } from '@/components/Modal/Sidebar'
 import { SidebarNavButton } from '@/components/Button'
 import { useNavUserLinks, NavUserSublinks } from '@/hooks/useNav'
@@ -41,7 +41,7 @@ function NavUserSublinksMobile({ navSublinks }: NavUserSublinksMobileProps) {
 
 export default function NavModalUserMobile() {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // modal
   const toggleNavModalUserMobile = useNavModalUserMobileToggle()
@@ -51,9 +51,9 @@ export default function NavModalUserMobile() {
   const toggleWalletModal = useWalletModalToggle()
 
   // nav links
-  const navLinks = useNavUserLinks(currentUser.slug)
+  const navLinks = useNavUserLinks(currentUser?.slug)
 
-  if (!currentUser) return null
+  if (!currentUser || !navLinks) return null
 
   return (
     <SidebarModal onDismiss={toggleNavModalUserMobile} isOpen={isOpen} position="right">

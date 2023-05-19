@@ -8,12 +8,12 @@ import {
 } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import { useETHBalances } from '@/state/wallet/hooks'
 
 export default function LockedWallet() {
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // ETH balance
   const weiAmountToEURValue = useWeiAmountToEURValue()

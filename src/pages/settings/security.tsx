@@ -6,7 +6,7 @@ import SettingsLayout from '@/components/Layout/Settings'
 import Column from '@/components/Column'
 import Title from '@/components/Text/Title'
 import TwoFactorStatus from '@/components/Settings/TwoFactorStatus'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import Label from '@/components/Label'
 
 const StyledSecuritySettings = styled(Column)`
@@ -16,7 +16,7 @@ const StyledSecuritySettings = styled(Column)`
 
 function SecuritySettings() {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   return (
     <StyledSecuritySettings>

@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { Trans, t } from '@lingui/macro'
 
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import useRampSdk from '@/hooks/useRampSdk'
@@ -15,7 +15,7 @@ import MetamaskIcon from '@/images/metamask.svg'
 
 export default function DepositModal() {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // modal mode
   const setWalletModalMode = useSetWalletModalMode()

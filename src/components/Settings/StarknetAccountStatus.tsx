@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
 
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import Column from '@/components/Column'
 import { PrimaryButton, SecondaryButton } from '../Button'
 import LongHex from '@/components/Text/LongHex'
@@ -29,7 +29,7 @@ const ButtonsWrapper = styled(Row)`
 
 export default function StarknetAccountStatus() {
   // current user
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // private key modal
   const toggleStarknetAccountPrivateKeyModal = useStarknetAccountPrivateKeyModalToggle()

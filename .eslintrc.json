@@ -8,7 +8,7 @@
       "jsx": true
     }
   },
-  "ignorePatterns": ["node_modules/", "node_modules/**/*", "lib/"],
+  "ignorePatterns": ["node_modules/", "node_modules/**/*", "lib/", "**/__generated__/"],
   "settings": {
     "react": {
       "version": "detect"

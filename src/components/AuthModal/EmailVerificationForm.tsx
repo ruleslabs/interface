@@ -22,6 +22,7 @@ import { useAuthModalToggle } from '@/state/application/hooks'
 import useCountdown from '@/hooks/useCountdown'
 import { passwordHasher } from '@/utils/password'
 import useCreateWallet, { WalletInfos } from '@/hooks/useCreateWallet'
+import { AuthFormProps } from './types'
 
 const ResendCode = styled(TYPE.subtitle)`
   display: inline;
@@ -30,11 +31,7 @@ const ResendCode = styled(TYPE.subtitle)`
   cursor: pointer;
 `
 
-interface EmailVerificationFormProps {
-  onSuccessfulConnection: (accessToken?: string, onboard?: boolean, toggleModal?: boolean) => void
-}
-
-export default function EmailVerificationForm({ onSuccessfulConnection }: EmailVerificationFormProps) {
+export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFormProps) {
   // Wallet
   const createWallet = useCreateWallet()
   const [walletInfos, setWalletInfos] = useState<WalletInfos | null>(null)
@@ -90,7 +87,7 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: EmailV
             acceptCommercialEmails,
           },
         })
-          .then((res: any) => onSuccessfulConnection(res?.data?.signUp?.accessToken, true))
+          .then((res: any) => onSuccessfulConnection({ accessToken: res?.data?.signUp?.accessToken }))
           .catch((signUpError: ApolloError) => {
             const error = signUpError?.graphQLErrors?.[0]
             if (error) setError({ message: error.message, id: 'emailVerificationCode' })

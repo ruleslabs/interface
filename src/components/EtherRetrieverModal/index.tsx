@@ -7,7 +7,6 @@ import { ApolloError } from '@apollo/client'
 
 import ClassicModal, { ModalBody, ModalContent } from '@/components/Modal/Classic'
 import { ModalHeader } from '@/components/Modal'
-import { useCurrentUser, useSetCurrentUser } from '@/state/user/hooks'
 import Column from '@/components/Column'
 import { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
@@ -27,6 +26,7 @@ import Subtitle from '@/components/Text/Subtitle'
 import Divider from '@/components/Divider'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
+import useCurrentUser from '@/hooks/useCurrentUser'
 
 const RetrievableWrapper = styled(Column)`
   width: 100%;
@@ -53,8 +53,7 @@ const SeeOnEtherscanWrapper = styled(RowCenter)`
 
 export default function EtherRetrieveModal() {
   // current user
-  const currentUser = useCurrentUser()
-  const setCurrentUser = useSetCurrentUser()
+  const { currentUser, setCurrentUser } = useCurrentUser()
 
   // modal
   const toggleRetrieveEthersModal = useRetrieveEthersModalToggle()
@@ -127,7 +126,10 @@ export default function EtherRetrieveModal() {
               })),
             },
           })
-            .then(() => setCurrentUser({ ...currentUser, retrievableEthers: [] }))
+            .then(() => setCurrentUser((currentUser) => {
+              if (!currentUser) return
+              currentUser.retrievableEthers = []
+            }))
             .catch((retrieveEtherError: ApolloError) => {
               console.error(retrieveEtherError?.graphQLErrors?.[0])
             })

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { gql } from '@apollo/client'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
-import { getApolloClient } from '@/apollo/apollo'
+import { apolloClient } from '@/graphql/apollo'
 
 import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'
@@ -15,7 +15,7 @@ import Card from '@/components/Card'
 import CardModel from '@/components/CardModel'
 import Grid from '@/components/Grid'
 import { PackPosterWrapper } from '@/components/PackWrapper'
-import { useCurrentUser } from '@/state/user/hooks'
+import useCurrentUser from '@/hooks/useCurrentUser'
 
 const StyledMainSection = styled(Section)`
   margin-bottom: 84px;
@@ -95,12 +95,12 @@ export default function Pack() {
   const router = useRouter()
   const { packSlug } = router.query
 
-  const currentUser = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   const [packQuery, setPackQuery] = useState<any>({})
 
   useEffect(() => {
-    getApolloClient()
+    apolloClient
       ?.query({ query: QUERY_PACK, variables: { slug: packSlug } })
       ?.then((response) => {
         setPackQuery(response)

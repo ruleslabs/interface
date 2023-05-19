@@ -65,7 +65,7 @@ const OfferCard = styled(Card)`
 
 const CardImage = styled.img`
   height: 156px;
-  border-radius: 4.44%/3.17%;
+  border-radius: 4.7% / 3.35%;
 `
 
 const InfosWrapper = styled(Column)`

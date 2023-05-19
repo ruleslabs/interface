@@ -36,15 +36,17 @@ export interface NavUserLinks {
   misc: NavUserSublinks
 }
 
-export function useNavUserLinks(userSlug?: string): NavUserLinks {
+export function useNavUserLinks(userSlug?: string): NavUserLinks | null {
   // logout
   const logoutHanlder = useLogout()
 
   // wallet upgrade
   const toggleUpgradeWalletModal = useUpgradeWalletModalToggle()
 
-  return useMemo(
-    () => ({
+  return useMemo(() => {
+    if (!userSlug) return null
+
+    return {
       profile: {
         name: 'Profile',
         links: [
@@ -64,7 +66,6 @@ export function useNavUserLinks(userSlug?: string): NavUserLinks {
           { name: 'Logout', handler: logoutHanlder },
         ],
       },
-    }),
-    [userSlug]
-  )
+    }
+  }, [userSlug])
 }
