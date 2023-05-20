@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { gql } from '@apollo/client'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
-import { apolloClient } from '@/graphql/apollo'
+import { apolloClient } from '@/graphql/data/apollo'
 
 import Section from '@/components/Section'
 import { BackButton } from '@/components/Button'

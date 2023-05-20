@@ -2,7 +2,6 @@ import { useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
 import { QRCodeSVG } from 'qrcode.react'
-import { ApolloError } from '@apollo/client'
 
 import useTheme from '@/hooks/useTheme'
 import Column from '@/components/Column'
@@ -10,9 +9,9 @@ import { TYPE } from '@/styles/theme'
 import Input from '@/components/Input'
 import useNewTwoFactorAuthSecret from '@/hooks/useNewTwoFactorAuthSecret'
 import { TWO_FACTOR_AUTH_CODE_LENGTH } from '@/constants/misc'
-import { useSetTwoFactorAuthSecretMutation } from '@/state/auth/hooks'
 import { RowCenter } from '../Row'
 import useCurrentUser from '@/hooks/useCurrentUser'
+import { useSetTwoFactorAuthSecret } from '@/graphql/data/Auth'
 
 const TwoFactorSetter = styled(RowCenter)`
   gap: 32px;
@@ -55,35 +54,17 @@ export default function TwoFactorStatus() {
     setTwoFactorAuthSecret(newTwoFactorAuthSecret())
   }, [twoFactorAuthSecret])
 
-  // Loading
-  const [loading, setLoading] = useState(false)
-
-  // errors
-  const [error, setError] = useState<{ message?: string; id?: string }>({})
-
   // graphql mutations
-  const [setTwoFactorAuthSecretMutation] = useSetTwoFactorAuthSecretMutation()
+  const [setTwoFactorAuthSecretMutation, { loading, error }] = useSetTwoFactorAuthSecret()
 
   // set 2fa secret
   const handleSetTwoFactorAuthSecret = useCallback(
-    (code: string) => {
+    async (code: string) => {
       if (!twoFactorAuthSecret) return
 
-      setLoading(true)
+      const { success } = await setTwoFactorAuthSecretMutation({ variables: { secret: twoFactorAuthSecret.raw, code } })
 
-      setTwoFactorAuthSecretMutation({ variables: { secret: twoFactorAuthSecret.raw, code } })
-        .then(() => {
-          setLoading(false)
-          refreshCurrentUser()
-        })
-        .catch((setTwoFactorAuthSecretError: ApolloError) => {
-          const error = setTwoFactorAuthSecretError?.graphQLErrors?.[0]
-          if (error) setError({ message: error.message, id: error.extensions?.id as string })
-          else if (!loading) setError({})
-
-          console.error(setTwoFactorAuthSecretError)
-          setLoading(false)
-        })
+      if (success) refreshCurrentUser()
     },
     [twoFactorAuthSecret, setTwoFactorAuthSecretMutation, refreshCurrentUser]
   )
@@ -129,16 +110,14 @@ export default function TwoFactorStatus() {
               placeholder={t`Code`}
               type="text"
               onUserInput={onTwoFactorAuthInput}
-              loading={(twoFactorAuthCode.length > 0 && loading) || !twoFactorAuthSecret}
-              $valid={error.id !== 'twoFactorAuthCode' || loading}
+              loading={loading}
+              $valid={error?.id !== 'twoFactorAuthCode'}
             />
           </Column>
         </TwoFactorSetter>
       )}
 
-      {error.message && (
-        <Trans id={error.message} render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>} />
-      )}
+      {error?.render()}
     </Column>
   )
 }

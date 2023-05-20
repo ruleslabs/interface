@@ -1,7 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 import styled from 'styled-components'
-import GoogleLogin from 'react-google-login'
-import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
 
 import { ModalHeader } from '@/components/Modal'
@@ -9,16 +7,10 @@ import { ModalContent, ModalBody } from '@/components/Modal/Classic'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'
-import { PrimaryButton, CustomGoogleLogin } from '@/components/Button'
+import { PrimaryButton } from '@/components/Button'
 import { AuthMode } from '@/state/auth/actions'
-import {
-  useAuthForm,
-  useAuthActionHanlders,
-  useSetAuthMode,
-  useSetTwoFactorAuthToken,
-} from '@/state/auth/hooks'
+import { useAuthForm, useAuthActionHanlders, useSetAuthMode, useSetTwoFactorAuthToken } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
-import Separator from '@/components/Text/Separator'
 import { passwordHasher } from '@/utils/password'
 import { AuthFormProps } from './types'
 import { useSignIn } from '@/graphql/data/Auth'
@@ -41,7 +33,7 @@ const SubmitButton = styled(PrimaryButton)`
 
 export default function SignInForm({ onSuccessfulConnection }: AuthFormProps) {
   // graphql
-  const [signInMutation, { data: signIn, loading, error }] = useSignIn()
+  const [signInMutation, { loading, error }] = useSignIn()
 
   // fields
   const { email, password } = useAuthForm()
@@ -61,19 +53,19 @@ export default function SignInForm({ onSuccessfulConnection }: AuthFormProps) {
 
       const hashedPassword = await passwordHasher(password)
 
-      signInMutation({ variables: { email, password: hashedPassword } })
+      const { accessToken, twoFactorAuthToken } = await signInMutation({
+        variables: { email, password: hashedPassword },
+      })
+
+      if (accessToken) {
+        onSuccessfulConnection({ accessToken })
+      } else if (twoFactorAuthToken) {
+        setTwoFactorAuthToken(twoFactorAuthToken)
+        setAuthMode(AuthMode.TWO_FACTOR_AUTH)
+      }
     },
     [email, password, signInMutation, onSuccessfulConnection, setTwoFactorAuthToken, setAuthMode]
   )
-
-  useEffect(() => {
-    if (signIn.accessToken) {
-      onSuccessfulConnection({ accessToken: signIn.accessToken })
-    } else if (signIn.twoFactorAuthToken) {
-      setTwoFactorAuthToken(signIn.twoFactorAuthToken)
-      setAuthMode(AuthMode.TWO_FACTOR_AUTH)
-    }
-  }, [signIn.accessToken, signIn.twoFactorAuthToken, onSuccessfulConnection, setTwoFactorAuthToken, setAuthMode])
 
   return (
     <ModalContent>

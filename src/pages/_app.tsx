@@ -16,7 +16,7 @@ import { MulticallUpdater } from '@/lib/state/multicall'
 import DefaultLayout from '@/components/Layout'
 import StyledThemeProvider from '@/styles/theme'
 import store from '@/state'
-import { apolloClient } from 'src/graphql/apollo'
+import { apolloClient } from '@/graphql/data/apollo'
 import { ApolloProvider } from '@apollo/client'
 
 const connectors: [MetaMask, Web3ReactHooks][] = [[metaMask, metaMaskHooks]]

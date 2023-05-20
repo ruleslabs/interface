@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client'
-import { apolloClient } from '@/graphql/apollo'
+import { apolloClient } from '@/graphql/data/apollo'
 
 const REFRESH_TOKEN = gql`
   mutation RefreshToken {
@@ -8,5 +8,5 @@ const REFRESH_TOKEN = gql`
 `
 
 export default async function refreshToken() {
-  return apolloClient?.mutate({ mutation: REFRESH_TOKEN })
+  return apolloClient.mutate({ mutation: REFRESH_TOKEN })
 }

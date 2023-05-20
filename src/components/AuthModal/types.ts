@@ -1,5 +1,5 @@
 export interface OnSuccessfulConnectionResponse {
-  accessToken?: string
+  accessToken: string
 }
 
 export interface AuthFormProps {

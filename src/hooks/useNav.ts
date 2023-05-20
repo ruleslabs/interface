@@ -1,6 +1,6 @@
 import { useUpgradeWalletModalToggle } from '@/state/application/hooks'
-import { useLogout } from '@/state/user/hooks'
 import { useMemo } from 'react'
+import useLogout from './useLogout'
 
 export interface NavLink {
   name: string
@@ -38,7 +38,7 @@ export interface NavUserLinks {
 
 export function useNavUserLinks(userSlug?: string): NavUserLinks | null {
   // logout
-  const logoutHanlder = useLogout()
+  const [logout] = useLogout()
 
   // wallet upgrade
   const toggleUpgradeWalletModal = useUpgradeWalletModalToggle()
@@ -63,7 +63,7 @@ export function useNavUserLinks(userSlug?: string): NavUserLinks | null {
       misc: {
         links: [
           { name: 'Settings', link: '/settings/profile' },
-          { name: 'Logout', handler: logoutHanlder },
+          { name: 'Logout', handler: logout },
         ],
       },
     }

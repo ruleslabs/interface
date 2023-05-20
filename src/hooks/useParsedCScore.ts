@@ -8,7 +8,7 @@ const DEFAULT_OPTIONS = {
   rounded: true,
 }
 
-export default function useParsedCScore(cScore: number, options: Options = DEFAULT_OPTIONS) {
+export default function useParsedCScore(cScore = 0, options: Options = DEFAULT_OPTIONS) {
   return useMemo(() => {
     return options.rounded
       ? Intl.NumberFormat('en-US', {

@@ -73,20 +73,14 @@ export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }
   const toggleAuthModal = useAuthModalToggle()
 
   // remove 2fa
-  const [removeTwoFactorAuthSecretMutation, { data: accessToken, error }] = useRemoveTwoFactorAuthSecret()
+  const [removeTwoFactorAuthSecretMutation, { loading, error }] = useRemoveTwoFactorAuthSecret()
   useEffect(() => {
-    if (!email || typeof token !== 'string') {
-      toggleAuthModal()
-      return
-    }
+    if (!email || typeof token !== 'string') return
 
-    removeTwoFactorAuthSecretMutation({ variables: { email, token } })
-  }, [removeTwoFactorAuthSecretMutation, toggleAuthModal])
-
-  // on access token retrieved
-  useEffect(() => {
-    if (accessToken) onSuccessfulConnection({ accessToken })
-  }, [accessToken, onSuccessfulConnection])
+    removeTwoFactorAuthSecretMutation({ variables: { email, token } }).then(({ accessToken }) => {
+      if (accessToken) onSuccessfulConnection({ accessToken })
+    })
+  }, []) // need state on mount
 
   return (
     <ModalContent>
@@ -106,26 +100,28 @@ export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }
                 {error?.render()}
               </Column>
             </Column>
-          ) : accessToken && (
-            <>
-              <Column gap={24}>
-                <StyledCheckmark />
+          ) : (
+            !loading && (
+              <>
+                <Column gap={24}>
+                  <StyledCheckmark />
 
-                <Column gap={8}>
-                  <Subtitle>
-                    <Trans>The Two-Factor Authentication has been successfully removed.</Trans>
-                  </Subtitle>
+                  <Column gap={8}>
+                    <Subtitle>
+                      <Trans>The Two-Factor Authentication has been successfully removed.</Trans>
+                    </Subtitle>
+                  </Column>
                 </Column>
-              </Column>
 
-              <ConfigureTwoFactorAuthButtonWrapper>
-                <Link href="/settings/security">
-                  <PrimaryButton large>
-                    <Trans>Setup a new one</Trans>
-                  </PrimaryButton>
-                </Link>
-              </ConfigureTwoFactorAuthButtonWrapper>
-            </>
+                <ConfigureTwoFactorAuthButtonWrapper>
+                  <Link href="/settings/security">
+                    <PrimaryButton large>
+                      <Trans>Setup a new one</Trans>
+                    </PrimaryButton>
+                  </Link>
+                </ConfigureTwoFactorAuthButtonWrapper>
+              </>
+            )
           )}
         </ColumnCenter>
       </ModalBody>

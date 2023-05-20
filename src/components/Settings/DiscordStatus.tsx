@@ -102,7 +102,7 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
 
     router.replace(redirectPath, undefined, { shallow: true })
     connectDiscordAccountMutation({ variables: { code: discordCode, redirectPath } })
-      .then((res: any) => {
+      .then(() => {
         refreshCurrentUser()
         setLoading(false)
       })
@@ -120,7 +120,7 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
     setError(null)
 
     disconnectDiscordAccountMutation()
-      .then((res: any) => {
+      .then(() => {
         refreshCurrentUser()
         setLoading(false)
       })
@@ -138,7 +138,7 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
     setError(null)
 
     refreshDiscordRolesMutation()
-      .then((res: any) => {
+      .then(() => {
         refreshCurrentUser()
         setLoading(false)
       })
@@ -174,10 +174,7 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
             <DiscordStatusWrapper gap={16}>
               <ConnectedDiscordWrapper>
                 <RowCenter gap={12}>
-                  <DiscordAvatar
-                    src={discordMember.avatarUrl ?? ''}
-                    fallbackSrc={currentUser.profile.fallbackUrl}
-                  />
+                  <DiscordAvatar src={discordMember.avatarUrl ?? ''} fallbackSrc={currentUser.profile.fallbackUrl} />
 
                   <Column gap={4}>
                     <TYPE.medium>{discordMember.username}</TYPE.medium>

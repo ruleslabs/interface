@@ -5,9 +5,6 @@ import { SupportedLocale } from '@/constants/locales'
 import { AppState } from '@/state'
 import { useAppSelector, useAppDispatch } from '@/state/hooks'
 import { updateUserLocale } from './actions'
-import { useRevokeSessionMutation } from '@/state/auth/hooks'
-import { storeAccessToken } from '@/utils/accessToken'
-import { useRouter } from 'next/router'
 import useCurrentUser from '@/hooks/useCurrentUser'
 
 const SEARCH_USER_CONTENT = `
@@ -100,7 +97,7 @@ const MARK_NOTIFICATIONS_AS_READ_MUTATION = gql`
 `
 
 export function useSearchUser(userSlug?: string, skip = false) {
-  const currentUser = useAppSelector((state) => state.user.currentUser)
+  const { currentUser } = useCurrentUser()
 
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -185,22 +182,4 @@ export function useUserLocaleManager(): [AppState['user']['userLocale'], (newLoc
   )
 
   return [locale, setLocale]
-}
-
-export function useLogout() {
-  // router
-  const router = useRouter()
-
-  const [revokeSessionMutation] = useRevokeSessionMutation()
-  const { setCurrentUser } = useCurrentUser()
-
-  return useCallback(() => {
-    revokeSessionMutation({ variables: { payload: null } })
-      .catch((error) => console.error(error))
-      .finally(() => {
-        storeAccessToken('')
-        setCurrentUser(null)
-        router.replace('/')
-      })
-  }, [storeAccessToken, setCurrentUser, revokeSessionMutation, router.replace])
 }

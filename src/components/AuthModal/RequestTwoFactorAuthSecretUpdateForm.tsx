@@ -31,10 +31,7 @@ export default function RequestPasswordUpdateForm() {
   const setAuthMode = useSetAuthMode()
 
   // graphql mutations
-  const [
-    requestTwoFactorAuthSecretRemovalMutation,
-    { data: requested, loading, error },
-  ] = useRequestTwoFactorAuthSecretRemoval()
+  const [requestTwoFactorAuthSecretRemovalMutation, { loading, error }] = useRequestTwoFactorAuthSecretRemoval()
 
   // email
   const { email } = useAuthForm()
@@ -56,14 +53,12 @@ export default function RequestPasswordUpdateForm() {
       const recaptchaTokenV2 = await recaptchaRef.current?.executeAsync()
       if (!recaptchaTokenV2) return
 
-      requestTwoFactorAuthSecretRemovalMutation({ variables: { email, recaptchaTokenV2 } })
-    },
-    [email, requestTwoFactorAuthSecretRemovalMutation, recaptchaRef.current]
-  )
+      const { success } = await requestTwoFactorAuthSecretRemovalMutation({ variables: { email, recaptchaTokenV2 } })
 
-  useEffect(() => {
-    if (requested) refreshNewAuthUpdateLinkTime()
-  }, [requested, refreshNewAuthUpdateLinkTime])
+      if (success) refreshNewAuthUpdateLinkTime()
+    },
+    [email, requestTwoFactorAuthSecretRemovalMutation, recaptchaRef.current, refreshNewAuthUpdateLinkTime]
+  )
 
   useEffect(() => {
     handleNewLink()

@@ -1,6 +1,5 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { Trans } from '@lingui/macro'
-import { ApolloError } from '@apollo/client'
 
 import { ModalHeader } from '@/components/Modal'
 import { ModalContent, ModalBody } from '@/components/Modal/Classic'
@@ -16,7 +15,7 @@ import { useTwoFactorAuthSignIn } from '@/graphql/data/Auth'
 
 export default function TwoFactorAuthForm({ onSuccessfulConnection }: AuthFormProps) {
   // graphql
-  const [twoFactorAuthSignInMutation, { data: accessToken, loading, error }] = useTwoFactorAuthSignIn()
+  const [twoFactorAuthSignInMutation, { loading, error }] = useTwoFactorAuthSignIn()
 
   // form data
   const twoFactorAuthToken = useTwoFactorAuthToken()
@@ -30,14 +29,12 @@ export default function TwoFactorAuthForm({ onSuccessfulConnection }: AuthFormPr
     async (code: string) => {
       if (!twoFactorAuthToken) return
 
-      twoFactorAuthSignInMutation({ variables: { token: twoFactorAuthToken, code } })
+      const { accessToken } = await twoFactorAuthSignInMutation({ variables: { token: twoFactorAuthToken, code } })
+
+      if (accessToken) onSuccessfulConnection({ accessToken })
     },
     [twoFactorAuthToken, twoFactorAuthSignInMutation, onSuccessfulConnection]
   )
-
-  useEffect(() => {
-    if (accessToken) onSuccessfulConnection({ accessToken })
-  }, [accessToken, onSuccessfulConnection])
 
   // fields
   const [twoFactorAuthCode, setTwoFactorAuthCode] = useState('')

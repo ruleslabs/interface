@@ -1,6 +1,5 @@
-import { ApolloClient, InMemoryCache, HttpLink, Observable } from '@apollo/client'
+import { ApolloClient, InMemoryCache, HttpLink, Observable, ApolloLink, from } from '@apollo/client'
 import fetch from 'isomorphic-unfetch'
-import { setContext } from '@apollo/client/link/context'
 import { onError } from '@apollo/client/link/error'
 import { relayStylePagination } from '@apollo/client/utilities'
 
@@ -61,16 +60,18 @@ const errorLink = onError(({ graphQLErrors, operation, forward }) => {
   return
 })
 
-const authLink = setContext((_, { headers }) => {
+const authMiddleware = new ApolloLink((operation, forward) => {
   // get the authentication token from local storage if it exists
   const token = getAccessToken() || null
-  // return the headers to the context so httpLink can read them
-  return {
+
+  operation.setContext(({ headers = {} }) => ({
     headers: {
       ...headers,
       Authorization: token ? `Bearer ${token}` : '',
     },
-  }
+  }))
+
+  return forward(operation)
 })
 
 export const apolloClient = new ApolloClient({
@@ -79,7 +80,7 @@ export const apolloClient = new ApolloClient({
   headers: {
     'Content-Type': 'application/json',
   },
-  link: authLink.concat(errorLink.concat(httpLink)),
+  link: from([authMiddleware, errorLink, httpLink]),
   cache: new InMemoryCache({
     typePolicies: {
       Query: {

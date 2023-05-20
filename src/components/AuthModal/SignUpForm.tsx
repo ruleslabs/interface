@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { ApolloError } from '@apollo/client'
 import { Trans, t } from '@lingui/macro'
 import GoogleReCAPTCHA from 'react-google-recaptcha'
 
@@ -20,7 +19,7 @@ import {
 import { useAuthModalToggle } from '@/state/application/hooks'
 import Checkbox from '@/components/Checkbox'
 import Link from '@/components/Link'
-import { validatePassword, PasswordError } from '@/utils/password'
+import { validatePassword } from '@/utils/password'
 import ReCAPTCHA, { RecaptchaPolicy } from '@/components/Recaptcha'
 import { usePrepareSignUp } from '@/graphql/data/Auth'
 import { GenieError } from '@/types'
@@ -44,11 +43,15 @@ const SubmitButton = styled(PrimaryButton)`
 
 export default function SignUpForm() {
   // graphql
-  const [prepareSignUpMutation, { data: signUpPrepared, loading, error: mutationError }] = usePrepareSignUp()
+  const [prepareSignUpMutation, { loading: mutationLoading, error: mutationError }] = usePrepareSignUp()
 
   // errors
   const [clientError, setClientError] = useState<GenieError | null>(null)
   const error = clientError ?? mutationError
+
+  // loading
+  const [clientLoading, setClientLoading] = useState(false)
+  const loading = clientLoading || mutationLoading
 
   // fields
   const {
@@ -87,28 +90,43 @@ export default function SignUpForm() {
         return
       }
 
+      setClientLoading(true)
+
       // Check password
       const passwordError = await validatePassword(email, username, password)
       if (passwordError !== null) {
         setClientError(formatError(passwordError))
+        setClientLoading(false)
         return
       }
 
       recaptchaRef.current?.reset()
       const recaptchaTokenV2 = await recaptchaRef.current?.executeAsync()
-      if (!recaptchaTokenV2) return
+      if (!recaptchaTokenV2) {
+        setClientLoading(false)
+        return
+      }
 
-      prepareSignUpMutation({ variables: { username, email, recaptchaTokenV2 } })
+      setClientLoading(false)
+
+      const { success } = await prepareSignUpMutation({ variables: { username, email, recaptchaTokenV2 } })
+
+      if (success) {
+        setAuthMode(AuthMode.EMAIL_VERIFICATION)
+        refreshNewEmailVerificationCodeTime()
+      }
     },
-    [email, username, password, prepareSignUpMutation, setAuthMode, acceptTos, recaptchaRef.current]
+    [
+      email,
+      username,
+      password,
+      prepareSignUpMutation,
+      setAuthMode,
+      acceptTos,
+      recaptchaRef.current,
+      refreshNewEmailVerificationCodeTime,
+    ]
   )
-
-  useEffect(() => {
-    if (signUpPrepared) {
-      setAuthMode(AuthMode.EMAIL_VERIFICATION)
-      refreshNewEmailVerificationCodeTime()
-    }
-  }, [signUpPrepared, refreshNewEmailVerificationCodeTime])
 
   return (
     <ModalContent>

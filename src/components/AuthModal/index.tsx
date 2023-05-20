@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useRouter } from 'next/router'
 
 import ClassicModal from '@/components/Modal/Classic'
@@ -29,21 +29,13 @@ export default function AuthModal() {
   const authMode = useAuthMode()
 
   // Current user
-  const { currentUser, refreshCurrentUser } = useCurrentUser()
+  const { refreshCurrentUser } = useCurrentUser()
   const onSuccessfulConnection = useCallback(
     ({ accessToken }: OnSuccessfulConnectionResponse) => {
-      if (!accessToken) return // TODO handle this case
-
       storeAccessToken(accessToken)
       refreshCurrentUser()
-    },
-    [refreshCurrentUser, router]
-  )
 
-  useEffect(() => {
-    if (currentUser) {
-      // close if connection is not emited from account recovery solution
-      if (authMode && authMode !== AuthMode.REMOVE_TWO_FACTOR_AUTH_SECRET) {
+      if (authMode !== null && authMode !== AuthMode.REMOVE_TWO_FACTOR_AUTH_SECRET) {
         toggleAuthModal()
       }
 
@@ -51,10 +43,11 @@ export default function AuthModal() {
       if (authMode === AuthMode.EMAIL_VERIFICATION) {
         router.push('/onboard')
       }
-    }
-  }, [!!currentUser, toggleAuthModal])
+    },
+    [refreshCurrentUser, storeAccessToken, router, authMode, toggleAuthModal]
+  )
 
-  const renderModal = (authMode: AuthMode | null) => {
+  const modalContent = useMemo(() => {
     switch (authMode) {
       case AuthMode.SIGN_IN:
         return <SignInForm onSuccessfulConnection={onSuccessfulConnection} />
@@ -81,11 +74,11 @@ export default function AuthModal() {
         return <TwoFactorAuthForm onSuccessfulConnection={onSuccessfulConnection} />
     }
     return null
-  }
+  }, [authMode, onSuccessfulConnection])
 
   return (
     <ClassicModal onDismiss={toggleAuthModal} isOpen={isOpen}>
-      {renderModal(authMode)}
+      {modalContent}
     </ClassicModal>
   )
 }

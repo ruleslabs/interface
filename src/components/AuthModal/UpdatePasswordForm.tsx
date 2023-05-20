@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useRouter } from 'next/router'
@@ -10,7 +10,7 @@ import Column from '@/components/Column'
 import Input from '@/components/Input'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import { PrimaryButton } from '@/components/Button'
-import useCreateWallet, { WalletInfos } from '@/hooks/useCreateWallet'
+import useCreateWallet from '@/hooks/useCreateWallet'
 import { AuthFormProps } from './types'
 import { useUpdatePassword } from '@/graphql/data/Auth'
 import { GenieError } from '@/types'
@@ -38,7 +38,7 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: AuthFormP
   const toggleAuthModal = useAuthModalToggle()
 
   // graphql mutations
-  const [updatePasswordMutation, { data: accessToken, loading, error: mutationError }] = useUpdatePassword()
+  const [updatePasswordMutation, { loading, error: mutationError }] = useUpdatePassword()
 
   // errors
   const [clientError, setClientError] = useState<GenieError | null>(null)
@@ -69,34 +69,29 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: AuthFormP
         return
       }
 
-      const updatePassword = async () => {
-        const hashedPassword = await passwordHasher(password)
+      const hashedPassword = await passwordHasher(password)
 
-        try {
-          const { starkPub: starknetPub, userKey: rulesPrivateKey } = await createWallet(password)
+      try {
+        const { starkPub: starknetPub, userKey: rulesPrivateKey } = await createWallet(password)
 
-          updatePasswordMutation({
-            variables: {
-              email,
-              newPassword: hashedPassword,
-              starknetPub,
-              rulesPrivateKey,
-              token,
-            },
-          })
-        } catch (error: any) {
-          setClientError(formatError(`${error.message}, contact support if the error persist.`))
-          return
-        }
+        const { accessToken } = await updatePasswordMutation({
+          variables: {
+            email,
+            newPassword: hashedPassword,
+            starknetPub,
+            rulesPrivateKey,
+            token,
+          },
+        })
+
+        if (accessToken) onSuccessfulConnection({ accessToken })
+      } catch (error: any) {
+        setClientError(formatError(`${error.message}, contact support if the error persist.`))
+        return
       }
-      updatePassword()
     },
-    [password, confirmPassword, updatePasswordMutation, username]
+    [password, confirmPassword, updatePasswordMutation, username, onSuccessfulConnection]
   )
-
-  useEffect(() => {
-    if (accessToken) onSuccessfulConnection({ accessToken })
-  }, [accessToken, onSuccessfulConnection])
 
   return (
     <ModalContent>

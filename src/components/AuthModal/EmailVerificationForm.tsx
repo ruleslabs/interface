@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useState, useCallback, useRef, useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 import GoogleReCAPTCHA from 'react-google-recaptcha'
@@ -24,6 +24,7 @@ import { AuthFormProps } from './types'
 import { usePrepareSignUp, useSignUp } from '@/graphql/data/Auth'
 import { formatError } from '@/utils/error'
 import { GenieError } from '@/types'
+import ReCAPTCHA from '@/components/Recaptcha'
 
 const ResendCode = styled(TYPE.subtitle)`
   display: inline;
@@ -48,21 +49,34 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFo
   const recaptchaRef = useRef<GoogleReCAPTCHA>(null)
 
   // graphql mutations
-  const [signUpMutation, { data: accessToken, ...signUpQuery }] = useSignUp()
-  const [prepareSignUpMutation, { data: signUpPrepared, ...prepareSignUpQuery }] = usePrepareSignUp()
+  const [signUpMutation, { loading: signUpLoading, error: signUpError }] = useSignUp()
+  const [prepareSignUpMutation, { loading: prepareSignUpLoading, error: prepareSignUpError }] = usePrepareSignUp()
 
   // errors
   const [clientError, setClientError] = useState<GenieError | null>(null)
-  const error = clientError ?? prepareSignUpQuery.error ?? signUpQuery.error
+  const error = clientError ?? prepareSignUpError ?? signUpError
+
+  // loadings
+  type Loading = { prepareSignUp?: boolean; signUp?: boolean }
+  const [clientLoading, setClientLoading] = useState<Loading>({})
+  const loading: Loading = useMemo(
+    () => ({
+      prepareSignUp: clientLoading.prepareSignUp || prepareSignUpLoading,
+      signUp: clientLoading.signUp || signUpLoading,
+    }),
+    [clientLoading.prepareSignUp, clientLoading.signUp, prepareSignUpLoading, signUpLoading]
+  )
 
   // signUp
   const handleSignUp = useCallback(
     async (code: string) => {
+      setClientError(null)
+
       const hashedPassword = await passwordHasher(password)
 
       try {
         const { starkPub: starknetPub, userKey: rulesPrivateKey } = await createWallet(password)
-        signUpMutation({
+        const { accessToken } = await signUpMutation({
           variables: {
             email,
             username,
@@ -73,12 +87,14 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFo
             acceptCommercialEmails,
           },
         })
+
+        if (accessToken) onSuccessfulConnection({ accessToken })
       } catch (error: any) {
         setClientError(formatError(`${error.message}, contact support if the error persist.`))
         return
       }
     },
-    [email, username, password, signUpMutation, createWallet]
+    [password, createWallet, signUpMutation, email, username, acceptCommercialEmails, onSuccessfulConnection]
   )
 
   // fields
@@ -103,29 +119,28 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFo
   const countdown = useCountdown(new Date(newEmailVerificationCodeTime ?? 0))
 
   // new code
-  const handleNewCode = useCallback(
-    async (event) => {
-      event.preventDefault()
+  const handleNewCode = useCallback(async () => {
+    setClientLoading((state) => ({ ...state, prepareSignUp: true }))
 
-      // get captcha
-      recaptchaRef.current?.reset()
-      const recaptchaTokenV2 = await recaptchaRef.current?.executeAsync()
-      if (!recaptchaTokenV2) return
+    // get captcha
+    recaptchaRef.current?.reset()
+    const recaptchaTokenV2 = await recaptchaRef.current?.executeAsync()
+    if (!recaptchaTokenV2) return
 
-      setEmailVerificationCode('')
+    setEmailVerificationCode('')
+    setClientLoading((state) => ({ ...state, prepareSignUp: false }))
 
-      prepareSignUpMutation({ variables: { username, email, recaptchaTokenV2 }})
-    },
-    [email, username, prepareSignUpMutation, setEmailVerificationCode]
-  )
+    const { success } = await prepareSignUpMutation({ variables: { username, email, recaptchaTokenV2 } })
 
-  useEffect(() => {
-    if (signUpPrepared) refreshNewEmailVerificationCodeTime()
-  }, [signUpPrepared, refreshNewEmailVerificationCodeTime])
-
-  useEffect(() => {
-    if (accessToken) onSuccessfulConnection({ accessToken })
-  }, [accessToken, onSuccessfulConnection])
+    if (success) refreshNewEmailVerificationCodeTime()
+  }, [
+    email,
+    username,
+    prepareSignUpMutation,
+    setEmailVerificationCode,
+    refreshNewEmailVerificationCodeTime,
+    recaptchaRef.current,
+  ])
 
   return (
     <ModalContent>
@@ -144,16 +159,18 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFo
               placeholder="Code"
               type="text"
               onUserInput={onEmailVerificationCodeInput}
-              loading={signUpQuery.loading}
+              loading={loading.signUp}
               $valid={error?.id !== 'emailVerificationCode'}
             />
+
+            <ReCAPTCHA ref={recaptchaRef} />
 
             {error?.render()}
           </Column>
 
           <Column gap={8}>
             <TYPE.body>
-              <Trans>The code has been emailed to {email}</Trans>
+              {loading.prepareSignUp ? <Trans>Loading...</Trans> : <Trans>The code has been emailed to {email}</Trans>}
             </TYPE.body>
             {countdown?.seconds ? (
               <TYPE.subtitle>
