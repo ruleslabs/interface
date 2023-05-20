@@ -8,5 +8,5 @@ const REFRESH_TOKEN = gql`
 `
 
 export default async function refreshToken() {
-  return apolloClient.mutate({ mutation: REFRESH_TOKEN })
+  return apolloClient.mutate({ mutation: REFRESH_TOKEN }).catch(() => {})
 }

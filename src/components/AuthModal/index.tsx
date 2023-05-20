@@ -31,11 +31,11 @@ export default function AuthModal() {
   // Current user
   const { refreshCurrentUser } = useCurrentUser()
   const onSuccessfulConnection = useCallback(
-    ({ accessToken }: OnSuccessfulConnectionResponse) => {
+    ({ accessToken, closeModal = true }: OnSuccessfulConnectionResponse) => {
       storeAccessToken(accessToken)
       refreshCurrentUser()
 
-      if (authMode !== null && authMode !== AuthMode.REMOVE_TWO_FACTOR_AUTH_SECRET) {
+      if (closeModal) {
         toggleAuthModal()
       }
 

@@ -9,7 +9,7 @@ import { TYPE } from '@/styles/theme'
 import { RowBetween, RowCenter } from '@/components/Row'
 import { ColumnCenter } from '@/components/Column'
 import { TabButton } from '@/components/Button'
-import { useSearchUser, useCurrentUser } from '@/state/user/hooks'
+import { useSearchUser } from '@/state/user/hooks'
 import DiscordMember from '@/components/DiscordStatus/DiscordMember'
 import AvatarEditModal from '@/components/AvatarEditModal'
 import { useDefaultAvatarIdFromUrl } from '@/hooks/useDefaultAvatarUrls'
@@ -21,6 +21,7 @@ import { useAvatarEditModalToggle } from '@/state/application/hooks'
 
 import Instagram from '@/images/instagram-color.svg'
 import Twitter from '@/images/twitter-color.svg'
+import useCurrentUser from '@/hooks/useCurrentUser'
 
 const Gradient = styled.div`
   background: ${({ theme }) => theme.gradient1};

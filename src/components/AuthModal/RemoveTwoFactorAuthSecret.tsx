@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 import { useRouter } from 'next/router'
@@ -12,9 +12,9 @@ import Link from '@/components/Link'
 import { PrimaryButton } from '@/components/Button'
 
 import Checkmark from '@/images/checkmark.svg'
-import Close from '@/images/close.svg'
 import { AuthFormProps } from './types'
 import { useRemoveTwoFactorAuthSecret } from '@/graphql/data/Auth'
+import { PaginationSpinner } from '../Spinner'
 
 const StyledCheckmark = styled(Checkmark)`
   border-radius: 50%;
@@ -25,27 +25,6 @@ const StyledCheckmark = styled(Checkmark)`
   padding: 24px;
   margin: 0 auto;
   stroke: ${({ theme }) => theme.text1};
-`
-
-const StyledFail = styled(Close)`
-  border-radius: 50%;
-  overflow: visible;
-  background: ${({ theme }) => theme.error};
-  width: 108px;
-  height: 108px;
-  padding: 24px;
-  margin: 0 auto;
-  stroke: ${({ theme }) => theme.text1};
-`
-
-const Subtitle = styled(TYPE.body)`
-  text-align: center;
-  width: 100%;
-  max-width: 420px;
-
-  span {
-    font-weight: 700;
-  }
 `
 
 const ConfigureTwoFactorAuthButtonWrapper = styled(ColumnCenter)`
@@ -69,6 +48,9 @@ export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }
   const { token, email: encodedEmail } = router.query
   const email = useMemo(() => (encodedEmail ? decodeURIComponent(encodedEmail as string) : undefined), [encodedEmail])
 
+  // success
+  const [success, setSuccess] = useState(false)
+
   // modal
   const toggleAuthModal = useAuthModalToggle()
 
@@ -78,7 +60,10 @@ export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }
     if (!email || typeof token !== 'string') return
 
     removeTwoFactorAuthSecretMutation({ variables: { email, token } }).then(({ accessToken }) => {
-      if (accessToken) onSuccessfulConnection({ accessToken })
+      if (accessToken) {
+        onSuccessfulConnection({ accessToken, closeModal: false })
+        setSuccess(true)
+      }
     })
   }, []) // need state on mount
 
@@ -88,40 +73,30 @@ export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }
 
       <ModalBody>
         <ColumnCenter gap={32}>
-          {error ? (
-            <Column gap={24}>
-              <StyledFail />
+          {error?.render()}
 
-              <Column gap={8}>
-                <Subtitle>
-                  <Trans>The Two-Factor Authentication has not been removed.</Trans>
-                </Subtitle>
+          <PaginationSpinner loading={loading} />
 
-                {error?.render()}
-              </Column>
-            </Column>
-          ) : (
-            !loading && (
-              <>
-                <Column gap={24}>
-                  <StyledCheckmark />
+          {success && (
+            <>
+              <Column gap={24}>
+                <StyledCheckmark />
 
-                  <Column gap={8}>
-                    <Subtitle>
-                      <Trans>The Two-Factor Authentication has been successfully removed.</Trans>
-                    </Subtitle>
-                  </Column>
+                <Column gap={8}>
+                  <TYPE.body>
+                    <Trans>The Two-Factor Authentication has been successfully removed.</Trans>
+                  </TYPE.body>
                 </Column>
+              </Column>
 
-                <ConfigureTwoFactorAuthButtonWrapper>
-                  <Link href="/settings/security">
-                    <PrimaryButton large>
-                      <Trans>Setup a new one</Trans>
-                    </PrimaryButton>
-                  </Link>
-                </ConfigureTwoFactorAuthButtonWrapper>
-              </>
-            )
+              <ConfigureTwoFactorAuthButtonWrapper>
+                <Link href="/settings/security">
+                  <PrimaryButton large>
+                    <Trans>Setup a new one</Trans>
+                  </PrimaryButton>
+                </Link>
+              </ConfigureTwoFactorAuthButtonWrapper>
+            </>
           )}
         </ColumnCenter>
       </ModalBody>
