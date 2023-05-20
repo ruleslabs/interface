@@ -24,7 +24,7 @@ import { AuthFormProps } from './types'
 import { usePrepareSignUp, useSignUp } from '@/graphql/data/Auth'
 import { formatError } from '@/utils/error'
 import { GenieError } from '@/types'
-import ReCAPTCHA from '@/components/Recaptcha'
+import ReCAPTCHA, { RecaptchaPolicy } from '@/components/Recaptcha'
 
 const ResendCode = styled(TYPE.subtitle)`
   display: inline;
@@ -163,8 +163,6 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFo
               $valid={error?.id !== 'emailVerificationCode'}
             />
 
-            <ReCAPTCHA ref={recaptchaRef} />
-
             {error?.render()}
           </Column>
 
@@ -182,6 +180,9 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFo
               </ResendCode>
             )}
           </Column>
+
+          <RecaptchaPolicy />
+          <ReCAPTCHA ref={recaptchaRef} />
         </Column>
       </ModalBody>
     </ModalContent>

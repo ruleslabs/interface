@@ -55,6 +55,8 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: AuthFormP
     async (event) => {
       event.preventDefault()
 
+      setClientError(null)
+
       if (!email || typeof username !== 'string' || typeof token !== 'string') return
 
       if (password !== confirmPassword) {
@@ -84,13 +86,16 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: AuthFormP
           },
         })
 
-        if (accessToken) onSuccessfulConnection({ accessToken })
+        if (accessToken) {
+          onSuccessfulConnection({ accessToken })
+          router.replace('/')
+        }
       } catch (error: any) {
         setClientError(formatError(`${error.message}, contact support if the error persist.`))
         return
       }
     },
-    [password, confirmPassword, updatePasswordMutation, username, onSuccessfulConnection]
+    [password, confirmPassword, updatePasswordMutation, username, onSuccessfulConnection, router.replace]
   )
 
   return (

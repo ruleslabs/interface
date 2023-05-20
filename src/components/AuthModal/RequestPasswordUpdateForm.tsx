@@ -1,6 +1,6 @@
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 import GoogleReCAPTCHA from 'react-google-recaptcha'
 
 import { ModalHeader } from '@/components/Modal'
@@ -14,6 +14,7 @@ import {
   useAuthForm,
   useNewAuthUpdateLinkTime,
   useRefreshNewAuthUpdateLinkTime,
+  useAuthActionHanlders,
 } from '@/state/auth/hooks'
 import { useAuthModalToggle } from '@/state/application/hooks'
 import useCountdown from '@/hooks/useCountdown'
@@ -32,13 +33,18 @@ export default function RequestPasswordUpdateForm() {
   const setAuthMode = useSetAuthMode()
 
   // graphql mutations
-  const [requestPasswordUpdateMutation, { data: requested, loading, error }] = useRequestPasswordUpdate()
+  const [requestPasswordUpdateMutation, { loading: mutationLoading, error }] = useRequestPasswordUpdate()
+
+  // loading
+  const [clientLoading, setClientLoading] = useState(false)
+  const loading = clientLoading || mutationLoading
 
   // email
-  const { email: emailFromState } = useAuthForm()
-  const [email, setEmail] = useState(emailFromState)
-  const [recipient, setRecipient] = useState<string | null>(null)
-  const onEmailInput = useCallback((email: string) => setEmail(email), [setEmail])
+  const { email } = useAuthForm()
+  const { onEmailInput } = useAuthActionHanlders()
+
+  // success
+  const [success, setSuccess] = useState(false)
 
   // Countdown
   const newAuthUpdateLinkTime = useNewAuthUpdateLinkTime()
@@ -49,25 +55,24 @@ export default function RequestPasswordUpdateForm() {
   const recaptchaRef = useRef<GoogleReCAPTCHA>(null)
 
   // new code
-  const handleNewLink = useCallback(
-    async (event) => {
-      event.preventDefault()
+  const handleNewLink = useCallback(async () => {
+    setSuccess(false)
+    setClientLoading(true)
 
-      recaptchaRef.current?.reset()
-      const recaptchaTokenV2 = await recaptchaRef.current?.executeAsync()
-      if (!recaptchaTokenV2) return
+    recaptchaRef.current?.reset()
+    const recaptchaTokenV2 = await recaptchaRef.current?.executeAsync()
 
-      requestPasswordUpdateMutation({ variables: { email, recaptchaTokenV2 } })
-    },
-    [email, requestPasswordUpdateMutation, recaptchaRef.current]
-  )
+    setClientLoading(false)
 
-  useEffect(() => {
-    if (requested) {
+    if (!recaptchaTokenV2) return
+
+    const { success } = await requestPasswordUpdateMutation({ variables: { email, recaptchaTokenV2 } })
+
+    if (success) {
+      setSuccess(true)
       refreshNewAuthUpdateLinkTime()
-      setRecipient(email)
     }
-  }, [refreshNewAuthUpdateLinkTime, setRecipient, requested, email])
+  }, [email, requestPasswordUpdateMutation, refreshNewAuthUpdateLinkTime, recaptchaRef.current])
 
   return (
     <ModalContent>
@@ -76,10 +81,16 @@ export default function RequestPasswordUpdateForm() {
       <ModalBody>
         <Column gap={26}>
           <TYPE.body>
-            <Trans>
-              Enter your email to request a password update, you will receive a link to that email address to update
-              your password.
-            </Trans>
+            {success ? (
+              <Trans>The link has been emailed to {email}</Trans>
+            ) : loading ? (
+              <Trans>Loading...</Trans>
+            ) : (
+              <Trans>
+                Enter your email to request a password update, you will receive a link to that email address to update
+                your password.
+              </Trans>
+            )}
           </TYPE.body>
 
           <Column gap={12}>
@@ -93,31 +104,22 @@ export default function RequestPasswordUpdateForm() {
               $valid={error?.id !== 'email'}
             />
 
-            <RecaptchaPolicy />
-
             {error?.render()}
           </Column>
 
           <Column gap={8}>
-            {recipient && (
-              <TYPE.body>
-                <Trans>The link has been emailed to {recipient}</Trans>
-              </TYPE.body>
-            )}
+            <SubmitButton type="submit" onClick={handleNewLink} disabled={!!countdown?.seconds || loading} large>
+              <Trans>Send</Trans>
+            </SubmitButton>
 
             {!!countdown?.seconds && (
               <TYPE.subtitle>
-                <Trans>New link available in {countdown.seconds} seconds</Trans>
+                <Trans>New link in {countdown.seconds} seconds</Trans>
               </TYPE.subtitle>
             )}
 
-            <Column>
-              <ReCAPTCHA ref={recaptchaRef} />
-
-              <SubmitButton type="submit" onClick={handleNewLink} disabled={!!countdown?.seconds} large>
-                {loading ? 'Loading ...' : t`Send`}
-              </SubmitButton>
-            </Column>
+            <ReCAPTCHA ref={recaptchaRef} />
+            <RecaptchaPolicy />
           </Column>
         </Column>
       </ModalBody>
