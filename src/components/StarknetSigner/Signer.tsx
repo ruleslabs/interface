@@ -70,15 +70,14 @@ export default function Signer({
 
   // wallet
   const { currentUser } = useCurrentUser()
-  const address = currentUser.starknetWallet.address
+  const address = currentUser?.starknetWallet.address ?? ''
 
   // starknet account
   const [account, setAccount] = useState<Account | null>(null)
 
   // balance
-  const balance =
-    useETHBalances([currentUser?.starknetWallet.address])[currentUser?.starknetWallet.address] ??
-    WeiAmount.fromRawAmount(0)
+  const balances = useETHBalances([address])
+  const balance = balances?.[address] ?? WeiAmount.fromRawAmount(0)
 
   // network fee
   const [parsedNetworkFee, setParsedNetworkFee] = useState<{ fee: WeiAmount; maxFee: WeiAmount } | null>(null)
@@ -96,9 +95,10 @@ export default function Signer({
 
   // can pay
   const canPayTransaction = useMemo(() => {
-    if (!parsedTotalCost?.maxCost && !parsedNetworkFee?.maxFee) return false
+    const maxFee = parsedTotalCost?.maxCost ?? parsedNetworkFee?.maxFee
+    if (!maxFee) return false
 
-    return JSBI.greaterThanOrEqual(balance.quotient, (parsedTotalCost?.maxCost ?? parsedNetworkFee?.maxFee)!.quotient)
+    return JSBI.greaterThanOrEqual(balance.quotient, maxFee.quotient)
   }, [parsedTotalCost?.maxCost.quotient, parsedNetworkFee?.maxFee.quotient, balance.quotient])
 
   // tx
@@ -173,12 +173,12 @@ export default function Signer({
           })
         })
         .then((signature?: Signature) => {
-          if (!signature) {
+          if (!signature || !nonce) {
             onError('Failed to sign transaction')
             return
           }
 
-          onSignature(signature, parsedNetworkFee.maxFee.quotient.toString(), nonce!)
+          onSignature(signature, parsedNetworkFee.maxFee.quotient.toString(), nonce)
         })
         .catch((error: Error) => {
           if (!error) return

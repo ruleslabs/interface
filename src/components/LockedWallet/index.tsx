@@ -16,9 +16,11 @@ export default function LockedWallet() {
   const { currentUser } = useCurrentUser()
 
   // ETH balance
+  const address = currentUser?.starknetWallet.address ?? ''
+  const balances = useETHBalances([address])
+  const balance = balances?.[address] ?? WeiAmount.fromRawAmount(0)
+
   const weiAmountToEURValue = useWeiAmountToEURValue()
-  let balance = useETHBalances([currentUser?.starknetWallet.address])[currentUser?.starknetWallet.address]
-  balance = currentUser?.starknetWallet.address ? balance : WeiAmount.fromRawAmount(0)
 
   // forced upgrade
   const isLockedForForcedUpgrade = useMemo(

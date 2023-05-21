@@ -32,9 +32,12 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
   // call
   const [calls, setCalls] = useState<Call[] | null>(null)
   const handleConfirmation = useCallback(() => {
+    const contractAddress = currentUser?.starknetWallet.address
+    if (!contractAddress) return
+
     setCalls([
       {
-        contractAddress: currentUser.starknetWallet.address,
+        contractAddress,
         entrypoint: 'upgrade',
         calldata: [ACCOUNT_CLASS_HASH],
       },
@@ -88,7 +91,7 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
       <ModalContent>
         <ModalHeader onDismiss={toggleUpgradeWalletModal} title={calls ? undefined : t`Wallet upgrade`} />
 
-        {currentUser.needsUpgrade ? (
+        {currentUser.starknetWallet.needsUpgrade ? (
           <StarknetSigner
             confirmationText={t`Your wallet will be upgraded`}
             confirmationActionText={t`Confirm wallet upgrade`}

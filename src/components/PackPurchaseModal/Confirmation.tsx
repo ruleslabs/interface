@@ -75,13 +75,14 @@ const SeeMyPacksButtonWrapper = styled(ColumnCenter)`
 
 interface ConfirmationProps {
   packName: string
-  amountPaid: number
   error?: string
   success?: boolean
 }
 
-export default function Confirmation({ packName, amountPaid, error, success = false }: ConfirmationProps) {
+export default function Confirmation({ packName, error, success = false }: ConfirmationProps) {
   const { currentUser } = useCurrentUser()
+
+  if (!currentUser) return null
 
   return (
     <StyledConfirmation>

@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
@@ -52,10 +52,6 @@ function Packs() {
 
   const { currentUser } = useCurrentUser()
   const isCurrentUserProfile = currentUser?.slug === userSlug
-
-  // sort
-  const [increaseSort, setIncreaseSort] = useState(true)
-  const toggleSort = useCallback(() => setIncreaseSort(!increaseSort), [increaseSort, setIncreaseSort])
 
   // query packs
   const packsBalancesQuery = useQuery(USER_PACKS_BALANCES_QUERY, { variables: { slug: userSlug }, skip: !userSlug })

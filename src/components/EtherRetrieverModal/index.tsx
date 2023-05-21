@@ -126,10 +126,12 @@ export default function EtherRetrieveModal() {
               })),
             },
           })
-            .then(() => setCurrentUser((currentUser) => {
-              if (!currentUser) return
-              currentUser.retrievableEthers = []
-            }))
+            .then(() =>
+              setCurrentUser((currentUser) => {
+                if (!currentUser) return
+                currentUser.retrievableEthers = []
+              })
+            )
             .catch((retrieveEtherError: ApolloError) => {
               console.error(retrieveEtherError?.graphQLErrors?.[0])
             })

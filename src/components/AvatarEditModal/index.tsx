@@ -59,7 +59,7 @@ export default function AvatarEditModal({ currentAvatarId, customAvatarUrl }: Av
     (avatarId: number) => {
       setSelectedAvatarId(avatarId)
       editAvatarMutation({ variables: { avatarId } })
-        .then((res: any) => {
+        .then(() => {
           refreshCurrentUser()
         })
         .catch((editAvatarError: ApolloError) => {

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useQuery, gql, ApolloError } from '@apollo/client'
+import { useQuery, gql } from '@apollo/client'
 import moment, { Duration } from 'moment'
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
@@ -7,9 +7,9 @@ import { Trans, t } from '@lingui/macro'
 import Column from '@/components/Column'
 import { RowBetween, RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
-import { useRevokeSessionMutation } from '@/state/auth/hooks'
 import Label from '@/components/Label'
 import { SecondaryButton } from '@/components/Button'
+import { useRevokeSession } from '@/graphql/data/Auth'
 
 const StyledSessionRow = styled(RowCenter)`
   width: 100%;
@@ -91,20 +91,17 @@ const SessionRow = ({ osName, duration, isCurrentSession, onRevoke }: SessionRow
 
 export default function SessionsManager() {
   const activeSessionsQuery = useQuery(GET_ACTIVE_SESSIONS)
-  const [revokeSessionMutation] = useRevokeSessionMutation()
+  const [revokeSessionMutation] = useRevokeSession()
 
   const [activeSessions, setActiveSessions] = useState<Session[]>([])
 
   const handleSessionRevoke = useCallback(
-    (payload) => {
-      revokeSessionMutation({ variables: { payload } })
-        .then((res: any) => {
-          const payload = res?.data?.revokeRefreshToken
-          if (payload) setActiveSessions(activeSessions.filter((session) => session.payload !== payload))
-        })
-        .catch((revokeSessionError: ApolloError) => {
-          console.error(revokeSessionError) // TODO handle error
-        })
+    async (payload) => {
+      const { success } = await revokeSessionMutation({ variables: { payload } })
+
+      if (success) {
+        setActiveSessions(activeSessions.filter((session) => session.payload !== payload))
+      }
     },
     [revokeSessionMutation, setActiveSessions, activeSessions]
   )

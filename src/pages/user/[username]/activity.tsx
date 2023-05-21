@@ -20,7 +20,6 @@ function Explorer({ address, publicKey, userId }: ExplorerProps) {
   const starknetTransactions = starknetTransactionQuery.data
 
   // loading / error
-  const isValid = !starknetTransactionQuery.error
   const isLoading = starknetTransactionQuery.loading
 
   // infinite scroll

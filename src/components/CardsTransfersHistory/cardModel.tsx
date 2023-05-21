@@ -36,11 +36,11 @@ const sorts: Array<{
   },
 ]
 
-interface CardModelHistoryProps extends React.HTMLAttributes<HTMLDivElement> {
+interface CardModelHistoryProps {
   cardModelId: string
 }
 
-export default function CardModelHistory({ cardModelId, ...props }: CardModelHistoryProps) {
+export default function CardModelHistory({ cardModelId }: CardModelHistoryProps) {
   const [sortingKey, setSortingKey] = useState<TransfersSortingKey>(sorts[0].key)
 
   const transfersSearch = useSearchTransfers({ facets: { cardModelId }, sortingKey, onlySales: true })

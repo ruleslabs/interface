@@ -67,13 +67,6 @@ export default function PackPurchaseModal({
     onSuccessfulPackPurchase(quantity)
   }, [onSuccessfulPackPurchase, quantity])
 
-  // on retry
-  const onRetry = useCallback(() => {
-    setError(null)
-    setProcessing(false)
-    refreshPaymentIntent()
-  }, [refreshPaymentIntent])
-
   // on close modal
   useEffect(() => {
     if (isOpen) {
@@ -92,7 +85,7 @@ export default function PackPurchaseModal({
 
         <ModalBody>
           {(!!error || success || processing) && (
-            <Confirmation packName={packName} amountPaid={price} error={error ?? undefined} success={success} />
+            <Confirmation packName={packName} error={error ?? undefined} success={success} />
           )}
 
           <Elements stripe={stripePromise}>

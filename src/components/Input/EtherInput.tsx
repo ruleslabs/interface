@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useRef } from 'react'
 import styled from 'styled-components'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
@@ -61,7 +61,6 @@ interface EtherInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export default function EtherInput({ onUserInput, ...props }: EtherInputProps) {
-  const [ethereumValue, setEthereumValue] = useState(props.value)
   const handleInput = useCallback(
     (event) => {
       const value = event?.target?.value?.replace(',', '.')

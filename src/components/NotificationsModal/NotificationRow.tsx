@@ -55,7 +55,7 @@ interface NotificationRowProps {
 const MemoizedNotificationRowPropsEqualityCheck = (prevProps: NotificationRowProps, nextProps: NotificationRowProps) =>
   prevProps.innerRef === nextProps.innerRef
 
-const MemoizedNotificationRow = React.memo(function NotificationRow({ innerRef, notification }: NotificationRowProps) {
+const MemoizedNotificationRow = React.memo(function NotificationRow({ notification }: NotificationRowProps) {
   const { title, subtitle, icon, link } = useMemo(() => {
     switch (notification.__typename) {
       case 'EtherRetrieveNotification':

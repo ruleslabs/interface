@@ -32,7 +32,9 @@ export default function NavProfile(props: React.HTMLAttributes<HTMLDivElement>) 
   const { currentUser } = useCurrentUser()
 
   // parsed cScore
-  const parsedCScore = useParsedCScore(currentUser.cScore, { rounded: false })
+  const parsedCScore = useParsedCScore(currentUser?.cScore, { rounded: false })
+
+  if (!currentUser) return null
 
   return (
     <ProfileRow {...props}>

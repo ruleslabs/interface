@@ -1,5 +1,4 @@
 import { useMemo, useCallback, useState } from 'react'
-import styled from 'styled-components'
 import { useLazyQuery, gql } from '@apollo/client'
 import { t } from '@lingui/macro'
 
@@ -35,18 +34,6 @@ const CARDS_QUERY = gql`
       }
     }
   }
-`
-
-const StyledDeckInsertionModal = styled.div<{ windowHeight?: number }>`
-  padding: 16px 40px;
-  background: ${({ theme }) => theme.bg1};
-  width: 100vw;
-  height: ${({ windowHeight }) => windowHeight}px;
-  overflow: scroll;
-
-  ${({ theme }) => theme.media.medium`
-    padding: 16px;
-  `}
 `
 
 interface DeckInsertionModalProps {

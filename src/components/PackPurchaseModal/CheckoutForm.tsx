@@ -12,7 +12,6 @@ import { useValidatePaymentMethod, useConfirmPaymentIntent } from '@/state/strip
 import Checkbox from '@/components/Checkbox'
 import Link from '@/components/Link'
 import useCheckbox from '@/hooks/useCheckbox'
-import Spinner from '@/components/Spinner'
 
 import VisaIcon from '@/images/cardBrands/visa.svg'
 import MastercardIcon from '@/images/cardBrands/mastercard.svg'
@@ -64,16 +63,6 @@ const StripeLabel = styled.label`
   }
 `
 
-const Confirmation = styled(RowCenter)`
-  justify-content: center;
-  gap: 16px;
-`
-
-const StyledSpinner = styled(Spinner)`
-  margin: 0;
-  width: 24px;
-`
-
 interface CheckoutFormProps {
   isOpen: boolean
   paymentIntent: string | null
@@ -95,7 +84,6 @@ export default function CheckoutForm({
 }: CheckoutFormProps) {
   const [loading, setLoading] = useState(!paymentIntent)
   const [error, setError] = useState<string | null>(null)
-  const [confirming, setConfirming] = useState(false)
 
   // Stripe ready
   const [stripeElementsReady, setStripeElementsReady] = useState(false)

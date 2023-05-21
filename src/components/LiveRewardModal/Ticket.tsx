@@ -85,7 +85,7 @@ export default function LiveRewardTicketModal({ liveReward }: LiveRewardTicketMo
 
             <QRCodeWrapper>
               <QRCodeSVG
-                value={`${process.env.NEXT_PUBLIC_APP_URL}/?action=claim-live-reward&userId=${currentUser.id}&liveRewardId=${liveReward.id}`}
+                value={`${process.env.NEXT_PUBLIC_APP_URL}/?action=claim-live-reward&userId=${currentUser?.id}&liveRewardId=${liveReward.id}`}
                 bgColor={`transparent`}
                 fgColor={theme.text1}
               />

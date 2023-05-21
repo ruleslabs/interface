@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { useSearchUsers } from '@/state/search/hooks'
 import { TOP_COLLECTOR_RANK_MAX } from '@/constants/misc'
 
-export function useCScoreRank(cScore: number): number {
+export function useCScoreRank(cScore = 0): number {
   // user rank
   const userRankSearch = useSearchUsers({
     sortingKey: 'cScore',

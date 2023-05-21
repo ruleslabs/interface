@@ -75,7 +75,10 @@ export default function TransfersTable({ transfers, loading, error, showSerialNu
   const usersTable = useMemo(
     () =>
       ((usersQuery?.data?.usersByStarknetAddresses ?? []) as any[]).reduce<{ [key: string]: any }>((acc, user: any) => {
-        acc[user.starknetWallet.address!] = user
+        const address = user.starknetWallet.address
+        if (!address) return acc
+
+        acc[address] = user
         return acc
       }, {}),
     [usersQuery?.data?.usersByStarknetAddresses]

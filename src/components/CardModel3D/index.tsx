@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
 import FocusLock from 'react-focus-lock'
 import { RemoveScroll } from 'react-remove-scroll'
@@ -38,7 +38,7 @@ const CardWrapper = styled.div<{ stacked: boolean; fullscreen: boolean; smallWid
   height: 100%;
   width: fit-content;
 
-  ${({ stacked, fullscreen }) =>
+  ${({ stacked }) =>
     stacked &&
     `
       transform: scale(0.97) translate(4.8%, 1.3%);
@@ -57,25 +57,6 @@ const CardWrapper = styled.div<{ stacked: boolean; fullscreen: boolean; smallWid
     & video {
       ${smallWidth && `width: ${smallWidth}px;`}
     }
-  `}
-`
-
-const DefaultCardVisualWrapperStyle = css`
-  position: absolute;
-  height: 100%;
-  top: 0;
-  left: 16px;
-
-  & > video {
-    height: 100%;
-  }
-
-  ${({ theme }) => theme.media.small`
-    position: unset;
-  `}
-
-  ${({ theme }) => theme.media.medium`
-    left: 60px;
   `}
 `
 

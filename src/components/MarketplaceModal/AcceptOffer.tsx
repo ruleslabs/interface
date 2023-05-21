@@ -58,7 +58,9 @@ export default function AcceptOfferModal({
   const toggleWalletModal = useWalletModalToggle()
 
   // balance
-  const balance = useETHBalances([currentUser?.starknetWallet.address])[currentUser?.starknetWallet.address]
+  const address = currentUser?.starknetWallet.address ?? ''
+  const balances = useETHBalances([address])
+  const balance = balances?.[address]
 
   // can pay for card
   const canPayForCard = useMemo(() => {

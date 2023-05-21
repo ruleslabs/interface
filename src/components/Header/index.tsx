@@ -138,7 +138,7 @@ export default function Header() {
       <NavBar>
         {navLinks.map((navLink) =>
           navLink.map((navLink) => (
-            <ActiveLink key={navLink.name} href={navLink.link!} target={navLink.external ? '_blank' : undefined}>
+            <ActiveLink key={navLink.name} href={navLink.link ?? ''} target={navLink.external ? '_blank' : undefined}>
               <NavButton>
                 <RowCenter gap={4}>
                   <Trans id={navLink.name} render={({ translation }) => <>{translation}</>} />

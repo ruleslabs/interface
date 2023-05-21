@@ -83,7 +83,7 @@ export default function SocialAccountsSettings() {
   const saveSocialLinks = useCallback(() => {
     setSetSocialLinksLoading(true)
     setSocialLinksMutation({ variables: { twitterUsername, instagramUsername } })
-      .then((res: any) => {
+      .then(() => {
         setSocialLinksModified(false)
 
         refreshCurrentUser()

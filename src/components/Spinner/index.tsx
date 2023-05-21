@@ -75,9 +75,8 @@ const StyledPaginationSpinner = styled(Spinner)`
   display: block;
 `
 
-interface PaginationSpinnerProps extends React.HTMLAttributes<HTMLImageElement> {
+interface PaginationSpinnerProps {
   loading: boolean
 }
 
-export const PaginationSpinner = ({ loading, ...props }: PaginationSpinnerProps) =>
-  loading ? <StyledPaginationSpinner /> : null
+export const PaginationSpinner = ({ loading }: PaginationSpinnerProps) => (loading ? <StyledPaginationSpinner /> : null)

@@ -34,11 +34,13 @@ export default function StarknetAccountStatus() {
   // private key modal
   const toggleStarknetAccountPrivateKeyModal = useStarknetAccountPrivateKeyModalToggle()
 
+  if (!currentUser) return null
+
   return (
     <>
       <Column gap={12}>
         <Subtitle value={t`Wallet address`} />
-        <LongHex value={currentUser.starknetWallet.address} />
+        <LongHex value={currentUser.starknetWallet.address ?? ''} />
 
         <ButtonsWrapper>
           <Link

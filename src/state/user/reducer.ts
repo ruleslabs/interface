@@ -12,8 +12,7 @@ export const initialState: UserState = {
 }
 
 export default createReducer(initialState, (builder) =>
-  builder
-    .addCase(updateUserLocale, (state, action) => {
-      state.userLocale = action.payload.userLocale
-    })
+  builder.addCase(updateUserLocale, (state, action) => {
+    state.userLocale = action.payload.userLocale
+  })
 )

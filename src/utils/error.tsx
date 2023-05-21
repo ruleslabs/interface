@@ -7,8 +7,9 @@ export function formatError(message: string, id: string | null = null): GenieErr
   return {
     message,
     id,
-    render: () => (
-      message && <Trans id={message} render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>} />
-    ),
+    render: () =>
+      message && (
+        <Trans id={message} render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>} />
+      ),
   }
 }

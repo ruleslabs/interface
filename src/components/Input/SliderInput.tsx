@@ -1,9 +1,8 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useRef } from 'react'
 import styled from 'styled-components'
 
 import { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 
 const StyledSliderInput = styled(RowCenter)`
   padding: 8px 12px;
@@ -58,7 +57,6 @@ interface SliderInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export default function SliderInput({ onUserInput, unit, value, ...props }: SliderInputProps) {
-  const [ethereumValue, setSlidereumValue] = useState(value)
   const handleInput = useCallback(
     (event) => {
       const value = event?.target?.value
@@ -70,9 +68,6 @@ export default function SliderInput({ onUserInput, unit, value, ...props }: Slid
   // focus
   const inputRef = useRef<HTMLInputElement>(null)
   const setInputFocus = useCallback(() => inputRef.current?.focus(), [inputRef])
-
-  // fiat
-  const weiAmountToEURValue = useWeiAmountToEURValue()
 
   return (
     <StyledSliderInput onClick={setInputFocus}>

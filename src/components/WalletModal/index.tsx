@@ -67,9 +67,11 @@ export default function WalletModal() {
   const onWithdrawMode = useCallback(() => setWalletModalMode(WalletModalMode.WITHDRAW), [setWalletModalMode])
 
   // ETH balance
+  const address = currentUser?.starknetWallet.address ?? ''
+  const balances = useETHBalances([address])
+  const balance = balances?.[address] ?? WeiAmount.fromRawAmount(0)
+
   const weiAmountToEURValue = useWeiAmountToEURValue()
-  let balance = useETHBalances([currentUser?.starknetWallet.address])[currentUser?.starknetWallet.address]
-  balance = currentUser?.starknetWallet.address ? balance : WeiAmount.fromRawAmount(0)
 
   // render modal mode
   const renderModal = useCallback(() => {

@@ -82,7 +82,6 @@ function PackOpening() {
 
   // opening
   const [cards, setCards] = useState<any[] | null>(null)
-  const onOpening = useCallback((cards: any[]) => setCards(cards), [])
 
   if (loading || error || packQuery.error || !pack) return null
 

@@ -109,11 +109,7 @@ const USER_OWNED_CARD_MODELS_QUERY = gql`
   }
 `
 
-interface RuledexProps {
-  address: string
-}
-
-function Ruledex({ address }: RuledexProps) {
+function Ruledex() {
   // user slug
   const router = useRouter()
   const { username } = router.query

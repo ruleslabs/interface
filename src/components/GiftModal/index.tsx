@@ -313,7 +313,7 @@ export default function GiftModal({ cardsIds, onSuccess }: GiftModalProps) {
                 <Column gap={12}>
                   <TransferSummary>
                     <RowCenter gap={12}>
-                      <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackSrc} />
+                      <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackUrl} />
                       <TYPE.body fontSize={14}>
                         <Trans>My account</Trans>
                       </TYPE.body>

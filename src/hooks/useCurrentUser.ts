@@ -1,7 +1,6 @@
 import { shallow } from 'zustand/shallow'
 
 import { useBoundStore } from '@/zustand'
-import { UserSlice } from '@/zustand/user'
 
 export default function useCurrentUser() {
   const { currentUser, setCurrentUser, refreshCurrentUser } = useBoundStore(

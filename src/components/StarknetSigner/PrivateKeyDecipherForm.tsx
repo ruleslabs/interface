@@ -29,7 +29,7 @@ export default function PrivateKeyDecipherForm({ onPrivateKeyDeciphered }: Priva
 
   // wallet
   const { currentUser } = useCurrentUser()
-  const rulesPrivateKey = currentUser.starknetWallet.rulesPrivateKey
+  const rulesPrivateKey = currentUser?.starknetWallet.rulesPrivateKey
 
   // errors
   const [error, setError] = useState<string | null>(null)
@@ -38,6 +38,8 @@ export default function PrivateKeyDecipherForm({ onPrivateKeyDeciphered }: Priva
   const decipherPrivateKey = useCallback(
     (event) => {
       event.preventDefault()
+
+      if (!rulesPrivateKey) return
 
       decryptRulesPrivateKey(rulesPrivateKey, password)
         .then((res: string) => {

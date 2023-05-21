@@ -6,8 +6,13 @@ import { Trans } from '@lingui/macro'
 import { TYPE } from '@/styles/theme'
 import Link from '@/components/Link'
 
+const NEXT_PUBLIC_RECAPTCHA_V2_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_V2_KEY
+if (!NEXT_PUBLIC_RECAPTCHA_V2_KEY) {
+  throw 'env NEXT_PUBLIC_RECAPTCHA_V2_KEY not provided'
+}
+
 const ReCAPTCHA = React.forwardRef<GoogleReCAPTCHA>((_props, ref) => {
-  return <GoogleReCAPTCHA ref={ref} size="invisible" sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_V2_KEY!} />
+  return <GoogleReCAPTCHA ref={ref} size="invisible" sitekey={NEXT_PUBLIC_RECAPTCHA_V2_KEY} />
 })
 
 ReCAPTCHA.displayName = 'ReCAPTCHA'

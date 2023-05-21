@@ -61,7 +61,7 @@ export default function NotificationsModal() {
   useEffect(() => {
     if (isOpen && currentUser && currentUser.unreadNotificationsCount > 0) {
       markNotificationsAsReadMutation()
-        .then((res: any) => {
+        .then(() => {
           setCurrentUser({ ...currentUser, unreadNotificationsCount: 0 })
         })
         .catch((markNotificationsAsReadError: ApolloError) => {

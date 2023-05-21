@@ -578,10 +578,10 @@ export function useCurrentUserNotifications(): ApolloSearch {
   // on query completed
   const onQueryCompleted = useCallback(
     (data: any) => {
-      setEndCursor(data.currentUser.notifications.pageInfo.endCursor)
-      setHasNextPage(data.currentUser.notifications.pageInfo.hasNextPage)
+      setEndCursor(data?.currentUser?.notifications?.pageInfo?.endCursor ?? null)
+      setHasNextPage(data?.currentUser?.notifications?.pageInfo?.hasNextPage ?? false)
 
-      setNotifications(notifications.concat(data.currentUser.notifications.nodes))
+      setNotifications(notifications.concat(data?.currentUser?.notifications?.nodes ?? []))
     },
     [notifications.length]
   )

@@ -147,7 +147,7 @@ export default function UsersSearchBar({ onSelect, selfSearchAllowed = true }: U
     },
     [usersHits]
   )
-  const [queryUsersData, usersQuery] = useLazyQuery(USERS_QUERY, { onCompleted: onUsersQueryCompleted })
+  const [queryUsersData] = useLazyQuery(USERS_QUERY, { onCompleted: onUsersQueryCompleted })
 
   // algolia facets
   const facets = useMemo(
@@ -163,7 +163,7 @@ export default function UsersSearchBar({ onSelect, selfSearchAllowed = true }: U
     },
     [queryUsersData]
   )
-  const usersSearch = useSearchUsers({ search: debouncedSearch, facets, onPageFetched })
+  useSearchUsers({ search: debouncedSearch, facets, onPageFetched })
 
   // selection
   const handleSelect = useCallback(

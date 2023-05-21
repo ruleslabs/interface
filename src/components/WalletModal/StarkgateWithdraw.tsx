@@ -49,7 +49,9 @@ export default function WithdrawModal() {
   const account = useAccount()
 
   // balance
-  const balance = useETHBalances([currentUser?.starknetWallet.address])[currentUser?.starknetWallet.address]
+  const address = currentUser?.starknetWallet.address ?? ''
+  const balances = useETHBalances([address])
+  const balance = balances?.[address]
 
   // withdraw
   const [withdrawAmount, setWithdrawAmount] = useState('')

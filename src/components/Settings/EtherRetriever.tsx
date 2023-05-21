@@ -27,7 +27,7 @@ export default function StarknetAccountStatus() {
       ((currentUser?.retrievableEthers ?? []) as any[])
         .reduce<WeiAmount>((acc, { amount }) => acc.add(WeiAmount.fromRawAmount(amount)), WeiAmount.fromRawAmount(0))
         .toSignificant(6),
-    [currentUser.retrievableEthers.length]
+    [currentUser?.retrievableEthers?.length]
   )
 
   if (!currentUser) return null
