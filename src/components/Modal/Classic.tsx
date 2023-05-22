@@ -3,7 +3,7 @@ import '@reach/dialog/styles.css'
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { DialogOverlay, DialogContent } from '@reach/dialog'
-import { animated, useTransition } from 'react-spring'
+import { animated, useTransition } from '@react-spring/web'
 
 import Column from '@/components/Column'
 import useCloseModalOnNavigation from '@/hooks/useCloseModalOnNavigation'

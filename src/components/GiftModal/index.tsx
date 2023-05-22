@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
-import { uint256HexFromStrHex, getStarknetCardId, ScarcityName } from '@rulesorg/sdk-core'
 import { ApolloError, gql, useQuery } from '@apollo/client'
 import { Call, Signature, stark } from 'starknet'
 
@@ -18,13 +17,12 @@ import { PrimaryButton } from '@/components/Button'
 import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
 import StarknetSigner from '@/components/StarknetSigner'
-import { RULES_TOKENS_ADDRESSES } from '@/constants/addresses'
 import { useTransferCardMutation } from '@/state/wallet/hooks'
-import { networkId } from '@/constants/networks'
 import CardBreakdown from '@/components/MarketplaceModal/CardBreakdown'
 import Avatar from '@/components/Avatar'
 
 import Arrow from '@/images/arrow.svg'
+import { cardId, constants, uint256 } from '@rulesorg/sdk-core'
 
 const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
 
@@ -171,10 +169,10 @@ export default function GiftModal({ cardsIds, onSuccess }: GiftModalProps) {
   const tokenIds: string[] = useMemo(
     () =>
       cards.map((card: any) =>
-        getStarknetCardId(
+        cardId.getStarknetCardId(
           card.cardModel.artist.displayName,
           card.cardModel.season,
-          ScarcityName.indexOf(card.cardModel.scarcity.name),
+          constants.ScarcityName.indexOf(card.cardModel.scarcity.name),
           card.serialNumber
         )
       ),
@@ -190,7 +188,7 @@ export default function GiftModal({ cardsIds, onSuccess }: GiftModalProps) {
 
     setCalls([
       {
-        contractAddress: RULES_TOKENS_ADDRESSES[networkId],
+        contractAddress: constants.RULES_ADDRESSES[rules],
         entrypoint: 'safeBatchTransferFrom',
         calldata: [
           currentUser.starknetWallet.address,
@@ -198,7 +196,7 @@ export default function GiftModal({ cardsIds, onSuccess }: GiftModalProps) {
 
           tokenIds.length, // ids len
           ...tokenIds.flatMap((tokenId) => {
-            const uint256TokenId = uint256HexFromStrHex(tokenId)
+            const uint256TokenId = uint256.uint256HexFromStrHex(tokenId)
             return [uint256TokenId.low, uint256TokenId.high]
           }), // ids
 

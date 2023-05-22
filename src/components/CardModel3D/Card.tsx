@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
-import { useSpring, animated, interpolate } from 'react-spring'
+import { useSpring, animated, interpolate } from '@react-spring/web'
 
 import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
 import { round, range } from '@/utils/math'

@@ -5,11 +5,10 @@ import Column, { ColumnCenter } from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import Link from '@/components/Link'
-import Spinner from '@/components/Spinner'
-import { NETWORKS, networkId } from '@/constants/networks'
 
 import Checkmark from '@/images/checkmark.svg'
-import Close from '@/images/close.svg'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import { getChainInfo } from '@/constants/chainInfo'
 
 const StyledCheckmark = styled(Checkmark)`
   border-radius: 50%;
@@ -22,21 +21,6 @@ const StyledCheckmark = styled(Checkmark)`
   stroke: ${({ theme }) => theme.text1};
 `
 
-const StyledFail = styled(Close)`
-  border-radius: 50%;
-  overflow: visible;
-  background: ${({ theme }) => theme.error};
-  width: 108px;
-  height: 108px;
-  padding: 24px;
-  margin: 0 auto;
-  stroke: ${({ theme }) => theme.text1};
-`
-
-const StyledSpinner = styled(Spinner)`
-  margin: 0 auto;
-`
-
 const Title = styled(TYPE.large)`
   text-align: center;
   width: 100%;
@@ -46,13 +30,6 @@ const Subtitle = styled(TYPE.body)`
   text-align: center;
   width: 100%;
   max-width: 420px;
-`
-
-const ErrorMessage = styled(Subtitle)`
-  text-align: center;
-  width: 100%;
-  max-width: 420px;
-  color: ${({ theme }) => theme.error};
 `
 
 const EtherscanButtonWrapper = styled(ColumnCenter)`
@@ -71,63 +48,32 @@ const EtherscanButtonWrapper = styled(ColumnCenter)`
 `
 
 interface ConfirmationProps {
-  confirmationText?: string
-  transactionText?: string
-  txHash?: string
-  error?: string
-  waitingForFees?: boolean
-  success?: boolean
+  confirmationText: string
+  txHash: string
 }
 
-export default function Confirmation({
-  confirmationText = '',
-  transactionText = '',
-  txHash,
-  error,
-  waitingForFees = false,
-  success = false,
-}: ConfirmationProps) {
+export default function Confirmation({ confirmationText, txHash }: ConfirmationProps) {
   return (
     <ColumnCenter gap={32}>
       <Column gap={24}>
-        {success ? <StyledCheckmark /> : error ? <StyledFail /> : <StyledSpinner fill="primary1" />}
+        <StyledCheckmark />
 
-        {txHash ? (
-          <ColumnCenter gap={8}>
-            <Title>{confirmationText}</Title>
+        <ColumnCenter gap={8}>
+          <Title>{confirmationText}</Title>
 
-            <Subtitle>
-              <Trans>The transaction might take a few minutes to succeed.</Trans>
-            </Subtitle>
-          </ColumnCenter>
-        ) : error ? (
-          <ColumnCenter gap={8}>
-            <Title>
-              <Trans>Your transaction has been rejected</Trans>
-            </Title>
-
-            <ErrorMessage>{error}</ErrorMessage>
-          </ColumnCenter>
-        ) : (
-          <ColumnCenter gap={8}>
-            <Title>
-              {waitingForFees ? <Trans>Estimating network fee</Trans> : <Trans>Waiting for confirmation</Trans>}
-            </Title>
-
-            <Subtitle>{transactionText}</Subtitle>
-          </ColumnCenter>
-        )}
+          <Subtitle>
+            <Trans>The transaction might take a few minutes to succeed.</Trans>
+          </Subtitle>
+        </ColumnCenter>
       </Column>
 
-      {txHash && (
-        <EtherscanButtonWrapper>
-          <Link target="_blank" href={`${NETWORKS[networkId].explorerBaseUrl}/tx/${txHash}`}>
-            <PrimaryButton large>
-              <Trans>See on Starkscan</Trans>
-            </PrimaryButton>
-          </Link>
-        </EtherscanButtonWrapper>
-      )}
+      <EtherscanButtonWrapper>
+        <Link target="_blank" href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId)}/tx/${txHash}`}>
+          <PrimaryButton large>
+            <Trans>See on Starkscan</Trans>
+          </PrimaryButton>
+        </Link>
+      </EtherscanButtonWrapper>
     </ColumnCenter>
   )
 }

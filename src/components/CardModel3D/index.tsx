@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import { useSpring, animated } from 'react-spring'
+import { useSpring, animated } from '@react-spring/web'
 import FocusLock from 'react-focus-lock'
 import { RemoveScroll } from 'react-remove-scroll'
 

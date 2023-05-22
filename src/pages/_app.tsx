@@ -5,21 +5,17 @@ import React from 'react'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { Provider as ReduxProvider } from 'react-redux'
-import { Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
-import { MetaMask } from '@web3-react/metamask'
+import { ApolloProvider } from '@apollo/client'
 
 import { LanguageProvider } from '@/lib/i18n'
-import { metaMaskHooks, metaMask } from '@/constants/connectors'
-import { StarknetProvider } from '@/lib/starknet'
+import { EthereumProvider, StarknetProvider } from 'src/components/Web3Provider'
 import ApplicationUpdater from '@/state/application/updater'
 import { MulticallUpdater } from '@/lib/state/multicall'
 import DefaultLayout from '@/components/Layout'
 import StyledThemeProvider from '@/styles/theme'
 import store from '@/state'
 import { apolloClient } from '@/graphql/data/apollo'
-import { ApolloProvider } from '@apollo/client'
-
-const connectors: [MetaMask, Web3ReactHooks][] = [[metaMask, metaMaskHooks]]
+import RulesProvider from '@/components/RulesProvider'
 
 export default function App({ Component, pageProps }: AppProps) {
   const getLayout = Component.getLayout || ((page: JSX.Element) => <DefaultLayout>{page}</DefaultLayout>)
@@ -38,13 +34,15 @@ export default function App({ Component, pageProps }: AppProps) {
       <ReduxProvider store={store}>
         <LanguageProvider>
           <React.Fragment>
-            <StarknetProvider>
-              <Web3ReactProvider connectors={connectors}>
-                <ApolloProvider client={apolloClient}>
-                  <StyledThemeProvider>{children}</StyledThemeProvider>
-                </ApolloProvider>
-              </Web3ReactProvider>
-            </StarknetProvider>
+            <RulesProvider>
+              <StarknetProvider>
+                <EthereumProvider>
+                  <ApolloProvider client={apolloClient}>
+                    <StyledThemeProvider>{children}</StyledThemeProvider>
+                  </ApolloProvider>
+                </EthereumProvider>
+              </StarknetProvider>
+            </RulesProvider>
           </React.Fragment>
         </LanguageProvider>
       </ReduxProvider>
