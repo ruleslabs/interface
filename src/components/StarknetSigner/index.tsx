@@ -82,7 +82,7 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
   const { txHash } = executeTxRes.data
 
   // starknet account
-  const { address, account, needsSignerUpdate } = useRulesAccount()
+  const { address, account } = useRulesAccount()
   const updateSigner = useCallback(
     (pk: string) => {
       if (!account) return
@@ -105,8 +105,8 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
   }, [balance, parsedTotalCost])
 
   // loading / error
-  const loading = waitingTransactionQuery.loading || estimateFeesRes.loading
-  const error = estimateFeesRes.error || queryError
+  const loading = waitingTransactionQuery.loading || estimateFeesRes.loading || executeTxRes.loading
+  const error = estimateFeesRes.error || executeTxRes.error || queryError
 
   // fiat value
   const weiAmountToEURValue = useWeiAmountToEURValue()
@@ -184,10 +184,8 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
       )
     }
 
-    if (needsSignerUpdate) return <PrivateKeyDecipherForm onPrivateKeyDeciphered={updateSigner} />
-
-    return null
-  }, [waitingTransactionHash, loading, error, txHash, needsSignerUpdate, executeTx, updateSigner])
+    return <PrivateKeyDecipherForm onPrivateKeyDeciphered={updateSigner} />
+  }, [waitingTransactionHash, loading, error, txHash, executeTx, updateSigner])
 
   return (
     <ModalBody>

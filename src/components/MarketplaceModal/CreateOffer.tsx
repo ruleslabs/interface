@@ -128,12 +128,20 @@ export default function CreateOfferModal({ cardsIds }: CreateOfferModalProps) {
       calldata: [uint256TokenId.low, uint256TokenId.high, parsedPrice.quotient.toString()],
     })
 
-    // increase total price for final overview
-    setParsedPricesTotal((state) => state.add(parsedPrice))
+    if (cards.length === 1) {
+      // if overview is not needed, just start signing process
+      setSigning(true)
+    } else {
+      // increase total price for final overview
+      setParsedPricesTotal((state) => state.add(parsedPrice))
 
-    // move to the next card
-    setCardIndex((state) => state + 1)
-  }, [parsedPrice, card])
+      // move to the next card
+      setCardIndex((state) => state + 1)
+
+      // clean price input
+      setPrice('')
+    }
+  }, [parsedPrice, card, cards.length])
 
   // Lowest ask
   const [lowestAsks, setLowestAsks] = useState<{ [id: string]: string }>({})

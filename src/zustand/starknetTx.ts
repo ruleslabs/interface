@@ -30,11 +30,14 @@ export const createStarknetTxSlice = immer<StarknetTxSlice>((set) => ({
   // CALLS
 
   setCalls: (calls) => set({ calls }),
-  pushCalls: (...calls: Call[]) => set((state) => state.calls.push(...(calls as any[]))),
+  pushCalls: (...calls: Call[]) =>
+    set((state) => {
+      state.calls.push(...(calls as any[]))
+    }),
 
   // TX VALUE
 
-  increaseValue: (amount: WeiAmount) => set((state) => (state.value = state.value.add(amount))),
+  increaseValue: (amount: WeiAmount) => set((state) => state.value.add(amount)),
 
   // SIGNING
 

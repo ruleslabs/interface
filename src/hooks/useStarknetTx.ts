@@ -66,7 +66,7 @@ export function useExecuteTx() {
 
   const executeTx = useCallback(
     async (parsedMaxFee: WeiAmount) => {
-      if (calls.length || !account) return
+      if (!calls.length || !account) return
 
       setLoading(true)
       setError(null)
