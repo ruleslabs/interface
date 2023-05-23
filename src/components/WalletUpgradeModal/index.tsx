@@ -1,10 +1,7 @@
-import { useState, useCallback, useEffect } from 'react'
-import { t, Trans } from '@lingui/macro'
-import { ApolloError } from '@apollo/client'
-import { Call, Signature, stark } from 'starknet'
+import { useCallback, useEffect } from 'react'
+import { constants } from '@rulesorg/sdk-core'
+import { Trans, t } from '@lingui/macro'
 
-import { ModalHeader } from '@/components/Modal'
-import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classic'
 import { useModalOpened, useUpgradeWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import useCurrentUser from '@/hooks/useCurrentUser'
@@ -12,16 +9,20 @@ import Column from '@/components/Column'
 import { PrimaryButton } from '@/components/Button'
 import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
-import StarknetSigner from '@/components/StarknetSigner'
-import { ACCOUNT_CLASS_HASH } from '@/constants/addresses'
-import { useUpgradeWalletMutation } from '@/state/wallet/hooks'
+import StarknetSigner, { StarknetSignerDisplayProps } from '@/components/StarknetSigner'
 import { TYPE } from '@/styles/theme'
+import useRulesAccount from '@/hooks/useRulesAccount'
+import useStarknetTx from '@/hooks/useStarknetTx'
+import ClassicModal, { ModalBody, ModalContent } from '../Modal/Classic'
+import { ModalHeader } from '../Modal'
 
-interface UpgradeWalletModalProps {
-  onSuccess(): void
+const display: StarknetSignerDisplayProps = {
+  confirmationText: t`Your wallet will be upgraded`,
+  confirmationActionText: t`Confirm wallet upgrade`,
+  transactionText: t`wallet upgrade.`,
 }
 
-export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProps) {
+export default function UpgradeWalletModal() {
   // current user
   const { currentUser } = useCurrentUser()
 
@@ -29,58 +30,30 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
   const isOpen = useModalOpened(ApplicationModal.UPGRADE_WALLET)
   const toggleUpgradeWalletModal = useUpgradeWalletModalToggle()
 
+  // starknet account
+  const { address } = useRulesAccount()
+
+  // starknet tx
+  const { setCalls, resetStarknetTx, setSigning, signing } = useStarknetTx()
+
   // call
-  const [calls, setCalls] = useState<Call[] | null>(null)
   const handleConfirmation = useCallback(() => {
-    const contractAddress = currentUser?.starknetWallet.address
-    if (!contractAddress) return
+    if (!address) return
 
     setCalls([
       {
-        contractAddress,
+        contractAddress: address,
         entrypoint: 'upgrade',
-        calldata: [ACCOUNT_CLASS_HASH],
+        calldata: [constants.ACCOUNT_CLASS_HASH],
       },
     ])
-  }, [currentUser?.starknetWallet?.address])
-
-  // error
-  const [error, setError] = useState<string | null>(null)
-  const onError = useCallback((error: string) => setError(error), [])
-
-  // signature
-  const [upgradeWalletMutation] = useUpgradeWalletMutation()
-  const [txHash, setTxHash] = useState<string | null>(null)
-
-  const onSignature = useCallback(
-    (signature: Signature, maxFee: string, nonce: string) => {
-      upgradeWalletMutation({ variables: { maxFee, nonce, signature: stark.signatureToDecimalArray(signature) } })
-        .then((res?: any) => {
-          const hash = res?.data?.upgradeWallet?.hash
-          if (!hash) {
-            onError('Transaction not received')
-            return
-          }
-
-          onSuccess()
-          setTxHash(hash)
-        })
-        .catch((upgradeWalletError: ApolloError) => {
-          const error = upgradeWalletError?.graphQLErrors?.[0]
-          onError(error?.message ?? 'Transaction not received')
-
-          console.error(error)
-        })
-    },
-    [onSuccess, onError]
-  )
+    setSigning(true)
+  }, [address, setCalls, setSigning])
 
   // on close modal
   useEffect(() => {
     if (isOpen) {
-      setCalls(null)
-      setTxHash(null)
-      setError(null)
+      resetStarknetTx()
     }
   }, [isOpen])
 
@@ -89,19 +62,10 @@ export default function UpgradeWalletModal({ onSuccess }: UpgradeWalletModalProp
   return (
     <ClassicModal onDismiss={toggleUpgradeWalletModal} isOpen={isOpen}>
       <ModalContent>
-        <ModalHeader onDismiss={toggleUpgradeWalletModal} title={calls ? undefined : t`Wallet upgrade`} />
+        <ModalHeader onDismiss={toggleUpgradeWalletModal} title={signing ? undefined : t`Wallet upgrade`} />
 
         {currentUser.starknetWallet.needsUpgrade ? (
-          <StarknetSigner
-            confirmationText={t`Your wallet will be upgraded`}
-            confirmationActionText={t`Confirm wallet upgrade`}
-            transactionText={t`wallet upgrade.`}
-            calls={calls ?? undefined}
-            txHash={txHash ?? undefined}
-            error={error ?? undefined}
-            onSignature={onSignature}
-            onError={onError}
-          >
+          <StarknetSigner display={display}>
             <Column gap={32}>
               <Column gap={16}>
                 <TYPE.large>

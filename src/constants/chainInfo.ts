@@ -37,8 +37,8 @@ const CHAIN_INFO: ChainInfoMap = {
   },
 }
 
-export function getChainInfo(chainId: constants.EthereumChainId | number | undefined): ChainInfo | undefined
-export function getChainInfo(chainId: constants.StarknetChainId | string | undefined): ChainInfo | undefined
+export function getChainInfo(chainId: constants.EthereumChainId | number | undefined): ChainInfo
+export function getChainInfo(chainId: constants.StarknetChainId | string | undefined): ChainInfo
 
 /**
  * Overloaded method for returning ChainInfo given a chainID

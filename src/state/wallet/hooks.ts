@@ -1,13 +1,12 @@
 import { useMemo, useEffect, useState, useCallback } from 'react'
 import JSBI from 'jsbi'
 import { WeiAmount, constants } from '@rulesorg/sdk-core'
-import { Abi } from 'starknet'
+import { Abi, num, uint256 } from 'starknet'
 import { useWeb3React } from '@web3-react/core'
 import { gql, useMutation, useQuery } from '@apollo/client'
 
 import ERC20ABI from '@/abis/ERC20.json'
 
-import { BIG_INT_UINT126_HIGH_FACTOR } from '@/constants/misc'
 import { useMultipleContractSingleData } from '@/lib/hooks/multicall'
 import { useEthereumBlockNumber } from '@/state/application/hooks'
 import { useAppDispatch, useAppSelector } from '@/state/hooks'
@@ -112,32 +111,24 @@ export function useSetWalletModalMode(): (walletModalMode: WalletModalMode) => v
 
 // balance
 
-interface Balance {
-  low?: string
-  high?: string
-}
-
 export function useETHBalances(addresses: (string | undefined)[]): { [address: string]: WeiAmount | undefined } {
-  const filteredAddresses = addresses.filter((address) => !!address) as string[]
-
   const results = useMultipleContractSingleData(
     [constants.ETH_ADDRESSES[rulesSdk.networkInfos.starknetChainId]],
     ERC20ABI as Abi,
     'balanceOf',
-    { address: filteredAddresses[0] } // TODO use the right hook ^^
+    { address: addresses[0] } // TODO use the right hook ^^
   )
 
   return useMemo(() => {
-    return filteredAddresses.reduce<{ [address: string]: WeiAmount | undefined }>(
-      (acc, address: string, index: number) => {
-        const balance = results[index]?.result?.balance as Balance
-        if (!balance?.low || !balance?.high) return acc
+    return addresses.reduce<{ [address: string]: WeiAmount | undefined }>(
+      (acc, address: string | undefined, index: number) => {
+        const balance = results[index]?.result?.balance as any // as any... We'll do better later é_è
+        if (!balance?.low || !balance?.high || !address) {
+          return acc
+        }
 
-        const high = JSBI.multiply(JSBI.BigInt(balance.high), BIG_INT_UINT126_HIGH_FACTOR)
-        const low = JSBI.BigInt(balance.low)
-        const amount = JSBI.add(high, low)
-
-        acc[address] = WeiAmount.fromRawAmount(amount)
+        const amount = uint256.uint256ToBN(balance)
+        acc[address] = WeiAmount.fromRawAmount(num.toHex(amount))
         return acc
       },
       {}
@@ -147,7 +138,9 @@ export function useETHBalances(addresses: (string | undefined)[]): { [address: s
 
 export function useETHBalance(address?: string): WeiAmount {
   const balances = useETHBalances([address])
-  return balances?.[address ?? ''] ?? WeiAmount.fromRawAmount(0)
+  if (!address) return WeiAmount.ZERO
+
+  return balances?.[address] ?? WeiAmount.ZERO
 }
 
 export function useEthereumETHBalance(address?: string): WeiAmount | undefined {

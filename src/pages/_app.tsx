@@ -34,15 +34,15 @@ export default function App({ Component, pageProps }: AppProps) {
       <ReduxProvider store={store}>
         <LanguageProvider>
           <React.Fragment>
-            <RulesProvider>
-              <StarknetProvider>
-                <EthereumProvider>
-                  <ApolloProvider client={apolloClient}>
+            <ApolloProvider client={apolloClient}>
+              <RulesProvider>
+                <StarknetProvider>
+                  <EthereumProvider>
                     <StyledThemeProvider>{children}</StyledThemeProvider>
-                  </ApolloProvider>
-                </EthereumProvider>
-              </StarknetProvider>
-            </RulesProvider>
+                  </EthereumProvider>
+                </StarknetProvider>
+              </RulesProvider>
+            </ApolloProvider>
           </React.Fragment>
         </LanguageProvider>
       </ReduxProvider>

@@ -36,23 +36,19 @@ export default function PrivateKeyDecipherForm({ onPrivateKeyDeciphered }: Priva
 
   // prepare transaction
   const decipherPrivateKey = useCallback(
-    (event) => {
+    async (event) => {
       event.preventDefault()
 
       if (!rulesPrivateKey) return
 
-      decryptRulesPrivateKey(rulesPrivateKey, password)
-        .then((res: string) => {
-          onPrivateKeyDeciphered(res)
-        })
-        .catch((error: Error) => {
-          console.error(error)
-
-          setError(error.message)
-          return Promise.reject()
-        })
+      try {
+        const pk = await decryptRulesPrivateKey(rulesPrivateKey, password)
+        onPrivateKeyDeciphered(pk)
+      } catch (error) {
+        setError(error.message ?? 'Unknown error')
+      }
     },
-    [password, rulesPrivateKey]
+    [password, rulesPrivateKey, onPrivateKeyDeciphered]
   )
 
   return (

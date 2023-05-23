@@ -3,7 +3,7 @@ import 'moment/locale/fr'
 import React, { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { useLazyQuery, gql } from '@apollo/client'
-import { ScarcityName, WeiAmount } from '@rulesorg/sdk-core'
+import { WeiAmount, constants } from '@rulesorg/sdk-core'
 import moment from 'moment'
 
 import shortenUsername from '@/utils/shortenUsername'
@@ -192,7 +192,7 @@ const MemoizedOfferCard = React.memo(function OfferCards({
             <span>
               {' '}
               /{cardModel.scarcity.maxSupply}
-              {cardModel.scarcity.name === ScarcityName[0] && '+'}
+              {cardModel.scarcity.name === constants.ScarcityName[0] && '+'}
             </span>
           </TYPE.body>
 

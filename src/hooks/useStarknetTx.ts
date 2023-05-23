@@ -16,9 +16,10 @@ export function useEstimateFees() {
   const { account } = useRulesAccount()
 
   const estimatedFees = useCallback(async () => {
-    setError(null)
+    if (!calls.length || !account) return
 
-    if (calls.length || !account) return
+    setLoading(true)
+    setError(null)
 
     try {
       const estimatedFees = await account.estimateInvokeFee(calls)
@@ -65,9 +66,10 @@ export function useExecuteTx() {
 
   const executeTx = useCallback(
     async (parsedMaxFee: WeiAmount) => {
-      setError(null)
-
       if (calls.length || !account) return
+
+      setLoading(true)
+      setError(null)
 
       const maxFee = parsedMaxFee.quotient.toString()
 
@@ -86,4 +88,19 @@ export function useExecuteTx() {
   )
 
   return [executeTx, { data: { txHash }, loading, error }] as const
+}
+
+export default function useStarknetTx() {
+  return useBoundStore(
+    (state) => ({
+      setCalls: state.setCalls,
+      pushCalls: state.pushCalls,
+      resetStarknetTx: state.resetStarknetTx,
+      txValue: state.value,
+      increaseTxValue: state.increaseValue,
+      setSigning: state.setSigning,
+      signing: state.signing,
+    }),
+    shallow
+  )
 }

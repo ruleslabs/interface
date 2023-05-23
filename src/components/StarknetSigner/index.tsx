@@ -33,7 +33,7 @@ const SubmitButton = styled(PrimaryButton)`
   margin-top: 12px;
 `
 
-const StyledForm = styled.form`
+const StyledForm = styled.div`
   width: 100%;
 `
 
@@ -94,10 +94,7 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
   )
 
   // starknet state
-  const { signing, resetStarknetTx, txValue } = useBoundStore(
-    (state) => ({ signing: state.signing, resetStarknetTx: state.resetStarknetTx, txValue: state.value }),
-    shallow
-  )
+  const { signing, txValue } = useBoundStore((state) => ({ signing: state.signing, txValue: state.value }), shallow)
 
   // can pay
   const balance = useETHBalance(address)
@@ -110,11 +107,6 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
   // loading / error
   const loading = waitingTransactionQuery.loading || estimateFeesRes.loading
   const error = estimateFeesRes.error || queryError
-
-  // init
-  useEffect(() => {
-    resetStarknetTx()
-  }, [])
 
   // fiat value
   const weiAmountToEURValue = useWeiAmountToEURValue()
@@ -138,7 +130,7 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
 
     if (parsedNetworkFee) {
       return (
-        <StyledForm onSubmit={() => executeTx(parsedNetworkFee.maxFee)}>
+        <StyledForm>
           <Column gap={20}>
             <Column gap={12}>
               <FeeWrapper>
@@ -157,7 +149,7 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
               </FeeWrapper>
             </Column>
 
-            {parsedTotalCost && txValue && (
+            {parsedTotalCost && !txValue.isNull() && (
               <FeeWrapper>
                 <TYPE.body fontWeight={700}>
                   <Trans>Total</Trans>
@@ -184,7 +176,7 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
               </ErrorCard>
             )}
 
-            <SubmitButton type="submit" disabled={!canPayTransaction} large>
+            <SubmitButton onClick={() => executeTx(parsedNetworkFee.maxFee)} disabled={!canPayTransaction} large>
               {display.confirmationActionText ?? <Trans>Confirm</Trans>}
             </SubmitButton>
           </Column>
@@ -195,7 +187,7 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
     if (needsSignerUpdate) return <PrivateKeyDecipherForm onPrivateKeyDeciphered={updateSigner} />
 
     return null
-  }, [waitingTransactionHash, loading, error, txHash, needsSignerUpdate])
+  }, [waitingTransactionHash, loading, error, txHash, needsSignerUpdate, executeTx, updateSigner])
 
   return (
     <ModalBody>

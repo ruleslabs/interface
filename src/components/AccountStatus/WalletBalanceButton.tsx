@@ -1,11 +1,12 @@
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { WeiAmount } from '@rulesorg/sdk-core'
 
 import useCurrentUser from '@/hooks/useCurrentUser'
 import { PrimaryButton } from '@/components/Button'
 import { TYPE } from '@/styles/theme'
-import { useETHBalances } from '@/state/wallet/hooks'
-import React from 'react'
+import { useETHBalance } from '@/state/wallet/hooks'
+import useRulesAccount from '@/hooks/useRulesAccount'
+import { useConnectors } from '@starknet-react/core'
 
 import EthereumIcon from '@/images/ethereum-plain.svg'
 
@@ -40,15 +41,22 @@ export default function WalletBalanceButton(props: React.HTMLAttributes<HTMLButt
   // current user
   const { currentUser } = useCurrentUser()
 
+  // auto wallet conect
+  const { connect, connectors } = useConnectors()
+  useEffect(() => {
+    if (currentUser && connectors[0]) {
+      connect(connectors[0])
+    }
+  }, [!!currentUser, !!connectors[0]])
+
   // ETH balance
-  const address = currentUser?.starknetWallet.address ?? ''
-  const balances = useETHBalances([address])
-  const balance = balances?.[address] ?? WeiAmount.fromRawAmount(0)
+  const { address } = useRulesAccount()
+  const balance = useETHBalance(address)
 
   return (
     <WalletButton alert={!!currentUser?.starknetWallet.lockingReason} {...props}>
-      <TYPE.body fontWeight={500}>{balance ? `${balance.toFixed(4)}` : 'Loading...'}</TYPE.body>
-      {!!balance && <EthereumIcon />}
+      <TYPE.body fontWeight={500}>{address ? `${balance.toFixed(4)}` : 'Loading...'}</TYPE.body>
+      {!!address && <EthereumIcon />}
     </WalletButton>
   )
 }

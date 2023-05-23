@@ -2,6 +2,7 @@ import { useBoundStore } from '@/zustand'
 import { StarknetWindowObject } from 'get-starknet-core'
 import { rulesSdk } from './rulesSdk'
 import { RulesAccount } from './RulesAccount'
+import { SequencerProvider, constants } from 'starknet'
 
 const VERSION = `${process.env.VERSION}`
 
@@ -19,7 +20,7 @@ export const starknetWindowObject: StarknetWindowObject = {
   request: async () => {
     throw Error("Not implemented")
   },
-  enable: async ({ starknetVersion = "v3" } = {}) => {
+  enable: async () => {
     const currentUser = useBoundStore.getState().currentUser
 
     const address = currentUser?.starknetWallet.address
@@ -28,15 +29,18 @@ export const starknetWindowObject: StarknetWindowObject = {
       throw Error("No wallet account")
     }
 
-    const { starknet } = window
+    const { starknet_rules: starknet } = window
     if (!starknet) {
       throw Error("No starknet object detected")
     }
 
-    const provider = rulesSdk.starknet
+    // rulesSdk.starknet is not an instance of a vanilla starknet.js provider
+    // then it is not supported by Account class and a default provider will be used
+    const provider = new SequencerProvider({ baseUrl: rulesSdk.starknet.baseUrl })
+
     ;(starknet as any).starknetJsVersion = 'v5'
     starknet.provider = provider
-    starknet.account = new RulesAccount(address, provider)
+    starknet.account = new RulesAccount(provider, address)
 
     starknet.selectedAddress = address
     starknet.chainId = rulesSdk.networkInfos.starknetChainId.toString()

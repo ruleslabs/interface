@@ -1,9 +1,6 @@
-import JSBI from 'jsbi'
-import { useState, useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { t, Trans } from '@lingui/macro'
-import { uint256HexFromStrHex, getStarknetCardId, ScarcityName } from '@rulesorg/sdk-core'
-import { ApolloError } from '@apollo/client'
-import { Call, Signature, stark } from 'starknet'
+import { WeiAmount, cardId, constants, uint256 } from '@rulesorg/sdk-core'
 
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
 import { useModalOpened, useAcceptOfferModalToggle, useWalletModalToggle } from '@/state/application/hooks'
@@ -13,13 +10,20 @@ import Column from '@/components/Column'
 import { PrimaryButton } from '@/components/Button'
 import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
-import StarknetSigner from '@/components/StarknetSigner'
-import { ETH_ADDRESSES, MARKETPLACE_ADDRESSES } from '@/constants/addresses'
-import { networkId } from '@/constants/networks'
-import { useETHBalances, useAcceptOffersMutation } from '@/state/wallet/hooks'
+import StarknetSigner, { StarknetSignerDisplayProps } from '@/components/StarknetSigner'
+import { useETHBalance } from '@/state/wallet/hooks'
 import { PurchaseBreakdown } from './PriceBreakdown'
 import CardBreakdown from './CardBreakdown'
 import { ModalHeader } from '@/components/Modal'
+import useStarknetTx from '@/hooks/useStarknetTx'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import useRulesAccount from '@/hooks/useRulesAccount'
+
+const display: StarknetSignerDisplayProps = {
+  confirmationText: t`Your purchase will be accepted`,
+  confirmationActionText: t`Confirm purchase`,
+  transactionText: t`offer acceptance.`,
+}
 
 interface AcceptOfferModalProps {
   artistName: string
@@ -28,7 +32,6 @@ interface AcceptOfferModalProps {
   serialNumbers: number[]
   pictureUrl: string
   price: string
-  onSuccess(): void
 }
 
 export default function AcceptOfferModal({
@@ -38,116 +41,74 @@ export default function AcceptOfferModal({
   serialNumbers,
   pictureUrl,
   price,
-  onSuccess,
 }: AcceptOfferModalProps) {
   // current user
   const { currentUser } = useCurrentUser()
-
-  // tokens ids
-  const tokenIds = useMemo(
-    () =>
-      serialNumbers.map((serialNumber) =>
-        getStarknetCardId(artistName, season, ScarcityName.indexOf(scarcityName), serialNumber)
-      ),
-    [artistName, season, scarcityName, serialNumbers.length]
-  )
 
   // modal
   const isOpen = useModalOpened(ApplicationModal.ACCEPT_OFFER)
   const toggleAcceptOfferModal = useAcceptOfferModalToggle()
   const toggleWalletModal = useWalletModalToggle()
 
-  // balance
-  const address = currentUser?.starknetWallet.address ?? ''
-  const balances = useETHBalances([address])
-  const balance = balances?.[address]
+  // starknet tx
+  const { setCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()
+
+  // starknet account
+  const { address } = useRulesAccount()
 
   // can pay for card
+  const balance = useETHBalance(address)
   const canPayForCard = useMemo(() => {
-    if (!balance) return false
+    if (!balance) return true // we avoid displaying error message if not necessary
 
-    return JSBI.greaterThanOrEqual(balance.quotient, JSBI.BigInt(price))
+    return !balance.lessThan(WeiAmount.fromRawAmount(price))
   }, [balance, price])
 
   // call
-  const [calls, setCalls] = useState<Call[] | null>(null)
   const handleConfirmation = useCallback(() => {
+    const ethAddress = constants.ETH_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+    const marketplaceAddress = constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+    if (!ethAddress || !marketplaceAddress) return
+
     setCalls([
       {
-        contractAddress: ETH_ADDRESSES[networkId],
+        contractAddress: ethAddress,
         entrypoint: 'increaseAllowance',
-        calldata: [MARKETPLACE_ADDRESSES[networkId], price, 0],
+        calldata: [marketplaceAddress, price, 0],
       },
-      ...tokenIds.map((tokenId) => {
-        const uint256TokenId = uint256HexFromStrHex(tokenId)
+      ...serialNumbers.map((serialNumber) => {
+        const tokenId = cardId.getStarknetCardId(
+          artistName,
+          season,
+          constants.ScarcityName.indexOf(scarcityName),
+          serialNumber
+        )
+        const uint256TokenId = uint256.uint256HexFromStrHex(tokenId)
 
         return {
-          contractAddress: MARKETPLACE_ADDRESSES[networkId],
+          contractAddress: marketplaceAddress,
           entrypoint: 'acceptOffer',
           calldata: [uint256TokenId.low, uint256TokenId.high],
         }
       }),
     ])
-  }, [tokenIds.length])
 
-  // error
-  const [error, setError] = useState<string | null>(null)
-  const onError = useCallback((error: string) => setError(error), [])
-
-  // signature
-  const [acceptOffersMutation] = useAcceptOffersMutation()
-  const [txHash, setTxHash] = useState<string | null>(null)
-
-  const onSignature = useCallback(
-    (signature: Signature, maxFee: string, nonce: string) => {
-      acceptOffersMutation({
-        variables: { tokenIds, maxFee, nonce, signature: stark.signatureToDecimalArray(signature) },
-      })
-        .then((res?: any) => {
-          const hash = res?.data?.acceptOffers?.hash
-          if (!hash) {
-            onError('Transaction not received')
-            return
-          }
-
-          setTxHash(hash)
-          onSuccess()
-        })
-        .catch((acceptOfferError: ApolloError) => {
-          const error = acceptOfferError?.graphQLErrors?.[0]
-          onError(error?.message ?? 'Transaction not received')
-
-          console.error(error)
-        })
-    },
-    [tokenIds.length, onSuccess]
-  )
+    setSigning(true)
+  }, [artistName, season, scarcityName, serialNumbers.length])
 
   // on close modal
   useEffect(() => {
     if (isOpen) {
-      setCalls(null)
-      setTxHash(null)
-      setError(null)
+      resetStarknetTx()
     }
   }, [isOpen])
 
   return (
     <ClassicModal onDismiss={toggleAcceptOfferModal} isOpen={isOpen}>
       <ModalContent>
-        <ModalHeader onDismiss={toggleAcceptOfferModal} title={calls ? undefined : t`Confirm purchase`} />
+        <ModalHeader onDismiss={toggleAcceptOfferModal} title={signing ? undefined : t`Confirm purchase`} />
 
-        <StarknetSigner
-          confirmationText={t`Your purchase will be accepted`}
-          confirmationActionText={t`Confirm purchase`}
-          transactionText={t`offer acceptance.`}
-          transactionValue={price}
-          calls={calls ?? undefined}
-          txHash={txHash ?? undefined}
-          error={error ?? undefined}
-          onSignature={onSignature}
-          onError={onError}
-        >
+        <StarknetSigner display={display}>
           <Column gap={32}>
             <CardBreakdown
               pictureUrl={pictureUrl}

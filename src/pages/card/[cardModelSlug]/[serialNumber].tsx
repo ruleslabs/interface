@@ -124,36 +124,6 @@ export default function CardBreakout() {
   // pending status
   const pendingStatus = useCardsPendingStatusMap([card])
 
-  // actions callbacks
-  const onSuccessfulGift = useCallback(
-    () =>
-      setCard((state: any | null) => {
-        if (state) return { ...state, inTransfer: true }
-      }),
-    []
-  )
-  const onSuccessfulOfferCreation = useCallback(
-    () =>
-      setCard((state: any | null) => {
-        if (state) return { ...state, inOfferCreation: true }
-      }),
-    []
-  )
-  const onSuccessfulOfferCancelation = useCallback(
-    () =>
-      setCard((state: any | null) => {
-        if (state) return { ...state, inOfferCancelation: true }
-      }),
-    []
-  )
-  const onSuccessfulOfferAcceptance = useCallback(
-    () =>
-      setCard((state: any | null) => {
-        if (state) return { ...state, inOfferAcceptance: true }
-      }),
-    []
-  )
-
   // card price
   const offerSearch = useSearchOffers({ facets: { cardId: card?.id }, skip: !card?.id, hitsPerPage: 1 })
   const cardPrice = useMemo(
@@ -217,9 +187,9 @@ export default function CardBreakout() {
             </Column>
           </Section>
 
-          <GiftModal cardsIds={[card.id]} onSuccess={onSuccessfulGift} />
+          <GiftModal cardsIds={[card.id]} />
 
-          <CreateOfferModal cardsIds={[card.id]} onSuccess={onSuccessfulOfferCreation} />
+          <CreateOfferModal cardsIds={[card.id]} />
 
           {cardPrice && (
             <>
@@ -229,7 +199,6 @@ export default function CardBreakout() {
                 season={card.cardModel.season}
                 serialNumber={card.serialNumber}
                 pictureUrl={card.cardModel.pictureUrl}
-                onSuccess={onSuccessfulOfferCancelation}
               />
 
               <AcceptOfferModal
@@ -239,7 +208,6 @@ export default function CardBreakout() {
                 serialNumbers={[card.serialNumber]}
                 pictureUrl={card.cardModel.pictureUrl}
                 price={cardPrice}
-                onSuccess={onSuccessfulOfferAcceptance}
               />
             </>
           )}

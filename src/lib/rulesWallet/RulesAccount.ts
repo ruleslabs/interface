@@ -1,9 +1,4 @@
-import {
-  Account,
-  ProviderInterface,
-  Signer,
-  defaultProvider,
-} from 'starknet'
+import { Account, ProviderInterface, Signer } from 'starknet'
 
 /**
  *  This is the latest Account Object that is imported from starknet.js.
@@ -12,10 +7,10 @@ import {
 export class RulesAccount extends Account {
   public needPrivateKey = false
 
-  constructor(address: string, provider?: ProviderInterface) {
+  constructor(provider: ProviderInterface, address: string) {
     // since account constructor is taking a private key,
     // we set a dummy one (never used anyway)
-    super(provider || defaultProvider, address, '0xB00B135')
+    super(provider, address, '0xB00B135')
   }
 
   public needSignerUpdate = true

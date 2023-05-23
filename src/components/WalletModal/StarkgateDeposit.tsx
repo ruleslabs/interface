@@ -13,14 +13,13 @@ import { useEthereumStarkgateContract } from '@/hooks/useContract'
 import Wallet from '@/components/Wallet'
 import Metamask from '@/components/Metamask'
 import EthereumSigner from '@/components/EthereumSigner'
-import { useStarknet } from '@/lib/starknet'
-import { L2_STARKGATE_ADDRESSES } from '@/constants/addresses'
-import { networkId } from '@/constants/networks'
 import { L2_STARKGATE_DEPOSIT_HANDLER_SELECTOR_NAME } from '@/constants/misc'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
 
 import Arrow from '@/images/arrow.svg'
+import { constants } from '@rulesorg/sdk-core'
 
-const { useAccount } = metaMaskHooks
+const { useAccount: useEthereumAccount } = metaMaskHooks
 
 const ArrowWrapper = styled(Column)`
   width: 36px;
@@ -45,11 +44,8 @@ export default function DepositModal() {
   // current user
   const { currentUser } = useCurrentUser()
 
-  // starknet
-  const { provider } = useStarknet()
-
   // metamask
-  const account = useAccount()
+  const ethereumAddress = useEthereumAccount()
 
   // deposit amount
   const [depositAmount, setDepositAmount] = useState('')
@@ -57,7 +53,7 @@ export default function DepositModal() {
   const parsedDepositAmount = useMemo(() => tryParseWeiAmount(depositAmount), [depositAmount])
 
   // balance
-  const balance = useEthereumETHBalance(account)
+  const balance = useEthereumETHBalance(ethereumAddress)
 
   // tx
   const [txHash, setTxHash] = useState<string | null>(null)
@@ -69,15 +65,23 @@ export default function DepositModal() {
   // deposit
   const ethereumStarkgateContract = useEthereumStarkgateContract()
   const deposit = useCallback(async () => {
-    if (!ethereumStarkgateContract || !parsedDepositAmount || !currentUser?.starknetWallet.address || !provider) return
+    const l2StarkgateAddress = constants.STARKGATE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+    if (
+      !ethereumStarkgateContract ||
+      !parsedDepositAmount ||
+      !currentUser?.starknetWallet.address ||
+      !l2StarkgateAddress
+    ) {
+      return
+    }
 
     setWaitingForTx(true)
 
     const amount = parsedDepositAmount.quotient.toString()
 
-    const messageFee = await provider.estimateMessageFee({
+    const messageFee = await rulesSdk.starknet.estimateMessageFee({
       from_address: ethereumStarkgateContract.address,
-      to_address: L2_STARKGATE_ADDRESSES[networkId],
+      to_address: l2StarkgateAddress,
       entry_point_selector: L2_STARKGATE_DEPOSIT_HANDLER_SELECTOR_NAME,
       payload: [currentUser.starknetWallet.address, amount, '0x0'],
     })
@@ -104,7 +108,8 @@ export default function DepositModal() {
       if (error?.code !== 4001) throw error
       setWaitingForTx(false)
     }
-  }, [parsedDepositAmount, ethereumStarkgateContract, currentUser?.starknetWallet.address, provider])
+  }, [parsedDepositAmount, ethereumStarkgateContract])
+
   const onDeposit = useCallback(() => {
     deposit().catch((error: any) => {
       console.error(error)

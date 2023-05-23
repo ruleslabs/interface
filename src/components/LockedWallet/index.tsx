@@ -18,7 +18,7 @@ export default function LockedWallet() {
   // ETH balance
   const address = currentUser?.starknetWallet.address ?? ''
   const balances = useETHBalances([address])
-  const balance = balances?.[address] ?? WeiAmount.fromRawAmount(0)
+  const balance = balances?.[address] ?? WeiAmount.ZERO
 
   const weiAmountToEURValue = useWeiAmountToEURValue()
 

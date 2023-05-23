@@ -68,7 +68,7 @@ export default function Confirmation({ confirmationText, txHash }: ConfirmationP
       </Column>
 
       <EtherscanButtonWrapper>
-        <Link target="_blank" href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId)}/tx/${txHash}`}>
+        <Link target="_blank" href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId).explorer}tx/${txHash}`}>
           <PrimaryButton large>
             <Trans>See on Starkscan</Trans>
           </PrimaryButton>

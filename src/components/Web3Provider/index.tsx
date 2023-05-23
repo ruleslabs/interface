@@ -23,13 +23,13 @@ export function EthereumProvider({ children }: EthereumProviderProps) {
 
 // STARKNET
 
+export const connectors = [new InjectedConnector({ options: { id: 'rules' } })]
+
 interface StarknetProviderProps {
   children: React.ReactNode
 }
 
 export function StarknetProvider({ children }: StarknetProviderProps) {
-  const connectors: InjectedConnector[] = [new InjectedConnector({ options: { id: 'rules' } })]
-
   return (
     <StarknetConfig connectors={connectors} key={'starknet'}>
       {children}

@@ -3,6 +3,7 @@ import { shallow } from 'zustand/shallow'
 
 import { useCurrentUser } from '@/graphql/data/CurrentUser'
 import { useBoundStore } from '@/zustand'
+import useInjectRulesWallet from '@/hooks/useInjectRulesWallet'
 
 interface RulesProviderProps {
   children: React.ReactNode
@@ -19,6 +20,8 @@ export default function RulesProvider({ children }: RulesProviderProps) {
     setCurrentUser(currentUser)
     setCurrentUserRefresher(refresh)
   }, [setCurrentUser, currentUser, refresh])
+
+  useInjectRulesWallet()
 
   if (loading) return null
 

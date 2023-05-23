@@ -265,22 +265,6 @@ function Cards({ userId, address }: CardsProps) {
     [selectedCardsIds.length]
   )
 
-  // offer creation
-  const onSuccessfulAction = useCallback(
-    (cardStateKey: string) => {
-      const selectedCardsIdsSet = new Set(selectedCardsIds)
-
-      toggleSelectionMode()
-      setCards((state) =>
-        state.map((card) => (selectedCardsIdsSet.has(card.id) ? { ...card, [cardStateKey]: true } : card))
-      )
-    },
-    [toggleSelectionMode, selectedCardsIds.length]
-  )
-
-  const onSuccessfulOfferCreation = useCallback(() => onSuccessfulAction('inOfferCreation'), [onSuccessfulAction])
-  const onSuccessfulGift = useCallback(() => onSuccessfulAction('inTransfer'), [onSuccessfulAction])
-
   return (
     <>
       <StickyWrapper>
@@ -365,8 +349,8 @@ function Cards({ userId, address }: CardsProps) {
         </SelectedCardsAction>
       </SelectedCardsActionWrapper>
 
-      <CreateOfferModal cardsIds={selectedCardsIds} onSuccess={onSuccessfulOfferCreation} />
-      <GiftModal cardsIds={selectedCardsIds} onSuccess={onSuccessfulGift} />
+      <CreateOfferModal cardsIds={selectedCardsIds} />
+      <GiftModal cardsIds={selectedCardsIds} />
     </>
   )
 }

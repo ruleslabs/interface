@@ -1,8 +1,6 @@
-import { useState, useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect } from 'react'
 import { t, Trans } from '@lingui/macro'
-import { uint256HexFromStrHex, getStarknetCardId, ScarcityName } from '@rulesorg/sdk-core'
-import { ApolloError } from '@apollo/client'
-import { Call, Signature, stark } from 'starknet'
+import { cardId, constants, uint256 } from '@rulesorg/sdk-core'
 
 import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
@@ -13,11 +11,16 @@ import Column from '@/components/Column'
 import { PrimaryButton } from '@/components/Button'
 import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
-import StarknetSigner from '@/components/StarknetSigner'
-import { MARKETPLACE_ADDRESSES } from '@/constants/addresses'
-import { useCancelOfferMutation } from '@/state/wallet/hooks'
-import { networkId } from '@/constants/networks'
+import StarknetSigner, { StarknetSignerDisplayProps } from '@/components/StarknetSigner'
 import CardBreakdown from './CardBreakdown'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import useStarknetTx from '@/hooks/useStarknetTx'
+
+const display: StarknetSignerDisplayProps = {
+  confirmationText: t`Your offer will be canceled`,
+  confirmationActionText: t`Confirm offer cancelation`,
+  transactionText: t`offer cancelation.`,
+}
 
 interface CancelOfferModalProps {
   artistName: string
@@ -25,7 +28,6 @@ interface CancelOfferModalProps {
   scarcityName: string
   serialNumber: number
   pictureUrl: string
-  onSuccess(): void
 }
 
 export default function CancelOfferModal({
@@ -34,92 +36,54 @@ export default function CancelOfferModal({
   scarcityName,
   serialNumber,
   pictureUrl,
-  onSuccess,
 }: CancelOfferModalProps) {
   // current user
   const { currentUser } = useCurrentUser()
-
-  // token id
-  const tokenId: string = useMemo(
-    () => getStarknetCardId(artistName, season, ScarcityName.indexOf(scarcityName), serialNumber),
-    [artistName, season, scarcityName, serialNumber]
-  )
 
   // modal
   const isOpen = useModalOpened(ApplicationModal.CANCEL_OFFER)
   const toggleCancelOfferModal = useCancelOfferModalToggle()
 
+  // starknet tx
+  const { setCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()
+
   // call
-  const [calls, setCalls] = useState<Call[] | null>(null)
   const handleConfirmation = useCallback(() => {
-    const uint256TokenId = uint256HexFromStrHex(tokenId)
+    const marketplaceAddress = constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+    if (!marketplaceAddress) return
+
+    const tokenId = cardId.getStarknetCardId(
+      artistName,
+      season,
+      constants.ScarcityName.indexOf(scarcityName),
+      serialNumber
+    )
+    const uint256TokenId = uint256.uint256HexFromStrHex(tokenId)
 
     setCalls([
       {
-        contractAddress: MARKETPLACE_ADDRESSES[networkId],
+        contractAddress: marketplaceAddress,
         entrypoint: 'cancelOffer',
         calldata: [uint256TokenId.low, uint256TokenId.high],
       },
     ])
-  }, [tokenId])
 
-  // error
-  const [error, setError] = useState<string | null>(null)
-  const onError = useCallback((error: string) => setError(error), [])
-
-  // signature
-  const [cancelOfferMutation] = useCancelOfferMutation()
-  const [txHash, setTxHash] = useState<string | null>(null)
-
-  const onSignature = useCallback(
-    (signature: Signature, maxFee: string, nonce: string) => {
-      cancelOfferMutation({
-        variables: { tokenId, maxFee, nonce, signature: stark.signatureToDecimalArray(signature) },
-      })
-        .then((res?: any) => {
-          const hash = res?.data?.cancelOffer?.hash
-          if (!hash) {
-            onError('Transaction not received')
-            return
-          }
-
-          setTxHash(hash)
-          onSuccess()
-        })
-        .catch((cancelOfferError: ApolloError) => {
-          const error = cancelOfferError?.graphQLErrors?.[0]
-          onError(error?.message ?? 'Transaction not received')
-
-          console.error(error)
-        })
-    },
-    [tokenId, onSuccess]
-  )
+    setSigning(true)
+  }, [artistName, season, scarcityName, serialNumber])
 
   // on close modal
   useEffect(() => {
     if (isOpen) {
-      setCalls(null)
-      setTxHash(null)
-      setError(null)
+      resetStarknetTx()
     }
   }, [isOpen])
 
   return (
     <ClassicModal onDismiss={toggleCancelOfferModal} isOpen={isOpen}>
       <ModalContent>
-        <ModalHeader onDismiss={toggleCancelOfferModal} title={calls ? undefined : t`Confirm offer cancelation`} />
+        <ModalHeader onDismiss={toggleCancelOfferModal} title={signing ? undefined : t`Confirm offer cancelation`} />
 
-        <StarknetSigner
-          confirmationText={t`Your offer will be canceled`}
-          confirmationActionText={t`Confirm offer cancelation`}
-          transactionText={t`offer cancelation.`}
-          calls={calls ?? undefined}
-          txHash={txHash ?? undefined}
-          error={error ?? undefined}
-          onSignature={onSignature}
-          onError={onError}
-        >
+        <StarknetSigner display={display}>
           <Column gap={32}>
             <CardBreakdown
               pictureUrl={pictureUrl}

@@ -1,9 +1,8 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { Plural, t, Trans } from '@lingui/macro'
-import { uint256HexFromStrHex, getStarknetCardId, ScarcityName, WeiAmount } from '@rulesorg/sdk-core'
-import { ApolloError, useQuery, gql } from '@apollo/client'
-import { Call, Signature, stark } from 'starknet'
+import { useQuery, gql } from '@apollo/client'
+import { WeiAmount, cardId, constants, uint256 } from '@rulesorg/sdk-core'
 
 import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
@@ -14,10 +13,7 @@ import Column from '@/components/Column'
 import { PrimaryButton } from '@/components/Button'
 import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
-import StarknetSigner from '@/components/StarknetSigner'
-import { MARKETPLACE_ADDRESSES } from '@/constants/addresses'
-import { useCreateOffersMutation } from '@/state/wallet/hooks'
-import { networkId } from '@/constants/networks'
+import StarknetSigner, { StarknetSignerDisplayProps } from '@/components/StarknetSigner'
 import EtherInput from '@/components/Input/EtherInput'
 import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
 import { SaleBreakdown, PurchaseBreakdown } from './PriceBreakdown'
@@ -27,6 +23,8 @@ import CardBreakdown from './CardBreakdown'
 import { PaginationSpinner } from '@/components/Spinner'
 import { useSearchCardModels } from '@/state/search/hooks'
 import { TYPE } from '@/styles/theme'
+import useStarknetTx from '@/hooks/useStarknetTx'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
 
 const CardBreakdownWrapper = styled.div`
   position: relative;
@@ -64,12 +62,21 @@ const CARDS_QUERY = gql`
   }
 `
 
-interface CreateOfferModalProps {
-  cardsIds: string[]
-  onSuccess(): void
+const display: StarknetSignerDisplayProps = {
+  confirmationText: t`Your offer will be created`,
+  confirmationActionText: t`Confirm offer creation`,
+  transactionText: t`offer creation.`,
 }
 
-export default function CreateOfferModal({ cardsIds, onSuccess }: CreateOfferModalProps) {
+interface CreateOfferModalProps {
+  cardsIds: string[]
+}
+
+export default function CreateOfferModal({ cardsIds }: CreateOfferModalProps) {
+  const [cardIndex, setCardIndex] = useState(0)
+  const [price, setPrice] = useState('')
+  const [parsedPricesTotal, setParsedPricesTotal] = useState(WeiAmount.ZERO)
+
   // current user
   const { currentUser } = useCurrentUser()
 
@@ -80,39 +87,16 @@ export default function CreateOfferModal({ cardsIds, onSuccess }: CreateOfferMod
   // cards query
   const cardsQuery = useQuery(CARDS_QUERY, { variables: { ids: cardsIds }, skip: !isOpen })
   const cards = cardsQuery.data?.cardsByIds ?? []
+  const card = cards[cardIndex]
 
-  // card index
-  const [cardIndex, setCardIndex] = useState(0)
-
-  // token ids
-  const tokenIds: string[] = useMemo(
-    () =>
-      cards.map((card: any) =>
-        getStarknetCardId(
-          card.cardModel.artist.displayName,
-          card.cardModel.season,
-          ScarcityName.indexOf(card.cardModel.scarcity.name),
-          card.serialNumber
-        )
-      ),
-    [cards.length]
-  )
+  // starknet tx
+  const { pushCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()
 
   // offers creation overview
-  const [needsOverview, setNeedsOverview] = useState(false)
-  const handleOverviewConfirmation = useCallback(() => setNeedsOverview(false), [])
-  const displayOverview = useMemo(
-    () => !cardsIds[cardIndex] && needsOverview,
-    [cardsIds.length, cardIndex, needsOverview]
-  )
-
-  // overview init
-  useEffect(() => {
-    setNeedsOverview(cardsIds.length > 1) // overview not needed for a single offer creation
-  }, [cardsIds.length])
+  const handleOverviewConfirmation = useCallback(() => setSigning(true), [])
+  const displayOverview = useMemo(() => cards.length > 1 && cardIndex === cards.length, [(cardsIds.length, cardIndex)])
 
   // price
-  const [price, setPrice] = useState<string>('')
   const parsedPrice = useMemo(() => tryParseWeiAmount(price), [price])
 
   const onPriceInput = useCallback((value: string) => setPrice(value), [])
@@ -125,79 +109,31 @@ export default function CreateOfferModal({ cardsIds, onSuccess }: CreateOfferMod
     )
   }, [parsedPrice])
 
-  // prices
-  const [parsedPrices, setParsedPrices] = useState<WeiAmount[]>([])
-  const [parsedPricesTotal, setParsedPricesTotal] = useState<WeiAmount>(WeiAmount.fromRawAmount(0))
-
   // prices confirmation
   const handlePriceConfirmation = useCallback(() => {
-    if (!parsedPrice) return
+    const marketplaceAddress = constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+    if (!marketplaceAddress || !parsedPrice) return
 
-    setCardIndex((state) => state + 1)
-    setParsedPrices((state) => state.concat(parsedPrice))
-    setParsedPricesTotal((state) => state.add(parsedPrice))
-    setPrice('')
-  }, [parsedPrice])
-
-  // calls
-  const [calls, setCalls] = useState<Call[] | null>(null)
-  useEffect(() => {
-    if (!tokenIds.length || tokenIds.length > parsedPrices.length || needsOverview) return
-
-    // all prices are set, calls can be created
-    setCalls(
-      tokenIds.flatMap((tokenId, index) => {
-        const uint256TokenId = uint256HexFromStrHex(tokenId)
-
-        return [
-          {
-            contractAddress: MARKETPLACE_ADDRESSES[networkId],
-            entrypoint: 'createOffer',
-            calldata: [uint256TokenId.low, uint256TokenId.high, parsedPrices[index].quotient.toString()],
-          },
-        ]
-      })
+    const tokenId = cardId.getStarknetCardId(
+      card.cardModel.artist.displayName,
+      card.cardModel.season,
+      constants.ScarcityName.indexOf(card.cardModel.scarcity.name),
+      card.serialNumber
     )
-  }, [tokenIds.length, parsedPrices.length, needsOverview])
+    const uint256TokenId = uint256.uint256HexFromStrHex(tokenId)
 
-  // error
-  const [error, setError] = useState<string | null>(null)
-  const onError = useCallback((error: string) => setError(error), [])
+    pushCalls({
+      contractAddress: marketplaceAddress,
+      entrypoint: 'createOffer',
+      calldata: [uint256TokenId.low, uint256TokenId.high, parsedPrice.quotient.toString()],
+    })
 
-  // signature
-  const [createOffersMutation] = useCreateOffersMutation()
-  const [txHash, setTxHash] = useState<string | null>(null)
+    // increase total price for final overview
+    setParsedPricesTotal((state) => state.add(parsedPrice))
 
-  const onSignature = useCallback(
-    (signature: Signature, maxFee: string, nonce: string) => {
-      createOffersMutation({
-        variables: {
-          tokenIds,
-          prices: parsedPrices.map((parsedPrice) => parsedPrice.quotient.toString()),
-          maxFee,
-          nonce,
-          signature: stark.signatureToDecimalArray(signature),
-        },
-      })
-        .then((res?: any) => {
-          const hash = res?.data?.createOffers?.hash
-          if (!hash) {
-            onError('Transaction not received')
-            return
-          }
-
-          setTxHash(hash)
-          onSuccess()
-        })
-        .catch((createOfferError: ApolloError) => {
-          const error = createOfferError?.graphQLErrors?.[0]
-          onError(error?.message ?? 'Transaction not received')
-
-          console.error(error)
-        })
-    },
-    [parsedPrices.length, tokenIds.length, onSuccess]
-  )
+    // move to the next card
+    setCardIndex((state) => state + 1)
+  }, [parsedPrice, card])
 
   // Lowest ask
   const [lowestAsks, setLowestAsks] = useState<{ [id: string]: string }>({})
@@ -223,14 +159,10 @@ export default function CreateOfferModal({ cardsIds, onSuccess }: CreateOfferMod
   // on close modal
   useEffect(() => {
     if (isOpen) {
-      setCalls(null)
-      setTxHash(null)
-      setError(null)
       setPrice('')
       setCardIndex(0)
-      setParsedPrices([])
-      setParsedPricesTotal(WeiAmount.fromRawAmount(0))
       setLowestAsks({})
+      resetStarknetTx()
     }
   }, [isOpen])
 
@@ -242,20 +174,11 @@ export default function CreateOfferModal({ cardsIds, onSuccess }: CreateOfferMod
       <ModalContent>
         <ModalHeader
           onDismiss={toggleCreateOfferModal}
-          title={calls ? undefined : displayOverview ? t`Offers overview` : t`Enter an asking price`}
+          title={signing ? undefined : displayOverview ? t`Offers overview` : t`Enter an asking price`}
         />
 
-        <StarknetSigner
-          confirmationText={t`Your offer will be created`}
-          confirmationActionText={t`Confirm offer creation`}
-          transactionText={t`offer creation.`}
-          calls={calls ?? undefined}
-          txHash={txHash ?? undefined}
-          error={error ?? undefined}
-          onSignature={onSignature}
-          onError={onError}
-        >
-          {!!cards[cardIndex] && !!lowestAsks[cards[cardIndex].cardModel.id] && (
+        <StarknetSigner display={display}>
+          {!!(card && lowestAsks[card.cardModel.id]) && (
             <Column gap={32}>
               <CardBreakdownWrapper>
                 <CardBreakdown
@@ -266,7 +189,7 @@ export default function CreateOfferModal({ cardsIds, onSuccess }: CreateOfferMod
                   scarcityName={cards[cardIndex].cardModel.scarcity.name}
                 />
 
-                {needsOverview && (
+                {cards.length > 1 && (
                   <CardsCount>
                     {cardIndex + 1} / {cards.length}
                   </CardsCount>

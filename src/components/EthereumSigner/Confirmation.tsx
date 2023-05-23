@@ -6,11 +6,11 @@ import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import Link from '@/components/Link'
 import Spinner from '@/components/Spinner'
-import { desiredChainId } from '@/constants/connectors'
-import { CHAINS } from '@/constants/networks'
 
 import Checkmark from '@/images/checkmark.svg'
 import Close from '@/images/close.svg'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import { getChainInfo } from '@/constants/chainInfo'
 
 const StyledConfirmation = styled(ColumnCenter)`
   padding-bottom: 8px;
@@ -118,7 +118,7 @@ export default function Confirmation({ confirmationText, transactionText, txHash
 
       {txHash && (
         <EtherscanButtonWrapper>
-          <Link target="_blank" href={`${CHAINS[desiredChainId].explorerBaseUrl}/tx/${txHash}`}>
+          <Link target="_blank" href={`${getChainInfo(rulesSdk.networkInfos.ethereumChainId).explorer}tx/${txHash}`}>
             <PrimaryButton large>
               <Trans>See on Etherscan</Trans>
             </PrimaryButton>

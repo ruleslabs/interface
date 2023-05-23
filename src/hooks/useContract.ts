@@ -7,36 +7,30 @@ import { useWeb3React } from '@web3-react/core'
 import MulticallABI from '@/abis/multicall.json'
 import EthereumStarkgateABI from '@/abis/ethereum/starkgate.json'
 import EthereumMulticallABI from '@/abis/ethereum/multicall.json'
-
-import { useStarknet } from '@/lib/starknet'
-import {
-  AddressesMap,
-  L2_MULTICALL_ADDRESSES,
-  L1_MULTICALL_ADDRESSES,
-  L1_STARKGATE_ADDRESSES,
-} from '@/constants/addresses'
+import { AddressMap, constants } from '@rulesorg/sdk-core'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
 
 //
 // Starknet
 //
 
-export function useContract(addressOrAddressesMap: string | AddressesMap, abi: Abi): Contract | null {
-  const { network, provider } = useStarknet()
+export function useContract(addressOrAddressesMap: string | AddressMap, abi: Abi): Contract | null {
+  const chainId = rulesSdk.networkInfos.starknetChainId
 
   return useMemo(() => {
-    if (!network || !provider || !abi) return null
+    if (!abi) return null
 
     let address: string | undefined
     if (typeof addressOrAddressesMap === 'string') address = addressOrAddressesMap
-    else address = addressOrAddressesMap[network]
+    else address = addressOrAddressesMap[chainId]
     if (!address) return null
 
-    return new Contract(abi, address, provider)
-  }, [addressOrAddressesMap, network, provider])
+    return new Contract(abi, address, rulesSdk.starknet)
+  }, [addressOrAddressesMap, chainId, rulesSdk.starknet])
 }
 
 export function useMulticallContract(): Contract | null {
-  return useContract(L2_MULTICALL_ADDRESSES, MulticallABI as Abi)
+  return useContract(constants.MULTICALL_ADDRESSES, MulticallABI as Abi)
 }
 
 //
@@ -52,7 +46,7 @@ function getProviderOrSigner(provider: Web3Provider, account?: string): Web3Prov
 }
 
 export function useEthereumContract(
-  addressOrAddressesMap: string | AddressesMap,
+  addressOrAddressesMap: string | AddressMap,
   abi: any,
   withSignerIfPossible = true
 ): EthereumContract | null {
@@ -78,9 +72,9 @@ export function useEthereumContract(
 }
 
 export function useEthereumStarkgateContract(): EthereumContract | null {
-  return useEthereumContract(L1_STARKGATE_ADDRESSES, EthereumStarkgateABI as Abi)
+  return useEthereumContract(constants.STARKGATE_ADDRESSES, EthereumStarkgateABI as Abi)
 }
 
 export function useEthereumMulticallContract(): EthereumContract | null {
-  return useEthereumContract(L1_MULTICALL_ADDRESSES, EthereumMulticallABI as Abi)
+  return useEthereumContract(constants.MULTICALL_ADDRESSES, EthereumMulticallABI as Abi)
 }

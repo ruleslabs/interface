@@ -1,8 +1,7 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
-import { ApolloError, gql, useQuery } from '@apollo/client'
-import { Call, Signature, stark } from 'starknet'
+import { gql, useQuery } from '@apollo/client'
 
 import { ModalHeader } from '@/components/Modal'
 import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
@@ -16,13 +15,15 @@ import { TYPE } from '@/styles/theme'
 import { PrimaryButton } from '@/components/Button'
 import { ErrorCard } from '@/components/Card'
 import LockedWallet from '@/components/LockedWallet'
-import StarknetSigner from '@/components/StarknetSigner'
-import { useTransferCardMutation } from '@/state/wallet/hooks'
+import StarknetSigner, { StarknetSignerDisplayProps } from '@/components/StarknetSigner'
 import CardBreakdown from '@/components/MarketplaceModal/CardBreakdown'
 import Avatar from '@/components/Avatar'
 
 import Arrow from '@/images/arrow.svg'
 import { cardId, constants, uint256 } from '@rulesorg/sdk-core'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import useRulesAccount from '@/hooks/useRulesAccount'
+import useStarknetTx from '@/hooks/useStarknetTx'
 
 const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
 
@@ -131,14 +132,23 @@ const CARDS_QUERY = gql`
   }
 `
 
-interface GiftModalProps {
-  cardsIds: string[]
-  onSuccess(): void
+const display: StarknetSignerDisplayProps = {
+  confirmationText: t`Your card is on its way`,
+  transactionText: t`card transfer.`,
 }
 
-export default function GiftModal({ cardsIds, onSuccess }: GiftModalProps) {
+interface GiftModalProps {
+  cardsIds: string[]
+}
+
+export default function GiftModal({ cardsIds }: GiftModalProps) {
+  const [recipient, setRecipient] = useState<any | null>(null)
+
   // current user
   const { currentUser } = useCurrentUser()
+
+  // starknet account
+  const { address } = useRulesAccount()
 
   // modal
   const isOpen = useModalOpened(ApplicationModal.OFFER)
@@ -179,16 +189,16 @@ export default function GiftModal({ cardsIds, onSuccess }: GiftModalProps) {
     [cards.length]
   )
 
-  // generate calls
-  const [recipient, setRecipient] = useState<any | null>(null)
-  const [calls, setCalls] = useState<Call[] | null>(null)
+  // starknet tx
+  const { setCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()
 
   const handleConfirmation = useCallback(() => {
-    if (!currentUser?.starknetWallet.address || !recipient?.starknetWallet.address) return
+    const rulesAddress = constants.RULES_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+    if (!currentUser?.starknetWallet.address || !recipient?.starknetWallet.address || !rulesAddress) return
 
     setCalls([
       {
-        contractAddress: constants.RULES_ADDRESSES[rules],
+        contractAddress: rulesAddress,
         entrypoint: 'safeBatchTransferFrom',
         calldata: [
           currentUser.starknetWallet.address,
@@ -208,56 +218,14 @@ export default function GiftModal({ cardsIds, onSuccess }: GiftModalProps) {
         ],
       },
     ])
-  }, [tokenIds.length, currentUser?.starknetWallet.address, recipient?.starknetWallet.address])
-
-  // error
-  const [error, setError] = useState<string | null>(null)
-  const onError = useCallback((error: string) => setError(error), [])
-
-  // signature
-  const [transferCardMutation] = useTransferCardMutation()
-  const [txHash, setTxHash] = useState<string | null>(null)
-
-  const onSignature = useCallback(
-    (signature: Signature, maxFee: string, nonce: string) => {
-      if (!recipient?.starknetWallet.address) return
-
-      transferCardMutation({
-        variables: {
-          tokenIds,
-          recipientAddress: recipient.starknetWallet.address,
-          maxFee,
-          nonce,
-          signature: stark.signatureToDecimalArray(signature),
-        },
-      })
-        .then((res?: any) => {
-          const hash = res?.data?.transferCard?.hash
-          if (!hash) {
-            onError('Transaction not received')
-            return
-          }
-
-          setTxHash(hash)
-          onSuccess()
-        })
-        .catch((transferCardError: ApolloError) => {
-          const error = transferCardError?.graphQLErrors?.[0]
-          onError(error?.message ?? 'Transaction not received')
-
-          console.error(error)
-        })
-    },
-    [recipient?.starknetWallet.address, tokenIds.length, onSuccess]
-  )
+    setSigning(true)
+  }, [tokenIds.length, address, recipient?.starknetWallet.address, setSigning, setCalls])
 
   // on close modal
   useEffect(() => {
     if (isOpen) {
-      setCalls(null)
-      setTxHash(null)
-      setError(null)
       setRecipient(null)
+      resetStarknetTx()
     }
   }, [isOpen])
 
@@ -266,17 +234,9 @@ export default function GiftModal({ cardsIds, onSuccess }: GiftModalProps) {
   return (
     <ClassicModal onDismiss={toggleOfferModal} isOpen={isOpen}>
       <ModalContent>
-        <ModalHeader onDismiss={toggleOfferModal} title={calls ? undefined : t`Offer this card`} />
+        <ModalHeader onDismiss={toggleOfferModal} title={signing ? undefined : t`Offer this card`} />
 
-        <StarknetSigner
-          confirmationText={t`Your card is on its way`}
-          transactionText={t`card transfer.`}
-          calls={calls ?? undefined}
-          txHash={txHash ?? undefined}
-          error={error ?? undefined}
-          onSignature={onSignature}
-          onError={onError}
-        >
+        <StarknetSigner display={display}>
           <Column gap={24}>
             <CardBreakdownsWrapper
               needsScroll={Object.keys(cardModelsMap).length > MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING}

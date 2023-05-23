@@ -97,7 +97,7 @@ export default function Buy() {
       selectedOffers
         .reduce<WeiAmount>(
           (acc, { price }) => acc.add(WeiAmount.fromRawAmount(`0x${price}`)),
-          WeiAmount.fromRawAmount(0)
+          WeiAmount.ZERO
         )
         .toUnitFixed(Unit.WEI),
     [selectedOffers.length]

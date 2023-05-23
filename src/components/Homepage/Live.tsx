@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { useLazyQuery, gql } from '@apollo/client'
-import { ScarcityName, WeiAmount } from '@rulesorg/sdk-core'
+import { WeiAmount, constants } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
@@ -186,7 +186,7 @@ export default function Live() {
             <Link href={`/card/${cardModel.slug}/${transferHit.serialNumber}`}>
               <TYPE.body clickable>
                 {cardModel.artist.displayName} #{transferHit.serialNumber} /{cardModel.scarcity.maxSupply}
-                {cardModel.scarcity.name === ScarcityName[0] && '+'}
+                {cardModel.scarcity.name === constants.ScarcityName[0] && '+'}
               </TYPE.body>
             </Link>
 

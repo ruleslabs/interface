@@ -4,6 +4,7 @@
 // -----------------------------------------------------------------------------
 
 const ESLintPlugin = require('eslint-webpack-plugin')
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 
 // -----------------------------------------------------------------------------
 // Next.js config
@@ -11,7 +12,7 @@ const ESLintPlugin = require('eslint-webpack-plugin')
 
 const defaultConfig = {
   reactStrictMode: true,
-  webpack: (config, { dev, isServer, defaultLoaders, dir }) => {
+  webpack: (config, { dev, isServer }) => {
     if (dev) {
       config.plugins.push(
         new ESLintPlugin({
@@ -21,6 +22,12 @@ const defaultConfig = {
         })
       )
     }
+
+    config.plugins.push(
+      new NodePolyfillPlugin({
+        excludeAliases: ['console']
+      }),
+    )
 
     config.module.rules.push(
       {
@@ -65,6 +72,22 @@ const defaultConfig = {
         use: 'raw-loader'
       }
     )
+
+    if (!isServer) {
+      config.resolve = {
+        ...config.resolve,
+        fallback: {
+          // fixes proxy-agent dependencies
+          net: false,
+          dns: false,
+          tls: false,
+          assert: false,
+          fs: false,
+          // fixes sentry dependencies
+          process: false
+        }
+      };
+    }
 
     return config
   },

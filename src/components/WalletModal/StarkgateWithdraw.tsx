@@ -1,8 +1,6 @@
-import { useCallback, useState, useMemo } from 'react'
+import { useCallback, useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { t, Trans } from '@lingui/macro'
-import { Call, Signature, stark } from 'starknet'
-import { ApolloError } from '@apollo/client'
 
 import Column from '@/components/Column'
 import { PrimaryButton } from '@/components/Button'
@@ -10,15 +8,18 @@ import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
 import CurrencyInput from '@/components/Input/CurrencyInput'
 import { metaMaskHooks } from '@/constants/connectors'
 import useCurrentUser from '@/hooks/useCurrentUser'
-import StarknetSigner from '@/components/StarknetSigner'
-import { useETHBalances, useWithdrawEtherMutation } from '@/state/wallet/hooks'
-import { L2_STARKGATE_ADDRESSES, ETH_ADDRESSES } from '@/constants/addresses'
-import { networkId } from '@/constants/networks'
+import StarknetSigner, { StarknetSignerDisplayProps } from '@/components/StarknetSigner'
+import { useETHBalances } from '@/state/wallet/hooks'
 import Wallet from '@/components/Wallet'
 import Metamask from '@/components/Metamask'
 import { InfoCard } from '@/components/Card'
 
 import Arrow from '@/images/arrow.svg'
+import { constants } from '@rulesorg/sdk-core'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import { useModalOpened } from '@/state/application/hooks'
+import { ApplicationModal } from '@/state/application/actions'
+import useStarknetTx from '@/hooks/useStarknetTx'
 
 const { useAccount } = metaMaskHooks
 
@@ -41,9 +42,18 @@ const ArrowWrapper = styled(Column)`
   }
 `
 
+const display: StarknetSignerDisplayProps = {
+  confirmationText: t`Your withdraw is on its way`,
+  confirmationActionText: t`Confirm withdraw`,
+  transactionText: t`ETH withdraw to your Ethereum wallet`,
+}
+
 export default function WithdrawModal() {
   // current user
   const { currentUser } = useCurrentUser()
+
+  // modal
+  const isOpen = useModalOpened(ApplicationModal.WALLET)
 
   // metamask
   const account = useAccount()
@@ -58,62 +68,32 @@ export default function WithdrawModal() {
   const handleWithdrawAmountUpdate = useCallback((value: string) => setWithdrawAmount(value), [setWithdrawAmount])
   const parsedWithdrawAmount = useMemo(() => tryParseWeiAmount(withdrawAmount), [withdrawAmount])
 
+  // starknet tx
+  const { setCalls, resetStarknetTx, increaseTxValue, setSigning } = useStarknetTx()
+
   // call
-  const [calls, setCalls] = useState<Call[] | null>(null)
   const handleConfirmation = useCallback(() => {
-    if (!parsedWithdrawAmount || !account) return
+    const ethAddress = constants.ETH_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+    const l2StarkgateAddress = constants.ETH_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+    if (!parsedWithdrawAmount || !account || !ethAddress || !l2StarkgateAddress) return
 
     const amount = parsedWithdrawAmount.quotient.toString()
 
     setCalls([
       {
-        contractAddress: ETH_ADDRESSES[networkId],
+        contractAddress: ethAddress,
         entrypoint: 'increaseAllowance',
-        calldata: [L2_STARKGATE_ADDRESSES[networkId], amount, 0],
+        calldata: [l2StarkgateAddress, amount, 0],
       },
       {
-        contractAddress: L2_STARKGATE_ADDRESSES[networkId],
+        contractAddress: l2StarkgateAddress,
         entrypoint: 'initiate_withdraw',
         calldata: [account, amount, 0],
       },
     ])
-  }, [parsedWithdrawAmount, account])
-
-  // error
-  const [error, setError] = useState<string | null>(null)
-  const onError = useCallback((error: string) => setError(error), [])
-
-  // signature
-  const [withdrawEtherMutation] = useWithdrawEtherMutation()
-  const [txHash, setTxHash] = useState<string | null>(null)
-
-  const onSignature = useCallback(
-    (signature: Signature, maxFee: string, nonce: string) => {
-      if (!parsedWithdrawAmount || !account) return
-
-      const amount = parsedWithdrawAmount.quotient.toString()
-
-      withdrawEtherMutation({
-        variables: { amount, l1Recipient: account, maxFee, nonce, signature: stark.signatureToDecimalArray(signature) },
-      })
-        .then((res?: any) => {
-          const hash = res?.data?.withdrawEther?.hash
-          if (!hash) {
-            onError('Transaction not received')
-            return
-          }
-
-          setTxHash(hash)
-        })
-        .catch((withdrawEtherError: ApolloError) => {
-          const error = withdrawEtherError?.graphQLErrors?.[0]
-          onError(error?.message ?? 'Transaction not received')
-
-          console.error(error)
-        })
-    },
-    [parsedWithdrawAmount, account]
-  )
+    increaseTxValue(parsedWithdrawAmount)
+    setSigning(true)
+  }, [parsedWithdrawAmount, account, setSigning, increaseTxValue, setCalls])
 
   // next step check
   const canWithdraw = useMemo(
@@ -121,18 +101,12 @@ export default function WithdrawModal() {
     [withdrawAmount, parsedWithdrawAmount, balance]
   )
 
+  useEffect(() => {
+    resetStarknetTx()
+  }, [isOpen])
+
   return (
-    <StarknetSigner
-      confirmationText={t`Your ${withdrawAmount} ETH withdraw is on its way`}
-      confirmationActionText={t`Confirm withdraw`}
-      transactionText={t`${withdrawAmount} ETH withdraw to your Ethereum wallet`}
-      transactionValue={parsedWithdrawAmount?.quotient.toString()}
-      calls={calls ?? undefined}
-      txHash={txHash ?? undefined}
-      error={error ?? undefined}
-      onSignature={onSignature}
-      onError={onError}
-    >
+    <StarknetSigner display={display}>
       <Metamask>
         <Column gap={32}>
           <InfoCard textAlign="center">

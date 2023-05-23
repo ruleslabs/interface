@@ -20,7 +20,7 @@ export interface Actions {
 
 const initialState = {
   calls: [],
-  value: WeiAmount.fromRawAmount(0),
+  value: WeiAmount.ZERO,
   signing: false,
 }
 

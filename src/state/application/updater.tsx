@@ -1,12 +1,11 @@
 import { useEffect, useCallback, useState } from 'react'
-import { GetBlockResponse } from 'starknet'
 import { useWeb3React } from '@web3-react/core'
 
 import { useAppDispatch } from '@/state/hooks'
 import { updateEtherPrice, updateBlockNumber, updateEthereumBlockNumber } from './actions'
-import { useStarknet } from '@/lib/starknet'
 import useDebounce from '@/hooks/useDebounce'
 import { BLOCK_POLLING, ETH_PRICE_POLLING } from '@/constants/misc'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
 
 export function useEtherEURPrice() {
   const dispatch = useAppDispatch()
@@ -38,20 +37,12 @@ export function useEtherEURPrice() {
 }
 
 function useBlockNumber() {
-  const { provider } = useStarknet()
   const dispatch = useAppDispatch()
 
-  const fetchBlock = useCallback(() => {
-    if (!provider) return
-    provider
-      .getBlock('latest')
-      .then((block: GetBlockResponse) => {
-        dispatch(updateBlockNumber({ blockNumber: block.block_number }))
-      })
-      .catch((error) => {
-        console.error('failed fetching block', error)
-      })
-  }, [provider, dispatch])
+  const fetchBlock = useCallback(async () => {
+    const block = await rulesSdk.starknet.getBlock('latest')
+    dispatch(updateBlockNumber({ blockNumber: block.block_number }))
+  }, [rulesSdk.starknet, dispatch])
 
   useEffect(() => {
     fetchBlock() // first fetch

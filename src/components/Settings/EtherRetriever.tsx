@@ -25,7 +25,7 @@ export default function StarknetAccountStatus() {
   const totalAmountToRetrieve = useMemo(
     () =>
       ((currentUser?.retrievableEthers ?? []) as any[])
-        .reduce<WeiAmount>((acc, { amount }) => acc.add(WeiAmount.fromRawAmount(amount)), WeiAmount.fromRawAmount(0))
+        .reduce<WeiAmount>((acc, { amount }) => acc.add(WeiAmount.fromRawAmount(amount)), WeiAmount.ZERO)
         .toSignificant(6),
     [currentUser?.retrievableEthers?.length]
   )
