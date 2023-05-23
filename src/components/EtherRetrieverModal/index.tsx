@@ -16,8 +16,6 @@ import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import EthereumSigner from '@/components/EthereumSigner'
 import { useEthereumMulticallContract, useEthereumStarkgateContract } from '@/hooks/useContract'
 import Link from '@/components/Link'
-import { desiredChainId } from '@/constants/connectors'
-import { CHAINS } from '@/constants/networks'
 import { useRetrieveEtherMutation } from '@/state/wallet/hooks'
 import { useModalOpened, useRetrieveEthersModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
@@ -27,6 +25,8 @@ import Divider from '@/components/Divider'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
 import useCurrentUser from '@/hooks/useCurrentUser'
+import { getChainInfo } from '@/constants/chainInfo'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
 
 const RetrievableWrapper = styled(Column)`
   width: 100%;
@@ -168,7 +168,9 @@ export default function EtherRetrieveModal() {
 
                       <Link
                         target="_blank"
-                        href={`${CHAINS[desiredChainId].explorerBaseUrl}/address/${retrievableEther.l1Recipient}`}
+                        href={`${getChainInfo(rulesSdk.networkInfos.ethereumChainId).explorer}/address/${
+                          retrievableEther.l1Recipient
+                        }`}
                       >
                         <SeeOnEtherscanWrapper>
                           <TYPE.subtitle clickable>

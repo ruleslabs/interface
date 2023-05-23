@@ -5,23 +5,23 @@ import { WeiAmount } from '@rulesorg/sdk-core'
 export type StarknetTxSlice = State & Actions
 
 export interface State {
-  calls: Array<Call>
-  value: WeiAmount
-  signing: boolean
+  stxCalls: Call[]
+  stxValue: WeiAmount
+  stxSigning: boolean
 }
 
 export interface Actions {
-  setCalls: (calls: Array<Call>) => void
-  pushCalls: (...calls: Call[]) => void
-  setSigning: (signing: boolean) => void
-  resetStarknetTx: () => void
-  increaseValue: (amount: WeiAmount) => void
+  stxSetCalls: (calls: Call[]) => void
+  stxPushCalls: (...calls: Call[]) => void
+  stxSetSigning: (signing: boolean) => void
+  stxResetStarknetTx: () => void
+  stxIncreaseValue: (amount: WeiAmount) => void
 }
 
 const initialState = {
-  calls: [],
-  value: WeiAmount.ZERO,
-  signing: false,
+  stxCalls: [],
+  stxValue: WeiAmount.ZERO,
+  stxSigning: false,
 }
 
 export const createStarknetTxSlice = immer<StarknetTxSlice>((set) => ({
@@ -29,21 +29,21 @@ export const createStarknetTxSlice = immer<StarknetTxSlice>((set) => ({
 
   // CALLS
 
-  setCalls: (calls) => set({ calls }),
-  pushCalls: (...calls: Call[]) =>
+  stxSetCalls: (calls: Call[]) => set({ stxCalls: calls }),
+  stxPushCalls: (...calls: Call[]) =>
     set((state) => {
-      state.calls.push(...(calls as any[]))
+      state.stxCalls.push(...(calls as any[]))
     }),
 
   // TX VALUE
 
-  increaseValue: (amount: WeiAmount) => set((state) => state.value.add(amount)),
+  stxIncreaseValue: (amount: WeiAmount) => set((state) => state.stxValue.add(amount)),
 
   // SIGNING
 
-  setSigning: (signing: boolean) => set({ signing }),
+  stxSetSigning: (signing: boolean) => set({ stxSigning: signing }),
 
   // RESET
 
-  resetStarknetTx: () => set(initialState),
+  stxResetStarknetTx: () => set(initialState),
 }))

@@ -118,7 +118,7 @@ const MobileIconButton = styled(IconButton)`
 
 export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement>) {
   // current user
-  const { currentUser, setCurrentUser } = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   // modal
   const toggleWalletModal = useWalletModalToggle()
@@ -144,16 +144,6 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
   )
   const toggleSignInModal = () => toggleAuthModalWithMode(AuthMode.SIGN_IN)
   const toggleSignUpModal = () => toggleAuthModalWithMode(AuthMode.SIGN_UP)
-
-  // wallet upgrade
-  const onSuccessfulWalletUpgrade = useCallback(
-    () =>
-      setCurrentUser((currentUser) => {
-        if (!currentUser) return
-        currentUser.starknetWallet.needsUpgrade = false
-      }),
-    [setCurrentUser, currentUser]
-  )
 
   return (
     <>
@@ -202,7 +192,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
       </StyledAccountStatus>
 
       <WalletModal />
-      <WalletUpgradeModal onSuccess={onSuccessfulWalletUpgrade} />
+      <WalletUpgradeModal />
       <NotificationsModal />
       <AuthModal />
     </>

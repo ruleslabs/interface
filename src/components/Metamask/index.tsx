@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { t, Trans } from '@lingui/macro'
 
-import { metaMask, metaMaskHooks, desiredChainId } from '@/constants/connectors'
+import { metaMask, metaMaskHooks } from '@/constants/connectors'
 import { ThirdPartyButton } from '@/components/Button'
 import { InfoCard, ErrorCard } from '@/components/Card'
 import Column from '@/components/Column'
 import Link from '@/components/Link'
 
 import MetamaskIcon from '@/images/metamask.svg'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
 
 const { useAccount, useChainId } = metaMaskHooks
 
@@ -19,7 +20,7 @@ export default function Metamask({ children }: MetamaskProps) {
   // metamask
   const account = useAccount()
   const chainId = useChainId()
-  const activateMetamask = useCallback(() => metaMask.activate(desiredChainId), [metaMask, desiredChainId])
+  const activateMetamask = useCallback(() => metaMask.activate(rulesSdk.networkInfos.ethereumChainId), [metaMask])
   const [metamaskFound, setMetamaskFound] = useState(false)
 
   // attempt to connect eagerly on mount
@@ -30,7 +31,7 @@ export default function Metamask({ children }: MetamaskProps) {
     }
   }, [])
 
-  if (account && chainId === desiredChainId) return <>{children}</>
+  if (account && chainId === rulesSdk.networkInfos.ethereumChainId) return <>{children}</>
   else if (account)
     return (
       <ErrorCard textAlign="center">

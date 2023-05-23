@@ -1,5 +1,5 @@
 import { MutationFunction } from '@apollo/client'
-import { StarknetWalletLockingReason } from '@rulesorg/sdk-core'
+import { constants } from '@rulesorg/sdk-core'
 
 export type GenieError = { message: string; id: string | null; render: () => React.ReactNode } | null
 
@@ -15,7 +15,7 @@ export interface GenieRetrievableEthers {
 export interface GenieStarknetWallet {
   address?: string
   publicKey: string
-  lockingReason: StarknetWalletLockingReason
+  lockingReason: constants.StarknetWalletLockingReason
   signerEscapeTriggeredAt?: Date
   needsUpgrade: boolean
   rulesPrivateKey: {

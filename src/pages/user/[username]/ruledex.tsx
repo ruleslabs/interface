@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
-import { ScarcityName } from '@rulesorg/sdk-core'
+import { constants } from '@rulesorg/sdk-core'
 
 import { BaseButton } from '@/components/Button'
 import DefaultLayout from '@/components/Layout'
@@ -187,7 +187,7 @@ function Ruledex() {
   return (
     <Section marginTop="32px">
       <ScarcitySelectorWrapper>
-        {ScarcityName.map((scarcityName) => (
+        {constants.ScarcityName.map((scarcityName) => (
           <ScarcitySelector
             key={scarcityName}
             active={selectedScarcity === scarcityName}

@@ -1,19 +1,18 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
-import { parseMessage, WeiAmount, WithdrawMessage } from '@rulesorg/sdk-core'
+import { WeiAmount, WithdrawMessage, constants, message } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
 import Link from '@/components/Link'
-import { desiredChainId } from '@/constants/connectors'
-import { networkId, CHAINS } from '@/constants/networks'
-import { L2_STARKGATE_ADDRESSES, L1_STARKGATE_ADDRESSES } from '@/constants/addresses'
 import { useAddressesQuery } from '@/state/transactions/hooks'
 import useReduceHash from '@/hooks/useReduceHash'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
 import EthereumIcon from '@/images/ethereum.svg'
+import { getChainInfo } from '@/constants/chainInfo'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
 
 // style
 
@@ -83,7 +82,7 @@ function EtherWithdrawMessage({ address, parsedMessage }: EtherWithdrawMessagePr
         <span> </span>
         <EtherscanLink
           target="_blank"
-          href={`${CHAINS[desiredChainId].explorerBaseUrl}/address/${parsedMessage.l1Recipient}`}
+          href={`${getChainInfo(rulesSdk.networkInfos.ethereumChainId).explorer}/address/${parsedMessage.l1Recipient}`}
         >
           <RowCenter gap={6}>
             {reducedL1Recipient}
@@ -106,8 +105,11 @@ interface EventProps {
 
 export default function Message({ address, fromAddress, toAddress, payload }: EventProps) {
   const parsedMessage = useMemo(() => {
-    if (fromAddress === L2_STARKGATE_ADDRESSES[networkId] && toAddress === L1_STARKGATE_ADDRESSES[desiredChainId])
-      return parseMessage('starkgate', payload)
+    const l2StarkgateAddress = constants.STARKGATE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+    const l1StarkgateAddress = constants.STARKGATE_ADDRESSES[rulesSdk.networkInfos.ethereumChainId]
+
+    if (fromAddress === l2StarkgateAddress && toAddress === l1StarkgateAddress)
+      return message.parseMessage('starkgate', payload)
     return null
   }, [payload.length])
 

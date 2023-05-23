@@ -7,7 +7,6 @@ import Link from '@/components/Link'
 import Column from '@/components/Column'
 import { RowCenter } from '@/components/Row'
 import { TYPE } from '@/styles/theme'
-import { NETWORKS, networkId } from '@/constants/networks'
 import Status from './Status'
 import useReduceHash from '@/hooks/useReduceHash'
 import Caret from '@/components/Caret'
@@ -18,6 +17,8 @@ import OffchainAction from './OffchainAction'
 import useAge from '@/hooks/useAge'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
+import { getChainInfo } from '@/constants/chainInfo'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
 
 const StyledTransactionRow = styled(Card)<{ offchain: boolean }>`
   ${({ offchain }) => offchain && 'opacity: 0.7;'}
@@ -197,7 +198,7 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
         </HeaderRow>
 
         <div>
-          <Link target="_blank" href={`${NETWORKS[networkId].explorerBaseUrl}/tx/${hash}`}>
+          <Link target="_blank" href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId).explorer}/tx/${hash}`}>
             <RowCenter gap={6}>
               <StarkscanLink>{reducedHash}</StarkscanLink>
               <StyledExternalLinkIcon />
@@ -207,7 +208,10 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
 
         <div>
           {blockNumber ? (
-            <Link target="_blank" href={`${NETWORKS[networkId].explorerBaseUrl}/block/${blockNumber}`}>
+            <Link
+              target="_blank"
+              href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId).explorer}/block/${blockNumber}`}
+            >
               <RowCenter gap={6}>
                 <StarkscanLink>{blockNumber}</StarkscanLink>
                 <StyledExternalLinkIcon />

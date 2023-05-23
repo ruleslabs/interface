@@ -3,7 +3,7 @@ import gql from 'graphql-tag'
 
 import { GenieCurrentUser, GenieProfile } from '@/types'
 import { CurrentUser, useCurrentUserQuery } from './__generated__/types-and-hooks'
-import { StarknetWalletLockingReason } from '@rulesorg/sdk-core'
+import { constants } from '@rulesorg/sdk-core'
 
 gql`
   query CurrentUser {
@@ -83,7 +83,7 @@ export function formatCurrentUserQueryData(queryCurrentUser: NonNullable<Current
       address: queryStarknetWallet.address,
       publicKey: queryStarknetWallet.publicKey,
       // cannot do better with how bad enums are handled in graphql
-      lockingReason: queryStarknetWallet.lockingReason as any as StarknetWalletLockingReason,
+      lockingReason: queryStarknetWallet.lockingReason as any as constants.StarknetWalletLockingReason,
       needsUpgrade: queryStarknetWallet.needsUpgrade,
       rulesPrivateKey: queryStarknetWallet.rulesPrivateKey,
     },

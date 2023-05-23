@@ -95,10 +95,7 @@ export default function Buy() {
   const selectedOffersPriceTotal = useMemo(
     () =>
       selectedOffers
-        .reduce<WeiAmount>(
-          (acc, { price }) => acc.add(WeiAmount.fromRawAmount(`0x${price}`)),
-          WeiAmount.ZERO
-        )
+        .reduce<WeiAmount>((acc, { price }) => acc.add(WeiAmount.fromRawAmount(`0x${price}`)), WeiAmount.ZERO)
         .toUnitFixed(Unit.WEI),
     [selectedOffers.length]
   )
@@ -109,11 +106,7 @@ export default function Buy() {
   const cardModel = cardModelQuery?.data?.cardModel
 
   // on successful offer acceptance
-  const [acceptedSerialNumbers, setAcceptedSerialNumbers] = useState<number[]>([])
-  const onSuccessfulOfferAcceptance = useCallback(() => {
-    setAcceptedSerialNumbers(acceptedSerialNumbers.concat(selectedSerialNumbers))
-    setSelectedOffers([])
-  }, [acceptedSerialNumbers.length, selectedSerialNumbers.length])
+  const [acceptedSerialNumbers] = useState<number[]>([])
 
   const isLoading = cardModelQuery.loading
 
@@ -141,7 +134,6 @@ export default function Buy() {
                 pictureUrl={cardModel.pictureUrl}
                 serialNumbers={selectedSerialNumbers}
                 price={selectedOffersPriceTotal}
-                onSuccessfulOfferAcceptance={onSuccessfulOfferAcceptance}
               />
             </OffersSelectorBreakdownCard>
           </>

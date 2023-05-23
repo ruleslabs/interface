@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { StarknetTransactionAction } from '@rulesorg/sdk-core'
+import { constants } from '@rulesorg/sdk-core'
 
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
@@ -40,40 +40,40 @@ interface OffchainActionProps {
 export default function OffchainAction({ action, status }: OffchainActionProps) {
   const actionText = useMemo(() => {
     switch (action) {
-      case StarknetTransactionAction.ACCOUNT_DEPLOYMENT:
+      case constants.StarknetTransactionAction.ACCOUNT_DEPLOYMENT:
         return t`Wallet deployment`
 
-      case StarknetTransactionAction.PACKS_DELIVERY:
+      case constants.StarknetTransactionAction.PACKS_DELIVERY:
         return t`Pack delivery`
 
-      case StarknetTransactionAction.PACKS_OPENING_PREPARATION:
+      case constants.StarknetTransactionAction.PACKS_OPENING_PREPARATION:
         return t`Pack opening`
 
-      case StarknetTransactionAction.PACKS_OPENING:
+      case constants.StarknetTransactionAction.PACKS_OPENING:
         return t`Pack cards delivery`
 
-      case StarknetTransactionAction.WALLET_UPGRADE:
+      case constants.StarknetTransactionAction.WALLET_UPGRADE:
         return t`Wallet upgrade`
 
-      case StarknetTransactionAction.SIGNER_ESCAPE_TRIGGERED:
+      case constants.StarknetTransactionAction.SIGNER_ESCAPE_TRIGGERED:
         return t`Wallet password update triggering`
 
-      case StarknetTransactionAction.SIGNER_ESCAPED:
+      case constants.StarknetTransactionAction.SIGNER_ESCAPED:
         return t`Wallet password update`
 
-      case StarknetTransactionAction.WITHDRAW:
+      case constants.StarknetTransactionAction.WITHDRAW:
         return t`ETH Withdraw`
 
-      case StarknetTransactionAction.CARD_TRANSFER:
+      case constants.StarknetTransactionAction.CARD_TRANSFER:
         return t`Card transfer`
 
-      case StarknetTransactionAction.OFFER_CREATION:
+      case constants.StarknetTransactionAction.OFFER_CREATION:
         return t`Offer creation`
 
-      case StarknetTransactionAction.OFFER_CANCELLATION:
+      case constants.StarknetTransactionAction.OFFER_CANCELLATION:
         return t`Offer cancellation`
 
-      case StarknetTransactionAction.OFFER_ACCEPTANCE:
+      case constants.StarknetTransactionAction.OFFER_ACCEPTANCE:
         return t`Offer acceptance`
 
       default:

@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
-import { shallow } from 'zustand/shallow'
 
 import { ModalBody } from '@/components/Modal/Classic'
 import { useETHBalance, useWaitingTransactionQuery } from '@/state/wallet/hooks'
 import Confirmation from './Confirmation'
 import { PaginationSpinner } from '../Spinner'
 import Error from './Error'
-import { useBoundStore } from '@/zustand'
 import Column from '../Column'
 import { PrimaryButton } from '../Button'
 import { RowCenter } from '../Row'
@@ -16,7 +14,7 @@ import { TYPE } from '@/styles/theme'
 import { ErrorCard } from '../Card'
 import PrivateKeyDecipherForm from './PrivateKeyDecipherForm'
 import { useWalletModalToggle } from '@/state/application/hooks'
-import { useEstimateFees, useExecuteTx } from '@/hooks/useStarknetTx'
+import useStarknetTx, { useEstimateFees, useExecuteTx } from '@/hooks/useStarknetTx'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import useRulesAccount from '@/hooks/useRulesAccount'
 
@@ -94,7 +92,7 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
   )
 
   // starknet state
-  const { signing, txValue } = useBoundStore((state) => ({ signing: state.signing, txValue: state.value }), shallow)
+  const { signing, txValue } = useStarknetTx()
 
   // can pay
   const balance = useETHBalance(address)

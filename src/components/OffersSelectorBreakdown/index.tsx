@@ -23,7 +23,6 @@ interface OffersSelectorBreakdownProps {
   pictureUrl: string
   serialNumbers: number[]
   price: string
-  onSuccessfulOfferAcceptance(): void
 }
 
 export default function OffersSelectorBreakdown({
@@ -33,7 +32,6 @@ export default function OffersSelectorBreakdown({
   pictureUrl,
   serialNumbers,
   price,
-  onSuccessfulOfferAcceptance,
 }: OffersSelectorBreakdownProps) {
   // modal
   const toggleAcceptOfferModal = useAcceptOfferModalToggle()
@@ -72,7 +70,6 @@ export default function OffersSelectorBreakdown({
           serialNumbers={serialNumbers}
           pictureUrl={pictureUrl}
           price={price}
-          onSuccess={onSuccessfulOfferAcceptance}
         />
       )}
     </>

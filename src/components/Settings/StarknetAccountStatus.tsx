@@ -1,16 +1,17 @@
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
 
-import useCurrentUser from '@/hooks/useCurrentUser'
 import Column from '@/components/Column'
 import { PrimaryButton, SecondaryButton } from '../Button'
 import LongHex from '@/components/Text/LongHex'
 import Link from '@/components/Link'
-import { NETWORKS, networkId } from '@/constants/networks'
 import Row from '@/components/Row'
 import Subtitle from '@/components/Text/Subtitle'
 import { useStarknetAccountPrivateKeyModalToggle } from '@/state/application/hooks'
 import StarknetAccountPrivateKeyModal from '@/components/StarknetAccountPrivateKeyModal'
+import { getChainInfo } from '@/constants/chainInfo'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import useRulesAccount from '@/hooks/useRulesAccount'
 
 const ButtonsWrapper = styled(Row)`
   gap: 16px;
@@ -29,24 +30,21 @@ const ButtonsWrapper = styled(Row)`
 
 export default function StarknetAccountStatus() {
   // current user
-  const { currentUser } = useCurrentUser()
+  const { address } = useRulesAccount()
 
   // private key modal
   const toggleStarknetAccountPrivateKeyModal = useStarknetAccountPrivateKeyModalToggle()
 
-  if (!currentUser) return null
+  if (!address) return null
 
   return (
     <>
       <Column gap={12}>
         <Subtitle value={t`Wallet address`} />
-        <LongHex value={currentUser.starknetWallet.address ?? ''} />
+        <LongHex value={address} />
 
         <ButtonsWrapper>
-          <Link
-            target="_blank"
-            href={`${NETWORKS[networkId].explorerBaseUrl}/contract/${currentUser.starknetWallet.address}`}
-          >
+          <Link target="_blank" href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId)}/contract/${address}`}>
             <PrimaryButton>
               <Trans>See on Starkscan</Trans>
             </PrimaryButton>

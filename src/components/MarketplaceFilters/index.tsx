@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Seasons, ScarcityName } from '@rulesorg/sdk-core'
+import { constants } from '@rulesorg/sdk-core'
 import { Trans, t } from '@lingui/macro'
 
 import Column from '@/components/Column'
@@ -57,7 +57,7 @@ export default function MarketplaceFilters({ maximumPriceUpperBound, ...props }:
       <Column gap={12}>
         <Subtitle value={t`Seasons`} />
 
-        {Object.keys(Seasons).map((season: string) => (
+        {Object.keys(constants.Seasons).map((season: string) => (
           <Checkbox
             key={`checkbox-season-${season}`}
             value={!filters.seasons.includes(+season)}
@@ -75,7 +75,7 @@ export default function MarketplaceFilters({ maximumPriceUpperBound, ...props }:
       <Column gap={12}>
         <Subtitle value={t`Scarcities`} />
 
-        {ScarcityName.map((scarcity: string, index) => (
+        {constants.ScarcityName.map((scarcity: string, index) => (
           <Checkbox
             key={`checkbox-tier-${scarcity}`}
             value={!filters.scarcities.includes(index)}

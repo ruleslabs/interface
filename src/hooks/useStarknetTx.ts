@@ -11,7 +11,7 @@ export function useEstimateFees() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const { calls, txValue } = useBoundStore((state) => ({ calls: state.calls, txValue: state.value }), shallow)
+  const { calls, txValue } = useBoundStore((state) => ({ calls: state.stxCalls, txValue: state.stxValue }), shallow)
 
   const { account } = useRulesAccount()
 
@@ -60,7 +60,7 @@ export function useExecuteTx() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const { calls } = useBoundStore((state) => ({ calls: state.calls }), shallow)
+  const { calls } = useBoundStore((state) => ({ calls: state.stxCalls }), shallow)
 
   const { account } = useRulesAccount()
 
@@ -93,13 +93,13 @@ export function useExecuteTx() {
 export default function useStarknetTx() {
   return useBoundStore(
     (state) => ({
-      setCalls: state.setCalls,
-      pushCalls: state.pushCalls,
-      resetStarknetTx: state.resetStarknetTx,
-      txValue: state.value,
-      increaseTxValue: state.increaseValue,
-      setSigning: state.setSigning,
-      signing: state.signing,
+      setCalls: state.stxSetCalls,
+      pushCalls: state.stxPushCalls,
+      resetStarknetTx: state.stxResetStarknetTx,
+      txValue: state.stxValue,
+      increaseTxValue: state.stxIncreaseValue,
+      setSigning: state.stxSetSigning,
+      signing: state.stxSigning,
     }),
     shallow
   )

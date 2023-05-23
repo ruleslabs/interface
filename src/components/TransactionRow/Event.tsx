@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
 import {
-  parseEvent,
   WeiAmount,
-  EventKeys,
   TransferEvent,
   TransferSingleEvent,
   OfferCreatedEvent,
   AccountInitializedEvent,
+  constants,
+  event as rsdkEvent,
 } from '@rulesorg/sdk-core'
 import { getChecksumAddress } from 'starknet'
 import { t, Trans } from '@lingui/macro'
@@ -15,11 +15,10 @@ import { t, Trans } from '@lingui/macro'
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
 import Link from '@/components/Link'
-import { networkId } from '@/constants/networks'
-import { PACKS_OPENER_ADDRESSES, AIRDROP_MINTER_ADDRESSES, TAX_RESERVE_ADDRESSES } from '@/constants/addresses'
 import { useMapUsersByAddress, useTokenAndAddressesQuery, useAddressesQuery } from '@/state/transactions/hooks'
 
 import EthereumIcon from '@/images/ethereum.svg'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
 
 // style
 
@@ -88,7 +87,7 @@ function TokenTransferEvent({ parsedEvent }: CardTransferEventProps) {
   const query = useTokenAndAddressesQuery(parsedEvent.type, parsedEvent.tokenId, [parsedEvent.to, parsedEvent.from])
 
   // airdrop
-  const airdrop = parsedEvent.operator === AIRDROP_MINTER_ADDRESSES[networkId]
+  const airdrop = constants.ACCOUNTS[rulesSdk.networkInfos.starknetChainId][constants.RulesAccount.AIRDROP_MINTER]
 
   // get token (pack/card) data
   const token = useMemo(() => {
@@ -168,7 +167,7 @@ function EtherTransferEvent({ parsedEvent }: EtherTransferEventProps) {
   const parsedAmount = useMemo(() => WeiAmount.fromRawAmount(parsedEvent.value), [parsedEvent.value])
 
   // is marketplace tax
-  const marketplaceTax = parsedEvent.to === TAX_RESERVE_ADDRESSES[networkId]
+  const marketplaceTax = parsedEvent.to === constants.TAX_RESERVE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
 
   if (!query.data) return null
 
@@ -267,16 +266,16 @@ interface WalletEventProps {
 function WalletEvent({ eventKey }: WalletEventProps) {
   const eventText = useMemo(() => {
     switch (eventKey) {
-      case EventKeys.ACCOUNT_INITIALIZED:
+      case constants.EventKeys.ACCOUNT_INITIALIZED:
         return t`Wallet deployed`
 
-      case EventKeys.ACCOUNT_UPGRADED:
+      case constants.EventKeys.ACCOUNT_UPGRADED:
         return t`Wallet upgraded`
 
-      case EventKeys.SIGNER_ESCAPE_TRIGGERED:
+      case constants.EventKeys.SIGNER_ESCAPE_TRIGGERED:
         return t`Password update triggered`
 
-      case EventKeys.SIGNER_ESCAPED:
+      case constants.EventKeys.SIGNER_ESCAPED:
         return t`Password update completed`
     }
 
@@ -305,17 +304,17 @@ interface EventProps {
 
 export default function Event({ address, publicKey, $key, $data }: EventProps) {
   const [parsedEvents, involvedAddresses] = useMemo(() => {
-    const [parsedEvent, involvedAddresses] = parseEvent($key, $data)
+    const [parsedEvent, involvedAddresses] = rsdkEvent.parseEvent($key, $data)
     if (!parsedEvent || !involvedAddresses) return []
 
     const parsedEvents = Array.isArray(parsedEvent) ? parsedEvent : [parsedEvent]
 
     // fix events lack of informations
-    if (parsedEvents[0]?.key === EventKeys.OFFER_CANCELED) {
+    if (parsedEvents[0]?.key === constants.EventKeys.OFFER_CANCELED) {
       ;(parsedEvents[0] as OfferCreatedEvent).seller = address
       involvedAddresses.push(address)
     } else if (
-      parsedEvents[0]?.key === EventKeys.ACCOUNT_INITIALIZED &&
+      parsedEvents[0]?.key === constants.EventKeys.ACCOUNT_INITIALIZED &&
       getChecksumAddress((parsedEvents[0] as AccountInitializedEvent).signerPublicKey) === publicKey
     ) {
       involvedAddresses.push(address)
@@ -332,21 +331,21 @@ export default function Event({ address, publicKey, $key, $data }: EventProps) {
     <>
       {parsedEvents.map((parsedEvent, index) => {
         switch (parsedEvent.key) {
-          case EventKeys.TRANSFER_SINGLE:
-            return (parsedEvent as TransferSingleEvent).to === PACKS_OPENER_ADDRESSES[networkId] ? (
-              <PackOpeningPreparationEvent key={index} parsedEvent={parsedEvent as TransferSingleEvent} />
-            ) : (
+          case constants.EventKeys.TRANSFER_SINGLE:
+            return +(parsedEvent as TransferSingleEvent).to ? (
               <TokenTransferEvent key={index} parsedEvent={parsedEvent as TransferSingleEvent} />
+            ) : (
+              <PackOpeningPreparationEvent key={index} parsedEvent={parsedEvent as TransferSingleEvent} />
             )
 
-          case EventKeys.TRANSFER:
+          case constants.EventKeys.TRANSFER:
             return <EtherTransferEvent key={index} parsedEvent={parsedEvent as TransferEvent} />
 
-          case EventKeys.OFFER_CREATED:
-          case EventKeys.OFFER_CANCELED:
+          case constants.EventKeys.OFFER_CREATED:
+          case constants.EventKeys.OFFER_CANCELED:
             return <OfferCreationAndCancelEvent key={index} parsedEvent={parsedEvent as OfferCreatedEvent} />
 
-          case EventKeys.ACCOUNT_INITIALIZED:
+          case constants.EventKeys.ACCOUNT_INITIALIZED:
             return <WalletEvent key={index} eventKey={$key} />
         }
 
