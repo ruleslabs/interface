@@ -76,7 +76,7 @@ const CardModelId = styled(TYPE.body)`
   padding: 6px;
   text-align: center;
   background: ${({ theme }) => theme.bg2};
-  border-radius: 3px;
+  border-radius: 6px;
 `
 
 const ALL_CARD_MODELS_QUERY = gql`

@@ -6,11 +6,11 @@ import { TYPE } from '@/styles/theme'
 const StyledLabel = styled(TYPE.body)<{ color: string }>`
   font-size: 14px;
   padding: 2px 6px;
-  border-radius: 3px;
+  border-radius: 6px;
   background: ${({ theme, color }) => (theme as any)[color]}20;
   border: 1px solid ${({ theme, color }) => (theme as any)[color]}80;
   color: ${({ theme, color }) => (theme as any)[color]};
-  border-radius: 3px;
+  border-radius: 6px;
 `
 
 interface LabelProps {

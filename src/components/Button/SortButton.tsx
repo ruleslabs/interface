@@ -13,7 +13,7 @@ export type SortsData<T extends string> = SortData<T>[]
 const StyledSortButton = styled(RowButton)`
   position: relative;
   border: solid 1px ${({ theme }) => theme.text2}80;
-  border-radius: 3px;
+  border-radius: 6px;
   padding: 8px 16px;
 
   &:hover {
@@ -26,7 +26,7 @@ const Dropdown = styled(Column)<{ isOpen: boolean }>`
   position: absolute;
   background: ${({ theme }) => theme.bg2};
   border: 1px solid ${({ theme }) => theme.bg3}80;
-  border-radius: 3px;
+  border-radius: 6px;
   top: 38px;
   right: 0;
   padding: 8px 0;

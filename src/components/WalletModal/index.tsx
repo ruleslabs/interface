@@ -1,60 +1,41 @@
-import { useCallback } from 'react'
-import styled from 'styled-components'
-import { WeiAmount } from '@rulesorg/sdk-core'
-import { Trans, t } from '@lingui/macro'
+import { useEffect, useMemo } from 'react'
+import { t } from '@lingui/macro'
 
-import { ModalHeader } from '@/components/Modal'
-import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classic'
+import SidebarModal, { ModalContent } from '@/components/Modal/Sidebar'
 import { useModalOpened, useWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
-import useCurrentUser from '@/hooks/useCurrentUser'
-import { useWalletModalMode, useSetWalletModalMode, useETHBalances } from '@/state/wallet/hooks'
+import { useSetWalletModalMode, useWalletModalMode } from '@/state/wallet/hooks'
 import { WalletModalMode } from '@/state/wallet/actions'
-import Column from '@/components/Column'
-import Row, { RowCenter } from '@/components/Row'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-import { TYPE } from '@/styles/theme'
-import { TabButton } from '@/components/Button'
-import LockedWallet from '@/components/LockedWallet'
-import { ErrorCard } from '@/components/Card'
 
+import Overview from './Overview'
 import Deposit from './Deposit'
-import StarkgateDeposit from './StarkgateDeposit'
-import Withdraw from './Withdraw'
-import StarkgateWithdraw from './StarkgateWithdraw'
+import { ModalContents } from '@/types'
+import { ModalHeader } from '../Modal'
 
-import EthereumIcon from '@/images/ethereum-plain.svg'
-
-const ETHBalance = styled(RowCenter)`
-  width: 100%;
-  margin-top: 16px;
-  gap: 8px;
-  justify-content: center;
-
-  & svg {
-    fill: ${({ theme }) => theme.text1};
-    height: 32px;
-  }
-`
-
-const FiatBalance = styled(TYPE.subtitle)`
-  width: 100%;
-  text-align: center;
-  font-size: 16px;
-`
-
-const TabBar = styled(Row)`
-  justify-content: space-around;
-  border-color: ${({ theme }) => theme.bg3}80;
-  border-style: solid;
-  border-width: 0 0 1px;
-  margin: 32px -16px;
-`
+const MODAL_CONTENTS: ModalContents<WalletModalMode> = {
+  [WalletModalMode.OVERVIEW]: {
+    Component: Overview,
+  },
+  [WalletModalMode.DEPOSIT]: {
+    Component: Deposit,
+    title: t`Add funds`,
+    previous: WalletModalMode.OVERVIEW,
+  },
+  [WalletModalMode.WITHDRAW]: {
+    Component: Deposit,
+    title: t`Add funds`,
+  },
+  [WalletModalMode.STARKGATE_DEPOSIT]: {
+    Component: Deposit,
+    title: t`Add funds`,
+  },
+  [WalletModalMode.STARKGATE_WITHDRAW]: {
+    Component: Deposit,
+    title: t`Add funds`,
+  },
+}
 
 export default function WalletModal() {
-  // current user
-  const { currentUser } = useCurrentUser()
-
   // modal
   const isOpen = useModalOpened(ApplicationModal.WALLET)
   const toggleWalletModal = useWalletModalToggle()
@@ -63,86 +44,34 @@ export default function WalletModal() {
   const walletModalMode = useWalletModalMode()
   const setWalletModalMode = useSetWalletModalMode()
 
-  const onDepositMode = useCallback(() => setWalletModalMode(WalletModalMode.DEPOSIT), [setWalletModalMode])
-  const onWithdrawMode = useCallback(() => setWalletModalMode(WalletModalMode.WITHDRAW), [setWalletModalMode])
+  const renderedModalContent = useMemo(() => {
+    if (walletModalMode === null) return null
+    const ModalContent = MODAL_CONTENTS[walletModalMode]
 
-  // ETH balance
-  const address = currentUser?.starknetWallet.address ?? ''
-  const balances = useETHBalances([address])
-  const balance = balances?.[address] ?? WeiAmount.ZERO
+    const onBack =
+      ModalContent.previous !== undefined
+        ? () => {
+            if (ModalContent.previous !== undefined) setWalletModalMode(ModalContent.previous)
+          }
+        : undefined
 
-  const weiAmountToEURValue = useWeiAmountToEURValue()
+    return (
+      <>
+        <ModalHeader onDismiss={toggleWalletModal} onBack={onBack} title={ModalContent.title} />
+        <ModalContent.Component />
+      </>
+    )
+  }, [walletModalMode, toggleWalletModal, setWalletModalMode])
 
-  // render modal mode
-  const renderModal = useCallback(() => {
-    switch (walletModalMode) {
-      default:
-      case WalletModalMode.DEPOSIT:
-        return <Deposit />
-
-      case WalletModalMode.STARKGATE_DEPOSIT:
-        return <StarkgateDeposit />
-
-      case WalletModalMode.WITHDRAW:
-        return <Withdraw />
-
-      case WalletModalMode.STARKGATE_WITHDRAW:
-        return <StarkgateWithdraw />
+  useEffect(() => {
+    if (isOpen) {
+      setWalletModalMode(WalletModalMode.OVERVIEW)
     }
-  }, [walletModalMode])
+  }, [isOpen])
 
   return (
-    <ClassicModal onDismiss={toggleWalletModal} isOpen={isOpen}>
-      <ModalContent>
-        <ModalHeader onDismiss={toggleWalletModal} title={t`Wallet`} />
-
-        <ModalBody>
-          <Column gap={16}>
-            <Column gap={8}>
-              <ETHBalance>
-                <TYPE.medium fontSize={32}>{balance ? `${balance.toFixed(6)}` : 'Loading ...'}</TYPE.medium>
-                <EthereumIcon />
-              </ETHBalance>
-
-              <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)} EUR` : '- €'}</FiatBalance>
-            </Column>
-
-            {currentUser?.starknetWallet.lockingReason && (
-              <ErrorCard>
-                <LockedWallet />
-              </ErrorCard>
-            )}
-          </Column>
-
-          <TabBar>
-            <TabButton
-              onClick={onDepositMode}
-              className={
-                walletModalMode === null ||
-                walletModalMode === WalletModalMode.DEPOSIT ||
-                walletModalMode === WalletModalMode.STARKGATE_DEPOSIT
-                  ? 'active'
-                  : undefined
-              }
-            >
-              <Trans>Deposit</Trans>
-            </TabButton>
-
-            <TabButton
-              onClick={onWithdrawMode}
-              className={
-                walletModalMode === WalletModalMode.WITHDRAW || walletModalMode === WalletModalMode.STARKGATE_WITHDRAW
-                  ? 'active'
-                  : undefined
-              }
-            >
-              <Trans>Withdraw</Trans>
-            </TabButton>
-          </TabBar>
-
-          {renderModal()}
-        </ModalBody>
-      </ModalContent>
-    </ClassicModal>
+    <SidebarModal onDismiss={toggleWalletModal} isOpen={isOpen} width={350} fullscreen>
+      <ModalContent>{renderedModalContent}</ModalContent>
+    </SidebarModal>
   )
 }

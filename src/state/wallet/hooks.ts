@@ -3,7 +3,6 @@ import JSBI from 'jsbi'
 import { WeiAmount, constants } from '@rulesorg/sdk-core'
 import { Abi, num, uint256 } from 'starknet'
 import { useWeb3React } from '@web3-react/core'
-import { gql, useMutation, useQuery } from '@apollo/client'
 
 import ERC20ABI from '@/abis/ERC20.json'
 
@@ -13,87 +12,6 @@ import { useAppDispatch, useAppSelector } from '@/state/hooks'
 import { AppState } from '@/state'
 import { setWalletModalMode, WalletModalMode } from './actions'
 import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
-
-const WAITING_TRANSACTION_QUERY = gql`
-  query {
-    waitingTransaction {
-      hash
-    }
-  }
-`
-
-const TRANSFER_CARD_MUTATION = gql`
-  mutation (
-    $tokenIds: [String!]!
-    $recipientAddress: String!
-    $maxFee: String!
-    $nonce: String!
-    $signature: [String!]!
-  ) {
-    transferCard(
-      input: {
-        tokenIds: $tokenIds
-        recipientAddress: $recipientAddress
-        quantity: 1
-        maxFee: $maxFee
-        nonce: $nonce
-        signature: $signature
-      }
-    ) {
-      hash
-    }
-  }
-`
-
-const CREATE_OFFERS_MUTATION = gql`
-  mutation ($tokenIds: [String!]!, $prices: [String!]!, $maxFee: String!, $nonce: String!, $signature: [String!]!) {
-    createOffers(
-      input: { tokenIds: $tokenIds, prices: $prices, maxFee: $maxFee, nonce: $nonce, signature: $signature }
-    ) {
-      hash
-    }
-  }
-`
-
-const CANCEL_OFFER_MUTATION = gql`
-  mutation ($tokenId: String!, $maxFee: String!, $nonce: String!, $signature: [String!]!) {
-    cancelOffer(input: { tokenId: $tokenId, maxFee: $maxFee, nonce: $nonce, signature: $signature }) {
-      hash
-    }
-  }
-`
-
-const ACCEPT_OFFERS_MUTATION = gql`
-  mutation ($tokenIds: [String!]!, $maxFee: String!, $nonce: String!, $signature: [String!]!) {
-    acceptOffers(input: { tokenIds: $tokenIds, maxFee: $maxFee, nonce: $nonce, signature: $signature }) {
-      hash
-    }
-  }
-`
-
-const WITHDRAW_ETHER_MUTATION = gql`
-  mutation ($l1Recipient: String!, $amount: String!, $maxFee: String!, $nonce: String!, $signature: [String!]!) {
-    withdrawEther(
-      input: { l1Recipient: $l1Recipient, amount: $amount, maxFee: $maxFee, nonce: $nonce, signature: $signature }
-    ) {
-      hash
-    }
-  }
-`
-
-const RETRIEVE_ETHER_MUTATION = gql`
-  mutation ($hash: String!, $withdraws: [EtherWithdraw!]!) {
-    retrieveEther(input: { hash: $hash, withdraws: $withdraws })
-  }
-`
-
-const UPGRADE_WALLET_MUTATION = gql`
-  mutation ($maxFee: String!, $nonce: String!, $signature: [String!]!) {
-    upgradeWallet(input: { maxFee: $maxFee, nonce: $nonce, signature: $signature }) {
-      hash
-    }
-  }
-`
 
 // Modal mode
 
@@ -156,36 +74,4 @@ export function useEthereumETHBalance(address?: string): WeiAmount | undefined {
   }, [provider, address, setBalance, blockNumber])
 
   return balance
-}
-
-export function useWaitingTransactionQuery() {
-  return useQuery(WAITING_TRANSACTION_QUERY)
-}
-
-export function useTransferCardMutation() {
-  return useMutation(TRANSFER_CARD_MUTATION)
-}
-
-export function useCreateOffersMutation() {
-  return useMutation(CREATE_OFFERS_MUTATION)
-}
-
-export function useCancelOfferMutation() {
-  return useMutation(CANCEL_OFFER_MUTATION)
-}
-
-export function useAcceptOffersMutation() {
-  return useMutation(ACCEPT_OFFERS_MUTATION)
-}
-
-export function useWithdrawEtherMutation() {
-  return useMutation(WITHDRAW_ETHER_MUTATION)
-}
-
-export function useRetrieveEtherMutation() {
-  return useMutation(RETRIEVE_ETHER_MUTATION)
-}
-
-export function useUpgradeWalletMutation() {
-  return useMutation(UPGRADE_WALLET_MUTATION)
 }

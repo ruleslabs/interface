@@ -33,7 +33,7 @@ const RetrievableWrapper = styled(Column)`
   padding: 12px 20px;
   background: ${({ theme }) => theme.bg3}40;
   border: 1px solid ${({ theme }) => theme.bg3}80;
-  border-radius: 3px;
+  border-radius: 6px;
   gap: 16px;
 `
 

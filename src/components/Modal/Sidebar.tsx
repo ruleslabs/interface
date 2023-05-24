@@ -7,13 +7,9 @@ import { animated, useTransition } from '@react-spring/web'
 
 import useCloseModalOnNavigation from '@/hooks/useCloseModalOnNavigation'
 import { round } from '@/utils/math'
-import { MEDIA_QUERIES_BREAKPOINTS, TYPE } from '@/styles/theme'
-import { IconButton } from '@/components/Button'
-import { RowBetween } from '@/components/Row'
+import { MEDIA_QUERIES_BREAKPOINTS } from '@/styles/theme'
 import Column from '@/components/Column'
 import useWindowSize from '@/hooks/useWindowSize'
-
-import CloseIcon from '@/images/close.svg'
 
 const DEFAULT_SIDEBAR_WIDTH = 280
 
@@ -123,47 +119,9 @@ export function ModalContent({ children, ...props }: React.HTMLAttributes<HTMLDi
   )
 }
 
-// MODAL HEADER
-
-const StyledModalHeader = styled(RowBetween)`
-  height: 64px;
-  align-items: center;
-  padding: 0 8px;
-  border-style: solid;
-  border-color: ${({ theme }) => theme.bg3}80;
-  border-width: 0 0 1px;
-
-  & > div {
-    min-width: 32px;
-  }
-`
-
-const CloseButton = styled(IconButton)`
-  cursor: pointer;
-`
-
-interface ModalHeaderProps {
-  onDismiss: () => void
-  title?: string
-}
-
-export function ModalHeader({ title, onDismiss }: ModalHeaderProps) {
-  return (
-    <StyledModalHeader>
-      <div />
-
-      <TYPE.medium>{title}</TYPE.medium>
-
-      <CloseButton onClick={onDismiss}>
-        <CloseIcon />
-      </CloseButton>
-    </StyledModalHeader>
-  )
-}
-
 // MODAL BODY
 
 export const ModalBody = styled(Column)`
   width: 100%;
-  padding: 8px;
+  padding: 16px;
 `

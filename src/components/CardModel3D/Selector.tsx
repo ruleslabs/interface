@@ -10,7 +10,7 @@ const StyledCardDisplaySelector = styled(Column)`
   gap: 12px;
 
   div {
-    border-radius: 3px;
+    border-radius: 6px;
     width: 32px;
     height: 32px;
     background: ${({ theme }) => theme.bg2};

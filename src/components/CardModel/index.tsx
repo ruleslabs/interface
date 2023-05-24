@@ -24,7 +24,7 @@ const StyledCardModel = styled(ColumnCenter)<{ width?: number; selected: boolean
   gap: 12px;
   ${({ width }) => width && `width: ${width}px;`}
   padding: 8px;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: background 200ms, transform 200ms ease-out;
 
   ${({ theme, selectable, selected }) => theme.media.computer`

@@ -30,7 +30,7 @@ const QRCodeWrapper = styled.div`
   background: ${({ theme }) => theme.black}20;
   padding: 16px;
   border: 1px solid ${({ theme }) => theme.bg3};
-  border-radius: 4px;
+  border-radius: 6px;
 
   & > svg {
     margin: 0 auto;

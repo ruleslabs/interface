@@ -4229,10 +4229,10 @@
   resolved "https://registry.yarnpkg.com/@repeaterjs/repeater/-/repeater-3.0.4.tgz#a04d63f4d1bf5540a41b01a921c9a7fddc3bd1ca"
   integrity sha512-AW8PKd6iX3vAZ0vA43nOUOnbq/X5ihgU+mSXXqunMkeQADGiqw/PY0JNeYtD5sr0PAy51YPgAPbDoeapv9r8WA==
 
-"@rulesorg/sdk-core@^1.1.15":
-  version "1.1.15"
-  resolved "https://registry.yarnpkg.com/@rulesorg/sdk-core/-/sdk-core-1.1.15.tgz#75c1d50f2ec2877b8bbdcb27435eb4d19927f70b"
-  integrity sha512-0tyLWut8DuYEkDOKtNYrNGhqWBkjwCaqltOVeHwH/d9+Fvod4U29Rv+BoYAm8iVtTLEzIHbTs/hoJrDLLbL0hA==
+"@rulesorg/sdk-core@^1.1.16":
+  version "1.1.16"
+  resolved "https://registry.yarnpkg.com/@rulesorg/sdk-core/-/sdk-core-1.1.16.tgz#07b71653f7b12dedb8d9bc088732dc9f2eb44a90"
+  integrity sha512-y0RzOJHC6UKUy+N4/yWuCXL5D5P7gPZiWTjY4u99QrGxPWWE8sIfL4lQK3FkqfhIm4OfKhSkvxfx3JkF0BuK4A==
   dependencies:
     big.js "^6.2.1"
     decimal.js-light "^2.5.1"

@@ -40,7 +40,7 @@ const Form = styled.form<{ isOpen: boolean }>`
 const StripeInputWrapper = styled(RowCenter)`
   padding: 12px;
   background: ${({ theme }) => theme.bg5};
-  border-radius: 3px;
+  border-radius: 6px;
   border: 1px solid ${({ theme }) => theme.bg3};
 
   & div {

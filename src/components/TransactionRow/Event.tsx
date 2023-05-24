@@ -24,7 +24,7 @@ import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
 
 const StyledEvent = styled(RowCenter)`
   padding: 12px 20px;
-  border-radius: 3px;
+  border-radius: 6px;
   background: ${({ theme }) => theme.bg3}40;
   border: 1px solid ${({ theme }) => theme.bg3}80;
   gap: 16px;

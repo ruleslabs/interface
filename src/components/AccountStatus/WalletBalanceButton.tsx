@@ -14,7 +14,7 @@ const WalletButton = styled(PrimaryButton)<{ alert: boolean }>`
   width: unset;
   padding: 0 16px;
   height: 38px;
-  border-radius: 4px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   gap: 8px;

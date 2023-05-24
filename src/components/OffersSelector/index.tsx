@@ -26,7 +26,7 @@ const OFFERS_USERS_QUERY = gql`
 
 const StyledOffersSelector = styled.div`
   background: ${({ theme }) => theme.bg2};
-  border-radius: 3px;
+  border-radius: 6px;
   padding: 22px 32px;
 `
 

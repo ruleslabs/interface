@@ -56,11 +56,13 @@ export function useEstimateFees() {
 }
 
 export function useExecuteTx() {
-  const [txHash, setTxHash] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const { calls } = useBoundStore((state) => ({ calls: state.stxCalls }), shallow)
+  const { calls, txHash, setTxHash } = useBoundStore(
+    (state) => ({ calls: state.stxCalls, txHash: state.stxHash, setTxHash: state.stxSetHash }),
+    shallow
+  )
 
   const { account } = useRulesAccount()
 
@@ -100,6 +102,7 @@ export default function useStarknetTx() {
       increaseTxValue: state.stxIncreaseValue,
       setSigning: state.stxSetSigning,
       signing: state.stxSigning,
+      txHash: state.stxHash,
     }),
     shallow
   )

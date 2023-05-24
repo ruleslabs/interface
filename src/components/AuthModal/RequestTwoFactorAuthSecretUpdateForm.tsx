@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 import GoogleReCAPTCHA from 'react-google-recaptcha'
 
 import { ModalHeader } from '@/components/Modal'
-import { ModalContent, ModalBody } from '@/components/Modal/Classic'
+import { ModalBody } from '@/components/Modal/Classic'
 import Column from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { AuthMode } from '@/state/auth/actions'
@@ -73,7 +73,7 @@ export default function RequestPasswordUpdateForm() {
   }, [])
 
   return (
-    <ModalContent>
+    <>
       <ModalHeader onDismiss={toggleAuthModal} onBack={() => setAuthMode(AuthMode.TWO_FACTOR_AUTH)} />
 
       <ModalBody>
@@ -111,6 +111,6 @@ export default function RequestPasswordUpdateForm() {
           <RecaptchaPolicy />
         </Column>
       </ModalBody>
-    </ModalContent>
+    </>
   )
 }

@@ -15,7 +15,7 @@ const CurrencySwitch = styled(SecondaryButton)`
   min-width: 26px;
   height: 52px;
   border: 1px solid ${({ theme }) => theme.bg3};
-  border-radius: 3px;
+  border-radius: 6px;
   background: transparent;
   padding: 0;
   font-size: 20px;

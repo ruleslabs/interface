@@ -8,7 +8,7 @@ import { RowCenter } from '@/components/Row'
 const StyledDiscordMember = styled(RowCenter)`
   background: ${({ theme }) => theme.bg3};
   height: 36px;
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
 
   & > div {

@@ -34,7 +34,7 @@ const Requirements = styled(Column)`
 
   & > * {
     padding: 8px 12px;
-    border-radius: 3px;
+    border-radius: 6px;
     background: ${({ theme }) => theme.bg3}40;
     border: 1px solid ${({ theme }) => theme.bg3}80;
   }

@@ -8,6 +8,7 @@ export interface State {
   stxCalls: Call[]
   stxValue: WeiAmount
   stxSigning: boolean
+  stxHash: null | string
 }
 
 export interface Actions {
@@ -16,12 +17,14 @@ export interface Actions {
   stxSetSigning: (signing: boolean) => void
   stxResetStarknetTx: () => void
   stxIncreaseValue: (amount: WeiAmount) => void
+  stxSetHash: (hash: string) => void
 }
 
 const initialState = {
   stxCalls: [],
   stxValue: WeiAmount.ZERO,
   stxSigning: false,
+  stxHash: null,
 }
 
 export const createStarknetTxSlice = immer<StarknetTxSlice>((set) => ({
@@ -46,4 +49,8 @@ export const createStarknetTxSlice = immer<StarknetTxSlice>((set) => ({
   // RESET
 
   stxResetStarknetTx: () => set(initialState),
+
+  // HASH
+
+  stxSetHash: (hash: string) => set({ stxHash: hash }),
 }))

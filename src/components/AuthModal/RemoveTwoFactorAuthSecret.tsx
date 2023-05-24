@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
 import { ModalHeader } from '@/components/Modal'
-import { ModalContent, ModalBody } from '@/components/Modal/Classic'
+import { ModalBody } from '@/components/Modal/Classic'
 import Column, { ColumnCenter } from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { useAuthModalToggle } from '@/state/application/hooks'
@@ -68,7 +68,7 @@ export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }
   }, []) // need state on mount
 
   return (
-    <ModalContent>
+    <>
       <ModalHeader onDismiss={toggleAuthModal} />
 
       <ModalBody>
@@ -100,6 +100,6 @@ export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }
           )}
         </ColumnCenter>
       </ModalBody>
-    </ModalContent>
+    </>
   )
 }

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
 
 import { ModalHeader } from '@/components/Modal'
-import { ModalContent, ModalBody } from '@/components/Modal/Classic'
+import { ModalBody } from '@/components/Modal/Classic'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'
@@ -68,7 +68,7 @@ export default function SignInForm({ onSuccessfulConnection }: AuthFormProps) {
   )
 
   return (
-    <ModalContent>
+    <>
       <ModalHeader onDismiss={toggleAuthModal} title={t`Connection`} />
 
       <ModalBody>
@@ -115,6 +115,6 @@ export default function SignInForm({ onSuccessfulConnection }: AuthFormProps) {
           </TYPE.subtitle>
         </Column>
       </ModalBody>
-    </ModalContent>
+    </>
   )
 }

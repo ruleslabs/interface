@@ -15,7 +15,7 @@ const Checkmark = styled.span`
   left: 0;
   height: 24px;
   width: 24px;
-  border-radius: 3px;
+  border-radius: 6px;
   border: 1px solid ${({ theme }) => theme.bg3};
   background-color: ${({ theme }) => theme.bg5};
 

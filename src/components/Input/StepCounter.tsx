@@ -23,7 +23,7 @@ const SmallButton = styled(IconButton)`
 const NumericalInput = styled.input`
   background: ${({ theme }) => theme.bg5};
   border: 1px solid ${({ theme }) => theme.bg3};
-  border-radius: 3px;
+  border-radius: 6px;
   font-size: 16px;
   font-weight: 500;
   text-align: center;

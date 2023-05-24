@@ -4,7 +4,7 @@ import { Trans, t } from '@lingui/macro'
 import GoogleReCAPTCHA from 'react-google-recaptcha'
 
 import { ModalHeader } from '@/components/Modal'
-import { ModalContent, ModalBody } from '@/components/Modal/Classic'
+import { ModalBody } from '@/components/Modal/Classic'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
 import { TYPE } from '@/styles/theme'
@@ -129,7 +129,7 @@ export default function SignUpForm() {
   )
 
   return (
-    <ModalContent>
+    <>
       <ModalHeader onDismiss={toggleAuthModal} title={t`Registration`} />
 
       <ModalBody>
@@ -201,6 +201,6 @@ export default function SignUpForm() {
           </Trans>
         </TYPE.subtitle>
       </ModalBody>
-    </ModalContent>
+    </>
   )
 }

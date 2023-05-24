@@ -7,7 +7,7 @@ const Placeholder = styled(TYPE.body)`
   width: 100%;
   border: 1px solid ${({ theme }) => theme.text2};
   color: ${({ theme }) => theme.text2};
-  border-radius: 4px;
+  border-radius: 6px;
   padding: 12px;
 `
 

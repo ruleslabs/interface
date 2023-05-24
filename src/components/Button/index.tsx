@@ -11,7 +11,7 @@ import GoogleLogo from '@/images/google-logo.svg'
 
 export const BaseButton = styled.button<{ large?: boolean }>`
   border: none;
-  border-radius: ${({ large = false }) => (large ? '4px' : '3px')};
+  border-radius: 6px;
   font-size: 16px;
   min-height: ${({ large = false }) => (large ? '54px' : '40px')};
   padding: 8px 20px;
@@ -74,7 +74,7 @@ export const IconButton = styled.button<{ alert?: boolean; notifications?: numbe
   ${({ theme, square = false }) =>
     square
       ? `
-      border-radius: 3px;
+      border-radius: 6px;
       background: none;
     `
       : `
@@ -118,7 +118,7 @@ export const SidebarNavButton = styled(NavButton)`
   width: 100%;
   height: fit-content;
   padding: 6px 8px 6px 16px;
-  border-radius: 3px;
+  border-radius: 6px;
 
   &.active,
   &:hover {
@@ -280,45 +280,30 @@ export const CustomGoogleLogin = (props: CustomGoogleLoginProps) => {
   )
 }
 
-const StyledThirdPartyButton = styled(SecondaryButton)<{ active: boolean }>`
+const StyledCardButton = styled(SecondaryButton)`
   display: flex;
   text-align: initial;
-  align-items: center;
   padding: 8px 12px 8px 16px;
-  border: 1px solid ${({ theme }) => theme.bg3};
-  background: ${({ theme }) => theme.bg3}80;
   gap: 16px;
   min-height: 60px;
-  transition: background 100ms ease;
 
   svg {
     width: 32px;
     height: 32px;
   }
-
-  ${({ active, theme }) =>
-    active
-      ? `
-        :hover {
-          background: ${theme.bg3}40;
-        }
-      `
-      : `
-        opacity: 0.3;
-        cursor: default;
-      `}
 `
 
-interface ThirdPartyButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
+interface CardButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   title: string
   subtitle?: string
-  disbaled?: boolean
+  width?: number
+  disabled?: boolean
   children: React.HTMLAttributes<HTMLButtonElement>['children']
 }
 
-export const ThirdPartyButton = ({ title, subtitle, children, disbaled = false, ...props }: ThirdPartyButtonProps) => {
+export const CardButton = ({ title, subtitle, children, width, ...props }: CardButtonProps) => {
   return (
-    <StyledThirdPartyButton active={!disbaled} {...props}>
+    <StyledCardButton {...props} style={{ width: width ? `${width}px` : 'auto' }}>
       {children}
       <Column gap={4}>
         <TYPE.body>{title}</TYPE.body>
@@ -328,6 +313,6 @@ export const ThirdPartyButton = ({ title, subtitle, children, disbaled = false, 
           </TYPE.subtitle>
         )}
       </Column>
-    </StyledThirdPartyButton>
+    </StyledCardButton>
   )
 }

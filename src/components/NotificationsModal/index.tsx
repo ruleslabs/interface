@@ -3,7 +3,7 @@ import { Trans, t } from '@lingui/macro'
 import styled from 'styled-components'
 
 import { useSidebarModalOpened, useNotificationsModalToggle } from '@/state/application/hooks'
-import SidebarModal, { ModalContent, ModalHeader, ModalBody } from '@/components/Modal/Sidebar'
+import SidebarModal, { ModalContent, ModalBody } from '@/components/Modal/Sidebar'
 import { ApplicationSidebarModal } from '@/state/application/actions'
 import { TYPE } from '@/styles/theme'
 import Column, { ColumnCenter } from '@/components/Column'
@@ -15,6 +15,7 @@ import { useMarkNotificationsAsReadMutation } from '@/state/user/hooks'
 import GhostIcon from '@/images/ghost.svg'
 import { ApolloError } from 'apollo-client'
 import useCurrentUser from '@/hooks/useCurrentUser'
+import { ModalHeader } from '../Modal'
 
 const StyledModalBody = styled(ModalBody)`
   padding: 0;

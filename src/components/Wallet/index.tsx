@@ -12,7 +12,7 @@ const StyledWallet = styled(RowCenter)`
   padding: 12px;
   background: ${({ theme }) => theme.bg5};
   border: 1px solid ${({ theme }) => theme.primary1};
-  border-radius: 4px;
+  border-radius: 6px;
   box-sizing: border-box;
   width: 100%;
   gap: 8px;

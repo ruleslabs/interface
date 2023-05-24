@@ -13,7 +13,7 @@ const StyledCurrencyInput = styled(Column)`
   padding: 16px;
   background: ${({ theme }) => theme.bg5};
   border: 1px solid ${({ theme }) => theme.bg3};
-  border-radius: 4px;
+  border-radius: 6px;
   box-sizing: border-box;
   width: 100%;
   gap: 16px;
@@ -58,7 +58,7 @@ const Currency = styled(RowCenter)`
   gap: 8px;
   background: ${({ theme }) => theme.bg3};
   padding: 6px 12px;
-  border-radius: 4px;
+  border-radius: 6px;
 
   svg {
     width: 20px;

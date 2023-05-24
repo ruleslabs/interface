@@ -20,7 +20,7 @@ const InputWrapper = styled(RowCenter)<{ prefixed: boolean; $valid: boolean }>`
   position: relative;
   background: ${({ theme }) => theme.bg5};
   border: 1px solid ${({ theme, $valid }) => ($valid ? theme.bg3 : theme.error)};
-  border-radius: 4px;
+  border-radius: 6px;
   box-sizing: border-box;
   padding: ${({ prefixed }) => (prefixed ? '0 20px 0 12px' : '0 20px')};
 
@@ -63,7 +63,7 @@ const StyledInput = styled(InputBase)`
 const StyledSearchBar = styled(InputBase)`
   background: ${({ theme }) => theme.bg5};
   border: 1px solid ${({ theme }) => theme.bg3};
-  border-radius: 3px;
+  border-radius: 6px;
   height: 40px;
   outline: none;
   color: ${({ theme }) => theme.text1};
@@ -78,7 +78,7 @@ const StyledSearchBar = styled(InputBase)`
 const StyledSmallInput = styled(InputBase)`
   background: ${({ theme }) => theme.black}40;
   border: 1px solid ${({ theme }) => theme.bg3};
-  border-radius: 3px;
+  border-radius: 6px;
   height: 32px;
   outline: none;
   color: ${({ theme }) => theme.text1};

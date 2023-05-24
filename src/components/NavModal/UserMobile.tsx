@@ -5,7 +5,7 @@ import { useSidebarModalOpened, useNavModalUserMobileToggle, useWalletModalToggl
 import { ApplicationSidebarModal } from '@/state/application/actions'
 import { TYPE } from '@/styles/theme'
 import useCurrentUser from '@/hooks/useCurrentUser'
-import SidebarModal, { ModalHeader, ModalBody, ModalContent } from '@/components/Modal/Sidebar'
+import SidebarModal, { ModalBody, ModalContent } from '@/components/Modal/Sidebar'
 import { SidebarNavButton } from '@/components/Button'
 import { useNavUserLinks, NavUserSublinks } from '@/hooks/useNav'
 import Actionable from '../Actionable'
@@ -15,6 +15,7 @@ import { RowCenter } from '@/components/Row'
 import { ActiveLink } from '@/components/Link'
 import WalletBalanceButton from '@/components/AccountStatus/WalletBalanceButton'
 import NavProfile from './NavProfile'
+import { ModalHeader } from '../Modal'
 
 const WalletRow = styled(RowCenter)`
   padding: 8px;

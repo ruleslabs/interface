@@ -11,7 +11,7 @@ import useParsedCScore from '@/hooks/useParsedCScore'
 const ProfileRow = styled(RowCenter)`
   gap: 8px;
   padding: 8px;
-  border-radius: 3px;
+  border-radius: 6px;
 
   & img {
     width: 48px;

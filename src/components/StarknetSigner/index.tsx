@@ -40,7 +40,7 @@ const FeeWrapper = styled(RowCenter)`
   padding: 24px;
   background: ${({ theme }) => theme.bg2};
   border: 1px solid ${({ theme }) => theme.bg3}80;
-  border-radius: 4px;
+  border-radius: 6px;
 
   ${({ theme }) => theme.media.extraSmall`
     padding: 16px;

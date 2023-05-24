@@ -2,18 +2,18 @@ import { useCallback } from 'react'
 import { Trans, t } from '@lingui/macro'
 
 import useCurrentUser from '@/hooks/useCurrentUser'
-import Column from '@/components/Column'
-import { TYPE } from '@/styles/theme'
 import useRampSdk from '@/hooks/useRampSdk'
-import { ThirdPartyButton } from '@/components/Button'
+import { CardButton } from '@/components/Button'
 import Separator from '@/components/Text/Separator'
 import { useSetWalletModalMode } from '@/state/wallet/hooks'
 import { WalletModalMode } from '@/state/wallet/actions'
+import { ModalBody } from '../Modal/Classic'
 
 import RampIcon from '@/images/ramp.svg'
 import MetamaskIcon from '@/images/metamask.svg'
+import Column from '../Column'
 
-export default function DepositModal() {
+export default function Deposit() {
   // current user
   const { currentUser } = useCurrentUser()
 
@@ -25,39 +25,25 @@ export default function DepositModal() {
   const rampSdk = useRampSdk({ email: currentUser?.email, address: currentUser?.starknetWallet.address })
 
   return (
-    <Column gap={32}>
-      <Column gap={16}>
-        <TYPE.medium>
-          <Trans>From your bank account</Trans>
-        </TYPE.medium>
-
-        <ThirdPartyButton
-          title="Ramp"
-          subtitle={t`Buy ETH with your credit card or a bank transfer`}
+    <ModalBody>
+      <Column gap={24}>
+        <CardButton
+          title="Credit card or bank transfer"
+          subtitle={t`might take a few days`}
           onClick={rampSdk?.show}
-          disbaled={!rampSdk?.show}
+          disabled={!rampSdk?.show}
         >
           <RampIcon />
-        </ThirdPartyButton>
-      </Column>
+        </CardButton>
 
-      <Separator>
-        <Trans>or</Trans>
-      </Separator>
+        <Separator>
+          <Trans>or</Trans>
+        </Separator>
 
-      <Column gap={16}>
-        <TYPE.medium>
-          <Trans>From your Ethereum wallet</Trans>
-        </TYPE.medium>
-
-        <ThirdPartyButton
-          title={t`Metamask`}
-          subtitle={t`Deposit ETH from your Ethereum wallet`}
-          onClick={onStarkgateDeposit}
-        >
+        <CardButton title={t`Ethereum`} subtitle={t`a few minutes`} onClick={onStarkgateDeposit}>
           <MetamaskIcon />
-        </ThirdPartyButton>
+        </CardButton>
       </Column>
-    </Column>
+    </ModalBody>
   )
 }

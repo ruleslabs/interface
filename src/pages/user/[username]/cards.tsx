@@ -137,7 +137,7 @@ const SelectedCardsAction = styled(RowCenter)`
   background: ${({ theme }) => theme.bg2};
   gap: 16px;
   padding: 8px 8px 8px 16px;
-  border-radius: 3px;
+  border-radius: 6px;
   box-shadow: 0 0 8px ${({ theme }) => theme.black}80;
 
   ${({ theme }) => theme.media.small`

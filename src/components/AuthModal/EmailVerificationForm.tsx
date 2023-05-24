@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 import GoogleReCAPTCHA from 'react-google-recaptcha'
 
 import { ModalHeader } from '@/components/Modal'
-import { ModalContent, ModalBody } from '@/components/Modal/Classic'
+import { ModalBody } from '@/components/Modal/Classic'
 import { EMAIL_VERIFICATION_CODE_LENGTH } from '@/constants/misc'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
@@ -143,7 +143,7 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFo
   ])
 
   return (
-    <ModalContent>
+    <>
       <ModalHeader onDismiss={toggleAuthModal} onBack={() => setAuthMode(AuthMode.SIGN_UP)} />
 
       <ModalBody>
@@ -185,6 +185,6 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFo
           <ReCAPTCHA ref={recaptchaRef} />
         </Column>
       </ModalBody>
-    </ModalContent>
+    </>
   )
 }

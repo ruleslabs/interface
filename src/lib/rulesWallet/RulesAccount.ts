@@ -1,3 +1,4 @@
+import { constants } from '@rulesorg/sdk-core'
 import { Account, ProviderInterface, Signer } from 'starknet'
 
 /**
@@ -10,7 +11,7 @@ export class RulesAccount extends Account {
   constructor(provider: ProviderInterface, address: string) {
     // since account constructor is taking a private key,
     // we set a dummy one (never used anyway)
-    super(provider, address, '0xB00B135')
+    super(provider, address, constants.DUMMY_PK)
   }
 
   public needSignerUpdate = true

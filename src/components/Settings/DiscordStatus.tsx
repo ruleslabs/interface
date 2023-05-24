@@ -57,7 +57,7 @@ const ConnectedDiscordWrapper = styled(RowBetween)`
 const DiscordAvatar = styled(Avatar)`
   width: 48px;
   height: 48px;
-  border-radius: 4px;
+  border-radius: 6px;
 `
 
 interface DiscordStatusProps extends React.HTMLAttributes<HTMLDivElement> {

@@ -4,7 +4,7 @@ import styled from 'styled-components'
 const StyledProgressBar = styled.div<{ duration: number }>`
   animation: progress ${({ duration }) => duration}ms ease-in-out;
   height: 5px;
-  border-radius: 4px;
+  border-radius: 6px;
   background: ${({ theme }) => theme.primary1};
   box-shadow: 0px 0px 9px ${({ theme }) => theme.primary1};
 

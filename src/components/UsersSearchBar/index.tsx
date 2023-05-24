@@ -62,7 +62,7 @@ const SearchBarWrapper = styled.div<{ focused: boolean }>`
         focused &&
         `
           border-width: 1px 1px 0;
-          border-radius: 3px 3px 0 0;
+          border-radius: 6px 3px 0 0;
         `
       }
     }

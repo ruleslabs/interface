@@ -23,7 +23,7 @@ const StyledNotificationRow = styled(Column)`
 
 const IconWrapper = styled(RowCenter)`
   background: ${({ theme }) => theme.bg2};
-  border-radius: 3px;
+  border-radius: 6px;
   width: 36px;
   height: 36px;
   padding: 4px;

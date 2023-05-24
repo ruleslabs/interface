@@ -11,11 +11,11 @@ const StyledCardBreakdown = styled(RowCenter)`
   border: 1px solid ${({ theme }) => theme.bg3}80;
   width: 100%;
   padding: 12px;
-  border-radius: 3px;
+  border-radius: 6px;
 
   & img {
     width: 64px;
-    border-radius: 4px;
+    border-radius: 6px;
   }
 `
 

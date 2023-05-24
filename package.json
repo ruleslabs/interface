@@ -37,7 +37,7 @@
     "@reach/dialog": "^0.16.2",
     "@react-spring/web": "^9.7.2",
     "@reduxjs/toolkit": "^1.6.2",
-    "@rulesorg/sdk-core": "^1.1.15",
+    "@rulesorg/sdk-core": "^1.1.16",
     "@rulesorg/serum": "^0.1.4",
     "@starknet-react/core": "0.17.0",
     "@stripe/react-stripe-js": "^1.7.1",

@@ -30,7 +30,7 @@ const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
 const TransferSummary = styled(RowCenter)`
   background: ${({ theme }) => theme.bg2};
   border: 1px solid ${({ theme }) => theme.bg3}80;
-  border-radius: 3px;
+  border-radius: 6px;
   padding: 16px 12px;
   gap: 16px;
 
@@ -91,7 +91,7 @@ const CardBreakdownsWrapper = styled.div<{ needsScroll: boolean }>`
   ${({ theme, needsScroll }) =>
     needsScroll &&
     `
-    border-radius: 3px;
+    border-radius: 6px;
     position: relative;
 
     ::before {

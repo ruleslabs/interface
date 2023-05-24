@@ -28,7 +28,7 @@ const StyledNavModalUserDesktop = styled.div`
   right: -16px;
   background: ${({ theme }) => theme.bg2};
   border: 1px solid ${({ theme }) => theme.bg3};
-  border-radius: 4px;
+  border-radius: 6px;
   padding: 8px 0;
   box-shadow: 0 0 20px ${({ theme }) => theme.black}80;
 `

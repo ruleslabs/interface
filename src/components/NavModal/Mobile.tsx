@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
-import SidebarModal, { ModalHeader, ModalBody, ModalContent } from '@/components/Modal/Sidebar'
+import SidebarModal, { ModalBody, ModalContent } from '@/components/Modal/Sidebar'
 import { RowCenter } from '@/components/Row'
 import { useNavModalMobileToggle, useSidebarModalOpened } from '@/state/application/hooks'
 import { ApplicationSidebarModal } from '@/state/application/actions'
@@ -14,6 +14,7 @@ import Divider from '@/components/Divider'
 import Column from '@/components/Column'
 
 import ExternalLinkIcon from '@/images/external-link.svg'
+import { ModalHeader } from '../Modal'
 
 const StyledLanguageSelector = styled(LanguageSelector)`
   margin: 16px 0;

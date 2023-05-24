@@ -4,7 +4,7 @@ import { t } from '@lingui/macro'
 import { useRouter } from 'next/router'
 
 import { ModalHeader } from '@/components/Modal'
-import { ModalContent, ModalBody } from '@/components/Modal/Classic'
+import { ModalBody } from '@/components/Modal/Classic'
 import { passwordHasher, validatePassword } from '@/utils/password'
 import Column from '@/components/Column'
 import Input from '@/components/Input'
@@ -99,7 +99,7 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: AuthFormP
   )
 
   return (
-    <ModalContent>
+    <>
       <ModalHeader onDismiss={toggleAuthModal} title={t`Update password`} />
 
       <ModalBody>
@@ -137,6 +137,6 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: AuthFormP
           </Column>
         </StyledForm>
       </ModalBody>
-    </ModalContent>
+    </>
   )
 }

@@ -7,7 +7,7 @@ const Card = styled.div`
   background: ${({ theme }) => theme.bg2};
   border: 1px solid ${({ theme }) => theme.bg3}80;
   backdrop-filter: blur;
-  border-radius: 3px;
+  border-radius: 6px;
   width: 100%;
 
   ${({ theme }) => theme.media.small`
@@ -21,7 +21,7 @@ export const ErrorCard = styled(TYPE.body)`
   background: ${({ theme }) => theme.error}26;
   border: 1px solid ${({ theme }) => theme.error};
   color: ${({ theme }) => theme.error};
-  border-radius: 3px;
+  border-radius: 6px;
   padding: 24px;
   width: 100%;
 
@@ -34,7 +34,7 @@ export const ErrorCard = styled(TYPE.body)`
 
 export const InfoCard = styled(TYPE.body)`
   border: 1px solid ${({ theme }) => theme.bg3};
-  border-radius: 3px;
+  border-radius: 6px;
   padding: 24px;
   width: 100%;
 

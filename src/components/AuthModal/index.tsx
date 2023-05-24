@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { useRouter } from 'next/router'
 
-import ClassicModal from '@/components/Modal/Classic'
+import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
 import { useModalOpened, useAuthModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useAuthMode } from '@/state/auth/hooks'
@@ -78,7 +78,7 @@ export default function AuthModal() {
 
   return (
     <ClassicModal onDismiss={toggleAuthModal} isOpen={isOpen}>
-      {modalContent}
+      <ModalContent>{modalContent}</ModalContent>
     </ClassicModal>
   )
 }

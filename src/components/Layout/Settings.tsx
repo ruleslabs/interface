@@ -45,7 +45,7 @@ const AsideSettings = styled.aside`
 
 const SettingsCategoryButton = styled(RowCenter)`
   gap: 6px;
-  border-radius: 3px;
+  border-radius: 6px;
   padding: 8px;
   position: relative;
   margin-left: 12px;
@@ -67,7 +67,7 @@ const SettingsCategoryButton = styled(RowCenter)`
       top: 1px;
       bottom: 1px;
       width: 5px;
-      border-radius: 3px;
+      border-radius: 6px;
       left: -12px;
     }
   }

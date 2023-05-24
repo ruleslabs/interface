@@ -53,3 +53,11 @@ export interface GenieCurrentUser {
   hasTwoFactorAuthActivated: boolean
   profile: GenieProfile
 }
+
+export type ModalContents<TEnum extends string | number | symbol> = {
+  [key in TEnum]: {
+    Component: () => JSX.Element
+    title?: string
+    previous?: TEnum
+  }
+}
