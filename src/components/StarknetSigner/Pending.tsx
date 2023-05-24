@@ -5,17 +5,10 @@ import Column, { ColumnCenter } from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 import { EtherscanButton } from '@/components/Button'
 
-import Checkmark from '@/images/checkmark.svg'
+import Spinner from '../Spinner'
 
-const StyledCheckmark = styled(Checkmark)`
-  border-radius: 50%;
-  overflow: visible;
-  background: ${({ theme }) => theme.primary1};
-  width: 108px;
-  height: 108px;
-  padding: 24px;
+const StyledSpinner = styled(Spinner)`
   margin: 0 auto;
-  stroke: ${({ theme }) => theme.text1};
 `
 
 const Title = styled(TYPE.large)`
@@ -29,19 +22,20 @@ const Subtitle = styled(TYPE.body)`
   max-width: 420px;
 `
 
-interface ConfirmationProps {
-  confirmationText: string
+interface PendingProps {
   txHash: string
 }
 
-export default function Confirmation({ confirmationText, txHash }: ConfirmationProps) {
+export default function Pending({ txHash }: PendingProps) {
   return (
     <ColumnCenter gap={32}>
       <Column gap={24}>
-        <StyledCheckmark />
+        <StyledSpinner />
 
         <ColumnCenter gap={8}>
-          <Title>{confirmationText}</Title>
+          <Title>
+            <Trans>Your wallet is already processing another transaction</Trans>
+          </Title>
 
           <Subtitle>
             <Trans>The transaction might take a few minutes to succeed.</Trans>

@@ -11,6 +11,10 @@ import Box, { BoxProps } from '@/theme/components/Box'
 import { Row, Column } from '@/theme/components/Flex'
 import * as styles from './style.css'
 import * as Text from 'src/theme/components/Text'
+import Link from '../Link'
+import { getChainInfo } from '@/constants/chainInfo'
+import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import { ColumnCenter } from '../Column'
 
 type ButtonProps = Omit<BoxProps, 'as'>
 
@@ -239,3 +243,34 @@ export const CardButton = ({ className, title, subtitle, icon, ...props }: CardB
     </Box>
   )
 }
+
+/* Etherscan */
+
+const StyledEtherscanButton = styled(ColumnCenter)`
+  width: 100%;
+  gap: 16px;
+
+  a {
+    max-width: 380px;
+    width: 100%;
+  }
+
+  button {
+    height: 50px;
+    width: 100%;
+  }
+`
+
+interface EtherscanButtonProps {
+  txHash: string
+}
+
+export const EtherscanButton = ({ txHash }: EtherscanButtonProps) => (
+  <StyledEtherscanButton>
+    <Link target="_blank" href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId).explorer}tx/${txHash}`}>
+      <PrimaryButton large>
+        <Trans>See on Starkscan</Trans>
+      </PrimaryButton>
+    </Link>
+  </StyledEtherscanButton>
+)

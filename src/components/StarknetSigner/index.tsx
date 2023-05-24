@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from 'react'
 import styled from 'styled-components'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 
 import { useETHBalance } from '@/state/wallet/hooks'
 import Confirmation from './Confirmation'
@@ -16,6 +16,7 @@ import { useWalletModalToggle } from '@/state/application/hooks'
 import useStarknetTx, { useEstimateFees, useExecuteTx } from '@/hooks/useStarknetTx'
 import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 import useRulesAccount from '@/hooks/useRulesAccount'
+import Pending from './Pending'
 
 const DummyFocusInput = styled.input`
   max-height: 0;
@@ -103,16 +104,11 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
 
   // components
   const modalContent = useMemo(() => {
-    if (txHash) return <Confirmation txHash={txHash} confirmationText={display.confirmationText} />
-
-    if (waitingTransactionHash) {
-      return (
-        <Confirmation
-          txHash={waitingTransactionHash}
-          confirmationText={t`Your wallet is already processing another transaction`}
-        />
-      )
+    if (!signing) {
+      return txHash ? <Pending txHash={txHash} /> : <>children</>
     }
+
+    if (txHash) return <Confirmation txHash={txHash} confirmationText={display.confirmationText} />
 
     if (error) return <Error error={error} />
 
@@ -185,13 +181,14 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
     txValue,
     parsedTotalCost,
     parsedNetworkFee,
+    children,
   ])
 
   return (
     <>
       <DummyFocusInput type="text" />
 
-      {signing ? modalContent : children}
+      {modalContent}
     </>
   )
 }

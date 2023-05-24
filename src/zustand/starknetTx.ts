@@ -20,10 +20,14 @@ export interface Actions {
   stxSetHash: (hash: string) => void
 }
 
-const initialState = {
+const resetState = {
   stxCalls: [],
   stxValue: WeiAmount.ZERO,
   stxSigning: false,
+}
+
+const initialState = {
+  ...resetState,
   stxHash: null,
 }
 
@@ -51,7 +55,7 @@ export const createStarknetTxSlice = immer<StarknetTxSlice>((set) => ({
 
   // RESET
 
-  stxResetStarknetTx: () => set(initialState),
+  stxResetStarknetTx: () => set(resetState),
 
   // HASH
 

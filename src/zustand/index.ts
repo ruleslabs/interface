@@ -6,7 +6,7 @@ import { StarknetTxSlice, createStarknetTxSlice } from './starknetTx'
 
 export type StoreState = UserSlice & StarknetTxSlice
 
-const PERSISTING_KEYS: Array<keyof StoreState> = []
+const PERSISTING_KEYS: Array<keyof StoreState> = ['stxHash']
 
 export const useBoundStore = create<StoreState>()(
   persist(
