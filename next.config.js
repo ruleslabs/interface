@@ -5,10 +5,13 @@
 
 const ESLintPlugin = require('eslint-webpack-plugin')
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
+const { createVanillaExtractPlugin } = require('@vanilla-extract/next-plugin');
 
 // -----------------------------------------------------------------------------
 // Next.js config
 // -----------------------------------------------------------------------------
+
+const withVanillaExtract = createVanillaExtractPlugin()
 
 const defaultConfig = {
   reactStrictMode: true,
@@ -93,4 +96,4 @@ const defaultConfig = {
   },
 }
 
-module.exports = defaultConfig
+module.exports = withVanillaExtract(defaultConfig)

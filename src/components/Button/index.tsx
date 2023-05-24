@@ -1,64 +1,36 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
+import clsx from 'clsx'
 
 import { TYPE } from '@/styles/theme'
 import { RowCenter } from '@/components/Row'
-import Column from '@/components/Column'
 import Caret from '@/components/Caret'
 import Checkmark from '@/images/checkmark.svg'
-import GoogleLogo from '@/images/google-logo.svg'
+import Box, { BoxProps } from '@/theme/components/Box'
+import { Row, Column } from '@/theme/components/Flex'
+import * as styles from './style.css'
+import * as Text from 'src/theme/components/Text'
 
-export const BaseButton = styled.button<{ large?: boolean }>`
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  min-height: ${({ large = false }) => (large ? '54px' : '40px')};
-  padding: 8px 20px;
-  cursor: pointer;
-  font-weight: 500;
+type ButtonProps = Omit<BoxProps, 'as'>
 
-  &:hover {
-    opacity: 0.9;
-  }
+/* Base */
 
-  &:disabled,
-  &[disabled] {
-    opacity: 0.5;
-  }
-`
+interface EnlargeableButtonProps extends ButtonProps {
+  large?: boolean
+}
 
-export const PrimaryButton = styled(BaseButton)`
-  background: ${({ theme }) => `radial-gradient(circle, ${theme.primary1} 0, ${theme.primary2} 50%)`};
-  color: ${({ theme }) => theme.white};
+/* Primary */
 
-  &:active {
-    background: ${({ theme }) => theme.primary1}e0;
-  }
+export const PrimaryButton = ({ className, large = false, ...props }: EnlargeableButtonProps) => (
+  <Box as={'button'} className={clsx(className, styles.primaryButton({ large }))} {...props} />
+)
 
-  &:disabled,
-  &[disabled] {
-    background: ${({ theme }) => theme.bg3};
-    color: ${({ theme }) => theme.text2};
-    cursor: default;
-  }
-`
+/* Secondary */
 
-export const SecondaryButton = styled(BaseButton)`
-  background: ${({ theme }) => theme.bg3};
-  color: ${({ theme }) => theme.text1};
-
-  &:active {
-    background: ${({ theme }) => theme.bg3}e0;
-  }
-
-  &:disabled,
-  &[disabled] {
-    background: ${({ theme }) => theme.bg3};
-    color: ${({ theme }) => theme.text2};
-    cursor: default;
-  }
-`
+export const SecondaryButton = ({ className, large = false, ...props }: EnlargeableButtonProps) => (
+  <Box as={'button'} className={clsx(className, styles.secondaryButton({ large }))} {...props} />
+)
 
 export const IconButton = styled.button<{ alert?: boolean; notifications?: number; square?: boolean }>`
   width: 32px;
@@ -243,76 +215,27 @@ export function RadioButton({ selected, onChange, ...props }: RadioButtonProps) 
   )
 }
 
-const StyledCustomGoogleLogin = styled(BaseButton)`
-  background: #3a7af2;
-  color: ${({ theme }) => theme.white};
-  height: 55px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-
-  &:disabled,
-  &[disabled] {
-    opacity: 0.8;
-  }
-
-  svg {
-    height: 24px;
-    border-radius: 100%;
-    background: #fff;
-    border: 4px solid #fff;
-    box-sizing: content-box;
-  }
-`
-
-interface CustomGoogleLoginProps {
-  onClick: () => void
-  disabled?: boolean
-}
-
-export const CustomGoogleLogin = (props: CustomGoogleLoginProps) => {
-  return (
-    <StyledCustomGoogleLogin {...props}>
-      <GoogleLogo />
-      <Trans>Connect with google</Trans>
-    </StyledCustomGoogleLogin>
-  )
-}
-
-const StyledCardButton = styled(SecondaryButton)`
-  display: flex;
-  text-align: initial;
-  padding: 8px 12px 8px 16px;
-  gap: 16px;
-  min-height: 60px;
-
-  svg {
-    width: 32px;
-    height: 32px;
-  }
-`
-
-interface CardButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
+interface CardButtonProps extends BoxProps {
   title: string
-  subtitle?: string
-  width?: number
+  subtitle: string
+  icon: () => JSX.Element
   disabled?: boolean
-  children: React.HTMLAttributes<HTMLButtonElement>['children']
 }
 
-export const CardButton = ({ title, subtitle, children, width, ...props }: CardButtonProps) => {
+export const CardButton = ({ className, title, subtitle, icon, ...props }: CardButtonProps) => {
   return (
-    <StyledCardButton {...props} style={{ width: width ? `${width}px` : 'auto' }}>
-      {children}
-      <Column gap={4}>
-        <TYPE.body>{title}</TYPE.body>
-        {subtitle && (
-          <TYPE.subtitle fontWeight={400} fontSize={12}>
+    <Box as={'button'} className={clsx(className, styles.cardButton())} {...props}>
+      <Row gap={'12'} alignItems={'flex-start'}>
+        <Box className={styles.cardButtonIconContainer}>{icon()}</Box>
+
+        <Column gap={'4'}>
+          <Text.Body>{title}</Text.Body>
+
+          <Text.Custom fontWeight={'normal'} fontSize={'14'} color={'text2'}>
             {subtitle}
-          </TYPE.subtitle>
-        )}
-      </Column>
-    </StyledCardButton>
+          </Text.Custom>
+        </Column>
+      </Row>
+    </Box>
   )
 }
