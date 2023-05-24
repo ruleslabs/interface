@@ -22,10 +22,21 @@ export const base = recipe({
       true: sprinkles({ minHeight: '54' }),
       false: sprinkles({ minHeight: '40' }),
     },
+    disabled: {
+      true: [
+        {
+          background: `${vars.color.bg3} !important`,
+          outline: 'none !important',
+          cursor: 'default !important',
+        },
+        sprinkles({ opacity: 'disabled' }),
+      ],
+    },
   },
 
   defaultVariants: {
     large: false,
+    disabled: false,
   },
 })
 

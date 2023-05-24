@@ -40,7 +40,10 @@ export const createStarknetTxSlice = immer<StarknetTxSlice>((set) => ({
 
   // TX VALUE
 
-  stxIncreaseValue: (amount: WeiAmount) => set((state) => state.stxValue.add(amount)),
+  stxIncreaseValue: (amount: WeiAmount) =>
+    set((state) => {
+      state.stxValue = state.stxValue.add(amount)
+    }),
 
   // SIGNING
 

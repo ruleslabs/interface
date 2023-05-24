@@ -50,7 +50,7 @@ export default function DepositModal() {
 
   // deposit amount
   const [depositAmount, setDepositAmount] = useState('')
-  const handleDepositAmountUpdate = useCallback((value: string) => setDepositAmount(value), [setDepositAmount])
+  const handleDepositAmountUpdate = useCallback((value: string) => setDepositAmount(value), [])
   const parsedDepositAmount = useMemo(() => tryParseWeiAmount(depositAmount), [depositAmount])
 
   // balance

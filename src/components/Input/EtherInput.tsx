@@ -8,7 +8,7 @@ import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
 
 const StyledEtherInput = styled(RowCenter)`
   padding: 12px;
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg2};
   border: 1px solid ${({ theme }) => theme.bg3};
   border-radius: 6px;
   box-sizing: border-box;

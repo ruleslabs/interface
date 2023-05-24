@@ -6,7 +6,7 @@ import { TYPE } from '@/styles/theme'
 
 const StyledSliderInput = styled(RowCenter)`
   padding: 8px 12px;
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg2};
   border: 1px solid ${({ theme }) => theme.bg3};
   border-radius: 2px;
   box-sizing: border-box;

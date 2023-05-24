@@ -22,14 +22,14 @@ interface EnlargeableButtonProps extends ButtonProps {
 
 /* Primary */
 
-export const PrimaryButton = ({ className, large = false, ...props }: EnlargeableButtonProps) => (
-  <Box as={'button'} className={clsx(className, styles.primaryButton({ large }))} {...props} />
+export const PrimaryButton = ({ className, large = false, disabled = false, ...props }: EnlargeableButtonProps) => (
+  <Box as={'button'} className={clsx(className, styles.primaryButton({ large, disabled }))} {...props} />
 )
 
 /* Secondary */
 
-export const SecondaryButton = ({ className, large = false, ...props }: EnlargeableButtonProps) => (
-  <Box as={'button'} className={clsx(className, styles.secondaryButton({ large }))} {...props} />
+export const SecondaryButton = ({ className, large = false, disabled = false, ...props }: EnlargeableButtonProps) => (
+  <Box as={'button'} className={clsx(className, styles.secondaryButton({ large, disabled }))} {...props} />
 )
 
 export const IconButton = styled.button<{ alert?: boolean; notifications?: number; square?: boolean }>`

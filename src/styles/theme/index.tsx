@@ -100,7 +100,7 @@ export function colors(darkMode: boolean): Colors {
 
     bg1: '#0D1114',
     bg2: '#191B1D',
-    bg3: '#4e515c',
+    bg3: '#33373b',
     bg4: '#AFAFAF',
     bg5: '#2e3033',
 

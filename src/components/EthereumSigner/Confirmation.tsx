@@ -15,6 +15,10 @@ import { getChainInfo } from '@/constants/chainInfo'
 const StyledConfirmation = styled(ColumnCenter)`
   padding-bottom: 8px;
   gap: 32px;
+
+  & > * {
+    width: 100%;
+  }
 `
 
 const StyledCheckmark = styled(Checkmark)`

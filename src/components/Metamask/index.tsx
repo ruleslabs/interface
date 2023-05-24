@@ -69,5 +69,5 @@ export default function Metamask({ children }: MetamaskProps) {
         </Trans>
       </InfoCard>
     )
-  }, [account, chainId])
+  }, [account, chainId, children, activateMetamask, metamaskFound])
 }

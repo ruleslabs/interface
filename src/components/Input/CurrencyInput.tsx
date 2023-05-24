@@ -11,7 +11,7 @@ import EthereumIcon from '@/images/ethereum.svg'
 
 const StyledCurrencyInput = styled(Column)`
   padding: 16px;
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg2};
   border: 1px solid ${({ theme }) => theme.bg3};
   border-radius: 6px;
   box-sizing: border-box;
@@ -74,7 +74,9 @@ export default function CurrencyInput({ onUserInput, balance, ...props }: Curren
   const handleInput = useCallback(
     (event) => {
       const value = event?.target?.value?.replace(',', '.')
-      if (value === '' || /^([0-9]{1,10}\.[0-9]{0,18}|[0-9]{1,10}\.?)$/.test(value)) onUserInput(value)
+      if (value === '' || /^([0-9]{1,10}\.[0-9]{0,18}|[0-9]{1,10}\.?)$/.test(value)) {
+        onUserInput(value)
+      }
     },
     [onUserInput]
   )

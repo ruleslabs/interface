@@ -75,7 +75,7 @@ export default function WithdrawModal() {
   // call
   const handleConfirmation = useCallback(() => {
     const ethAddress = constants.ETH_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
-    const l2StarkgateAddress = constants.ETH_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+    const l2StarkgateAddress = constants.STARKGATE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
     if (!parsedWithdrawAmount || !account || !ethAddress || !l2StarkgateAddress) return
 
     const amount = parsedWithdrawAmount.quotient.toString()

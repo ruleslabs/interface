@@ -42,7 +42,7 @@ const StyledSlider = styled.input`
   }
 
   &::-webkit-slider-thumb {
-    background: ${({ theme }) => theme.bg5};
+    background: ${({ theme }) => theme.bg2};
     border: 2px solid ${({ theme }) => theme.text1};
     border-radius: 2px;
     width: 20px;

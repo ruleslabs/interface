@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 import { Trans } from '@lingui/macro'
 
-import { ColumnCenter } from '@/components/Column'
 import { TYPE } from '@/styles/theme'
 
 import Close from '@/images/close.svg'
+import { Column } from '@/theme/components/Flex'
 
 const StyledFail = styled(Close)`
   border-radius: 50%;
@@ -41,16 +41,16 @@ interface ErrorProps {
 
 export default function Error({ error }: ErrorProps) {
   return (
-    <ColumnCenter gap={24}>
+    <Column gap={'24'} width={'full'}>
       <StyledFail />
 
-      <ColumnCenter gap={8}>
+      <Column gap={'8'}>
         <Title>
           <Trans>Your transaction has been rejected</Trans>
         </Title>
 
         <ErrorMessage>{error}</ErrorMessage>
-      </ColumnCenter>
-    </ColumnCenter>
+      </Column>
+    </Column>
   )
 }

@@ -18,7 +18,7 @@ function InputBase({ onUserInput, ...props }: InputProps | SearchBarProps) {
 
 const InputWrapper = styled(RowCenter)<{ prefixed: boolean; $valid: boolean }>`
   position: relative;
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg2};
   border: 1px solid ${({ theme, $valid }) => ($valid ? theme.bg3 : theme.error)};
   border-radius: 6px;
   box-sizing: border-box;
@@ -61,7 +61,7 @@ const StyledInput = styled(InputBase)`
 `
 
 const StyledSearchBar = styled(InputBase)`
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg2};
   border: 1px solid ${({ theme }) => theme.bg3};
   border-radius: 6px;
   height: 40px;

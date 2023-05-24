@@ -39,7 +39,7 @@ export function useEstimateFees() {
   }, [account, calls])
 
   const parsedTotalCost = useMemo(() => {
-    if (!parsedNetworkFee || !txValue) return null
+    if (!parsedNetworkFee) return null
 
     return {
       cost: txValue.add(parsedNetworkFee.fee),

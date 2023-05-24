@@ -175,7 +175,17 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
     }
 
     return <PrivateKeyDecipherForm onPrivateKeyDeciphered={updateSigner} />
-  }, [waitingTransactionHash, loading, error, txHash, executeTx, updateSigner])
+  }, [
+    waitingTransactionHash,
+    loading,
+    error,
+    txHash,
+    executeTx,
+    updateSigner,
+    txValue,
+    parsedTotalCost,
+    parsedNetworkFee,
+  ])
 
   return (
     <>

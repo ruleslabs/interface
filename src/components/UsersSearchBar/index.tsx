@@ -39,7 +39,7 @@ const SearchResults = styled(Column)`
   border: solid ${({ theme }) => theme.bg3};
   border-width: 1px;
   position: absolute;
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg2};
   left: 0;
   right: 0;
   border-radius: 0 0 3px 3px;
@@ -76,7 +76,7 @@ const SearchSuggestedUser = styled(RowCenter)`
   position: relative;
 
   :hover {
-    background: ${({ theme }) => theme.bg2};
+    background: ${({ theme }) => theme.bg5};
   }
 
   img {

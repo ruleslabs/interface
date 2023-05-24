@@ -15,8 +15,10 @@ import Divider from '@/components/Divider'
 import NavProfile from './NavProfile'
 
 const StyledNavProfile = styled(NavProfile)`
+  border-radius: 0;
+
   &:hover {
-    background: ${({ theme }) => theme.bg3}40;
+    background: ${({ theme }) => theme.bg3};
   }
 `
 
