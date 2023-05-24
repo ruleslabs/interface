@@ -41,7 +41,7 @@ export default function Overview() {
   const setWalletModalMode = useSetWalletModalMode()
 
   const onDepositMode = useCallback(() => setWalletModalMode(WalletModalMode.DEPOSIT), [setWalletModalMode])
-  const onWithdrawMode = useCallback(() => setWalletModalMode(WalletModalMode.WITHDRAW), [setWalletModalMode])
+  const onWithdrawMode = useCallback(() => setWalletModalMode(WalletModalMode.STARKGATE_WITHDRAW), [setWalletModalMode])
 
   // ETH balance
   const { address } = useRulesAccount()
@@ -58,7 +58,7 @@ export default function Overview() {
             <TYPE.medium fontSize={36}>{balance ? `${balance.toFixed(6)}` : 'Loading ...'}</TYPE.medium>
           </ETHBalance>
 
-          <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)?.toFixed(2)}` : '- €'}</FiatBalance>
+          <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)?.toFixed(2)}` : 'Loading ...'}</FiatBalance>
         </Column>
 
         {currentUser?.starknetWallet.lockingReason && (
@@ -68,11 +68,11 @@ export default function Overview() {
         )}
 
         <Column gap={8}>
-          <PrimaryButton onClick={onDepositMode}>
+          <PrimaryButton onClick={onDepositMode} large>
             <Trans>Add funds</Trans>
           </PrimaryButton>
 
-          <SecondaryButton onClick={onWithdrawMode}>
+          <SecondaryButton onClick={onWithdrawMode} large>
             <Trans>Withdraw</Trans>
           </SecondaryButton>
         </Column>

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { t, Trans } from '@lingui/macro'
 import { WeiAmount, cardId, constants, uint256 } from '@rulesorg/sdk-core'
 
-import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
+import ClassicModal, { ModalBody, ModalContent } from '@/components/Modal/Classic'
 import { useModalOpened, useAcceptOfferModalToggle, useWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import useCurrentUser from '@/hooks/useCurrentUser'
@@ -108,43 +108,45 @@ export default function AcceptOfferModal({
       <ModalContent>
         <ModalHeader onDismiss={toggleAcceptOfferModal} title={signing ? undefined : t`Confirm purchase`} />
 
-        <StarknetSigner display={display}>
-          <Column gap={32}>
-            <CardBreakdown
-              pictureUrl={pictureUrl}
-              season={season}
-              artistName={artistName}
-              serialNumbers={serialNumbers}
-              scarcityName={scarcityName}
-            />
+        <ModalBody>
+          <StarknetSigner display={display}>
+            <Column gap={32}>
+              <CardBreakdown
+                pictureUrl={pictureUrl}
+                season={season}
+                artistName={artistName}
+                serialNumbers={serialNumbers}
+                scarcityName={scarcityName}
+              />
 
-            <PurchaseBreakdown price={price} />
+              <PurchaseBreakdown price={price} />
 
-            {!!currentUser?.starknetWallet.lockingReason && (
-              <ErrorCard>
-                <LockedWallet />
-              </ErrorCard>
-            )}
+              {!!currentUser?.starknetWallet.lockingReason && (
+                <ErrorCard>
+                  <LockedWallet />
+                </ErrorCard>
+              )}
 
-            {!canPayForCard && balance && (
-              <ErrorCard textAlign="center">
-                <Trans>
-                  You do not have enough ETH in your Rules wallet to purchase this card.
-                  <br />
-                  <span onClick={toggleWalletModal}>Buy ETH or deposit from another wallet.</span>
-                </Trans>
-              </ErrorCard>
-            )}
+              {!canPayForCard && balance && (
+                <ErrorCard textAlign="center">
+                  <Trans>
+                    You do not have enough ETH in your Rules wallet to purchase this card.
+                    <br />
+                    <span onClick={toggleWalletModal}>Buy ETH or deposit from another wallet.</span>
+                  </Trans>
+                </ErrorCard>
+              )}
 
-            <PrimaryButton
-              onClick={handleConfirmation}
-              disabled={!!currentUser?.starknetWallet.lockingReason || !canPayForCard}
-              large
-            >
-              <Trans>Next</Trans>
-            </PrimaryButton>
-          </Column>
-        </StarknetSigner>
+              <PrimaryButton
+                onClick={handleConfirmation}
+                disabled={!!currentUser?.starknetWallet.lockingReason || !canPayForCard}
+                large
+              >
+                <Trans>Next</Trans>
+              </PrimaryButton>
+            </Column>
+          </StarknetSigner>
+        </ModalBody>
       </ModalContent>
     </ClassicModal>
   )

@@ -3,7 +3,7 @@ import { t, Trans } from '@lingui/macro'
 import { cardId, constants, uint256 } from '@rulesorg/sdk-core'
 
 import { ModalHeader } from '@/components/Modal'
-import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
+import ClassicModal, { ModalBody, ModalContent } from '@/components/Modal/Classic'
 import { useModalOpened, useCancelOfferModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import useCurrentUser from '@/hooks/useCurrentUser'
@@ -83,27 +83,29 @@ export default function CancelOfferModal({
       <ModalContent>
         <ModalHeader onDismiss={toggleCancelOfferModal} title={signing ? undefined : t`Confirm offer cancelation`} />
 
-        <StarknetSigner display={display}>
-          <Column gap={32}>
-            <CardBreakdown
-              pictureUrl={pictureUrl}
-              season={season}
-              artistName={artistName}
-              serialNumbers={[serialNumber]}
-              scarcityName={scarcityName}
-            />
+        <ModalBody>
+          <StarknetSigner display={display}>
+            <Column gap={32}>
+              <CardBreakdown
+                pictureUrl={pictureUrl}
+                season={season}
+                artistName={artistName}
+                serialNumbers={[serialNumber]}
+                scarcityName={scarcityName}
+              />
 
-            {!!currentUser?.starknetWallet.lockingReason && (
-              <ErrorCard>
-                <LockedWallet />
-              </ErrorCard>
-            )}
+              {!!currentUser?.starknetWallet.lockingReason && (
+                <ErrorCard>
+                  <LockedWallet />
+                </ErrorCard>
+              )}
 
-            <PrimaryButton onClick={handleConfirmation} disabled={!!currentUser?.starknetWallet.lockingReason} large>
-              <Trans>Next</Trans>
-            </PrimaryButton>
-          </Column>
-        </StarknetSigner>
+              <PrimaryButton onClick={handleConfirmation} disabled={!!currentUser?.starknetWallet.lockingReason} large>
+                <Trans>Next</Trans>
+              </PrimaryButton>
+            </Column>
+          </StarknetSigner>
+        </ModalBody>
       </ModalContent>
     </ClassicModal>
   )

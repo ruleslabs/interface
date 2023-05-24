@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans, t } from '@lingui/macro'
 
-import { ModalBody } from '@/components/Modal/Classic'
-import { useETHBalance, useWaitingTransactionQuery } from '@/state/wallet/hooks'
+import { useETHBalance } from '@/state/wallet/hooks'
 import Confirmation from './Confirmation'
 import { PaginationSpinner } from '../Spinner'
 import Error from './Error'
@@ -59,18 +58,11 @@ interface StarknetSignerProps {
 }
 
 export default function StarknetSigner({ display, children }: StarknetSignerProps) {
-  const [queryError, setQueryError] = useState<string | null>(null)
-
   // modal
   const toggleWalletModal = useWalletModalToggle()
 
   // wallet lazyness
-  const waitingTransactionQuery = useWaitingTransactionQuery()
-  const waitingTransactionHash = waitingTransactionQuery.data?.waitingTransaction?.hash
-
-  useEffect(() => {
-    if (waitingTransactionQuery.error) setQueryError('An error has occurred, please refresh the page and try again.')
-  }, [waitingTransactionQuery.error])
+  const waitingTransactionHash = null
 
   // handlers
   const [estimateFees, estimateFeesRes] = useEstimateFees()
@@ -103,8 +95,8 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
   }, [balance, parsedTotalCost])
 
   // loading / error
-  const loading = waitingTransactionQuery.loading || estimateFeesRes.loading || executeTxRes.loading
-  const error = estimateFeesRes.error || executeTxRes.error || queryError
+  const loading = estimateFeesRes.loading || executeTxRes.loading
+  const error = estimateFeesRes.error || executeTxRes.error
 
   // fiat value
   const weiAmountToEURValue = useWeiAmountToEURValue()
@@ -186,10 +178,10 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
   }, [waitingTransactionHash, loading, error, txHash, executeTx, updateSigner])
 
   return (
-    <ModalBody>
+    <>
       <DummyFocusInput type="text" />
 
       {signing ? modalContent : children}
-    </ModalBody>
+    </>
   )
 }

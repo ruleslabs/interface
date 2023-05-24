@@ -4,7 +4,7 @@ import { t, Trans } from '@lingui/macro'
 import { gql, useQuery } from '@apollo/client'
 
 import { ModalHeader } from '@/components/Modal'
-import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
+import ClassicModal, { ModalBody, ModalContent } from '@/components/Modal/Classic'
 import { useModalOpened, useOfferModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import UsersSearchBar from '@/components/UsersSearchBar'
@@ -236,75 +236,77 @@ export default function GiftModal({ cardsIds }: GiftModalProps) {
       <ModalContent>
         <ModalHeader onDismiss={toggleOfferModal} title={signing ? undefined : t`Offer this card`} />
 
-        <StarknetSigner display={display}>
-          <Column gap={24}>
-            <CardBreakdownsWrapper
-              needsScroll={Object.keys(cardModelsMap).length > MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING}
-            >
-              <Column>
-                {Object.keys(cardModelsMap).map((cardModelId) => (
-                  <CardBreakdown
-                    key={cardModelId}
-                    pictureUrl={cardModelsMap[cardModelId].pictureUrl}
-                    season={cardModelsMap[cardModelId].season}
-                    artistName={cardModelsMap[cardModelId].artistName}
-                    serialNumbers={cardModelsMap[cardModelId].serialNumbers}
-                    scarcityName={cardModelsMap[cardModelId].scarcityName}
-                  />
-                ))}
-              </Column>
-            </CardBreakdownsWrapper>
-
-            {currentUser.starknetWallet.lockingReason ? (
-              <ErrorCard>
-                <LockedWallet />
-              </ErrorCard>
-            ) : (
-              <>
-                <RowCenter gap={16}>
-                  <TYPE.body style={{ whiteSpace: 'nowrap' }}>
-                    <Trans>Send to</Trans>
-                  </TYPE.body>
-                  <UsersSearchBar onSelect={setRecipient} selfSearchAllowed={false} />
-                </RowCenter>
-
-                <Column gap={12}>
-                  <TransferSummary>
-                    <RowCenter gap={12}>
-                      <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackUrl} />
-                      <TYPE.body fontSize={14}>
-                        <Trans>My account</Trans>
-                      </TYPE.body>
-                    </RowCenter>
-
-                    <ArrowWrapper>
-                      <Arrow />
-                    </ArrowWrapper>
-
-                    <RowCenter gap={12}>
-                      {recipient && (
-                        <>
-                          <Avatar src={recipient.profile.pictureUrl} fallbackSrc={recipient.profile.fallbackSrc} />
-                          <TYPE.body fontSize={14}>{recipient.username}</TYPE.body>
-                        </>
-                      )}
-                    </RowCenter>
-                  </TransferSummary>
-
-                  {recipient && !recipient.starknetWallet.address && (
-                    <TYPE.body color="error">
-                      <Trans>This user does not have a wallet yet, please try again in a few hours.</Trans>
-                    </TYPE.body>
-                  )}
+        <ModalBody>
+          <StarknetSigner display={display}>
+            <Column gap={24}>
+              <CardBreakdownsWrapper
+                needsScroll={Object.keys(cardModelsMap).length > MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING}
+              >
+                <Column>
+                  {Object.keys(cardModelsMap).map((cardModelId) => (
+                    <CardBreakdown
+                      key={cardModelId}
+                      pictureUrl={cardModelsMap[cardModelId].pictureUrl}
+                      season={cardModelsMap[cardModelId].season}
+                      artistName={cardModelsMap[cardModelId].artistName}
+                      serialNumbers={cardModelsMap[cardModelId].serialNumbers}
+                      scarcityName={cardModelsMap[cardModelId].scarcityName}
+                    />
+                  ))}
                 </Column>
-              </>
-            )}
+              </CardBreakdownsWrapper>
 
-            <PrimaryButton onClick={handleConfirmation} disabled={!recipient?.starknetWallet.address} large>
-              <Trans>Next</Trans>
-            </PrimaryButton>
-          </Column>
-        </StarknetSigner>
+              {currentUser.starknetWallet.lockingReason ? (
+                <ErrorCard>
+                  <LockedWallet />
+                </ErrorCard>
+              ) : (
+                <>
+                  <RowCenter gap={16}>
+                    <TYPE.body style={{ whiteSpace: 'nowrap' }}>
+                      <Trans>Send to</Trans>
+                    </TYPE.body>
+                    <UsersSearchBar onSelect={setRecipient} selfSearchAllowed={false} />
+                  </RowCenter>
+
+                  <Column gap={12}>
+                    <TransferSummary>
+                      <RowCenter gap={12}>
+                        <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackUrl} />
+                        <TYPE.body fontSize={14}>
+                          <Trans>My account</Trans>
+                        </TYPE.body>
+                      </RowCenter>
+
+                      <ArrowWrapper>
+                        <Arrow />
+                      </ArrowWrapper>
+
+                      <RowCenter gap={12}>
+                        {recipient && (
+                          <>
+                            <Avatar src={recipient.profile.pictureUrl} fallbackSrc={recipient.profile.fallbackSrc} />
+                            <TYPE.body fontSize={14}>{recipient.username}</TYPE.body>
+                          </>
+                        )}
+                      </RowCenter>
+                    </TransferSummary>
+
+                    {recipient && !recipient.starknetWallet.address && (
+                      <TYPE.body color="error">
+                        <Trans>This user does not have a wallet yet, please try again in a few hours.</Trans>
+                      </TYPE.body>
+                    )}
+                  </Column>
+                </>
+              )}
+
+              <PrimaryButton onClick={handleConfirmation} disabled={!recipient?.starknetWallet.address} large>
+                <Trans>Next</Trans>
+              </PrimaryButton>
+            </Column>
+          </StarknetSigner>
+        </ModalBody>
       </ModalContent>
     </ClassicModal>
   )

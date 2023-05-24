@@ -6,34 +6,36 @@ import { useModalOpened, useWalletModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import { useSetWalletModalMode, useWalletModalMode } from '@/state/wallet/hooks'
 import { WalletModalMode } from '@/state/wallet/actions'
-
-import Overview from './Overview'
-import Deposit from './Deposit'
 import { ModalContents } from '@/types'
 import { ModalHeader } from '../Modal'
+import Overview from './Overview'
+import Deposit from './Deposit'
+import StarkgateDeposit from './StarkgateDeposit'
+import StarkgateWithdraw from './StarkgateWithdraw'
 
 const MODAL_CONTENTS: ModalContents<WalletModalMode> = {
   [WalletModalMode.OVERVIEW]: {
     Component: Overview,
+    title: t`Wallet`,
   },
   [WalletModalMode.DEPOSIT]: {
     Component: Deposit,
     title: t`Add funds`,
     previous: WalletModalMode.OVERVIEW,
   },
-  [WalletModalMode.WITHDRAW]: {
-    Component: Deposit,
-    title: t`Add funds`,
-  },
   [WalletModalMode.STARKGATE_DEPOSIT]: {
-    Component: Deposit,
+    Component: StarkgateDeposit,
     title: t`Add funds`,
+    previous: WalletModalMode.DEPOSIT,
   },
   [WalletModalMode.STARKGATE_WITHDRAW]: {
-    Component: Deposit,
-    title: t`Add funds`,
+    Component: StarkgateWithdraw,
+    title: t`Withdraw`,
+    previous: WalletModalMode.OVERVIEW,
   },
 }
+
+// TODO: make a generic component for moded modals
 
 export default function WalletModal() {
   // modal

@@ -5,7 +5,7 @@ import { useQuery, gql } from '@apollo/client'
 import { WeiAmount, cardId, constants, uint256 } from '@rulesorg/sdk-core'
 
 import { ModalHeader } from '@/components/Modal'
-import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
+import ClassicModal, { ModalBody, ModalContent } from '@/components/Modal/Classic'
 import { useModalOpened, useCreateOfferModalToggle } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import useCurrentUser from '@/hooks/useCurrentUser'
@@ -185,67 +185,69 @@ export default function CreateOfferModal({ cardsIds }: CreateOfferModalProps) {
           title={signing ? undefined : displayOverview ? t`Offers overview` : t`Enter an asking price`}
         />
 
-        <StarknetSigner display={display}>
-          {!!(card && lowestAsks[card.cardModel.id]) && (
-            <Column gap={32}>
-              <CardBreakdownWrapper>
-                <CardBreakdown
-                  pictureUrl={cards[cardIndex].cardModel.pictureUrl}
-                  season={cards[cardIndex].cardModel.season}
-                  artistName={cards[cardIndex].cardModel.artist.displayName}
-                  serialNumbers={[cards[cardIndex].serialNumber]}
-                  scarcityName={cards[cardIndex].cardModel.scarcity.name}
+        <ModalBody>
+          <StarknetSigner display={display}>
+            {!!(card && lowestAsks[card.cardModel.id]) && (
+              <Column gap={32}>
+                <CardBreakdownWrapper>
+                  <CardBreakdown
+                    pictureUrl={cards[cardIndex].cardModel.pictureUrl}
+                    season={cards[cardIndex].cardModel.season}
+                    artistName={cards[cardIndex].cardModel.artist.displayName}
+                    serialNumbers={[cards[cardIndex].serialNumber]}
+                    scarcityName={cards[cardIndex].cardModel.scarcity.name}
+                  />
+
+                  {cards.length > 1 && (
+                    <CardsCount>
+                      {cardIndex + 1} / {cards.length}
+                    </CardsCount>
+                  )}
+                </CardBreakdownWrapper>
+
+                <StyledCardModelPriceStats
+                  lowestAsk={lowestAsks[cards[cardIndex].cardModel.id]}
+                  averageSale={cards[cardIndex].cardModel.averageSale}
                 />
 
-                {cards.length > 1 && (
-                  <CardsCount>
-                    {cardIndex + 1} / {cards.length}
-                  </CardsCount>
+                {currentUser?.starknetWallet.lockingReason ? (
+                  <ErrorCard>
+                    <LockedWallet />
+                  </ErrorCard>
+                ) : (
+                  <Column gap={32}>
+                    <EtherInput onUserInput={onPriceInput} value={price} placeholder="0.0" />
+                    {parsedPrice && (
+                      <SaleBreakdown
+                        price={parsedPrice.quotient.toString()}
+                        artistName={cards[cardIndex].cardModel.artist.displayName}
+                      />
+                    )}
+                  </Column>
                 )}
-              </CardBreakdownWrapper>
 
-              <StyledCardModelPriceStats
-                lowestAsk={lowestAsks[cards[cardIndex].cardModel.id]}
-                averageSale={cards[cardIndex].cardModel.averageSale}
-              />
+                <PrimaryButton onClick={handlePriceConfirmation} disabled={!isPriceValid} large>
+                  <Trans>Next</Trans>
+                </PrimaryButton>
+              </Column>
+            )}
 
-              {currentUser?.starknetWallet.lockingReason ? (
-                <ErrorCard>
-                  <LockedWallet />
-                </ErrorCard>
-              ) : (
-                <Column gap={32}>
-                  <EtherInput onUserInput={onPriceInput} value={price} placeholder="0.0" />
-                  {parsedPrice && (
-                    <SaleBreakdown
-                      price={parsedPrice.quotient.toString()}
-                      artistName={cards[cardIndex].cardModel.artist.displayName}
-                    />
-                  )}
-                </Column>
-              )}
+            {displayOverview && (
+              <Column gap={32}>
+                <PurchaseBreakdown price={parsedPricesTotal.quotient.toString()}>
+                  <Plural value={cards.length} _1="Total ({0} card)" other="Total ({0} cards)" />
+                </PurchaseBreakdown>
+                <SaleBreakdown price={parsedPricesTotal.quotient.toString()} />
 
-              <PrimaryButton onClick={handlePriceConfirmation} disabled={!isPriceValid} large>
-                <Trans>Next</Trans>
-              </PrimaryButton>
-            </Column>
-          )}
+                <PrimaryButton onClick={handleOverviewConfirmation} large>
+                  <Trans>Next</Trans>
+                </PrimaryButton>
+              </Column>
+            )}
 
-          {displayOverview && (
-            <Column gap={32}>
-              <PurchaseBreakdown price={parsedPricesTotal.quotient.toString()}>
-                <Plural value={cards.length} _1="Total ({0} card)" other="Total ({0} cards)" />
-              </PurchaseBreakdown>
-              <SaleBreakdown price={parsedPricesTotal.quotient.toString()} />
-
-              <PrimaryButton onClick={handleOverviewConfirmation} large>
-                <Trans>Next</Trans>
-              </PrimaryButton>
-            </Column>
-          )}
-
-          <PaginationSpinner loading={isLoading} />
-        </StarknetSigner>
+            <PaginationSpinner loading={isLoading} />
+          </StarknetSigner>
+        </ModalBody>
       </ModalContent>
     </ClassicModal>
   )

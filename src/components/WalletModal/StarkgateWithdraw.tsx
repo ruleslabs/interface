@@ -12,7 +12,7 @@ import StarknetSigner, { StarknetSignerDisplayProps } from '@/components/Starkne
 import { useETHBalances } from '@/state/wallet/hooks'
 import Wallet from '@/components/Wallet'
 import Metamask from '@/components/Metamask'
-import { InfoCard } from '@/components/Card'
+import * as Text from 'src/theme/components/Text'
 
 import Arrow from '@/images/arrow.svg'
 import { constants } from '@rulesorg/sdk-core'
@@ -20,6 +20,7 @@ import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
 import { useModalOpened } from '@/state/application/hooks'
 import { ApplicationModal } from '@/state/application/actions'
 import useStarknetTx from '@/hooks/useStarknetTx'
+import { ModalBody } from '../Modal/Sidebar'
 
 const { useAccount } = metaMaskHooks
 
@@ -106,39 +107,44 @@ export default function WithdrawModal() {
   }, [isOpen])
 
   return (
-    <StarknetSigner display={display}>
-      <Metamask>
-        <Column gap={32}>
-          <InfoCard textAlign="center">
-            <Trans>An additional step will be required to transfer the funds.</Trans>
-          </InfoCard>
+    <ModalBody>
+      <StarknetSigner display={display}>
+        <Metamask>
+          <Column gap={32}>
+            <Text.Body>
+              <Trans>
+                There will be an additional step in a few hours to finalize the withdraw. Please note that this step
+                will require a small amount of ETH on your metamask
+              </Trans>
+            </Text.Body>
 
-          <Column>
-            <CurrencyInput
-              value={withdrawAmount}
-              placeholder="0.0"
-              onUserInput={handleWithdrawAmountUpdate}
-              balance={balance}
-            />
+            <Column>
+              <CurrencyInput
+                value={withdrawAmount}
+                placeholder="0.0"
+                onUserInput={handleWithdrawAmountUpdate}
+                balance={balance}
+              />
 
-            <ArrowWrapper>
-              <Arrow />
-            </ArrowWrapper>
+              <ArrowWrapper>
+                <Arrow />
+              </ArrowWrapper>
 
-            <Wallet layer={1} />
+              <Wallet layer={1} />
+            </Column>
+
+            <PrimaryButton onClick={handleConfirmation} disabled={!canWithdraw} large>
+              {!+withdrawAmount || !parsedWithdrawAmount ? (
+                <Trans>Enter an amount</Trans>
+              ) : balance?.lessThan(parsedWithdrawAmount) ? (
+                <Trans>Insufficient ETH balance</Trans>
+              ) : (
+                <Trans>Next</Trans>
+              )}
+            </PrimaryButton>
           </Column>
-
-          <PrimaryButton onClick={handleConfirmation} disabled={!canWithdraw} large>
-            {!+withdrawAmount || !parsedWithdrawAmount ? (
-              <Trans>Enter an amount</Trans>
-            ) : balance?.lessThan(parsedWithdrawAmount) ? (
-              <Trans>Insufficient ETH balance</Trans>
-            ) : (
-              <Trans>Next</Trans>
-            )}
-          </PrimaryButton>
-        </Column>
-      </Metamask>
-    </StarknetSigner>
+        </Metamask>
+      </StarknetSigner>
+    </ModalBody>
   )
 }

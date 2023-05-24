@@ -23,6 +23,10 @@ export const base = recipe({
       false: sprinkles({ minHeight: '40' }),
     },
   },
+
+  defaultVariants: {
+    large: false,
+  },
 })
 
 export const primaryButton = recipes(

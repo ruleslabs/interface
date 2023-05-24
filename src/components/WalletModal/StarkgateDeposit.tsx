@@ -18,6 +18,7 @@ import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
 
 import Arrow from '@/images/arrow.svg'
 import { constants } from '@rulesorg/sdk-core'
+import { ModalBody } from '../Modal/Sidebar'
 
 const { useAccount: useEthereumAccount } = metaMaskHooks
 
@@ -124,41 +125,43 @@ export default function DepositModal() {
   )
 
   return (
-    <EthereumSigner
-      confirmationText={t`Your ${depositAmount} ETH deposit is on its way`}
-      transactionText={t`${depositAmount} ETH deposit to your Rules wallet`}
-      waitingForTx={waitingForTx}
-      txHash={txHash ?? undefined}
-      error={error ?? undefined}
-    >
-      <Metamask>
-        <Column gap={32}>
-          <Column>
-            <CurrencyInput
-              value={depositAmount}
-              placeholder="0.0"
-              onUserInput={handleDepositAmountUpdate}
-              balance={balance}
-            />
+    <ModalBody>
+      <EthereumSigner
+        confirmationText={t`Your ${depositAmount} ETH deposit is on its way`}
+        transactionText={t`${depositAmount} ETH deposit to your Rules wallet`}
+        waitingForTx={waitingForTx}
+        txHash={txHash ?? undefined}
+        error={error ?? undefined}
+      >
+        <Metamask>
+          <Column gap={32}>
+            <Column>
+              <CurrencyInput
+                value={depositAmount}
+                placeholder="0.0"
+                onUserInput={handleDepositAmountUpdate}
+                balance={balance}
+              />
 
-            <ArrowWrapper>
-              <Arrow />
-            </ArrowWrapper>
+              <ArrowWrapper>
+                <Arrow />
+              </ArrowWrapper>
 
-            <Wallet layer={2} />
+              <Wallet layer={2} />
+            </Column>
+
+            <PrimaryButton onClick={onDeposit} disabled={!canDeposit} large>
+              {!+depositAmount || !parsedDepositAmount ? (
+                <Trans>Enter an amount</Trans>
+              ) : balance?.lessThan(parsedDepositAmount) ? (
+                <Trans>Insufficient ETH balance</Trans>
+              ) : (
+                <Trans>Next</Trans>
+              )}
+            </PrimaryButton>
           </Column>
-
-          <PrimaryButton onClick={onDeposit} disabled={!canDeposit} large>
-            {!+depositAmount || !parsedDepositAmount ? (
-              <Trans>Enter an amount</Trans>
-            ) : balance?.lessThan(parsedDepositAmount) ? (
-              <Trans>Insufficient ETH balance</Trans>
-            ) : (
-              <Trans>Next</Trans>
-            )}
-          </PrimaryButton>
-        </Column>
-      </Metamask>
-    </EthereumSigner>
+        </Metamask>
+      </EthereumSigner>
+    </ModalBody>
   )
 }

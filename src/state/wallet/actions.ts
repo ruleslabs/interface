@@ -4,7 +4,6 @@ export enum WalletModalMode {
   OVERVIEW,
   DEPOSIT,
   STARKGATE_DEPOSIT,
-  WITHDRAW,
   STARKGATE_WITHDRAW,
 }
 

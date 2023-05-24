@@ -1,14 +1,12 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import { t, Trans } from '@lingui/macro'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import { Trans } from '@lingui/macro'
 
 import { metaMask, metaMaskHooks } from '@/constants/connectors'
-import { ThirdPartyButton } from '@/components/Button'
 import { InfoCard, ErrorCard } from '@/components/Card'
 import Column from '@/components/Column'
 import Link from '@/components/Link'
-
-import MetamaskIcon from '@/images/metamask.svg'
 import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import { PrimaryButton } from '../Button'
 
 const { useAccount, useChainId } = metaMaskHooks
 
@@ -31,31 +29,38 @@ export default function Metamask({ children }: MetamaskProps) {
     }
   }, [])
 
-  if (account && chainId === rulesSdk.networkInfos.ethereumChainId) return <>{children}</>
-  else if (account)
-    return (
-      <ErrorCard textAlign="center">
-        <Trans>
-          Metamask connected to the wrong network,
-          <br />
-          please&nbsp;
-          <span onClick={activateMetamask}>switch network</span>
-        </Trans>
-      </ErrorCard>
-    )
-  else if (metamaskFound)
-    return (
-      <Column>
-        <ThirdPartyButton title={t`Connect Metamask`} onClick={activateMetamask}>
-          <MetamaskIcon />
-        </ThirdPartyButton>
-      </Column>
-    )
-  else
+  return useMemo(() => {
+    if (account && chainId === rulesSdk.networkInfos.ethereumChainId) {
+      return <>{children}</>
+    }
+
+    if (account) {
+      return (
+        <ErrorCard textAlign="center">
+          <Trans>
+            Metamask connected to the wrong network,
+            <br />
+            please&nbsp;
+            <span onClick={activateMetamask}>switch network</span>
+          </Trans>
+        </ErrorCard>
+      )
+    }
+
+    if (metamaskFound) {
+      return (
+        <Column>
+          <PrimaryButton onClick={activateMetamask}>
+            <Trans>Connect Metamask</Trans>
+          </PrimaryButton>
+        </Column>
+      )
+    }
+
     return (
       <InfoCard textAlign="center">
         <Trans>
-          Haven’t got an Ethereum wallet yet?
+          Haven&apos;t got an Ethereum wallet yet?
           <br />
           Learn how to create one with&nbsp;
           <Link href="https://metamask.io/" target="_blank" color="text1" underline>
@@ -64,4 +69,5 @@ export default function Metamask({ children }: MetamaskProps) {
         </Trans>
       </InfoCard>
     )
+  }, [account, chainId])
 }

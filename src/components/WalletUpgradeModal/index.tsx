@@ -64,43 +64,47 @@ export default function UpgradeWalletModal() {
       <ModalContent>
         <ModalHeader onDismiss={toggleUpgradeWalletModal} title={signing ? undefined : t`Wallet upgrade`} />
 
-        {currentUser.starknetWallet.needsUpgrade ? (
-          <StarknetSigner display={display}>
-            <Column gap={32}>
-              <Column gap={16}>
-                <TYPE.large>
-                  <Trans>Your wallet needs to be upgraded.</Trans>
-                </TYPE.large>
+        <ModalBody>
+          {currentUser.starknetWallet.needsUpgrade ? (
+            <StarknetSigner display={display}>
+              <Column gap={32}>
+                <Column gap={16}>
+                  <TYPE.large>
+                    <Trans>Your wallet needs to be upgraded.</Trans>
+                  </TYPE.large>
 
-                <TYPE.body>
-                  <Trans>
-                    Starknet released a new update to improve the network, and it implies some changes for your wallet.
-                    To keep on working, your wallet needs to be upgraded as soon as possible.
-                    <br />
-                    <br />
-                    If you don&apos;t perform the upgrade on time, your wallet will be temporarily locked.
-                  </Trans>
-                </TYPE.body>
+                  <TYPE.body>
+                    <Trans>
+                      Starknet released a new update to improve the network, and it implies some changes for your
+                      wallet. To keep on working, your wallet needs to be upgraded as soon as possible.
+                      <br />
+                      <br />
+                      If you don&apos;t perform the upgrade on time, your wallet will be temporarily locked.
+                    </Trans>
+                  </TYPE.body>
+                </Column>
+
+                {!!currentUser?.starknetWallet.lockingReason && (
+                  <ErrorCard>
+                    <LockedWallet />
+                  </ErrorCard>
+                )}
+
+                <PrimaryButton
+                  onClick={handleConfirmation}
+                  disabled={!!currentUser?.starknetWallet.lockingReason}
+                  large
+                >
+                  <Trans>Upgrade</Trans>
+                </PrimaryButton>
               </Column>
-
-              {!!currentUser?.starknetWallet.lockingReason && (
-                <ErrorCard>
-                  <LockedWallet />
-                </ErrorCard>
-              )}
-
-              <PrimaryButton onClick={handleConfirmation} disabled={!!currentUser?.starknetWallet.lockingReason} large>
-                <Trans>Upgrade</Trans>
-              </PrimaryButton>
-            </Column>
-          </StarknetSigner>
-        ) : (
-          <ModalBody>
+            </StarknetSigner>
+          ) : (
             <TYPE.large textAlign="center">
               <Trans>Your wallet is up-to-date 🎉</Trans>
             </TYPE.large>
-          </ModalBody>
-        )}
+          )}
+        </ModalBody>
       </ModalContent>
     </ClassicModal>
   )
