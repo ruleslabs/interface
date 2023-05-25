@@ -18,9 +18,7 @@ import { CertifiedBadge } from '@/components/User/Badge'
 import UserRank from '@/components/User/Rank'
 import { useCScoreRank } from '@/hooks/useCScore'
 import { useAvatarEditModalToggle } from '@/state/application/hooks'
-
-import Instagram from '@/images/instagram-color.svg'
-import Twitter from '@/images/twitter-color.svg'
+import * as Icons from 'src/theme/components/Icons'
 import useCurrentUser from '@/hooks/useCurrentUser'
 
 const Gradient = styled.div`
@@ -70,6 +68,12 @@ const AvatarEditButton = styled(RowCenter)`
 `
 
 const SocialLink = styled.a`
+  color: ${({ theme }) => theme.text2};
+
+  :hover {
+    color: ${({ theme }) => theme.text1};
+  }
+
   svg {
     width: 24px;
     height: 24px;
@@ -136,7 +140,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
 
       <Section>
         <UserWrapper>
-          <ColumnCenter gap={8} style={{ width: 'fit-content' }}>
+          <ColumnCenter gap={12} style={{ width: 'fit-content' }}>
             <AvatarWrapper>
               <Avatar src={user.profile.pictureUrl} fallbackSrc={user.profile.fallbackUrl} />
 
@@ -156,15 +160,15 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
               <UserRank rank={rank} />
             </RowCenter>
 
-            <RowCenter gap={8}>
+            <RowCenter gap={12}>
               {user?.profile?.instagramUsername && (
                 <SocialLink target="_blank" href={`https://instagram.com/${user.profile.instagramUsername}`}>
-                  <Instagram />
+                  <Icons.Instagram />
                 </SocialLink>
               )}
               {user?.profile?.twitterUsername && (
                 <SocialLink target="_blank" href={`https://twitter.com/${user.profile.twitterUsername}`}>
-                  <Twitter />
+                  <Icons.Twitter />
                 </SocialLink>
               )}
             </RowCenter>
