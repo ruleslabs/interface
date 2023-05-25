@@ -37,14 +37,6 @@ gql`
 `
 
 gql`
-  mutation googleAuth($token: String!) {
-    googleAuth(token: $token) {
-      accessToken
-    }
-  }
-`
-
-gql`
   mutation SignUp(
     $email: String!
     $username: String!

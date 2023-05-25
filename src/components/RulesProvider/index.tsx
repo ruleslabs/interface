@@ -19,7 +19,7 @@ export default function RulesProvider({ children }: RulesProviderProps) {
   useEffect(() => {
     setCurrentUser(currentUser)
     setCurrentUserRefresher(refresh)
-  }, [setCurrentUser, currentUser, refresh])
+  }, [!!currentUser, refresh])
 
   useInjectRulesWallet()
 

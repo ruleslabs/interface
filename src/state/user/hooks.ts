@@ -50,38 +50,6 @@ const SET_SOCIAL_LINKS_MUTATION = gql`
   }
 `
 
-const CONNECT_DISCORD_ACCOUNT_MUTATION = gql`
-  mutation ($code: String!, $redirectPath: String!) {
-    connectDiscordAccount(input: { code: $code, redirectPath: $redirectPath }) {
-      id
-      username
-      discriminator
-    }
-  }
-`
-
-const DISCONNECT_DISCORD_ACCOUNT_MUTATION = gql`
-  mutation {
-    disconnectDiscordAccount {
-      discordId
-    }
-  }
-`
-
-const REFRESH_DISCORD_ROLES_MUTATION = gql`
-  mutation {
-    refreshDiscordRoles
-  }
-`
-
-const SET_DISCORD_ACCOUNT_VISIBILITY_MUTATION = gql`
-  mutation ($visible: Boolean!) {
-    setDiscordAccountVisibility(visible: $visible) {
-      visible
-    }
-  }
-`
-
 const EDIT_AVATAR_MUTATION = gql`
   mutation ($avatarId: Int!) {
     setAvatar(avatarId: $avatarId) {
@@ -139,22 +107,6 @@ export function useSearchUser(userSlug?: string, skip = false) {
 
 export function useSetSocialLinksMutation() {
   return useMutation(SET_SOCIAL_LINKS_MUTATION)
-}
-
-export function useSetDiscordVisibilityMutation() {
-  return useMutation(SET_DISCORD_ACCOUNT_VISIBILITY_MUTATION)
-}
-
-export function useConnectDiscordAccountMutation() {
-  return useMutation(CONNECT_DISCORD_ACCOUNT_MUTATION)
-}
-
-export function useDisconnectDiscordAccountMutation() {
-  return useMutation(DISCONNECT_DISCORD_ACCOUNT_MUTATION)
-}
-
-export function useRefreshDiscordRolesMutation() {
-  return useMutation(REFRESH_DISCORD_ROLES_MUTATION)
 }
 
 export function useEditAvatarMutation() {
