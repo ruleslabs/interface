@@ -44,8 +44,6 @@ export function useDeckActionHandlers(): {
 } {
   const dispatch = useAppDispatch()
 
-  const { deck } = useDeckState()
-
   const [removeShowcasedDeckCardMutation] = useMutation(REMOVE_SHOWCASED_DECK_CARD)
   const [addShowcasedDeckCardMutation] = useMutation(ADD_SHOWCASED_DECK_CARD)
 

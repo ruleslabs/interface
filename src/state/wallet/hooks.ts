@@ -3,6 +3,7 @@ import JSBI from 'jsbi'
 import { WeiAmount, constants } from '@rulesorg/sdk-core'
 import { Abi, num, uint256 } from 'starknet'
 import { useWeb3React } from '@web3-react/core'
+import { gql, useMutation } from '@apollo/client'
 
 import ERC20ABI from '@/abis/ERC20.json'
 
@@ -12,6 +13,12 @@ import { useAppDispatch, useAppSelector } from '@/state/hooks'
 import { AppState } from '@/state'
 import { setWalletModalMode, WalletModalMode } from './actions'
 import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+
+const RETRIEVE_ETHER_MUTATION = gql`
+  mutation ($hash: String!, $withdraws: [EtherWithdraw!]!) {
+    retrieveEther(input: { hash: $hash, withdraws: $withdraws })
+  }
+`
 
 // Modal mode
 
@@ -74,4 +81,8 @@ export function useEthereumETHBalance(address?: string): WeiAmount | undefined {
   }, [provider, address, setBalance, blockNumber])
 
   return balance
+}
+
+export function useRetrieveEtherMutation() {
+  return useMutation(RETRIEVE_ETHER_MUTATION)
 }

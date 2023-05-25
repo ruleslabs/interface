@@ -20,7 +20,7 @@ type ButtonProps = Omit<BoxProps, 'as'>
 
 /* Base */
 
-interface EnlargeableButtonProps extends ButtonProps {
+export interface EnlargeableButtonProps extends ButtonProps {
   large?: boolean
 }
 

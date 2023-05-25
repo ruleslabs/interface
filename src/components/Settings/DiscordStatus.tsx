@@ -19,6 +19,7 @@ import {
   useRefreshDiscordRoles,
   useSetDiscordAccountVisibility,
 } from '@/graphql/data/Discord'
+import useMergeGenieStatus from '@/hooks/useMergeGenieSatus'
 
 const DiscordStatusWrapper = styled(Column)`
   gap: 16px;
@@ -90,16 +91,12 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
   const [setDiscordAccountVisibilityMutation, setDiscordAccountVisibilityStatus] = useSetDiscordAccountVisibility()
 
   // loading / errors
-  const loading =
-    connectDiscordAccountStatus.loading ||
-    disconnectDiscordAccountStatus.loading ||
-    refreshDiscordRolesStatus.loading ||
-    setDiscordAccountVisibilityStatus.loading
-  const error =
-    connectDiscordAccountStatus.error ||
-    disconnectDiscordAccountStatus.error ||
-    refreshDiscordRolesStatus.error ||
-    setDiscordAccountVisibilityStatus.error
+  const { loading, error } = useMergeGenieStatus(
+    connectDiscordAccountStatus,
+    disconnectDiscordAccountStatus,
+    refreshDiscordRolesStatus,
+    setDiscordAccountVisibilityStatus
+  )
 
   const discordOAuthRedirectUrl = useMemo(
     () =>

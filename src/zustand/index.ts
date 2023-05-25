@@ -18,7 +18,7 @@ export const useBoundStore = create<StoreState>()(
       name: 'rules-state-storage',
       partialize: (state: StoreState) =>
         PERSISTING_KEYS.reduce<StoreState>((acc, key) => {
-          acc[key] = state[key] as any
+          ;(acc as any)[key] = state[key]
           return acc
         }, {} as StoreState),
     }

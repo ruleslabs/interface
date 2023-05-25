@@ -3,6 +3,11 @@ import { constants } from '@rulesorg/sdk-core'
 
 export type GenieError = { message: string; id: string | null; render: () => React.ReactNode } | null
 
+export interface GenieStatus {
+  loading: boolean
+  error?: GenieError
+}
+
 export type FormatedMutationFunction<TData, TVariables, TFormatedData> = (
   options: Parameters<MutationFunction<TData, TVariables>>[0]
 ) => Promise<NonNullable<TFormatedData>>

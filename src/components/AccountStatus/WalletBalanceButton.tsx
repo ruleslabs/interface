@@ -37,7 +37,7 @@ const WalletButton = styled(PrimaryButton)<{ alert: boolean }>`
     `}
 `
 
-export default function WalletBalanceButton(props: React.HTMLAttributes<HTMLButtonElement>) {
+export default function WalletBalanceButton(props: Parameters<typeof PrimaryButton>[0]) {
   // current user
   const { currentUser } = useCurrentUser()
 

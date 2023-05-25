@@ -4,7 +4,7 @@ import { useQuery, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
 import { constants } from '@rulesorg/sdk-core'
 
-import { BaseButton } from '@/components/Button'
+import { SecondaryButton } from '@/components/Button'
 import DefaultLayout from '@/components/Layout'
 import ProfileLayout from '@/components/Layout/Profile'
 import Section from '@/components/Section'
@@ -29,7 +29,7 @@ const ScarcitySelectorWrapper = styled(Row)`
   `}
 `
 
-const ScarcitySelector = styled(BaseButton)<{ scarcity: string; active: boolean }>`
+const ScarcitySelector = styled(SecondaryButton)<{ scarcity: string; active: boolean }>`
   border: solid 4px ${({ theme, scarcity, active }) => (active ? `${(theme as any)[scarcity]}` : 'transparent')};
   box-sizing: content-box;
   width: 100%;
