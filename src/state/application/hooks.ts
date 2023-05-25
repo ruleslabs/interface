@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 import { useWeb3React } from '@web3-react/core'
 
-import { AppState } from '@/state'
-import { useAppSelector, useAppDispatch } from '@/state/hooks'
+import { AppState } from 'src/state'
+import { useAppSelector, useAppDispatch } from 'src/state/hooks'
 import { setOpenedModal, setOpenedSidebarModal, ApplicationModal, ApplicationSidebarModal } from './actions'
 
 // BLOCK NUMBER

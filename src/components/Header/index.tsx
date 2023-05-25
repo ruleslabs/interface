@@ -1,20 +1,20 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import AccountStatus from '@/components/AccountStatus'
-import { NavButton } from '@/components/Button'
-import { RowCenter } from '@/components/Row'
-import Link, { ActiveLink } from '@/components/Link'
-import { useOpenSidebarModal } from '@/state/application/hooks'
-import { ApplicationSidebarModal } from '@/state/application/actions'
-import NavModalMobile from '@/components/NavModal/Mobile'
-import useCurrentUser from '@/hooks/useCurrentUser'
-import { useNavLinks } from '@/hooks/useNav'
+import AccountStatus from 'src/components/AccountStatus'
+import { NavButton } from 'src/components/Button'
+import { RowCenter } from 'src/components/Row'
+import Link, { ActiveLink } from 'src/components/Link'
+import { useOpenSidebarModal } from 'src/state/application/hooks'
+import { ApplicationSidebarModal } from 'src/state/application/actions'
+import NavModalMobile from 'src/components/NavModal/Mobile'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import { useNavLinks } from 'src/hooks/useNav'
 
-import Logo from '@/public/assets/logo.svg'
-import SmallLogo from '@/images/logo-plain.svg'
-import Hamburger from '@/images/hamburger.svg'
-import ExternalLinkIcon from '@/images/external-link.svg'
+import { ReactComponent as Logo } from 'src/images/logo.svg'
+import { ReactComponent as SmallLogo } from 'src/images/logo-plain.svg'
+import { ReactComponent as Hamburger } from 'src/images/hamburger.svg'
+import { ReactComponent as ExternalLinkIcon } from 'src/images/external-link.svg'
 
 const StyledHeader = styled.header`
   height: ${({ theme }) => theme.size.headerHeight}px;
@@ -141,7 +141,7 @@ export default function Header() {
             <ActiveLink key={navLink.name} href={navLink.link ?? ''} target={navLink.external ? '_blank' : undefined}>
               <NavButton>
                 <RowCenter gap={4}>
-                  <Trans id={navLink.name} render={({ translation }) => <>{translation}</>} />
+                  <Trans id={navLink.name}>{navLink.name}</Trans>
 
                   {navLink.external && <StyledExternalLinkIcon />}
                 </RowCenter>

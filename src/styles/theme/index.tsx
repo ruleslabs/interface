@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
-import styled, { createGlobalStyle, css, ThemeProvider } from 'styled-components'
-
-import { Colors } from './styled'
+import { rawTokens } from 'src/theme/css/vars.css'
+import styled, { css, ThemeProvider } from 'styled-components/macro'
 
 const MISC_MEDIA_QUERIES = {
   computer: '(hover: hover) and (pointer: fine)',
@@ -43,7 +42,7 @@ const Alert = css`
   position: relative;
   text-align: center;
 
-  ::before {
+  &::before {
     width: 20px;
     height: 20px;
     background: ${({ theme }) => theme.error};
@@ -61,7 +60,7 @@ const Alert = css`
 const Notifications = css<{ notifications?: number }>`
   ${Alert}
 
-  ::before {
+  &::before {
     background: ${({ theme }) => theme.primary1};
     content: '${({ notifications = 0 }) => notifications}';
     top: -6px;
@@ -77,35 +76,36 @@ const BEFORES_CSS = {
   notifications: Notifications,
 }
 
-const before: { [before in keyof typeof BEFORES_CSS]: typeof css } = Object.keys(BEFORES_CSS).reduce(
-  (acc: any, before: string) => {
-    acc[before] = (first: any, ...interpolations: any[]) => css`
-      ${BEFORES_CSS[before as keyof typeof BEFORES_CSS]}
+type BeforeKey = keyof typeof BEFORES_CSS
+
+const before = (Object.keys(BEFORES_CSS) as BeforeKey[]).reduce<{ [before in BeforeKey]: typeof css }>(
+  (acc: any, beforeKey) => {
+    acc[beforeKey] = (first: any, ...interpolations: any[]) => css`
+      ${BEFORES_CSS[beforeKey]}
       ${first && interpolations && css(first, ...interpolations)}
     `
 
     return acc
   },
-  {}
+  {} as any
 )
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function colors(darkMode: boolean): Colors {
+export function colors(darkMode: boolean) {
   return {
-    white: '#ffffff',
-    black: '#000000',
+    white: rawTokens.color.white,
+    black: rawTokens.color.black,
 
-    primary1: '#9F04DC',
-    primary2: '#7C03AE',
+    primary1: rawTokens.color.accent,
+    primary2: rawTokens.color.accentDarker,
 
-    bg1: '#0D1114',
-    bg2: '#191B1D',
-    bg3: '#33373b',
-    bg4: '#AFAFAF',
-    bg5: '#2e3033',
+    bg1: rawTokens.color.bg1,
+    bg2: rawTokens.color.bg2,
+    bg3: rawTokens.color.bg3,
+    bg4: '#2e3033',
 
-    text1: '#FFFFFF',
-    text2: '#909193',
+    text1: rawTokens.color.text1,
+    text2: rawTokens.color.text2,
 
     gradient1: 'linear-gradient(90deg, #6E36E7, #CB49CE)',
 
@@ -124,7 +124,7 @@ export function colors(darkMode: boolean): Colors {
   }
 }
 
-function theme(darkMode: boolean) {
+export function getTheme(darkMode: boolean) {
   return {
     ...colors(darkMode),
 
@@ -137,20 +137,8 @@ function theme(darkMode: boolean) {
       headerHeight: 57,
       headerHeightMedium: 62,
     },
-  }
+  } as const
 }
-
-const ThemedGlobalStyle = createGlobalStyle`
-  body {
-    background-attachment: fixed;
-    background-image: ${({ theme }) => `linear-gradient(180deg, ${theme.primary1}15 0, ${theme.primary1}00 300px)`};
-    background-color: ${({ theme }) => theme.bg1};
-  }
-
-  h1, h2, h3, h4, h5, h6, p, a, ul, ol, label, table, input {
-    color: ${({ theme }) => theme.text1};
-  }
-`
 
 interface StyledThemeProviderProps {
   children: React.ReactNode
@@ -158,14 +146,9 @@ interface StyledThemeProviderProps {
 
 export default function StyledThemeProvider({ children }: StyledThemeProviderProps) {
   const darkMode = false
-  const themeObject = useMemo(() => theme(darkMode), [darkMode])
+  const themeObject = useMemo(() => getTheme(darkMode), [darkMode])
 
-  return (
-    <ThemeProvider theme={themeObject}>
-      <ThemedGlobalStyle />
-      {children}
-    </ThemeProvider>
-  )
+  return <ThemeProvider theme={themeObject}>{children}</ThemeProvider>
 }
 
 export interface TextWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -197,7 +180,7 @@ const Text = styled.div<TextProps>`
     `
       cursor: pointer;
 
-      :hover {
+      &:hover {
         text-decoration: underline;
       }
     `}
@@ -215,14 +198,8 @@ const TextWrapper = styled(Text)<TextWrapperProps>`
 `
 
 export const TYPE = {
-  black(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'white'} {...props} />
-  },
-  white(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'white'} {...props} />
-  },
   link(props: TextProps) {
-    return <TextWrapper fontWeight={400} color={'primary1'} clickable {...props} />
+    return <TextWrapper fontWeight={500} color={'primary1'} clickable {...props} />
   },
   subtitle(props: TextProps) {
     return <TextWrapper fontWeight={400} color={'text2'} {...props} />
@@ -231,7 +208,7 @@ export const TYPE = {
     return <TextWrapper fontWeight={400} fontSize={14} color={'text1'} {...props} />
   },
   body(props: TextProps) {
-    return <TextWrapper fontWeight={400} fontSize={16} color={'text1'} {...props} />
+    return <TextWrapper fontWeight={500} fontSize={16} color={'text1'} {...props} />
   },
   medium(props: TextProps) {
     return <TextWrapper fontWeight={500} fontSize={18} color={'text1'} {...props} />

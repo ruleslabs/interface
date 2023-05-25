@@ -1,22 +1,22 @@
 import { useCallback, useState, useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans, t } from '@lingui/macro'
 
-import useCurrentUser from '@/hooks/useCurrentUser'
-import Column from '@/components/Column'
-import CurrencyInput from '@/components/Input/CurrencyInput'
-import { metaMaskHooks } from '@/constants/connectors'
-import { PrimaryButton } from '@/components/Button'
-import { useEthereumETHBalance } from '@/state/wallet/hooks'
-import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
-import { useEthereumStarkgateContract } from '@/hooks/useContract'
-import Wallet from '@/components/Wallet'
-import Metamask from '@/components/Metamask'
-import EthereumSigner from '@/components/EthereumSigner'
-import { L2_STARKGATE_DEPOSIT_HANDLER_SELECTOR_NAME } from '@/constants/misc'
-import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import Column from 'src/components/Column'
+import CurrencyInput from 'src/components/Input/CurrencyInput'
+import { metaMaskHooks } from 'src/constants/connectors'
+import { PrimaryButton } from 'src/components/Button'
+import { useEthereumETHBalance } from 'src/state/wallet/hooks'
+import tryParseWeiAmount from 'src/utils/tryParseWeiAmount'
+import { useEthereumStarkgateContract } from 'src/hooks/useContract'
+import Wallet from 'src/components/Wallet'
+import Metamask from 'src/components/Metamask'
+import EthereumSigner from 'src/components/EthereumSigner'
+import { L2_STARKGATE_DEPOSIT_HANDLER_SELECTOR_NAME } from 'src/constants/misc'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 
-import Arrow from '@/images/arrow.svg'
+import { ReactComponent as Arrow } from 'src/images/arrow.svg'
 import { constants } from '@rulesorg/sdk-core'
 import { ModalBody } from '../Modal/Sidebar'
 
@@ -25,7 +25,7 @@ const { useAccount: useEthereumAccount } = metaMaskHooks
 const ArrowWrapper = styled(Column)`
   width: 36px;
   height: 36px;
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg4};
   box-shadow: 0px 0px 5px ${({ theme }) => theme.bg1};
   justify-content: center;
   border-radius: 50%;

@@ -1,15 +1,15 @@
 import { useState, useCallback, useEffect } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import { ApolloError } from '@apollo/client'
 
-import { PrimaryButton } from '@/components/Button'
-import { TYPE } from '@/styles/theme'
-import { usePackOpeningMutation, useAudioLoop } from '@/state/packOpening/hooks'
-import { Sound } from '@/state/packOpening/actions'
-import Column, { ColumnCenter } from '@/components/Column'
-import { PACK_OPENING_DURATION, PACK_OPENING_FLASH_DURATION } from '@/constants/misc'
-import ProgressBar from '@/components/ProgressBar'
+import { PrimaryButton } from 'src/components/Button'
+import { TYPE } from 'src/styles/theme'
+import { usePackOpeningMutation, useAudioLoop } from 'src/state/packOpening/hooks'
+import { Sound } from 'src/state/packOpening/actions'
+import Column, { ColumnCenter } from 'src/components/Column'
+import { PACK_OPENING_DURATION, PACK_OPENING_FLASH_DURATION } from 'src/constants/misc'
+import ProgressBar from 'src/components/ProgressBar'
 
 const PackImage = styled.img<{ opened: boolean }>`
   width: 265px;

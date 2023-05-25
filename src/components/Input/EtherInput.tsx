@@ -1,10 +1,10 @@
 import React, { useCallback, useRef } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
-import { RowCenter } from '@/components/Row'
-import { TYPE } from '@/styles/theme'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
+import { RowCenter } from 'src/components/Row'
+import { TYPE } from 'src/styles/theme'
+import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 
 const StyledEtherInput = styled(RowCenter)`
   padding: 12px;
@@ -15,7 +15,7 @@ const StyledEtherInput = styled(RowCenter)`
   width: 100%;
   gap: 12px;
 
-  :focus-within {
+  &:focus-within {
     outline: ${({ theme }) => theme.primary1} solid 2px;
     outline-offset: -1px;
   }
@@ -42,12 +42,12 @@ const Input = styled.input`
   }
 
   :-webkit-autofill,
-  :-webkit-autofill:focus {
+  &:-webkit-autofill:focus {
     transition: background-color 600000s 0s, color 600000s 0s;
   }
 
   ::-webkit-outer-spin-button,
-  ::-webkit-inner-spin-button {
+  &::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }

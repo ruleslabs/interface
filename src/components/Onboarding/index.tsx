@@ -1,14 +1,15 @@
 import { useMemo, useCallback } from 'react'
-import styled from 'styled-components'
-import { useRouter } from 'next/router'
+import styled from 'styled-components/macro'
 
-import Card from '@/components/Card'
-import { useOnboardingPage } from '@/state/onboarding/hooks'
-import { OnboardingPage } from '@/state/onboarding/actions'
+import Card from 'src/components/Card'
+import { useOnboardingPage } from 'src/state/onboarding/hooks'
+import { OnboardingPage } from 'src/state/onboarding/actions'
 
 import DiscordJoinPage from './DiscordJoinPage'
 import IntroductionPage from './IntroductionPage'
 import StarterPackPage from './StarterPackPage'
+import { useLocation } from 'react-router-dom'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
 const StyledOnboarding = styled(Card)`
   margin: 0;
@@ -24,23 +25,30 @@ const StyledOnboarding = styled(Card)`
 export default function Onboarding() {
   // page
   const onboardingPage = useOnboardingPage()
-  const router = useRouter()
-  const anchor = useMemo(() => router.asPath.split('#')[1], [router.asPath])
+
+  // pathname
+  const { pathname } = useLocation()
+  const anchor = useMemo(() => pathname.split('#')[1], [pathname])
+
+  // query
+  const query = useLocationQuery()
+  const code = query.get('code')
 
   const renderModal = useCallback(
     (onboardingPage: OnboardingPage | null) => {
-      if (!onboardingPage && router.query.code) onboardingPage = OnboardingPage.DISCORD_JOIN
+      if (!onboardingPage && code) onboardingPage = OnboardingPage.DISCORD_JOIN
 
       switch (onboardingPage) {
         default:
         case OnboardingPage.INTRODUCTION:
           return <IntroductionPage nextPage={OnboardingPage.DISCORD_JOIN} />
+
         case OnboardingPage.STARTER_PACK:
           return <StarterPackPage />
+
         case OnboardingPage.DISCORD_JOIN:
           return <DiscordJoinPage nextPage={OnboardingPage.STARTER_PACK} />
       }
-      return null
     },
     [anchor]
   )

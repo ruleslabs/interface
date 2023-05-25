@@ -1,25 +1,25 @@
 import { useCallback, useState, useMemo, useEffect } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { t, Trans } from '@lingui/macro'
 
-import Column from '@/components/Column'
-import { PrimaryButton } from '@/components/Button'
-import tryParseWeiAmount from '@/utils/tryParseWeiAmount'
-import CurrencyInput from '@/components/Input/CurrencyInput'
-import { metaMaskHooks } from '@/constants/connectors'
-import useCurrentUser from '@/hooks/useCurrentUser'
-import StarknetSigner, { StarknetSignerDisplayProps } from '@/components/StarknetSigner'
-import { useETHBalances } from '@/state/wallet/hooks'
-import Wallet from '@/components/Wallet'
-import Metamask from '@/components/Metamask'
+import Column from 'src/components/Column'
+import { PrimaryButton } from 'src/components/Button'
+import tryParseWeiAmount from 'src/utils/tryParseWeiAmount'
+import CurrencyInput from 'src/components/Input/CurrencyInput'
+import { metaMaskHooks } from 'src/constants/connectors'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/StarknetSigner'
+import { useETHBalances } from 'src/state/wallet/hooks'
+import Wallet from 'src/components/Wallet'
+import Metamask from 'src/components/Metamask'
 import * as Text from 'src/theme/components/Text'
 
-import Arrow from '@/images/arrow.svg'
+import { ReactComponent as Arrow } from 'src/images/arrow.svg'
 import { constants } from '@rulesorg/sdk-core'
-import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
-import { useModalOpened } from '@/state/application/hooks'
-import { ApplicationModal } from '@/state/application/actions'
-import useStarknetTx from '@/hooks/useStarknetTx'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { useModalOpened } from 'src/state/application/hooks'
+import { ApplicationModal } from 'src/state/application/actions'
+import useStarknetTx from 'src/hooks/useStarknetTx'
 import { ModalBody } from '../Modal/Sidebar'
 
 const { useAccount } = metaMaskHooks
@@ -27,7 +27,7 @@ const { useAccount } = metaMaskHooks
 const ArrowWrapper = styled(Column)`
   width: 36px;
   height: 36px;
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg4};
   box-shadow: 0px 0px 5px ${({ theme }) => theme.bg1};
   justify-content: center;
   border-radius: 50%;

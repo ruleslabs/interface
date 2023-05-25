@@ -1,17 +1,17 @@
 import { useMemo } from 'react'
-import { useRouter } from 'next/router'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import moment from 'moment'
 import { useQuery, gql } from '@apollo/client'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { Trans, t } from '@lingui/macro'
 
-import { NULL_PRICE } from '@/constants/misc'
-import { TYPE } from '@/styles/theme'
-import Table from '@/components/Table'
-import Avatar from '@/components/Avatar'
-import Link from '@/components/Link'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
+import { NULL_PRICE } from 'src/constants/misc'
+import { TYPE } from 'src/styles/theme'
+import Table from 'src/components/Table'
+import Avatar from 'src/components/Avatar'
+import Link from 'src/components/Link'
+import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
 const StyledAvatar = styled(Avatar)`
   width: 36px;
@@ -52,7 +52,8 @@ interface TransfersTableProps {
 }
 
 export default function TransfersTable({ transfers, loading, error, showSerialNumber }: TransfersTableProps) {
-  const router = useRouter()
+  // query
+  const query = useLocationQuery()
 
   // user table
   const starknetAddresses = useMemo(
@@ -173,7 +174,7 @@ export default function TransfersTable({ transfers, loading, error, showSerialNu
               </td>
               {showSerialNumber && (
                 <td>
-                  <Link href={`/card/${router.query.cardModelSlug}/${transfer.serialNumber}`}>
+                  <Link href={`/card/${query.get('cardModelSlug')}/${transfer.serialNumber}`}>
                     <TYPE.body clickable>#{transfer.serialNumber}</TYPE.body>
                   </Link>
                 </td>

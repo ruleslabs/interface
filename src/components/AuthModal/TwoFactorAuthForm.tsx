@@ -1,17 +1,17 @@
 import { useState, useCallback } from 'react'
 import { Trans } from '@lingui/macro'
 
-import { ModalHeader } from '@/components/Modal'
-import { ModalBody } from '@/components/Modal/Classic'
-import Column from '@/components/Column'
-import Input from '@/components/Input'
-import { TYPE } from '@/styles/theme'
-import { AuthMode } from '@/state/auth/actions'
-import { useAuthModalToggle } from '@/state/application/hooks'
-import { useSetAuthMode, useTwoFactorAuthToken } from '@/state/auth/hooks'
-import { TWO_FACTOR_AUTH_CODE_LENGTH } from '@/constants/misc'
+import { ModalHeader } from 'src/components/Modal'
+import { ModalBody } from 'src/components/Modal/Classic'
+import Column from 'src/components/Column'
+import Input from 'src/components/Input'
+import { TYPE } from 'src/styles/theme'
+import { AuthMode } from 'src/state/auth/actions'
+import { useAuthModalToggle } from 'src/state/application/hooks'
+import { useSetAuthMode, useTwoFactorAuthToken } from 'src/state/auth/hooks'
+import { TWO_FACTOR_AUTH_CODE_LENGTH } from 'src/constants/misc'
 import { AuthFormProps } from './types'
-import { useTwoFactorAuthSignIn } from '@/graphql/data/Auth'
+import { useTwoFactorAuthSignIn } from 'src/graphql/data/Auth'
 
 export default function TwoFactorAuthForm({ onSuccessfulConnection }: AuthFormProps) {
   // graphql

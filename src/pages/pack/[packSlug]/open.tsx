@@ -1,18 +1,19 @@
 import { useState, useCallback, useEffect } from 'react'
-import { useRouter } from 'next/router'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { useQuery, gql } from '@apollo/client'
+import { useNavigate } from 'react-router-dom'
 
-import { TYPE } from '@/styles/theme'
-import Section from '@/components/Section'
-import { BackButton } from '@/components/Button'
-import { useAudioLoop } from '@/state/packOpening/hooks'
-import { Sound } from '@/state/packOpening/actions'
-import PackOpeningPack from '@/components/PackOpening/Pack'
-import PackOpeningCards from '@/components/PackOpening/Cards'
+import { TYPE } from 'src/styles/theme'
+import Section from 'src/components/Section'
+import { BackButton } from 'src/components/Button'
+import { useAudioLoop } from 'src/state/packOpening/hooks'
+import { Sound } from 'src/state/packOpening/actions'
+import PackOpeningPack from 'src/components/PackOpening/Pack'
+import PackOpeningCards from 'src/components/PackOpening/Cards'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
-import SoundOn from '@/images/sound-on.svg'
-import SoundOff from '@/images/sound-off.svg'
+import { ReactComponent as SoundOn } from 'src/images/sound-on.svg'
+import { ReactComponent as SoundOff } from 'src/images/sound-off.svg'
 
 const PACK_QUERY = gql`
   query ($slug: String!) {
@@ -57,8 +58,12 @@ const SoundSwitch = ({ on, toggleSound }: SoundSwitchProps) => {
 }
 
 function PackOpening() {
-  const router = useRouter()
-  const { packSlug } = router.query
+  // query
+  const query = useLocationQuery()
+  const packSlug = query.get('packSlug')
+
+  // nav
+  const navigate = useNavigate()
 
   // sound mgmt
   const { mute, unmute, loop, isMute } = useAudioLoop()
@@ -88,7 +93,7 @@ function PackOpening() {
   return (
     <>
       <ControlsSection>
-        <BackButton onClick={router.back} />
+        <BackButton onClick={() => navigate} />
         <SoundSwitch on={!isMute} toggleSound={toggleSound} />
       </ControlsSection>
 

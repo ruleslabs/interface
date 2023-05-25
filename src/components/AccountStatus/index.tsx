@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
 import {
@@ -8,22 +8,22 @@ import {
   useNavModalUserMobileToggle,
   useNotificationsModalToggle,
   useWalletModalToggle,
-} from '@/state/application/hooks'
-import { useSetAuthMode } from '@/state/auth/hooks'
-import { AuthMode } from '@/state/auth/actions'
-import AuthModal from '@/components/AuthModal'
-import { IconButton, PrimaryButton, SecondaryButton } from '@/components/Button'
-import WalletModal from '@/components/WalletModal'
-import WalletUpgradeModal from '@/components/WalletUpgradeModal'
-import Avatar from '@/components/Avatar'
-import NavModalUserDesktop from '@/components/NavModal/UserDesktop'
-import NavModalUserMobile from '@/components/NavModal/UserMobile'
-import NotificationsModal from '@/components/NotificationsModal'
+} from 'src/state/application/hooks'
+import { useSetAuthMode } from 'src/state/auth/hooks'
+import { AuthMode } from 'src/state/auth/actions'
+import AuthModal from 'src/components/AuthModal'
+import { IconButton, PrimaryButton, SecondaryButton } from 'src/components/Button'
+import WalletModal from 'src/components/WalletModal'
+import WalletUpgradeModal from 'src/components/WalletUpgradeModal'
+import Avatar from 'src/components/Avatar'
+import NavModalUserDesktop from 'src/components/NavModal/UserDesktop'
+import NavModalUserMobile from 'src/components/NavModal/UserMobile'
+import NotificationsModal from 'src/components/NotificationsModal'
 
-import BellIcon from '@/images/bell.svg'
-import WalletIcon from '@/images/wallet.svg'
+import { ReactComponent as BellIcon } from 'src/images/bell.svg'
+import { ReactComponent as WalletIcon } from 'src/images/wallet.svg'
 import WalletBalanceButton from './WalletBalanceButton'
-import useCurrentUser from '@/hooks/useCurrentUser'
+import useCurrentUser from 'src/hooks/useCurrentUser'
 
 const StyledAccountStatus = styled.div`
   display: flex;
@@ -169,7 +169,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
             </AvatarButtonWrapperMobile>
 
             {currentUser?.starknetWallet.address && (
-              <MobileIconButton onClick={toggleWalletModal} alert={!!currentUser?.starknetWallet.lockingReason}>
+              <MobileIconButton onClick={toggleWalletModal} $alert={!!currentUser?.starknetWallet.lockingReason}>
                 <WalletIcon />
               </MobileIconButton>
             )}

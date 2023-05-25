@@ -1,8 +1,8 @@
 import { combineReducers, createStore } from 'redux'
 
 import { createMulticall } from '@rulesorg/serum'
-import { useMulticallContract } from '@/hooks/useContract'
-import { useBlockNumber } from '@/state/application/hooks'
+import { useMulticallContract } from 'src/hooks/useContract'
+import { useBlockNumber } from 'src/state/application/hooks'
 
 const multicall = createMulticall()
 const reducer = combineReducers({ [multicall.reducerPath]: multicall.reducer })

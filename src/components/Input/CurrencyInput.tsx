@@ -1,13 +1,13 @@
 import React, { useCallback, useRef } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
-import Row, { RowCenter } from '@/components/Row'
-import Column from '@/components/Column'
-import { TYPE } from '@/styles/theme'
+import Row, { RowCenter } from 'src/components/Row'
+import Column from 'src/components/Column'
+import { TYPE } from 'src/styles/theme'
 
-import EthereumIcon from '@/images/ethereum.svg'
+import { ReactComponent as EthereumIcon } from 'src/images/ethereum.svg'
 
 const StyledCurrencyInput = styled(Column)`
   padding: 16px;
@@ -18,7 +18,7 @@ const StyledCurrencyInput = styled(Column)`
   width: 100%;
   gap: 16px;
 
-  :focus-within {
+  &:focus-within {
     outline: ${({ theme }) => theme.primary1} solid 2px;
     outline-offset: -1px;
   }
@@ -41,12 +41,12 @@ const Input = styled.input`
   }
 
   :-webkit-autofill,
-  :-webkit-autofill:focus {
+  &:-webkit-autofill:focus {
     transition: background-color 600000s 0s, color 600000s 0s;
   }
 
   ::-webkit-outer-spin-button,
-  ::-webkit-inner-spin-button {
+  &::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }

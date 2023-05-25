@@ -1,21 +1,21 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import styled from 'styled-components'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import styled from 'styled-components/macro'
 import { useQuery, gql } from '@apollo/client'
-import { useRouter } from 'next/router'
 import { Trans } from '@lingui/macro'
 
-import Link from '@/components/Link'
-import DefaultLayout from '@/components/Layout'
-import ProfileLayout from '@/components/Layout/Profile'
-import Section from '@/components/Section'
-import { TYPE } from '@/styles/theme'
-import { RowCenter } from '@/components/Row'
-import DeckInsertionModal from '@/components/DeckInsertionModal'
-import { useDeckState, useSetDeckCards, useDeckActionHandlers } from '@/state/deck/hooks'
-import { Deck } from '@/state/deck/actions'
-import useCurrentUser from '@/hooks/useCurrentUser'
-import { useDeckInsertionModalToggle } from '@/state/application/hooks'
-import { SecondaryButton } from '@/components/Button'
+import Link from 'src/components/Link'
+import DefaultLayout from 'src/components/Layout'
+import ProfileLayout from 'src/components/Layout/Profile'
+import Section from 'src/components/Section'
+import { TYPE } from 'src/styles/theme'
+import { RowCenter } from 'src/components/Row'
+import DeckInsertionModal from 'src/components/DeckInsertionModal'
+import { useDeckState, useSetDeckCards, useDeckActionHandlers } from 'src/state/deck/hooks'
+import { Deck } from 'src/state/deck/actions'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import { useDeckInsertionModalToggle } from 'src/state/application/hooks'
+import { SecondaryButton } from 'src/components/Button'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
 const ShowcaseSection = styled(Section)`
   position: relative;
@@ -45,12 +45,12 @@ const StyledEmptyCard = styled(RowCenter)<{ clickable: boolean }>`
     `
       cursor: pointer;
 
-      :hover {
+      &:hover {
         background: ${theme.white}20;
       }
     `}
 
-  ::after {
+  &::after {
     content: '';
     padding-bottom: 140%;
   }
@@ -203,9 +203,9 @@ interface ProfileProps {
 }
 
 function Profile({ address }: ProfileProps) {
-  const router = useRouter()
-  const { username } = router.query
-  const userSlug = typeof username === 'string' ? username.toLowerCase() : null
+  const query = useLocationQuery()
+  const username = query.get('username')
+  const userSlug = useMemo(() => username?.toLowerCase() ?? null, [username])
 
   const { currentUser } = useCurrentUser()
   const isCurrentUserProfile = currentUser?.slug === userSlug

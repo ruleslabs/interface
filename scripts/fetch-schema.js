@@ -23,4 +23,4 @@ function fetchSchema(url, outputFile) {
     })
 }
 
-fetchSchema(process.env.NEXT_PUBLIC_GRAPHQL_URI, dataConfig.schema)
+fetchSchema(process.env.REACT_APP_GRAPHQL_URI, dataConfig.schema)

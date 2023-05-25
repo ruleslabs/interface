@@ -1,6 +1,6 @@
 import { immer } from 'zustand/middleware/immer'
 
-import { GenieCurrentUser } from '@/types'
+import { GenieCurrentUser } from 'src/types'
 
 export type UserSlice = State & Actions
 

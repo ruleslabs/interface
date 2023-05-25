@@ -1,15 +1,14 @@
 import React, { useMemo } from 'react'
-import NextLink from 'next/link'
-import { useRouter } from 'next/router'
-import styled from 'styled-components'
+import { Link as RouterLink, useLocation } from 'react-router-dom'
+import styled from 'styled-components/macro'
 
-const StyledLink = styled.a<{ color?: string; underline: boolean }>`
+const StyledLink = styled(RouterLink)<{ color?: string; underline: boolean }>`
   outline: none;
 
   ${({ color = 'primary1', theme, underline }) => `
     color: ${(theme as any)[color]};
 
-    :hover {
+    &:hover {
       ${underline ? 'text-decoration: underline;' : ''}
     }
   `}
@@ -22,13 +21,11 @@ export interface LinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
   underline?: boolean
 }
 
-export default function Link({ href, color, target, children, underline = false, ...props }: LinkProps) {
+export default function Link({ href, children, underline = false, ...props }: LinkProps) {
   return (
-    <NextLink href={href}>
-      <StyledLink href={href} target={target} color={color} underline={underline} {...props}>
-        {children}
-      </StyledLink>
-    </NextLink>
+    <StyledLink to={href} underline={underline} {...props}>
+      {children}
+    </StyledLink>
   )
 }
 
@@ -40,15 +37,15 @@ export interface ActiveLinkProps extends LinkProps {
 }
 
 export function ActiveLink({ children, href, perfectMatch = false, ...props }: ActiveLinkProps) {
-  const router = useRouter()
+  const { pathname } = useLocation()
   const childClassName = children.props.className ?? ''
 
   const className = useMemo(
     () =>
-      (perfectMatch && router.asPath === href) || (!perfectMatch && router.asPath.indexOf(href) === 0)
+      (perfectMatch && pathname === href) || (!perfectMatch && pathname.indexOf(href) === 0)
         ? `${childClassName} active`.trim()
         : childClassName,
-    [perfectMatch, childClassName, href, router.asPath]
+    [perfectMatch, childClassName, href, pathname]
   )
 
   if (!children) return null

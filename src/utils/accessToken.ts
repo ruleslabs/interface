@@ -1,5 +1,5 @@
 function getAccessTokenLocalstorageKey() {
-  const key = process.env.NEXT_PUBLIC_ACCESS_TOKEN_LOCALSTORAGE_KEY
+  const key = process.env.REACT_APP_ACCESS_TOKEN_LOCALSTORAGE_KEY
   if (!key) {
     throw new Error("Can't store accessToken: No localStorage key")
   }

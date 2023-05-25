@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES, SupportedLocale } from '@/constants/locales'
-import store from '@/state'
-import { useUserLocale } from '@/state/user/hooks'
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES, SupportedLocale } from 'src/constants/locales'
+import store from 'src/state'
+import { useUserLocale } from 'src/state/user/hooks'
+import useLocationQuery from './useLocationQuery'
 
 /**
  * Given a locale string (e.g. from user agent), return the best match for corresponding SupportedLocale
@@ -39,8 +39,8 @@ function userLocale(): SupportedLocale | undefined {
 export const initialLocale = userLocale() ?? DEFAULT_LOCALE
 
 function useUrlLocale() {
-  const router = useRouter()
-  return parseLocale(router.query.lng)
+  const query = useLocationQuery()
+  return parseLocale(query.get('lng'))
 }
 
 /**

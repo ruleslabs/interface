@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 const StyledProgressBar = styled.div<{ duration: number }>`
   animation: progress ${({ duration }) => duration}ms ease-in-out;

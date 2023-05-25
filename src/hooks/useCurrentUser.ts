@@ -1,6 +1,6 @@
 import { shallow } from 'zustand/shallow'
 
-import { useBoundStore } from '@/zustand'
+import { useBoundStore } from 'src/zustand'
 
 export default function useCurrentUser() {
   const { currentUser, setCurrentUser, refreshCurrentUser } = useBoundStore(

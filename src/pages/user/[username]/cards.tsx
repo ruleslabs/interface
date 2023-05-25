@@ -1,29 +1,29 @@
 import { useState, useCallback, useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { useLazyQuery, useQuery, gql } from '@apollo/client'
 import { t, Trans, Plural } from '@lingui/macro'
-import { useRouter } from 'next/router'
 
-import DefaultLayout from '@/components/Layout'
-import ProfileLayout from '@/components/Layout/Profile'
-import Row, { RowBetween, RowCenter } from '@/components/Row'
-import Section from '@/components/Section'
-import CardModel from '@/components/CardModel'
-import Grid from '@/components/Grid'
-import { useSearchCards, CardsSortingKey } from '@/state/search/hooks'
-import { TYPE } from '@/styles/theme'
-import EmptyTab, { EmptyCardsTabOfCurrentUser } from '@/components/EmptyTab'
-import useCurrentUser from '@/hooks/useCurrentUser'
-import useCardsPendingStatusMap from '@/hooks/useCardsPendingStatusMap'
-import { PaginationSpinner } from '@/components/Spinner'
-import useInfiniteScroll from '@/hooks/useInfiniteScroll'
-import SortButton, { SortsData } from '@/components/Button/SortButton'
-import { PrimaryButton, SecondaryButton } from '@/components/Button'
-import CreateOfferModal from '@/components/MarketplaceModal/CreateOffer'
-import { useCreateOfferModalToggle, useOfferModalToggle } from '@/state/application/hooks'
+import DefaultLayout from 'src/components/Layout'
+import ProfileLayout from 'src/components/Layout/Profile'
+import Row, { RowBetween, RowCenter } from 'src/components/Row'
+import Section from 'src/components/Section'
+import CardModel from 'src/components/CardModel'
+import Grid from 'src/components/Grid'
+import { useSearchCards, CardsSortingKey } from 'src/state/search/hooks'
+import { TYPE } from 'src/styles/theme'
+import EmptyTab, { EmptyCardsTabOfCurrentUser } from 'src/components/EmptyTab'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import useCardsPendingStatusMap from 'src/hooks/useCardsPendingStatusMap'
+import { PaginationSpinner } from 'src/components/Spinner'
+import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
+import SortButton, { SortsData } from 'src/components/Button/SortButton'
+import { PrimaryButton, SecondaryButton } from 'src/components/Button'
+import CreateOfferModal from 'src/components/MarketplaceModal/CreateOffer'
+import { useCreateOfferModalToggle, useOfferModalToggle } from 'src/state/application/hooks'
+import GiftModal from 'src/components/GiftModal'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
-import Present from '@/images/present.svg'
-import GiftModal from '@/components/GiftModal'
+import { ReactComponent as Present } from 'src/images/present.svg'
 
 // css
 
@@ -109,7 +109,7 @@ const SelectionButton = styled(SecondaryButton)`
   font-weight: 400;
   background: ${({ theme }) => theme.bg3}80;
 
-  :hover {
+  &:hover {
     background: ${({ theme }) => theme.bg3};
   }
 `
@@ -177,10 +177,10 @@ interface CardsProps {
 }
 
 function Cards({ userId, address }: CardsProps) {
-  // router
-  const router = useRouter()
-  const { username } = router.query
-  const userSlug = typeof username === 'string' ? username.toLowerCase() : null
+  // query
+  const query = useLocationQuery()
+  const username = query.get('username')
+  const userSlug = useMemo(() => username?.toLowerCase() ?? null, [username])
 
   // current user
   const { currentUser } = useCurrentUser()

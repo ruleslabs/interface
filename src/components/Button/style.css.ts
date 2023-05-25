@@ -1,9 +1,9 @@
 import { style } from '@vanilla-extract/css'
 import { recipe } from '@vanilla-extract/recipes'
 
-import { sprinkles } from '@/theme/css/sprinkles.css'
-import { vars } from '@/theme/css/vars.css'
-import { recipes } from '@/theme/utils/recipes'
+import { sprinkles } from 'src/theme/css/sprinkles.css'
+import { vars } from 'src/theme/css/vars.css'
+import { recipes } from 'src/theme/utils/recipes'
 
 export const base = recipe({
   base: sprinkles({

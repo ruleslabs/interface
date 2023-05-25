@@ -3,15 +3,15 @@ import { useQuery, useLazyQuery, gql } from '@apollo/client'
 import algoliasearch from 'algoliasearch'
 import { Unit } from '@rulesorg/sdk-core'
 
-import { NULL_PRICE } from '@/constants/misc'
-import { useAppSelector, useAppDispatch } from '@/state/hooks'
+import { NULL_PRICE } from 'src/constants/misc'
+import { useAppSelector, useAppDispatch } from 'src/state/hooks'
 import {
   updateMarketplaceScarcityFilter,
   updateMarketplaceSeasonsFilter,
   updateMarketplaceLowSerialsFilter,
   updateMarketplaceMaximumPrice,
 } from './actions'
-import { useEurAmountToWeiAmount } from '@/hooks/useFiatPrice'
+import { useEurAmountToWeiAmount } from 'src/hooks/useFiatPrice'
 
 const SEARCHED_USERS_QUERY = gql`
   query {
@@ -156,7 +156,7 @@ export function useAlgoliaFormatedMarketplaceFilters() {
 
 // algolia
 
-const client = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_ID ?? '', process.env.NEXT_PUBLIC_ALGOLIA_KEY ?? '')
+const client = algoliasearch(process.env.REACT_APP_ALGOLIA_ID ?? '', process.env.REACT_APP_ALGOLIA_KEY ?? '')
 const algoliaIndexes = {
   transfers: {
     priceDesc: client.initIndex('transfers-price-desc'),

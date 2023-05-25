@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { gql, useMutation } from '@apollo/client'
 
-import { AppState } from '@/state'
+import { AppState } from 'src/state'
 import {
   updateSoundFetchingState,
   addSoundAudioData,
@@ -13,7 +13,7 @@ import {
   Sound,
   FetchingState,
 } from './actions'
-import { useAppDispatch, useAppSelector } from '@/state/hooks'
+import { useAppDispatch, useAppSelector } from 'src/state/hooks'
 
 const PREPARE_PACK_OPENING_MUTATION = gql`
   mutation ($packId: ID!) {
@@ -158,7 +158,7 @@ export function useAudioLoop() {
     }
 
     // Fetch sounds
-    Object.values(Sound).forEach((sound, index: number) => {
+    Object.values(Sound).forEach((sound) => {
       if (soundsFetchingState[sound] === FetchingState.UNFETCHED) {
         dispatch(updateSoundFetchingState({ sound, fetchingState: FetchingState.FETCHING }))
         fetch(`/sounds/${sound}.wav`, { mode: 'cors' })

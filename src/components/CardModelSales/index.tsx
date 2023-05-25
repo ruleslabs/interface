@@ -1,12 +1,12 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans, Plural } from '@lingui/macro'
 
-import Column from '@/components/Column'
-import { TYPE } from '@/styles/theme'
-import { PrimaryButton } from '@/components/Button'
-import Link from '@/components/Link'
-import Placeholder from '@/components/Placeholder'
-import { useSearchOffers } from '@/state/search/hooks'
+import Column from 'src/components/Column'
+import { TYPE } from 'src/styles/theme'
+import { PrimaryButton } from 'src/components/Button'
+import Link from 'src/components/Link'
+import Placeholder from 'src/components/Placeholder'
+import { useSearchOffers } from 'src/state/search/hooks'
 import CardModelPriceStats from './CardModelPriceStats'
 
 const CardsOnSaleCount = styled(TYPE.body)`

@@ -1,14 +1,14 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import { TYPE } from '@/styles/theme'
-import { ColumnCenter } from '@/components/Column'
-import Row from '@/components/Row'
-import Card from '@/components/Card'
-import Link from '@/components/Link'
-import { PrimaryButton } from '@/components/Button'
+import { TYPE } from 'src/styles/theme'
+import { ColumnCenter } from 'src/components/Column'
+import Row from 'src/components/Row'
+import Card from 'src/components/Card'
+import Link from 'src/components/Link'
+import { PrimaryButton } from 'src/components/Button'
 
-import Ghost from '@/images/ghost.svg'
+import { ReactComponent as Ghost } from 'src/images/ghost.svg'
 
 const StyledEmptyTab = styled(ColumnCenter)`
   justify-content: center;

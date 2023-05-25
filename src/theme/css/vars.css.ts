@@ -193,7 +193,7 @@ export const zIndices = {
   tooltip: '1080',
 }
 
-createGlobalTheme(':root', vars, {
+export const rawTokens = {
   color: {
     ...colors,
 
@@ -240,4 +240,6 @@ createGlobalTheme(':root', vars, {
   time: times,
   timing: timings,
   opacity: opacities,
-})
+}
+
+createGlobalTheme(':root', vars, rawTokens)

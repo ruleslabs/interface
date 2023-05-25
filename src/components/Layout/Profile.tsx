@@ -1,25 +1,25 @@
 import React from 'react'
-import styled from 'styled-components'
-import { useRouter } from 'next/router'
+import styled from 'styled-components/macro'
 import { t, Trans } from '@lingui/macro'
 
-import { ActiveLink } from '@/components/Link'
-import Section from '@/components/Section'
-import { TYPE } from '@/styles/theme'
-import { RowBetween, RowCenter } from '@/components/Row'
-import { ColumnCenter } from '@/components/Column'
-import { TabButton } from '@/components/Button'
-import { useSearchUser } from '@/state/user/hooks'
-import DiscordMember from '@/components/DiscordStatus/DiscordMember'
-import AvatarEditModal from '@/components/AvatarEditModal'
-import { useDefaultAvatarIdFromUrl } from '@/hooks/useDefaultAvatarUrls'
-import Avatar from '@/components/Avatar'
-import { CertifiedBadge } from '@/components/User/Badge'
-import UserRank from '@/components/User/Rank'
-import { useCScoreRank } from '@/hooks/useCScore'
-import { useAvatarEditModalToggle } from '@/state/application/hooks'
+import { ActiveLink } from 'src/components/Link'
+import Section from 'src/components/Section'
+import { TYPE } from 'src/styles/theme'
+import { RowBetween, RowCenter } from 'src/components/Row'
+import { ColumnCenter } from 'src/components/Column'
+import { TabButton } from 'src/components/Button'
+import { useSearchUser } from 'src/state/user/hooks'
+import DiscordMember from 'src/components/DiscordStatus/DiscordMember'
+import AvatarEditModal from 'src/components/AvatarEditModal'
+import { useDefaultAvatarIdFromUrl } from 'src/hooks/useDefaultAvatarUrls'
+import Avatar from 'src/components/Avatar'
+import { CertifiedBadge } from 'src/components/User/Badge'
+import UserRank from 'src/components/User/Rank'
+import { useCScoreRank } from 'src/hooks/useCScore'
+import { useAvatarEditModalToggle } from 'src/state/application/hooks'
 import * as Icons from 'src/theme/components/Icons'
-import useCurrentUser from '@/hooks/useCurrentUser'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
 const Gradient = styled.div`
   background: ${({ theme }) => theme.gradient1};
@@ -70,7 +70,7 @@ const AvatarEditButton = styled(RowCenter)`
 const SocialLink = styled.a`
   color: ${({ theme }) => theme.text2};
 
-  :hover {
+  &:hover {
     color: ${({ theme }) => theme.text1};
   }
 
@@ -113,8 +113,8 @@ export const tabLinks = [
 ] // TODO: move it somewhere else as a single source of truth
 
 export default function ProfileLayout({ children }: { children: React.ReactElement }) {
-  const router = useRouter()
-  const { username } = router.query
+  const query = useLocationQuery()
+  const username = query.get('username')
   const userSlug = typeof username === 'string' ? username.toLowerCase() : undefined
 
   const { currentUser } = useCurrentUser()
@@ -187,7 +187,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
         {tabLinks.map((tabLink, index: number) => (
           <ActiveLink key={`tab-link-${index}`} href={`/user/${userSlug}${tabLink.link}`} perfectMatch>
             <TabButton>
-              <Trans id={tabLink.name} render={({ translation }) => <>{translation}</>} />
+              <Trans id={tabLink.name}>{tabLink.name}</Trans>
             </TabButton>
           </ActiveLink>
         ))}

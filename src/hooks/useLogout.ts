@@ -1,14 +1,11 @@
 import { useCallback } from 'react'
-import { useRouter } from 'next/router'
+import { redirect } from 'react-router-dom'
 
 import useCurrentUser from './useCurrentUser'
-import { storeAccessToken } from '@/utils/accessToken'
-import { useRevokeSession } from '@/graphql/data/Auth'
+import { storeAccessToken } from 'src/utils/accessToken'
+import { useRevokeSession } from 'src/graphql/data/Auth'
 
 export default function useLogout() {
-  // router
-  const router = useRouter()
-
   const [revokeSessionMutation, { loading, error }] = useRevokeSession()
   const { setCurrentUser } = useCurrentUser()
 
@@ -18,8 +15,8 @@ export default function useLogout() {
 
     setCurrentUser(null)
     storeAccessToken('')
-    router.replace('/')
-  }, [revokeSessionMutation])
+    redirect('/')
+  }, [revokeSessionMutation, redirect])
 
   return [logout, { loading, error }] as const
 }

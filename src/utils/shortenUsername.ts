@@ -1,4 +1,4 @@
-import { MAX_SHORT_USERNAME_LENGTH } from '@/constants/misc'
+import { MAX_SHORT_USERNAME_LENGTH } from 'src/constants/misc'
 
 export default function shortenUsername(username: string) {
   return username.length > MAX_SHORT_USERNAME_LENGTH

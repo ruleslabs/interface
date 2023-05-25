@@ -1,29 +1,29 @@
 import { useCallback, useRef, useState } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans, t } from '@lingui/macro'
 import GoogleReCAPTCHA from 'react-google-recaptcha'
 
-import { ModalHeader } from '@/components/Modal'
-import { ModalBody } from '@/components/Modal/Classic'
-import Column from '@/components/Column'
-import Input from '@/components/Input'
-import { TYPE } from '@/styles/theme'
-import { PrimaryButton } from '@/components/Button'
-import { AuthMode } from '@/state/auth/actions'
+import { ModalHeader } from 'src/components/Modal'
+import { ModalBody } from 'src/components/Modal/Classic'
+import Column from 'src/components/Column'
+import Input from 'src/components/Input'
+import { TYPE } from 'src/styles/theme'
+import { PrimaryButton } from 'src/components/Button'
+import { AuthMode } from 'src/state/auth/actions'
 import {
   useAuthForm,
   useAuthActionHanlders,
   useSetAuthMode,
   useRefreshNewEmailVerificationCodeTime,
-} from '@/state/auth/hooks'
-import { useAuthModalToggle } from '@/state/application/hooks'
-import Checkbox from '@/components/Checkbox'
-import Link from '@/components/Link'
-import { validatePassword } from '@/utils/password'
-import ReCAPTCHA, { RecaptchaPolicy } from '@/components/Recaptcha'
-import { usePrepareSignUp } from '@/graphql/data/Auth'
-import { GenieError } from '@/types'
-import { formatError } from '@/utils/error'
+} from 'src/state/auth/hooks'
+import { useAuthModalToggle } from 'src/state/application/hooks'
+import Checkbox from 'src/components/Checkbox'
+import Link from 'src/components/Link'
+import { validatePassword } from 'src/utils/password'
+import ReCAPTCHA, { RecaptchaPolicy } from 'src/components/Recaptcha'
+import { usePrepareSignUp } from 'src/graphql/data/Auth'
+import { GenieError } from 'src/types'
+import { formatError } from 'src/utils/error'
 
 const StyledForm = styled.form`
   width: 100%;

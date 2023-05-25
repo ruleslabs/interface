@@ -1,9 +1,9 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import Column, { ColumnCenter } from '@/components/Column'
-import { TYPE } from '@/styles/theme'
-import { EtherscanButton } from '@/components/Button'
+import Column, { ColumnCenter } from 'src/components/Column'
+import { TYPE } from 'src/styles/theme'
+import { EtherscanButton } from 'src/components/Button'
 
 import Spinner from '../Spinner'
 

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import gql from 'graphql-tag'
 
-import { GenieCurrentUser, GenieProfile } from '@/types'
+import { GenieCurrentUser, GenieProfile } from 'src/types'
 import { CurrentUser, useCurrentUserQuery } from './__generated__/types-and-hooks'
 import { constants } from '@rulesorg/sdk-core'
 

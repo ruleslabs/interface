@@ -1,12 +1,12 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import { RowCenter } from '@/components/Row'
-import { TYPE } from '@/styles/theme'
+import { RowCenter } from 'src/components/Row'
+import { TYPE } from 'src/styles/theme'
 
-import RulesPlainIcon from '@/images/logo-plain.svg'
-import EthereumPlainIcon from '@/images/ethereum-plain.svg'
+import { ReactComponent as RulesPlainIcon } from 'src/images/logo-plain.svg'
+import { ReactComponent as EthereumPlainIcon } from 'src/images/ethereum-plain.svg'
 
 const StyledWallet = styled(RowCenter)`
   padding: 12px;
@@ -17,7 +17,7 @@ const StyledWallet = styled(RowCenter)`
   width: 100%;
   gap: 8px;
 
-  :focus-within {
+  &:focus-within {
     outline: ${({ theme }) => theme.primary1} solid 2px;
     outline-offset: -1px;
   }

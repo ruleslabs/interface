@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit'
 
-import { SupportedLocale } from '@/constants/locales'
+import { SupportedLocale } from 'src/constants/locales'
 import { updateUserLocale } from './actions'
 
 export interface UserState {

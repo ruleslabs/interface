@@ -3,7 +3,7 @@ import { Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
 import { InjectedConnector, StarknetConfig } from '@starknet-react/core'
 import { MetaMask } from '@web3-react/metamask'
 
-import { metaMaskHooks, metaMask } from '@/constants/connectors'
+import { metaMaskHooks, metaMask } from 'src/constants/connectors'
 
 // ETHEREUM
 

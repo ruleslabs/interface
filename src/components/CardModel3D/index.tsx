@@ -1,17 +1,17 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { useSpring, animated } from '@react-spring/web'
 import FocusLock from 'react-focus-lock'
 import { RemoveScroll } from 'react-remove-scroll'
 
 import { CardDisplaySelector } from './Selector'
-import { RowCenter } from '@/components/Row'
+import { RowCenter } from 'src/components/Row'
 import Card from './Card'
-import useWindowSize from '@/hooks/useWindowSize'
-import { CARD_ASPECT_RATIO } from '@/constants/misc'
-import useCardModel3DFullscreen from '@/hooks/useCardModel3DFullscreen'
+import useWindowSize from 'src/hooks/useWindowSize'
+import { CARD_ASPECT_RATIO } from 'src/constants/misc'
+import useCardModel3DFullscreen from 'src/hooks/useCardModel3DFullscreen'
 
-import Close from '@/images/close.svg'
+import { ReactComponent as Close } from 'src/images/close.svg'
 
 const StyledCardModel3D = styled.div<{ fullscreen: boolean; scarcityName: string }>`
   position: absolute;

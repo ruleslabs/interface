@@ -1,4 +1,4 @@
-import useCurrentUser from '@/hooks/useCurrentUser'
+import useCurrentUser from 'src/hooks/useCurrentUser'
 
 export default function useNeededActions() {
   const { currentUser } = useCurrentUser()

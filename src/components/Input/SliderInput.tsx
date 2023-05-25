@@ -1,8 +1,8 @@
 import React, { useCallback, useRef } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import { RowCenter } from '@/components/Row'
-import { TYPE } from '@/styles/theme'
+import { RowCenter } from 'src/components/Row'
+import { TYPE } from 'src/styles/theme'
 
 const StyledSliderInput = styled(RowCenter)`
   padding: 8px 12px;
@@ -13,7 +13,7 @@ const StyledSliderInput = styled(RowCenter)`
   width: 100%;
   gap: 4px;
 
-  :focus-within {
+  &:focus-within {
     outline: ${({ theme }) => theme.primary1} solid 2px;
     outline-offset: -1px;
   }
@@ -37,12 +37,12 @@ const Input = styled.input`
   }
 
   :-webkit-autofill,
-  :-webkit-autofill:focus {
+  &:-webkit-autofill:focus {
     transition: background-color 600000s 0s, color 600000s 0s;
   }
 
   ::-webkit-outer-spin-button,
-  ::-webkit-inner-spin-button {
+  &::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }

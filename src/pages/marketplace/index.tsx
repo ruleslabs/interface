@@ -1,30 +1,30 @@
 import { useState, useCallback, useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { gql, useLazyQuery } from '@apollo/client'
 
-import MarketplaceFilters from '@/components/MarketplaceFilters'
-import Section from '@/components/Section'
-import CardModel from '@/components/CardModel'
-import Column, { ColumnCenter } from '@/components/Column'
-import Row, { RowBetween } from '@/components/Row'
-import Grid from '@/components/Grid'
+import MarketplaceFilters from 'src/components/MarketplaceFilters'
+import Section from 'src/components/Section'
+import CardModel from 'src/components/CardModel'
+import Column, { ColumnCenter } from 'src/components/Column'
+import Row, { RowBetween } from 'src/components/Row'
+import Grid from 'src/components/Grid'
 import {
   useMarketplaceFilters,
   useSearchCardModels,
   useAlgoliaFormatedMarketplaceFilters,
   CardModelsSortingKey,
-} from '@/state/search/hooks'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-import { PaginationSpinner } from '@/components/Spinner'
-import SortButton, { SortData } from '@/components/Button/SortButton'
-import useInfiniteScroll from '@/hooks/useInfiniteScroll'
-import { Badge } from '@/components/CardModel/Badges'
-import { IconButton } from '@/components/Button'
-import { useMarketplaceFiltersModalToggle } from '@/state/application/hooks'
+} from 'src/state/search/hooks'
+import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import { PaginationSpinner } from 'src/components/Spinner'
+import SortButton, { SortData } from 'src/components/Button/SortButton'
+import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
+import { Badge } from 'src/components/CardModel/Badges'
+import { IconButton } from 'src/components/Button'
+import { useMarketplaceFiltersModalToggle } from 'src/state/application/hooks'
 
-import HopperIcon from '@/images/hopper.svg'
-import MarketplaceFiltersModal from '@/components/MarketplaceFiltersModal'
+import { ReactComponent as HopperIcon } from 'src/images/hopper.svg'
+import MarketplaceFiltersModal from 'src/components/MarketplaceFiltersModal'
 
 const StyledSection = styled(Section)`
   width: 100%;

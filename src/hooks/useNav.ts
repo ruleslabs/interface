@@ -1,4 +1,4 @@
-import { useUpgradeWalletModalToggle } from '@/state/application/hooks'
+import { useUpgradeWalletModalToggle } from 'src/state/application/hooks'
 import { useMemo } from 'react'
 import useLogout from './useLogout'
 

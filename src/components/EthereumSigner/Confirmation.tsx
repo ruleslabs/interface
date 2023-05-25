@@ -1,16 +1,16 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import Column, { ColumnCenter } from '@/components/Column'
-import { TYPE } from '@/styles/theme'
-import { PrimaryButton } from '@/components/Button'
-import Link from '@/components/Link'
-import Spinner from '@/components/Spinner'
+import Column, { ColumnCenter } from 'src/components/Column'
+import { TYPE } from 'src/styles/theme'
+import { PrimaryButton } from 'src/components/Button'
+import Link from 'src/components/Link'
+import Spinner from 'src/components/Spinner'
 
-import Checkmark from '@/images/checkmark.svg'
-import Close from '@/images/close.svg'
-import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
-import { getChainInfo } from '@/constants/chainInfo'
+import { ReactComponent as Checkmark } from 'src/images/checkmark.svg'
+import { ReactComponent as Close } from 'src/images/close.svg'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { getChainInfo } from 'src/constants/chainInfo'
 
 const StyledConfirmation = styled(ColumnCenter)`
   padding-bottom: 8px;

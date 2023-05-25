@@ -1,15 +1,16 @@
 import { useState, useCallback, useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { useQuery, gql } from '@apollo/client'
-import { useRouter } from 'next/router'
 import { WeiAmount, Unit } from '@rulesorg/sdk-core'
+import { useNavigate } from 'react-router-dom'
 
-import Section from '@/components/Section'
-import { BackButton } from '@/components/Button'
-import OffersSelectorBreakdown from '@/components/OffersSelectorBreakdown'
-import OffersSelector from '@/components/OffersSelector'
-import Card from '@/components/Card'
-import { PaginationSpinner } from '@/components/Spinner'
+import Section from 'src/components/Section'
+import { BackButton } from 'src/components/Button'
+import OffersSelectorBreakdown from 'src/components/OffersSelectorBreakdown'
+import OffersSelector from 'src/components/OffersSelector'
+import Card from 'src/components/Card'
+import { PaginationSpinner } from 'src/components/Spinner'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
 const MainSection = styled(Section)`
   display: flex;
@@ -70,9 +71,12 @@ const QUERY_CARD_MODEL = gql`
 `
 
 export default function Buy() {
-  // router
-  const router = useRouter()
-  const { cardModelSlug } = router.query
+  // query
+  const query = useLocationQuery()
+  const cardModelSlug = query.get('cardModelSlug')
+
+  // nav
+  const navigate = useNavigate()
 
   // offer selection
   const [selectedOffers, setSelectedOffers] = useState<Array<{ serialNumber: number; price: string }>>([])
@@ -113,7 +117,7 @@ export default function Buy() {
   return (
     <>
       <Section marginTop="32px">
-        <BackButton onClick={router.back} />
+        <BackButton onClick={() => navigate(-1)} />
       </Section>
 
       <MainSection>

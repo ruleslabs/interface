@@ -1,20 +1,20 @@
 import { useState, useCallback, useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { useQuery, gql } from '@apollo/client'
-import { useRouter } from 'next/router'
 import { constants } from '@rulesorg/sdk-core'
 
-import { SecondaryButton } from '@/components/Button'
-import DefaultLayout from '@/components/Layout'
-import ProfileLayout from '@/components/Layout/Profile'
-import Section from '@/components/Section'
-import Grid from '@/components/Grid'
-import CardModel from '@/components/CardModel'
-import Row, { RowCenter } from '@/components/Row'
-import Column from '@/components/Column'
-import { TYPE } from '@/styles/theme'
-import { RULEDEX_CARDS_COUNT_LEVELS_MINS } from '@/constants/misc'
-import { Badge } from '@/components/CardModel/Badges'
+import { SecondaryButton } from 'src/components/Button'
+import DefaultLayout from 'src/components/Layout'
+import ProfileLayout from 'src/components/Layout/Profile'
+import Section from 'src/components/Section'
+import Grid from 'src/components/Grid'
+import CardModel from 'src/components/CardModel'
+import Row, { RowCenter } from 'src/components/Row'
+import Column from 'src/components/Column'
+import { TYPE } from 'src/styles/theme'
+import { RULEDEX_CARDS_COUNT_LEVELS_MINS } from 'src/constants/misc'
+import { Badge } from 'src/components/CardModel/Badges'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
 const ScarcitySelectorWrapper = styled(Row)`
   gap: 42px;
@@ -111,8 +111,8 @@ const USER_OWNED_CARD_MODELS_QUERY = gql`
 
 function Ruledex() {
   // user slug
-  const router = useRouter()
-  const { username } = router.query
+  const query = useLocationQuery()
+  const username = query.get('username')
   const userSlug = typeof username === 'string' ? username.toLowerCase() : null
 
   // Query cards
@@ -224,12 +224,12 @@ function Ruledex() {
   )
 }
 
-Ruledex.getLayout = (page: JSX.Element) => {
-  return (
-    <DefaultLayout>
-      <ProfileLayout>{page}</ProfileLayout>
-    </DefaultLayout>
-  )
-}
+Ruledex.withLayout = () => (
+  <DefaultLayout>
+    <ProfileLayout>
+      <Ruledex />
+    </ProfileLayout>
+  </DefaultLayout>
+)
 
 export default Ruledex

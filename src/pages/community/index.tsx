@@ -1,21 +1,21 @@
 import { useCallback } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { useQuery, gql } from '@apollo/client'
 import { t } from '@lingui/macro'
-import { useRouter } from 'next/router'
+import { useNavigate } from 'react-router-dom'
 
-import Link from '@/components/Link'
-import Section from '@/components/Section'
-import Row, { RowCenter } from '@/components/Row'
-import { useSearchedUsers } from '@/state/search/hooks'
-import UsersSearchBar from '@/components/UsersSearchBar'
-import Avatar from '@/components/Avatar'
-import { CertifiedBadge, TopCollectorBadge } from '@/components/User/Badge'
-import { useCScoreTopCollector } from '@/hooks/useCScore'
-import Column, { ColumnCenter } from '@/components/Column'
-import { PaginationSpinner } from '@/components/Spinner'
-import Subtitle from '@/components/Text/Subtitle'
-import { TYPE } from '@/styles/theme'
+import Link from 'src/components/Link'
+import Section from 'src/components/Section'
+import Row, { RowCenter } from 'src/components/Row'
+import { useSearchedUsers } from 'src/state/search/hooks'
+import UsersSearchBar from 'src/components/UsersSearchBar'
+import Avatar from 'src/components/Avatar'
+import { CertifiedBadge, TopCollectorBadge } from 'src/components/User/Badge'
+import { useCScoreTopCollector } from 'src/hooks/useCScore'
+import Column, { ColumnCenter } from 'src/components/Column'
+import { PaginationSpinner } from 'src/components/Spinner'
+import Subtitle from 'src/components/Text/Subtitle'
+import { TYPE } from 'src/styles/theme'
 
 const UsersRow = styled(Row)`
   width: 100%;
@@ -72,6 +72,9 @@ function User({ username, pictureUrl, fallbackUrl, certified, cScore }: CustomUs
 }
 
 export default function Community() {
+  // nav
+  const navigate = useNavigate()
+
   // search history
   const searchedUsersQuery = useSearchedUsers()
   const searchedUsers = searchedUsersQuery.searchedUsers
@@ -81,8 +84,7 @@ export default function Community() {
   const certifiedUsers = (certifiedUsersQuery.data?.certifiedUsersOverview ?? []) as any[]
 
   // search
-  const router = useRouter()
-  const handleUserSelection = useCallback((user: any) => router.push(`/user/${user.slug}`), [router])
+  const handleUserSelection = useCallback((user: any) => navigate(`/user/${user.slug}`), [navigate])
 
   // loading
   const isLoading = searchedUsersQuery.loading || certifiedUsersQuery.loading

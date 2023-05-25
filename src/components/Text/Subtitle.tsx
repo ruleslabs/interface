@@ -1,6 +1,6 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import { TYPE } from '@/styles/theme'
+import { TYPE } from 'src/styles/theme'
 
 const StyledSubtitle = styled(TYPE.medium)`
   font-size: 16px;

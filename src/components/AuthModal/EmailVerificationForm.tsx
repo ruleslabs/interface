@@ -1,30 +1,30 @@
 import { useState, useCallback, useRef, useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import GoogleReCAPTCHA from 'react-google-recaptcha'
 
-import { ModalHeader } from '@/components/Modal'
-import { ModalBody } from '@/components/Modal/Classic'
-import { EMAIL_VERIFICATION_CODE_LENGTH } from '@/constants/misc'
-import Column from '@/components/Column'
-import Input from '@/components/Input'
-import { TYPE } from '@/styles/theme'
-import { AuthMode } from '@/state/auth/actions'
+import { ModalHeader } from 'src/components/Modal'
+import { ModalBody } from 'src/components/Modal/Classic'
+import { EMAIL_VERIFICATION_CODE_LENGTH } from 'src/constants/misc'
+import Column from 'src/components/Column'
+import Input from 'src/components/Input'
+import { TYPE } from 'src/styles/theme'
+import { AuthMode } from 'src/state/auth/actions'
 import {
   useAuthForm,
   useSetAuthMode,
   useRefreshNewEmailVerificationCodeTime,
   useNewEmailVerificationCodeTime,
-} from '@/state/auth/hooks'
-import { useAuthModalToggle } from '@/state/application/hooks'
-import useCountdown from '@/hooks/useCountdown'
-import { passwordHasher } from '@/utils/password'
-import useCreateWallet from '@/hooks/useCreateWallet'
+} from 'src/state/auth/hooks'
+import { useAuthModalToggle } from 'src/state/application/hooks'
+import useCountdown from 'src/hooks/useCountdown'
+import { passwordHasher } from 'src/utils/password'
+import useCreateWallet from 'src/hooks/useCreateWallet'
 import { AuthFormProps } from './types'
-import { usePrepareSignUp, useSignUp } from '@/graphql/data/Auth'
-import { formatError } from '@/utils/error'
-import { GenieError } from '@/types'
-import ReCAPTCHA, { RecaptchaPolicy } from '@/components/Recaptcha'
+import { usePrepareSignUp, useSignUp } from 'src/graphql/data/Auth'
+import { formatError } from 'src/utils/error'
+import { GenieError } from 'src/types'
+import ReCAPTCHA, { RecaptchaPolicy } from 'src/components/Recaptcha'
 
 const ResendCode = styled(TYPE.subtitle)`
   display: inline;

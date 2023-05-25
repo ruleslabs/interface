@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query/react'
 import { load, save } from 'redux-localstorage-simple'
 
-import multicall from '@/lib/state/multicall'
+import multicall from 'src/lib/state/multicall'
 import search from './search/reducer'
 import application from './application/reducer'
 import auth from './auth/reducer'

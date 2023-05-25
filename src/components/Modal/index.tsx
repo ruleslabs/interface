@@ -1,11 +1,11 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import { TYPE } from '@/styles/theme'
-import { IconButton } from '@/components/Button'
-import { RowBetween } from '@/components/Row'
-import Caret from '@/components/Caret'
+import { TYPE } from 'src/styles/theme'
+import { IconButton } from 'src/components/Button'
+import { RowBetween } from 'src/components/Row'
+import Caret from 'src/components/Caret'
 
-import CloseIcon from '@/images/close.svg'
+import { ReactComponent as CloseIcon } from 'src/images/close.svg'
 
 // MODAL HEADER
 

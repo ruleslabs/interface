@@ -1,5 +1,5 @@
 import { globalStyle } from '@vanilla-extract/css'
-import { vars } from './vars.css'
+import { rawTokens, vars } from './vars.css'
 
 globalStyle('*', {
   fontFamily: "'Inter', sans-serif",
@@ -8,6 +8,22 @@ globalStyle('*', {
 globalStyle('html, body', {
   margin: 0,
   padding: 0,
+})
+
+globalStyle('body', {
+  backgroundAttachment: 'fixed',
+  backgroundImage: `linear-gradient(180deg, ${rawTokens.color.accent}15 0, ${rawTokens.color.accent}00 300px)`,
+  backgroundColor: rawTokens.color.bg1,
+})
+
+globalStyle('h1, h2, h3, h4, h5, h6, p, a, ul, li, ol, label, input, button, div', {
+  color: rawTokens.color.text1,
+})
+
+globalStyle('html *', {
+  boxSizing: 'border-box',
+  WebkitBoxSizing: 'border-box',
+  MozBoxSizing: 'border-box',
 })
 
 globalStyle('html', {
@@ -44,4 +60,8 @@ globalStyle('a:hover', {
 
 globalStyle('button', {
   userSelect: 'none',
+})
+
+globalStyle('.grecaptcha-badge', {
+  visibility: 'hidden',
 })

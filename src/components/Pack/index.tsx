@@ -2,13 +2,13 @@ import 'moment/locale/fr'
 
 import { useMemo } from 'react'
 import moment from 'moment'
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import Link from '@/components/Link'
-import { useActiveLocale } from '@/hooks/useActiveLocale'
-import { TYPE } from '@/styles/theme'
-import { ColumnCenter } from '@/components/Column'
+import Link from 'src/components/Link'
+import { useActiveLocale } from 'src/hooks/useActiveLocale'
+import { TYPE } from 'src/styles/theme'
+import { ColumnCenter } from 'src/components/Column'
 
 const Image = styled.img`
   width: 100%;
@@ -59,18 +59,18 @@ const StyledPack = styled(ColumnCenter)<{ width?: number; disabled: boolean }>`
         opacity: 0.5;
       }
 
-      :hover ${Image} {
+      &:hover ${Image} {
         opacity: 0.7;
       }
     `}
 
-  :hover ${PackInfos} {
+  &:hover ${PackInfos} {
     visibility: visible;
   }
 
   ${({ theme }) => theme.media.computer`
-    :hover {
-      background: ${({ theme }) => theme.bg3}80;
+    &:hover {
+      background: ${theme.bg3}80;
       transform: translateY(-8px) scale(1.02);
     }
   `}

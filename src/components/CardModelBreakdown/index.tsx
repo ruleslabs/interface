@@ -1,11 +1,11 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import { TYPE } from '@/styles/theme'
-import { RowCenter } from '@/components/Row'
-import Column from '@/components/Column'
-import { CertifiedBadge } from '@/components/User/Badge'
-import Link from '@/components/Link'
+import { TYPE } from 'src/styles/theme'
+import { RowCenter } from 'src/components/Row'
+import Column from 'src/components/Column'
+import { CertifiedBadge } from 'src/components/User/Badge'
+import Link from 'src/components/Link'
 
 const UserLogin = styled(RowCenter)`
   margin 4px 0 32px;
@@ -56,7 +56,9 @@ export default function CardModelBreakdown({
         <TYPE.body>
           <Trans>Season {season}</Trans>
         </TYPE.body>
-        <Trans id={`${scarcityName} card`} render={({ translation }) => <TYPE.body>{translation}</TYPE.body>} />
+        <TYPE.body>
+          <Trans id={`${scarcityName} card`}>{`${scarcityName} card`}</Trans>
+        </TYPE.body>
         {serial ? (
           <TYPE.body spanColor="text2">
             #{serial}

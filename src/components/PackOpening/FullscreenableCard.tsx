@@ -1,13 +1,13 @@
 import { useRef } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import FocusLock from 'react-focus-lock'
 import { RemoveScroll } from 'react-remove-scroll'
 
 import Serial from './Serial'
-import Card, { CardProps } from '@/components/CardModel3D/Card'
-import useCardModel3DFullscreen from '@/hooks/useCardModel3DFullscreen'
+import Card, { CardProps } from 'src/components/CardModel3D/Card'
+import useCardModel3DFullscreen from 'src/hooks/useCardModel3DFullscreen'
 
-import Close from '@/images/close.svg'
+import { ReactComponent as Close } from 'src/images/close.svg'
 
 const StyledFullscreenableCard = styled.div<{ fullscreen: boolean }>`
   ${({ fullscreen }) => fullscreen && `z-index: 999999;`}

@@ -3,9 +3,9 @@ import { useMemo } from 'react'
 import { WeiAmount, constants } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
-import useCurrentUser from '@/hooks/useCurrentUser'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-import { useETHBalances } from '@/state/wallet/hooks'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import { useETHBalances } from 'src/state/wallet/hooks'
 
 export default function LockedWallet() {
   const { currentUser } = useCurrentUser()

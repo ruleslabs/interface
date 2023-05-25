@@ -1,17 +1,16 @@
 import { useCallback, useState, useEffect } from 'react'
-import styled from 'styled-components'
+import styled, { DefaultTheme, useTheme } from 'styled-components/macro'
 import { Trans, t } from '@lingui/macro'
 import { QRCodeSVG } from 'qrcode.react'
 
-import useTheme from '@/hooks/useTheme'
-import Column from '@/components/Column'
-import { TYPE } from '@/styles/theme'
-import Input from '@/components/Input'
-import useNewTwoFactorAuthSecret from '@/hooks/useNewTwoFactorAuthSecret'
-import { TWO_FACTOR_AUTH_CODE_LENGTH } from '@/constants/misc'
+import Column from 'src/components/Column'
+import { TYPE } from 'src/styles/theme'
+import Input from 'src/components/Input'
+import useNewTwoFactorAuthSecret from 'src/hooks/useNewTwoFactorAuthSecret'
+import { TWO_FACTOR_AUTH_CODE_LENGTH } from 'src/constants/misc'
 import { RowCenter } from '../Row'
-import useCurrentUser from '@/hooks/useCurrentUser'
-import { useSetTwoFactorAuthSecret } from '@/graphql/data/Auth'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import { useSetTwoFactorAuthSecret } from 'src/graphql/data/Auth'
 
 const TwoFactorSetter = styled(RowCenter)`
   gap: 32px;
@@ -43,7 +42,7 @@ export default function TwoFactorStatus() {
   const { currentUser, refreshCurrentUser } = useCurrentUser()
 
   // theme
-  const theme = useTheme()
+  const theme = useTheme() as DefaultTheme
 
   // otp secret
   const newTwoFactorAuthSecret = useNewTwoFactorAuthSecret()

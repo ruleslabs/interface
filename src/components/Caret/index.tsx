@@ -1,10 +1,10 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components/macro'
 
-import { CssDirection } from '@/styles/theme'
+import { CssDirection } from 'src/styles/theme'
 
-import CaretRight from '@/images/caret-right.svg'
-import FilledCaretRight from '@/images/filled-caret-right.svg'
+import { ReactComponent as CaretRight } from 'src/images/caret-right.svg'
+import { ReactComponent as FilledCaretRight } from 'src/images/filled-caret-right.svg'
 
 const CaretStyle = css<{ direction: CssDirection }>`
   transform: rotate(
@@ -24,13 +24,13 @@ const StyledFilledCaret = styled(FilledCaretRight)<{ direction: CssDirection }>`
   ${CaretStyle}
 `
 
-interface CaretProps extends React.SVGProps<SVGElement> {
+interface CaretProps extends Omit<React.SVGProps<SVGSVGElement>, 'ref'> {
   direction: CssDirection
   filled?: boolean
 }
 
-export default function Caret({ direction, filled = false, ...props }: CaretProps) {
+export default function Caret({ filled = false, ...props }: CaretProps) {
   const CaretComponent = filled ? StyledFilledCaret : StyledCaret
 
-  return <CaretComponent direction={direction} {...props} />
+  return <CaretComponent {...props} />
 }

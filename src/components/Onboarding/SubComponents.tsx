@@ -1,9 +1,9 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import { TYPE } from '@/styles/theme'
-import Column from '@/components/Column'
-import Row from '@/components/Row'
-import { PrimaryButton } from '@/components/Button'
+import { TYPE } from 'src/styles/theme'
+import Column from 'src/components/Column'
+import Row from 'src/components/Row'
+import { PrimaryButton } from 'src/components/Button'
 
 export const PageContent = styled(Column)`
   width: 440px;

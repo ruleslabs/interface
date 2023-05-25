@@ -60,7 +60,7 @@ export const Body = ({ className, ...props }: TextProps) => (
     className={clsx(
       className,
       sprinkles({
-        fontWeight: 'normal',
+        fontWeight: 'medium',
         color: 'text1',
         fontSize: '16',
       })
@@ -74,7 +74,7 @@ export const Link = ({ className, ...props }: TextProps) => (
     className={clsx(
       className,
       sprinkles({
-        fontWeight: 'normal',
+        fontWeight: 'medium',
         color: 'text1',
         fontSize: '16',
         cursor: 'pointer',

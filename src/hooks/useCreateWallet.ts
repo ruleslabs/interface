@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { ec, getChecksumAddress, encode } from 'starknet'
 
-import { encryptWithPassword, encodeKey, generateSalt, generateIV } from '@/utils/encryption'
+import { encryptWithPassword, encodeKey, generateSalt, generateIV } from 'src/utils/encryption'
 
 export interface WalletInfos {
   starkPub: string

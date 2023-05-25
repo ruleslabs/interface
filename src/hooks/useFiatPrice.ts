@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
-import { useEtherPrice } from '@/state/application/hooks'
+import { useEtherPrice } from 'src/state/application/hooks'
 
 export function useWeiAmountToEURValue(): (amount?: WeiAmount) => number | null {
   const etherEURprice = useEtherPrice()

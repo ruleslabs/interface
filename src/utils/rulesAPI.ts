@@ -1,6 +1,6 @@
-import { getAccessToken } from '@/utils/accessToken'
+import { getAccessToken } from 'src/utils/accessToken'
 
-const baseUrl: string = process.env.NEXT_PUBLIC_REST_URI ?? ''
+const baseUrl: string = process.env.REACT_APP_REST_URI ?? ''
 
 export default class RulesAPI {
   public static async post<T>(endpoint: string, body: { [key: string]: string | number }): Promise<T> {

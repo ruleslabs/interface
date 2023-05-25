@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { getChecksumAddress } from 'starknet'
 import { RampInstantSDK, RampInstantEventTypes } from '@ramp-network/ramp-instant-sdk'
 
-const apiKey = process.env.NEXT_PUBLIC_RAMP_API_KEY
+const apiKey = process.env.REACT_APP_RAMP_API_KEY
 
 interface RampSdkProps {
   email?: string
@@ -20,7 +20,7 @@ export default function useRampSdk({ email, address }: RampSdkProps): RampInstan
       fiatValue: '100',
       swapAsset: 'STARKNET_ETH',
       fiatCurrency: 'EUR',
-      hostLogoUrl: process.env.NEXT_PUBLIC_APP_URL ? `${process.env.NEXT_PUBLIC_APP_URL}/assets/ramp-logo.svg` : '',
+      hostLogoUrl: process.env.REACT_APP_APP_URL ? `${process.env.REACT_APP_APP_URL}/assets/ramp-logo.svg` : '',
       userEmailAddress: email,
       hostApiKey: apiKey,
       userAddress: getChecksumAddress(address),

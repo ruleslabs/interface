@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 import { gql, useMutation, ApolloError } from '@apollo/client'
 
-import { AppState } from '@/state'
-import { useAppSelector, useAppDispatch } from '@/state/hooks'
+import { AppState } from 'src/state'
+import { useAppSelector, useAppDispatch } from 'src/state/hooks'
 import { setDeckCards, removeDeckCard, addDeckCard, DeckCard } from './actions'
 
 const REMOVE_SHOWCASED_DECK_CARD = gql`

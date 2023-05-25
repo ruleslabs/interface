@@ -1,10 +1,10 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import { RowCenter } from '@/components/Row'
+import { RowCenter } from 'src/components/Row'
 
-import UserBadgeShape from '@/images/user-badge.svg'
-import Checkmark from '@/images/checkmark.svg'
-import Crown from '@/images/crown.svg'
+import { ReactComponent as UserBadgeShape } from 'src/images/user-badge.svg'
+import { ReactComponent as Checkmark } from 'src/images/checkmark.svg'
+import { ReactComponent as Crown } from 'src/images/crown.svg'
 
 const StyledUserBadge = styled(RowCenter)`
   position: relative;

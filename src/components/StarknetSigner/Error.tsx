@@ -1,10 +1,10 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import { TYPE } from '@/styles/theme'
+import { TYPE } from 'src/styles/theme'
 
-import Close from '@/images/close.svg'
-import { Column } from '@/theme/components/Flex'
+import { ReactComponent as Close } from 'src/images/close.svg'
+import { Column } from 'src/theme/components/Flex'
 
 const StyledFail = styled(Close)`
   border-radius: 50%;

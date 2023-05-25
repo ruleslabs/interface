@@ -1,19 +1,19 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { useQuery, gql } from '@apollo/client'
-import { useRouter } from 'next/router'
 import { Plural, t } from '@lingui/macro'
 
-import DefaultLayout from '@/components/Layout'
-import ProfileLayout from '@/components/Layout/Profile'
-import Section from '@/components/Section'
-import Grid from '@/components/Grid'
-import PackCard from '@/components/Pack'
-import { TYPE } from '@/styles/theme'
-import { RowBetween } from '@/components/Row'
-import useCurrentUser from '@/hooks/useCurrentUser'
-import EmptyTab, { EmptyPacksTabOfCurrentUser } from '@/components/EmptyTab'
-import { PaginationSpinner } from '@/components/Spinner'
+import DefaultLayout from 'src/components/Layout'
+import ProfileLayout from 'src/components/Layout/Profile'
+import Section from 'src/components/Section'
+import Grid from 'src/components/Grid'
+import PackCard from 'src/components/Pack'
+import { TYPE } from 'src/styles/theme'
+import { RowBetween } from 'src/components/Row'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import EmptyTab, { EmptyPacksTabOfCurrentUser } from 'src/components/EmptyTab'
+import { PaginationSpinner } from 'src/components/Spinner'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
 const USER_PACKS_BALANCES_QUERY = gql`
   query ($slug: String!) {
@@ -46,9 +46,9 @@ const StyledPackCard = styled(PackCard)`
 
 function Packs() {
   // current user
-  const router = useRouter()
-  const { username } = router.query
-  const userSlug = typeof username === 'string' ? username.toLowerCase() : null
+  const query = useLocationQuery()
+  const username = query.get('username')
+  const userSlug = useMemo(() => username?.toLowerCase() ?? null, [username])
 
   const { currentUser } = useCurrentUser()
   const isCurrentUserProfile = currentUser?.slug === userSlug

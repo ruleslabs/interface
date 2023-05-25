@@ -1,7 +1,7 @@
 import { ApolloError, MutationFunction } from '@apollo/client'
 
-import { FormatedMutationFunction, GenieError } from '@/types'
-import { formatError } from '@/utils/error'
+import { FormatedMutationFunction, GenieError } from 'src/types'
+import { formatError } from 'src/utils/error'
 
 export function formatApolloError(error?: ApolloError): GenieError {
   const grapqlError = error?.graphQLErrors?.[0]

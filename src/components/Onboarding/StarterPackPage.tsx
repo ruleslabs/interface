@@ -1,12 +1,12 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { gql, useQuery } from '@apollo/client'
 import { Trans } from '@lingui/macro'
 
-import { TYPE } from '@/styles/theme'
-import { RowCenter } from '@/components/Row'
-import Column from '@/components/Column'
+import { TYPE } from 'src/styles/theme'
+import { RowCenter } from 'src/components/Row'
+import Column from 'src/components/Column'
 import { PageBody, PageContent, PageWrapper, MainActionButton } from './SubComponents'
-import Link from '@/components/Link'
+import Link from 'src/components/Link'
 
 const PackPictureWrapper = styled(RowCenter)`
   width: 35%;

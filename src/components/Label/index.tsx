@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import { TYPE } from '@/styles/theme'
+import { TYPE } from 'src/styles/theme'
 
 const StyledLabel = styled(TYPE.body)<{ color: string }>`
   font-size: 14px;

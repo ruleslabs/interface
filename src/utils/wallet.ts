@@ -1,4 +1,4 @@
-import { decryptWithPassword, decodeKey } from '@/utils/encryption'
+import { decryptWithPassword, decodeKey } from 'src/utils/encryption'
 
 interface RulesPrivateKey {
   iv: string

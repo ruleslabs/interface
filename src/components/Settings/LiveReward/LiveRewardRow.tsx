@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans, t } from '@lingui/macro'
 
-import { ColumnCenter } from '@/components/Column'
-import { TYPE } from '@/styles/theme'
-import { RowCenter } from '@/components/Row'
-import { SecondaryButton, PrimaryButton } from '@/components/Button'
+import { ColumnCenter } from 'src/components/Column'
+import { TYPE } from 'src/styles/theme'
+import { RowCenter } from 'src/components/Row'
+import { SecondaryButton, PrimaryButton } from 'src/components/Button'
 import { LiveReward } from '.'
-import { useLiveRewardDetailsModalToggle, useLiveRewardTicketModalToggle } from '@/state/application/hooks'
+import { useLiveRewardDetailsModalToggle, useLiveRewardTicketModalToggle } from 'src/state/application/hooks'
 
 const StyledLiveRewardRow = styled(ColumnCenter)<{ closed: boolean }>`
   width: 100%;

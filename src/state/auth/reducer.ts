@@ -17,7 +17,7 @@ import {
   AuthModePayload,
   TokenPayload,
 } from './actions'
-import { EMAIL_VERIFICATION_INTERVAL } from '@/constants/misc'
+import { EMAIL_VERIFICATION_INTERVAL } from 'src/constants/misc'
 
 export interface AuthState {
   form: {

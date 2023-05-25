@@ -1,18 +1,18 @@
 import { useState, useCallback, useEffect } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { ApolloError } from '@apollo/client'
 import { t } from '@lingui/macro'
 
-import { PrimaryButton } from '@/components/Button'
-import Column from '@/components/Column'
-import { SmallInput } from '@/components/Input'
-import { useSetSocialLinksMutation } from '@/state/user/hooks'
+import { PrimaryButton } from 'src/components/Button'
+import Column from 'src/components/Column'
+import { SmallInput } from 'src/components/Input'
+import { useSetSocialLinksMutation } from 'src/state/user/hooks'
 import { RowCenter } from '../Row'
 
-import InstagramIcon from '@/images/instagram.svg'
-import TwitterIcon from '@/images/twitter-color.svg'
+import { ReactComponent as InstagramIcon } from 'src/images/instagram.svg'
+import { ReactComponent as TwitterIcon } from 'src/images/twitter-color.svg'
 import Subtitle from '../Text/Subtitle'
-import useCurrentUser from '@/hooks/useCurrentUser'
+import useCurrentUser from 'src/hooks/useCurrentUser'
 
 const InputWithIcon = styled(RowCenter)`
   gap: 8px;

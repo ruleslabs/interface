@@ -1,20 +1,20 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { t } from '@lingui/macro'
-import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { gql, useMutation } from '@apollo/client'
 import { ApolloError } from 'apollo-client'
 
-import { ModalHeader } from '@/components/Modal'
-import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classic'
-import { useClaimLiveRewardModalToggle, useModalOpened } from '@/state/application/hooks'
-import { ApplicationModal } from '@/state/application/actions'
-import { TYPE } from '@/styles/theme'
-import Column, { ColumnCenter } from '@/components/Column'
-import Spinner from '@/components/Spinner'
+import { ModalHeader } from 'src/components/Modal'
+import ClassicModal, { ModalContent, ModalBody } from 'src/components/Modal/Classic'
+import { useClaimLiveRewardModalToggle, useModalOpened } from 'src/state/application/hooks'
+import { ApplicationModal } from 'src/state/application/actions'
+import { TYPE } from 'src/styles/theme'
+import Column, { ColumnCenter } from 'src/components/Column'
+import Spinner from 'src/components/Spinner'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
-import Checkmark from '@/images/checkmark.svg'
-import Close from '@/images/close.svg'
+import { ReactComponent as Checkmark } from 'src/images/checkmark.svg'
+import { ReactComponent as Close } from 'src/images/close.svg'
 
 const StyledCheckmark = styled(Checkmark)`
   border-radius: 50%;
@@ -72,8 +72,9 @@ const CLAIM_LIVE_REWARD = gql`
 
 export default function ClaimLiveRewardModal() {
   // router
-  const router = useRouter()
-  const { userId, liveRewardId } = router.query
+  const query = useLocationQuery()
+  const userId = query.get('userId')
+  const liveRewardId = query.get('liveRewardId')
 
   // modal
   const toggleClaimLiveRewardModal = useClaimLiveRewardModalToggle()

@@ -1,9 +1,9 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import DiscordLogo from '@/images/discord.svg'
-import { TYPE } from '@/styles/theme'
-import { RowCenter } from '@/components/Row'
+import { ReactComponent as DiscordLogo } from 'src/images/discord.svg'
+import { TYPE } from 'src/styles/theme'
+import { RowCenter } from 'src/components/Row'
 
 const StyledDiscordMember = styled(RowCenter)`
   background: ${({ theme }) => theme.bg3};

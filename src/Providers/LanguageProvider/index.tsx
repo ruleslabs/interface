@@ -1,10 +1,9 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 
-import { SupportedLocale } from '@/constants/locales'
-import { initialLocale, useActiveLocale } from '@/hooks/useActiveLocale'
+import { SupportedLocale } from 'src/constants/locales'
+import { initialLocale, useActiveLocale } from 'src/hooks/useActiveLocale'
 import { dynamicActivate, Provider } from './provider'
-import { useUserLocaleManager } from '@/state/user/hooks'
-import { DEFAULT_LOCALE } from '@/constants/locales'
+import { useUserLocaleManager } from 'src/state/user/hooks'
 
 dynamicActivate(initialLocale)
 
@@ -25,7 +24,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
   )
 
   return (
-    <Provider locale={locale} forceRenderAfterLocaleChange={false} onActivate={onActivate}>
+    <Provider locale={locale} onActivate={onActivate}>
       {children}
     </Provider>
   )

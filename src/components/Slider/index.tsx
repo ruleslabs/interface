@@ -1,9 +1,8 @@
 import React, { useCallback, useMemo } from 'react'
-import styled from 'styled-components'
+import styled, { DefaultTheme, useTheme } from 'styled-components/macro'
 
-import useTheme from '@/hooks/useTheme'
-import SliderInput from '@/components/Input/SliderInput'
-import Column from '@/components/Column'
+import SliderInput from 'src/components/Input/SliderInput'
+import Column from 'src/components/Column'
 
 const SliderWrapper = styled(Column)`
   z-index: 1;
@@ -67,7 +66,7 @@ interface SliderProps {
 }
 
 export default function Slider({ value, min = 0, max, onSlidingChange, onInputChange, onSliderRelease }: SliderProps) {
-  const theme = useTheme()
+  const theme = useTheme() as DefaultTheme
 
   const sliderStyle = useMemo(
     () => ({

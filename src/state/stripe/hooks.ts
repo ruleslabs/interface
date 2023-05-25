@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react'
 import { loadStripe, PaymentIntent, PaymentMethod } from '@stripe/stripe-js'
 
-import RulesAPI from '@/utils/rulesAPI'
+import RulesAPI from 'src/utils/rulesAPI'
 
 export function useStripePromise(): Promise<any> {
-  return useMemo(() => loadStripe(process.env.NEXT_PUBLIC_STRIPE_ID ?? ''), [])
+  return useMemo(() => loadStripe(process.env.REACT_APP_STRIPE_ID ?? ''), [])
 }
 
 export function useCreatePaymentIntent(): (

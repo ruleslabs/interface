@@ -1,14 +1,14 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { useQuery, gql } from '@apollo/client'
 import { Trans } from '@lingui/macro'
 
-import { TYPE } from '@/styles/theme'
-import { RowCenter } from '@/components/Row'
-import Column from '@/components/Column'
-import useWindowSize from '@/hooks/useWindowSize'
+import { TYPE } from 'src/styles/theme'
+import { RowCenter } from 'src/components/Row'
+import Column from 'src/components/Column'
+import useWindowSize from 'src/hooks/useWindowSize'
 
-import RulesPlainIcon from '@/images/logo-plain.svg'
+import { ReactComponent as RulesPlainIcon } from 'src/images/logo-plain.svg'
 
 const MAINTENANCE_QUERY = gql`
   query {

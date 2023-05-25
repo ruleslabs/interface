@@ -1,21 +1,21 @@
 import { useState, useCallback, useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { useLazyQuery, gql } from '@apollo/client'
 import { WeiAmount, constants } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
-import { TYPE } from '@/styles/theme'
-import { useSearchTransfers } from '@/state/search/hooks'
-import { PaginationSpinner } from '@/components/Spinner'
-import Card from '@/components/CardModel3D/Card'
-import Link from '@/components/Link'
-import { ColumnCenter } from '@/components/Column'
-import Row from '@/components/Row'
-import { NULL_PRICE } from '@/constants/misc'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-import Avatar from '@/components/Avatar'
+import { TYPE } from 'src/styles/theme'
+import { useSearchTransfers } from 'src/state/search/hooks'
+import { PaginationSpinner } from 'src/components/Spinner'
+import Card from 'src/components/CardModel3D/Card'
+import Link from 'src/components/Link'
+import { ColumnCenter } from 'src/components/Column'
+import Row from 'src/components/Row'
+import { NULL_PRICE } from 'src/constants/misc'
+import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import Avatar from 'src/components/Avatar'
 
-import LongArrow from '@/images/long-arrow.svg'
+import { ReactComponent as LongArrow } from 'src/images/long-arrow.svg'
 
 const TRANSFERS_QUERY = gql`
   query ($cardModelId: ID!, $starknetAddresses: [String!]!) {

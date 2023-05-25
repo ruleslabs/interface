@@ -1,19 +1,19 @@
 import React, { useCallback } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import clsx from 'clsx'
 
-import { TYPE } from '@/styles/theme'
-import { RowCenter } from '@/components/Row'
-import Caret from '@/components/Caret'
-import Checkmark from '@/images/checkmark.svg'
-import Box, { BoxProps } from '@/theme/components/Box'
-import { Row, Column } from '@/theme/components/Flex'
+import { TYPE } from 'src/styles/theme'
+import { RowCenter } from 'src/components/Row'
+import Caret from 'src/components/Caret'
+import { ReactComponent as Checkmark } from 'src/images/checkmark.svg'
+import Box, { BoxProps } from 'src/theme/components/Box'
+import { Row, Column } from 'src/theme/components/Flex'
 import * as styles from './style.css'
 import * as Text from 'src/theme/components/Text'
 import Link from '../Link'
-import { getChainInfo } from '@/constants/chainInfo'
-import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import { getChainInfo } from 'src/constants/chainInfo'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import { ColumnCenter } from '../Column'
 
 type ButtonProps = Omit<BoxProps, 'as'>
@@ -36,7 +36,7 @@ export const SecondaryButton = ({ className, large = false, disabled = false, ..
   <Box as={'button'} className={clsx(className, styles.secondaryButton({ large, disabled }))} {...props} />
 )
 
-export const IconButton = styled.button<{ alert?: boolean; notifications?: number; square?: boolean }>`
+export const IconButton = styled.button<{ $alert?: boolean; notifications?: number; square?: boolean }>`
   width: 32px;
   height: 32px;
   border: 1px solid ${({ theme }) => theme.bg3};
@@ -58,7 +58,7 @@ export const IconButton = styled.button<{ alert?: boolean; notifications?: numbe
       background: ${theme.bg3}80;
     `}
 
-  :hover {
+  &:hover {
     background: ${({ theme }) => theme.bg3}40;
   }
 
@@ -68,7 +68,7 @@ export const IconButton = styled.button<{ alert?: boolean; notifications?: numbe
     fill: ${({ theme }) => theme.text1};
   }
 
-  ${({ theme, alert = false }) => alert && theme.before.alert``}
+  ${({ theme, $alert = false }) => $alert && theme.before.alert``}
   ${({ theme, notifications = 0 }) => notifications && theme.before.notifications``}
 `
 
@@ -166,9 +166,9 @@ export function BackButton(props: React.HTMLAttributes<HTMLButtonElement>) {
   return (
     <StyledBackButton {...props}>
       <Caret direction="left" />
-      <TYPE.white fontSize={16}>
+      <TYPE.body fontWeight={600}>
         <Trans>Back</Trans>
-      </TYPE.white>
+      </TYPE.body>
     </StyledBackButton>
   )
 }

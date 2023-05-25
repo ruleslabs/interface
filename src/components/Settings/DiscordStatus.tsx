@@ -1,25 +1,26 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
-import styled from 'styled-components'
-import { useRouter } from 'next/router'
+import styled from 'styled-components/macro'
 import { Trans, t } from '@lingui/macro'
+import { redirect } from 'react-router-dom'
 
-import Link from '@/components/Link'
-import { PrimaryButton, SecondaryButton, CardButton } from '@/components/Button'
-import Row, { RowBetween, RowCenter } from '@/components/Row'
-import { TYPE } from '@/styles/theme'
-import Avatar from '@/components/Avatar'
-import Checkbox from '@/components/Checkbox'
+import Link from 'src/components/Link'
+import { PrimaryButton, SecondaryButton, CardButton } from 'src/components/Button'
+import Row, { RowBetween, RowCenter } from 'src/components/Row'
+import { TYPE } from 'src/styles/theme'
+import Avatar from 'src/components/Avatar'
+import Checkbox from 'src/components/Checkbox'
 import { PaginationSpinner } from '../Spinner'
 import Column from '../Column'
-import useCurrentUser from '@/hooks/useCurrentUser'
+import useCurrentUser from 'src/hooks/useCurrentUser'
 import * as Icons from 'src/theme/components/Icons'
 import {
   useConnectDiscordAccount,
   useDisconnectDiscordAccount,
   useRefreshDiscordRoles,
   useSetDiscordAccountVisibility,
-} from '@/graphql/data/Discord'
-import useMergeGenieStatus from '@/hooks/useMergeGenieSatus'
+} from 'src/graphql/data/Discord'
+import useMergeGenieStatus from 'src/hooks/useMergeGenieSatus'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
 const DiscordStatusWrapper = styled(Column)`
   gap: 16px;
@@ -70,7 +71,8 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
   // current user
   const { currentUser, refreshCurrentUser } = useCurrentUser()
 
-  const router = useRouter()
+  // query
+  const query = useLocationQuery()
 
   // discord visibility
   useEffect(() => {
@@ -78,10 +80,8 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
   }, [!!currentUser])
 
   useEffect(() => {
-    const code = router?.query?.code
-    if (typeof code !== 'string') return
-
-    setDiscordCode(code)
+    const code = query.get('code')
+    if (code) setDiscordCode(code)
   }, [])
 
   // mutation
@@ -101,7 +101,7 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
   const discordOAuthRedirectUrl = useMemo(
     () =>
       `https://discord.com/api/oauth2/authorize?client_id=975024307044499456&redirect_uri=${encodeURIComponent(
-        `${process.env.NEXT_PUBLIC_APP_URL}${redirectPath}`
+        `${process.env.REACT_APP_APP_URL}${redirectPath}`
       )}&response_type=code&scope=guilds.join%20identify`,
     [redirectPath]
   )
@@ -109,12 +109,12 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
   // handle connection on code reception
   const onConnect = useCallback(
     async (code: string) => {
-      router.replace(redirectPath, undefined, { shallow: true })
+      redirect(redirectPath)
       const { username } = await connectDiscordAccountMutation({ variables: { code, redirectPath } })
 
       if (username) refreshCurrentUser()
     },
-    [connectDiscordAccountMutation, refreshCurrentUser, redirectPath, router.replace]
+    [connectDiscordAccountMutation, refreshCurrentUser, redirectPath, redirect]
   )
 
   // handle disconnection

@@ -4,11 +4,11 @@ import { Contract as EthereumContract } from '@ethersproject/contracts'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { useWeb3React } from '@web3-react/core'
 
-import MulticallABI from '@/abis/multicall.json'
-import EthereumStarkgateABI from '@/abis/ethereum/starkgate.json'
-import EthereumMulticallABI from '@/abis/ethereum/multicall.json'
+import MulticallABI from 'src/abis/multicall.json'
+import EthereumStarkgateABI from 'src/abis/ethereum/starkgate.json'
+import EthereumMulticallABI from 'src/abis/ethereum/multicall.json'
 import { AddressMap, constants } from '@rulesorg/sdk-core'
-import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 
 //
 // Starknet

@@ -1,18 +1,17 @@
-import styled from 'styled-components'
+import styled, { DefaultTheme, useTheme } from 'styled-components/macro'
 import { QRCodeSVG } from 'qrcode.react'
 import { t } from '@lingui/macro'
 
-import { ModalHeader } from '@/components/Modal'
-import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classic'
-import { useLiveRewardTicketModalToggle, useModalOpened } from '@/state/application/hooks'
-import { ApplicationModal } from '@/state/application/actions'
-import { LiveReward } from '@/components/Settings/LiveReward'
-import useTheme from '@/hooks/useTheme'
-import useCurrentUser from '@/hooks/useCurrentUser'
-import { TYPE } from '@/styles/theme'
-import { ColumnCenter } from '@/components/Column'
+import { ModalHeader } from 'src/components/Modal'
+import ClassicModal, { ModalContent, ModalBody } from 'src/components/Modal/Classic'
+import { useLiveRewardTicketModalToggle, useModalOpened } from 'src/state/application/hooks'
+import { ApplicationModal } from 'src/state/application/actions'
+import { LiveReward } from 'src/components/Settings/LiveReward'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import { TYPE } from 'src/styles/theme'
+import { ColumnCenter } from 'src/components/Column'
 
-import TicketBg from '@/images/ticket-bg.svg'
+import { ReactComponent as TicketBg } from 'src/images/ticket-bg.svg'
 
 const Ticket = styled(ColumnCenter)`
   position: relative;
@@ -66,7 +65,7 @@ export default function LiveRewardTicketModal({ liveReward }: LiveRewardTicketMo
   const { currentUser } = useCurrentUser()
 
   // theme
-  const theme = useTheme()
+  const theme = useTheme() as DefaultTheme
 
   // modal
   const toggleLiveRewardTicketModal = useLiveRewardTicketModalToggle()
@@ -85,7 +84,7 @@ export default function LiveRewardTicketModal({ liveReward }: LiveRewardTicketMo
 
             <QRCodeWrapper>
               <QRCodeSVG
-                value={`${process.env.NEXT_PUBLIC_APP_URL}/?action=claim-live-reward&userId=${currentUser?.id}&liveRewardId=${liveReward.id}`}
+                value={`${process.env.REACT_APP_APP_URL}/?action=claim-live-reward&userId=${currentUser?.id}&liveRewardId=${liveReward.id}`}
                 bgColor={`transparent`}
                 fgColor={theme.text1}
               />

@@ -1,10 +1,10 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import Column from '@/components/Column'
-import { RowCenter } from '@/components/Row'
+import Column from 'src/components/Column'
+import { RowCenter } from 'src/components/Row'
 
-import Expand from '@/images/expand.svg'
+import { ReactComponent as Expand } from 'src/images/expand.svg'
 
 const StyledCardDisplaySelector = styled(Column)`
   gap: 12px;

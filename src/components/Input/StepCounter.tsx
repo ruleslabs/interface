@@ -1,7 +1,7 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import Row from '@/components/Row'
-import { IconButton } from '@/components/Button'
+import Row from 'src/components/Row'
+import { IconButton } from 'src/components/Button'
 
 const SmallButton = styled(IconButton)`
   font-size: 24px;
@@ -9,13 +9,13 @@ const SmallButton = styled(IconButton)`
   width: 40px;
   color: ${({ theme }) => theme.text1};
 
-  :disabled {
+  &:disabled {
     opacity: 0.2;
     cursor: not-allowed;
     pointer-events: all;
   }
 
-  :disabled:hover {
+  &:disabled:hover {
     background: none;
   }
 `

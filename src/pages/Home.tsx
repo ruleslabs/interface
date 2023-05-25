@@ -1,23 +1,23 @@
 import React, { useCallback, useEffect } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { t } from '@lingui/macro'
-import { useRouter } from 'next/router'
+import { useLocation } from 'react-router'
 
-import Section from '@/components/Section'
-import Column from '@/components/Column'
-import { TYPE } from '@/styles/theme'
-import Card from '@/components/Card'
-import HOMEPAGE from '@/components/Homepage'
-import DefaultLayout from '@/components/Layout'
-import { useAuthModalToggle, useClaimLiveRewardModalToggle } from '@/state/application/hooks'
-import { useSetAuthMode } from '@/state/auth/hooks'
-import { AuthMode } from '@/state/auth/actions'
-import { RowCenter } from '@/components/Row'
-import useCurrentUser from '@/hooks/useCurrentUser'
-import YoutubeEmbed from '@/components/YoutubeEmbed'
-import ClaimLiveRewardModal from '@/components/LiveRewardModal/Claim'
+import Section from 'src/components/Section'
+import Column from 'src/components/Column'
+import { TYPE } from 'src/styles/theme'
+import Card from 'src/components/Card'
+import HOMEPAGE from 'src/components/Homepage'
+import DefaultLayout from 'src/components/Layout'
+import { useAuthModalToggle, useClaimLiveRewardModalToggle } from 'src/state/application/hooks'
+import { useSetAuthMode } from 'src/state/auth/hooks'
+import { AuthMode } from 'src/state/auth/actions'
+import { RowCenter } from 'src/components/Row'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import YoutubeEmbed from 'src/components/YoutubeEmbed'
+import ClaimLiveRewardModal from 'src/components/LiveRewardModal/Claim'
 
-import LogoOutline from '@/images/logo-outline.svg'
+import { ReactComponent as LogoOutline } from 'src/images/logo-outline.svg'
 
 const BackgroundWrapper = styled(RowCenter)<{ large: boolean }>`
   position: relative;
@@ -146,7 +146,7 @@ function Article({ title, children, ...props }: ArticleProps) {
 
 function Home() {
   // router
-  const router = useRouter()
+  const query = new URLSearchParams(useLocation().search)
 
   // current user
   const { currentUser } = useCurrentUser()
@@ -168,7 +168,7 @@ function Home() {
 
   // ?action
   useEffect(() => {
-    switch (router.query.action) {
+    switch (query.get('action')) {
       case 'update-password':
         togglePasswordUpdateModal()
         break
@@ -246,10 +246,10 @@ const FooterMargin = styled.div`
   `}
 `
 
-Home.getLayout = (page: JSX.Element) => {
-  const FooterChildrenComponent = () => <FooterMargin />
-
-  return <DefaultLayout FooterChildrenComponent={FooterChildrenComponent}>{page}</DefaultLayout>
-}
+Home.withLayout = () => (
+  <DefaultLayout FooterChildrenComponent={() => <FooterMargin />}>
+    <Home />
+  </DefaultLayout>
+)
 
 export default Home

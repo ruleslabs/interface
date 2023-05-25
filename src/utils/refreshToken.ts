@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client'
-import { apolloClient } from '@/graphql/data/apollo'
+import { apolloClient } from 'src/graphql/data/apollo'
 
 const REFRESH_TOKEN = gql`
   mutation RefreshToken {

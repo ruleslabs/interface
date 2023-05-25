@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 const CheckboxInput = styled.input`
   position: absolute;
@@ -17,7 +17,7 @@ const Checkmark = styled.span`
   width: 24px;
   border-radius: 6px;
   border: 1px solid ${({ theme }) => theme.bg3};
-  background-color: ${({ theme }) => theme.bg5};
+  background-color: ${({ theme }) => theme.bg4};
 
   &:after {
     content: '';

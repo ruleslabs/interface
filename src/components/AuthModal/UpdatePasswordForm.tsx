@@ -1,20 +1,21 @@
 import { useState, useCallback, useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { t } from '@lingui/macro'
-import { useRouter } from 'next/router'
+import { redirect } from 'react-router-dom'
 
-import { ModalHeader } from '@/components/Modal'
-import { ModalBody } from '@/components/Modal/Classic'
-import { passwordHasher, validatePassword } from '@/utils/password'
-import Column from '@/components/Column'
-import Input from '@/components/Input'
-import { useAuthModalToggle } from '@/state/application/hooks'
-import { PrimaryButton } from '@/components/Button'
-import useCreateWallet from '@/hooks/useCreateWallet'
+import { ModalHeader } from 'src/components/Modal'
+import { ModalBody } from 'src/components/Modal/Classic'
+import { passwordHasher, validatePassword } from 'src/utils/password'
+import Column from 'src/components/Column'
+import Input from 'src/components/Input'
+import { useAuthModalToggle } from 'src/state/application/hooks'
+import { PrimaryButton } from 'src/components/Button'
+import useCreateWallet from 'src/hooks/useCreateWallet'
 import { AuthFormProps } from './types'
-import { useUpdatePassword } from '@/graphql/data/Auth'
-import { GenieError } from '@/types'
-import { formatError } from '@/utils/error'
+import { useUpdatePassword } from 'src/graphql/data/Auth'
+import { GenieError } from 'src/types'
+import { formatError } from 'src/utils/error'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
 const StyledForm = styled.form`
   width: 100%;
@@ -30,8 +31,10 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: AuthFormP
   const createWallet = useCreateWallet()
 
   // router
-  const router = useRouter()
-  const { token, email: encodedEmail, username } = router.query
+  const query = useLocationQuery()
+  const token = query.get('token')
+  const username = query.get('username')
+  const encodedEmail = query.get('email')
   const email = useMemo(() => (encodedEmail ? decodeURIComponent(encodedEmail as string) : undefined), [encodedEmail])
 
   // modal
@@ -88,14 +91,14 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: AuthFormP
 
         if (accessToken) {
           onSuccessfulConnection({ accessToken })
-          router.replace('/')
+          redirect('/')
         }
       } catch (error: any) {
         setClientError(formatError(`${error.message}, contact support if the error persist.`))
         return
       }
     },
-    [password, confirmPassword, updatePasswordMutation, username, onSuccessfulConnection, router.replace]
+    [password, confirmPassword, updatePasswordMutation, username, onSuccessfulConnection, redirect]
   )
 
   return (

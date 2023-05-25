@@ -1,11 +1,11 @@
-import DefaultLayout from '@/components/Layout'
-import ProfileLayout from '@/components/Layout/Profile'
-import { useStarknetTransactionsForAddress } from '@/state/search/hooks'
-import Section from '@/components/Section'
-import Column from '@/components/Column'
-import TransactionRow from '@/components/TransactionRow'
-import { PaginationSpinner } from '@/components/Spinner'
-import useInfiniteScroll from '@/hooks/useInfiniteScroll'
+import DefaultLayout from 'src/components/Layout'
+import ProfileLayout from 'src/components/Layout/Profile'
+import { useStarknetTransactionsForAddress } from 'src/state/search/hooks'
+import Section from 'src/components/Section'
+import Column from 'src/components/Column'
+import TransactionRow from 'src/components/TransactionRow'
+import { PaginationSpinner } from 'src/components/Spinner'
+import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
 
 // Main Component
 

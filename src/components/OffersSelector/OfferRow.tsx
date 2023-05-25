@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
-import { useRouter } from 'next/router'
+import { useLocation } from 'react-router-dom'
 
-import Link from '@/components/Link'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-import { TYPE } from '@/styles/theme'
-import Checkbox from '@/components/Checkbox'
+import Link from 'src/components/Link'
+import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import { TYPE } from 'src/styles/theme'
+import Checkbox from 'src/components/Checkbox'
 
 const CheckboxWrapper = styled.td`
   width: 72px;
@@ -63,7 +63,7 @@ const MemoizedOfferRow = React.memo(function OfferRows({
   scarcityMaxLowSerial,
   price,
 }: OfferRowProps) {
-  const { asPath } = useRouter()
+  const { pathname } = useLocation()
 
   // parsed price
   const parsedPrice = useMemo(() => WeiAmount.fromRawAmount(`0x${price}`), [price])
@@ -83,7 +83,7 @@ const MemoizedOfferRow = React.memo(function OfferRows({
         </Price>
       </td>
       <td>
-        <Link href={`${asPath.replace(/buy$/, `${serialNumber}`)}`}>
+        <Link href={`${pathname.replace(/buy$/, `${serialNumber}`)}`}>
           <TYPE.body color={serialNumber <= scarcityMaxLowSerial ? 'lowSerial' : undefined} clickable>
             #{serialNumber}
           </TYPE.body>

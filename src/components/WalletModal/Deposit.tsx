@@ -1,16 +1,16 @@
 import { useCallback } from 'react'
 import { Trans, t } from '@lingui/macro'
 
-import useCurrentUser from '@/hooks/useCurrentUser'
-import useRampSdk from '@/hooks/useRampSdk'
-import { CardButton } from '@/components/Button'
-import Separator from '@/components/Text/Separator'
-import { useSetWalletModalMode } from '@/state/wallet/hooks'
-import { WalletModalMode } from '@/state/wallet/actions'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import useRampSdk from 'src/hooks/useRampSdk'
+import { CardButton } from 'src/components/Button'
+import Separator from 'src/components/Text/Separator'
+import { useSetWalletModalMode } from 'src/state/wallet/hooks'
+import { WalletModalMode } from 'src/state/wallet/actions'
 import { ModalBody } from '../Modal/Classic'
 import * as Icons from 'src/theme/components/Icons'
 import Column from '../Column'
-import { useWalletModalToggle } from '@/state/application/hooks'
+import { useWalletModalToggle } from 'src/state/application/hooks'
 
 export default function Deposit() {
   // current user

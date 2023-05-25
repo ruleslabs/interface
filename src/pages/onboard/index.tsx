@@ -1,7 +1,7 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import Onboarding from '@/components/Onboarding'
-import Section from '@/components/Section'
+import Onboarding from 'src/components/Onboarding'
+import Section from 'src/components/Section'
 
 const StyledSection = styled(Section)`
   margin-top: 64px;

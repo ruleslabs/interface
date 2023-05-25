@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import {
   WeiAmount,
   TransferEvent,
@@ -12,13 +12,13 @@ import {
 import { getChecksumAddress } from 'starknet'
 import { t, Trans } from '@lingui/macro'
 
-import { TYPE } from '@/styles/theme'
-import { RowCenter } from '@/components/Row'
-import Link from '@/components/Link'
-import { useMapUsersByAddress, useTokenAndAddressesQuery, useAddressesQuery } from '@/state/transactions/hooks'
+import { TYPE } from 'src/styles/theme'
+import { RowCenter } from 'src/components/Row'
+import Link from 'src/components/Link'
+import { useMapUsersByAddress, useTokenAndAddressesQuery, useAddressesQuery } from 'src/state/transactions/hooks'
 
-import EthereumIcon from '@/images/ethereum.svg'
-import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import { ReactComponent as EthereumIcon } from 'src/images/ethereum.svg'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 
 // style
 

@@ -1,14 +1,14 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import useCountdown from '@/hooks/useCountdown'
-import { RowCenter } from '@/components/Row'
-import { ColumnCenter } from '@/components/Column'
-import { TYPE } from '@/styles/theme'
+import useCountdown from 'src/hooks/useCountdown'
+import { RowCenter } from 'src/components/Row'
+import { ColumnCenter } from 'src/components/Column'
+import { TYPE } from 'src/styles/theme'
 
-import PackBg from '@/images/pack-bg.svg'
-import LogoOutline from '@/images/logo-outline.svg'
+import { ReactComponent as PackBg } from 'src/images/pack-bg.svg'
+import { ReactComponent as LogoOutline } from 'src/images/logo-outline.svg'
 
 const StyledPackCountdownWrapper = styled(ColumnCenter)<{ released: boolean }>`
   ${({ released, theme }) =>

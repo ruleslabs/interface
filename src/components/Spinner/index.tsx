@@ -1,12 +1,7 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-// needed to avoid Type
-// 'LegacyRef<SVGElement> | undefined' is not assignable to type
-// '((instance: SVGSVGElement | null) => void) | RefObject<SVGSVGElement> | null | undefined'.
-import emptySvg from '@/images/emptySvg.svg'
-
-const StyledSpinner = styled(emptySvg)<{ fill?: string }>`
+const StyledSpinner = styled.svg<{ fill?: string }>`
   animation: rotate 2s linear infinite;
   margin: -25px 0 0 -25px;
   width: 50px;
@@ -39,12 +34,12 @@ const StyledSpinner = styled(emptySvg)<{ fill?: string }>`
   }
 `
 
-interface SpinnerProps extends React.SVGProps<SVGElement> {
+interface SpinnerProps extends React.SVGProps<SVGSVGElement> {
   fill?: string
 }
 
-const Spinner = ({ fill, ...props }: SpinnerProps) => (
-  <StyledSpinner viewBox="0 0 50 50" fill={fill} {...props}>
+const Spinner = (props: SpinnerProps) => (
+  <StyledSpinner viewBox="0 0 50 50" {...props}>
     <circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="4" />
   </StyledSpinner>
 )

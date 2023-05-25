@@ -1,7 +1,7 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import { RowCenter } from '@/components/Row'
-import { TYPE } from '@/styles/theme'
+import { RowCenter } from 'src/components/Row'
+import { TYPE } from 'src/styles/theme'
 
 const StyledVideoButton = styled(RowCenter)`
   width: 300px;

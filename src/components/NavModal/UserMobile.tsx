@@ -1,19 +1,19 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import { useSidebarModalOpened, useNavModalUserMobileToggle, useWalletModalToggle } from '@/state/application/hooks'
-import { ApplicationSidebarModal } from '@/state/application/actions'
-import { TYPE } from '@/styles/theme'
-import useCurrentUser from '@/hooks/useCurrentUser'
-import SidebarModal, { ModalBody, ModalContent } from '@/components/Modal/Sidebar'
-import { SidebarNavButton } from '@/components/Button'
-import { useNavUserLinks, NavUserSublinks } from '@/hooks/useNav'
+import { useSidebarModalOpened, useNavModalUserMobileToggle, useWalletModalToggle } from 'src/state/application/hooks'
+import { ApplicationSidebarModal } from 'src/state/application/actions'
+import { TYPE } from 'src/styles/theme'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import SidebarModal, { ModalBody, ModalContent } from 'src/components/Modal/Sidebar'
+import { SidebarNavButton } from 'src/components/Button'
+import { useNavUserLinks, NavUserSublinks } from 'src/hooks/useNav'
 import Actionable from '../Actionable'
-import Divider from '@/components/Divider'
-import Column from '@/components/Column'
-import { RowCenter } from '@/components/Row'
-import { ActiveLink } from '@/components/Link'
-import WalletBalanceButton from '@/components/AccountStatus/WalletBalanceButton'
+import Divider from 'src/components/Divider'
+import Column from 'src/components/Column'
+import { RowCenter } from 'src/components/Row'
+import { ActiveLink } from 'src/components/Link'
+import WalletBalanceButton from 'src/components/AccountStatus/WalletBalanceButton'
 import NavProfile from './NavProfile'
 import { ModalHeader } from '../Modal'
 
@@ -32,7 +32,7 @@ function NavUserSublinksMobile({ navSublinks }: NavUserSublinksMobileProps) {
       {navSublinks.links.map((navLink) => (
         <Actionable key={navLink.name} link={navLink.link} handler={navLink.handler} perfectMatch>
           <SidebarNavButton>
-            <Trans id={navLink.name} render={({ translation }) => <>{translation}</>} />
+            <Trans id={navLink.name}>{navLink.name}</Trans>
           </SidebarNavButton>
         </Actionable>
       ))}

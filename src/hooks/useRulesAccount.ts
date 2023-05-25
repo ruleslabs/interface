@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { RulesAccount } from '@/lib/rulesWallet/RulesAccount'
+import { RulesAccount } from 'src/lib/rulesWallet/RulesAccount'
 import { useAccount } from '@starknet-react/core'
 
 export default function useRulesAccount() {

@@ -1,10 +1,9 @@
-import styled from 'styled-components'
-import type { AppProps } from 'next/app'
+import styled from 'styled-components/macro'
 
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
-import useWindowSize from '@/hooks/useWindowSize'
-import Maintenance from '@/components/Maintenance'
+import Header from 'src/components/Header'
+import Footer from 'src/components/Footer'
+import useWindowSize from 'src/hooks/useWindowSize'
+import Maintenance from 'src/components/Maintenance'
 
 const MainContent = styled.main<{ windowHeight?: number }>`
   min-height: ${({ theme, windowHeight = 0 }) => windowHeight - theme.size.footerHeight}px;
@@ -13,7 +12,7 @@ const MainContent = styled.main<{ windowHeight?: number }>`
 
 interface DefaultLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
   footerMargin?: number
-  FooterChildrenComponent?: AppProps['Component']
+  FooterChildrenComponent?: () => JSX.Element
 }
 
 export default function DefaultLayout({ children, FooterChildrenComponent }: DefaultLayoutProps) {
@@ -24,9 +23,9 @@ export default function DefaultLayout({ children, FooterChildrenComponent }: Def
     <MainContent windowHeight={windowSize.height}>
       <Header />
 
-      {process.env.NEXT_PUBLIC_MAINTENANCE === 'true' ? <Maintenance /> : children}
+      {process.env.REACT_APP_MAINTENANCE === 'true' ? <Maintenance /> : children}
 
-      <Footer>{FooterChildrenComponent && <FooterChildrenComponent />}</Footer>
+      <Footer>{FooterChildrenComponent?.()}</Footer>
     </MainContent>
   )
 }

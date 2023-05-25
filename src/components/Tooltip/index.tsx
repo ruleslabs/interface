@@ -1,13 +1,13 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import { TYPE } from '@/styles/theme'
-import Caret from '@/components/Caret'
-import { RowCenter } from '@/components/Row'
-import { CssDirection } from '@/styles/theme'
+import { TYPE } from 'src/styles/theme'
+import Caret from 'src/components/Caret'
+import { RowCenter } from 'src/components/Row'
+import { CssDirection } from 'src/styles/theme'
 
 const StyledTooltip = styled.div`
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg4};
   position: absolute;
   display: none;
   border-radius: 5px;
@@ -27,7 +27,7 @@ const CaretWrapper = styled(RowCenter)<{ direction: CssDirection }>`
     position: absolute;
     width: 18px;
     z-index: 1;
-    fill: ${({ theme }) => theme.bg5};
+    fill: ${({ theme }) => theme.bg4};
   }
 
   ${({ direction }) => {

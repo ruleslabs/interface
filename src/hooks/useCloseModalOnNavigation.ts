@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-import { useRouter } from 'next/router'
+import { useLocation } from 'react-router-dom'
+
 import usePrevious from './usePrevious'
 
 interface CloseModalOnNavigationProps {
@@ -8,12 +9,12 @@ interface CloseModalOnNavigationProps {
 }
 
 export default function useCloseModalOnNavigation({ isOpen, onDismiss }: CloseModalOnNavigationProps) {
-  const router = useRouter()
+  const { pathname } = useLocation()
 
-  const previousRouterPath = usePrevious(router.asPath)
+  const previousRouterPath = usePrevious(pathname)
 
   useEffect(() => {
     // dismiss if open and path user navigated
-    if (isOpen && previousRouterPath && previousRouterPath !== router.asPath) onDismiss()
-  }, [previousRouterPath, router.asPath, onDismiss, isOpen])
+    if (isOpen && previousRouterPath && previousRouterPath !== pathname) onDismiss()
+  }, [previousRouterPath, pathname, onDismiss, isOpen])
 }

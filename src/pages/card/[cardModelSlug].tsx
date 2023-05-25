@@ -1,20 +1,21 @@
 import { useState, useCallback } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { useQuery, gql } from '@apollo/client'
-import { useRouter } from 'next/router'
+import { useNavigate } from 'react-router-dom'
 
-import Section from '@/components/Section'
-import { BackButton } from '@/components/Button'
-import Column from '@/components/Column'
-import CardModelBreakdown from '@/components/CardModelBreakdown'
-import CardModelSales from '@/components/CardModelSales'
-import CardModelTransfersHistory from '@/components/CardsTransfersHistory/cardModel'
-import YoutubeEmbed from '@/components/YoutubeEmbed'
-import CardModel3D from '@/components/CardModel3D'
-import Card from '@/components/Card'
-import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
-import { useSearchCardModels } from '@/state/search/hooks'
-import { PaginationSpinner } from '@/components/Spinner'
+import Section from 'src/components/Section'
+import { BackButton } from 'src/components/Button'
+import Column from 'src/components/Column'
+import CardModelBreakdown from 'src/components/CardModelBreakdown'
+import CardModelSales from 'src/components/CardModelSales'
+import CardModelTransfersHistory from 'src/components/CardsTransfersHistory/cardModel'
+import YoutubeEmbed from 'src/components/YoutubeEmbed'
+import CardModel3D from 'src/components/CardModel3D'
+import Card from 'src/components/Card'
+import useCardsBackPictureUrl from 'src/hooks/useCardsBackPictureUrl'
+import { useSearchCardModels } from 'src/state/search/hooks'
+import { PaginationSpinner } from 'src/components/Spinner'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
 const MainSection = styled(Section)`
   position: relative;
@@ -75,8 +76,12 @@ const QUERY_CARD_MODEL = gql`
 `
 
 export default function CardModelPage() {
-  const router = useRouter()
-  const { cardModelSlug } = router.query
+  // nav
+  const navigate = useNavigate()
+
+  // query
+  const query = useLocationQuery()
+  const cardModelSlug = query.get('cardModelSlug')
 
   // hits
   const [cardModelHit, setCardModelHit] = useState<any | null>(null)
@@ -102,7 +107,7 @@ export default function CardModelPage() {
   return (
     <>
       <Section marginTop="32px">
-        <BackButton onClick={router.back} />
+        <BackButton onClick={() => navigate(-1)} />
       </Section>
 
       {cardModel && cardModelHit && (

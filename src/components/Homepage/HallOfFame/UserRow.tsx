@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import shortenUsername from '@/utils/shortenUsername'
-import Link from '@/components/Link'
-import { RowCenter } from '@/components/Row'
-import Avatar from '@/components/Avatar'
-import { TYPE } from '@/styles/theme'
-import Tooltip from '@/components/Tooltip'
-import useParsedCScore from '@/hooks/useParsedCScore'
+import shortenUsername from 'src/utils/shortenUsername'
+import Link from 'src/components/Link'
+import { RowCenter } from 'src/components/Row'
+import Avatar from 'src/components/Avatar'
+import { TYPE } from 'src/styles/theme'
+import Tooltip from 'src/components/Tooltip'
+import useParsedCScore from 'src/hooks/useParsedCScore'
 
 const StyledTooltip = styled(Tooltip)`
   width: 236px;

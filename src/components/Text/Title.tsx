@@ -1,10 +1,10 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import { TYPE } from '@/styles/theme'
-import { RowBetween } from '@/components/Row'
-import Column from '@/components/Column'
-import Divider from '@/components/Divider'
+import { TYPE } from 'src/styles/theme'
+import { RowBetween } from 'src/components/Row'
+import Column from 'src/components/Column'
+import Divider from 'src/components/Divider'
 
 const StyledTitle = styled(TYPE.large)`
   margin-left: 4px;

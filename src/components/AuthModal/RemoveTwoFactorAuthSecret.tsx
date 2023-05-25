@@ -1,20 +1,20 @@
 import { useMemo, useEffect, useState } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-import { useRouter } from 'next/router'
 
-import { ModalHeader } from '@/components/Modal'
-import { ModalBody } from '@/components/Modal/Classic'
-import Column, { ColumnCenter } from '@/components/Column'
-import { TYPE } from '@/styles/theme'
-import { useAuthModalToggle } from '@/state/application/hooks'
-import Link from '@/components/Link'
-import { PrimaryButton } from '@/components/Button'
+import { ModalHeader } from 'src/components/Modal'
+import { ModalBody } from 'src/components/Modal/Classic'
+import Column, { ColumnCenter } from 'src/components/Column'
+import { TYPE } from 'src/styles/theme'
+import { useAuthModalToggle } from 'src/state/application/hooks'
+import Link from 'src/components/Link'
+import { PrimaryButton } from 'src/components/Button'
 
-import Checkmark from '@/images/checkmark.svg'
+import { ReactComponent as Checkmark } from 'src/images/checkmark.svg'
 import { AuthFormProps } from './types'
-import { useRemoveTwoFactorAuthSecret } from '@/graphql/data/Auth'
+import { useRemoveTwoFactorAuthSecret } from 'src/graphql/data/Auth'
 import { PaginationSpinner } from '../Spinner'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
 const StyledCheckmark = styled(Checkmark)`
   border-radius: 50%;
@@ -43,9 +43,10 @@ const ConfigureTwoFactorAuthButtonWrapper = styled(ColumnCenter)`
 `
 
 export default function RemoveTwoFactorAuthSecretForm({ onSuccessfulConnection }: AuthFormProps) {
-  // router
-  const router = useRouter()
-  const { token, email: encodedEmail } = router.query
+  // query
+  const query = useLocationQuery()
+  const token = query.get('token')
+  const encodedEmail = query.get('email')
   const email = useMemo(() => (encodedEmail ? decodeURIComponent(encodedEmail as string) : undefined), [encodedEmail])
 
   // success

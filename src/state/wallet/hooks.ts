@@ -5,14 +5,14 @@ import { Abi, num, uint256 } from 'starknet'
 import { useWeb3React } from '@web3-react/core'
 import { gql, useMutation } from '@apollo/client'
 
-import ERC20ABI from '@/abis/ERC20.json'
+import ERC20ABI from 'src/abis/ERC20.json'
 
-import { useMultipleContractSingleData } from '@/lib/hooks/multicall'
-import { useEthereumBlockNumber } from '@/state/application/hooks'
-import { useAppDispatch, useAppSelector } from '@/state/hooks'
-import { AppState } from '@/state'
+import { useMultipleContractSingleData } from 'src/lib/hooks/multicall'
+import { useEthereumBlockNumber } from 'src/state/application/hooks'
+import { useAppDispatch, useAppSelector } from 'src/state/hooks'
+import { AppState } from 'src/state'
 import { setWalletModalMode, WalletModalMode } from './actions'
-import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 
 const RETRIEVE_ETHER_MUTATION = gql`
   mutation ($hash: String!, $withdraws: [EtherWithdraw!]!) {

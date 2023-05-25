@@ -1,17 +1,17 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { useLazyQuery, gql } from '@apollo/client'
 import { t } from '@lingui/macro'
 
-import { SearchBar } from '@/components/Input'
-import Column from '@/components/Column'
-import { RowCenter } from '@/components/Row'
-import { useSearchUsers } from '@/state/search/hooks'
-import useDebounce from '@/hooks/useDebounce'
-import { TYPE } from '@/styles/theme'
-import useCurrentUser from '@/hooks/useCurrentUser'
-import { CertifiedBadge } from '@/components/User/Badge'
-import Avatar from '@/components/Avatar'
+import { SearchBar } from 'src/components/Input'
+import Column from 'src/components/Column'
+import { RowCenter } from 'src/components/Row'
+import { useSearchUsers } from 'src/state/search/hooks'
+import useDebounce from 'src/hooks/useDebounce'
+import { TYPE } from 'src/styles/theme'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import { CertifiedBadge } from 'src/components/User/Badge'
+import Avatar from 'src/components/Avatar'
 
 const USERS_QUERY = gql`
   query ($ids: [ID!]!) {
@@ -75,8 +75,8 @@ const SearchSuggestedUser = styled(RowCenter)`
   gap: 12px;
   position: relative;
 
-  :hover {
-    background: ${({ theme }) => theme.bg5};
+  &:hover {
+    background: ${({ theme }) => theme.bg4};
   }
 
   img {

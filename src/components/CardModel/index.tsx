@@ -1,16 +1,16 @@
 import React, { useMemo, useCallback, useRef } from 'react'
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
-import { useActiveLocale } from '@/hooks/useActiveLocale'
-import Link from '@/components/Link'
-import { TYPE } from '@/styles/theme'
-import Column, { ColumnCenter } from '@/components/Column'
-import { LargeSpinner } from '@/components/Spinner'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-import CardPendingStatusText from '@/components/CardPendingStatusText'
-import { CardPendingStatus } from '@/hooks/useCardsPendingStatusMap'
+import { useActiveLocale } from 'src/hooks/useActiveLocale'
+import Link from 'src/components/Link'
+import { TYPE } from 'src/styles/theme'
+import Column, { ColumnCenter } from 'src/components/Column'
+import { LargeSpinner } from 'src/components/Spinner'
+import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import CardPendingStatusText from 'src/components/CardPendingStatusText'
+import { CardPendingStatus } from 'src/hooks/useCardsPendingStatusMap'
 import Badges, { Badge } from './Badges'
 import { RowCenter } from '../Row'
 
@@ -28,7 +28,7 @@ const StyledCardModel = styled(ColumnCenter)<{ width?: number; selected: boolean
   transition: background 200ms, transform 200ms ease-out;
 
   ${({ theme, selectable, selected }) => theme.media.computer`
-    :hover {
+    &:hover {
       ${ActiveCardModelStyle}
       ${selectable && !selected && 'opacity: 0.7;'}
     }

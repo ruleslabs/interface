@@ -1,15 +1,15 @@
 import React, { useState, useCallback, useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { useLazyQuery, gql } from '@apollo/client'
 import { Plural, Trans } from '@lingui/macro'
 
-import { TYPE } from '@/styles/theme'
-import { RowBetween } from '@/components/Row'
-import { OffersSortingKey, useMarketplaceFilters, useSearchOffers } from '@/state/search/hooks'
-import Table from '@/components/Table'
-import Caret from '@/components/Caret'
-import { PaginationSpinner } from '@/components/Spinner'
-import useInfiniteScroll from '@/hooks/useInfiniteScroll'
+import { TYPE } from 'src/styles/theme'
+import { RowBetween } from 'src/components/Row'
+import { OffersSortingKey, useMarketplaceFilters, useSearchOffers } from 'src/state/search/hooks'
+import Table from 'src/components/Table'
+import Caret from 'src/components/Caret'
+import { PaginationSpinner } from 'src/components/Spinner'
+import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
 import OfferRow from './OfferRow'
 
 const OFFERS_USERS_QUERY = gql`

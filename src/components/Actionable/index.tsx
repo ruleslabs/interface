@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { ActiveLink, ActiveLinkProps } from '@/components/Link'
-import { NavLink } from '@/hooks/useNav'
+import { ActiveLink, ActiveLinkProps } from 'src/components/Link'
+import { NavLink } from 'src/hooks/useNav'
 
 type ActionablePropsBase = Omit<ActiveLinkProps, 'href'> & React.HTMLAttributes<HTMLDivElement>
 

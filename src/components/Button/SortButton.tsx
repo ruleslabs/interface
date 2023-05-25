@@ -1,11 +1,11 @@
 import { useState, useCallback } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import Column from '@/components/Column'
-import { RowButton } from '@/components/Button'
-import Hover from '@/components/AnimatedIcon/hover'
-import { TYPE } from '@/styles/theme'
+import Column from 'src/components/Column'
+import { RowButton } from 'src/components/Button'
+import Hover from 'src/components/AnimatedIcon/hover'
+import { TYPE } from 'src/styles/theme'
 
 export type SortData<T extends string> = { name: string; key: T; desc: boolean }
 export type SortsData<T extends string> = SortData<T>[]
@@ -59,7 +59,7 @@ export default function SortButton<T extends string>({ sortsData, onChange, sort
   return (
     <StyledSortButton onClick={toggleSortDropdown}>
       <TYPE.body>
-        <Trans id={sortsData[sortIndex].name} render={({ translation }) => <>{translation}</>} />
+        <Trans id={sortsData[sortIndex].name}>{sortsData[sortIndex].name}</Trans>
       </TYPE.body>
 
       <Hover width="16" height="16" reverse={!sortsData[sortIndex].desc} />
@@ -67,7 +67,7 @@ export default function SortButton<T extends string>({ sortsData, onChange, sort
       <Dropdown isOpen={sortDropdownOpen}>
         {sortsData.map((sortData, index) => (
           <TYPE.body key={index} onClick={() => onChange(index)}>
-            <Trans id={sortData.name} render={({ translation }) => <>{translation}</>} />
+            <Trans id={sortData.name}>{sortData.name}</Trans>
           </TYPE.body>
         ))}
       </Dropdown>

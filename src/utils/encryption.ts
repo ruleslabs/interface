@@ -1,3 +1,5 @@
+import { Buffer } from 'buffer'
+
 export const DECRYPTION_ERROR = 'DecryptionError'
 
 export class DecryptionError extends Error {

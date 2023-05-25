@@ -1,29 +1,29 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { t, Trans } from '@lingui/macro'
 import { gql, useQuery } from '@apollo/client'
 
-import { ModalHeader } from '@/components/Modal'
-import ClassicModal, { ModalBody, ModalContent } from '@/components/Modal/Classic'
-import { useModalOpened, useOfferModalToggle } from '@/state/application/hooks'
-import { ApplicationModal } from '@/state/application/actions'
-import UsersSearchBar from '@/components/UsersSearchBar'
-import useCurrentUser from '@/hooks/useCurrentUser'
-import Column from '@/components/Column'
-import { RowCenter } from '@/components/Row'
-import { TYPE } from '@/styles/theme'
-import { PrimaryButton } from '@/components/Button'
-import { ErrorCard } from '@/components/Card'
-import LockedWallet from '@/components/LockedWallet'
-import StarknetSigner, { StarknetSignerDisplayProps } from '@/components/StarknetSigner'
-import CardBreakdown from '@/components/MarketplaceModal/CardBreakdown'
-import Avatar from '@/components/Avatar'
+import { ModalHeader } from 'src/components/Modal'
+import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
+import { useModalOpened, useOfferModalToggle } from 'src/state/application/hooks'
+import { ApplicationModal } from 'src/state/application/actions'
+import UsersSearchBar from 'src/components/UsersSearchBar'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import Column from 'src/components/Column'
+import { RowCenter } from 'src/components/Row'
+import { TYPE } from 'src/styles/theme'
+import { PrimaryButton } from 'src/components/Button'
+import { ErrorCard } from 'src/components/Card'
+import LockedWallet from 'src/components/LockedWallet'
+import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/StarknetSigner'
+import CardBreakdown from 'src/components/MarketplaceModal/CardBreakdown'
+import Avatar from 'src/components/Avatar'
 
-import Arrow from '@/images/arrow.svg'
+import { ReactComponent as Arrow } from 'src/images/arrow.svg'
 import { cardId, constants, uint256 } from '@rulesorg/sdk-core'
-import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
-import useRulesAccount from '@/hooks/useRulesAccount'
-import useStarknetTx from '@/hooks/useStarknetTx'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import useRulesAccount from 'src/hooks/useRulesAccount'
+import useStarknetTx from 'src/hooks/useStarknetTx'
 
 const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
 
@@ -49,7 +49,7 @@ const TransferSummary = styled(RowCenter)`
 const ArrowWrapper = styled(Column)`
   width: 26px;
   height: 26px;
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg4};
   box-shadow: 0px 0px 5px ${({ theme }) => theme.bg1};
   justify-content: center;
   border-radius: 50%;
@@ -63,7 +63,7 @@ const ArrowWrapper = styled(Column)`
   }
 
   ::before,
-  ::after {
+  &::after {
     content: '';
     width: 1px;
     background: ${({ theme }) => theme.text1}20;
@@ -72,12 +72,12 @@ const ArrowWrapper = styled(Column)`
     display: block;
   }
 
-  ::before {
+  &::before {
     top: -16px;
     bottom: 26px;
   }
 
-  ::after {
+  &::after {
     top: 26px;
     bottom: -16px;
   }
@@ -94,7 +94,7 @@ const CardBreakdownsWrapper = styled.div<{ needsScroll: boolean }>`
     border-radius: 6px;
     position: relative;
 
-    ::before {
+    &::before {
       content: '';
       position: absolute;
       top: 0;

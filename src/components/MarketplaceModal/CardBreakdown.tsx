@@ -1,9 +1,9 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-import Column from '@/components/Column'
-import Row, { RowCenter } from '@/components/Row'
-import { TYPE } from '@/styles/theme'
-import Tag from '@/components/Tag'
+import Column from 'src/components/Column'
+import Row, { RowCenter } from 'src/components/Row'
+import { TYPE } from 'src/styles/theme'
+import Tag from 'src/components/Tag'
 
 const StyledCardBreakdown = styled(RowCenter)`
   gap: 16px;
@@ -45,7 +45,7 @@ export default function CardBreakdown({
       <Column gap={8}>
         <TYPE.medium>
           {artistName} S{season}&nbsp;
-          <Trans id={scarcityName} render={({ translation }) => <>{translation}</>} />
+          <Trans id={scarcityName}>{scarcityName}</Trans>
         </TYPE.medium>
 
         <SerialNumbersWrapper gap={4}>

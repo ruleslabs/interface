@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans, t } from '@lingui/macro'
 
-import { ModalHeader } from '@/components/Modal'
-import ClassicModal, { ModalBody, ModalContent } from '@/components/Modal/Classic'
-import { useModalOpened, useStarknetAccountPrivateKeyModalToggle } from '@/state/application/hooks'
-import { ApplicationModal } from '@/state/application/actions'
-import Column from '@/components/Column'
-import { ErrorCard } from '@/components/Card'
-import LongHex from '@/components/Text/LongHex'
-import PrivateKeyDecipherForm from '@/components/StarknetSigner/PrivateKeyDecipherForm'
+import { ModalHeader } from 'src/components/Modal'
+import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
+import { useModalOpened, useStarknetAccountPrivateKeyModalToggle } from 'src/state/application/hooks'
+import { ApplicationModal } from 'src/state/application/actions'
+import Column from 'src/components/Column'
+import { ErrorCard } from 'src/components/Card'
+import LongHex from 'src/components/Text/LongHex'
+import PrivateKeyDecipherForm from 'src/components/StarknetSigner/PrivateKeyDecipherForm'
 
 const PrivateKeyWarning = styled(ErrorCard)`
   font-weight: 700;

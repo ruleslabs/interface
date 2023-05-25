@@ -1,8 +1,8 @@
-import { useBoundStore } from '@/zustand'
+import { useBoundStore } from 'src/zustand'
 import { StarknetWindowObject } from 'get-starknet-core'
 import { rulesSdk } from './rulesSdk'
 import { RulesAccount } from './RulesAccount'
-import { SequencerProvider, constants } from 'starknet'
+import { SequencerProvider } from 'starknet'
 
 const VERSION = `${process.env.VERSION}`
 

@@ -1,20 +1,21 @@
 import { useMemo } from 'react'
 import { useQuery, gql } from '@apollo/client'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import useCurrentUser from '@/hooks/useCurrentUser'
-import Section from '@/components/Section'
-import YoutubeEmbed from '@/components/YoutubeEmbed'
-import { TYPE } from '@/styles/theme'
-import Column from '@/components/Column'
-import { RowCenter } from '@/components/Row'
-import Card from '@/components/Card'
-import PackCard from '@/components/Pack'
-import { PackCountdownWrapper } from '@/components/PackWrapper'
-import Link from '@/components/Link'
-import { SecondaryButton } from '@/components/Button'
-import Caret from '@/components/Caret'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import Section from 'src/components/Section'
+import YoutubeEmbed from 'src/components/YoutubeEmbed'
+import { TYPE } from 'src/styles/theme'
+import Column from 'src/components/Column'
+import { RowCenter } from 'src/components/Row'
+import Card from 'src/components/Card'
+import PackCard from 'src/components/Pack'
+import { PackCountdownWrapper } from 'src/components/PackWrapper'
+import Link from 'src/components/Link'
+import { SecondaryButton } from 'src/components/Button'
+import Caret from 'src/components/Caret'
+import DefaultLayout from 'src/components/Layout'
 
 const PACKS_COUNT = 4
 
@@ -109,7 +110,7 @@ const PacksInfosCard = styled(Card)`
   flex: 1;
 `
 
-export default function Packs() {
+function Packs() {
   const { currentUser } = useCurrentUser()
 
   const packsQuery = useQuery(PACKS_QUERY)
@@ -230,3 +231,11 @@ export default function Packs() {
     </>
   )
 }
+
+Packs.withLayout = () => (
+  <DefaultLayout>
+    <Packs />
+  </DefaultLayout>
+)
+
+export default Packs

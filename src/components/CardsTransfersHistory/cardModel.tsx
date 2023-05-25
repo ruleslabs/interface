@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
-import { Trans } from '@lingui/macro'
+import styled from 'styled-components/macro'
+import { Trans } from '@lingui/react'
 
-import { TYPE } from '@/styles/theme'
-import Row from '@/components/Row'
-import { useSearchTransfers, TransfersSortingKey } from '@/state/search/hooks'
+import { TYPE } from 'src/styles/theme'
+import Row from 'src/components/Row'
+import { useSearchTransfers, TransfersSortingKey } from 'src/state/search/hooks'
 import TransfersTable from './table'
 
 const SortingTitle = styled(Row)`
@@ -57,7 +57,7 @@ export default function CardModelHistory({ cardModelId }: CardModelHistoryProps)
               fontWeight={700}
               onClick={sort.key === sortingKey ? undefined : () => setSortingKey(sort.key)}
             >
-              <Trans id={sort.name} render={({ translation }) => <>{translation}</>} />
+              <Trans id={sort.name} />
             </TYPE.body>
           ))}
       </SortingTitle>

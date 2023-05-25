@@ -1,25 +1,25 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { WeiAmount, WithdrawMessage, constants, message } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
-import { TYPE } from '@/styles/theme'
-import { RowCenter } from '@/components/Row'
-import Link from '@/components/Link'
-import { useAddressesQuery } from '@/state/transactions/hooks'
-import useReduceHash from '@/hooks/useReduceHash'
+import { TYPE } from 'src/styles/theme'
+import { RowCenter } from 'src/components/Row'
+import Link from 'src/components/Link'
+import { useAddressesQuery } from 'src/state/transactions/hooks'
+import useReduceHash from 'src/hooks/useReduceHash'
 
-import ExternalLinkIcon from '@/images/external-link.svg'
-import EthereumIcon from '@/images/ethereum.svg'
-import { getChainInfo } from '@/constants/chainInfo'
-import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import { ReactComponent as ExternalLinkIcon } from 'src/images/external-link.svg'
+import { ReactComponent as EthereumIcon } from 'src/images/ethereum.svg'
+import { getChainInfo } from 'src/constants/chainInfo'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 
 // style
 
 const StyledEvent = styled(RowCenter)`
   padding: 12px 20px;
   border-radius: 6px;
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg4};
   gap: 16px;
   word-break: break-all;
 

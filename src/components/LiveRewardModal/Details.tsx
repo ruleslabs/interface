@@ -1,19 +1,20 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans, t } from '@lingui/macro'
+import { Trans as TransReact } from '@lingui/react'
 
-import { ModalHeader } from '@/components/Modal'
-import ClassicModal, { ModalContent, ModalBody } from '@/components/Modal/Classic'
-import { useLiveRewardDetailsModalToggle, useModalOpened } from '@/state/application/hooks'
-import { ApplicationModal } from '@/state/application/actions'
-import { TYPE } from '@/styles/theme'
-import { LiveReward } from '@/components/Settings/LiveReward'
-import Column from '@/components/Column'
-import { RowCenter } from '@/components/Row'
-import useFormatedDate from '@/hooks/useFormatedDate'
-import CardBreakdown from '@/components/MarketplaceModal/CardBreakdown'
+import { ModalHeader } from 'src/components/Modal'
+import ClassicModal, { ModalContent, ModalBody } from 'src/components/Modal/Classic'
+import { useLiveRewardDetailsModalToggle, useModalOpened } from 'src/state/application/hooks'
+import { ApplicationModal } from 'src/state/application/actions'
+import { TYPE } from 'src/styles/theme'
+import { LiveReward } from 'src/components/Settings/LiveReward'
+import Column from 'src/components/Column'
+import { RowCenter } from 'src/components/Row'
+import useFormatedDate from 'src/hooks/useFormatedDate'
+import CardBreakdown from 'src/components/MarketplaceModal/CardBreakdown'
 
-import PinIcon from '@/images/pin.svg'
-import CalendarIcon from '@/images/calendar.svg'
+import { ReactComponent as PinIcon } from 'src/images/pin.svg'
+import { ReactComponent as CalendarIcon } from 'src/images/calendar.svg'
 
 const InformationRow = styled(RowCenter)`
   gap: 12px;
@@ -60,7 +61,7 @@ export default function LiveRewardDetailsModal({ liveReward }: LiveRewardDetails
   return (
     <ClassicModal onDismiss={toggleLiveRewardDetailsModal} isOpen={isOpen}>
       <ModalContent>
-        <Trans
+        <TransReact
           id={liveReward.displayName}
           render={({ translation }) => (
             <ModalHeader onDismiss={toggleLiveRewardDetailsModal} title={translation as string} />

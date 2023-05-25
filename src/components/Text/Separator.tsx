@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 const Separator = styled.div`
   display: flex;
@@ -6,18 +6,18 @@ const Separator = styled.div`
   text-align: center;
   color: ${({ theme }) => theme.text2};
 
-  ::before,
-  ::after {
+  &::before,
+  &::after {
     content: '';
     flex: 1;
     border-bottom: 1px solid ${({ theme }) => theme.text2};
   }
 
-  :not(:empty)::before {
+  &:not(:empty)::before {
     margin-right: 24px;
   }
 
-  :not(:empty)::after {
+  &:not(:empty)::after {
     margin-left: 24px;
   }
 `

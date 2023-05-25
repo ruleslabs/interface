@@ -1,15 +1,15 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { t, Trans } from '@lingui/macro'
 import { WeiAmount, Fraction } from '@rulesorg/sdk-core'
 
-import Column from '@/components/Column'
-import Row from '@/components/Row'
-import { InfoTooltip } from '@/components/Tooltip'
-import { TYPE } from '@/styles/theme'
-import { ARTIST_FEE_PERCENTAGE, MARKETPLACE_FEE_PERCENTAGE } from '@/constants/misc'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-import Divider from '@/components/Divider'
+import Column from 'src/components/Column'
+import Row from 'src/components/Row'
+import { InfoTooltip } from 'src/components/Tooltip'
+import { TYPE } from 'src/styles/theme'
+import { ARTIST_FEE_PERCENTAGE, MARKETPLACE_FEE_PERCENTAGE } from 'src/constants/misc'
+import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import Divider from 'src/components/Divider'
 
 const PriceBreakdownLine = styled(Row)`
   width: 100%;

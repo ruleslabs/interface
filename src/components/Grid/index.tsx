@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import useComponentSize from '@/hooks/useComponentSize'
+import useComponentSize from 'src/hooks/useComponentSize'
 
 const MAX_WIDTH = 240
 const GAP = 16

@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { Trans } from '@lingui/macro'
 
-import { metaMask, metaMaskHooks } from '@/constants/connectors'
-import { InfoCard, ErrorCard } from '@/components/Card'
-import Column from '@/components/Column'
-import Link from '@/components/Link'
-import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import { metaMask, metaMaskHooks } from 'src/constants/connectors'
+import { InfoCard, ErrorCard } from 'src/components/Card'
+import Column from 'src/components/Column'
+import Link from 'src/components/Link'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import { PrimaryButton } from '../Button'
 
 const { useAccount, useChainId } = metaMaskHooks

@@ -2,12 +2,12 @@ import React, { useState, useCallback } from 'react'
 import { useLazyQuery, gql } from '@apollo/client'
 import { Trans } from '@lingui/macro'
 
-import { TYPE } from '@/styles/theme'
-import { useSearchUsers } from '@/state/search/hooks'
-import Column from '@/components/Column'
-import { PaginationSpinner } from '@/components/Spinner'
-import useCurrentUser from '@/hooks/useCurrentUser'
-import { useCScoreRank } from '@/hooks/useCScore'
+import { TYPE } from 'src/styles/theme'
+import { useSearchUsers } from 'src/state/search/hooks'
+import Column from 'src/components/Column'
+import { PaginationSpinner } from 'src/components/Spinner'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import { useCScoreRank } from 'src/hooks/useCScore'
 import UserRow from './UserRow'
 
 const USERS_QUERY = gql`

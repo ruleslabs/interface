@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from 'react'
-import { useRouter } from 'next/router'
 
-import ClassicModal, { ModalContent } from '@/components/Modal/Classic'
-import { useModalOpened, useAuthModalToggle } from '@/state/application/hooks'
-import { ApplicationModal } from '@/state/application/actions'
-import { useAuthMode } from '@/state/auth/hooks'
-import { AuthMode } from '@/state/auth/actions'
-import { storeAccessToken } from '@/utils/accessToken'
+import ClassicModal, { ModalContent } from 'src/components/Modal/Classic'
+import { useModalOpened, useAuthModalToggle } from 'src/state/application/hooks'
+import { ApplicationModal } from 'src/state/application/actions'
+import { useAuthMode } from 'src/state/auth/hooks'
+import { AuthMode } from 'src/state/auth/actions'
+import { storeAccessToken } from 'src/utils/accessToken'
+import { useNavigate } from 'react-router-dom'
 
 import EmailVerificationForm from './EmailVerificationForm'
 import SignUpForm from './SignUpForm'
@@ -16,11 +16,12 @@ import RemoveTwoFactorAuthSecret from './RemoveTwoFactorAuthSecret'
 import RequestPasswordUpdateForm from './RequestPasswordUpdateForm'
 import RequestTwoFactorAuthSecretUpdateForm from './RequestTwoFactorAuthSecretUpdateForm'
 import TwoFactorAuthForm from './TwoFactorAuthForm'
-import useCurrentUser from '@/hooks/useCurrentUser'
+import useCurrentUser from 'src/hooks/useCurrentUser'
 import { OnSuccessfulConnectionResponse } from './types'
 
 export default function AuthModal() {
-  const router = useRouter()
+  // nav
+  const navigate = useNavigate()
 
   // modal
   const isOpen = useModalOpened(ApplicationModal.AUTH)
@@ -41,10 +42,10 @@ export default function AuthModal() {
 
       // onboard if user is new
       if (authMode === AuthMode.EMAIL_VERIFICATION) {
-        router.push('/onboard')
+        navigate('/onboard')
       }
     },
-    [refreshCurrentUser, storeAccessToken, router, authMode, toggleAuthModal]
+    [refreshCurrentUser, storeAccessToken, authMode, toggleAuthModal, navigate]
   )
 
   const modalContent = useMemo(() => {

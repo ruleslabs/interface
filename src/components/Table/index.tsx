@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 const Table = styled.table`
   border-spacing: 0px;
@@ -6,7 +6,7 @@ const Table = styled.table`
   border-collapse: separate;
 
   thead tr {
-    background: ${({ theme }) => theme.bg5};
+    background: ${({ theme }) => theme.bg4};
   }
 
   thead td {

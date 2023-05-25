@@ -2,14 +2,14 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { constants } from '@rulesorg/sdk-core'
 import { Trans, t } from '@lingui/macro'
 
-import Column from '@/components/Column'
-import Checkbox from '@/components/Checkbox'
-import Slider from '@/components/Slider'
-import { TYPE } from '@/styles/theme'
-import { useMarketplaceFilters, useMarketplaceFiltersHandlers } from '@/state/search/hooks'
-import Subtitle from '@/components/Text/Subtitle'
-import Divider from '@/components/Divider'
-import usePrevious from '@/hooks/usePrevious'
+import Column from 'src/components/Column'
+import Checkbox from 'src/components/Checkbox'
+import Slider from 'src/components/Slider'
+import { TYPE } from 'src/styles/theme'
+import { useMarketplaceFilters, useMarketplaceFiltersHandlers } from 'src/state/search/hooks'
+import Subtitle from 'src/components/Text/Subtitle'
+import Divider from 'src/components/Divider'
+import usePrevious from 'src/hooks/usePrevious'
 
 interface MarketplaceFiltersProps extends React.HTMLAttributes<HTMLDivElement> {
   maximumPriceUpperBound: number
@@ -81,7 +81,9 @@ export default function MarketplaceFilters({ maximumPriceUpperBound, ...props }:
             value={!filters.scarcities.includes(index)}
             onChange={() => toggleScarcityFilter(index)}
           >
-            <Trans id={scarcity} render={({ translation }) => <TYPE.body>{translation}</TYPE.body>} />
+            <TYPE.body>
+              <Trans id={scarcity}>{scarcity}</Trans>
+            </TYPE.body>
           </Checkbox>
         ))}
       </Column>

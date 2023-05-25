@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import { TYPE } from '@/styles/theme'
+import { TYPE } from 'src/styles/theme'
 import { PageBody, PageContent, PageWrapper, MainActionButton } from './SubComponents'
-import { useSetOnboardingPage } from '@/state/onboarding/hooks'
-import { OnboardingPage } from '@/state/onboarding/actions'
+import { useSetOnboardingPage } from 'src/state/onboarding/hooks'
+import { OnboardingPage } from 'src/state/onboarding/actions'
 
 const Illustration = styled.img`
   width: 35%;

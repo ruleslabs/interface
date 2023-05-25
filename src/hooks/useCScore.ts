@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { useSearchUsers } from '@/state/search/hooks'
-import { TOP_COLLECTOR_RANK_MAX } from '@/constants/misc'
+import { useSearchUsers } from 'src/state/search/hooks'
+import { TOP_COLLECTOR_RANK_MAX } from 'src/constants/misc'
 
 export function useCScoreRank(cScore = 0): number {
   // user rank

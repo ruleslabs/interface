@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import { useAudioLoop } from '@/state/packOpening/hooks'
-import { Sound } from '@/state/packOpening/actions'
-import Row from '@/components/Row'
+import { useAudioLoop } from 'src/state/packOpening/hooks'
+import { Sound } from 'src/state/packOpening/actions'
+import Row from 'src/components/Row'
 import FullscreenableCard from './FullscreenableCard'
 
 const StyledPackOpeningCards = styled(Row)`

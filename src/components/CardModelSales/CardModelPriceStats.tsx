@@ -1,15 +1,15 @@
 import React, { useMemo, useState, useCallback } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
-import Row from '@/components/Row'
-import Column from '@/components/Column'
-import { TYPE } from '@/styles/theme'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-import { SecondaryButton } from '@/components/Button'
+import Row from 'src/components/Row'
+import Column from 'src/components/Column'
+import { TYPE } from 'src/styles/theme'
+import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import { SecondaryButton } from 'src/components/Button'
 
-import EthereumPlainIcon from '@/images/ethereum-plain.svg'
+import { ReactComponent as EthereumPlainIcon } from 'src/images/ethereum-plain.svg'
 
 const CurrencySwitch = styled(SecondaryButton)`
   min-width: 26px;

@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
-import { AppState } from '@/state'
-import { useAppDispatch, useAppSelector } from '@/state/hooks'
+import { AppState } from 'src/state'
+import { useAppDispatch, useAppSelector } from 'src/state/hooks'
 import { setOnboardingPage, OnboardingPage } from './actions'
 
 export function useOnboardingPage(): AppState['onboarding']['onboardingPage'] {

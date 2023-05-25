@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { t } from '@lingui/macro'
 import { constants } from '@rulesorg/sdk-core'
 
-import { TYPE } from '@/styles/theme'
-import { RowCenter } from '@/components/Row'
+import { TYPE } from 'src/styles/theme'
+import { RowCenter } from 'src/components/Row'
 
-import Spinner from '@/components/Spinner'
-import Close from '@/images/close.svg'
+import Spinner from 'src/components/Spinner'
+import { ReactComponent as Close } from 'src/images/close.svg'
 
 const RejectedStatus = styled(Close)`
   border-radius: 50%;

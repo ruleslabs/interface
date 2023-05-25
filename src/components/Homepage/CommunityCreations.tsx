@@ -1,11 +1,11 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import { RowCenter } from '@/components/Row'
-import Column from '@/components/Column'
-import Link from '@/components/Link'
-import { TYPE } from '@/styles/theme'
+import { RowCenter } from 'src/components/Row'
+import Column from 'src/components/Column'
+import Link from 'src/components/Link'
+import { TYPE } from 'src/styles/theme'
 
-import LinkIcon from '@/images/link.svg'
+import { ReactComponent as LinkIcon } from 'src/images/link.svg'
 
 const communityCreationsData = [
   {

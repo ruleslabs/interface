@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from 'react'
 import { shallow } from 'zustand/shallow'
 
-import { useBoundStore } from '@/zustand'
+import { useBoundStore } from 'src/zustand'
 import { WeiAmount } from '@rulesorg/sdk-core'
-import { ParsedNetworkFee } from '@/types/starknetTx'
+import { ParsedNetworkFee } from 'src/types/starknetTx'
 import useRulesAccount from './useRulesAccount'
 
 export function useEstimateFees() {

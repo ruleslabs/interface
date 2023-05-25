@@ -1,6 +1,6 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import { TYPE } from '@/styles/theme'
+import { TYPE } from 'src/styles/theme'
 
 const Card = styled.div`
   padding: 22px 32px;

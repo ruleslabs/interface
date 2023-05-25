@@ -2,9 +2,9 @@ import { useMemo } from 'react'
 import { useQuery, gql } from '@apollo/client'
 import { Trans } from '@lingui/macro'
 
-import Column from '@/components/Column'
-import { TYPE } from '@/styles/theme'
-import { PaginationSpinner } from '@/components/Spinner'
+import Column from 'src/components/Column'
+import { TYPE } from 'src/styles/theme'
+import { PaginationSpinner } from 'src/components/Spinner'
 
 const ARTISTS_FUND_QUERY = gql`
   query {

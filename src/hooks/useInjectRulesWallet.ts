@@ -1,4 +1,4 @@
-import { starknetWindowObject } from '@/lib/rulesWallet/starknetWindowObject'
+import { starknetWindowObject } from 'src/lib/rulesWallet/starknetWindowObject'
 import { useCallback, useEffect } from 'react'
 
 const INJECT_NAMES = ['starknet', 'starknet_rules']

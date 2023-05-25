@@ -1,13 +1,13 @@
 import { useCallback } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import { TYPE } from '@/styles/theme'
-import { ColumnCenter } from '@/components/Column'
+import { TYPE } from 'src/styles/theme'
+import { ColumnCenter } from 'src/components/Column'
 import { PageBody, SkipButton } from './SubComponents'
-import DiscordStatus from '@/components/Settings/DiscordStatus'
-import { useSetOnboardingPage } from '@/state/onboarding/hooks'
-import { OnboardingPage } from '@/state/onboarding/actions'
+import DiscordStatus from 'src/components/Settings/DiscordStatus'
+import { useSetOnboardingPage } from 'src/state/onboarding/hooks'
+import { OnboardingPage } from 'src/state/onboarding/actions'
 
 const StyledPageBody = styled(PageBody)`
   ${({ theme }) => theme.media.medium`

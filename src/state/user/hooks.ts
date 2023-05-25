@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useQuery, useMutation, gql, ApolloError } from '@apollo/client'
 
-import { SupportedLocale } from '@/constants/locales'
-import { AppState } from '@/state'
-import { useAppSelector, useAppDispatch } from '@/state/hooks'
+import { SupportedLocale } from 'src/constants/locales'
+import { AppState } from 'src/state'
+import { useAppSelector, useAppDispatch } from 'src/state/hooks'
 import { updateUserLocale } from './actions'
-import useCurrentUser from '@/hooks/useCurrentUser'
+import useCurrentUser from 'src/hooks/useCurrentUser'
 
 const SEARCH_USER_CONTENT = `
   id

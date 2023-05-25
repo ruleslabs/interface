@@ -1,15 +1,15 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans, t } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
-import { TYPE } from '@/styles/theme'
-import Row from '@/components/Row'
-import Column from '@/components/Column'
-import { PrimaryButton } from '@/components/Button'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-import AcceptOfferModal from '@/components/MarketplaceModal/AcceptOffer'
-import { useAcceptOfferModalToggle } from '@/state/application/hooks'
+import { TYPE } from 'src/styles/theme'
+import Row from 'src/components/Row'
+import Column from 'src/components/Column'
+import { PrimaryButton } from 'src/components/Button'
+import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import AcceptOfferModal from 'src/components/MarketplaceModal/AcceptOffer'
+import { useAcceptOfferModalToggle } from 'src/state/application/hooks'
 
 const CardModelImage = styled.img`
   width: 84px;
@@ -52,7 +52,9 @@ export default function OffersSelectorBreakdown({
             <TYPE.body>
               <Trans>Season {season}</Trans>
             </TYPE.body>
-            <Trans id={scarcityName} render={({ translation }) => <TYPE.body>{translation}</TYPE.body>} />
+            <TYPE.body>
+              <Trans id={scarcityName}>{scarcityName}</Trans>
+            </TYPE.body>
           </Column>
         </Row>
         <PrimaryButton onClick={toggleAcceptOfferModal} disabled={!serialNumbers.length} large>

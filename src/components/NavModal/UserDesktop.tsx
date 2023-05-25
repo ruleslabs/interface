@@ -1,17 +1,17 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import HintModal from '@/components/Modal/Hint'
-import { useModalOpened, useNavModalUserDesktopToggle } from '@/state/application/hooks'
-import { ApplicationModal } from '@/state/application/actions'
-import { TYPE } from '@/styles/theme'
-import Column from '@/components/Column'
+import HintModal from 'src/components/Modal/Hint'
+import { useModalOpened, useNavModalUserDesktopToggle } from 'src/state/application/hooks'
+import { ApplicationModal } from 'src/state/application/actions'
+import { TYPE } from 'src/styles/theme'
+import Column from 'src/components/Column'
 import { TooltipCaret } from '../Tooltip'
-import Link from '@/components/Link'
-import useCurrentUser from '@/hooks/useCurrentUser'
-import { NavUserSublinks, useNavUserLinks } from '@/hooks/useNav'
+import Link from 'src/components/Link'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import { NavUserSublinks, useNavUserLinks } from 'src/hooks/useNav'
 import Actionable from '../Actionable'
-import Divider from '@/components/Divider'
+import Divider from 'src/components/Divider'
 import NavProfile from './NavProfile'
 
 const StyledNavProfile = styled(NavProfile)`
@@ -76,7 +76,9 @@ function NavUserSublinksDesktop({ navSublinks }: NavUserSublinksDesktopProps) {
     <Column>
       {navSublinks.links.map((navLink) => (
         <Actionable key={navLink.name} link={navLink.link} handler={navLink.handler}>
-          <Trans id={navLink.name} render={({ translation }) => <MenuButton>{translation}</MenuButton>} />
+          <MenuButton>
+            <Trans id={navLink.name}>{navLink.name}</Trans>
+          </MenuButton>
         </Actionable>
       ))}
     </Column>

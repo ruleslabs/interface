@@ -1,11 +1,11 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { t } from '@lingui/macro'
 
-import DefaultLayout from '@/components/Layout'
-import SettingsLayout from '@/components/Layout/Settings'
-import Column from '@/components/Column'
-import Title from '@/components/Text/Title'
-import LiveRewards from '@/components/Settings/LiveReward'
+import DefaultLayout from 'src/components/Layout'
+import SettingsLayout from 'src/components/Layout/Settings'
+import Column from 'src/components/Column'
+import Title from 'src/components/Text/Title'
+import LiveRewards from 'src/components/Settings/LiveReward'
 
 const StyledSecuritySettings = styled(Column)`
   width: 100%;

@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react'
-import styled from 'styled-components'
-import { useRouter } from 'next/router'
+import styled from 'styled-components/macro'
+import { redirect, useLocation } from 'react-router-dom'
 
-import Row from '@/components/Row'
-import { SUPPORTED_LOCALES, LOCALE_LABEL, SupportedLocale } from '@/constants/locales'
-import { TYPE } from '@/styles/theme'
-import { useUserLocaleManager } from '@/state/user/hooks'
+import Row from 'src/components/Row'
+import { SUPPORTED_LOCALES, LOCALE_LABEL, SupportedLocale } from 'src/constants/locales'
+import { TYPE } from 'src/styles/theme'
+import { useUserLocaleManager } from 'src/state/user/hooks'
 
 const StyledLanguageSelector = styled(Row)`
   gap: 8px;
@@ -17,7 +17,7 @@ const LocaleLabel = styled(TYPE.body)<{ active: boolean }>`
   cursor: pointer;
   pointer-events: auto;
 
-  :hover {
+  &:hover {
     color: ${({ theme }) => theme.text1};
   }
 `
@@ -25,20 +25,23 @@ const LocaleLabel = styled(TYPE.body)<{ active: boolean }>`
 type LanguageSelectorProps = React.HTMLAttributes<HTMLDivElement>
 
 export default function LanguageSelector(props: LanguageSelectorProps) {
+  // location
+  const { pathname } = useLocation()
+
+  // locale
   const [userLocale, setUserLocale] = useUserLocaleManager()
-  const router = useRouter()
 
   const handleLocaleChange = useCallback(
     (locale: SupportedLocale) => {
       try {
         const regex = new RegExp(`(?<=\\?|\\&)lng=${userLocale}`, 'g')
-        router.replace(router.asPath.replace(regex, ''), undefined, { shallow: true })
+        redirect(pathname.replace(regex, ''))
       } catch (err) {
         console.error(err)
       }
       setUserLocale(locale)
     },
-    [router, setUserLocale, userLocale]
+    [pathname, redirect, setUserLocale, userLocale]
   )
 
   return (

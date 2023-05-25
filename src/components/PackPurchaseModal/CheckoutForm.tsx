@@ -1,36 +1,35 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react'
-import styled from 'styled-components'
+import styled, { DefaultTheme, useTheme } from 'styled-components/macro'
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js'
 import { Trans, t } from '@lingui/macro'
 
-import useTheme from '@/hooks/useTheme'
-import Column from '@/components/Column'
-import Row, { RowCenter } from '@/components/Row'
-import { PrimaryButton } from '@/components/Button'
-import { TYPE } from '@/styles/theme'
-import { useValidatePaymentMethod, useConfirmPaymentIntent } from '@/state/stripe/hooks'
-import Checkbox from '@/components/Checkbox'
-import Link from '@/components/Link'
-import useCheckbox from '@/hooks/useCheckbox'
+import Column from 'src/components/Column'
+import Row, { RowCenter } from 'src/components/Row'
+import { PrimaryButton } from 'src/components/Button'
+import { TYPE } from 'src/styles/theme'
+import { useValidatePaymentMethod, useConfirmPaymentIntent } from 'src/state/stripe/hooks'
+import Checkbox from 'src/components/Checkbox'
+import Link from 'src/components/Link'
+import useCheckbox from 'src/hooks/useCheckbox'
 
-import VisaIcon from '@/images/cardBrands/visa.svg'
-import MastercardIcon from '@/images/cardBrands/mastercard.svg'
-import UnknownCardIcon from '@/images/cardBrands/unknown.svg'
-import UnionPayIcon from '@/images/cardBrands/unionpay.svg'
-import DinersIcon from '@/images/cardBrands/diners.svg'
-import AmexIcon from '@/images/cardBrands/amex.svg'
-import DiscoverIcon from '@/images/cardBrands/discover.svg'
-import JcbIcon from '@/images/cardBrands/jcb.svg'
+import { ReactComponent as VisaIcon } from 'src/images/cardBrands/visa.svg'
+import { ReactComponent as MastercardIcon } from 'src/images/cardBrands/mastercard.svg'
+import { ReactComponent as UnknownCardIcon } from 'src/images/cardBrands/unknown.svg'
+import { ReactComponent as UnionPayIcon } from 'src/images/cardBrands/unionpay.svg'
+import { ReactComponent as DinersIcon } from 'src/images/cardBrands/diners.svg'
+import { ReactComponent as AmexIcon } from 'src/images/cardBrands/amex.svg'
+import { ReactComponent as DiscoverIcon } from 'src/images/cardBrands/discover.svg'
+import { ReactComponent as JcbIcon } from 'src/images/cardBrands/jcb.svg'
 
 const cardBrandToIcon = {
-  visa: VisaIcon,
-  mastercard: MastercardIcon,
-  amex: AmexIcon,
-  discover: DiscoverIcon,
-  diners: DinersIcon,
-  jcb: JcbIcon,
-  unionpay: UnionPayIcon,
-  unknown: UnknownCardIcon,
+  visa: <VisaIcon />,
+  mastercard: <MastercardIcon />,
+  amex: <AmexIcon />,
+  discover: <DiscoverIcon />,
+  diners: <DinersIcon />,
+  jcb: <JcbIcon />,
+  unionpay: <UnionPayIcon />,
+  unknown: <UnknownCardIcon />,
 }
 
 const Form = styled.form<{ isOpen: boolean }>`
@@ -39,7 +38,7 @@ const Form = styled.form<{ isOpen: boolean }>`
 
 const StripeInputWrapper = styled(RowCenter)`
   padding: 12px;
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg4};
   border-radius: 6px;
   border: 1px solid ${({ theme }) => theme.bg3};
 
@@ -105,7 +104,7 @@ export default function CheckoutForm({
   const handleCardNumberInput = useCallback((event) => {
     setCardBrand(event.brand ?? 'unknown')
   }, [])
-  const theme = useTheme()
+  const theme = useTheme() as DefaultTheme
 
   const options = useMemo(
     () => ({
@@ -115,7 +114,7 @@ export default function CheckoutForm({
           backgroundColor: 'transparent',
           color: theme.text1,
           letterSpacing: '0.025em',
-          fontFamily: 'Roboto, Helvetica',
+          fontFamily: 'Inter var, Helvetica',
           '::placeholder': {
             color: theme.text2,
           },
@@ -233,7 +232,7 @@ export default function CheckoutForm({
 
               <StripeInputWrapper>
                 <CardNumberElement options={options} onChange={handleCardNumberInput} onReady={handleCardNumberReady} />
-                {(cardBrandToIcon[cardBrand as keyof typeof cardBrandToIcon] ?? UnknownCardIcon)()}
+                {cardBrandToIcon[cardBrand as keyof typeof cardBrandToIcon] ?? <UnknownCardIcon />}
               </StripeInputWrapper>
             </StripeLabel>
 
@@ -261,7 +260,9 @@ export default function CheckoutForm({
           </Column>
 
           {error && (
-            <Trans id={error} render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>} />
+            <TYPE.body color="error">
+              <Trans id={error}>{error}</Trans>
+            </TYPE.body>
           )}
 
           <Column gap={12}>

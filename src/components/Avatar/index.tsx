@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 const Image = styled.img`
   border-radius: 50%;

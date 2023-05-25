@@ -1,27 +1,27 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
-import useCurrentUser from '@/hooks/useCurrentUser'
-import { RowCenter } from '@/components/Row'
-import Column from '@/components/Column'
-import { TYPE } from '@/styles/theme'
-import { PrimaryButton, SecondaryButton } from '@/components/Button'
-import Link from '@/components/Link'
-import Placeholder from '@/components/Placeholder'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import { RowCenter } from 'src/components/Row'
+import Column from 'src/components/Column'
+import { TYPE } from 'src/styles/theme'
+import { PrimaryButton, SecondaryButton } from 'src/components/Button'
+import Link from 'src/components/Link'
+import Placeholder from 'src/components/Placeholder'
 import {
   useOfferModalToggle,
   useCreateOfferModalToggle,
   useCancelOfferModalToggle,
   useAcceptOfferModalToggle,
-} from '@/state/application/hooks'
-import { useWeiAmountToEURValue } from '@/hooks/useFiatPrice'
-import CardPendingStatusText from '@/components/CardPendingStatusText'
-import { CardPendingStatus } from '@/hooks/useCardsPendingStatusMap'
-import Avatar from '@/components/Avatar'
+} from 'src/state/application/hooks'
+import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import CardPendingStatusText from 'src/components/CardPendingStatusText'
+import { CardPendingStatus } from 'src/hooks/useCardsPendingStatusMap'
+import Avatar from 'src/components/Avatar'
 
-import Present from '@/images/present.svg'
+import { ReactComponent as Present } from 'src/images/present.svg'
 
 const StyledAvatar = styled(Avatar)`
   width: 50px;

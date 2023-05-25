@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { GenieStatus } from '@/types'
+import { GenieStatus } from 'src/types'
 
 export default function useMergeGenieSatus(...status: GenieStatus[]) {
   const [error, setError] = useState<null | GenieStatus['error']>(null)

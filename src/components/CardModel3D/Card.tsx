@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { useSpring, animated, interpolate } from '@react-spring/web'
 
-import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
-import { round, range } from '@/utils/math'
-import useWindowSize from '@/hooks/useWindowSize'
+import useCardsBackPictureUrl from 'src/hooks/useCardsBackPictureUrl'
+import { round, range } from 'src/utils/math'
+import useWindowSize from 'src/hooks/useWindowSize'
 
 const CardTranslator = styled.div`
   width: fit-content;

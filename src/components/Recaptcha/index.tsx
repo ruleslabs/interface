@@ -1,18 +1,19 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import GoogleReCAPTCHA from 'react-google-recaptcha'
 import { Trans } from '@lingui/macro'
 
-import { TYPE } from '@/styles/theme'
-import Link from '@/components/Link'
+import { TYPE } from 'src/styles/theme'
+import Link from 'src/components/Link'
 
-const NEXT_PUBLIC_RECAPTCHA_V2_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_V2_KEY
-if (!NEXT_PUBLIC_RECAPTCHA_V2_KEY) {
-  throw 'env NEXT_PUBLIC_RECAPTCHA_V2_KEY not provided'
+const REACT_APP_RECAPTCHA_V2_KEY = process.env.REACT_APP_RECAPTCHA_V2_KEY
+if (!REACT_APP_RECAPTCHA_V2_KEY) {
+  console.log(process.env)
+  throw 'env REACT_APP_RECAPTCHA_V2_KEY not provided'
 }
 
 const ReCAPTCHA = React.forwardRef<GoogleReCAPTCHA>((_props, ref) => {
-  return <GoogleReCAPTCHA ref={ref} size="invisible" sitekey={NEXT_PUBLIC_RECAPTCHA_V2_KEY} />
+  return <GoogleReCAPTCHA ref={ref} size="invisible" sitekey={REACT_APP_RECAPTCHA_V2_KEY} />
 })
 
 ReCAPTCHA.displayName = 'ReCAPTCHA'

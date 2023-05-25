@@ -1,8 +1,8 @@
 import React from 'react'
 import { Trans } from '@lingui/macro'
 
-import { TYPE } from '@/styles/theme'
-import { useSearchTransfers } from '@/state/search/hooks'
+import { TYPE } from 'src/styles/theme'
+import { useSearchTransfers } from 'src/state/search/hooks'
 import TransfersTable from './table'
 
 interface CardTransfersHistoryProps extends React.HTMLAttributes<HTMLDivElement> {

@@ -1,12 +1,11 @@
 import { ApolloClient, InMemoryCache, HttpLink, Observable, ApolloLink, from } from '@apollo/client'
-import fetch from 'isomorphic-unfetch'
 import { onError } from '@apollo/client/link/error'
 import { relayStylePagination } from '@apollo/client/utilities'
 
-import refreshToken from '@/utils/refreshToken'
-import { storeAccessToken, getAccessToken } from '@/utils/accessToken'
+import refreshToken from 'src/utils/refreshToken'
+import { storeAccessToken, getAccessToken } from 'src/utils/accessToken'
 
-const GRAPHQL_URL = process.env.NEXT_PUBLIC_GRAPHQL_URI
+const GRAPHQL_URL = process.env.REACT_APP_GRAPHQL_URI
 if (!GRAPHQL_URL) {
   throw new Error('GRAPHQL URI MISSING FROM ENVIRONMENT')
 }
@@ -14,7 +13,9 @@ if (!GRAPHQL_URL) {
 const httpLink = new HttpLink({
   uri: GRAPHQL_URL, // must be absolute
   credentials: 'include',
-  fetch,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 })
 
 const errorLink = onError(({ graphQLErrors, operation, forward }) => {
@@ -76,10 +77,6 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 
 export const apolloClient = new ApolloClient({
   connectToDevTools: true,
-  uri: GRAPHQL_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
   link: from([authMiddleware, errorLink, httpLink]),
   cache: new InMemoryCache({
     typePolicies: {

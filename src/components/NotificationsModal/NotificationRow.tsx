@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { t } from '@lingui/macro'
 
-import Column from '@/components/Column'
-import { RowCenter } from '@/components/Row'
-import { TYPE } from '@/styles/theme'
+import Column from 'src/components/Column'
+import { RowCenter } from 'src/components/Row'
+import { TYPE } from 'src/styles/theme'
 
-import EthereumIcon from '@/images/ethereum.svg'
+import { ReactComponent as EthereumIcon } from 'src/images/ethereum.svg'
 import { WeiAmount } from '@rulesorg/sdk-core'
-import useAge from '@/hooks/useAge'
-import Actionable from '@/components/Actionable'
+import useAge from 'src/hooks/useAge'
+import Actionable from 'src/components/Actionable'
 
 const StyledNotificationRow = styled(Column)`
   gap: 12px;
@@ -62,7 +62,7 @@ const MemoizedNotificationRow = React.memo(function NotificationRow({ notificati
         const parsedAmount = WeiAmount.fromRawAmount(notification.amount)
 
         return {
-          icon: EthereumIcon(),
+          icon: <EthereumIcon />,
           title: t`ETH Retrive`,
           subtitle: t`Your ${parsedAmount.toSignificant(
             6

@@ -1,21 +1,22 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 import { gql } from '@apollo/client'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-import { apolloClient } from '@/graphql/data/apollo'
+import { apolloClient } from 'src/graphql/data/apollo'
+import { useNavigate } from 'react-router-dom'
 
-import Section from '@/components/Section'
-import { BackButton } from '@/components/Button'
-import PackBreakdown from '@/components/PackBreakdown'
-import { TYPE } from '@/styles/theme'
-import Row from '@/components/Row'
-import Column from '@/components/Column'
-import Card from '@/components/Card'
-import CardModel from '@/components/CardModel'
-import Grid from '@/components/Grid'
-import { PackPosterWrapper } from '@/components/PackWrapper'
-import useCurrentUser from '@/hooks/useCurrentUser'
+import Section from 'src/components/Section'
+import { BackButton } from 'src/components/Button'
+import PackBreakdown from 'src/components/PackBreakdown'
+import { TYPE } from 'src/styles/theme'
+import Row from 'src/components/Row'
+import Column from 'src/components/Column'
+import Card from 'src/components/Card'
+import CardModel from 'src/components/CardModel'
+import Grid from 'src/components/Grid'
+import { PackPosterWrapper } from 'src/components/PackWrapper'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
 const StyledMainSection = styled(Section)`
   margin-bottom: 84px;
@@ -92,9 +93,14 @@ const QUERY_PACK = gql`
 `
 
 export default function Pack() {
-  const router = useRouter()
-  const { packSlug } = router.query
+  // query
+  const query = useLocationQuery()
+  const packSlug = query.get('packSlug')
 
+  // nav
+  const navigate = useNavigate()
+
+  // current user
   const { currentUser } = useCurrentUser()
 
   const [packQuery, setPackQuery] = useState<any>({})
@@ -126,7 +132,7 @@ export default function Pack() {
   return (
     <>
       <Section marginTop="36px">
-        <BackButton onClick={router.back} />
+        <BackButton onClick={() => navigate(-1)} />
       </Section>
       {error ? (
         <TYPE.body textAlign="center">
@@ -158,7 +164,9 @@ export default function Pack() {
                 <ExplanationsCard>
                   <Column gap={28}>
                     <TYPE.body>
-                      <Trans id={pack.description} render={({ translation }) => <strong>{translation}</strong>} />
+                      <strong>
+                        <Trans id={pack.description}>{pack.description}</Trans>
+                      </strong>
                     </TYPE.body>
                     <TYPE.body>
                       <Trans>Cards of this pack are created by working closely with the artists.</Trans>

@@ -2,19 +2,20 @@ import 'moment/locale/fr'
 
 import { useCallback, useState, useEffect } from 'react'
 import { Plural, Trans, t } from '@lingui/macro'
+import { Trans as TransReact } from '@lingui/react'
 
-import useCurrentUser from '@/hooks/useCurrentUser'
-import Column from '@/components/Column'
-import { TYPE } from '@/styles/theme'
-import { PrimaryButton } from '@/components/Button'
-import Placeholder from '@/components/Placeholder'
-import PackPurchaseModal from '@/components/PackPurchaseModal'
-import { usePackPurchaseModalToggle } from '@/state/application/hooks'
-import InputStepCounter from '@/components/Input/StepCounter'
-import { useAuthModalToggle } from '@/state/application/hooks'
-import { useSetAuthMode } from '@/state/auth/hooks'
-import { AuthMode } from '@/state/auth/actions'
-import useFormatedDate from '@/hooks/useFormatedDate'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import Column from 'src/components/Column'
+import { TYPE } from 'src/styles/theme'
+import { PrimaryButton } from 'src/components/Button'
+import Placeholder from 'src/components/Placeholder'
+import PackPurchaseModal from 'src/components/PackPurchaseModal'
+import { usePackPurchaseModalToggle } from 'src/state/application/hooks'
+import InputStepCounter from 'src/components/Input/StepCounter'
+import { useAuthModalToggle } from 'src/state/application/hooks'
+import { useSetAuthMode } from 'src/state/auth/hooks'
+import { AuthMode } from 'src/state/auth/actions'
+import useFormatedDate from 'src/hooks/useFormatedDate'
 
 interface PackBreakdownProps {
   name: string
@@ -74,14 +75,9 @@ export default function PackBreakdown({
     <>
       <Column gap={28}>
         <Column gap={8}>
-          <Trans
-            id={name}
-            render={({ translation }) => (
-              <TYPE.body fontWeight={700} fontSize={28}>
-                {translation}
-              </TYPE.body>
-            )}
-          />
+          <TYPE.body fontWeight={700} fontSize={28}>
+            <Trans id={name}>{name}</Trans>
+          </TYPE.body>
           <TYPE.body>
             <Plural value={seasons.length} _1="Season" other="Seasons" />
             {seasons.map((season, index) => `${index > 0 ? ', ' : ' '}${season}`)}
@@ -110,7 +106,7 @@ export default function PackBreakdown({
           </Placeholder>
         )}
       </Column>
-      <Trans
+      <TransReact
         id={name}
         render={({ translation }) => (
           <PackPurchaseModal

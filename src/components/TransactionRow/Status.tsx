@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import Label from '@/components/Label'
+import Label from 'src/components/Label'
 
 interface StatusProps {
   type: 'status' | 'origin'

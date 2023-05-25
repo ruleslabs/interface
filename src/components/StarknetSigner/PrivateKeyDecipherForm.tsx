@@ -1,13 +1,13 @@
 import { useState, useCallback } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans, t } from '@lingui/macro'
 
-import Input from '@/components/Input'
-import Column from '@/components/Column'
-import { TYPE } from '@/styles/theme'
-import { decryptRulesPrivateKey } from '@/utils/wallet'
-import { PrimaryButton } from '@/components/Button'
-import useCurrentUser from '@/hooks/useCurrentUser'
+import Input from 'src/components/Input'
+import Column from 'src/components/Column'
+import { TYPE } from 'src/styles/theme'
+import { decryptRulesPrivateKey } from 'src/utils/wallet'
+import { PrimaryButton } from 'src/components/Button'
+import useCurrentUser from 'src/hooks/useCurrentUser'
 
 const StyledForm = styled.form`
   width: 100%;
@@ -66,7 +66,9 @@ export default function PrivateKeyDecipherForm({ onPrivateKeyDeciphered }: Priva
           />
 
           {error && (
-            <Trans id={error} render={({ translation }) => <TYPE.body color="error">{translation}</TYPE.body>} />
+            <TYPE.body color="error">
+              <Trans id={error}>{error}</Trans>
+            </TYPE.body>
           )}
         </Column>
 

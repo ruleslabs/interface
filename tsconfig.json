@@ -31,23 +31,12 @@
     "module": "commonjs",
     "rootDir": ".",
     "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "@/public/*": [
-        "public/*"
-      ]
-    },
     "declaration": true
   },
   "include": [
-    "next.d.ts",
-    "next-env.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "src/**/*.json",
-    "src/**/*.txt"
+    "src/**/*.json"
   ],
   "exclude": ["node_modules"]
 }

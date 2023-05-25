@@ -1,11 +1,11 @@
 import { useEffect, useCallback, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 
-import { useAppDispatch } from '@/state/hooks'
+import { useAppDispatch } from 'src/state/hooks'
 import { updateEtherPrice, updateBlockNumber, updateEthereumBlockNumber } from './actions'
-import useDebounce from '@/hooks/useDebounce'
-import { BLOCK_POLLING, ETH_PRICE_POLLING } from '@/constants/misc'
-import { rulesSdk } from '@/lib/rulesWallet/rulesSdk'
+import useDebounce from 'src/hooks/useDebounce'
+import { BLOCK_POLLING, ETH_PRICE_POLLING } from 'src/constants/misc'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 
 export function useEtherEURPrice() {
   const dispatch = useAppDispatch()

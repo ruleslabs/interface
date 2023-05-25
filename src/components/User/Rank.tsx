@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import { RowCenter } from '@/components/Row'
-import { TOP_COLLECTOR_RANK_MAX } from '@/constants/misc'
-import { TYPE } from '@/styles/theme'
+import { RowCenter } from 'src/components/Row'
+import { TOP_COLLECTOR_RANK_MAX } from 'src/constants/misc'
+import { TYPE } from 'src/styles/theme'
 
-import CrownIcon from '@/images/crown.svg'
-import RankIcon from '@/images/rank.svg'
+import { ReactComponent as CrownIcon } from 'src/images/crown.svg'
+import { ReactComponent as RankIcon } from 'src/images/rank.svg'
 
 const Rank = styled(RowCenter)<{ topCollector: boolean }>`
   gap: 4px;

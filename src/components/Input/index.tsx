@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
-import { RowCenter } from '@/components/Row'
-import Spinner from '@/components/Spinner'
-import { TYPE } from '@/styles/theme'
+import { RowCenter } from 'src/components/Row'
+import Spinner from 'src/components/Spinner'
+import { TYPE } from 'src/styles/theme'
 
 function InputBase({ onUserInput, ...props }: InputProps | SearchBarProps) {
   const handleInput = useCallback(
@@ -24,7 +24,7 @@ const InputWrapper = styled(RowCenter)<{ prefixed: boolean; $valid: boolean }>`
   box-sizing: border-box;
   padding: ${({ prefixed }) => (prefixed ? '0 20px 0 12px' : '0 20px')};
 
-  :focus-within {
+  &:focus-within {
     outline: ${({ theme }) => theme.primary1} solid 2px;
     outline-offset: -1px;
   }
@@ -38,7 +38,7 @@ const StyledInput = styled(InputBase)`
   outline: none;
   height: 55px;
 
-  :disabled {
+  &:disabled {
     color: ${({ theme }) => theme.text2};
   }
 
@@ -47,12 +47,12 @@ const StyledInput = styled(InputBase)`
   }
 
   :-webkit-autofill,
-  :-webkit-autofill:focus {
+  &:-webkit-autofill:focus {
     transition: background-color 600000s 0s, color 600000s 0s;
   }
 
   ::-webkit-outer-spin-button,
-  ::-webkit-inner-spin-button {
+  &::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
@@ -89,11 +89,11 @@ const StyledSmallInput = styled(InputBase)`
     color: ${({ theme }) => theme.text1}80;
   }
 
-  :focus {
+  &:focus {
     border-color: ${({ theme }) => theme.primary1};
   }
 
-  :focus-visible {
+  &:focus-visible {
     box-shadow: inset 0 0 0 1px ${({ theme }) => theme.primary1};
   }
 `

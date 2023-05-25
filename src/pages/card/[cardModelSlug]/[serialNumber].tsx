@@ -1,25 +1,26 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { gql, useLazyQuery } from '@apollo/client'
-import { useRouter } from 'next/router'
+import { useNavigate } from 'react-router-dom'
 
-import Section from '@/components/Section'
-import { BackButton } from '@/components/Button'
-import Column from '@/components/Column'
-import Card from '@/components/Card'
-import CardModelBreakdown from '@/components/CardModelBreakdown'
-import CardOwnership from '@/components/CardOwnership'
-import CardTransfersHistory from '@/components/CardsTransfersHistory/card'
-import YoutubeEmbed from '@/components/YoutubeEmbed'
-import CardModel3D from '@/components/CardModel3D'
-import useCardsBackPictureUrl from '@/hooks/useCardsBackPictureUrl'
-import GiftModal from '@/components/GiftModal'
-import CreateOfferModal from '@/components/MarketplaceModal/CreateOffer'
-import CancelOfferModal from '@/components/MarketplaceModal/CancelOffer'
-import AcceptOfferModal from '@/components/MarketplaceModal/AcceptOffer'
-import { useSearchOffers } from '@/state/search/hooks'
-import useCardsPendingStatusMap from '@/hooks/useCardsPendingStatusMap'
-import { PaginationSpinner } from '@/components/Spinner'
+import Section from 'src/components/Section'
+import { BackButton } from 'src/components/Button'
+import Column from 'src/components/Column'
+import Card from 'src/components/Card'
+import CardModelBreakdown from 'src/components/CardModelBreakdown'
+import CardOwnership from 'src/components/CardOwnership'
+import CardTransfersHistory from 'src/components/CardsTransfersHistory/card'
+import YoutubeEmbed from 'src/components/YoutubeEmbed'
+import CardModel3D from 'src/components/CardModel3D'
+import useCardsBackPictureUrl from 'src/hooks/useCardsBackPictureUrl'
+import GiftModal from 'src/components/GiftModal'
+import CreateOfferModal from 'src/components/MarketplaceModal/CreateOffer'
+import CancelOfferModal from 'src/components/MarketplaceModal/CancelOffer'
+import AcceptOfferModal from 'src/components/MarketplaceModal/AcceptOffer'
+import { useSearchOffers } from 'src/state/search/hooks'
+import useCardsPendingStatusMap from 'src/hooks/useCardsPendingStatusMap'
+import { PaginationSpinner } from 'src/components/Spinner'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
 const MainSection = styled(Section)`
   position: relative;
@@ -100,9 +101,14 @@ const CARD_QUERY = gql`
 `
 
 export default function CardBreakout() {
-  const router = useRouter()
-  const { cardModelSlug, serialNumber } = router.query
-  const cardSlug = `${cardModelSlug}-${serialNumber}`
+  // query
+  const query = useLocationQuery()
+  const cardModelSlug = query.get('cardModelSlug')
+  const serialNumber = query.get('serialNumber')
+  const cardSlug = useMemo(() => `${cardModelSlug}-${serialNumber}`, [cardModelSlug, serialNumber])
+
+  // nav
+  const navigate = useNavigate()
 
   // card
   const [card, setCard] = useState<any | null>(null)
@@ -137,7 +143,7 @@ export default function CardBreakout() {
   return (
     <>
       <Section marginTop="32px">
-        <BackButton onClick={router.back} />
+        <BackButton onClick={() => navigate(-1)} />
       </Section>
 
       {card && (

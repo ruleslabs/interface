@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useQuery, gql } from '@apollo/client'
 import moment, { Duration } from 'moment'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans, t } from '@lingui/macro'
 
-import Column from '@/components/Column'
-import { RowBetween, RowCenter } from '@/components/Row'
-import { TYPE } from '@/styles/theme'
-import Label from '@/components/Label'
-import { SecondaryButton } from '@/components/Button'
-import { useRevokeSession } from '@/graphql/data/Auth'
+import Column from 'src/components/Column'
+import { RowBetween, RowCenter } from 'src/components/Row'
+import { TYPE } from 'src/styles/theme'
+import Label from 'src/components/Label'
+import { SecondaryButton } from 'src/components/Button'
+import { useRevokeSession } from 'src/graphql/data/Auth'
 
 const StyledSessionRow = styled(RowCenter)`
   width: 100%;
@@ -30,7 +30,7 @@ const StyledSessionRow = styled(RowCenter)`
 `
 
 const RevokeButton = styled(SecondaryButton)`
-  background: ${({ theme }) => theme.bg5};
+  background: ${({ theme }) => theme.bg4};
   border: 1px solid ${({ theme }) => theme.bg3}80;
   color: ${({ theme }) => theme.error};
   min-height: unset;

@@ -1,15 +1,13 @@
-import '@reach/dialog/styles.css'
-
 import React, { useCallback, useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { DialogOverlay, DialogContent } from '@reach/dialog'
 import { animated, useTransition } from '@react-spring/web'
 
-import useCloseModalOnNavigation from '@/hooks/useCloseModalOnNavigation'
-import { round } from '@/utils/math'
-import { MEDIA_QUERIES_BREAKPOINTS } from '@/styles/theme'
-import Column from '@/components/Column'
-import useWindowSize from '@/hooks/useWindowSize'
+import useCloseModalOnNavigation from 'src/hooks/useCloseModalOnNavigation'
+import { round } from 'src/utils/math'
+import { MEDIA_QUERIES_BREAKPOINTS } from 'src/styles/theme'
+import Column from 'src/components/Column'
+import useWindowSize from 'src/hooks/useWindowSize'
 
 const DEFAULT_SIDEBAR_WIDTH = 280
 

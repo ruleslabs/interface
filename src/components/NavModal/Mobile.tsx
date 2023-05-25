@@ -1,19 +1,19 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import SidebarModal, { ModalBody, ModalContent } from '@/components/Modal/Sidebar'
-import { RowCenter } from '@/components/Row'
-import { useNavModalMobileToggle, useSidebarModalOpened } from '@/state/application/hooks'
-import { ApplicationSidebarModal } from '@/state/application/actions'
-import LanguageSelector from '@/components/LanguageSelector'
-import { SidebarNavButton } from '@/components/Button'
-import { useNavLinks } from '@/hooks/useNav'
+import SidebarModal, { ModalBody, ModalContent } from 'src/components/Modal/Sidebar'
+import { RowCenter } from 'src/components/Row'
+import { useNavModalMobileToggle, useSidebarModalOpened } from 'src/state/application/hooks'
+import { ApplicationSidebarModal } from 'src/state/application/actions'
+import LanguageSelector from 'src/components/LanguageSelector'
+import { SidebarNavButton } from 'src/components/Button'
+import { useNavLinks } from 'src/hooks/useNav'
 import Actionable from '../Actionable'
-import Divider from '@/components/Divider'
-import Column from '@/components/Column'
+import Divider from 'src/components/Divider'
+import Column from 'src/components/Column'
 
-import ExternalLinkIcon from '@/images/external-link.svg'
+import { ReactComponent as ExternalLinkIcon } from 'src/images/external-link.svg'
 import { ModalHeader } from '../Modal'
 
 const StyledLanguageSelector = styled(LanguageSelector)`
@@ -51,7 +51,7 @@ export default function NavModalMobile() {
                 >
                   <SidebarNavButton>
                     <RowCenter gap={4}>
-                      <Trans id={navLink.name} render={({ translation }) => <>{translation}</>} />
+                      <Trans id={navLink.name}>{navLink.name}</Trans>
 
                       {navLink.external && <StyledExternalLinkIcon />}
                     </RowCenter>

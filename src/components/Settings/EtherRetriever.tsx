@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Plural, Trans } from '@lingui/macro'
 
-import Column from '@/components/Column'
+import Column from 'src/components/Column'
 import { PrimaryButton } from '../Button'
-import { useRetrieveEthersModalToggle } from '@/state/application/hooks'
-import EtherRetrieveModal from '@/components/EtherRetrieverModal'
-import useCurrentUser from '@/hooks/useCurrentUser'
-import { TYPE } from '@/styles/theme'
+import { useRetrieveEthersModalToggle } from 'src/state/application/hooks'
+import EtherRetrieveModal from 'src/components/EtherRetrieverModal'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import { TYPE } from 'src/styles/theme'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
 const RetrieveButton = styled(PrimaryButton)`

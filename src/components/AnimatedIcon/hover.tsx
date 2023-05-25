@@ -1,7 +1,7 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components/macro'
 
-import Hover from '@/images/hover.svg'
+import { ReactComponent as Hover } from 'src/images/hover.svg'
 
 const StyledHover = styled(Hover)<{ $reverse: boolean }>`
   ${({ $reverse }) => css`
@@ -22,7 +22,7 @@ const StyledHover = styled(Hover)<{ $reverse: boolean }>`
   `}
 `
 
-interface StyledHoverProps extends React.SVGProps<SVGElement> {
+interface StyledHoverProps extends Omit<React.SVGProps<SVGSVGElement>, 'ref'> {
   reverse?: boolean
 }
 
