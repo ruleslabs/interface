@@ -33,6 +33,7 @@ const flexAlignment = [
 
 const layoutStyles = defineProperties({
   conditions: {
+    default: {},
     xs: {},
     ...(Object.keys(breakpoints) as (keyof typeof breakpoints)[]).reduce<{
       [key in keyof typeof breakpoints]: { '@media': string }
@@ -44,7 +45,7 @@ const layoutStyles = defineProperties({
       {} as any
     ),
   },
-  defaultCondition: 'sm',
+  defaultCondition: 'default',
   properties: {
     alignItems: flexAlignment,
     flexDirection: ['row', 'column', 'column-reverse'],

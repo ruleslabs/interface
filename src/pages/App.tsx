@@ -59,13 +59,13 @@ export default function App() {
       <Route path={'settings/starknet'} element={StarknetSettings.withLayout()} />
 
       <Route path={'pack/:packSlug'} element={Pack.withLayout()} />
-      <Route path={'pack/:packSlug/open'} element={<PackOpening />} />
+      <Route path={'pack/:packSlug/open'} element={PackOpening.withLayout()} />
 
       <Route path={'card/:cardModelSlug'} element={CardModel.withLayout()} />
       <Route path={'card/:cardModelSlug/:serialNumber'} element={Card.withLayout()} />
       <Route path={'card/:cardModelSlug/offers'} element={Offers.withLayout()} />
 
-      <Route path={'onboard'} element={<Onboard />} />
+      <Route path={'onboard'} element={Onboard.withLayout()} />
     </Routes>
   )
 }

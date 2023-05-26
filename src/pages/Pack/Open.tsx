@@ -13,6 +13,7 @@ import PackOpeningCards from 'src/components/PackOpening/Cards'
 
 import { ReactComponent as SoundOn } from 'src/images/sound-on.svg'
 import { ReactComponent as SoundOff } from 'src/images/sound-off.svg'
+import EmptyLayout from 'src/components/Layout/Empty'
 
 const PACK_QUERY = gql`
   query ($slug: String!) {
@@ -111,5 +112,11 @@ function PackOpening() {
     </>
   )
 }
+
+PackOpening.withLayout = () => (
+  <EmptyLayout>
+    <PackOpening />
+  </EmptyLayout>
+)
 
 export default PackOpening
