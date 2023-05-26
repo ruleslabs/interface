@@ -6,18 +6,14 @@ import EmptyLayout from 'src/components/Layout/Empty'
 import useWindowSize from 'src/hooks/useWindowSize'
 
 const StyledSection = styled(Section)<{ $windowHeight: number }>`
-  margin-top: 64px;
+  margin-top: 32px;
   position: relative;
+  height: ${({ $windowHeight }) => `${$windowHeight - 32 * 2}px`};
 
   & > * {
     padding-left: inherit;
     padding-right: inherit;
   }
-
-  ${({ theme, $windowHeight }) => theme.media.small`
-      margin-top: 32px;
-      height: ${`${$windowHeight - 32 * 2}px`};
-  `}
 `
 
 function Onboard() {

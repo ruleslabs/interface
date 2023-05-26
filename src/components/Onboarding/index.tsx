@@ -1,6 +1,5 @@
 import { useMemo, useEffect } from 'react'
 
-import Card from 'src/components/Card'
 import { useOnboardingPage, useSetOnboardingPage } from 'src/state/onboarding/hooks'
 import { OnboardingPage } from 'src/state/onboarding/actions'
 import * as styles from './style.css'
@@ -41,7 +40,7 @@ export default function Onboarding() {
 
   return (
     <Box className={styles.onboardingContainer}>
-      <Card className={styles.pageWrapper}>{onboardingPageComponent}</Card>
+      <Box className={styles.pageWrapper}>{onboardingPageComponent}</Box>
     </Box>
   )
 }

@@ -25,7 +25,7 @@ export default function StarterPackPage() {
 
   return (
     <Box className={styles.infoPageContainer}>
-      <Image className={styles.illustration} src={pack?.pictureUrl} marginBottom={{ default: '32', md: '0' }} />
+      <Image className={styles.illustration} src={pack?.pictureUrl} />
 
       <Column className={styles.infoContainer}>
         <Text.HeadlineLarge textAlign={'center'}>
