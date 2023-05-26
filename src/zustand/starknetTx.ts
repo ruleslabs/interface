@@ -36,7 +36,7 @@ export const createStarknetTxSlice = immer<StarknetTxSlice>((set) => ({
 
   // CALLS
 
-  stxSetCalls: (calls: Call[]) => set({ stxCalls: calls }),
+  stxSetCalls: (calls) => set({ stxCalls: calls }),
   stxPushCalls: (...calls: Call[]) =>
     set((state) => {
       state.stxCalls.push(...(calls as any[]))
@@ -44,14 +44,14 @@ export const createStarknetTxSlice = immer<StarknetTxSlice>((set) => ({
 
   // TX VALUE
 
-  stxIncreaseValue: (amount: WeiAmount) =>
+  stxIncreaseValue: (amount) =>
     set((state) => {
       state.stxValue = state.stxValue.add(amount)
     }),
 
   // SIGNING
 
-  stxSetSigning: (signing: boolean) => set({ stxSigning: signing }),
+  stxSetSigning: (signing) => set({ stxSigning: signing }),
 
   // RESET
 
@@ -59,5 +59,5 @@ export const createStarknetTxSlice = immer<StarknetTxSlice>((set) => ({
 
   // HASH
 
-  stxSetHash: (hash: string) => set({ stxHash: hash }),
+  stxSetHash: (hash) => set({ stxHash: hash }),
 }))

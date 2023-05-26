@@ -105,7 +105,7 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
   // components
   const modalContent = useMemo(() => {
     if (!signing) {
-      return txHash ? <Pending txHash={txHash} /> : <>children</>
+      return txHash ? <Pending txHash={txHash} /> : children
     }
 
     if (txHash) return <Confirmation txHash={txHash} confirmationText={display.confirmationText} />

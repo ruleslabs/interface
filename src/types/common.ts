@@ -18,3 +18,21 @@ export type ModalContents<TEnum extends string | number | symbol> = {
     previous?: TEnum
   }
 }
+
+export type OperationType = 'transfer' | 'offerCreation' | 'offerCancelation' | 'offerAcceptance'
+
+export interface Operation {
+  tokenId: string
+  type: OperationType
+  quantity: number
+}
+
+export interface PendingOperation extends Operation {
+  txHash: string
+}
+
+export type PendingOperations = {
+  [tokenId: string]: {
+    [txHash: string]: Omit<Operation, 'tokenId'>
+  }
+}

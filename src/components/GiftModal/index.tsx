@@ -24,6 +24,8 @@ import { cardId, constants, uint256 } from '@rulesorg/sdk-core'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import useStarknetTx from 'src/hooks/useStarknetTx'
+import { Operation } from 'src/types'
+import usePendingOperations from 'src/hooks/usePendingOperations'
 
 const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
 
@@ -143,6 +145,7 @@ interface GiftModalProps {
 
 export default function GiftModal({ cardsIds }: GiftModalProps) {
   const [recipient, setRecipient] = useState<any | null>(null)
+  const [operations, setOperations] = useState<Operation[]>([])
 
   // current user
   const { currentUser } = useCurrentUser()
@@ -175,27 +178,29 @@ export default function GiftModal({ cardsIds }: GiftModalProps) {
     [cards.length]
   )
 
-  // token ids
-  const tokenIds: string[] = useMemo(
-    () =>
-      cards.map((card: any) =>
-        cardId.getStarknetCardId(
-          card.cardModel.artist.displayName,
-          card.cardModel.season,
-          constants.ScarcityName.indexOf(card.cardModel.scarcity.name),
-          card.serialNumber
-        )
-      ),
-    [cards.length]
-  )
+  // pending operation
+  const { subscribePendingOperations } = usePendingOperations()
 
   // starknet tx
-  const { setCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()
+  const { setCalls, resetStarknetTx, signing, setSigning, txHash } = useStarknetTx()
 
   const handleConfirmation = useCallback(() => {
     const rulesAddress = constants.RULES_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
     if (!currentUser?.starknetWallet.address || !recipient?.starknetWallet.address || !rulesAddress) return
 
+    const tokenIds: string[] = cards.map((card: any) =>
+      cardId.getStarknetCardId(
+        card.cardModel.artist.displayName,
+        card.cardModel.season,
+        constants.ScarcityName.indexOf(card.cardModel.scarcity.name),
+        card.serialNumber
+      )
+    )
+
+    // save operation
+    setOperations(tokenIds.map((tokenId) => ({ tokenId, type: 'transfer', quantity: 1 })))
+
+    // save call
     setCalls([
       {
         contractAddress: rulesAddress,
@@ -218,16 +223,21 @@ export default function GiftModal({ cardsIds }: GiftModalProps) {
         ],
       },
     ])
-    setSigning(true)
-  }, [tokenIds.length, address, recipient?.starknetWallet.address, setSigning, setCalls])
 
-  // on close modal
+    setSigning(true)
+  }, [cards.length, address, recipient?.starknetWallet.address, setSigning, setCalls])
+
+  // on modal status update
   useEffect(() => {
-    if (isOpen) {
-      setRecipient(null)
-      resetStarknetTx()
-    }
+    setRecipient(null)
+    resetStarknetTx()
   }, [isOpen])
+
+  useEffect(() => {
+    if (isOpen && txHash && signing) {
+      subscribePendingOperations(operations, txHash)
+    }
+  }, [isOpen, signing, txHash, operations.length])
 
   if (!currentUser) return null
 
