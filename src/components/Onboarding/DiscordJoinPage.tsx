@@ -40,7 +40,7 @@ export default function DiscordJoinPage({ nextPage }: DiscordJoinPageProps) {
 
           <StyledDiscordStatus redirectPath="/onboard" />
 
-          <NextButton onClick={handleNextPage} width={'250'} large>
+          <NextButton onClick={handleNextPage} width={'256'} large>
             <Trans>Skip</Trans>
           </NextButton>
         </Column>

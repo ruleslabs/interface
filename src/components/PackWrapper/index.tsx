@@ -65,6 +65,8 @@ const StyledPackPosterWrapper = styled(RowCenter)`
   width: 100%;
   justify-content: center;
   position: relative;
+  overflow: hidden;
+  border-radius: 6px;
 
   ${({ theme }) => theme.media.medium`
     padding: 32px 0;
@@ -77,7 +79,6 @@ const StyledPackPosterWrapper = styled(RowCenter)`
 const StyledPackBg = styled(PackBg)`
   position: absolute;
   height: 100%;
-  z-index: -1;
   right: 0;
 
   * {
@@ -91,7 +92,6 @@ const StyledPackBg = styled(PackBg)`
 
 const StyledLogoOutline = styled(LogoOutline)`
   position: absolute;
-  z-index: -1;
   width: 80%;
 
   * {

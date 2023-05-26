@@ -8,7 +8,7 @@ import { recipes } from 'src/theme/utils/recipes'
 export const base = recipe({
   base: sprinkles({
     borderRadius: 'classic',
-    fontWeight: 'medium',
+    fontWeight: 'semibold',
     cursor: 'pointer',
     fontSize: '16',
     color: 'text1',

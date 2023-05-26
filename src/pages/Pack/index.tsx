@@ -17,6 +17,7 @@ import Grid from 'src/components/Grid'
 import { PackPosterWrapper } from 'src/components/PackWrapper'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import DefaultLayout from 'src/components/Layout'
+import Image from 'src/theme/components/Image'
 
 const StyledMainSection = styled(Section)`
   margin-bottom: 84px;
@@ -145,7 +146,7 @@ function Pack() {
           <StyledMainSection>
             <Row gap={52} switchDirection="medium">
               <PackPosterWrapper>
-                <img src={pack.pictureUrl} width="256px" />
+                <Image src={pack.pictureUrl} zIndex={'1'} width={'256'} />
               </PackPosterWrapper>
               <CardsColumn>
                 <Card>

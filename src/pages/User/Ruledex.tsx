@@ -37,6 +37,10 @@ const ScarcitySelector = styled(SecondaryButton)<{ scarcity: string; active: boo
   background: transparent;
   padding: 0;
 
+  &:hover {
+    background: transparent;
+  }
+
   & > div {
     background: ${({ theme }) => theme.bg2};
     border-style: solid;
