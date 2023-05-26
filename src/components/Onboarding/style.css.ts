@@ -14,7 +14,7 @@ export const onboardingContainer = sprinkles({
 
 export const pageWrapper = style([
   {
-    padding: '0',
+    padding: '0 !important',
   },
   sprinkles({
     width: 'full',
@@ -24,14 +24,21 @@ export const pageWrapper = style([
   }),
 ])
 
-const pageContainerBase = style({
-  height: '58vw',
-  '@media': {
-    [`screen and (max-width: ${breakpoints.md}px)`]: {
-      height: '100%',
+const pageContainerBase = style([
+  {
+    height: '58vw',
+    '@media': {
+      [`screen and (max-width: ${breakpoints.md}px)`]: {
+        height: '100%',
+      },
     },
   },
-})
+  sprinkles({
+    paddingX: {
+      md: '16',
+    },
+  }),
+])
 
 export const infoPageContainer = style([
   pageContainerBase,
@@ -42,18 +49,22 @@ export const infoPageContainer = style([
       md: 'center',
     },
     flexDirection: {
-      md: 'column-reverse',
+      md: 'column',
     },
     justifyContent: {
       default: 'center',
-      md: 'space-between',
+      md: 'space-around',
     },
     gap: {
       default: '64',
       lg: '32',
+      md: '0',
     },
     height: 'full',
-    paddingTop: '32',
+    paddingTop: {
+      default: '32',
+      md: '0',
+    },
     width: 'full',
   }),
 ])
@@ -61,10 +72,10 @@ export const infoPageContainer = style([
 export const infoContainer = sprinkles({
   gap: '16',
   maxWidth: '386',
-  marginX: {
-    md: '16',
+  marginTop: {
+    default: '64',
+    md: '0',
   },
-  marginTop: '64',
 })
 
 export const illustration = style([
@@ -72,7 +83,7 @@ export const illustration = style([
     objectPosition: 'bottom',
     '@media': {
       [`screen and (max-width: ${breakpoints.md}px)`]: {
-        height: '50%',
+        height: '40%',
         width: 'auto',
       },
     },

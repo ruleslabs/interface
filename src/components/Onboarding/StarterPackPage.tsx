@@ -25,7 +25,7 @@ export default function StarterPackPage() {
 
   return (
     <Box className={styles.infoPageContainer}>
-      <Image className={styles.illustration} src={pack?.pictureUrl} marginBottom={'32'} />
+      <Image className={styles.illustration} src={pack?.pictureUrl} marginBottom={{ default: '32', md: '0' }} />
 
       <Column className={styles.infoContainer}>
         <Text.HeadlineLarge textAlign={'center'}>
@@ -40,7 +40,7 @@ export default function StarterPackPage() {
         </Text.Body>
 
         <Link href={pack ? `/pack/${pack?.slug}` : ''}>
-          <PrimaryButton width={'full'} disabled={!pack} large>
+          <PrimaryButton width={'full'} disabled={!pack} marginTop={'16'} large>
             {pack ? <Trans>Buy - {(pack.price / 100).toFixed(2)}€</Trans> : 'Loading ...'}
           </PrimaryButton>
         </Link>
