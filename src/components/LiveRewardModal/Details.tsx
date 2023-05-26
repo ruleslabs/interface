@@ -1,6 +1,5 @@
 import styled from 'styled-components/macro'
 import { Trans, t } from '@lingui/macro'
-import { Trans as TransReact } from '@lingui/react'
 
 import { ModalHeader } from 'src/components/Modal'
 import ClassicModal, { ModalContent, ModalBody } from 'src/components/Modal/Classic'
@@ -61,11 +60,9 @@ export default function LiveRewardDetailsModal({ liveReward }: LiveRewardDetails
   return (
     <ClassicModal onDismiss={toggleLiveRewardDetailsModal} isOpen={isOpen}>
       <ModalContent>
-        <TransReact
-          id={liveReward.displayName}
-          render={({ translation }) => (
-            <ModalHeader onDismiss={toggleLiveRewardDetailsModal} title={translation as string} />
-          )}
+        <ModalHeader
+          onDismiss={toggleLiveRewardDetailsModal}
+          title={t({ id: liveReward.displayName, message: liveReward.displayName })}
         />
 
         <ModalBody>

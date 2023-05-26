@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components/macro'
-import { Trans } from '@lingui/react'
+import { Trans } from '@lingui/macro'
 
 import { TYPE } from 'src/styles/theme'
 import Row from 'src/components/Row'
@@ -57,7 +57,7 @@ export default function CardModelHistory({ cardModelId }: CardModelHistoryProps)
               fontWeight={700}
               onClick={sort.key === sortingKey ? undefined : () => setSortingKey(sort.key)}
             >
-              <Trans id={sort.name} />
+              <Trans id={sort.name}>{sort.name}</Trans>
             </TYPE.body>
           ))}
       </SortingTitle>

@@ -2,7 +2,6 @@ import 'moment/locale/fr'
 
 import { useCallback, useState, useEffect } from 'react'
 import { Plural, Trans, t } from '@lingui/macro'
-import { Trans as TransReact } from '@lingui/react'
 
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import Column from 'src/components/Column'
@@ -106,17 +105,12 @@ export default function PackBreakdown({
           </Placeholder>
         )}
       </Column>
-      <TransReact
-        id={name}
-        render={({ translation }) => (
-          <PackPurchaseModal
-            price={price}
-            quantity={quantity}
-            onSuccessfulPackPurchase={onSuccessfulPackPurchase}
-            packId={id}
-            packName={typeof translation === 'string' ? translation : ''}
-          />
-        )}
+      <PackPurchaseModal
+        price={price}
+        quantity={quantity}
+        onSuccessfulPackPurchase={onSuccessfulPackPurchase}
+        packId={id}
+        packName={t({ id: name, message: name })}
       />
     </>
   )
