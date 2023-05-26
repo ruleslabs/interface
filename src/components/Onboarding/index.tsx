@@ -1,57 +1,47 @@
-import { useMemo, useCallback } from 'react'
-import styled from 'styled-components/macro'
+import { useMemo, useEffect } from 'react'
 
 import Card from 'src/components/Card'
-import { useOnboardingPage } from 'src/state/onboarding/hooks'
+import { useOnboardingPage, useSetOnboardingPage } from 'src/state/onboarding/hooks'
 import { OnboardingPage } from 'src/state/onboarding/actions'
+import * as styles from './style.css'
+import Box from 'src/theme/components/Box'
+import useLocationQuery from 'src/hooks/useLocationQuery'
 
 import DiscordJoinPage from './DiscordJoinPage'
 import IntroductionPage from './IntroductionPage'
 import StarterPackPage from './StarterPackPage'
-import { useLocation } from 'react-router-dom'
-import useLocationQuery from 'src/hooks/useLocationQuery'
-
-const StyledOnboarding = styled(Card)`
-  margin: 0;
-  padding: 0;
-  width: 100%;
-
-  ${({ theme }) => theme.media.medium`
-    height: 100%;
-    padding: 28px;
-  `}
-`
 
 export default function Onboarding() {
   // page
   const onboardingPage = useOnboardingPage()
-
-  // pathname
-  const { pathname } = useLocation()
-  const anchor = useMemo(() => pathname.split('#')[1], [pathname])
+  const setOnboardingPage = useSetOnboardingPage()
 
   // query
   const query = useLocationQuery()
   const code = query.get('code')
 
-  const renderModal = useCallback(
-    (onboardingPage: OnboardingPage | null) => {
-      if (!onboardingPage && code) onboardingPage = OnboardingPage.DISCORD_JOIN
+  // directly switch to discord page if a code is available
+  useEffect(() => {
+    if (code) setOnboardingPage(OnboardingPage.DISCORD_JOIN)
+  }, [])
 
-      switch (onboardingPage) {
-        default:
-        case OnboardingPage.INTRODUCTION:
-          return <IntroductionPage nextPage={OnboardingPage.DISCORD_JOIN} />
+  const onboardingPageComponent = useMemo(() => {
+    switch (onboardingPage) {
+      default:
+      case OnboardingPage.INTRODUCTION:
+        return <IntroductionPage nextPage={OnboardingPage.DISCORD_JOIN} />
 
-        case OnboardingPage.STARTER_PACK:
-          return <StarterPackPage />
+      case OnboardingPage.STARTER_PACK:
+        return <StarterPackPage />
 
-        case OnboardingPage.DISCORD_JOIN:
-          return <DiscordJoinPage nextPage={OnboardingPage.STARTER_PACK} />
-      }
-    },
-    [anchor]
+      case OnboardingPage.DISCORD_JOIN:
+        return <DiscordJoinPage nextPage={OnboardingPage.STARTER_PACK} />
+    }
+  }, [onboardingPage])
+
+  return (
+    <Box className={styles.onboardingContainer}>
+      <Card className={styles.pageWrapper}>{onboardingPageComponent}</Card>
+    </Box>
   )
-
-  return <StyledOnboarding>{renderModal(onboardingPage)}</StyledOnboarding>
 }

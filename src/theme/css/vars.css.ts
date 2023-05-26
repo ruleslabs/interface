@@ -134,6 +134,7 @@ export const dimensions = {
   '292': '292px',
   '332': '332px',
   '386': '386px',
+  '440': '440px',
   half: '50%',
   full: '100%',
   min: 'min-content',

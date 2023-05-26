@@ -40,7 +40,7 @@ const layoutStyles = defineProperties({
     }>(
       (acc, key) => ({
         ...acc,
-        [key]: { '@media': `screen and (min-width: ${breakpoints[key]}px)` },
+        [key]: { '@media': `screen and (max-width: ${breakpoints[key]}px)` },
       }),
       {} as any
     ),

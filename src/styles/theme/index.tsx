@@ -8,7 +8,7 @@ const MISC_MEDIA_QUERIES = {
 
 export const MEDIA_QUERIES_BREAKPOINTS = {
   extraSmall: 481,
-  small: 769,
+  small: 768,
   medium: 1024,
   large: 1200,
 }

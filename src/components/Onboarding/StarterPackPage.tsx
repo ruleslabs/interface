@@ -1,23 +1,13 @@
-import styled from 'styled-components/macro'
 import { gql, useQuery } from '@apollo/client'
 import { Trans } from '@lingui/macro'
 
-import { TYPE } from 'src/styles/theme'
-import { RowCenter } from 'src/components/Row'
 import Column from 'src/components/Column'
-import { PageBody, PageContent, PageWrapper, MainActionButton } from './SubComponents'
 import Link from 'src/components/Link'
-
-const PackPictureWrapper = styled(RowCenter)`
-  width: 35%;
-  justify-content: center;
-
-  img {
-    max-width: 256px;
-    width: 100%;
-    object-fit: contain;
-  }
-`
+import Box from 'src/theme/components/Box'
+import * as styles from './style.css'
+import * as Text from 'src/theme/components/Text'
+import Image from 'src/theme/components/Image'
+import { PrimaryButton } from '../Button'
 
 const LAST_STARTER_PACK = gql`
   query {
@@ -34,33 +24,27 @@ export default function StarterPackPage() {
   const pack = lastStarterPackQuery.data?.lastStarterPack
 
   return (
-    <PageBody>
-      <PageWrapper>
-        <PackPictureWrapper>
-          <img src={pack?.pictureUrl} />
-        </PackPictureWrapper>
-        <PageContent>
-          <TYPE.large textAlign="center">
-            <Trans>Get your first pack</Trans>
-          </TYPE.large>
-          <TYPE.body>
-            <Trans>
-              RULES cards can be found in packs. Packs are available in limited quantity drops. Don&apos;t panic! We
-              have locked a Starter Pack for you. This pack contains 3 common cards that will get you started.
-            </Trans>
-          </TYPE.body>
-          <Column gap={16}>
-            {pack && (
-              <Link href={`/pack/${pack.slug}`}>
-                <MainActionButton large>
-                  <Trans>Buy - {(pack.price / 100).toFixed(2)}€</Trans>
-                </MainActionButton>
-              </Link>
-            )}
-          </Column>
-        </PageContent>
-        <div />
-      </PageWrapper>
-    </PageBody>
+    <Box className={styles.infoPageContainer}>
+      <Image className={styles.illustration} src={pack?.pictureUrl} marginBottom={'32'} />
+
+      <Column className={styles.infoContainer}>
+        <Text.HeadlineLarge textAlign={'center'}>
+          <Trans>Get your first pack</Trans>
+        </Text.HeadlineLarge>
+
+        <Text.Body>
+          <Trans>
+            RULES cards can be found in packs. Packs are available in limited quantity drops. Don&apos;t panic! We have
+            have locked a Starter Pack for you. This pack contains 3 common cards that will get you started.
+          </Trans>
+        </Text.Body>
+
+        <Link href={pack ? `/pack/${pack?.slug}` : ''}>
+          <PrimaryButton width={'full'} disabled={!pack} large>
+            {pack ? <Trans>Buy - {(pack.price / 100).toFixed(2)}€</Trans> : 'Loading ...'}
+          </PrimaryButton>
+        </Link>
+      </Column>
+    </Box>
   )
 }

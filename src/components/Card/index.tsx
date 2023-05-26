@@ -6,7 +6,6 @@ const Card = styled.div`
   padding: 22px 32px;
   background: ${({ theme }) => theme.bg2};
   border: 1px solid ${({ theme }) => theme.bg3};
-  backdrop-filter: blur;
   border-radius: 6px;
   width: 100%;
 
