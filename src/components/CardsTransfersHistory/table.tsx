@@ -4,6 +4,7 @@ import moment from 'moment'
 import { useQuery, gql } from '@apollo/client'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { Trans, t } from '@lingui/macro'
+import { useParams } from 'react-router-dom'
 
 import { NULL_PRICE } from 'src/constants/misc'
 import { TYPE } from 'src/styles/theme'
@@ -11,7 +12,6 @@ import Table from 'src/components/Table'
 import Avatar from 'src/components/Avatar'
 import Link from 'src/components/Link'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
-import useLocationQuery from 'src/hooks/useLocationQuery'
 
 const StyledAvatar = styled(Avatar)`
   width: 36px;
@@ -53,7 +53,7 @@ interface TransfersTableProps {
 
 export default function TransfersTable({ transfers, loading, error, showSerialNumber }: TransfersTableProps) {
   // query
-  const query = useLocationQuery()
+  const { cardModelSlug } = useParams()
 
   // user table
   const starknetAddresses = useMemo(
@@ -174,7 +174,7 @@ export default function TransfersTable({ transfers, loading, error, showSerialNu
               </td>
               {showSerialNumber && (
                 <td>
-                  <Link href={`/card/${query.get('cardModelSlug')}/${transfer.serialNumber}`}>
+                  <Link href={`/card/${cardModelSlug}/${transfer.serialNumber}`}>
                     <TYPE.body clickable>#{transfer.serialNumber}</TYPE.body>
                   </Link>
                 </td>

@@ -523,7 +523,7 @@ export function useSearchedUsers() {
   return { searchedUsers: orderedSearchedUsers, loading, error }
 }
 
-export function useStarknetTransactionsForAddress(userId: string, address?: string): ApolloSearch {
+export function useStarknetTransactionsForAddress(userId?: string, address?: string): ApolloSearch {
   // pagination cursor and page
   const [endCursor, setEndCursor] = useState<string | null>(null)
   const [hasNextPage, setHasNextPage] = useState(false)

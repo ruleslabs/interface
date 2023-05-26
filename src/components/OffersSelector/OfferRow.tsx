@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
-import { useLocation } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import Link from 'src/components/Link'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
@@ -63,7 +63,7 @@ const MemoizedOfferRow = React.memo(function OfferRows({
   scarcityMaxLowSerial,
   price,
 }: OfferRowProps) {
-  const { pathname } = useLocation()
+  const { cardModelSlug } = useParams()
 
   // parsed price
   const parsedPrice = useMemo(() => WeiAmount.fromRawAmount(`0x${price}`), [price])
@@ -83,7 +83,7 @@ const MemoizedOfferRow = React.memo(function OfferRows({
         </Price>
       </td>
       <td>
-        <Link href={`${pathname.replace(/buy$/, `${serialNumber}`)}`}>
+        <Link href={`/card/${cardModelSlug}/${serialNumber}`}>
           <TYPE.body color={serialNumber <= scarcityMaxLowSerial ? 'lowSerial' : undefined} clickable>
             #{serialNumber}
           </TYPE.body>

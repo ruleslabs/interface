@@ -37,11 +37,11 @@ const CARDS_QUERY = gql`
 `
 
 interface DeckInsertionModalProps {
-  starknetWalletAddress: string
+  address?: string
   cardIndex: number
 }
 
-export default function DeckInsertionModal({ starknetWalletAddress, cardIndex }: DeckInsertionModalProps) {
+export default function DeckInsertionModal({ address, cardIndex }: DeckInsertionModalProps) {
   // search bar
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 200)
@@ -104,9 +104,9 @@ export default function DeckInsertionModal({ starknetWalletAddress, cardIndex }:
     [queryCardsData]
   )
   const cardsSearch = useSearchCards({
-    facets: { ownerStarknetAddress: starknetWalletAddress, cardId: dashedDeckCardIds },
+    facets: { ownerStarknetAddress: address, cardId: dashedDeckCardIds },
     search: debouncedSearch,
-    skip: !isOpen,
+    skip: !isOpen || !address,
     onPageFetched,
   })
 

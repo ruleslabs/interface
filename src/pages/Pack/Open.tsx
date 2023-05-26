@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { useQuery, gql } from '@apollo/client'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { TYPE } from 'src/styles/theme'
 import Section from 'src/components/Section'
@@ -10,7 +10,6 @@ import { useAudioLoop } from 'src/state/packOpening/hooks'
 import { Sound } from 'src/state/packOpening/actions'
 import PackOpeningPack from 'src/components/PackOpening/Pack'
 import PackOpeningCards from 'src/components/PackOpening/Cards'
-import useLocationQuery from 'src/hooks/useLocationQuery'
 
 import { ReactComponent as SoundOn } from 'src/images/sound-on.svg'
 import { ReactComponent as SoundOff } from 'src/images/sound-off.svg'
@@ -59,8 +58,7 @@ const SoundSwitch = ({ on, toggleSound }: SoundSwitchProps) => {
 
 function PackOpening() {
   // query
-  const query = useLocationQuery()
-  const packSlug = query.get('packSlug')
+  const { packSlug } = useParams()
 
   // nav
   const navigate = useNavigate()
@@ -113,7 +111,5 @@ function PackOpening() {
     </>
   )
 }
-
-PackOpening.getLayout = (page: JSX.Element) => page
 
 export default PackOpening

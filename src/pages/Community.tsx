@@ -16,6 +16,7 @@ import Column, { ColumnCenter } from 'src/components/Column'
 import { PaginationSpinner } from 'src/components/Spinner'
 import Subtitle from 'src/components/Text/Subtitle'
 import { TYPE } from 'src/styles/theme'
+import DefaultLayout from 'src/components/Layout'
 
 const UsersRow = styled(Row)`
   width: 100%;
@@ -71,7 +72,7 @@ function User({ username, pictureUrl, fallbackUrl, certified, cScore }: CustomUs
   )
 }
 
-export default function Community() {
+function Community() {
   // nav
   const navigate = useNavigate()
 
@@ -138,3 +139,11 @@ export default function Community() {
     </>
   )
 }
+
+Community.withLayout = () => (
+  <DefaultLayout>
+    <Community />
+  </DefaultLayout>
+)
+
+export default Community

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components/macro'
 import { useQuery, gql } from '@apollo/client'
 import { Trans } from '@lingui/macro'
@@ -12,10 +12,9 @@ import { RowCenter } from 'src/components/Row'
 import DeckInsertionModal from 'src/components/DeckInsertionModal'
 import { useDeckState, useSetDeckCards, useDeckActionHandlers } from 'src/state/deck/hooks'
 import { Deck } from 'src/state/deck/actions'
-import useCurrentUser from 'src/hooks/useCurrentUser'
 import { useDeckInsertionModalToggle } from 'src/state/application/hooks'
 import { SecondaryButton } from 'src/components/Button'
-import useLocationQuery from 'src/hooks/useLocationQuery'
+import useSearchedUser from 'src/hooks/useSearchedUser'
 
 const ShowcaseSection = styled(Section)`
   position: relative;
@@ -198,17 +197,9 @@ const DeckCards = ({ deck, indexes, onInsertion, onRemove, isCurrentUserProfile 
   )
 }
 
-interface ProfileProps {
-  address: string
-}
-
-function Profile({ address }: ProfileProps) {
-  const query = useLocationQuery()
-  const username = query.get('username')
-  const userSlug = useMemo(() => username?.toLowerCase() ?? null, [username])
-
-  const { currentUser } = useCurrentUser()
-  const isCurrentUserProfile = currentUser?.slug === userSlug
+function UserProfile() {
+  // searched user
+  const [user] = useSearchedUser()
 
   const [cardIndexToInsert, setCardIndexToInsert] = useState(0)
   const toggleDeckInsertionModal = useDeckInsertionModalToggle()
@@ -228,7 +219,7 @@ function Profile({ address }: ProfileProps) {
     data: userData,
     loading,
     error,
-  } = useQuery(QUERY_USER_SHOWCASED_DECK, { variables: { slug: userSlug }, skip: !userSlug })
+  } = useQuery(QUERY_USER_SHOWCASED_DECK, { variables: { slug: user?.slug }, skip: !user?.slug })
 
   const showcasedDeck = userData?.user?.showcasedDeck
 
@@ -236,12 +227,13 @@ function Profile({ address }: ProfileProps) {
     setDeckCards(showcasedDeck?.deckCards ?? [])
   }, [showcasedDeck?.deckCards, setDeckCards])
 
-  if (!!error || !!loading) {
-    if (!!error) console.error(error)
+  // TODO: ...
+  if (error || loading) {
+    if (error) console.error(error)
     return null
   }
 
-  if (!error && !loading && !showcasedDeck) {
+  if (!showcasedDeck || !user) {
     return <TYPE.body>Deck not found</TYPE.body>
   }
 
@@ -255,7 +247,7 @@ function Profile({ address }: ProfileProps) {
             deck={deck}
             onRemove={onRemove}
             onInsertion={toggleDeckInsertionModalForCardIndex}
-            isCurrentUserProfile={isCurrentUserProfile}
+            isCurrentUserProfile={user.isCurrentUser}
           />
         </DeckGridFirstLine>
         <DeckGridSecondLine>
@@ -264,21 +256,21 @@ function Profile({ address }: ProfileProps) {
             deck={deck}
             onRemove={onRemove}
             onInsertion={toggleDeckInsertionModalForCardIndex}
-            isCurrentUserProfile={isCurrentUserProfile}
+            isCurrentUserProfile={user.isCurrentUser}
           />
         </DeckGridSecondLine>
       </ShowcaseSection>
-      {isCurrentUserProfile && <DeckInsertionModal starknetWalletAddress={address} cardIndex={cardIndexToInsert} />}
+      {user.isCurrentUser && <DeckInsertionModal address={user.address} cardIndex={cardIndexToInsert} />}
     </>
   )
 }
 
-Profile.getLayout = (page: JSX.Element) => {
-  return (
-    <DefaultLayout>
-      <ProfileLayout>{page}</ProfileLayout>
-    </DefaultLayout>
-  )
-}
+UserProfile.withLayout = () => (
+  <DefaultLayout>
+    <ProfileLayout>
+      <UserProfile />
+    </ProfileLayout>
+  </DefaultLayout>
+)
 
-export default Profile
+export default UserProfile

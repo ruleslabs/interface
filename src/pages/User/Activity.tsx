@@ -6,17 +6,15 @@ import Column from 'src/components/Column'
 import TransactionRow from 'src/components/TransactionRow'
 import { PaginationSpinner } from 'src/components/Spinner'
 import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
+import useSearchedUser from 'src/hooks/useSearchedUser'
 
 // Main Component
 
-interface ExplorerProps {
-  address: string
-  publicKey: string
-  userId: string
-}
+function UserActivity() {
+  // searched user
+  const [user] = useSearchedUser()
 
-function Explorer({ address, publicKey, userId }: ExplorerProps) {
-  const starknetTransactionQuery = useStarknetTransactionsForAddress(userId, address)
+  const starknetTransactionQuery = useStarknetTransactionsForAddress(user?.id, user?.address)
   const starknetTransactions = starknetTransactionQuery.data
 
   // loading / error
@@ -24,6 +22,8 @@ function Explorer({ address, publicKey, userId }: ExplorerProps) {
 
   // infinite scroll
   const lastTxRef = useInfiniteScroll({ nextPage: starknetTransactionQuery.nextPage, loading: isLoading })
+
+  if (!user) return null
 
   return (
     <Section marginTop="32px">
@@ -33,8 +33,8 @@ function Explorer({ address, publicKey, userId }: ExplorerProps) {
             key={starknetTransaction.hash}
             innerRef={index + 1 === starknetTransactions.length ? lastTxRef : undefined}
             fromAddress={starknetTransaction.fromAddress}
-            address={address}
-            publicKey={publicKey}
+            address={user.address}
+            publicKey={user.publicKey}
             hash={starknetTransaction.hash}
             status={starknetTransaction.status}
             code={starknetTransaction.code}
@@ -53,12 +53,12 @@ function Explorer({ address, publicKey, userId }: ExplorerProps) {
   )
 }
 
-Explorer.getLayout = (page: JSX.Element) => {
-  return (
-    <DefaultLayout>
-      <ProfileLayout>{page}</ProfileLayout>
-    </DefaultLayout>
-  )
-}
+UserActivity.withLayout = () => (
+  <DefaultLayout>
+    <ProfileLayout>
+      <UserActivity />
+    </ProfileLayout>
+  </DefaultLayout>
+)
 
-export default Explorer
+export default UserActivity

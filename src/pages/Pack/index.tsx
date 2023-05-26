@@ -3,7 +3,7 @@ import { gql } from '@apollo/client'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import { apolloClient } from 'src/graphql/data/apollo'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import Section from 'src/components/Section'
 import { BackButton } from 'src/components/Button'
@@ -16,7 +16,7 @@ import CardModel from 'src/components/CardModel'
 import Grid from 'src/components/Grid'
 import { PackPosterWrapper } from 'src/components/PackWrapper'
 import useCurrentUser from 'src/hooks/useCurrentUser'
-import useLocationQuery from 'src/hooks/useLocationQuery'
+import DefaultLayout from 'src/components/Layout'
 
 const StyledMainSection = styled(Section)`
   margin-bottom: 84px;
@@ -92,10 +92,9 @@ const QUERY_PACK = gql`
   }
 `
 
-export default function Pack() {
+function Pack() {
   // query
-  const query = useLocationQuery()
-  const packSlug = query.get('packSlug')
+  const { packSlug } = useParams()
 
   // nav
   const navigate = useNavigate()
@@ -105,6 +104,7 @@ export default function Pack() {
 
   const [packQuery, setPackQuery] = useState<any>({})
 
+  // TODO: wtf ??
   useEffect(() => {
     apolloClient
       ?.query({ query: QUERY_PACK, variables: { slug: packSlug } })
@@ -206,3 +206,11 @@ export default function Pack() {
     </>
   )
 }
+
+Pack.withLayout = () => (
+  <DefaultLayout>
+    <Pack />
+  </DefaultLayout>
+)
+
+export default Pack

@@ -12,7 +12,6 @@ import Grid from 'src/components/Grid'
 import { useSearchCards, CardsSortingKey } from 'src/state/search/hooks'
 import { TYPE } from 'src/styles/theme'
 import EmptyTab, { EmptyCardsTabOfCurrentUser } from 'src/components/EmptyTab'
-import useCurrentUser from 'src/hooks/useCurrentUser'
 import useCardsPendingStatusMap from 'src/hooks/useCardsPendingStatusMap'
 import { PaginationSpinner } from 'src/components/Spinner'
 import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
@@ -21,9 +20,9 @@ import { PrimaryButton, SecondaryButton } from 'src/components/Button'
 import CreateOfferModal from 'src/components/MarketplaceModal/CreateOffer'
 import { useCreateOfferModalToggle, useOfferModalToggle } from 'src/state/application/hooks'
 import GiftModal from 'src/components/GiftModal'
-import useLocationQuery from 'src/hooks/useLocationQuery'
 
 import { ReactComponent as Present } from 'src/images/present.svg'
+import useSearchedUser from 'src/hooks/useSearchedUser'
 
 // css
 
@@ -171,20 +170,9 @@ const sortsData: SortsData<CardsSortingKey> = [
   { name: 'Alphabetical Z-A', key: 'artistDesc', desc: true },
 ]
 
-interface CardsProps {
-  userId: string
-  address: string
-}
-
-function Cards({ userId, address }: CardsProps) {
-  // query
-  const query = useLocationQuery()
-  const username = query.get('username')
-  const userSlug = useMemo(() => username?.toLowerCase() ?? null, [username])
-
+function UserCards() {
   // current user
-  const { currentUser } = useCurrentUser()
-  const isCurrentUserProfile = currentUser?.slug === userSlug
+  const [user] = useSearchedUser()
 
   // modals
   const toggleCreateOfferModal = useCreateOfferModalToggle()
@@ -209,7 +197,7 @@ function Cards({ userId, address }: CardsProps) {
   })
 
   // query cards in delivery data
-  const cardsInDeliveryQuery = useQuery(CARDS_IN_DELIVERY_QUERY, { variables: { userId }, skip: !userId })
+  const cardsInDeliveryQuery = useQuery(CARDS_IN_DELIVERY_QUERY, { variables: { userId: user?.id }, skip: !user?.id })
   const cardsInDelivery = cardsInDeliveryQuery.data?.cardsInDeliveryForUser ?? []
 
   // cards count
@@ -231,9 +219,9 @@ function Cards({ userId, address }: CardsProps) {
     [queryCardsData]
   )
   const cardsSearch = useSearchCards({
-    facets: { ownerStarknetAddress: address },
+    facets: { ownerStarknetAddress: user?.address },
     sortingKey: sortsData[sortIndex].key,
-    skip: !address,
+    skip: !user?.address,
     onPageFetched,
   })
 
@@ -265,6 +253,8 @@ function Cards({ userId, address }: CardsProps) {
     [selectedCardsIds.length]
   )
 
+  if (!user) return null
+
   return (
     <>
       <StickyWrapper>
@@ -276,7 +266,7 @@ function Cards({ userId, address }: CardsProps) {
                   <Plural value={cardsCount} _1="{cardsCount} card" other="{cardsCount} cards" />
                 </TYPE.body>
 
-                {isCurrentUserProfile && (
+                {user.isCurrentUser && (
                   <SelectionButton onClick={toggleSelectionMode}>
                     {selectionModeEnabled ? t`Cancel` : t`Select`}
                   </SelectionButton>
@@ -323,7 +313,7 @@ function Cards({ userId, address }: CardsProps) {
 
         {!isLoading &&
           !cardsCount &&
-          (isCurrentUserProfile ? <EmptyCardsTabOfCurrentUser /> : <EmptyTab emptyText={t`No cards`} />)}
+          (user.isCurrentUser ? <EmptyCardsTabOfCurrentUser /> : <EmptyTab emptyText={t`No cards`} />)}
 
         <PaginationSpinner loading={isLoading} />
       </Section>
@@ -355,12 +345,12 @@ function Cards({ userId, address }: CardsProps) {
   )
 }
 
-Cards.getLayout = (page: JSX.Element) => {
-  return (
-    <DefaultLayout>
-      <ProfileLayout>{page}</ProfileLayout>
-    </DefaultLayout>
-  )
-}
+UserCards.withLayout = () => (
+  <DefaultLayout>
+    <ProfileLayout>
+      <UserCards />
+    </ProfileLayout>
+  </DefaultLayout>
+)
 
-export default Cards
+export default UserCards

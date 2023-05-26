@@ -23,12 +23,12 @@ function LiveEventsSettings() {
   )
 }
 
-LiveEventsSettings.getLayout = (page: JSX.Element) => {
-  return (
-    <DefaultLayout>
-      <SettingsLayout>{page}</SettingsLayout>
-    </DefaultLayout>
-  )
-}
+LiveEventsSettings.withLayout = () => (
+  <DefaultLayout>
+    <SettingsLayout>
+      <LiveEventsSettings />
+    </SettingsLayout>
+  </DefaultLayout>
+)
 
 export default LiveEventsSettings

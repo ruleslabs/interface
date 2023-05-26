@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { t, Trans } from '@lingui/macro'
 
@@ -19,7 +19,8 @@ import { useCScoreRank } from 'src/hooks/useCScore'
 import { useAvatarEditModalToggle } from 'src/state/application/hooks'
 import * as Icons from 'src/theme/components/Icons'
 import useCurrentUser from 'src/hooks/useCurrentUser'
-import useLocationQuery from 'src/hooks/useLocationQuery'
+import useSearchedUser from 'src/hooks/useSearchedUser'
+import { useParams } from 'react-router-dom'
 
 const Gradient = styled.div`
   background: ${({ theme }) => theme.gradient1};
@@ -113,14 +114,35 @@ export const tabLinks = [
 ] // TODO: move it somewhere else as a single source of truth
 
 export default function ProfileLayout({ children }: { children: React.ReactElement }) {
-  const query = useLocationQuery()
-  const username = query.get('username')
-  const userSlug = typeof username === 'string' ? username.toLowerCase() : undefined
+  // get username
+  const { userSlug } = useParams()
 
+  // search query
   const { currentUser } = useCurrentUser()
   const { searchedUser, error } = useSearchUser(userSlug, currentUser?.slug === userSlug)
 
-  const user = currentUser?.slug === userSlug ? currentUser : searchedUser
+  // format user
+  const isCurrentUser = currentUser?.slug === userSlug
+  const user = isCurrentUser ? currentUser : searchedUser
+  const formatedSearchedUser = useMemo(
+    () =>
+      user
+        ? {
+            slug: user.slug as string,
+            address: user.starknetWallet.address as string | undefined,
+            publicKey: user.starknetWallet.publicKey as string,
+            id: user.id as string,
+            isCurrentUser,
+          }
+        : null,
+    [user, isCurrentUser]
+  )
+
+  // save searched user
+  const [, setUser] = useSearchedUser()
+  useEffect(() => {
+    setUser(formatedSearchedUser)
+  }, [formatedSearchedUser?.slug])
 
   const defaultAvatarId = useDefaultAvatarIdFromUrl(user?.profile.pictureUrl)
 
@@ -132,7 +154,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
 
   // TODO: clean this ugly code bruh
   if (error) return <TYPE.body>User not found</TYPE.body>
-  else if (!user) return null
+  else if (!user || !userSlug) return null
 
   return (
     <>
@@ -193,11 +215,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
         ))}
       </TabBarSection>
 
-      {React.cloneElement(children, {
-        userId: user?.id,
-        address: user?.starknetWallet?.address,
-        publicKey: user?.starknetWallet?.publicKey,
-      })}
+      {children}
 
       <AvatarEditModal currentAvatarId={defaultAvatarId} customAvatarUrl={user.profile.customAvatarUrl} />
     </>

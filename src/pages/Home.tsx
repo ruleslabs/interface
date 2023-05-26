@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { t } from '@lingui/macro'
-import { useLocation } from 'react-router'
+import { useLocation } from 'react-router-dom'
 
 import Section from 'src/components/Section'
 import Column from 'src/components/Column'

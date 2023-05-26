@@ -10,10 +10,9 @@ import Grid from 'src/components/Grid'
 import PackCard from 'src/components/Pack'
 import { TYPE } from 'src/styles/theme'
 import { RowBetween } from 'src/components/Row'
-import useCurrentUser from 'src/hooks/useCurrentUser'
 import EmptyTab, { EmptyPacksTabOfCurrentUser } from 'src/components/EmptyTab'
 import { PaginationSpinner } from 'src/components/Spinner'
-import useLocationQuery from 'src/hooks/useLocationQuery'
+import useSearchedUser from 'src/hooks/useSearchedUser'
 
 const USER_PACKS_BALANCES_QUERY = gql`
   query ($slug: String!) {
@@ -44,21 +43,15 @@ const StyledPackCard = styled(PackCard)`
   width: 100%;
 `
 
-function Packs() {
-  // current user
-  const query = useLocationQuery()
-  const username = query.get('username')
-  const userSlug = useMemo(() => username?.toLowerCase() ?? null, [username])
-
-  const { currentUser } = useCurrentUser()
-  const isCurrentUserProfile = currentUser?.slug === userSlug
+function UserPacks() {
+  // searched user
+  const [user] = useSearchedUser()
 
   // query packs
-  const packsBalancesQuery = useQuery(USER_PACKS_BALANCES_QUERY, { variables: { slug: userSlug }, skip: !userSlug })
+  const packsBalancesQuery = useQuery(USER_PACKS_BALANCES_QUERY, { variables: { slug: user?.slug }, skip: !user?.slug })
 
   // aggregate packs
-  const user = packsBalancesQuery.data?.user ?? {}
-  const packsBalances = user.packsBalances ?? []
+  const packsBalances = packsBalancesQuery.data?.user?.packsBalances ?? []
 
   // loading / error
   const isLoading = packsBalancesQuery.loading
@@ -77,6 +70,8 @@ function Packs() {
       ),
     [packsBalances]
   )
+
+  if (!user) return null
 
   return (
     <>
@@ -114,14 +109,14 @@ function Packs() {
                       name={packBalance.pack.displayName}
                       releaseDate={packBalance.pack.releaseDate}
                       pictureUrl={packBalance.pack.pictureUrl}
-                      isOwner={isCurrentUserProfile}
+                      isOwner={user.isCurrentUser}
                     />
                   ))}
               </>
             ))}
           </Grid>
         ) : (
-          !isLoading && (isCurrentUserProfile ? <EmptyPacksTabOfCurrentUser /> : <EmptyTab emptyText={t`No packs`} />)
+          !isLoading && (user.isCurrentUser ? <EmptyPacksTabOfCurrentUser /> : <EmptyTab emptyText={t`No packs`} />)
         )}
 
         <PaginationSpinner loading={isLoading} />
@@ -147,7 +142,7 @@ function Packs() {
                       name={packBalance.pack.displayName}
                       releaseDate={packBalance.pack.releaseDate}
                       pictureUrl={packBalance.pack.pictureUrl}
-                      isOwner={isCurrentUserProfile}
+                      isOwner={user.isCurrentUser}
                       state="opened"
                     />
                   ))
@@ -160,12 +155,12 @@ function Packs() {
   )
 }
 
-Packs.getLayout = (page: JSX.Element) => {
-  return (
-    <DefaultLayout>
-      <ProfileLayout>{page}</ProfileLayout>
-    </DefaultLayout>
-  )
-}
+UserPacks.withLayout = () => (
+  <DefaultLayout>
+    <ProfileLayout>
+      <UserPacks />
+    </ProfileLayout>
+  </DefaultLayout>
+)
 
-export default Packs
+export default UserPacks

@@ -3,8 +3,9 @@ import { persist } from 'zustand/middleware'
 
 import { UserSlice, createUserSlice } from './user'
 import { StarknetTxSlice, createStarknetTxSlice } from './starknetTx'
+import { ApplicationSlice, createApplicationSlice } from './application'
 
-export type StoreState = UserSlice & StarknetTxSlice
+export type StoreState = UserSlice & StarknetTxSlice & ApplicationSlice
 
 const PERSISTING_KEYS: Array<keyof StoreState> = ['stxHash']
 
@@ -13,6 +14,7 @@ export const useBoundStore = create<StoreState>()(
     (...a) => ({
       ...createUserSlice(...a),
       ...createStarknetTxSlice(...a),
+      ...createApplicationSlice(...a),
     }),
     {
       name: 'rules-state-storage',

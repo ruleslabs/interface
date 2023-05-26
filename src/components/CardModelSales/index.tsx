@@ -31,7 +31,7 @@ export default function CardModelSales({ slug, cardModelId, lowestAsk, averageSa
 
       {offersSearch?.nbHits ? (
         <Column gap={12}>
-          <Link href={`/card/${slug}/buy`}>
+          <Link href={`/card/${slug}/offers`}>
             <PrimaryButton style={{ width: '100%' }} large>
               <Trans>Select and buy</Trans>
             </PrimaryButton>

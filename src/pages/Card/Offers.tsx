@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { useQuery, gql } from '@apollo/client'
 import { WeiAmount, Unit } from '@rulesorg/sdk-core'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import Section from 'src/components/Section'
 import { BackButton } from 'src/components/Button'
@@ -10,7 +10,7 @@ import OffersSelectorBreakdown from 'src/components/OffersSelectorBreakdown'
 import OffersSelector from 'src/components/OffersSelector'
 import Card from 'src/components/Card'
 import { PaginationSpinner } from 'src/components/Spinner'
-import useLocationQuery from 'src/hooks/useLocationQuery'
+import DefaultLayout from 'src/components/Layout'
 
 const MainSection = styled(Section)`
   display: flex;
@@ -70,10 +70,9 @@ const QUERY_CARD_MODEL = gql`
   }
 `
 
-export default function Buy() {
+function Offers() {
   // query
-  const query = useLocationQuery()
-  const cardModelSlug = query.get('cardModelSlug')
+  const { cardModelSlug } = useParams()
 
   // nav
   const navigate = useNavigate()
@@ -148,3 +147,11 @@ export default function Buy() {
     </>
   )
 }
+
+Offers.withLayout = () => (
+  <DefaultLayout>
+    <Offers />
+  </DefaultLayout>
+)
+
+export default Offers

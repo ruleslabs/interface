@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { gql, useLazyQuery } from '@apollo/client'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import Section from 'src/components/Section'
 import { BackButton } from 'src/components/Button'
@@ -20,7 +20,7 @@ import AcceptOfferModal from 'src/components/MarketplaceModal/AcceptOffer'
 import { useSearchOffers } from 'src/state/search/hooks'
 import useCardsPendingStatusMap from 'src/hooks/useCardsPendingStatusMap'
 import { PaginationSpinner } from 'src/components/Spinner'
-import useLocationQuery from 'src/hooks/useLocationQuery'
+import DefaultLayout from 'src/components/Layout'
 
 const MainSection = styled(Section)`
   position: relative;
@@ -100,11 +100,9 @@ const CARD_QUERY = gql`
   }
 `
 
-export default function CardBreakout() {
+function CardPage() {
   // query
-  const query = useLocationQuery()
-  const cardModelSlug = query.get('cardModelSlug')
-  const serialNumber = query.get('serialNumber')
+  const { cardModelSlug, serialNumber } = useParams()
   const cardSlug = useMemo(() => `${cardModelSlug}-${serialNumber}`, [cardModelSlug, serialNumber])
 
   // nav
@@ -224,3 +222,11 @@ export default function CardBreakout() {
     </>
   )
 }
+
+CardPage.withLayout = () => (
+  <DefaultLayout>
+    <CardPage />
+  </DefaultLayout>
+)
+
+export default CardPage

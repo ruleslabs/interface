@@ -25,6 +25,7 @@ import { useMarketplaceFiltersModalToggle } from 'src/state/application/hooks'
 
 import { ReactComponent as HopperIcon } from 'src/images/hopper.svg'
 import MarketplaceFiltersModal from 'src/components/MarketplaceFiltersModal'
+import DefaultLayout from 'src/components/Layout'
 
 const StyledSection = styled(Section)`
   width: 100%;
@@ -96,7 +97,7 @@ const sortsData: MarketplaceSortData[] = [
   { name: 'Price: high to low', key: 'lowestAskDesc', lowSerialKey: 'lowSerialLowestAskDesc', desc: false },
 ]
 
-export default function Marketplace() {
+function Marketplace() {
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
@@ -237,3 +238,11 @@ export default function Marketplace() {
     </>
   )
 }
+
+Marketplace.withLayout = () => (
+  <DefaultLayout>
+    <Marketplace />
+  </DefaultLayout>
+)
+
+export default Marketplace

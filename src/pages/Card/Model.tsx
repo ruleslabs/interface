@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import styled from 'styled-components/macro'
 import { useQuery, gql } from '@apollo/client'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import Section from 'src/components/Section'
 import { BackButton } from 'src/components/Button'
@@ -15,7 +15,7 @@ import Card from 'src/components/Card'
 import useCardsBackPictureUrl from 'src/hooks/useCardsBackPictureUrl'
 import { useSearchCardModels } from 'src/state/search/hooks'
 import { PaginationSpinner } from 'src/components/Spinner'
-import useLocationQuery from 'src/hooks/useLocationQuery'
+import DefaultLayout from 'src/components/Layout'
 
 const MainSection = styled(Section)`
   position: relative;
@@ -75,13 +75,12 @@ const QUERY_CARD_MODEL = gql`
   }
 `
 
-export default function CardModelPage() {
+function CardModel() {
+  // query
+  const { cardModelSlug } = useParams()
+
   // nav
   const navigate = useNavigate()
-
-  // query
-  const query = useLocationQuery()
-  const cardModelSlug = query.get('cardModelSlug')
 
   // hits
   const [cardModelHit, setCardModelHit] = useState<any | null>(null)
@@ -157,3 +156,11 @@ export default function CardModelPage() {
     </>
   )
 }
+
+CardModel.withLayout = () => (
+  <DefaultLayout>
+    <CardModel />
+  </DefaultLayout>
+)
+
+export default CardModel

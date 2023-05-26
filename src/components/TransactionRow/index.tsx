@@ -78,7 +78,7 @@ const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
 interface TransactionRowProps extends React.HTMLAttributes<HTMLDivElement> {
   innerRef?: (node: any) => void
   hash: string
-  address: string
+  address?: string
   publicKey: string
   fromAddress: string
   status: string
@@ -134,6 +134,8 @@ const MemoizedTransactionRow = React.memo(function TransactionRow({
 
   // parsed fee
   const parsedFee = useMemo(() => (actualFee ? WeiAmount.fromRawAmount(actualFee) : undefined), [actualFee])
+
+  if (!address) return null
 
   return (
     <StyledTransactionRow offchain={status === 'RECEIVED' || status === 'REJECTED'} {...props}>

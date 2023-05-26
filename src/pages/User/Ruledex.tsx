@@ -14,7 +14,7 @@ import Column from 'src/components/Column'
 import { TYPE } from 'src/styles/theme'
 import { RULEDEX_CARDS_COUNT_LEVELS_MINS } from 'src/constants/misc'
 import { Badge } from 'src/components/CardModel/Badges'
-import useLocationQuery from 'src/hooks/useLocationQuery'
+import useSearchedUser from 'src/hooks/useSearchedUser'
 
 const ScarcitySelectorWrapper = styled(Row)`
   gap: 42px;
@@ -109,16 +109,14 @@ const USER_OWNED_CARD_MODELS_QUERY = gql`
   }
 `
 
-function Ruledex() {
-  // user slug
-  const query = useLocationQuery()
-  const username = query.get('username')
-  const userSlug = typeof username === 'string' ? username.toLowerCase() : null
+function UserRuledex() {
+  // searched user
+  const [user] = useSearchedUser()
 
   // Query cards
   const ownedCardModelsQuery = useQuery(USER_OWNED_CARD_MODELS_QUERY, {
-    variables: { slug: userSlug },
-    skip: !userSlug,
+    variables: { slug: user?.slug },
+    skip: !user?.slug,
   })
   const ownedCardModels = ownedCardModelsQuery.data?.user.ownedCardModels ?? []
 
@@ -224,12 +222,12 @@ function Ruledex() {
   )
 }
 
-Ruledex.withLayout = () => (
+UserRuledex.withLayout = () => (
   <DefaultLayout>
     <ProfileLayout>
-      <Ruledex />
+      <UserRuledex />
     </ProfileLayout>
   </DefaultLayout>
 )
 
-export default Ruledex
+export default UserRuledex
