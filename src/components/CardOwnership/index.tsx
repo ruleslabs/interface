@@ -17,9 +17,10 @@ import {
   useAcceptOfferModalToggle,
 } from 'src/state/application/hooks'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
-import CardPendingStatusText from 'src/components/CardPendingStatusText'
-import { CardPendingStatus } from 'src/hooks/useCardsPendingStatusMap'
 import Avatar from 'src/components/Avatar'
+import { OwnerUser } from 'src/types'
+import { usePendingOperations } from 'src/hooks/usePendingOperations'
+import useTrans from 'src/hooks/useTrans'
 
 import { ReactComponent as Present } from 'src/images/present.svg'
 
@@ -28,36 +29,23 @@ const StyledAvatar = styled(Avatar)`
   height: 50px;
 `
 
-const ButtonsWrapper = styled(Column)`
-  button {
-    width: 100%;
-  }
-`
-
 const StyledPresent = styled(Present)`
   width: 16px;
   fill: ${({ theme }) => theme.text1};
 `
 
 interface CardOwnershipProps {
-  ownerSlug: string
-  ownerUsername: string
-  ownerProfilePictureUrl: string
-  ownerProfileFallbackUrl: string
-  pendingStatus?: CardPendingStatus
+  owner: OwnerUser
+  tokenId: string
   price?: string
 }
 
-export default function CardOwnership({
-  ownerSlug,
-  ownerUsername,
-  ownerProfilePictureUrl,
-  ownerProfileFallbackUrl,
-  pendingStatus,
-  price,
-}: CardOwnershipProps) {
+export default function CardOwnership({ owner, tokenId, price }: CardOwnershipProps) {
   // current user
   const { currentUser } = useCurrentUser()
+
+  // i18n
+  const trans = useTrans()
 
   // modal
   const toggleOfferModal = useOfferModalToggle()
@@ -71,64 +59,94 @@ export default function CardOwnership({
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
+  // pending operations
+  const pendingOperations = usePendingOperations(tokenId)
+  const pendingOperation = pendingOperations[0]
+
+  const isOwner = currentUser?.slug === owner.slug
+  const availableActions = useMemo(() => {
+    if (pendingOperation) {
+      return <Placeholder>{trans('operation', pendingOperation.type)}</Placeholder>
+    }
+
+    if (isOwner) {
+      // OWNER
+
+      if (parsedPrice) {
+        return (
+          <>
+            <PrimaryButton onClick={toggleCancelOfferModal} width={'full'} large>
+              <Trans>Close offer</Trans>
+            </PrimaryButton>
+
+            <SecondaryButton onClick={toggleCreateOfferModal} width={'full'} large>
+              <Trans>Update price</Trans>
+            </SecondaryButton>
+          </>
+        )
+      } else {
+        return (
+          <>
+            <PrimaryButton onClick={toggleCreateOfferModal} width={'full'} large>
+              <Trans>Place for Sale</Trans>
+            </PrimaryButton>
+
+            <SecondaryButton onClick={toggleOfferModal} width={'full'} large>
+              <RowCenter justify="center" gap={4}>
+                <StyledPresent />
+                <Trans>Gift</Trans>
+              </RowCenter>
+            </SecondaryButton>
+          </>
+        )
+      }
+    } else {
+      // NOT OWNER
+
+      if (parsedPrice) {
+        return (
+          <PrimaryButton onClick={toggleAcceptOfferModal} width={'full'} large>
+            <Trans>
+              Buy - {parsedPrice.toSignificant(6)} ETH ({weiAmountToEURValue(parsedPrice)}€)
+            </Trans>
+          </PrimaryButton>
+        )
+      } else {
+        return (
+          <Placeholder>
+            <Trans>This card is not on sale.</Trans>
+          </Placeholder>
+        )
+      }
+    }
+  }, [
+    isOwner,
+    parsedPrice,
+    toggleAcceptOfferModal,
+    toggleCreateOfferModal,
+    toggleCancelOfferModal,
+    toggleOfferModal,
+    weiAmountToEURValue,
+    !!pendingOperation,
+    trans,
+  ])
+
   return (
     <Column gap={16}>
       <RowCenter gap={12}>
-        <Link href={`/user/${ownerSlug}`}>
-          <StyledAvatar src={ownerProfilePictureUrl} fallbackSrc={ownerProfileFallbackUrl} />
+        <Link href={`/user/${owner.slug}`}>
+          <StyledAvatar src={owner.profile.pictureUrl} fallbackSrc={owner.profile.fallbackUrl} />
         </Link>
         <TYPE.body>
           <Trans>
             Belongs to&nbsp;
-            <Link href={`/user/${ownerSlug}`} color="text1" underline>
-              {ownerUsername}
+            <Link href={`/user/${owner.slug}`} color="text1" underline>
+              {owner.username}
             </Link>
           </Trans>
         </TYPE.body>
       </RowCenter>
-      <ButtonsWrapper gap={12}>
-        {!pendingStatus && (parsedPrice || currentUser?.slug === ownerSlug) ? (
-          <>
-            {currentUser?.slug === ownerSlug && parsedPrice ? (
-              <>
-                <PrimaryButton onClick={toggleCancelOfferModal} large>
-                  <Trans>Close offer</Trans>
-                </PrimaryButton>
-
-                <SecondaryButton onClick={toggleCreateOfferModal} large>
-                  <Trans>Update price</Trans>
-                </SecondaryButton>
-              </>
-            ) : parsedPrice ? (
-              <PrimaryButton onClick={toggleAcceptOfferModal} large>
-                <Trans>
-                  Buy - {parsedPrice.toSignificant(6)} ETH ({weiAmountToEURValue(parsedPrice)}€)
-                </Trans>
-              </PrimaryButton>
-            ) : (
-              <PrimaryButton onClick={toggleCreateOfferModal} large>
-                <Trans>Place for Sale</Trans>
-              </PrimaryButton>
-            )}
-            {!parsedPrice && (
-              <SecondaryButton onClick={toggleOfferModal} large>
-                <RowCenter justify="center" gap={4}>
-                  <StyledPresent />
-                  <Trans>Gift</Trans>
-                </RowCenter>
-              </SecondaryButton>
-            )}
-          </>
-        ) : (
-          <Placeholder>
-            {pendingStatus ? (
-              <CardPendingStatusText pendingStatus={pendingStatus} />
-            ) : (
-              <Trans>This card is not on sale.</Trans>
-            )}
-          </Placeholder>
-        )}
-      </ButtonsWrapper>
+      <Column gap={12}>{availableActions}</Column>
     </Column>
   )
 }

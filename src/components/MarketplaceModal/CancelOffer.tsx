@@ -15,7 +15,7 @@ import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/Stark
 import CardBreakdown from './CardBreakdown'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import useStarknetTx from 'src/hooks/useStarknetTx'
-import usePendingOperations from 'src/hooks/usePendingOperations'
+import { useOperations } from 'src/hooks/usePendingOperations'
 
 const display: StarknetSignerDisplayProps = {
   confirmationText: t`Your offer will be canceled`,
@@ -46,7 +46,7 @@ export default function CancelOfferModal({
   const toggleCancelOfferModal = useCancelOfferModalToggle()
 
   // pending operation
-  const { pushOperation, cleanOperations } = usePendingOperations()
+  const { pushOperation, cleanOperations } = useOperations()
 
   // starknet tx
   const { setCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()

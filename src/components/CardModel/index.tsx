@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React, { useMemo, useCallback, useRef } from 'react'
 import styled, { css } from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
@@ -9,10 +10,10 @@ import { TYPE } from 'src/styles/theme'
 import Column, { ColumnCenter } from 'src/components/Column'
 import { LargeSpinner } from 'src/components/Spinner'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
-import CardPendingStatusText from 'src/components/CardPendingStatusText'
-import { CardPendingStatus } from 'src/hooks/useCardsPendingStatusMap'
 import Badges, { Badge } from './Badges'
 import { RowCenter } from '../Row'
+import { usePendingOperations } from 'src/hooks/usePendingOperations'
+import useTrans from 'src/hooks/useTrans'
 
 const ActiveCardModelStyle = css`
   background: ${({ theme }) => theme.bg3}80;
@@ -49,10 +50,10 @@ const VideoWrapper = styled.div`
   width: 100%;
 `
 
-const Video = styled.video<{ inDelivery: boolean; pendingStatus: boolean }>`
+const Video = styled.video<{ inDelivery: boolean; hasPendingOperation: boolean }>`
   width: 100%;
   border-radius: 4.7% / 3.35%;
-  ${({ inDelivery, pendingStatus }) => (inDelivery || pendingStatus) && 'opacity: 0.5;'}
+  ${({ inDelivery, hasPendingOperation }) => (inDelivery || hasPendingOperation) && 'opacity: 0.5;'}
 `
 
 const PlasticEffect = css`
@@ -99,8 +100,6 @@ const BadgesWrapper = styled(Column)`
 `
 
 interface CardModelProps {
-  innerRef?: (node: any) => void
-  slug?: string
   cardModelSlug?: string
   videoUrl?: string
   pictureUrl: string
@@ -108,7 +107,6 @@ interface CardModelProps {
   serialNumber?: number
   inDelivery?: boolean
   onSale?: boolean
-  pendingStatus?: CardPendingStatus
   season?: number
   artistName?: string
   lowestAsk?: string
@@ -116,136 +114,133 @@ interface CardModelProps {
   badges?: Badge[]
   selectable?: boolean
   selected?: boolean
+  tokenId?: string
   onSelection?: (slug: string) => void
 }
 
-const MemoizedCardModelPropsEqualityCheck = (prevProps: CardModelProps, nextProps: CardModelProps) =>
-  prevProps.slug === nextProps.slug &&
-  !!prevProps.innerRef === !!nextProps.innerRef &&
-  prevProps.cardModelSlug === nextProps.cardModelSlug &&
-  prevProps.lowestAsk === nextProps.lowestAsk &&
-  prevProps.selectable === nextProps.selectable &&
-  prevProps.selected === nextProps.selected &&
-  prevProps.onClick === nextProps.onClick &&
-  prevProps.pendingStatus === nextProps.pendingStatus &&
-  prevProps.badges?.length === nextProps.badges?.length
+const CardModel = React.forwardRef<HTMLDivElement, CardModelProps>(
+  (
+    {
+      cardModelSlug,
+      videoUrl,
+      pictureUrl,
+      width,
+      serialNumber,
+      onSale = false,
+      inDelivery = false,
+      season,
+      artistName,
+      lowestAsk,
+      onClick,
+      badges,
+      selectable = false,
+      selected = false,
+      tokenId,
+    }: CardModelProps,
+    ref
+  ) => {
+    // trans
+    const trans = useTrans()
 
-const MemoizedCardModel = React.memo(function CardModel({
-  innerRef,
-  cardModelSlug,
-  videoUrl,
-  pictureUrl,
-  width,
-  serialNumber,
-  onSale = false,
-  pendingStatus,
-  inDelivery = false,
-  season,
-  artistName,
-  lowestAsk,
-  onClick,
-  badges,
-  selectable = false,
-  selected = false,
-}: CardModelProps) {
-  // locale
-  const locale = useActiveLocale()
+    // locale
+    const locale = useActiveLocale()
 
-  // lowest ask / average sale
-  const parsedLowestAsk = useMemo(() => (lowestAsk ? WeiAmount.fromRawAmount(lowestAsk) : null), [lowestAsk])
+    // lowest ask / average sale
+    const parsedLowestAsk = useMemo(() => (lowestAsk ? WeiAmount.fromRawAmount(lowestAsk) : null), [lowestAsk])
 
-  // fiat
-  const weiAmountToEURValue = useWeiAmountToEURValue()
+    // fiat
+    const weiAmountToEURValue = useWeiAmountToEURValue()
 
-  // link
-  const cardLink = useMemo(
-    () =>
-      cardModelSlug && !selectable
-        ? `/card/${cardModelSlug}${!!serialNumber ? `/${serialNumber}` : ''}`
-        : 'javascript: void(0)',
-    [cardModelSlug, serialNumber, selectable]
-  )
+    // card video play pause
+    const videoRef = useRef<HTMLVideoElement>(null)
 
-  // card video play pause
-  const videoRef = useRef<HTMLVideoElement>(null)
+    const playVideo = useCallback(() => videoRef?.current?.play(), [videoRef])
+    const pauseVideo = useCallback(() => videoRef?.current?.pause(), [videoRef])
 
-  const playVideo = useCallback(() => videoRef?.current?.play(), [videoRef])
-  const pauseVideo = useCallback(() => videoRef?.current?.pause(), [videoRef])
+    // pending operations
+    const pendingOperations = usePendingOperations(tokenId)
+    const pendingOperation = pendingOperations[0]
+    selectable = selectable && !pendingOperation // disable selectable if there's a pending operation
 
-  // selection
+    // link
+    const cardLink = useMemo(
+      () =>
+        cardModelSlug && !selectable
+          ? `/card/${cardModelSlug}${!!serialNumber ? `/${serialNumber}` : ''}`
+          : 'javascript: void(0)',
+      [cardModelSlug, serialNumber, selectable]
+    )
 
-  return (
-    <Link onClick={onClick} href={cardLink}>
-      <StyledCardModel
-        width={width}
-        ref={innerRef}
-        onMouseOver={playVideo}
-        onMouseOut={pauseVideo}
-        selected={selected}
-        selectable={selectable}
-      >
-        <VideoWrapper>
-          <Video
-            src={videoUrl}
-            inDelivery={inDelivery}
-            pendingStatus={!!pendingStatus}
-            ref={videoRef}
-            poster={pictureUrl}
-            preload="none"
-            loop
-            playsInline
-            muted
-          />
+    return (
+      <Link onClick={onClick} href={cardLink}>
+        <StyledCardModel
+          width={width}
+          ref={ref}
+          onMouseOver={playVideo}
+          onMouseOut={pauseVideo}
+          selected={selected}
+          selectable={selectable}
+        >
+          <VideoWrapper>
+            <Video
+              src={videoUrl}
+              inDelivery={inDelivery}
+              hasPendingOperation={!!pendingOperation}
+              ref={videoRef}
+              poster={pictureUrl}
+              preload="none"
+              loop
+              playsInline
+              muted
+            />
 
-          {inDelivery && <InDelivery src={`/assets/delivery.${locale}.png`} />}
-          {onSale && !pendingStatus && <OnSale src={`/assets/onsale.${locale}.png`} />}
-          {pendingStatus && <StyledLargeSpinner className="spinner" />}
-        </VideoWrapper>
+            {inDelivery && <InDelivery src={`/assets/delivery.${locale}.png`} />}
+            {onSale && !pendingOperation && <OnSale src={`/assets/onsale.${locale}.png`} />}
+            {!!pendingOperation && <StyledLargeSpinner className="spinner" />}
+          </VideoWrapper>
 
-        {pendingStatus && (
-          <ColumnCenter gap={4}>
-            <TYPE.body textAlign="center">
-              <CardPendingStatusText pendingStatus={pendingStatus} />
-            </TYPE.body>
-            <TYPE.subtitle textAlign="center">
-              <Trans>Please come back later.</Trans>
-            </TYPE.subtitle>
-          </ColumnCenter>
-        )}
+          {!!pendingOperation && (
+            <ColumnCenter gap={4}>
+              <TYPE.body textAlign="center">{trans('operation', pendingOperation.type)}</TYPE.body>
+              <TYPE.subtitle textAlign="center">
+                <Trans>Please come back later.</Trans>
+              </TYPE.subtitle>
+            </ColumnCenter>
+          )}
 
-        {season && artistName && !pendingStatus && (
-          <ColumnCenter gap={4}>
-            <TYPE.body textAlign="center">
-              {artistName} {serialNumber && `#${serialNumber}`}
-            </TYPE.body>
-            <TYPE.subtitle textAlign="center">
-              <Trans>Season {season}</Trans>
-            </TYPE.subtitle>
-          </ColumnCenter>
-        )}
+          {season && artistName && !pendingOperation && (
+            <ColumnCenter gap={4}>
+              <TYPE.body textAlign="center">
+                {artistName} {serialNumber && `#${serialNumber}`}
+              </TYPE.body>
+              <TYPE.subtitle textAlign="center">
+                <Trans>Season {season}</Trans>
+              </TYPE.subtitle>
+            </ColumnCenter>
+          )}
 
-        {parsedLowestAsk && (
-          <ColumnCenter gap={4}>
-            <TYPE.body textAlign="center">
-              <Trans>starting from</Trans>
-            </TYPE.body>
+          {parsedLowestAsk && (
+            <ColumnCenter gap={4}>
+              <TYPE.body textAlign="center">
+                <Trans>starting from</Trans>
+              </TYPE.body>
 
-            <RowCenter gap={4}>
-              <TYPE.medium fontSize={16}>{+parsedLowestAsk.toFixed(6)} ETH</TYPE.medium>
-              <TYPE.subtitle>{weiAmountToEURValue(parsedLowestAsk ?? undefined) ?? '0'}€</TYPE.subtitle>
-            </RowCenter>
-          </ColumnCenter>
-        )}
+              <RowCenter gap={4}>
+                <TYPE.medium fontSize={16}>{+parsedLowestAsk.toFixed(6)} ETH</TYPE.medium>
+                <TYPE.subtitle>{weiAmountToEURValue(parsedLowestAsk ?? undefined) ?? '0'}€</TYPE.subtitle>
+              </RowCenter>
+            </ColumnCenter>
+          )}
 
-        {badges && (
-          <BadgesWrapper>
-            <Badges badges={badges} />
-          </BadgesWrapper>
-        )}
-      </StyledCardModel>
-    </Link>
-  )
-},
-MemoizedCardModelPropsEqualityCheck)
+          {badges && (
+            <BadgesWrapper>
+              <Badges badges={badges} />
+            </BadgesWrapper>
+          )}
+        </StyledCardModel>
+      </Link>
+    )
+  }
+)
 
-export default MemoizedCardModel
+export default CardModel

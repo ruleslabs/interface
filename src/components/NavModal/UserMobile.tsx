@@ -13,7 +13,7 @@ import Divider from 'src/components/Divider'
 import Column from 'src/components/Column'
 import { RowCenter } from 'src/components/Row'
 import { ActiveLink } from 'src/components/Link'
-import WalletBalanceButton from 'src/components/AccountStatus/WalletBalanceButton'
+import WalletBalanceButton from 'src/components/AccountStatus/WalletButton'
 import NavProfile from './NavProfile'
 import { ModalHeader } from '../Modal'
 

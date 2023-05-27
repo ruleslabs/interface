@@ -25,7 +25,7 @@ import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import useStarknetTx from 'src/hooks/useStarknetTx'
 import { Operation } from 'src/types'
-import usePendingOperations from 'src/hooks/usePendingOperations'
+import { useOperations } from 'src/hooks/usePendingOperations'
 
 const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
 
@@ -178,7 +178,7 @@ export default function GiftModal({ cardsIds }: GiftModalProps) {
   )
 
   // pending operation
-  const { pushOperation, cleanOperations } = usePendingOperations()
+  const { pushOperation, cleanOperations } = useOperations()
 
   // starknet tx
   const { setCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()

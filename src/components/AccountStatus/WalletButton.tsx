@@ -3,14 +3,14 @@ import styled from 'styled-components/macro'
 
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import { PrimaryButton } from 'src/components/Button'
-import { TYPE } from 'src/styles/theme'
 import { useETHBalance } from 'src/state/wallet/hooks'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import { useConnectors } from '@starknet-react/core'
 
 import { ReactComponent as EthereumIcon } from 'src/images/ethereum-plain.svg'
+import Box from 'src/theme/components/Box'
 
-const WalletButton = styled(PrimaryButton)<{ $alert: boolean }>`
+const StyledWalletButton = styled(PrimaryButton)<{ $alert: boolean }>`
   width: unset;
   padding: 0 16px;
   height: 38px;
@@ -37,7 +37,7 @@ const WalletButton = styled(PrimaryButton)<{ $alert: boolean }>`
     `}
 `
 
-export default function WalletBalanceButton(props: Parameters<typeof PrimaryButton>[0]) {
+export default function WalletButton(props: Parameters<typeof PrimaryButton>[0]) {
   // current user
   const { currentUser } = useCurrentUser()
 
@@ -54,9 +54,9 @@ export default function WalletBalanceButton(props: Parameters<typeof PrimaryButt
   const balance = useETHBalance(address)
 
   return (
-    <WalletButton $alert={!!currentUser?.starknetWallet.lockingReason} {...props}>
-      <TYPE.body>{address ? `${balance.toFixed(4)}` : 'Loading...'}</TYPE.body>
+    <StyledWalletButton $alert={!!currentUser?.starknetWallet.lockingReason} {...props}>
+      <Box>{address ? `${balance.toFixed(4)}` : 'Loading...'}</Box>
       {!!address && <EthereumIcon />}
-    </WalletButton>
+    </StyledWalletButton>
   )
 }

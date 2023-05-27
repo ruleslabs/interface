@@ -19,6 +19,8 @@ export type ModalContents<TEnum extends string | number | symbol> = {
   }
 }
 
+/* Operations */
+
 export type OperationType = 'transfer' | 'offerCreation' | 'offerCancelation' | 'offerAcceptance'
 
 export interface Operation {
@@ -34,5 +36,15 @@ export interface PendingOperation extends Operation {
 export type PendingOperations = {
   [tokenId: string]: {
     [txHash: string]: Omit<Operation, 'tokenId'>
+  }
+}
+
+/* Owner profile */
+export interface OwnerUser {
+  slug: string
+  username: string
+  profile: {
+    pictureUrl: string
+    fallbackUrl: string
   }
 }

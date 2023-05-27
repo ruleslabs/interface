@@ -134,7 +134,7 @@ export default function DeckInsertionModal({ address, cardIndex }: DeckInsertion
               {cards.map((card, index) => (
                 <CardModel
                   key={card.slug}
-                  innerRef={index + 1 === cards.length ? lastTxRef : undefined}
+                  ref={index + 1 === cards.length ? lastTxRef : undefined}
                   pictureUrl={card.cardModel.pictureUrl}
                   videoUrl={card.cardModel.videoUrl}
                   serialNumber={card.serialNumber}

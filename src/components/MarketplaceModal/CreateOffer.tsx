@@ -25,7 +25,7 @@ import { useSearchCardModels } from 'src/state/search/hooks'
 import { TYPE } from 'src/styles/theme'
 import useStarknetTx from 'src/hooks/useStarknetTx'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
-import usePendingOperations from 'src/hooks/usePendingOperations'
+import { useOperations } from 'src/hooks/usePendingOperations'
 
 const CardBreakdownWrapper = styled.div`
   position: relative;
@@ -91,7 +91,7 @@ export default function CreateOfferModal({ cardsIds }: CreateOfferModalProps) {
   const card = cards[cardIndex]
 
   // pending operation
-  const { pushOperation, cleanOperations } = usePendingOperations()
+  const { pushOperation, cleanOperations } = useOperations()
 
   // starknet tx
   const { pushCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()

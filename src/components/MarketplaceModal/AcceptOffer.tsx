@@ -18,7 +18,7 @@ import { ModalHeader } from 'src/components/Modal'
 import useStarknetTx from 'src/hooks/useStarknetTx'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import useRulesAccount from 'src/hooks/useRulesAccount'
-import usePendingOperations from 'src/hooks/usePendingOperations'
+import { useOperations } from 'src/hooks/usePendingOperations'
 import { Operation } from 'src/types'
 
 const display: StarknetSignerDisplayProps = {
@@ -53,7 +53,7 @@ export default function AcceptOfferModal({
   const toggleWalletModal = useWalletModalToggle()
 
   // pending operation
-  const { pushOperation, cleanOperations } = usePendingOperations()
+  const { pushOperation, cleanOperations } = useOperations()
 
   // starknet tx
   const { setCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()

@@ -18,7 +18,6 @@ import CreateOfferModal from 'src/components/MarketplaceModal/CreateOffer'
 import CancelOfferModal from 'src/components/MarketplaceModal/CancelOffer'
 import AcceptOfferModal from 'src/components/MarketplaceModal/AcceptOffer'
 import { useSearchOffers } from 'src/state/search/hooks'
-import useCardsPendingStatusMap from 'src/hooks/useCardsPendingStatusMap'
 import { PaginationSpinner } from 'src/components/Spinner'
 import DefaultLayout from 'src/components/Layout'
 
@@ -63,10 +62,7 @@ const CARD_QUERY = gql`
     card(slug: $slug) {
       id
       serialNumber
-      inTransfer
-      inOfferCreation
-      inOfferCancelation
-      inOfferAcceptance
+      starknetTokenId
       owner {
         user {
           slug
@@ -125,9 +121,6 @@ function CardPage() {
   // card's back
   const backPictureUrl = useCardsBackPictureUrl(512)
 
-  // pending status
-  const pendingStatus = useCardsPendingStatusMap([card])
-
   // card price
   const offerSearch = useSearchOffers({ facets: { cardId: card?.id }, skip: !card?.id, hitsPerPage: 1 })
   const cardPrice = useMemo(
@@ -169,11 +162,8 @@ function CardPage() {
                 {card.owner && (
                   <Card>
                     <CardOwnership
-                      ownerSlug={card.owner.user.slug}
-                      ownerUsername={card.owner.user.username}
-                      ownerProfilePictureUrl={card.owner.user.profile.pictureUrl}
-                      ownerProfileFallbackUrl={card.owner.user.profile.fallbackUrl}
-                      pendingStatus={pendingStatus[card.id]}
+                      owner={card.owner.user}
+                      tokenId={card.starknetTokenId}
                       price={cardPrice ?? undefined}
                     />
                   </Card>

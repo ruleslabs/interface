@@ -22,7 +22,7 @@ import NotificationsModal from 'src/components/NotificationsModal'
 
 import { ReactComponent as BellIcon } from 'src/images/bell.svg'
 import { ReactComponent as WalletIcon } from 'src/images/wallet.svg'
-import WalletBalanceButton from './WalletBalanceButton'
+import WalletButton from './WalletButton'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 
 const StyledAccountStatus = styled.div`
@@ -65,7 +65,7 @@ const SignInButton = styled(SecondaryButton)`
   }
 `
 
-const StyledWalletBalanceButton = styled(WalletBalanceButton)`
+const StyledWalletButton = styled(WalletButton)`
   ${({ theme }) => theme.media.small`
     display: none;
   `}
@@ -150,7 +150,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
       <StyledAccountStatus {...props}>
         {!!currentUser ? (
           <>
-            {currentUser?.starknetWallet.address && <StyledWalletBalanceButton onClick={toggleWalletModal} />}
+            {currentUser?.starknetWallet.address && <StyledWalletButton onClick={toggleWalletModal} />}
 
             <AvatarButtonWrapperDesktop>
               <AvatarWrapper onClick={toggleNavModalUserDesktop}>

@@ -4,7 +4,9 @@ import { msg } from '@lingui/macro'
 
 import { OperationType } from 'src/types'
 
-const prefix = (obj: Messages, prefix: string) =>
+type Prefix = 'operation'
+
+const prefix = (obj: Messages, prefix: Prefix) =>
   Object.keys(obj).reduce<Messages>((acc, e) => {
     acc[`${prefix}.${e}`] = obj[e]
     return acc
@@ -28,8 +30,9 @@ export default function useTrans() {
   const { i18n } = useLingui()
 
   return useCallback(
-    (id: string) => {
-      return messages[id] ? i18n._(messages[id]) : id
+    (prefix: Prefix, id: string) => {
+      const prefixedId = `${prefix}.${id}`
+      return messages[prefixedId] ? i18n._(messages[prefixedId]) : prefixedId
     },
     [i18n]
   )

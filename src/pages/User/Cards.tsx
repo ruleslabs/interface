@@ -12,7 +12,6 @@ import Grid from 'src/components/Grid'
 import { useSearchCards, CardsSortingKey } from 'src/state/search/hooks'
 import { TYPE } from 'src/styles/theme'
 import EmptyTab, { EmptyCardsTabOfCurrentUser } from 'src/components/EmptyTab'
-import useCardsPendingStatusMap from 'src/hooks/useCardsPendingStatusMap'
 import { PaginationSpinner } from 'src/components/Spinner'
 import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
 import SortButton, { SortsData } from 'src/components/Button/SortButton'
@@ -33,10 +32,7 @@ const CARDS_QUERY = gql`
       slug
       serialNumber
       onSale
-      inTransfer
-      inOfferCreation
-      inOfferCancelation
-      inOfferAcceptance
+      starknetTokenId
       cardModel {
         slug
         pictureUrl(derivative: "width=1024")
@@ -225,9 +221,6 @@ function UserCards() {
     onPageFetched,
   })
 
-  // pending status
-  const pendingsStatus = useCardsPendingStatusMap(cards)
-
   // loading
   const isLoading = cardsSearch.loading || cardsQuery.loading || cardsInDelivery.loading
 
@@ -295,16 +288,16 @@ function UserCards() {
           {cards.map((card: any, index) => (
             <CardModel
               key={card.slug}
-              innerRef={index + 1 === cards.length ? lastTxRef : undefined}
+              ref={index + 1 === cards.length ? lastTxRef : undefined}
               cardModelSlug={card.cardModel.slug}
               pictureUrl={card.cardModel.pictureUrl}
               videoUrl={card.cardModel.videoUrl}
               onSale={card.onSale}
-              pendingStatus={pendingsStatus[card.id] ?? undefined}
+              tokenId={card.starknetTokenId}
               serialNumber={card.serialNumber}
               season={card.cardModel.season}
               artistName={card.cardModel.artist.displayName}
-              selectable={selectionModeEnabled && !pendingsStatus[card.id]}
+              selectable={selectionModeEnabled}
               selected={selectedCardsIds.includes(card.id)}
               onClick={selectionModeEnabled ? () => toggleCardSelection(card.id) : undefined}
             />
