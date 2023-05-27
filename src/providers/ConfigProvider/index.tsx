@@ -10,7 +10,7 @@ interface RulesProviderProps {
 }
 
 export default function ConfigProvider({ children }: RulesProviderProps) {
-  const { data: currentUser, refresh } = useCurrentUser()
+  const { data: currentUser, loading, refresh } = useCurrentUser()
   const { setCurrentUser, setCurrentUserRefresher } = useBoundStore(
     (state) => ({ setCurrentUser: state.setCurrentUser, setCurrentUserRefresher: state.setCurrentUserRefresher }),
     shallow
@@ -23,6 +23,8 @@ export default function ConfigProvider({ children }: RulesProviderProps) {
   }, [currentUser, refresh])
 
   useInjectRulesWallet()
+
+  if (loading) return null
 
   return <>{children}</>
 }

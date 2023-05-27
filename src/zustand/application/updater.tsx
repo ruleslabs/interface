@@ -43,7 +43,13 @@ export default function StarknetTxUpdater(): null {
               })
               const status = data?.starknetTransaction?.status
 
-              if (!status || status === StarknetTransactionStatus.Received) break
+              if (
+                !status ||
+                status === StarknetTransactionStatus.Received ||
+                status === StarknetTransactionStatus.NotReceived
+              ) {
+                break
+              }
             }
 
             unsubscribeFromPendingOperation(pendingOperationTxHash)

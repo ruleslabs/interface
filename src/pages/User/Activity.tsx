@@ -31,7 +31,7 @@ function UserActivity() {
         {starknetTransactions.map((starknetTransaction, index) => (
           <TransactionRow
             key={starknetTransaction.hash}
-            innerRef={index + 1 === starknetTransactions.length ? lastTxRef : undefined}
+            ref={index + 1 === starknetTransactions.length ? lastTxRef : undefined}
             fromAddress={starknetTransaction.fromAddress}
             address={user.address}
             publicKey={user.publicKey}

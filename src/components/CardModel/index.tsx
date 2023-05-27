@@ -136,7 +136,7 @@ const CardModel = React.forwardRef<HTMLDivElement, CardModelProps>(
       selectable = false,
       selected = false,
       tokenId,
-    }: CardModelProps,
+    },
     ref
   ) => {
     // trans

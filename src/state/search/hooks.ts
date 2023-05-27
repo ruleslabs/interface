@@ -558,8 +558,8 @@ export function useStarknetTransactionsForAddress(userId?: string, address?: str
   }, [getAllStarknetTransactionsForAddressOrUserId, address, endCursor])
 
   useEffect(() => {
-    nextPage()
-  }, [])
+    if (userId) nextPage()
+  }, [userId])
 
   return {
     nextPage: hasNextPage ? nextPage : undefined,

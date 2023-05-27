@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React, { useMemo, useState, useCallback } from 'react'
 import styled from 'styled-components/macro'
 import { WeiAmount, Unit } from '@rulesorg/sdk-core'
@@ -76,7 +77,6 @@ const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
 // Main Components
 
 interface TransactionRowProps extends React.HTMLAttributes<HTMLDivElement> {
-  innerRef?: (node: any) => void
   hash: string
   address?: string
   publicKey: string
@@ -100,149 +100,149 @@ interface TransactionRowProps extends React.HTMLAttributes<HTMLDivElement> {
   }>
 }
 
-const MemoizedTransactionRowPropsEqualityCheck = (prevProps: TransactionRowProps, nextProps: TransactionRowProps) =>
-  prevProps.hash === nextProps.hash
+const TransactionRow = React.forwardRef<HTMLDivElement, TransactionRowProps>(
+  (
+    {
+      hash,
+      address,
+      publicKey,
+      fromAddress,
+      status,
+      code,
+      blockNumber,
+      blockTimestamp,
+      actualFee,
+      events,
+      l2ToL1Messages,
+      offchainData,
+      ...props
+    },
+    ref
+  ) => {
+    // blockchain details visibility
+    const [areBlockchainDetailsOpen, setAreBlockchainDetailsOpen] = useState(false)
+    const toggleBlockchainDetails = useCallback(
+      () => setAreBlockchainDetailsOpen(!areBlockchainDetailsOpen),
+      [areBlockchainDetailsOpen]
+    )
 
-const MemoizedTransactionRow = React.memo(function TransactionRow({
-  innerRef,
-  hash,
-  address,
-  publicKey,
-  fromAddress,
-  status,
-  code,
-  blockNumber,
-  blockTimestamp,
-  actualFee,
-  events,
-  l2ToL1Messages,
-  offchainData,
-  ...props
-}: TransactionRowProps) {
-  // blockchain details visibility
-  const [areBlockchainDetailsOpen, setAreBlockchainDetailsOpen] = useState(false)
-  const toggleBlockchainDetails = useCallback(
-    () => setAreBlockchainDetailsOpen(!areBlockchainDetailsOpen),
-    [areBlockchainDetailsOpen]
-  )
+    // tx age
+    const transactionAge = useAge(blockTimestamp)
 
-  // tx age
-  const transactionAge = useAge(blockTimestamp)
+    // reduce hash
+    const reducedHash = useReduceHash(hash)
 
-  // reduce hash
-  const reducedHash = useReduceHash(hash)
+    // parsed fee
+    const parsedFee = useMemo(() => (actualFee ? WeiAmount.fromRawAmount(actualFee) : undefined), [actualFee])
 
-  // parsed fee
-  const parsedFee = useMemo(() => (actualFee ? WeiAmount.fromRawAmount(actualFee) : undefined), [actualFee])
+    if (!address) return null
 
-  if (!address) return null
+    return (
+      <StyledTransactionRow offchain={status === 'RECEIVED' || status === 'REJECTED'} {...props}>
+        <Column gap={8} ref={ref}>
+          {events.map((event, index) => (
+            <Event key={index} address={address} publicKey={publicKey} $key={event.key} $data={event.data} />
+          ))}
 
-  return (
-    <StyledTransactionRow offchain={status === 'RECEIVED' || status === 'REJECTED'} {...props}>
-      <Column gap={8} ref={innerRef}>
-        {events.map((event, index) => (
-          <Event key={index} address={address} publicKey={publicKey} $key={event.key} $data={event.data} />
-        ))}
+          {l2ToL1Messages.map((message, index) => (
+            <Message
+              key={index}
+              address={address}
+              fromAddress={message.fromAddress}
+              toAddress={message.toAddress}
+              payload={message.payload}
+            />
+          ))}
 
-        {l2ToL1Messages.map((message, index) => (
-          <Message
-            key={index}
-            address={address}
-            fromAddress={message.fromAddress}
-            toAddress={message.toAddress}
-            payload={message.payload}
-          />
-        ))}
+          {!events.length && !l2ToL1Messages.length && offchainData?.action && (
+            <OffchainAction action={offchainData.action} status={status} />
+          )}
+        </Column>
 
-        {!events.length && !l2ToL1Messages.length && offchainData?.action && (
-          <OffchainAction action={offchainData.action} status={status} />
-        )}
-      </Column>
+        <SeeDetails clickable>
+          <RowCenter gap={6} onClick={toggleBlockchainDetails}>
+            <Caret direction={areBlockchainDetailsOpen ? 'bottom' : 'right'} filled />
 
-      <SeeDetails clickable>
-        <RowCenter gap={6} onClick={toggleBlockchainDetails}>
-          <Caret direction={areBlockchainDetailsOpen ? 'bottom' : 'right'} filled />
+            <Trans>See transaction</Trans>
+          </RowCenter>
+        </SeeDetails>
 
-          <Trans>See transaction</Trans>
-        </RowCenter>
-      </SeeDetails>
+        <TxGrid isOpen={areBlockchainDetailsOpen}>
+          <HeaderRow>
+            <TYPE.body>
+              <Trans>Transaction hash</Trans>
+            </TYPE.body>
+          </HeaderRow>
+          <HeaderRow>
+            <TYPE.body>
+              <Trans>Block number</Trans>
+            </TYPE.body>
+          </HeaderRow>
+          <HeaderRow>
+            <TYPE.body>
+              <Trans>Status</Trans>
+            </TYPE.body>
+          </HeaderRow>
+          <HeaderRow>
+            <TYPE.body>
+              <Trans>Origin</Trans>
+            </TYPE.body>
+          </HeaderRow>
+          <HeaderRow>
+            <TYPE.body>
+              <Trans>Fee</Trans>
+            </TYPE.body>
+          </HeaderRow>
+          <HeaderRow>
+            <TYPE.body>
+              <Trans>Age</Trans>
+            </TYPE.body>
+          </HeaderRow>
 
-      <TxGrid isOpen={areBlockchainDetailsOpen}>
-        <HeaderRow>
-          <TYPE.body>
-            <Trans>Transaction hash</Trans>
-          </TYPE.body>
-        </HeaderRow>
-        <HeaderRow>
-          <TYPE.body>
-            <Trans>Block number</Trans>
-          </TYPE.body>
-        </HeaderRow>
-        <HeaderRow>
-          <TYPE.body>
-            <Trans>Status</Trans>
-          </TYPE.body>
-        </HeaderRow>
-        <HeaderRow>
-          <TYPE.body>
-            <Trans>Origin</Trans>
-          </TYPE.body>
-        </HeaderRow>
-        <HeaderRow>
-          <TYPE.body>
-            <Trans>Fee</Trans>
-          </TYPE.body>
-        </HeaderRow>
-        <HeaderRow>
-          <TYPE.body>
-            <Trans>Age</Trans>
-          </TYPE.body>
-        </HeaderRow>
-
-        <div>
-          <Link target="_blank" href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId).explorer}/tx/${hash}`}>
-            <RowCenter gap={6}>
-              <StarkscanLink>{reducedHash}</StarkscanLink>
-              <StyledExternalLinkIcon />
-            </RowCenter>
-          </Link>
-        </div>
-
-        <div>
-          {blockNumber ? (
-            <Link
-              target="_blank"
-              href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId).explorer}/block/${blockNumber}`}
-            >
+          <div>
+            <Link target="_blank" href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId).explorer}/tx/${hash}`}>
               <RowCenter gap={6}>
-                <StarkscanLink>{blockNumber}</StarkscanLink>
+                <StarkscanLink>{reducedHash}</StarkscanLink>
                 <StyledExternalLinkIcon />
               </RowCenter>
             </Link>
-          ) : (
-            <TYPE.small>N/A</TYPE.small>
-          )}
-        </div>
+          </div>
 
-        <div>
-          <Status type="status" value={code ?? status} />
-        </div>
+          <div>
+            {blockNumber ? (
+              <Link
+                target="_blank"
+                href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId).explorer}/block/${blockNumber}`}
+              >
+                <RowCenter gap={6}>
+                  <StarkscanLink>{blockNumber}</StarkscanLink>
+                  <StyledExternalLinkIcon />
+                </RowCenter>
+              </Link>
+            ) : (
+              <TYPE.small>N/A</TYPE.small>
+            )}
+          </div>
 
-        <div>
-          <Status type="origin" value={address === fromAddress} />
-        </div>
+          <div>
+            <Status type="status" value={code ?? status} />
+          </div>
 
-        <div>
-          <TYPE.small>{parsedFee ? `${parsedFee.toUnitFixed(Unit.GWEI, 0)} Gwei` : 'N/A'}</TYPE.small>
-        </div>
+          <div>
+            <Status type="origin" value={address === fromAddress} />
+          </div>
 
-        <div>
-          <TYPE.small>{transactionAge ?? 'N/A'}</TYPE.small>
-        </div>
-      </TxGrid>
-    </StyledTransactionRow>
-  )
-},
-MemoizedTransactionRowPropsEqualityCheck)
+          <div>
+            <TYPE.small>{parsedFee ? `${parsedFee.toUnitFixed(Unit.GWEI, 0)} Gwei` : 'N/A'}</TYPE.small>
+          </div>
 
-export default MemoizedTransactionRow
+          <div>
+            <TYPE.small>{transactionAge ?? 'N/A'}</TYPE.small>
+          </div>
+        </TxGrid>
+      </StyledTransactionRow>
+    )
+  }
+)
+
+export default TransactionRow
