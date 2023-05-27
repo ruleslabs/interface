@@ -1,18 +1,26 @@
 import { useCallback } from 'react'
 import ms from 'ms.macro'
+import { shallow } from 'zustand/shallow'
+import { TransactionStatus } from 'starknet'
 
 import useInterval from 'src/hooks/useInterval'
 import useIsWindowVisible from 'src/hooks/useIsWindowVisible'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import { useBoundStore } from '..'
-import { TransactionStatus } from 'starknet'
 
 const TX_STATUS_POLLING = ms`5s`
 
 export default function StarknetTxUpdater(): null {
   const windowVisible = useIsWindowVisible()
 
-  const { txHash, setTxHash } = useBoundStore((state) => ({ txHash: state.stxHash, setTxHash: state.stxSetHash }))
+  const { txHash, setTxHash, saveExecutedStx } = useBoundStore(
+    (state) => ({
+      txHash: state.stxHash,
+      setTxHash: state.stxSetHash,
+      saveExecutedStx: state.saveExecutedStx,
+    }),
+    shallow
+  )
 
   const fetchTxHashStatus = useCallback(async () => {
     if (!txHash) return
@@ -21,6 +29,7 @@ export default function StarknetTxUpdater(): null {
     const { tx_status: txStatus } = await rulesSdk.starknet.getTransactionStatus(txHash)
     if (txStatus !== TransactionStatus.NOT_RECEIVED && txStatus !== TransactionStatus.RECEIVED) {
       setTxHash(null)
+      saveExecutedStx({ hash: txHash, success: txStatus !== TransactionStatus.REJECTED })
     }
   }, [txHash])
 

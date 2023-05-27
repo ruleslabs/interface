@@ -29,3 +29,5 @@ export const MAX_SHORT_USERNAME_LENGTH = 14
 export const TOP_COLLECTOR_RANK_MAX = 100
 
 export const L2_STARKGATE_DEPOSIT_HANDLER_SELECTOR_NAME = 'handle_deposit'
+
+export const MAX_RECENT_WALLET_ACTIVITY_LEN = 10

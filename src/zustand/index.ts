@@ -8,7 +8,7 @@ import { ApplicationSlice, createApplicationSlice } from './application'
 
 export type StoreState = UserSlice & StarknetTxSlice & ApplicationSlice
 
-const PERSISTING_KEYS: Array<keyof StoreState> = ['stxHash', 'pendingOperations']
+const PERSISTING_KEYS: Array<keyof StoreState> = ['stxHash', 'pendingOperations', 'executedStxs']
 
 export const useBoundStore = create<StoreState>()(
   persist(

@@ -48,3 +48,10 @@ export interface OwnerUser {
     fallbackUrl: string
   }
 }
+
+/* txs */
+
+export interface ExecutedTx {
+  hash: string
+  success: boolean
+}

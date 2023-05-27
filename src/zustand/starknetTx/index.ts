@@ -29,7 +29,7 @@ const resetState = {
   stxSigning: false,
 }
 
-const initialState = {
+const initialState: State = {
   ...resetState,
   stxHash: null,
 }

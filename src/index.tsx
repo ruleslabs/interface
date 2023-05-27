@@ -13,17 +13,19 @@ import store from 'src/state'
 import App from './pages/App'
 import { apolloClient } from './graphql/data/apollo'
 import ConfigProvider from './providers/ConfigProvider'
-import ApplicationUpdater from 'src/state/application/updater'
+import ApplicationReduxUpdater from 'src/state/application/updater'
 import { MulticallUpdater } from 'src/lib/state/multicall'
 import { BrowserRouter } from 'react-router-dom'
 import StarknetTxUpdater from './zustand/starknetTx/updater'
+import ApplicationUpdate from './zustand/application/updater'
 
 function Updaters() {
   return (
     <>
-      <ApplicationUpdater />
+      <ApplicationReduxUpdater />
       <MulticallUpdater />
       <StarknetTxUpdater />
+      <ApplicationUpdate />
     </>
   )
 }
