@@ -1,7 +1,7 @@
 import { StateCreator } from 'zustand'
 
 import { GenieSearchedUser, Operation, PendingOperation, PendingOperations } from 'src/types'
-import { StoreState } from './index'
+import { StoreState } from '../index'
 
 export type ApplicationSlice = State & Actions
 

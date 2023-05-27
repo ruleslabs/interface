@@ -2,8 +2,8 @@ import { StateCreator } from 'zustand'
 import { Call } from 'starknet'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
-import { StoreState } from './index'
-import { createApplicationSlice } from './application'
+import { StoreState } from '../index'
+import { createApplicationSlice } from '../application'
 
 export type StarknetTxSlice = State & Actions
 
@@ -11,7 +11,7 @@ export interface State {
   stxCalls: Call[]
   stxValue: WeiAmount
   stxSigning: boolean
-  stxHash: null | string
+  stxHash: string | null
 }
 
 export interface Actions {
@@ -20,7 +20,7 @@ export interface Actions {
   stxSetSigning: (signing: boolean) => void
   stxResetStarknetTx: () => void
   stxIncreaseValue: (amount: WeiAmount) => void
-  stxSetHash: (hash: string) => void
+  stxSetHash: (hash: string | null) => void
 }
 
 const resetState = {
@@ -68,6 +68,6 @@ export const createStarknetTxSlice: StateCreator<StoreState, [['zustand/immer', 
   stxSetHash: (hash) => {
     set({ stxHash: hash })
 
-    createApplicationSlice(set, ...a).subscribeToOperations(hash)
+    if (hash) createApplicationSlice(set, ...a).subscribeToOperations(hash)
   },
 })

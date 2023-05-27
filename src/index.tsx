@@ -16,12 +16,14 @@ import ConfigProvider from './providers/ConfigProvider'
 import ApplicationUpdater from 'src/state/application/updater'
 import { MulticallUpdater } from 'src/lib/state/multicall'
 import { BrowserRouter } from 'react-router-dom'
+import StarknetTxUpdater from './zustand/starknetTx/updater'
 
 function Updaters() {
   return (
     <>
       <ApplicationUpdater />
       <MulticallUpdater />
+      <StarknetTxUpdater />
     </>
   )
 }
