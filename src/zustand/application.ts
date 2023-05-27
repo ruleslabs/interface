@@ -15,6 +15,7 @@ export interface Actions {
   setSearchedUser: (searchedUser: GenieSearchedUser | null) => void
   pushOperation: (...operations: Operation[]) => void
   subscribeToOperations: (txHash: PendingOperation['txHash']) => void
+  cleanOperations: () => void
 }
 
 export const createApplicationSlice: StateCreator<StoreState, [['zustand/immer', never]], [], ApplicationSlice> = (
@@ -24,12 +25,18 @@ export const createApplicationSlice: StateCreator<StoreState, [['zustand/immer',
   pendingOperations: {},
   operations: [],
 
+  /* Search user */
+
   setSearchedUser: (searchedUser) => set({ searchedUser }),
+
+  /* Pending operations */
 
   pushOperation: (...operations) =>
     set((state) => {
       state.operations.push(...(operations as any[]))
     }),
+
+  cleanOperations: () => set({ operations: [] }),
 
   subscribeToOperations: (txHash) =>
     set((state) => {
@@ -44,4 +51,6 @@ export const createApplicationSlice: StateCreator<StoreState, [['zustand/immer',
       // clean operations queue
       state.operations = []
     }),
+
+  /* Modals (coming soon) */
 })

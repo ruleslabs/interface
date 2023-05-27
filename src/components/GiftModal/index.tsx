@@ -178,7 +178,7 @@ export default function GiftModal({ cardsIds }: GiftModalProps) {
   )
 
   // pending operation
-  const { pushOperation } = usePendingOperations()
+  const { pushOperation, cleanOperations } = usePendingOperations()
 
   // starknet tx
   const { setCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()
@@ -196,10 +196,10 @@ export default function GiftModal({ cardsIds }: GiftModalProps) {
       )
     )
 
-    // save operation
+    // save operations
     pushOperation(...tokenIds.map((tokenId): Operation => ({ tokenId, type: 'transfer', quantity: 1 })))
 
-    // save call
+    // save calls
     setCalls([
       {
         contractAddress: rulesAddress,
@@ -228,8 +228,11 @@ export default function GiftModal({ cardsIds }: GiftModalProps) {
 
   // on modal status update
   useEffect(() => {
-    setRecipient(null)
-    resetStarknetTx()
+    if (isOpen) {
+      setRecipient(null)
+      resetStarknetTx()
+      cleanOperations()
+    }
   }, [isOpen])
 
   if (!currentUser) return null

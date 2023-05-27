@@ -18,6 +18,8 @@ import { ModalHeader } from 'src/components/Modal'
 import useStarknetTx from 'src/hooks/useStarknetTx'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import useRulesAccount from 'src/hooks/useRulesAccount'
+import usePendingOperations from 'src/hooks/usePendingOperations'
+import { Operation } from 'src/types'
 
 const display: StarknetSignerDisplayProps = {
   confirmationText: t`Your purchase will be accepted`,
@@ -50,6 +52,9 @@ export default function AcceptOfferModal({
   const toggleAcceptOfferModal = useAcceptOfferModalToggle()
   const toggleWalletModal = useWalletModalToggle()
 
+  // pending operation
+  const { pushOperation, cleanOperations } = usePendingOperations()
+
   // starknet tx
   const { setCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()
 
@@ -70,19 +75,21 @@ export default function AcceptOfferModal({
     const marketplaceAddress = constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
     if (!ethAddress || !marketplaceAddress) return
 
+    const tokenIds = serialNumbers.map((serialNumber) =>
+      cardId.getStarknetCardId(artistName, season, constants.ScarcityName.indexOf(scarcityName), serialNumber)
+    )
+
+    // save operations
+    pushOperation(...tokenIds.map((tokenId): Operation => ({ tokenId, type: 'offerAcceptance', quantity: 1 })))
+
+    // save calls
     setCalls([
       {
         contractAddress: ethAddress,
         entrypoint: 'increaseAllowance',
         calldata: [marketplaceAddress, price, 0],
       },
-      ...serialNumbers.map((serialNumber) => {
-        const tokenId = cardId.getStarknetCardId(
-          artistName,
-          season,
-          constants.ScarcityName.indexOf(scarcityName),
-          serialNumber
-        )
+      ...tokenIds.map((tokenId) => {
         const uint256TokenId = uint256.uint256HexFromStrHex(tokenId)
 
         return {
@@ -100,6 +107,7 @@ export default function AcceptOfferModal({
   useEffect(() => {
     if (isOpen) {
       resetStarknetTx()
+      cleanOperations()
     }
   }, [isOpen])
 
