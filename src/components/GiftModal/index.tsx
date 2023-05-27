@@ -145,7 +145,6 @@ interface GiftModalProps {
 
 export default function GiftModal({ cardsIds }: GiftModalProps) {
   const [recipient, setRecipient] = useState<any | null>(null)
-  const [operations, setOperations] = useState<Operation[]>([])
 
   // current user
   const { currentUser } = useCurrentUser()
@@ -179,10 +178,10 @@ export default function GiftModal({ cardsIds }: GiftModalProps) {
   )
 
   // pending operation
-  const { subscribePendingOperations } = usePendingOperations()
+  const { pushOperation } = usePendingOperations()
 
   // starknet tx
-  const { setCalls, resetStarknetTx, signing, setSigning, txHash } = useStarknetTx()
+  const { setCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()
 
   const handleConfirmation = useCallback(() => {
     const rulesAddress = constants.RULES_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
@@ -198,7 +197,7 @@ export default function GiftModal({ cardsIds }: GiftModalProps) {
     )
 
     // save operation
-    setOperations(tokenIds.map((tokenId) => ({ tokenId, type: 'transfer', quantity: 1 })))
+    pushOperation(...tokenIds.map((tokenId): Operation => ({ tokenId, type: 'transfer', quantity: 1 })))
 
     // save call
     setCalls([
@@ -232,12 +231,6 @@ export default function GiftModal({ cardsIds }: GiftModalProps) {
     setRecipient(null)
     resetStarknetTx()
   }, [isOpen])
-
-  useEffect(() => {
-    if (isOpen && txHash && signing) {
-      subscribePendingOperations(operations, txHash)
-    }
-  }, [isOpen, signing, txHash, operations.length])
 
   if (!currentUser) return null
 

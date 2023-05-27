@@ -2,13 +2,14 @@ import { useBoundStore } from 'src/zustand'
 import { shallow } from 'zustand/shallow'
 
 export default function usePendingOperations() {
-  const { pendingOperations, subscribePendingOperations } = useBoundStore(
+  const { pendingOperations, subscribeToOperations, pushOperation } = useBoundStore(
     (state) => ({
       pendingOperations: state.pendingOperations,
-      subscribePendingOperations: state.subscribePendingOperations,
+      pushOperation: state.pushOperation,
+      subscribeToOperations: state.subscribeToOperations,
     }),
     shallow
   )
 
-  return { pendingOperations, subscribePendingOperations }
+  return { pendingOperations, subscribeToOperations, pushOperation }
 }

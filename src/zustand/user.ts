@@ -1,6 +1,7 @@
-import { immer } from 'zustand/middleware/immer'
+import { StateCreator } from 'zustand'
 
 import { GenieCurrentUser } from 'src/types'
+import { StoreState } from './index'
 
 export type UserSlice = State & Actions
 
@@ -17,7 +18,7 @@ export interface Actions {
   setCurrentUserRefresher: (refresher: () => void) => void
 }
 
-export const createUserSlice = immer<UserSlice>((set) => ({
+export const createUserSlice: StateCreator<StoreState, [['zustand/immer', never]], [], UserSlice> = (set) => ({
   currentUser: null,
   currentUserRefresher: () => {},
 
@@ -32,4 +33,4 @@ export const createUserSlice = immer<UserSlice>((set) => ({
   },
 
   setCurrentUserRefresher: (refresher) => set({ currentUserRefresher: refresher }),
-}))
+})

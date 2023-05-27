@@ -1,6 +1,9 @@
-import { immer } from 'zustand/middleware/immer'
+import { StateCreator } from 'zustand'
 import { Call } from 'starknet'
 import { WeiAmount } from '@rulesorg/sdk-core'
+
+import { StoreState } from './index'
+import { createApplicationSlice } from './application'
 
 export type StarknetTxSlice = State & Actions
 
@@ -31,7 +34,10 @@ const initialState = {
   stxHash: null,
 }
 
-export const createStarknetTxSlice = immer<StarknetTxSlice>((set) => ({
+export const createStarknetTxSlice: StateCreator<StoreState, [['zustand/immer', never]], [], StarknetTxSlice> = (
+  set,
+  ...a
+) => ({
   ...initialState,
 
   // CALLS
@@ -59,5 +65,9 @@ export const createStarknetTxSlice = immer<StarknetTxSlice>((set) => ({
 
   // HASH
 
-  stxSetHash: (hash) => set({ stxHash: hash }),
-}))
+  stxSetHash: (hash) => {
+    set({ stxHash: hash })
+
+    createApplicationSlice(set, ...a).subscribeToOperations(hash)
+  },
+})
