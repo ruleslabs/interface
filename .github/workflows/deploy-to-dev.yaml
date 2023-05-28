@@ -1,0 +1,17 @@
+name: Deploy dev
+
+on:
+  # manual trigger
+  workflow_dispatch:
+
+jobs:
+  main-to-dev:
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: dev
+      url: https://dev.rules.art
+
+    steps:
+      - uses: ./.github/actions/deploy

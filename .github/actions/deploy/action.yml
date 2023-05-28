@@ -1,19 +1,9 @@
-name: Deploy main to dev
+name: Deploy
+description: checkout, setup, install deps, prepare, build, and deploy
 
-on:
-  # manual trigger
-  workflow_dispatch:
-
-jobs:
-  main-to-dev:
-
-    runs-on: ubuntu-latest
-
-    environment:
-      name: dev
-      url: https://dev.rules.art
-
-    steps:
+runs:
+  using: composite
+  steps:
       - name: Checkout
         uses: actions/checkout@master
 
