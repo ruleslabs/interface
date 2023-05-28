@@ -44,7 +44,10 @@ export default function StarknetAccountStatus() {
         <LongHex value={address} />
 
         <ButtonsWrapper>
-          <Link target="_blank" href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId)}/contract/${address}`}>
+          <Link
+            target="_blank"
+            href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId).explorer}/contract/${address}`}
+          >
             <PrimaryButton>
               <Trans>See on Starkscan</Trans>
             </PrimaryButton>

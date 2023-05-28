@@ -10,6 +10,7 @@ const dataConfig = require('../graphql.config')
 const exec = promisify(child_process.exec)
 
 function fetchSchema(url, outputFile) {
+  console.log(url)
   exec(`npx get-graphql-schema ${url}`)
     .then(({ stderr, stdout }) => {
       if (stderr) {

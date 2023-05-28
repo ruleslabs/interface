@@ -23,11 +23,28 @@ jobs:
           node-version: '16'
 
       - name: Install Dependencies
-        run: yarn
+        run: yarn --ignore-scripts
+
+      - name: Prepare build
+        run: yarn prepare
+        env:
+          REACT_APP_GRAPHQL_URI: ${{ vars.REACT_APP_GRAPHQL_URI }}
 
       - name: Build
-        run: yarn build:dev
+        run: yarn build
         env:
+          REACT_APP_GRAPHQL_URI: ${{ vars.REACT_APP_GRAPHQL_URI }}
+          REACT_APP_REST_URI: ${{ vars.REACT_APP_REST_URI }}
+
+          REACT_APP_APP_URL: ${{ vars.REACT_APP_APP_URL }}
+
+          REACT_APP_ALGOLIA_ID: ${{ vars.REACT_APP_ALGOLIA_ID }}
+          REACT_APP_ALGOLIA_KEY: ${{ vars.REACT_APP_ALGOLIA_KEY }}
+
+          REACT_APP_STRIPE_ID: ${{ vars.REACT_APP_STRIPE_ID }}
+
+          REACT_APP_STARKNET_NETWORK_NAME: ${{ vars.REACT_APP_STARKNET_NETWORK_NAME }}
+
           AWS_S3_BUCKET: ${{ vars.AWS_S3_BUCKET }}
 
       - name: Configure AWS credentials

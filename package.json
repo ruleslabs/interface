@@ -5,17 +5,15 @@
   "scripts": {
     "graphql:fetch": "node scripts/fetch-schema.js",
     "graphql:generate": "graphql-codegen --config apollo-codegen.ts",
-    "graphql:local": "env-cmd -f .env.local yarn graphql:fetch && yarn graphql:generate",
     "graphql": "yarn graphql:fetch && yarn graphql:generate",
     "i18n:extract": "lingui extract --locale en-US",
     "i18n:compile": "lingui compile",
     "i18n": "yarn i18n:compile && yarn i18n:extract",
     "prepare": "yarn graphql && yarn i18n",
-    "dev": "env-cmd -f .env.local craco start",
-    "prod": "env-cmd -f .env.local.production craco start",
+    "dev": "craco start",
+    "prod": "craco start",
     "serve": "serve build -l 3000",
-    "build:dev": "env-cmd -f .env craco build",
-    "build:prod": "env-cmd -f .env.production craco build"
+    "build": "craco build"
   },
   "author": "Charles Lanier",
   "license": "ISC",
@@ -98,7 +96,6 @@
     "babel-plugin-styled-components": "^2.1.3",
     "buffer": "^6.0.3",
     "css-loader": "^6.7.4",
-    "env-cmd": "^10.1.0",
     "eslint": "8.41.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
