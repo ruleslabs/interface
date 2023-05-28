@@ -20,7 +20,7 @@ export default function useRampSdk({ email, address }: RampSdkProps): RampInstan
       fiatValue: '100',
       swapAsset: 'STARKNET_ETH',
       fiatCurrency: 'EUR',
-      hostLogoUrl: process.env.REACT_APP_APP_URL ? `${process.env.REACT_APP_APP_URL}/assets/ramp-logo.svg` : '',
+      hostLogoUrl: process.env.PUBLIC_URL ? `${process.env.PUBLIC_URL}/assets/ramp-logo.svg` : '',
       userEmailAddress: email,
       hostApiKey: apiKey,
       userAddress: getChecksumAddress(address),

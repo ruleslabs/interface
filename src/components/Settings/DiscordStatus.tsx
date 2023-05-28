@@ -101,7 +101,7 @@ export default function DiscordStatus({ redirectPath, ...props }: DiscordStatusP
   const discordOAuthRedirectUrl = useMemo(
     () =>
       `https://discord.com/api/oauth2/authorize?client_id=975024307044499456&redirect_uri=${encodeURIComponent(
-        `${process.env.REACT_APP_APP_URL}${redirectPath}`
+        `${process.env.PUBLIC_URL}${redirectPath}`
       )}&response_type=code&scope=guilds.join%20identify`,
     [redirectPath]
   )

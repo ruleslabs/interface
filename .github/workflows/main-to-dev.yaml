@@ -36,7 +36,7 @@ jobs:
           REACT_APP_GRAPHQL_URI: ${{ vars.REACT_APP_GRAPHQL_URI }}
           REACT_APP_REST_URI: ${{ vars.REACT_APP_REST_URI }}
 
-          REACT_APP_APP_URL: ${{ vars.REACT_APP_APP_URL }}
+          PUBLIC_URL: ${{ vars.PUBLIC_URL }}
 
           REACT_APP_ALGOLIA_ID: ${{ vars.REACT_APP_ALGOLIA_ID }}
           REACT_APP_ALGOLIA_KEY: ${{ vars.REACT_APP_ALGOLIA_KEY }}
