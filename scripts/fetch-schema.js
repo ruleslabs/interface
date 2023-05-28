@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-env node */
 
 require('dotenv').config({ path: '.env' })
