@@ -14,11 +14,52 @@ jobs:
       url: https://rules.art
 
     steps:
-      - name: Setup
-        uses: ./.github/actions/setup
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Setup Node
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '16'
+
+      - name: Install Dependencies
+        run: yarn --ignore-scripts
+
+      - name: Prepare build
+        run: yarn prepare
+        env:
+          REACT_APP_GRAPHQL_URI: ${{ vars.REACT_APP_GRAPHQL_URI }}
 
       - name: Build
-        uses: ./.github/actions/build
+        run: yarn build
+        env:
+          REACT_APP_GRAPHQL_URI: ${{ vars.REACT_APP_GRAPHQL_URI }}
+          REACT_APP_REST_URI: ${{ vars.REACT_APP_REST_URI }}
+
+          PUBLIC_URL: ${{ vars.PUBLIC_URL }}
+
+          REACT_APP_ALGOLIA_ID: ${{ vars.REACT_APP_ALGOLIA_ID }}
+          REACT_APP_ALGOLIA_KEY: ${{ vars.REACT_APP_ALGOLIA_KEY }}
+
+          REACT_APP_STRIPE_ID: ${{ vars.REACT_APP_STRIPE_ID }}
+
+          REACT_APP_STARKNET_NETWORK_NAME: ${{ vars.REACT_APP_STARKNET_NETWORK_NAME }}
+
+          AWS_S3_BUCKET: ${{ vars.AWS_S3_BUCKET }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
 
       - name: Deploy
-        uses: ./.github/actions/deploy
+        run: aws s3 sync ./build s3://$AWS_S3_BUCKET --delete
+        env:
+          AWS_S3_BUCKET: ${{ vars.AWS_S3_BUCKET }}
+
+      - name: Invalidate Cloudfront cache
+        run: aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
+        env:
+          AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.AWS_CLOUDFRONT_DISTRIBUTION_ID}}
