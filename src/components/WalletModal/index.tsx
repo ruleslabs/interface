@@ -13,30 +13,34 @@ import Deposit from './Deposit'
 import StarkgateDeposit from './StarkgateDeposit'
 import StarkgateWithdraw from './StarkgateWithdraw'
 
-const MODAL_CONTENTS: ModalContents<WalletModalMode> = {
-  [WalletModalMode.OVERVIEW]: {
-    Component: Overview,
-    title: t`Wallet`,
-  },
-  [WalletModalMode.DEPOSIT]: {
-    Component: Deposit,
-    title: t`Add funds`,
-    previous: WalletModalMode.OVERVIEW,
-  },
-  [WalletModalMode.STARKGATE_DEPOSIT]: {
-    Component: StarkgateDeposit,
-    title: t`Add funds`,
-    previous: WalletModalMode.DEPOSIT,
-  },
-  [WalletModalMode.STARKGATE_WITHDRAW]: {
-    Component: StarkgateWithdraw,
-    title: t`Withdraw`,
-    previous: WalletModalMode.OVERVIEW,
-  },
+function useModalContent(): ModalContents<WalletModalMode> {
+  return useMemo(
+    () => ({
+      [WalletModalMode.OVERVIEW]: {
+        Component: Overview,
+        title: t`Wallet`,
+      },
+      [WalletModalMode.DEPOSIT]: {
+        Component: Deposit,
+        title: t`Add funds`,
+        previous: WalletModalMode.OVERVIEW,
+      },
+      [WalletModalMode.STARKGATE_DEPOSIT]: {
+        Component: StarkgateDeposit,
+        title: t`Add funds`,
+        previous: WalletModalMode.DEPOSIT,
+      },
+      [WalletModalMode.STARKGATE_WITHDRAW]: {
+        Component: StarkgateWithdraw,
+        title: t`Withdraw`,
+        previous: WalletModalMode.OVERVIEW,
+      },
+    }),
+    []
+  )
 }
 
 // TODO: make a generic component for moded modals
-
 export default function WalletModal() {
   // modal
   const isOpen = useModalOpened(ApplicationModal.WALLET)
@@ -46,9 +50,12 @@ export default function WalletModal() {
   const walletModalMode = useWalletModalMode()
   const setWalletModalMode = useSetWalletModalMode()
 
+  // modal content
+  const modalContent = useModalContent()
+
   const renderedModalContent = useMemo(() => {
     if (walletModalMode === null) return null
-    const ModalContent = MODAL_CONTENTS[walletModalMode]
+    const ModalContent = modalContent[walletModalMode]
 
     const onBack =
       ModalContent.previous !== undefined

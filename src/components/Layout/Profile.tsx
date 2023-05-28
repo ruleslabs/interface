@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
 import styled from 'styled-components/macro'
-import { t, Trans } from '@lingui/macro'
+import { Trans, t } from '@lingui/macro'
 
 import { ActiveLink } from 'src/components/Link'
 import Section from 'src/components/Section'
@@ -105,15 +105,19 @@ const StyledDiscordMember = styled(DiscordMember)`
   `}
 `
 
-export const tabLinks = [
-  { name: 'Deck', link: '' },
-  { name: 'Cards', link: '/cards' },
-  { name: 'Packs', link: '/packs' },
-  { name: 'Rulédex', link: '/ruledex' },
-  { name: t`Activity`, link: '/activity' },
-] // TODO: move it somewhere else as a single source of truth
-
 export default function ProfileLayout({ children }: { children: React.ReactElement }) {
+  // tabPaths
+  const tabsNav = useMemo(
+    () => [
+      { name: t`Deck`, path: '' },
+      { name: t`Cards`, path: 'cards' },
+      { name: t`Packs`, path: 'packs' },
+      { name: t`Rulédex`, path: 'ruledex' },
+      { name: t`Activity`, path: 'activity' },
+    ],
+    []
+  )
+
   // get username
   const { userSlug } = useParams()
 
@@ -206,11 +210,9 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
       </Section>
 
       <TabBarSection>
-        {tabLinks.map((tabLink, index: number) => (
-          <ActiveLink key={`tab-link-${index}`} href={`/user/${userSlug}${tabLink.link}`} perfectMatch>
-            <TabButton>
-              <Trans id={tabLink.name}>{tabLink.name}</Trans>
-            </TabButton>
+        {tabsNav.map((tab) => (
+          <ActiveLink key={tab.path} href={`/user/${userSlug}/${tab.path}`} perfectMatch>
+            <TabButton>{tab.name}</TabButton>
           </ActiveLink>
         ))}
       </TabBarSection>

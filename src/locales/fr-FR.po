@@ -1605,3 +1605,9 @@ msgstr "Live reward | Réception"
 #: src/components/LiveRewardModal/Ticket.tsx
 msgid "Live reward | Ticket"
 msgstr "Live reward | Ticket"
+
+#: src/components/WalletModal/index.tsx
+#: src/components/WalletModal/index.tsx
+#: src/components/WalletModal/Overview.tsx
+msgid "Add funds"
+msgstr "Ajouter des fonds"
