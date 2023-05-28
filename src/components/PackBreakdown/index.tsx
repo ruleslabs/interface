@@ -110,7 +110,7 @@ export default function PackBreakdown({
         quantity={quantity}
         onSuccessfulPackPurchase={onSuccessfulPackPurchase}
         packId={id}
-        packName={t({ id: name, message: name })}
+        packName={name}
       />
     </>
   )

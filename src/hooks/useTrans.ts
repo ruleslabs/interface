@@ -4,7 +4,7 @@ import { msg } from '@lingui/macro'
 
 import { OperationType } from 'src/types'
 
-type Prefix = 'operation'
+type Prefix = 'operation' | 'liveReward'
 
 const prefix = (obj: Messages, prefix: Prefix) =>
   Object.keys(obj).reduce<Messages>((acc, e) => {
@@ -22,8 +22,11 @@ const pendingOperationsMessage: { [id in OperationType]: MessageDescriptor } = {
   offerCreation: msg`Sale in progress...`,
 }
 
+const liveReward: Messages = {}
+
 const messages: Messages = {
   ...prefix(pendingOperationsMessage, 'operation'),
+  ...prefix(liveReward, 'liveReward'),
 }
 
 export default function useTrans() {
@@ -32,7 +35,7 @@ export default function useTrans() {
   return useCallback(
     (prefix: Prefix, id: string) => {
       const prefixedId = `${prefix}.${id}`
-      return messages[prefixedId] ? i18n._(messages[prefixedId]) : prefixedId
+      return messages[prefixedId] ? i18n._(messages[prefixedId]) : id
     },
     [i18n]
   )

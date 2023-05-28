@@ -14,6 +14,7 @@ import CardBreakdown from 'src/components/MarketplaceModal/CardBreakdown'
 
 import { ReactComponent as PinIcon } from 'src/images/pin.svg'
 import { ReactComponent as CalendarIcon } from 'src/images/calendar.svg'
+import useTrans from 'src/hooks/useTrans'
 
 const InformationRow = styled(RowCenter)`
   gap: 12px;
@@ -52,6 +53,9 @@ export default function LiveRewardDetailsModal({ liveReward }: LiveRewardDetails
   const toggleLiveRewardDetailsModal = useLiveRewardDetailsModalToggle()
   const isOpen = useModalOpened(ApplicationModal.LIVE_REWARD_DETAILS)
 
+  // trans
+  const trans = useTrans()
+
   // date
   const formatedDate = useFormatedDate(liveReward?.date)
 
@@ -60,10 +64,7 @@ export default function LiveRewardDetailsModal({ liveReward }: LiveRewardDetails
   return (
     <ClassicModal onDismiss={toggleLiveRewardDetailsModal} isOpen={isOpen}>
       <ModalContent>
-        <ModalHeader
-          onDismiss={toggleLiveRewardDetailsModal}
-          title={t({ id: liveReward.displayName, message: liveReward.displayName })}
-        />
+        <ModalHeader onDismiss={toggleLiveRewardDetailsModal} title={trans('liveReward', liveReward.displayName)} />
 
         <ModalBody>
           <Column gap={24}>
