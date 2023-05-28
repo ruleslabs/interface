@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     environment:
-      name: Dev
+      name: dev
       url: https://dev.rules.art
 
     steps:
