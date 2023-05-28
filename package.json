@@ -8,7 +8,7 @@
     "graphql": "yarn graphql:fetch && yarn graphql:generate",
     "i18n:extract": "lingui extract --locale en-US",
     "i18n:compile": "lingui compile",
-    "i18n": "yarn i18n:compile && yarn i18n:extract",
+    "i18n": "yarn i18n:extract --clean && yarn i18n:compile",
     "prepare": "yarn graphql && yarn i18n",
     "dev": "craco start",
     "prod": "craco start",

@@ -25,6 +25,7 @@ build
 
 # misc
 .DS_Store
+.env.production.local
 
 # generated
 /src/locales/**/*.mjs

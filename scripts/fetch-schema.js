@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-env node */
 
-require('dotenv').config({ path: '.env' })
+require('dotenv').config({ path: '.env.development' })
 const child_process = require('child_process')
 const fs = require('fs/promises')
 const { promisify } = require('util')
