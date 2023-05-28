@@ -1,5 +1,5 @@
 import JSBI from 'jsbi'
-import { useMemo, useState, useCallback } from 'react'
+import { useMemo, useState, useCallback, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { t, Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
@@ -52,6 +52,10 @@ const SeeOnEtherscanWrapper = styled(RowCenter)`
 `
 
 export default function EtherRetrieveModal() {
+  const [error, setError] = useState<string | null>(null)
+  const [txHash, setTxHash] = useState<string | null>(null)
+  const [waitingForTx, setWaitingForTx] = useState(false)
+
   // current user
   const { currentUser, setCurrentUser } = useCurrentUser()
 
@@ -78,13 +82,6 @@ export default function EtherRetrieveModal() {
 
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
-
-  // tx
-  const [txHash, setTxHash] = useState<string | null>(null)
-  const [waitingForTx, setWaitingForTx] = useState(false)
-
-  // error
-  const [error, setError] = useState<string | null>(null)
 
   // mutation
   const [retrieveEtherMutation] = useRetrieveEtherMutation()
@@ -143,6 +140,14 @@ export default function EtherRetrieveModal() {
         if (error?.code !== 4001) console.error(error)
       })
   }, [ethereumMulticallContract, ethereumStarkgateContract, currentUser?.retrievableEthers])
+
+  useEffect(() => {
+    if (isOpen) {
+      setError(null)
+      setTxHash(null)
+      setWaitingForTx(false)
+    }
+  }, [isOpen])
 
   return (
     <ClassicModal isOpen={isOpen} onDismiss={toggleRetrieveEthersModal}>

@@ -36,12 +36,12 @@ const Input = styled.input`
     color: ${({ theme }) => theme.text2};
   }
 
-  :-webkit-autofill,
+  &:-webkit-autofill,
   &:-webkit-autofill:focus {
     transition: background-color 600000s 0s, color 600000s 0s;
   }
 
-  ::-webkit-outer-spin-button,
+  &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;

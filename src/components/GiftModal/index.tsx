@@ -64,7 +64,7 @@ const ArrowWrapper = styled(Column)`
     fill: ${({ theme }) => theme.text1};
   }
 
-  ::before,
+  &::before,
   &::after {
     content: '';
     width: 1px;

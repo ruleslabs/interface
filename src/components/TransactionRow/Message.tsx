@@ -26,6 +26,7 @@ const StyledEvent = styled(RowCenter)`
   & > img,
   & > svg {
     height: 48px;
+    max-width: 48px;
   }
 
   a,
