@@ -55,7 +55,7 @@ jobs:
           aws-region: eu-west-1
 
       - name: Deploy
-        run: aws s3 sync ./build s3://$AWS_S3_BUCKET --delete --exclude ".*" --size-only
+        run: aws s3 sync ./build s3://$AWS_S3_BUCKET --delete
         env:
           AWS_S3_BUCKET: ${{ vars.AWS_S3_BUCKET }}
 
