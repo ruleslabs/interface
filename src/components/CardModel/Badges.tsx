@@ -1,8 +1,8 @@
 import { ReactComponent as RuledexBadgeLowSerial } from 'src/images/ruledex-badge-low-serial.svg'
-import RuledexBadgeCardsCountLevel1 from 'src/images/ruledex-badge-cards-count-level-1.svg'
-import RuledexBadgeCardsCountLevel2 from 'src/images/ruledex-badge-cards-count-level-2.svg'
-import RuledexBadgeCardsCountLevel3 from 'src/images/ruledex-badge-cards-count-level-3.svg'
-import RuledexBadgeCardsCountLevel4 from 'src/images/ruledex-badge-cards-count-level-4.svg'
+import { ReactComponent as RuledexBadgeCardsCountLevel1 } from 'src/images/ruledex-badge-cards-count-level-1.svg'
+import { ReactComponent as RuledexBadgeCardsCountLevel2 } from 'src/images/ruledex-badge-cards-count-level-2.svg'
+import { ReactComponent as RuledexBadgeCardsCountLevel3 } from 'src/images/ruledex-badge-cards-count-level-3.svg'
+import { ReactComponent as RuledexBadgeCardsCountLevel4 } from 'src/images/ruledex-badge-cards-count-level-4.svg'
 
 export enum Badge {
   LOW_SERIAL,
