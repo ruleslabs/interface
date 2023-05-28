@@ -21,7 +21,7 @@ node_modules/
 .yarn-integrity
 
 # CRA build output
-build
+/build
 
 # misc
 .DS_Store

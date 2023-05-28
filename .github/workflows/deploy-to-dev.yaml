@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  main-to-dev:
+  deploy-dev:
 
     runs-on: ubuntu-latest
 
@@ -14,4 +14,11 @@ jobs:
       url: https://dev.rules.art
 
     steps:
-      - uses: ./.github/actions/deploy
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Build
+        uses: ./.github/actions/build
+
+      - name: Deploy
+        uses: ./.github/actions/deploy
