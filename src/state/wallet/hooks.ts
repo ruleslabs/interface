@@ -15,8 +15,8 @@ import { setWalletModalMode, WalletModalMode } from './actions'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 
 const RETRIEVE_ETHER_MUTATION = gql`
-  mutation ($hash: String!, $withdraws: [EtherWithdraw!]!) {
-    retrieveEther(input: { hash: $hash, withdraws: $withdraws })
+  mutation ($hash: String!) {
+    retrieveEther(filter: { hash: $hash })
   }
 `
 

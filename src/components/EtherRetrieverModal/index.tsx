@@ -114,15 +114,7 @@ export default function EtherRetrieveModal() {
         method(args, { gasLimit: estimatedGasLimit }).then((response: any) => {
           setTxHash(response.hash)
 
-          retrieveEtherMutation({
-            variables: {
-              hash: response.hash,
-              withdraws: currentUser.retrievableEthers.map((retrievableEther: any) => ({
-                amount: retrievableEther.amount,
-                l1Recipient: retrievableEther.l1Recipient,
-              })),
-            },
-          })
+          retrieveEtherMutation({ variables: { hash: response.hash } })
             .then(() =>
               setCurrentUser((currentUser) => {
                 if (!currentUser) return
@@ -139,7 +131,7 @@ export default function EtherRetrieveModal() {
         // we only care if the error is something _other_ than the user rejected the tx
         if (error?.code !== 4001) console.error(error)
       })
-  }, [ethereumMulticallContract, ethereumStarkgateContract, currentUser?.retrievableEthers])
+  }, [ethereumMulticallContract, ethereumStarkgateContract])
 
   useEffect(() => {
     if (isOpen) {
