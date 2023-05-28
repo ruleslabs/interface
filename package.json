@@ -12,10 +12,9 @@
     "prepare": "yarn graphql && yarn i18n",
     "dev": "env-cmd -f .env.local craco start",
     "prod": "env-cmd -f .env.local.production craco start",
-    "build:dev": "env-cmd -f .env yarn run build",
-    "build:prod": "env-cmd -f .env.production yarn run build",
-    "deploy:dev": "yarn run build:dev && rm -rf .serverless .serverless_nextjs && env-cmd -f .env components-v1 --component",
-    "deploy:prod": "yarn run build:prod && rm -rf .serverless .serverless_nextjs && env-cmd -f .env.production components-v1 --component"
+    "serve": "serve build -l 3000",
+    "build:dev": "env-cmd -f .env craco build",
+    "build:prod": "env-cmd -f .env.production craco build"
   },
   "author": "Charles Lanier",
   "license": "ISC",
@@ -119,9 +118,11 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+      "chrome >= 67",
+      "edge >= 79",
+      "firefox >= 68",
+      "opera >= 54",
+      "safari >= 14"
     ],
     "development": [
       "last 1 chrome version",

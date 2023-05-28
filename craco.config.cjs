@@ -3,6 +3,9 @@
 const { VanillaExtractPlugin } = require('@vanilla-extract/webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
+const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin')
+
+const path = require('path')
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -35,6 +38,16 @@ module.exports = {
     ],
     configure: (webpackConfig) => {
       webpackConfig.resolve = Object.assign(webpackConfig.resolve, {
+        plugins: webpackConfig.resolve.plugins.map((plugin) => {
+          // Allow vanilla-extract in production builds.
+          // This is necessary because create-react-app guards against external imports.
+          // See https://sandroroth.com/blog/vanilla-extract-cra#production-build.
+          if (plugin instanceof ModuleScopePlugin) {
+            plugin.allowedPaths.push(path.join(__dirname, 'node_modules/@vanilla-extract/webpack-plugin'))
+          }
+
+          return plugin
+        }),
         fallback: {
           net: false,
           tls: false,

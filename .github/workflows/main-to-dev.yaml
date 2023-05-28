@@ -1,0 +1,48 @@
+name: Deploy main to dev
+
+on:
+  # manual trigger
+  workflow_dispatch:
+
+jobs:
+  main-to-dev:
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: Dev
+      url: https://dev.rules.art
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Setup Node
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '16'
+
+      - name: Install Dependencies
+        run: yarn
+
+      - name: Build
+        run: yarn build:dev
+        env:
+          AWS_S3_BUCKET: ${{ vars.AWS_S3_BUCKET }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Deploy
+        run: aws s3 sync ./build s3://$AWS_S3_BUCKET --delete --exclude ".*" --size-only
+        env:
+          AWS_S3_BUCKET: ${{ vars.AWS_S3_BUCKET }}
+
+      - name: Invalidate Cloudfront cache
+        run: aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
+        env:
+          AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.AWS_CLOUDFRONT_DISTRIBUTION_ID}}
