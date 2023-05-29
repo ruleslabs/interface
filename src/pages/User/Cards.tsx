@@ -7,13 +7,11 @@ import DefaultLayout from 'src/components/Layout'
 import ProfileLayout from 'src/components/Layout/Profile'
 import Row, { RowBetween, RowCenter } from 'src/components/Row'
 import Section from 'src/components/Section'
-import CardModel from 'src/components/CardModel'
 import Grid from 'src/components/Grid'
 import { useSearchCards, CardsSortingKey } from 'src/state/search/hooks'
 import { TYPE } from 'src/styles/theme'
 import EmptyTab, { EmptyCardsTabOfCurrentUser } from 'src/components/EmptyTab'
 import { PaginationSpinner } from 'src/components/Spinner'
-import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
 import SortButton, { SortsData } from 'src/components/Button/SortButton'
 import { PrimaryButton, SecondaryButton } from 'src/components/Button'
 import CreateOfferModal from 'src/components/MarketplaceModal/CreateOffer'
@@ -22,6 +20,10 @@ import GiftModal from 'src/components/GiftModal'
 
 import { ReactComponent as Present } from 'src/images/present.svg'
 import useSearchedUser from 'src/hooks/useSearchedUser'
+import { NftCard } from 'src/components/nft/Card'
+import useAssetsSelection from 'src/hooks/useAssetsSelection'
+import { WeiAmount } from '@rulesorg/sdk-core'
+import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 
 // css
 
@@ -31,7 +33,9 @@ const CARDS_QUERY = gql`
       id
       slug
       serialNumber
-      onSale
+      currentOffer {
+        price
+      }
       starknetTokenId
       cardModel {
         slug
@@ -52,6 +56,7 @@ const CARDS_IN_DELIVERY_QUERY = gql`
       id
       slug
       serialNumber
+      starknetTokenId
       cardModel {
         slug
         pictureUrl(derivative: "width=1024")
@@ -167,6 +172,8 @@ const sortsData: SortsData<CardsSortingKey> = [
 ]
 
 function UserCards() {
+  const [deliveredCardsCount, setDeliveredCardsCount] = useState(0)
+
   // current user
   const [user] = useSearchedUser()
 
@@ -181,12 +188,19 @@ function UserCards() {
   const [sortIndex, setSortIndex] = useState(0)
 
   // query cards data
-  const onCardsQueryCompleted = useCallback(
-    (data: any) => {
-      setCards(cards.concat(data.cardsByIds))
-    },
-    [cards.length]
-  )
+  const onCardsQueryCompleted = useCallback((data: any) => {
+    const cards = (data.cardsByIds ?? []).map((card: any) => {
+      const price = card.currentOffer?.price
+      const parsedPrice = price ? WeiAmount.fromRawAmount(price) : undefined
+
+      return {
+        ...card,
+        parsedPrice,
+      }
+    })
+
+    setCards((state) => state.concat(cards))
+  }, [])
   const [queryCardsData, cardsQuery] = useLazyQuery(CARDS_QUERY, {
     onCompleted: onCardsQueryCompleted,
     fetchPolicy: 'cache-and-network',
@@ -197,7 +211,6 @@ function UserCards() {
   const cardsInDelivery = cardsInDeliveryQuery.data?.cardsInDeliveryForUser ?? []
 
   // cards count
-  const [deliveredCardsCount, setDeliveredCardsCount] = useState(0)
   const cardsCount = useMemo(
     () => deliveredCardsCount + cardsInDelivery.length,
     [cardsInDelivery.length, deliveredCardsCount]
@@ -224,27 +237,11 @@ function UserCards() {
   // loading
   const isLoading = cardsSearch.loading || cardsQuery.loading || cardsInDelivery.loading
 
-  // infinite scroll
-  const lastTxRef = useInfiniteScroll({ nextPage: cardsSearch.nextPage, loading: isLoading })
-
-  // Selection feature
-  const [selectionModeEnabled, setSelectionModeEnabled] = useState(false)
-  const [selectedCardsIds, setSelectedCardsSlugs] = useState<string[]>([])
-
-  // toggle selection mode
-  const toggleSelectionMode = useCallback(() => {
-    if (selectionModeEnabled) setSelectedCardsSlugs([]) // clear selection
-    setSelectionModeEnabled(!selectionModeEnabled) // disable selection mode
-  }, [selectionModeEnabled])
-
   // cards selection
-  const toggleCardSelection = useCallback(
-    (cardId: string) => {
-      if (selectedCardsIds.includes(cardId)) setSelectedCardsSlugs(selectedCardsIds.filter((id) => cardId !== id))
-      else setSelectedCardsSlugs(selectedCardsIds.concat(cardId))
-    },
-    [selectedCardsIds.length]
-  )
+  const { selectedTokenIds, selectionModeEnabled, toggleSelectionMode } = useAssetsSelection()
+
+  // fiat
+  const weiAmountToEURValue = useWeiAmountToEURValue()
 
   if (!user) return null
 
@@ -275,31 +272,36 @@ function UserCards() {
       <Section>
         <Grid>
           {cardsInDelivery.map((card: any) => (
-            <CardModel
+            <NftCard
               key={card.slug}
-              cardModelSlug={card.cardModel.slug}
-              pictureUrl={card.cardModel.pictureUrl}
-              serialNumber={card.serialNumber}
-              season={card.cardModel.season}
-              artistName={card.cardModel.artist.displayName}
-              inDelivery
+              asset={{
+                animationUrl: card.cardModel.videoUrl,
+                imageUrl: card.cardModel.pictureUrl,
+                tokenId: card.starknetTokenId,
+              }}
+              display={{
+                primaryInfo: card.cardModel.artist.displayName,
+                secondaryInfo: `#${card.serialNumber}`,
+                status: 'inDelivery',
+              }}
             />
           ))}
-          {cards.map((card: any, index) => (
-            <CardModel
+          {cards.map((card: any) => (
+            <NftCard
               key={card.slug}
-              ref={index + 1 === cards.length ? lastTxRef : undefined}
-              cardModelSlug={card.cardModel.slug}
-              pictureUrl={card.cardModel.pictureUrl}
-              videoUrl={card.cardModel.videoUrl}
-              onSale={card.onSale}
-              tokenId={card.starknetTokenId}
-              serialNumber={card.serialNumber}
-              season={card.cardModel.season}
-              artistName={card.cardModel.artist.displayName}
-              selectable={selectionModeEnabled}
-              selected={selectedCardsIds.includes(card.id)}
-              onClick={selectionModeEnabled ? () => toggleCardSelection(card.id) : undefined}
+              asset={{
+                animationUrl: card.cardModel.videoUrl,
+                imageUrl: card.cardModel.pictureUrl,
+                tokenId: card.starknetTokenId,
+              }}
+              display={{
+                primaryInfo: card.cardModel.artist.displayName,
+                secondaryInfo: `#${card.serialNumber}`,
+                subtitle: card.parsedPrice
+                  ? `${card.parsedPrice.toSignificant(6)} ETH (€${weiAmountToEURValue(card.parsedPrice)})`
+                  : undefined,
+                status: card.parsedPrice ? 'onSale' : undefined,
+              }}
             />
           ))}
         </Grid>
@@ -311,10 +313,10 @@ function UserCards() {
         <PaginationSpinner loading={isLoading} />
       </Section>
 
-      <SelectedCardsActionWrapper active={selectedCardsIds.length > 0}>
+      <SelectedCardsActionWrapper active={selectedTokenIds.length > 0}>
         <SelectedCardsAction>
           <TYPE.body>
-            <Plural value={selectedCardsIds.length} _1="{0} card selected" other="{0} cards selected" />
+            <Plural value={selectedTokenIds.length} _1="{0} card selected" other="{0} cards selected" />
           </TYPE.body>
 
           <SelectedCardsButtonsWrapper>
@@ -332,8 +334,8 @@ function UserCards() {
         </SelectedCardsAction>
       </SelectedCardsActionWrapper>
 
-      <CreateOfferModal cardsIds={selectedCardsIds} />
-      <GiftModal cardsIds={selectedCardsIds} />
+      <CreateOfferModal tokenIds={selectedTokenIds} />
+      <GiftModal tokenIds={selectedTokenIds} />
     </>
   )
 }

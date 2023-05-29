@@ -48,7 +48,7 @@ export const Subtitle = ({ className, ...props }: TextProps) => (
       sprinkles({
         fontWeight: 'normal',
         color: 'text2',
-        fontSize: '16',
+        fontSize: '14',
       })
     )}
     {...props}

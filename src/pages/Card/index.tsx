@@ -181,9 +181,9 @@ function CardPage() {
             </Column>
           </Section>
 
-          <GiftModal cardsIds={[card.id]} />
+          <GiftModal tokenIds={[card.starknetTokenId]} />
 
-          <CreateOfferModal cardsIds={[card.id]} />
+          <CreateOfferModal tokenIds={[card.starknetTokenId]} />
 
           {cardPrice && (
             <>

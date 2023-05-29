@@ -5,8 +5,9 @@ import { immer } from 'zustand/middleware/immer'
 import { UserSlice, createUserSlice } from './user'
 import { StarknetTxSlice, createStarknetTxSlice } from './starknetTx'
 import { ApplicationSlice, createApplicationSlice } from './application'
+import { AssetsSlice, createAssetsSlice } from './assets'
 
-export type StoreState = UserSlice & StarknetTxSlice & ApplicationSlice
+export type StoreState = UserSlice & StarknetTxSlice & ApplicationSlice & AssetsSlice
 
 const PERSISTING_KEYS: Array<keyof StoreState> = ['stxHash', 'pendingOperations', 'executedStxs']
 
@@ -16,6 +17,7 @@ export const useBoundStore = create<StoreState>()(
       ...createUserSlice(...a),
       ...createStarknetTxSlice(...a),
       ...createApplicationSlice(...a),
+      ...createAssetsSlice(...a),
     })),
     {
       name: 'rules-state-storage',

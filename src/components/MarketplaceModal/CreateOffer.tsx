@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { Plural, t, Trans } from '@lingui/macro'
 import { useQuery, gql } from '@apollo/client'
-import { WeiAmount, cardId, constants, uint256 } from '@rulesorg/sdk-core'
+import { WeiAmount, constants, uint256 } from '@rulesorg/sdk-core'
 
 import { ModalHeader } from 'src/components/Modal'
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
@@ -43,12 +43,13 @@ const CardsCount = styled(TYPE.body)`
 `
 
 const CARDS_QUERY = gql`
-  query ($ids: [ID!]!) {
-    cardsByIds(ids: $ids) {
+  query CardsByTokenIds($tokenIds: [String!]!) {
+    cardsByTokenIds(tokenIds: $tokenIds) {
       serialNumber
+      starknetTokenId
       cardModel {
         id
-        pictureUrl(derivative: "width=256px")
+        pictureUrl(derivative: "width=256")
         averageSale
         season
         scarcity {
@@ -70,10 +71,10 @@ const display: StarknetSignerDisplayProps = {
 }
 
 interface CreateOfferModalProps {
-  cardsIds: string[]
+  tokenIds: string[]
 }
 
-export default function CreateOfferModal({ cardsIds }: CreateOfferModalProps) {
+export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
   const [cardIndex, setCardIndex] = useState(0)
   const [price, setPrice] = useState('')
   const [parsedPricesTotal, setParsedPricesTotal] = useState(WeiAmount.ZERO)
@@ -86,9 +87,10 @@ export default function CreateOfferModal({ cardsIds }: CreateOfferModalProps) {
   const toggleCreateOfferModal = useCreateOfferModalToggle()
 
   // cards query
-  const cardsQuery = useQuery(CARDS_QUERY, { variables: { ids: cardsIds }, skip: !isOpen })
-  const cards = cardsQuery.data?.cardsByIds ?? []
+  const cardsQuery = useQuery(CARDS_QUERY, { variables: { tokenIds }, skip: !isOpen })
+  const cards = cardsQuery.data?.cardsByTokenIds ?? []
   const card = cards[cardIndex]
+  const tokenId = card?.starknetTokenId
 
   // pending operation
   const { pushOperation, cleanOperations } = useOperations()
@@ -98,7 +100,7 @@ export default function CreateOfferModal({ cardsIds }: CreateOfferModalProps) {
 
   // offers creation overview
   const handleOverviewConfirmation = useCallback(() => setSigning(true), [])
-  const displayOverview = useMemo(() => cards.length > 1 && cardIndex === cards.length, [(cardsIds.length, cardIndex)])
+  const displayOverview = useMemo(() => cards.length > 1 && cardIndex === cards.length, [(tokenIds.length, cardIndex)])
 
   // price
   const parsedPrice = useMemo(() => tryParseWeiAmount(price), [price])
@@ -116,14 +118,8 @@ export default function CreateOfferModal({ cardsIds }: CreateOfferModalProps) {
   // prices confirmation
   const handlePriceConfirmation = useCallback(() => {
     const marketplaceAddress = constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
-    if (!marketplaceAddress || !parsedPrice) return
+    if (!marketplaceAddress || !parsedPrice || !tokenId) return
 
-    const tokenId = cardId.getStarknetCardId(
-      card.cardModel.artist.displayName,
-      card.cardModel.season,
-      constants.ScarcityName.indexOf(card.cardModel.scarcity.name),
-      card.serialNumber
-    )
     const uint256TokenId = uint256.uint256HexFromStrHex(tokenId)
 
     // save operations
@@ -149,7 +145,7 @@ export default function CreateOfferModal({ cardsIds }: CreateOfferModalProps) {
       // clean price input
       setPrice('')
     }
-  }, [parsedPrice, card, cards.length])
+  }, [parsedPrice, tokenId, cards.length])
 
   // Lowest ask
   const [lowestAsks, setLowestAsks] = useState<{ [id: string]: string }>({})

@@ -27,7 +27,7 @@ const GET_ALL_LIVE_EVENTS = gql`
         value
       }
       cardModelReward {
-        pictureUrl(derivative: "width=256px")
+        pictureUrl(derivative: "width=256")
         season
         scarcity {
           name
