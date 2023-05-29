@@ -61,7 +61,7 @@ export function useSearchUser(userSlug?: string) {
   useEffect(() => {
     if (!userSlug) return
 
-    searchUserMutation({ variables: { slug: userSlug } })
+    searchUserMutation({ variables: { slug: userSlug.toLowerCase() } })
   }, [userSlug])
 
   return { searchedUser: data?.searchUser, ...mutationStatus }
