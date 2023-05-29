@@ -123,7 +123,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
 
   // search query
   const { currentUser } = useCurrentUser()
-  const { searchedUser, error } = useSearchUser(userSlug, currentUser?.slug === userSlug)
+  const { searchedUser, error } = useSearchUser(userSlug)
 
   // format user
   const isCurrentUser = currentUser?.slug === userSlug

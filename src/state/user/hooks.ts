@@ -1,43 +1,34 @@
-import { useCallback, useEffect, useState } from 'react'
-import { useQuery, useMutation, gql, ApolloError } from '@apollo/client'
+import { useCallback, useEffect } from 'react'
+import { useMutation, gql } from '@apollo/client'
 
 import { SupportedLocale } from 'src/constants/locales'
 import { AppState } from 'src/state'
 import { useAppSelector, useAppDispatch } from 'src/state/hooks'
 import { updateUserLocale } from './actions'
-import useCurrentUser from 'src/hooks/useCurrentUser'
-
-const SEARCH_USER_CONTENT = `
-  id
-  username
-  slug
-  cScore
-  profile {
-    pictureUrl(derivative: "width=320")
-    fallbackUrl(derivative: "width=320")
-    certified
-    twitterUsername
-    instagramUsername
-    discordMember {
-      username
-      discriminator
-    }
-  }
-  starknetWallet {
-    address
-    publicKey
-  }
-`
 
 const SEARCH_USER_MUTATION = gql`
-  mutation ($slug: String!) {
-    searchUser(slug: $slug) { ${SEARCH_USER_CONTENT} }
-  }
-`
-
-const SEARCH_USER_QUERY = gql`
-  query ($slug: String!) {
-    user(slug: $slug) { ${SEARCH_USER_CONTENT} }
+  mutation SearchUser($slug: String!) {
+    searchUser(slug: $slug) {
+      id
+      username
+      slug
+      cScore
+      profile {
+        pictureUrl(derivative: "width=320")
+        fallbackUrl(derivative: "width=320")
+        certified
+        twitterUsername
+        instagramUsername
+        discordMember {
+          username
+          discriminator
+        }
+      }
+      starknetWallet {
+        address
+        publicKey
+      }
+    }
   }
 `
 
@@ -64,45 +55,16 @@ const MARK_NOTIFICATIONS_AS_READ_MUTATION = gql`
   }
 `
 
-export function useSearchUser(userSlug?: string, skip = false) {
-  const { currentUser } = useCurrentUser()
-
-  const [error, setError] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState<any | null>(null)
-
-  const [searchUserMutation] = useMutation(SEARCH_USER_MUTATION)
-  const {
-    data: queryData,
-    loading: queryLoading,
-    error: queryError,
-  } = useQuery(SEARCH_USER_QUERY, {
-    variables: { slug: userSlug },
-    skip: (!!currentUser && currentUser.slug !== userSlug) || !userSlug,
-  })
+export function useSearchUser(userSlug?: string) {
+  const [searchUserMutation, { data, ...mutationStatus }] = useMutation(SEARCH_USER_MUTATION, { refetchQueries: [] })
 
   useEffect(() => {
-    if (user || skip) return // no need to fetch user multiple times
+    if (!userSlug) return
 
-    if (queryData) {
-      setUser(queryData?.user ?? null)
-      return
-    }
+    searchUserMutation({ variables: { slug: userSlug } })
+  }, [userSlug])
 
-    if (userSlug && !!currentUser && currentUser.slug !== userSlug)
-      searchUserMutation({ variables: { slug: userSlug } })
-        .then((res: any) => {
-          setLoading(false)
-          setUser(res?.data?.searchUser ?? null)
-        })
-        .catch((error: ApolloError) => {
-          setError(true)
-          setLoading(false)
-          console.error(error)
-        })
-  }, [searchUserMutation, setUser, currentUser, userSlug, queryData])
-
-  return currentUser ? { searchedUser: user, loading, error } : { searchedUser: user, queryLoading, queryError }
+  return { searchedUser: data?.searchUser, ...mutationStatus }
 }
 
 export function useSetSocialLinksMutation() {

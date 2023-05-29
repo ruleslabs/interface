@@ -1,6 +1,5 @@
 import { ApolloClient, InMemoryCache, HttpLink, Observable, ApolloLink, from } from '@apollo/client'
 import { onError } from '@apollo/client/link/error'
-import { relayStylePagination } from '@apollo/client/utilities'
 
 import refreshToken from 'src/utils/refreshToken'
 import { storeAccessToken, getAccessToken } from 'src/utils/accessToken'
@@ -79,17 +78,11 @@ export const apolloClient = new ApolloClient({
   connectToDevTools: true,
   link: from([authMiddleware, errorLink, httpLink]),
   cache: new InMemoryCache({
-    typePolicies: {
-      Query: {
-        fields: {
-          assets: relayStylePagination(),
-        },
-      },
-    },
+    typePolicies: {},
   }),
   defaultOptions: {
     watchQuery: {
-      fetchPolicy: 'cache-and-network',
+      fetchPolicy: 'no-cache',
     },
   },
 })

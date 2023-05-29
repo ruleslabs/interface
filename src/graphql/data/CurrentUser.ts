@@ -101,8 +101,8 @@ export function formatCurrentUserQueryData(queryCurrentUser: NonNullable<Current
   }
 }
 
-export function useCurrentUser(skip?: boolean) {
-  const { data: queryData, loading, fetchMore } = useCurrentUserQuery({ skip })
+export function useCurrentUser() {
+  const { data: queryData, loading, fetchMore } = useCurrentUserQuery()
 
   const refresh = useCallback(() => {
     fetchMore({})

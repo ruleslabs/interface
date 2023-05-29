@@ -63,7 +63,7 @@ const ALL_STARKNET_TRANSACTION_FOR_USER_QUERY = gql`
 `
 
 const ALL_CURRENT_USER_NOTIFICATIONS_QUERY = gql`
-  query ($after: String) {
+  query CurrentUserNotifications($after: String) {
     currentUser {
       notifications(after: $after) {
         nodes {

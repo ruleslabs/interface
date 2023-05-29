@@ -18,7 +18,7 @@
   "author": "Charles Lanier",
   "license": "ISC",
   "dependencies": {
-    "@apollo/client": "^3.8.0-alpha.15",
+    "@apollo/client": "^3.7.14",
     "@ethersproject/contracts": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
     "@ethersproject/units": "^5.7.0",
