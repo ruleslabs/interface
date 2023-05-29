@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom'
 import Link from 'src/components/Link'
 import Section from 'src/components/Section'
 import Row, { RowCenter } from 'src/components/Row'
-import { useSearchedUsers } from 'src/state/search/hooks'
 import UsersSearchBar from 'src/components/UsersSearchBar'
 import Avatar from 'src/components/Avatar'
 import { CertifiedBadge, TopCollectorBadge } from 'src/components/User/Badge'
@@ -29,15 +28,32 @@ const UsersRow = styled(Row)`
 `
 
 const CERTIFIED_USERS_QUERY = gql`
-  query {
+  query CertifiedUsersOverview {
     certifiedUsersOverview {
       slug
       username
       cScore
       profile {
         certified
-        pictureUrl(derivative: "width=256")
-        fallbackUrl(derivative: "width=256")
+        pictureUrl(derivative: "width=512")
+        fallbackUrl(derivative: "width=512")
+      }
+    }
+  }
+`
+
+const SEARCHED_USERS_QUERY = gql`
+  query CurrentUserSearchedUsers {
+    currentUser {
+      searchedUsers {
+        slug
+        username
+        cScore
+        profile {
+          pictureUrl(derivative: "width=512")
+          fallbackUrl(derivative: "width=512")
+          certified
+        }
       }
     }
   }
@@ -77,12 +93,12 @@ function Community() {
   const navigate = useNavigate()
 
   // search history
-  const searchedUsersQuery = useSearchedUsers()
-  const searchedUsers = searchedUsersQuery.searchedUsers
+  const searchedUsersQuery = useQuery(SEARCHED_USERS_QUERY)
+  const searchedUsers = searchedUsersQuery.data?.currentUser?.searchedUsers ?? []
 
   // certified
   const certifiedUsersQuery = useQuery(CERTIFIED_USERS_QUERY)
-  const certifiedUsers = (certifiedUsersQuery.data?.certifiedUsersOverview ?? []) as any[]
+  const certifiedUsers = certifiedUsersQuery.data?.certifiedUsersOverview ?? []
 
   // search
   const handleUserSelection = useCallback((user: any) => navigate(`/user/${user.slug}`), [navigate])
@@ -102,7 +118,7 @@ function Community() {
               <Subtitle value={t`Seen recently`} />
 
               <UsersRow>
-                {searchedUsers.map((user) => (
+                {searchedUsers.map((user: any) => (
                   <User
                     key={user.username}
                     username={user.username}
@@ -119,7 +135,7 @@ function Community() {
               <Subtitle value={t`Verified collectors`} />
 
               <UsersRow>
-                {certifiedUsers.map((user) => (
+                {certifiedUsers.map((user: any) => (
                   <User
                     key={user.username}
                     username={user.username}

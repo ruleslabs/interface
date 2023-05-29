@@ -1,12 +1,9 @@
 import React, { useCallback, useState, useEffect } from 'react'
-import styled from 'styled-components/macro'
 
-const Image = styled.img`
-  border-radius: 50%;
-  display: block;
-`
+import { BoxProps } from 'src/theme/components/Box'
+import Image from 'src/theme/components/Image'
 
-interface AvatarProps extends React.HTMLAttributes<HTMLImageElement> {
+interface AvatarProps extends BoxProps {
   fallbackSrc: string
   src: string
 }
@@ -19,5 +16,5 @@ export default function Avatar({ fallbackSrc, src, ...props }: AvatarProps) {
     setDefaultSrc(src)
   }, [src])
 
-  return <Image src={defaultSrc} {...props} onError={onFallback} />
+  return <Image src={defaultSrc} {...props} onError={onFallback} borderRadius={'round'} />
 }

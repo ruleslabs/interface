@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
-import { useQuery, useLazyQuery, gql } from '@apollo/client'
+import { useLazyQuery, gql } from '@apollo/client'
 import algoliasearch from 'algoliasearch'
 import { Unit } from '@rulesorg/sdk-core'
 
@@ -12,23 +12,6 @@ import {
   updateMarketplaceMaximumPrice,
 } from './actions'
 import { useEurAmountToWeiAmount } from 'src/hooks/useFiatPrice'
-
-const SEARCHED_USERS_QUERY = gql`
-  query {
-    currentUser {
-      searchedUsers {
-        slug
-        username
-        cScore
-        profile {
-          pictureUrl(derivative: "width=512")
-          fallbackUrl(derivative: "width=512")
-          certified
-        }
-      }
-    }
-  }
-`
 
 const ALL_STARKNET_TRANSACTION_FOR_USER_QUERY = gql`
   query ($address: String, $userId: String!, $after: String) {
@@ -513,15 +496,6 @@ export function useSearchUsers({
 }
 
 // Non algolia search
-
-export function useSearchedUsers() {
-  const { data: queryData, loading, error } = useQuery(SEARCHED_USERS_QUERY)
-  const searchedUsers = [...(queryData?.currentUser?.searchedUsers ?? [])] // mandatory for reverse() to work
-
-  const orderedSearchedUsers = useMemo(() => searchedUsers.reverse(), [searchedUsers])
-
-  return { searchedUsers: orderedSearchedUsers, loading, error }
-}
 
 export function useStarknetTransactionsForAddress(userId?: string, address?: string): ApolloSearch {
   // pagination cursor and page
