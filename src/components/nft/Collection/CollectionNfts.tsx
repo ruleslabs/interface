@@ -18,7 +18,6 @@ export default function CollectionNfts({
   dataLength = 0,
   ...props
 }: CollectionNftsProps) {
-  console.log(dataLength)
   return (
     <InfiniteScroll
       next={next}

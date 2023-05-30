@@ -11,7 +11,6 @@ import Section from 'src/components/Section'
 import { useSearchCards, CardsSortingKey } from 'src/state/search/hooks'
 import { TYPE } from 'src/styles/theme'
 import EmptyTab, { EmptyCardsTabOfCurrentUser } from 'src/components/EmptyTab'
-import { PaginationSpinner } from 'src/components/Spinner'
 import SortButton, { SortsData } from 'src/components/Button/SortButton'
 import { PrimaryButton, SecondaryButton } from 'src/components/Button'
 import CreateOfferModal from 'src/components/MarketplaceModal/CreateOffer'
@@ -242,47 +241,49 @@ function UserCards() {
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
+  const cardsInDeliveryComponent = useMemo(
+    () =>
+      cardsInDelivery.map((card: any) => (
+        <NftCard
+          key={card.slug}
+          asset={{
+            animationUrl: card.cardModel.videoUrl,
+            imageUrl: card.cardModel.pictureUrl,
+            tokenId: card.starknetTokenId,
+            scarcity: card.cardModel.scarcity.name,
+          }}
+          display={{
+            primaryInfo: card.cardModel.artist.displayName,
+            secondaryInfo: `#${card.serialNumber}`,
+            status: 'inDelivery',
+          }}
+        />
+      )),
+    [cardsInDelivery.length]
+  )
+
   const cardsComponents = useMemo(
-    () => (
-      <>
-        {cardsInDelivery.map((card: any) => (
-          <NftCard
-            key={card.slug}
-            asset={{
-              animationUrl: card.cardModel.videoUrl,
-              imageUrl: card.cardModel.pictureUrl,
-              tokenId: card.starknetTokenId,
-              scarcity: card.cardModel.scarcity.name,
-            }}
-            display={{
-              primaryInfo: card.cardModel.artist.displayName,
-              secondaryInfo: `#${card.serialNumber}`,
-              status: 'inDelivery',
-            }}
-          />
-        ))}
-        {cards.map((card: any) => (
-          <NftCard
-            key={card.slug}
-            asset={{
-              animationUrl: card.cardModel.videoUrl,
-              imageUrl: card.cardModel.pictureUrl,
-              tokenId: card.starknetTokenId,
-              scarcity: card.cardModel.scarcity.name,
-            }}
-            display={{
-              primaryInfo: card.cardModel.artist.displayName,
-              secondaryInfo: `#${card.serialNumber}`,
-              subtitle: card.parsedPrice
-                ? `${card.parsedPrice.toSignificant(6)} ETH (€${weiAmountToEURValue(card.parsedPrice)})`
-                : undefined,
-              status: card.parsedPrice ? 'onSale' : undefined,
-            }}
-          />
-        ))}
-      </>
-    ),
-    [cardsInDelivery.length, cards]
+    () =>
+      cards.map((card: any) => (
+        <NftCard
+          key={card.slug}
+          asset={{
+            animationUrl: card.cardModel.videoUrl,
+            imageUrl: card.cardModel.pictureUrl,
+            tokenId: card.starknetTokenId,
+            scarcity: card.cardModel.scarcity.name,
+          }}
+          display={{
+            primaryInfo: card.cardModel.artist.displayName,
+            secondaryInfo: `#${card.serialNumber}`,
+            subtitle: card.parsedPrice
+              ? `${card.parsedPrice.toSignificant(6)} ETH (€${weiAmountToEURValue(card.parsedPrice)})`
+              : undefined,
+            status: card.parsedPrice ? 'onSale' : undefined,
+          }}
+        />
+      )),
+    [cards]
   )
 
   if (!user) return null
@@ -317,14 +318,13 @@ function UserCards() {
           hasNext={cardsSearch.hasNext}
           dataLength={(cards.length ?? 0) + (cardsInDelivery.length ?? 0)}
         >
+          {cardsInDeliveryComponent}
           {cardsComponents}
         </CollectionNfts>
 
         {!isLoading &&
           !cardsCount &&
           (user.isCurrentUser ? <EmptyCardsTabOfCurrentUser /> : <EmptyTab emptyText={t`No cards`} />)}
-
-        <PaginationSpinner loading={isLoading} />
       </Section>
 
       <SelectedCardsActionWrapper active={selectedTokenIds.length > 0}>

@@ -17,23 +17,20 @@ export const container = recipe({
       borderStyle: 'solid',
       borderColor: 'border1',
       background: 'bg2',
+      cursor: 'pointer',
     }),
   ],
 
   variants: {
-    selected: {
+    disabled: {
       true: sprinkles({
-        cursor: 'pointer',
-      }),
-      false: sprinkles({
         opacity: 'disabled',
-        cursor: 'pointer',
       }),
     },
   },
 
   defaultVariants: {
-    selected: undefined,
+    disabled: false,
   },
 })
 
@@ -152,5 +149,17 @@ export const onSale = style([
   sprinkles({
     position: 'absolute',
     right: '0',
+  }),
+])
+
+export const spinner = style([
+  {
+    width: '20%',
+    left: '40%',
+    top: '41.5%',
+    height: 'auto !important',
+  },
+  sprinkles({
+    position: 'absolute',
   }),
 ])

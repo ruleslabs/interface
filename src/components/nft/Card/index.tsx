@@ -13,6 +13,9 @@ import useAssetsSelection from 'src/hooks/useAssetsSelection'
 import { useAssetHref } from 'src/hooks/useAssetHref'
 import Link from 'src/components/Link'
 import Badges from 'src/components/Badges'
+import { usePendingOperations } from 'src/hooks/usePendingOperations'
+import useTrans from 'src/hooks/useTrans'
+import { LargeSpinner } from 'src/components/Spinner'
 
 interface NftCardDisplay {
   primaryInfo: string
@@ -34,6 +37,9 @@ interface NftCardProps {
 export const NftCard = ({ asset, display, onCardClick, badges }: NftCardProps) => {
   const { primaryInfo, secondaryInfo, subtitle, status } = display
 
+  // trans
+  const trans = useTrans()
+
   // locale
   const locale = useActiveLocale()
 
@@ -50,18 +56,27 @@ export const NftCard = ({ asset, display, onCardClick, badges }: NftCardProps) =
     }
   }, [status, locale])
 
+  // link
+  const href = useAssetHref(asset.tokenId)
+
+  // pending operations
+  const pendingOperations = usePendingOperations(asset.tokenId)
+  const pendingOperation = pendingOperations[0]
+
   // selection
   const { selectionModeEnabled, toggleTokenIdSelection, selectedTokenIds } = useAssetsSelection()
   const selected = useMemo(() => selectedTokenIds.includes(asset.tokenId), [asset.tokenId, selectedTokenIds.length])
-
-  const href = useAssetHref(asset.tokenId)
+  const selectable = useMemo(
+    () => selectionModeEnabled && !status && !pendingOperation,
+    [selectionModeEnabled, status, !!pendingOperation]
+  )
 
   return (
     <Container
-      className={styles.container({ selected: selectionModeEnabled ? selected : undefined })}
-      href={selectionModeEnabled || onCardClick ? undefined : href}
+      className={styles.container({ disabled: (selectionModeEnabled && !selected) || !!pendingOperation })}
+      href={selectionModeEnabled || onCardClick ? 'javascript:void(0)' : href} // TODO: avoid void(0)
       onClick={
-        selectionModeEnabled
+        selectable
           ? (e) => {
               e.preventDefault()
               e.stopPropagation()
@@ -79,6 +94,8 @@ export const NftCard = ({ asset, display, onCardClick, badges }: NftCardProps) =
 
         <Badges badges={badges} />
 
+        {pendingOperation && <LargeSpinner className={styles.spinner} />}
+
         {statusComponent}
       </Box>
 
@@ -89,7 +106,9 @@ export const NftCard = ({ asset, display, onCardClick, badges }: NftCardProps) =
             {secondaryInfo && <Text.Small className={styles.secondaryInfo}>{secondaryInfo}</Text.Small>}
           </Row>
 
-          {subtitle && <Text.Subtitle>{subtitle}</Text.Subtitle>}
+          {(subtitle || pendingOperation) && (
+            <Text.Subtitle>{pendingOperation ? trans('operation', pendingOperation.type) : subtitle}</Text.Subtitle>
+          )}
         </Column>
       </Box>
     </Container>

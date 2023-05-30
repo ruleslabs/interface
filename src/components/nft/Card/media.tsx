@@ -11,6 +11,7 @@ interface NftPlayableMediaProps {
   src?: string
   mediaSrc?: string
   tokenId: string
+  disabled?: boolean
 }
 
 export const NftPlayableMedia = ({ src, mediaSrc, tokenId }: NftPlayableMediaProps) => {
