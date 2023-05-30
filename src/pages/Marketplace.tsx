@@ -2,7 +2,6 @@ import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { gql, useLazyQuery } from '@apollo/client'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import { t } from '@lingui/macro'
 
 import MarketplaceFilters from 'src/components/MarketplaceFilters'
@@ -23,10 +22,9 @@ import { useMarketplaceFiltersModalToggle } from 'src/state/application/hooks'
 import MarketplaceFiltersModal from 'src/components/MarketplaceFiltersModal'
 import DefaultLayout from 'src/components/Layout'
 import { NftCard } from 'src/components/nft/Card'
-import * as styles from './style.css'
-import LoadingAssets from 'src/components/nft/Collection/CollectionAssetsLoading'
 
 import { ReactComponent as HopperIcon } from 'src/images/hopper.svg'
+import CollectionNfts from 'src/components/nft/Collection/CollectionNfts'
 
 const StyledSection = styled(Section)`
   width: 100%;
@@ -232,15 +230,13 @@ function Marketplace() {
           </FiltersWrapper>
 
           <GridWrapper>
-            <InfiniteScroll
-              next={cardModelsSearch.nextPage ?? (() => {})}
-              hasMore={cardModelsSearch.hasNext}
+            <CollectionNfts
+              next={cardModelsSearch.nextPage}
+              hasNext={cardModelsSearch.hasNext}
               dataLength={cardModels.length ?? 0}
-              loader={cardModelsSearch.hasNext && <LoadingAssets />}
-              className={styles.assetsGrid}
             >
               {cardModels}
-            </InfiniteScroll>
+            </CollectionNfts>
           </GridWrapper>
         </Row>
       </StyledSection>

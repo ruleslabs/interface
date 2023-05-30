@@ -2,12 +2,12 @@ import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { useLazyQuery, useQuery, gql } from '@apollo/client'
 import { t, Trans, Plural } from '@lingui/macro'
+import { WeiAmount } from '@rulesorg/sdk-core'
 
 import DefaultLayout from 'src/components/Layout'
 import ProfileLayout from 'src/components/Layout/Profile'
 import Row, { RowBetween, RowCenter } from 'src/components/Row'
 import Section from 'src/components/Section'
-import Grid from 'src/components/Grid'
 import { useSearchCards, CardsSortingKey } from 'src/state/search/hooks'
 import { TYPE } from 'src/styles/theme'
 import EmptyTab, { EmptyCardsTabOfCurrentUser } from 'src/components/EmptyTab'
@@ -17,13 +17,13 @@ import { PrimaryButton, SecondaryButton } from 'src/components/Button'
 import CreateOfferModal from 'src/components/MarketplaceModal/CreateOffer'
 import { useCreateOfferModalToggle, useOfferModalToggle } from 'src/state/application/hooks'
 import GiftModal from 'src/components/GiftModal'
-
-import { ReactComponent as Present } from 'src/images/present.svg'
 import useSearchedUser from 'src/hooks/useSearchedUser'
 import { NftCard } from 'src/components/nft/Card'
 import useAssetsSelection from 'src/hooks/useAssetsSelection'
-import { WeiAmount } from '@rulesorg/sdk-core'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import CollectionNfts from 'src/components/nft/Collection/CollectionNfts'
+
+import { ReactComponent as Present } from 'src/images/present.svg'
 
 // css
 
@@ -176,6 +176,8 @@ const sortsData: SortsData<CardsSortingKey> = [
 
 function UserCards() {
   const [deliveredCardsCount, setDeliveredCardsCount] = useState(0)
+  const [cards, setCards] = useState<any[]>([])
+  const [sortIndex, setSortIndex] = useState(0)
 
   // current user
   const [user] = useSearchedUser()
@@ -183,12 +185,6 @@ function UserCards() {
   // modals
   const toggleCreateOfferModal = useCreateOfferModalToggle()
   const toggleOfferModal = useOfferModalToggle()
-
-  // tables
-  const [cards, setCards] = useState<any[]>([])
-
-  // sort
-  const [sortIndex, setSortIndex] = useState(0)
 
   // query cards data
   const onCardsQueryCompleted = useCallback((data: any) => {
@@ -246,6 +242,49 @@ function UserCards() {
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
+  const cardsComponents = useMemo(
+    () => (
+      <>
+        {cardsInDelivery.map((card: any) => (
+          <NftCard
+            key={card.slug}
+            asset={{
+              animationUrl: card.cardModel.videoUrl,
+              imageUrl: card.cardModel.pictureUrl,
+              tokenId: card.starknetTokenId,
+              scarcity: card.cardModel.scarcity.name,
+            }}
+            display={{
+              primaryInfo: card.cardModel.artist.displayName,
+              secondaryInfo: `#${card.serialNumber}`,
+              status: 'inDelivery',
+            }}
+          />
+        ))}
+        {cards.map((card: any) => (
+          <NftCard
+            key={card.slug}
+            asset={{
+              animationUrl: card.cardModel.videoUrl,
+              imageUrl: card.cardModel.pictureUrl,
+              tokenId: card.starknetTokenId,
+              scarcity: card.cardModel.scarcity.name,
+            }}
+            display={{
+              primaryInfo: card.cardModel.artist.displayName,
+              secondaryInfo: `#${card.serialNumber}`,
+              subtitle: card.parsedPrice
+                ? `${card.parsedPrice.toSignificant(6)} ETH (€${weiAmountToEURValue(card.parsedPrice)})`
+                : undefined,
+              status: card.parsedPrice ? 'onSale' : undefined,
+            }}
+          />
+        ))}
+      </>
+    ),
+    [cardsInDelivery.length, cards]
+  )
+
   if (!user) return null
 
   return (
@@ -273,43 +312,13 @@ function UserCards() {
       </StickyWrapper>
 
       <Section>
-        <Grid>
-          {cardsInDelivery.map((card: any) => (
-            <NftCard
-              key={card.slug}
-              asset={{
-                animationUrl: card.cardModel.videoUrl,
-                imageUrl: card.cardModel.pictureUrl,
-                tokenId: card.starknetTokenId,
-                scarcity: card.cardModel.scarcity.name,
-              }}
-              display={{
-                primaryInfo: card.cardModel.artist.displayName,
-                secondaryInfo: `#${card.serialNumber}`,
-                status: 'inDelivery',
-              }}
-            />
-          ))}
-          {cards.map((card: any) => (
-            <NftCard
-              key={card.slug}
-              asset={{
-                animationUrl: card.cardModel.videoUrl,
-                imageUrl: card.cardModel.pictureUrl,
-                tokenId: card.starknetTokenId,
-                scarcity: card.cardModel.scarcity.name,
-              }}
-              display={{
-                primaryInfo: card.cardModel.artist.displayName,
-                secondaryInfo: `#${card.serialNumber}`,
-                subtitle: card.parsedPrice
-                  ? `${card.parsedPrice.toSignificant(6)} ETH (€${weiAmountToEURValue(card.parsedPrice)})`
-                  : undefined,
-                status: card.parsedPrice ? 'onSale' : undefined,
-              }}
-            />
-          ))}
-        </Grid>
+        <CollectionNfts
+          next={cardsSearch.nextPage ?? (() => {})}
+          hasNext={cardsSearch.hasNext}
+          dataLength={(cards.length ?? 0) + (cardsInDelivery.length ?? 0)}
+        >
+          {cardsComponents}
+        </CollectionNfts>
 
         {!isLoading &&
           !cardsCount &&

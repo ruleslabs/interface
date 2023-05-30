@@ -79,7 +79,7 @@ export const NftCard = ({ asset, display, onCardClick }: NftCardProps) => {
 
       <Box className={styles.detailsContainer}>
         <Column gap={'8'}>
-          <Row justifyContent={'space-between'}>
+          <Row gap={'4'} justifyContent={'space-between'}>
             <Text.Body className={styles.primaryInfo}>{primaryInfo}</Text.Body>
             {secondaryInfo && <Text.Small className={styles.secondaryInfo}>{secondaryInfo}</Text.Small>}
           </Row>

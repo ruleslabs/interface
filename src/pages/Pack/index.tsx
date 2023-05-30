@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { gql } from '@apollo/client'
 import styled from 'styled-components/macro'
-import { Trans } from '@lingui/macro'
+import { Trans, t } from '@lingui/macro'
 import { apolloClient } from 'src/graphql/data/apollo'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -12,24 +12,18 @@ import { TYPE } from 'src/styles/theme'
 import Row from 'src/components/Row'
 import Column from 'src/components/Column'
 import Card from 'src/components/Card'
-import CardModel from 'src/components/CardModel'
-import Grid from 'src/components/Grid'
 import { PackPosterWrapper } from 'src/components/PackWrapper'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import DefaultLayout from 'src/components/Layout'
 import Image from 'src/theme/components/Image'
+import CollectionNfts from 'src/components/nft/Collection/CollectionNfts'
+import { NftCard } from 'src/components/nft/Card'
 
 const StyledMainSection = styled(Section)`
   margin-bottom: 84px;
 
   ${({ theme }) => theme.media.medium`
     margin-bottom: 48px;
-  `}
-`
-
-const StyledGrid = styled(Grid)`
-  ${({ theme }) => theme.media.extraSmall`
-    grid-template-columns: repeat(2, 1fr);
   `}
 `
 
@@ -80,10 +74,14 @@ const QUERY_PACK = gql`
       season
       seasons
       cardModelsOverview {
+        quantity
         cardModel {
           slug
           pictureUrl(derivative: "width=512")
-          season
+          videoUrl
+          scarcity {
+            name
+          }
           artist {
             displayName
           }
@@ -130,80 +128,96 @@ function Pack() {
     [setAvailableQuantity, availableQuantity]
   )
 
+  // assets
+  const cardModels = pack?.cardModelsOverview ?? []
+  const assets = useMemo(
+    () =>
+      cardModels.map(({ cardModel, quantity }: any) => (
+        <NftCard
+          key={cardModel.slug}
+          asset={{
+            animationUrl: cardModel.videoUrl,
+            imageUrl: cardModel.pictureUrl,
+            tokenId: cardModel.slug,
+            scarcity: cardModel.scarcity.name,
+          }}
+          display={{
+            primaryInfo: cardModel.artist.displayName,
+            secondaryInfo: t`x ${quantity}`,
+          }}
+        />
+      )),
+    [cardModels.length]
+  )
+
+  if (error) {
+    return (
+      <TYPE.body textAlign="center">
+        <Trans>An error has occured</Trans>
+      </TYPE.body>
+    )
+  }
+
+  if (!pack) return null
+
   return (
     <>
       <Section marginTop="36px">
         <BackButton onClick={() => navigate(-1)} />
       </Section>
-      {error ? (
-        <TYPE.body textAlign="center">
-          <Trans>An error has occured</Trans>
-        </TYPE.body>
-      ) : isLoading ? (
-        <TYPE.body textAlign="center">Loading...</TYPE.body>
-      ) : (
-        <>
-          <StyledMainSection>
-            <Row gap={52} switchDirection="medium">
-              <PackPosterWrapper>
-                <Image src={pack.pictureUrl} zIndex={'1'} width={'256'} />
-              </PackPosterWrapper>
-              <CardsColumn>
-                <Card>
-                  <PackBreakdown
-                    name={pack.displayName}
-                    id={pack.id}
-                    price={pack.price}
-                    cardsPerPack={pack.cardsPerPack}
-                    seasons={pack.seasons}
-                    releaseDate={new Date(pack.releaseDate)}
-                    availableSupply={pack.maxBuyableSupply ? pack.maxBuyableSupply - pack.supply : undefined}
-                    availableQuantity={availableQuantity}
-                    onSuccessfulPackPurchase={onSuccessfulPackPurchase}
-                  />
-                </Card>
-                <ExplanationsCard>
-                  <Column gap={28}>
-                    <TYPE.body>
-                      <strong>
-                        <Trans id={pack.description}>{pack.description}</Trans>
-                      </strong>
-                    </TYPE.body>
-                    <TYPE.body>
-                      <Trans>Cards of this pack are created by working closely with the artists.</Trans>
-                    </TYPE.body>
-                    <TYPE.body>
-                      <Trans>50% of revenues will be distributed to them directly.</Trans>
-                    </TYPE.body>
-                    <TYPE.body>
-                      <Trans>
-                        Each card gives access to specific Discord channel and to airdrops of gifts during the year.
-                      </Trans>
-                    </TYPE.body>
-                  </Column>
-                </ExplanationsCard>
-              </CardsColumn>
-            </Row>
-          </StyledMainSection>
 
-          <Section>
-            <CardModelsSelectionTitle>
-              <Trans>Example of possible cards</Trans>
-            </CardModelsSelectionTitle>
-            <StyledGrid gap={16}>
-              {(pack.cardModelsOverview ?? []).map((packCardModel: any, index: number) => (
-                <CardModel
-                  key={`pack-rules-${index}`}
-                  cardModelSlug={packCardModel.cardModel.slug}
-                  pictureUrl={packCardModel.cardModel.pictureUrl}
-                  artistName={packCardModel.cardModel.artist.displayName}
-                  season={packCardModel.cardModel.season}
-                />
-              ))}
-            </StyledGrid>
-          </Section>
-        </>
-      )}
+      <StyledMainSection>
+        <Row gap={52} switchDirection="medium">
+          <PackPosterWrapper>
+            <Image src={pack.pictureUrl} zIndex={'1'} width={'256'} />
+          </PackPosterWrapper>
+          <CardsColumn>
+            <Card>
+              <PackBreakdown
+                name={pack.displayName}
+                id={pack.id}
+                price={pack.price}
+                cardsPerPack={pack.cardsPerPack}
+                seasons={pack.seasons}
+                releaseDate={new Date(pack.releaseDate)}
+                availableSupply={pack.maxBuyableSupply ? pack.maxBuyableSupply - pack.supply : undefined}
+                availableQuantity={availableQuantity}
+                onSuccessfulPackPurchase={onSuccessfulPackPurchase}
+              />
+            </Card>
+            <ExplanationsCard>
+              <Column gap={28}>
+                <TYPE.body>
+                  <strong>
+                    <Trans id={pack.description}>{pack.description}</Trans>
+                  </strong>
+                </TYPE.body>
+                <TYPE.body>
+                  <Trans>Cards of this pack are created by working closely with the artists.</Trans>
+                </TYPE.body>
+                <TYPE.body>
+                  <Trans>50% of revenues will be distributed to them directly.</Trans>
+                </TYPE.body>
+                <TYPE.body>
+                  <Trans>
+                    Each card gives access to specific Discord channel and to airdrops of gifts during the year.
+                  </Trans>
+                </TYPE.body>
+              </Column>
+            </ExplanationsCard>
+          </CardsColumn>
+        </Row>
+      </StyledMainSection>
+
+      <Section>
+        <CardModelsSelectionTitle>
+          <Trans>Example of possible cards</Trans>
+        </CardModelsSelectionTitle>
+
+        <CollectionNfts hasNext={isLoading} dataLength={cardModels.length ?? 0}>
+          {assets}
+        </CollectionNfts>
+      </Section>
     </>
   )
 }
