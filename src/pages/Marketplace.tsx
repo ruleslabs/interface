@@ -25,6 +25,7 @@ import { NftCard } from 'src/components/nft/Card'
 
 import { ReactComponent as HopperIcon } from 'src/images/hopper.svg'
 import CollectionNfts from 'src/components/nft/Collection/CollectionNfts'
+import { Badge } from 'src/types'
 
 const StyledSection = styled(Section)`
   width: 100%;
@@ -207,6 +208,7 @@ function Marketplace() {
                   ? t`from ${parsedLowestAsk.toSignificant(6)} ETH (€${weiAmountToEURValue(parsedLowestAsk)})`
                   : undefined,
               }}
+              badges={marketplaceFilters.lowSerials ? [Badge.LOW_SERIAL] : undefined}
             />
           )
         }),
