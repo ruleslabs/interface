@@ -24,6 +24,7 @@ const TRANSFERS_QUERY = gql`
       slug
       videoUrl
       pictureUrl(derivative: "width=1024")
+      season
       scarcity {
         maxSupply
         name

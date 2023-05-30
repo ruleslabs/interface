@@ -13,6 +13,8 @@ import {
 } from './actions'
 import { useEurAmountToWeiAmount } from 'src/hooks/useFiatPrice'
 
+export const ASSETS_PAGE_SIZE = 25
+
 const ALL_STARKNET_TRANSACTION_FOR_USER_QUERY = gql`
   query ($address: String, $userId: String!, $after: String) {
     allStarknetTransactionsForAddressOrUserId(address: $address, userId: $userId, after: $after) {
@@ -188,7 +190,8 @@ export type OffersSortingKey = keyof typeof algoliaIndexes.offers
 export type UsersSortingKey = keyof typeof algoliaIndexes.users
 
 interface AlgoliaSearch {
-  nextPage?: () => void
+  nextPage: () => void
+  hasNext: boolean
   hits?: any[]
   nbHits?: number
   loading: boolean
@@ -254,7 +257,10 @@ function useAlgoliaSearch({
   skip,
   pageNumber = ALGOLIA_FIRST_PAGE,
 }: AlgoliaSearchProps): AlgoliaSearch {
-  const [searchResult, setSearchResult] = useState<AlgoliaSearch>({ loading: false, error: null })
+  const [searchResult, setSearchResult] = useState<Omit<AlgoliaSearch, 'hasNext' | 'nextPage'>>({
+    loading: false,
+    error: null,
+  })
   const [pageOffset, setPageOffset] = useState<number | null>(0)
 
   const facetFilters = useFacetFilters({ ...facets })
@@ -301,7 +307,8 @@ function useAlgoliaSearch({
   }, [skip, runSearch])
 
   return {
-    nextPage: pageOffset === null ? undefined : nextPage,
+    nextPage: () => (pageOffset === null ? undefined : nextPage()),
+    hasNext: !!pageOffset,
     ...searchResult,
   }
 }
@@ -328,7 +335,7 @@ export function useSearchTransfers({
   sortingKey = Object.keys(algoliaIndexes.transfers)[0] as TransfersSortingKey,
   onlySales = false,
   noMinting = false,
-  hitsPerPage = 32,
+  hitsPerPage = ASSETS_PAGE_SIZE,
   onPageFetched,
   skip = false,
 }: SearchTransfersProps): AlgoliaSearch {
@@ -363,7 +370,7 @@ export function useSearchCards({
   search = '',
   facets = {},
   sortingKey = Object.keys(algoliaIndexes.cards)[0] as CardsSortingKey,
-  hitsPerPage = 32,
+  hitsPerPage = ASSETS_PAGE_SIZE,
   onPageFetched,
   skip = false,
 }: SearchCardsProps): AlgoliaSearch {
@@ -404,7 +411,7 @@ export function useSearchCardModels({
   facets = {},
   filters,
   sortingKey = Object.keys(algoliaIndexes.cardModels)[0] as CardModelsSortingKey,
-  hitsPerPage = 32,
+  hitsPerPage = ASSETS_PAGE_SIZE,
   onPageFetched,
   skip = false,
 }: SearchCardModelsProps): AlgoliaSearch {
@@ -442,7 +449,7 @@ export function useSearchOffers({
   facets = {},
   sortingKey = Object.keys(algoliaIndexes.offers)[0] as OffersSortingKey,
   skip = false,
-  hitsPerPage = 32,
+  hitsPerPage = ASSETS_PAGE_SIZE,
   onPageFetched,
 }: SearchOffersProps): AlgoliaSearch {
   return useAlgoliaSearch({

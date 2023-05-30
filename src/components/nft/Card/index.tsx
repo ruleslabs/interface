@@ -72,7 +72,7 @@ export const NftCard = ({ asset, display }: NftCardProps) => {
       </Box>
 
       <Box className={styles.detailsContainer}>
-        <Column gap={'4'}>
+        <Column gap={'8'}>
           <Row justifyContent={'space-between'}>
             <Text.Body className={styles.primaryInfo}>{primaryInfo}</Text.Body>
             {secondaryInfo && <Text.Small className={styles.secondaryInfo}>{secondaryInfo}</Text.Small>}
@@ -85,13 +85,9 @@ export const NftCard = ({ asset, display }: NftCardProps) => {
   )
 }
 
-interface LoadingNftCardProps {
-  height?: number
-}
-
-export const LoadingNftCard = ({ height }: LoadingNftCardProps) => (
-  <Box className={styles.container} background={'bg2'}>
-    <Box position={'relative'} width={'full'} style={{ height: height ? `${height}px` : 'auto' }} loading={true}>
+export const LoadingNftCard = () => (
+  <Box className={styles.container()} background={'bg2'} overflow={'hidden'}>
+    <Box position={'relative'} width={'full'} loading={true}>
       <Box position={'absolute'} width={'full'} height={'full'} />
       <Box as={'img'} src={SizingImage} width={'full'} opacity={'0'} draggable={false} />
     </Box>

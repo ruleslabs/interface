@@ -4,10 +4,17 @@ import { recipe } from '@vanilla-extract/recipes'
 import { breakpoints, sprinkles } from 'src/theme/css/sprinkles.css'
 import { mediaContainer } from './style.css'
 
-export const image = sprinkles({
-  width: 'full',
-  objectFit: 'contain',
-})
+export const image = style([
+  {
+    aspectRatio: '1074 / 1500',
+  },
+  sprinkles({
+    width: 'full',
+    objectFit: 'contain',
+    borderRadius: 'card',
+    overflow: 'hidden',
+  }),
+])
 
 // playable media
 

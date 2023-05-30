@@ -42,11 +42,11 @@ export const mediaContainer = recipe({
     {
       transition: `${vars.time.medium} ${vars.timing.ease} transform, ${vars.time.medium} ${vars.timing.ease} box-shadow`,
 
-      selectors: {
-        [`${container().split(' ')[0]}:hover &`]: {
-          transform: 'scale(1.05)',
-        },
+      ':hover': {
+        transform: 'scale(1.05)',
+      },
 
+      selectors: {
         '&::before, &::after': {
           content: '',
           position: 'absolute',
@@ -102,7 +102,8 @@ export const mediaContainer = recipe({
 
 export const detailsContainer = sprinkles({
   paddingX: '8',
-  paddingY: '16',
+  paddingTop: '16',
+  paddingBottom: '12',
 })
 
 export const primaryInfo = style([
@@ -121,6 +122,7 @@ export const secondaryInfo = style([
     paddingX: '6',
     paddingY: '2',
     borderRadius: 'classic',
+    whiteSpace: 'nowrap',
   }),
 ])
 

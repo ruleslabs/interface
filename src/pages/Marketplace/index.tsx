@@ -2,13 +2,13 @@ import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { gql, useLazyQuery } from '@apollo/client'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { t } from '@lingui/macro'
 
 import MarketplaceFilters from 'src/components/MarketplaceFilters'
 import Section from 'src/components/Section'
-import CardModel from 'src/components/CardModel'
-import Column, { ColumnCenter } from 'src/components/Column'
+import Column from 'src/components/Column'
 import Row, { RowBetween } from 'src/components/Row'
-import Grid from 'src/components/Grid'
 import {
   useMarketplaceFilters,
   useSearchCardModels,
@@ -16,16 +16,17 @@ import {
   CardModelsSortingKey,
 } from 'src/state/search/hooks'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
-import { PaginationSpinner } from 'src/components/Spinner'
 import SortButton, { SortData } from 'src/components/Button/SortButton'
-import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
-import { Badge } from 'src/components/CardModel/Badges'
+// import { Badge } from 'src/components/CardModel/Badges'
 import { IconButton } from 'src/components/Button'
 import { useMarketplaceFiltersModalToggle } from 'src/state/application/hooks'
-
-import { ReactComponent as HopperIcon } from 'src/images/hopper.svg'
 import MarketplaceFiltersModal from 'src/components/MarketplaceFiltersModal'
 import DefaultLayout from 'src/components/Layout'
+import { NftCard } from 'src/components/nft/Card'
+import * as styles from './style.css'
+import LoadingAssets from 'src/components/nft/Collection/CollectionAssetsLoading'
+
+import { ReactComponent as HopperIcon } from 'src/images/hopper.svg'
 
 const StyledSection = styled(Section)`
   width: 100%;
@@ -78,11 +79,15 @@ const CARD_MODELS_QUERY = gql`
     cardModelsByIds(ids: $ids) {
       id
       slug
-      pictureUrl(derivative: "width=720")
+      cardsOnSaleCount
+      pictureUrl(derivative: "width=512")
       videoUrl
       season
       scarcity {
         name
+      }
+      artist {
+        displayName
       }
     }
   }
@@ -98,6 +103,8 @@ const sortsData: MarketplaceSortData[] = [
 ]
 
 function Marketplace() {
+  const [cardModelsHits, setCardModelsHits] = useState<any[]>([])
+
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
@@ -119,29 +126,20 @@ function Marketplace() {
     [marketplaceFilters.lowSerials]
   )
 
-  // hits
-  const [cardModelsHits, setCardModelsHits] = useState<any[]>([])
-  const [pendingHits, setPendingHits] = useState<any[]>([])
-
   // tables
   const [cardModelsTable, setCardModelsTable] = useState<{ [key: string]: any }>({})
 
   // query card models data
-  const onCardModelsQueryCompleted = useCallback(
-    (data: any) => {
-      setCardModelsTable({
-        ...cardModelsTable,
-        ...(data.cardModelsByIds as any[]).reduce<{ [key: string]: any }>((acc, cardModel) => {
-          acc[cardModel.id] = cardModel
-          return acc
-        }, {}),
-      })
-
-      setCardModelsHits(cardModelsHits.concat(pendingHits))
-    },
-    [Object.keys(cardModelsTable).length, cardModelsHits.length, pendingHits]
-  )
-  const [queryCardModelsData, cardModelsQuery] = useLazyQuery(CARD_MODELS_QUERY, {
+  const onCardModelsQueryCompleted = useCallback((data: any) => {
+    setCardModelsTable((state) => ({
+      ...state,
+      ...(data.cardModelsByIds as any[]).reduce<{ [key: string]: any }>((acc, cardModel) => {
+        acc[cardModel.id] = cardModel
+        return acc
+      }, {}),
+    }))
+  }, [])
+  const [queryCardModelsData] = useLazyQuery(CARD_MODELS_QUERY, {
     onCompleted: onCardModelsQueryCompleted,
     fetchPolicy: 'cache-and-network',
   })
@@ -153,7 +151,7 @@ function Marketplace() {
 
       queryCardModelsData({ variables: { ids: hits.map((hit: any) => hit.objectID) } })
 
-      setPendingHits(hits)
+      setCardModelsHits((state) => state.concat(hits))
     },
     [queryCardModelsData]
   )
@@ -179,18 +177,43 @@ function Marketplace() {
     },
     [weiAmountToEURValue, marketplaceFilters.lowSerials]
   )
-  const highestLowestAskSearch = useSearchCardModels({
+  useSearchCardModels({
     facets: algoliaFormatedMarketplaceFilters.facets, // only use facets
     sortingKey: highestLowestAskSortingKey,
     hitsPerPage: 1,
     onPageFetched: onHighestLowestAskPageFetched,
   })
 
-  // loading
-  const isLoading = cardModelsSearch.loading || cardModelsQuery.loading || highestLowestAskSearch.loading
+  const cardModels = useMemo(
+    () =>
+      cardModelsHits
+        .filter((hit) => cardModelsTable[hit.objectID])
+        .map((hit: any) => {
+          const cardModel = cardModelsTable[hit.objectID]
+          const lowestAsk = marketplaceFilters.lowSerials ? hit.lowSerialLowestAsk : hit.lowestAsk
+          const parsedLowestAsk = lowestAsk ? WeiAmount.fromRawAmount(lowestAsk) : undefined
 
-  // infinite scroll
-  const lastCardModelRef = useInfiniteScroll({ nextPage: cardModelsSearch.nextPage, loading: isLoading })
+          return (
+            <NftCard
+              key={cardModel.slug}
+              asset={{
+                animationUrl: cardModel.videoUrl,
+                imageUrl: cardModel.pictureUrl,
+                tokenId: cardModel.slug,
+                scarcity: cardModel.scarcity.name,
+              }}
+              display={{
+                primaryInfo: cardModel.artist.displayName,
+                secondaryInfo: t`${cardModel.cardsOnSaleCount} offers`,
+                subtitle: parsedLowestAsk
+                  ? t`from ${parsedLowestAsk.toSignificant(6)} ETH (€${weiAmountToEURValue(parsedLowestAsk)})`
+                  : undefined,
+              }}
+            />
+          )
+        }),
+    [cardModelsHits, cardModelsTable]
+  )
 
   return (
     <>
@@ -209,27 +232,15 @@ function Marketplace() {
           </FiltersWrapper>
 
           <GridWrapper>
-            <Grid>
-              {cardModelsHits
-                .filter((hit) => cardModelsTable[hit.objectID])
-                .map((hit: any, index: number) => (
-                  <ColumnCenter
-                    gap={12}
-                    key={index}
-                    ref={index + 1 === cardModelsHits.length ? lastCardModelRef : undefined}
-                  >
-                    <CardModel
-                      videoUrl={cardModelsTable[hit.objectID].videoUrl}
-                      pictureUrl={cardModelsTable[hit.objectID].pictureUrl}
-                      cardModelSlug={cardModelsTable[hit.objectID].slug}
-                      lowestAsk={marketplaceFilters.lowSerials ? hit.lowSerialLowestAsk : hit.lowestAsk}
-                      badges={marketplaceFilters.lowSerials ? [Badge.LOW_SERIAL] : undefined}
-                    />
-                  </ColumnCenter>
-                ))}
-            </Grid>
-
-            <PaginationSpinner loading={isLoading} />
+            <InfiniteScroll
+              next={cardModelsSearch.nextPage ?? (() => {})}
+              hasMore={cardModelsSearch.hasNext}
+              dataLength={cardModels.length ?? 0}
+              loader={cardModelsSearch.hasNext && <LoadingAssets />}
+              className={styles.assetsGrid}
+            >
+              {cardModels}
+            </InfiniteScroll>
           </GridWrapper>
         </Row>
       </StyledSection>

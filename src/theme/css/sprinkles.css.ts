@@ -11,12 +11,12 @@ const borderStyle = ['none', 'solid'] as const
 const borderWidth = ['0px', '0.5px', '1px', '1.5px', '2px', '3px', '4px', '5px'] as const
 
 export const breakpoints = {
-  sm: 640,
-  md: 768,
-  lg: 1024,
-  xl: 1280,
-  xxl: 1536,
   xxxl: 1920,
+  xxl: 1536,
+  xl: 1280,
+  lg: 1024,
+  md: 768,
+  sm: 640,
 }
 
 const flexAlignment = [

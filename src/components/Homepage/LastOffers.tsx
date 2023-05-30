@@ -25,6 +25,7 @@ const OFFERS_QUERY = gql`
       id
       slug
       pictureUrl(derivative: "width=512")
+      season
       scarcity {
         maxSupply
         name

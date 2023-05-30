@@ -15,7 +15,7 @@ const colors = {
 
   vibrantPurple: '#9F04DC',
   offWhite: '#e7e7e7',
-  spookyOrange: 'af4027',
+  spookyOrange: '#af4027',
 }
 
 export const fontSizes = {
