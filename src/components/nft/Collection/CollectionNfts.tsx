@@ -1,4 +1,4 @@
-import InfiniteScroll from 'react-infinite-scroll-component'
+import InfiniteScroll, { Props } from 'react-infinite-scroll-component'
 
 import LoadingAssets from './CollectionAssetsLoading'
 import * as styles from './CollectionNfts.css'
@@ -8,9 +8,17 @@ interface CollectionNftsProps {
   hasNext: boolean
   next?: () => void
   dataLength?: number
+  scrollableTarget?: Props['scrollableTarget']
 }
 
-export default function CollectionNfts({ children, hasNext, next = () => {}, dataLength = 0 }: CollectionNftsProps) {
+export default function CollectionNfts({
+  children,
+  hasNext,
+  next = () => {},
+  dataLength = 0,
+  ...props
+}: CollectionNftsProps) {
+  console.log(dataLength)
   return (
     <InfiniteScroll
       next={next}
@@ -18,6 +26,7 @@ export default function CollectionNfts({ children, hasNext, next = () => {}, dat
       dataLength={dataLength}
       loader={hasNext && <LoadingAssets />}
       className={styles.assetsGrid}
+      {...props}
     >
       {children}
     </InfiniteScroll>

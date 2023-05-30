@@ -8,13 +8,11 @@ import { useModalOpened, useDeckInsertionModalToggle } from 'src/state/applicati
 import { ApplicationModal } from 'src/state/application/actions'
 import Column from 'src/components/Column'
 import { SearchBar } from 'src/components/Input'
-import Grid from 'src/components/Grid'
 import { useSearchCards } from 'src/state/search/hooks'
 import { useDeckState, useDeckActionHandlers } from 'src/state/deck/hooks'
 import useDebounce from 'src/hooks/useDebounce'
-import CardModel from 'src/components/CardModel'
-import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
-import { PaginationSpinner } from 'src/components/Spinner'
+import CollectionNfts from '../nft/Collection/CollectionNfts'
+import { NftCard } from '../nft/Card'
 
 const CARDS_QUERY = gql`
   query ($ids: [ID!]!) {
@@ -23,6 +21,7 @@ const CARDS_QUERY = gql`
       slug
       serialNumber
       onSale
+      starknetTokenId
       cardModel {
         slug
         season
@@ -30,6 +29,9 @@ const CARDS_QUERY = gql`
         videoUrl
         artist {
           displayName
+        }
+        scarcity {
+          name
         }
       }
     }
@@ -42,8 +44,10 @@ interface DeckInsertionModalProps {
 }
 
 export default function DeckInsertionModal({ address, cardIndex }: DeckInsertionModalProps) {
-  // search bar
+  const [cards, setCards] = useState<any[]>([])
   const [search, setSearch] = useState('')
+
+  // search bar
   const debouncedSearch = useDebounce(search, 200)
   const onSearchBarInput = useCallback((value) => setSearch(value), [setSearch])
 
@@ -79,17 +83,11 @@ export default function DeckInsertionModal({ address, cardIndex }: DeckInsertion
     [deck]
   )
 
-  // tables
-  const [cards, setCards] = useState<any[]>([])
-
   // query cards data
-  const onCardsQueryCompleted = useCallback(
-    (data: any) => {
-      setCards(cards.concat(data.cardsByIds))
-    },
-    [cards.length]
-  )
-  const [queryCardsData, cardsQuery] = useLazyQuery(CARDS_QUERY, {
+  const onCardsQueryCompleted = useCallback((data: any) => {
+    setCards((state) => state.concat(data.cardsByIds))
+  }, [])
+  const [queryCardsData] = useLazyQuery(CARDS_QUERY, {
     onCompleted: onCardsQueryCompleted,
     fetchPolicy: 'cache-and-network',
   })
@@ -110,18 +108,34 @@ export default function DeckInsertionModal({ address, cardIndex }: DeckInsertion
     onPageFetched,
   })
 
-  // loading
-  const isLoading = cardsSearch.loading || cardsQuery.loading
-
-  // infinite scroll
-  const lastTxRef = useInfiniteScroll({ nextPage: cardsSearch.nextPage, loading: isLoading })
+  const assets = useMemo(
+    () =>
+      cards.map((card) => (
+        <NftCard
+          key={card.slug}
+          asset={{
+            animationUrl: card.cardModel.videoUrl,
+            imageUrl: card.cardModel.pictureUrl,
+            tokenId: card.starknetTokenId,
+            scarcity: card.cardModel.scarcity.name,
+          }}
+          display={{
+            primaryInfo: card.cardModel.artist.displayName,
+            secondaryInfo: card.serialNumber,
+            status: card.onSale ? 'onSale' : undefined,
+          }}
+          onCardClick={() => handleCardInsertion(card)}
+        />
+      )),
+    [cards]
+  )
 
   return (
     <ClassicModal onDismiss={onDismiss} isOpen={isOpen}>
       <ModalContent fullscreen>
         <ModalHeader onDismiss={onDismiss} />
 
-        <ModalBody>
+        <ModalBody id="scrollableModal">
           <Column gap={32}>
             <SearchBar
               style={{ width: '100%' }}
@@ -130,23 +144,14 @@ export default function DeckInsertionModal({ address, cardIndex }: DeckInsertion
               value={search}
             />
 
-            <Grid>
-              {cards.map((card, index) => (
-                <CardModel
-                  key={card.slug}
-                  ref={index + 1 === cards.length ? lastTxRef : undefined}
-                  pictureUrl={card.cardModel.pictureUrl}
-                  videoUrl={card.cardModel.videoUrl}
-                  serialNumber={card.serialNumber}
-                  season={card.cardModel.season}
-                  artistName={card.cardModel.artist.displayName}
-                  onSale={card.onSale}
-                  onClick={() => handleCardInsertion(card)}
-                />
-              ))}
-            </Grid>
-
-            <PaginationSpinner loading={isLoading} />
+            <CollectionNfts
+              next={cardsSearch.nextPage}
+              hasNext={cardsSearch.hasNext}
+              dataLength={cards.length}
+              scrollableTarget="scrollableModal"
+            >
+              {assets}
+            </CollectionNfts>
           </Column>
         </ModalBody>
       </ModalContent>
