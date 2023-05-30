@@ -7,7 +7,7 @@ import {
   OfferCreatedEvent,
   AccountInitializedEvent,
   constants,
-  event as rsdkEvent,
+  evt,
 } from '@rulesorg/sdk-core'
 import { getChecksumAddress } from 'starknet'
 import { t, Trans } from '@lingui/macro'
@@ -305,7 +305,7 @@ interface EventProps {
 
 export default function Event({ address, publicKey, $key, $data }: EventProps) {
   const [parsedEvents, involvedAddresses] = useMemo(() => {
-    const [parsedEvent, involvedAddresses] = rsdkEvent.parseEvent($key, $data)
+    const [parsedEvent, involvedAddresses] = evt.parseEvent($key, $data)
     if (!parsedEvent || !involvedAddresses) return []
 
     const parsedEvents = Array.isArray(parsedEvent) ? parsedEvent : [parsedEvent]

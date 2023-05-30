@@ -192,7 +192,7 @@ const MemoizedOfferCard = React.memo(function OfferCards({
             <span>
               {' '}
               /{cardModel.scarcity.maxSupply}
-              {cardModel.scarcity.name === constants.ScarcityName[0] && '+'}
+              {cardModel.scarcity.name === constants.Seasons[cardModel.season][0].name && '+'}
             </span>
           </TYPE.body>
 

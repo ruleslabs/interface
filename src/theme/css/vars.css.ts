@@ -14,6 +14,8 @@ const colors = {
   gray500: '#828585',
 
   vibrantPurple: '#9F04DC',
+  offWhite: '#e7e7e7',
+  spookyOrange: 'af4027',
 }
 
 export const fontSizes = {
@@ -69,6 +71,10 @@ const themeContractValues = {
     accent: null,
     accentDark: null,
     accentDarker: null,
+
+    common: null,
+    platinium: null,
+    halloween: null,
   },
   border: {
     light: null,
@@ -77,6 +83,7 @@ const themeContractValues = {
   radii: {
     classic: null,
     round: null,
+    card: null,
   },
   fontSize: nullify(fontSizes),
   fontWeight: {
@@ -215,6 +222,10 @@ export const rawTokens = {
     accent: colors.vibrantPurple,
     accentDark: darken(0.05, colors.vibrantPurple),
     accentDarker: darken(0.1, colors.vibrantPurple),
+
+    common: colors.vibrantPurple,
+    platinium: colors.offWhite,
+    halloween: colors.spookyOrange,
   },
   border: {
     light: '1px solid rgba(0, 0, 0, 0.3)',
@@ -223,6 +234,7 @@ export const rawTokens = {
   radii: {
     classic: '6px',
     round: '9999px',
+    card: '4.7% / 3.35%',
   },
   fontSize: fontSizes,
   fontWeight: {

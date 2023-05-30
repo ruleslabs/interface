@@ -2,36 +2,11 @@ import { style } from '@vanilla-extract/css'
 import { recipe } from '@vanilla-extract/recipes'
 
 import { breakpoints, sprinkles } from 'src/theme/css/sprinkles.css'
-import { vars } from 'src/theme/css/vars.css'
-import { container, mediaContainer } from './style.css'
+import { mediaContainer } from './style.css'
 
-const mediaScaleOnHover = style({
-  transition: `${vars.time.medium} ${vars.timing.ease} transform`,
-  selectors: {
-    [`${container().split(' ')[0]}:hover &`]: {
-      transform: 'scale(1.15)',
-    },
-  },
-})
-
-export const image = recipe({
-  base: style([
-    mediaScaleOnHover,
-    sprinkles({
-      width: 'full',
-      objectFit: 'contain',
-    }),
-  ]),
-
-  variants: {
-    hidden: {
-      true: sprinkles({ visibility: 'hidden' }),
-    },
-  },
-
-  defaultVariants: {
-    hidden: false,
-  },
+export const image = sprinkles({
+  width: 'full',
+  objectFit: 'contain',
 })
 
 // playable media
@@ -49,7 +24,7 @@ export const playbackButton = recipe({
       },
 
       selectors: {
-        [`${mediaContainer.split(' ')[0]}:hover &`]: {
+        [`${mediaContainer().split(' ')[0]}:hover &`]: {
           display: 'flex',
         },
       },
@@ -89,7 +64,6 @@ export const audio = sprinkles({
 })
 
 export const video = style([
-  mediaScaleOnHover,
   sprinkles({
     width: 'full',
   }),
@@ -99,4 +73,6 @@ export const innerMediaContainer = sprinkles({
   position: 'absolute',
   left: '0',
   top: '0',
+  borderRadius: 'card',
+  overflow: 'hidden',
 })

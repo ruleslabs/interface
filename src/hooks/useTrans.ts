@@ -3,8 +3,9 @@ import { useCallback } from 'react'
 import { msg } from '@lingui/macro'
 
 import { OperationType } from 'src/types'
+import { ScarcityName } from '@rulesorg/sdk-core'
 
-type Prefix = 'operation' | 'liveReward'
+type Prefix = 'operation' | 'liveReward' | 'scarcity'
 
 const prefix = (obj: Messages, prefix: Prefix) =>
   Object.keys(obj).reduce<Messages>((acc, e) => {
@@ -22,11 +23,18 @@ const pendingOperationsMessage: { [id in OperationType]: MessageDescriptor } = {
   offerCreation: msg`Sale in progress...`,
 }
 
+const scarcities: { [id in ScarcityName]: MessageDescriptor } = {
+  common: msg`Common`,
+  platinium: msg`Platinium`,
+  halloween: msg`Halloween`,
+}
+
 const liveReward: Messages = {}
 
 const messages: Messages = {
   ...prefix(pendingOperationsMessage, 'operation'),
   ...prefix(liveReward, 'liveReward'),
+  ...prefix(scarcities, 'scarcity'),
 }
 
 export default function useTrans() {

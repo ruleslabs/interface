@@ -31,7 +31,7 @@ export const NftPlayableMedia = ({ src, mediaSrc, tokenId }: NftPlayableMediaPro
   return (
     <>
       <Row>
-        <Image className={styles.image({ hidden: shouldPlay })} src={src} draggable={false} />
+        <Image className={styles.image} src={src} draggable={false} />
       </Row>
       {!!mediaSrc &&
         (shouldPlay ? (

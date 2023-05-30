@@ -56,12 +56,18 @@ export default function CancelOfferModal({
     const marketplaceAddress = constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
     if (!marketplaceAddress) return
 
-    const tokenId = cardId.getStarknetCardId(
-      artistName,
-      season,
-      constants.ScarcityName.indexOf(scarcityName),
-      serialNumber
-    )
+    let scarcityIndex = -1
+
+    for (const [index, scarcity] of constants.Seasons[season].entries()) {
+      if (scarcity.name === scarcityName) {
+        scarcityIndex = index
+        break
+      }
+    }
+
+    if (scarcityIndex < 0) return
+
+    const tokenId = cardId.getStarknetCardId(artistName, season, scarcityIndex, serialNumber)
     const uint256TokenId = uint256.uint256HexFromStrHex(tokenId)
 
     // save operation

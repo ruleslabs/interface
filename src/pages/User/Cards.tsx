@@ -45,6 +45,9 @@ const CARDS_QUERY = gql`
         artist {
           displayName
         }
+        scarcity {
+          name
+        }
       }
     }
   }
@@ -278,6 +281,7 @@ function UserCards() {
                 animationUrl: card.cardModel.videoUrl,
                 imageUrl: card.cardModel.pictureUrl,
                 tokenId: card.starknetTokenId,
+                scarcity: card.cardModel.scarcity.name,
               }}
               display={{
                 primaryInfo: card.cardModel.artist.displayName,
@@ -293,6 +297,7 @@ function UserCards() {
                 animationUrl: card.cardModel.videoUrl,
                 imageUrl: card.cardModel.pictureUrl,
                 tokenId: card.starknetTokenId,
+                scarcity: card.cardModel.scarcity.name,
               }}
               display={{
                 primaryInfo: card.cardModel.artist.displayName,

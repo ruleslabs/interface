@@ -75,8 +75,19 @@ export default function AcceptOfferModal({
     const marketplaceAddress = constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
     if (!ethAddress || !marketplaceAddress) return
 
+    let scarcityIndex = -1
+
+    for (const [index, scarcity] of constants.Seasons[season].entries()) {
+      if (scarcity.name === scarcityName) {
+        scarcityIndex = index
+        break
+      }
+    }
+
+    if (scarcityIndex < 0) return
+
     const tokenIds = serialNumbers.map((serialNumber) =>
-      cardId.getStarknetCardId(artistName, season, constants.ScarcityName.indexOf(scarcityName), serialNumber)
+      cardId.getStarknetCardId(artistName, season, scarcityIndex, serialNumber)
     )
 
     // save operations

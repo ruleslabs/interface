@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import styled from 'styled-components/macro'
-import { WeiAmount, WithdrawMessage, constants, message } from '@rulesorg/sdk-core'
+import { WeiAmount, WithdrawMessage, constants, msg } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import { TYPE } from 'src/styles/theme'
@@ -110,7 +110,7 @@ export default function Message({ address, fromAddress, toAddress, payload }: Ev
     const l1StarkgateAddress = constants.STARKGATE_ADDRESSES[rulesSdk.networkInfos.ethereumChainId]
 
     if (fromAddress === l2StarkgateAddress && toAddress === l1StarkgateAddress)
-      return message.parseMessage('starkgate', payload)
+      return msg.parseMessage('starkgate', payload)
     return null
   }, [payload.length])
 

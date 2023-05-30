@@ -10,12 +10,16 @@ import { useMarketplaceFilters, useMarketplaceFiltersHandlers } from 'src/state/
 import Subtitle from 'src/components/Text/Subtitle'
 import Divider from 'src/components/Divider'
 import usePrevious from 'src/hooks/usePrevious'
+import useTrans from 'src/hooks/useTrans'
 
 interface MarketplaceFiltersProps extends React.HTMLAttributes<HTMLDivElement> {
   maximumPriceUpperBound: number
 }
 
 export default function MarketplaceFilters({ maximumPriceUpperBound, ...props }: MarketplaceFiltersProps) {
+  // trans
+  const trans = useTrans()
+
   const filters = useMarketplaceFilters()
 
   const {
@@ -57,9 +61,9 @@ export default function MarketplaceFilters({ maximumPriceUpperBound, ...props }:
       <Column gap={12}>
         <Subtitle value={t`Seasons`} />
 
-        {Object.keys(constants.Seasons).map((season: string) => (
+        {Object.keys(constants.Seasons).map((season) => (
           <Checkbox
-            key={`checkbox-season-${season}`}
+            key={season}
             value={!filters.seasons.includes(+season)}
             onChange={() => toggleSeasonFilter(+season)}
           >
@@ -75,15 +79,13 @@ export default function MarketplaceFilters({ maximumPriceUpperBound, ...props }:
       <Column gap={12}>
         <Subtitle value={t`Scarcities`} />
 
-        {constants.ScarcityName.map((scarcity: string, index) => (
+        {Object.values(constants.ScarcityName).map((scarcity, index) => (
           <Checkbox
-            key={`checkbox-tier-${scarcity}`}
+            key={scarcity}
             value={!filters.scarcities.includes(index)}
             onChange={() => toggleScarcityFilter(index)}
           >
-            <TYPE.body>
-              <Trans id={scarcity}>{scarcity}</Trans>
-            </TYPE.body>
+            <TYPE.body>{trans('scarcity', scarcity)}</TYPE.body>
           </Checkbox>
         ))}
       </Column>

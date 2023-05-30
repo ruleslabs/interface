@@ -62,7 +62,7 @@ export const NftCard = ({ asset, display }: NftCardProps) => {
           : undefined
       }
     >
-      <Box className={styles.mediaContainer}>
+      <Box className={styles.mediaContainer({ scarcity: asset.scarcity })}>
         <NftPlayableMedia
           src={asset.imageUrl}
           mediaSrc={selectionModeEnabled ? undefined : asset.animationUrl}

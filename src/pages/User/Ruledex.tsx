@@ -15,6 +15,7 @@ import { TYPE } from 'src/styles/theme'
 import { RULEDEX_CARDS_COUNT_LEVELS_MINS } from 'src/constants/misc'
 import { Badge } from 'src/components/CardModel/Badges'
 import useSearchedUser from 'src/hooks/useSearchedUser'
+import useTrans from 'src/hooks/useTrans'
 
 const ScarcitySelectorWrapper = styled(Row)`
   gap: 42px;
@@ -114,6 +115,9 @@ const USER_OWNED_CARD_MODELS_QUERY = gql`
 `
 
 function UserRuledex() {
+  // trans
+  const trans = useTrans()
+
   // searched user
   const [user] = useSearchedUser()
 
@@ -189,17 +193,13 @@ function UserRuledex() {
   return (
     <Section marginTop="32px">
       <ScarcitySelectorWrapper>
-        {constants.ScarcityName.map((scarcityName) => (
-          <ScarcitySelector
-            key={scarcityName}
-            active={selectedScarcity === scarcityName}
-            scarcity={scarcityName.toLowerCase()}
-          >
-            <RowCenter onClick={() => toggleSelectedScarcity(scarcityName)}>
-              <TYPE.body fontWeight={700}>{scarcityName}</TYPE.body>
+        {constants.Seasons[0].map((scarcity) => (
+          <ScarcitySelector key={scarcity.name} active={selectedScarcity === scarcity.name} scarcity={scarcity.name}>
+            <RowCenter onClick={() => toggleSelectedScarcity(scarcity.name)}>
+              <TYPE.body fontWeight={700}>{trans('scarcity', scarcity.name)}</TYPE.body>
 
               <TYPE.large spanColor="text2" fontSize={32}>
-                {scarcitiesBalance[scarcityName] ?? 0} <span>/{scarcitiesMax[scarcityName] ?? 0}</span>
+                {scarcitiesBalance[scarcity.name] ?? 0} <span>/{scarcitiesMax[scarcity.name] ?? 0}</span>
               </TYPE.large>
             </RowCenter>
           </ScarcitySelector>

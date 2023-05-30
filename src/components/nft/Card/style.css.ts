@@ -2,15 +2,7 @@ import { style } from '@vanilla-extract/css'
 import { recipe } from '@vanilla-extract/recipes'
 
 import { sprinkles } from 'src/theme/css/sprinkles.css'
-import { vars } from 'src/theme/css/vars.css'
-
-export const mediaContainer = style([
-  {},
-  sprinkles({
-    overflow: 'hidden',
-    position: 'relative',
-  }),
-])
+import { rawTokens, vars } from 'src/theme/css/vars.css'
 
 export const container = recipe({
   base: [
@@ -21,7 +13,6 @@ export const container = recipe({
     sprinkles({
       position: 'relative',
       borderRadius: 'classic',
-      overflow: 'hidden',
       borderWidth: '1px',
       borderStyle: 'solid',
       borderColor: 'border1',
@@ -43,6 +34,69 @@ export const container = recipe({
 
   defaultVariants: {
     selected: undefined,
+  },
+})
+
+export const mediaContainer = recipe({
+  base: [
+    {
+      transition: `${vars.time.medium} ${vars.timing.ease} transform, ${vars.time.medium} ${vars.timing.ease} box-shadow`,
+
+      selectors: {
+        [`${container().split(' ')[0]}:hover &`]: {
+          transform: 'scale(1.05)',
+        },
+
+        '&::before, &::after': {
+          content: '',
+          position: 'absolute',
+          bottom: '10px',
+          width: '40%',
+          height: '10px',
+          boxShadow: '0 5px 5px 10px rgba(0,0,0,.5)',
+          zIndex: '-1',
+          transition: 'all .3s ease-in-out',
+        },
+
+        '&:hover::before, &:hover::after': {
+          content: 'none',
+        },
+      },
+
+      '::before': {
+        left: '15px',
+        transform: 'skew(-5deg) rotate(-5deg)',
+      },
+
+      '::after': {
+        right: '15px',
+        transform: 'skew(5deg) rotate(5deg)',
+      },
+    },
+    sprinkles({
+      position: 'relative',
+      borderRadius: 'card',
+    }),
+  ],
+
+  variants: {
+    scarcity: {
+      common: {
+        ':hover': {
+          boxShadow: `0 4px 12px ${rawTokens.color.common}80`,
+        },
+      },
+      platinium: {
+        ':hover': {
+          boxShadow: `0 4px 12px ${rawTokens.color.platinium}80`,
+        },
+      },
+      halloween: {
+        ':hover': {
+          boxShadow: `0 4px 12px ${rawTokens.color.halloween}80`,
+        },
+      },
+    },
   },
 })
 

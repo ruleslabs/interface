@@ -186,7 +186,7 @@ export default function Live() {
             <Link href={`/card/${cardModel.slug}/${transferHit.serialNumber}`}>
               <TYPE.body clickable>
                 {cardModel.artist.displayName} #{transferHit.serialNumber} /{cardModel.scarcity.maxSupply}
-                {cardModel.scarcity.name === constants.ScarcityName[0] && '+'}
+                {cardModel.scarcity.name === constants.Seasons[cardModel.season][0].name && '+'}
               </TYPE.body>
             </Link>
 
