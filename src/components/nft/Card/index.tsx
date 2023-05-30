@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import * as Text from 'src/theme/components/Text'
 import * as styles from './style.css'
-import Box from 'src/theme/components/Box'
+import Box, { BoxProps } from 'src/theme/components/Box'
 import SizingImage from 'src/images/sizingImage.png'
 import { NftPlayableMedia } from './media'
 import { NftAsset } from 'src/types'
@@ -10,6 +10,8 @@ import { Column, Row } from 'src/theme/components/Flex'
 import Image from 'src/theme/components/Image'
 import { useActiveLocale } from 'src/hooks/useActiveLocale'
 import useAssetsSelection from 'src/hooks/useAssetsSelection'
+import { useAssetHref } from 'src/hooks/useAssetHref'
+import Link from 'src/components/Link'
 
 interface NftCardDisplay {
   primaryInfo: string
@@ -21,12 +23,13 @@ interface NftCardDisplay {
 interface NftCardProps {
   asset: NftAsset
   display: NftCardDisplay
+  onCardClick?: () => void
 }
 
 /**
  * NftCard is a component that displays an NFT asset.
  */
-export const NftCard = ({ asset, display }: NftCardProps) => {
+export const NftCard = ({ asset, display, onCardClick }: NftCardProps) => {
   const { primaryInfo, secondaryInfo, subtitle, status } = display
 
   // locale
@@ -49,9 +52,12 @@ export const NftCard = ({ asset, display }: NftCardProps) => {
   const { selectionModeEnabled, toggleTokenIdSelection, selectedTokenIds } = useAssetsSelection()
   const selected = useMemo(() => selectedTokenIds.includes(asset.tokenId), [asset.tokenId, selectedTokenIds.length])
 
+  const href = useAssetHref(asset.tokenId)
+
   return (
-    <Box
+    <Container
       className={styles.container({ selected: selectionModeEnabled ? selected : undefined })}
+      href={selectionModeEnabled || onCardClick ? undefined : href}
       onClick={
         selectionModeEnabled
           ? (e) => {
@@ -59,7 +65,7 @@ export const NftCard = ({ asset, display }: NftCardProps) => {
               e.stopPropagation()
               toggleTokenIdSelection(asset.tokenId)
             }
-          : undefined
+          : onCardClick
       }
     >
       <Box className={styles.mediaContainer({ scarcity: asset.scarcity })}>
@@ -81,9 +87,13 @@ export const NftCard = ({ asset, display }: NftCardProps) => {
           {subtitle && <Text.Subtitle>{subtitle}</Text.Subtitle>}
         </Column>
       </Box>
-    </Box>
+    </Container>
   )
 }
+
+export const Container = ({ children, href, ...props }: BoxProps) => (
+  <Box {...props}>{href ? <Link href={href}>{children}</Link> : children}</Box>
+)
 
 export const LoadingNftCard = () => (
   <Box className={styles.container()} background={'bg2'} overflow={'hidden'}>
