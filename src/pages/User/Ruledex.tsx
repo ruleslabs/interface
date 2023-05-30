@@ -8,14 +8,16 @@ import DefaultLayout from 'src/components/Layout'
 import ProfileLayout from 'src/components/Layout/Profile'
 import Section from 'src/components/Section'
 import Grid from 'src/components/Grid'
-import CardModel from 'src/components/CardModel'
 import Row, { RowCenter } from 'src/components/Row'
 import Column from 'src/components/Column'
 import { TYPE } from 'src/styles/theme'
 import { RULEDEX_CARDS_COUNT_LEVELS_MINS } from 'src/constants/misc'
-import { Badge } from 'src/components/CardModel/Badges'
+import Badges from 'src/components/Badges'
 import useSearchedUser from 'src/hooks/useSearchedUser'
 import useTrans from 'src/hooks/useTrans'
+import Link from 'src/components/Link'
+import Image from 'src/theme/components/Image'
+import { Badge } from 'src/types'
 
 const ScarcitySelectorWrapper = styled(Row)`
   gap: 42px;
@@ -68,7 +70,7 @@ const LockableCardModel = styled(Column)<{ locked?: boolean }>`
       color: ${theme.text2};
     }
 
-    video {
+    img {
       filter: grayscale(1);
       opacity: 0.3;
     }
@@ -193,7 +195,7 @@ function UserRuledex() {
   return (
     <Section marginTop="32px">
       <ScarcitySelectorWrapper>
-        {constants.Seasons[0].map((scarcity) => (
+        {constants.Seasons[1].map((scarcity) => (
           <ScarcitySelector key={scarcity.name} active={selectedScarcity === scarcity.name} scarcity={scarcity.name}>
             <RowCenter onClick={() => toggleSelectedScarcity(scarcity.name)}>
               <TYPE.body fontWeight={700}>{trans('scarcity', scarcity.name)}</TYPE.body>
@@ -212,11 +214,11 @@ function UserRuledex() {
           .sort((a: any, b: any) => a.uid - b.uid)
           .map((cardModel: any) => (
             <LockableCardModel key={cardModel.slug} locked={!cardModelsBadges[cardModel.uid]}>
-              <CardModel
-                cardModelSlug={cardModel.slug}
-                pictureUrl={cardModel.pictureUrl}
-                badges={cardModelsBadges[cardModel.uid]}
-              />
+              <Link href={`/card/${cardModel.slug}`}>
+                <Image src={cardModel.pictureUrl} display={'block'} width={'full'} />
+              </Link>
+
+              <Badges badges={cardModelsBadges[cardModel.uid]} />
 
               <CardModelId>#{cardModel.uid.toString().padStart(3, '0')}</CardModelId>
             </LockableCardModel>
