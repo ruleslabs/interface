@@ -18,7 +18,7 @@ import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import SortButton, { SortData } from 'src/components/Button/SortButton'
 // import { Badge } from 'src/components/CardModel/Badges'
 import { IconButton } from 'src/components/Button'
-import { useMarketplaceFiltersModalToggle } from 'src/state/application/hooks'
+import { useEtherPrice, useMarketplaceFiltersModalToggle } from 'src/state/application/hooks'
 import MarketplaceFiltersModal from 'src/components/MarketplaceFiltersModal'
 import DefaultLayout from 'src/components/Layout'
 import { NftCard } from 'src/components/nft/Card'
@@ -103,9 +103,13 @@ const sortsData: MarketplaceSortData[] = [
 
 function Marketplace() {
   const [cardModelsHits, setCardModelsHits] = useState<any[]>([])
+  const [highestLowestAsk, setHighestLowestAsk] = useState(0)
+  const [sortIndex, setSortIndex] = useState(0)
+  const [cardModelsTable, setCardModelsTable] = useState<{ [key: string]: any }>({})
 
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
+  const etherPrice = useEtherPrice()
 
   // filters
   const marketplaceFilters = useMarketplaceFilters()
@@ -115,7 +119,6 @@ function Marketplace() {
   const toggleMarketplaceFiltersModal = useMarketplaceFiltersModalToggle()
 
   // sort
-  const [sortIndex, setSortIndex] = useState(0)
   const sortingKey = useMemo(
     () => sortsData[sortIndex][marketplaceFilters.lowSerials ? 'lowSerialKey' : 'key'],
     [sortIndex, marketplaceFilters.lowSerials]
@@ -124,9 +127,6 @@ function Marketplace() {
     () => (marketplaceFilters.lowSerials ? 'lowSerialLowestAskDesc' : 'lowestAskDesc'),
     [marketplaceFilters.lowSerials]
   )
-
-  // tables
-  const [cardModelsTable, setCardModelsTable] = useState<{ [key: string]: any }>({})
 
   // query card models data
   const onCardModelsQueryCompleted = useCallback((data: any) => {
@@ -161,8 +161,6 @@ function Marketplace() {
   })
 
   // highest lowest ask
-  const [highestLowestAsk, setHighestLowestAsk] = useState(0)
-
   const onHighestLowestAskPageFetched = useCallback(
     (hits) => {
       if (!hits[0]) {
@@ -181,6 +179,7 @@ function Marketplace() {
     sortingKey: highestLowestAskSortingKey,
     hitsPerPage: 1,
     onPageFetched: onHighestLowestAskPageFetched,
+    skip: !etherPrice,
   })
 
   const cardModels = useMemo(

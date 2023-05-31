@@ -1,7 +1,7 @@
 import '@reach/dialog/styles.css'
 import './theme/css/global.css'
 
-import React, { StrictMode } from 'react'
+// import { StrictMode } from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
 import { ApolloProvider } from '@apollo/client'
 import { createRoot } from 'react-dom/client'
@@ -35,7 +35,7 @@ if (!container) throw 'Undefined #root container'
 
 const root = createRoot(container)
 root.render(
-  <StrictMode>
+  <>
     <ApolloProvider client={apolloClient}>
       <ConfigProvider>
         <StarknetProvider>
@@ -54,5 +54,5 @@ root.render(
         </StarknetProvider>
       </ConfigProvider>
     </ApolloProvider>
-  </StrictMode>
+  </>
 )
