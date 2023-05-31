@@ -21,6 +21,7 @@ gql`
       }
       starknetWallet {
         address
+        deployed
         publicKey
         signerEscapeTriggeredAt
         lockingReason

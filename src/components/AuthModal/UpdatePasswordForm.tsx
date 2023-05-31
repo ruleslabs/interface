@@ -77,13 +77,14 @@ export default function UpdatePasswordForm({ onSuccessfulConnection }: AuthFormP
       const hashedPassword = await passwordHasher(password)
 
       try {
-        const { starkPub: starknetPub, userKey: rulesPrivateKey } = await createWallet(password)
+        const { publicKey, address, rulesPrivateKey } = await createWallet(password)
 
         const { accessToken } = await updatePasswordMutation({
           variables: {
             email,
             newPassword: hashedPassword,
-            starknetPub,
+            walletPublicKey: publicKey,
+            walletAddress: address,
             rulesPrivateKey,
             token,
           },

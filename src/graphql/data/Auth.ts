@@ -41,7 +41,8 @@ gql`
     $email: String!
     $username: String!
     $password: String!
-    $starknetPub: String!
+    $walletPublicKey: String!
+    $walletAddress: String!
     $rulesPrivateKey: RulesPrivateKeyAttributes!
     $emailVerificationCode: String!
     $acceptCommercialEmails: Boolean!
@@ -51,7 +52,8 @@ gql`
         email: $email
         username: $username
         password: $password
-        starknetPub: $starknetPub
+        walletPublicKey: $walletPublicKey
+        walletAddress: $walletAddress
         rulesPrivateKey: $rulesPrivateKey
         emailVerificationCode: $emailVerificationCode
         acceptCommercialEmails: $acceptCommercialEmails
@@ -78,7 +80,8 @@ gql`
   mutation UpdatePassword(
     $email: String!
     $newPassword: String!
-    $starknetPub: String!
+    $walletPublicKey: String!
+    $walletAddress: String!
     $rulesPrivateKey: RulesPrivateKeyAttributes!
     $token: String!
   ) {
@@ -86,7 +89,8 @@ gql`
       input: {
         email: $email
         newPassword: $newPassword
-        starknetPub: $starknetPub
+        walletPublicKey: $walletPublicKey
+        walletAddress: $walletAddress
         rulesPrivateKey: $rulesPrivateKey
         token: $token
       }

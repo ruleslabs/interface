@@ -75,13 +75,14 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFo
       const hashedPassword = await passwordHasher(password)
 
       try {
-        const { starkPub: starknetPub, userKey: rulesPrivateKey } = await createWallet(password)
+        const { publicKey, address, rulesPrivateKey } = await createWallet(password)
         const { accessToken } = await signUpMutation({
           variables: {
             email,
             username,
             password: hashedPassword,
-            starknetPub,
+            walletPublicKey: publicKey,
+            walletAddress: address,
             rulesPrivateKey,
             emailVerificationCode: code,
             acceptCommercialEmails,
