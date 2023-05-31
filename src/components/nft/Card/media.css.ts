@@ -26,19 +26,17 @@ export const playbackButton = recipe({
 
       '@media': {
         [`screen and (max-width: ${breakpoints.sm}px)`]: {
-          display: 'flex',
+          display: 'block',
         },
       },
 
       selectors: {
         [`${mediaContainer().split(' ')[0]}:hover &`]: {
-          display: 'flex',
+          display: 'block',
         },
       },
     },
     sprinkles({
-      alignItems: 'center',
-      justifyContent: 'center',
       cursor: 'pointer',
       color: 'text1',
       position: 'absolute',
@@ -55,7 +53,7 @@ export const playbackButton = recipe({
 
   variants: {
     pauseButton: {
-      true: sprinkles({ display: 'flex' }),
+      true: sprinkles({ display: 'block' }),
       false: sprinkles({ display: 'none' }),
     },
   },
