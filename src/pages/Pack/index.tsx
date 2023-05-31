@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { gql } from '@apollo/client'
 import styled from 'styled-components/macro'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 import { apolloClient } from 'src/graphql/data/apollo'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -74,7 +74,6 @@ const QUERY_PACK = gql`
       season
       seasons
       cardModelsOverview {
-        quantity
         cardModel {
           slug
           pictureUrl(derivative: "width=512")
@@ -132,7 +131,7 @@ function Pack() {
   const cardModels = pack?.cardModelsOverview ?? []
   const assets = useMemo(
     () =>
-      cardModels.map(({ cardModel, quantity }: any) => (
+      cardModels.map(({ cardModel }: any) => (
         <NftCard
           key={cardModel.slug}
           asset={{
@@ -143,7 +142,6 @@ function Pack() {
           }}
           display={{
             primaryInfo: cardModel.artist.displayName,
-            secondaryInfo: t`x ${quantity}`,
           }}
         />
       )),
