@@ -83,6 +83,7 @@ export function formatCurrentUserQueryData(queryCurrentUser: NonNullable<Current
     starknetWallet: {
       address: queryStarknetWallet.address,
       publicKey: queryStarknetWallet.publicKey,
+      deployed: queryStarknetWallet.deployed,
       // cannot do better with how bad enums are handled in graphql
       lockingReason: queryStarknetWallet.lockingReason as any as constants.StarknetWalletLockingReason,
       needsUpgrade: queryStarknetWallet.needsUpgrade,

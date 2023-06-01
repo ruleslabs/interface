@@ -12,6 +12,7 @@ import Overview from './Overview'
 import Deposit from './Deposit'
 import StarkgateDeposit from './StarkgateDeposit'
 import StarkgateWithdraw from './StarkgateWithdraw'
+import Deploy from './Deploy'
 
 function useModalContent(): ModalContents<WalletModalMode> {
   return useMemo(
@@ -19,6 +20,11 @@ function useModalContent(): ModalContents<WalletModalMode> {
       [WalletModalMode.OVERVIEW]: {
         Component: Overview,
         title: t`Wallet`,
+      },
+      [WalletModalMode.DEPLOY]: {
+        Component: Deploy,
+        title: t`Wallet`,
+        previous: WalletModalMode.OVERVIEW,
       },
       [WalletModalMode.DEPOSIT]: {
         Component: Deposit,

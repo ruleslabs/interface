@@ -17,6 +17,7 @@ import useStarknetTx, { useEstimateFees, useExecuteTx } from 'src/hooks/useStark
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import Pending from './Pending'
+import { WeiAmount } from '@rulesorg/sdk-core'
 
 const DummyFocusInput = styled.input`
   max-height: 0;
@@ -88,7 +89,7 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
   const { signing, txValue } = useStarknetTx()
 
   // can pay
-  const balance = useETHBalance(address)
+  const balance = useETHBalance(address) ?? WeiAmount.ZERO
   const canPayTransaction = useMemo(() => {
     if (!parsedTotalCost) return false
 

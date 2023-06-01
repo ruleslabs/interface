@@ -55,7 +55,7 @@ export default function WalletButton(props: Parameters<typeof PrimaryButton>[0])
 
   return (
     <StyledWalletButton $alert={!!currentUser?.starknetWallet.lockingReason} {...props}>
-      <Box>{address ? `${balance.toFixed(4)}` : 'Loading...'}</Box>
+      <Box>{balance ? `${balance.toFixed(4)}` : 'Loading...'}</Box>
       {!!address && <EthereumIcon />}
     </StyledWalletButton>
   )

@@ -61,11 +61,11 @@ export function useETHBalances(addresses: (string | undefined)[]): { [address: s
   }, [results, addresses])
 }
 
-export function useETHBalance(address?: string): WeiAmount {
+export function useETHBalance(address?: string) {
   const balances = useETHBalances([address])
-  if (!address) return WeiAmount.ZERO
+  if (!address) return
 
-  return balances?.[address] ?? WeiAmount.ZERO
+  return balances?.[address]
 }
 
 export function useEthereumETHBalance(address?: string): WeiAmount | undefined {

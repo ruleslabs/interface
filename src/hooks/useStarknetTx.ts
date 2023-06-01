@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { shallow } from 'zustand/shallow'
+import { DeployContractResponse, EstimateFee, InvokeFunctionResponse } from 'starknet'
 
 import { useBoundStore } from 'src/zustand'
 import { WeiAmount } from '@rulesorg/sdk-core'
@@ -11,20 +12,33 @@ export function useEstimateFees() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const { calls, txValue } = useBoundStore((state) => ({ calls: state.stxCalls, txValue: state.stxValue }), shallow)
+  const { calls, accountDeploymentPayload, txValue } = useBoundStore(
+    (state) => ({
+      calls: state.stxCalls,
+      accountDeploymentPayload: state.stxAccountDeploymentPayload,
+      txValue: state.stxValue,
+    }),
+    shallow
+  )
 
   const { account } = useRulesAccount()
 
   const estimatedFees = useCallback(async () => {
-    if (!calls.length || !account) return
+    if (!account) return
 
     setLoading(true)
     setError(null)
 
     try {
-      const estimatedFees = await account.estimateInvokeFee(calls)
+      let estimatedFees: EstimateFee | undefined
 
-      const maxFee = estimatedFees.suggestedMaxFee?.toString() ?? '0'
+      if (accountDeploymentPayload) {
+        estimatedFees = await account.estimateAccountDeployFee(accountDeploymentPayload)
+      } else {
+        estimatedFees = await account.estimateFee(calls)
+      }
+
+      const maxFee = estimatedFees.suggestedMaxFee.toString() ?? '0'
       const fee = estimatedFees.overall_fee.toString() ?? '0'
       if (!+maxFee || !+fee) {
         throw new Error('Failed to estimate fees')
@@ -36,7 +50,7 @@ export function useEstimateFees() {
     }
 
     setLoading(false)
-  }, [account, calls])
+  }, [account, calls, accountDeploymentPayload])
 
   const parsedTotalCost = useMemo(() => {
     if (!parsedNetworkFee) return null
@@ -59,8 +73,13 @@ export function useExecuteTx() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const { calls, txHash, setTxHash } = useBoundStore(
-    (state) => ({ calls: state.stxCalls, txHash: state.stxHash, setTxHash: state.stxSetHash }),
+  const { calls, accountDeploymentPayload, txHash, setTxHash } = useBoundStore(
+    (state) => ({
+      calls: state.stxCalls,
+      txHash: state.stxHash,
+      setTxHash: state.stxSetHash,
+      accountDeploymentPayload: state.stxAccountDeploymentPayload,
+    }),
     shallow
   )
 
@@ -68,7 +87,7 @@ export function useExecuteTx() {
 
   const executeTx = useCallback(
     async (parsedMaxFee: WeiAmount) => {
-      if (!calls.length || !account) return
+      if (!account) return
 
       setLoading(true)
       setError(null)
@@ -76,7 +95,14 @@ export function useExecuteTx() {
       const maxFee = parsedMaxFee.quotient.toString()
 
       try {
-        const tx = await account.execute(calls, undefined, { maxFee })
+        let tx: InvokeFunctionResponse | DeployContractResponse | undefined
+
+        if (accountDeploymentPayload) {
+          tx = await account.deployAccount(accountDeploymentPayload)
+        } else {
+          tx = await account.execute(calls, undefined, { maxFee })
+        }
+
         if (!tx.transaction_hash) throw 'Failed to push transaction on starknet'
 
         setTxHash(tx.transaction_hash)
@@ -86,7 +112,7 @@ export function useExecuteTx() {
 
       setLoading(false)
     },
-    [account, calls]
+    [account, calls, accountDeploymentPayload]
   )
 
   return [executeTx, { data: { txHash }, loading, error }] as const
@@ -97,6 +123,7 @@ export default function useStarknetTx() {
     (state) => ({
       setCalls: state.stxSetCalls,
       pushCalls: state.stxPushCalls,
+      setAccountDeploymentPayload: state.stxSetAccountDeploymentPayload,
       resetStarknetTx: state.stxResetStarknetTx,
       txValue: state.stxValue,
       increaseTxValue: state.stxIncreaseValue,

@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand'
-import { Call } from 'starknet'
+import { Call, DeployAccountContractPayload } from 'starknet'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
 import { StoreState } from '../index'
@@ -9,6 +9,7 @@ export type StarknetTxSlice = State & Actions
 
 export interface State {
   stxCalls: Call[]
+  stxAccountDeploymentPayload: DeployAccountContractPayload | null
   stxValue: WeiAmount
   stxSigning: boolean
   stxHash: string | null
@@ -17,14 +18,21 @@ export interface State {
 export interface Actions {
   stxSetCalls: (calls: Call[]) => void
   stxPushCalls: (...calls: Call[]) => void
+
+  stxSetAccountDeploymentPayload: (accountDeploymentPayload: DeployAccountContractPayload | null) => void
+
   stxSetSigning: (signing: boolean) => void
+
   stxResetStarknetTx: () => void
+
   stxIncreaseValue: (amount: WeiAmount) => void
+
   stxSetHash: (hash: string | null) => void
 }
 
 const resetState = {
   stxCalls: [],
+  stxAccountDeploymentPayload: null,
   stxValue: WeiAmount.ZERO,
   stxSigning: false,
 }
@@ -47,6 +55,11 @@ export const createStarknetTxSlice: StateCreator<StoreState, [['zustand/immer', 
     set((state) => {
       state.stxCalls.push(...(calls as any[]))
     }),
+
+  // DEPLOY
+
+  stxSetAccountDeploymentPayload: (accountDeploymentPayload) =>
+    set({ stxAccountDeploymentPayload: accountDeploymentPayload }),
 
   // TX VALUE
 

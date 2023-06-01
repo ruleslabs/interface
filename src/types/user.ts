@@ -6,7 +6,8 @@ export interface GenieRetrievableEthers {
 }
 
 export interface GenieStarknetWallet {
-  address?: string
+  address: string
+  deployed: boolean
   publicKey: string
   lockingReason: constants.StarknetWalletLockingReason
   signerEscapeTriggeredAt?: Date

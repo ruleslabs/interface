@@ -14,6 +14,7 @@ import { PrimaryButton, SecondaryButton } from 'src/components/Button'
 import LockedWallet from 'src/components/LockedWallet'
 import { ErrorCard } from 'src/components/Card'
 import useRulesAccount from 'src/hooks/useRulesAccount'
+import * as Text from 'src/theme/components/Text'
 
 import { ReactComponent as EthereumIcon } from 'src/images/ethereum-plain.svg'
 
@@ -36,17 +37,20 @@ const FiatBalance = styled(TYPE.subtitle)`
 export default function Overview() {
   // current user
   const { currentUser } = useCurrentUser()
+  const { deployed, lockingReason } = currentUser?.starknetWallet ?? {}
 
   // modal mode
   const setWalletModalMode = useSetWalletModalMode()
 
   const onDepositMode = useCallback(() => setWalletModalMode(WalletModalMode.DEPOSIT), [setWalletModalMode])
   const onWithdrawMode = useCallback(() => setWalletModalMode(WalletModalMode.STARKGATE_WITHDRAW), [setWalletModalMode])
+  const onDeployMode = useCallback(() => setWalletModalMode(WalletModalMode.DEPLOY), [setWalletModalMode])
 
   // ETH balance
   const { address } = useRulesAccount()
   const balance = useETHBalance(address)
 
+  // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
   return (
@@ -61,21 +65,33 @@ export default function Overview() {
           <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)?.toFixed(2)}` : 'Loading ...'}</FiatBalance>
         </Column>
 
-        {currentUser?.starknetWallet.lockingReason && (
+        {lockingReason && (
           <ErrorCard>
             <LockedWallet />
           </ErrorCard>
         )}
 
-        <Column gap={8}>
-          <PrimaryButton onClick={onDepositMode} large>
-            <Trans>Add funds</Trans>
-          </PrimaryButton>
+        {deployed ? (
+          <Column gap={8}>
+            <PrimaryButton onClick={onDepositMode} large>
+              <Trans>Add funds</Trans>
+            </PrimaryButton>
 
-          <SecondaryButton onClick={onWithdrawMode} large>
-            <Trans>Withdraw</Trans>
-          </SecondaryButton>
-        </Column>
+            <SecondaryButton onClick={onWithdrawMode} large>
+              <Trans>Withdraw</Trans>
+            </SecondaryButton>
+          </Column>
+        ) : (
+          <Column gap={24}>
+            <Text.HeadlineSmall>
+              <Trans>Your wallet is not deployed, you need to deploy it to interact with other users on Rules.</Trans>
+            </Text.HeadlineSmall>
+
+            <PrimaryButton onClick={onDeployMode} large>
+              <Trans>Deploy</Trans>
+            </PrimaryButton>
+          </Column>
+        )}
       </Column>
     </ModalBody>
   )

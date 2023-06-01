@@ -3439,10 +3439,10 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@rulesorg/sdk-core@^1.1.22":
-  version "1.1.22"
-  resolved "https://registry.yarnpkg.com/@rulesorg/sdk-core/-/sdk-core-1.1.22.tgz#6f30778fa86bd2ec0a06b55c03bc152f5d9eb2c2"
-  integrity sha512-0Z8koKEP5L7dl+lYDL3Oc0P3b10eufEQjX9aDXEUJEcY2hDMV8tyNyQDju03D9nS7TmUZj1m1JlWY14sXBg/kA==
+"@rulesorg/sdk-core@^1.1.25":
+  version "1.1.25"
+  resolved "https://registry.yarnpkg.com/@rulesorg/sdk-core/-/sdk-core-1.1.25.tgz#1cc8007a811ff56d5ce08a7365fb50947b921f62"
+  integrity sha512-jgTfBhH7kwA1bbx1K9To3DV8LJWGHFfj72/oF9XG2Wsm/3TQ2gS8HA5QA85F+hR62vYY9FfJHzH5kQIhmDMKjg==
   dependencies:
     big.js "^6.2.1"
     decimal.js-light "^2.5.1"
