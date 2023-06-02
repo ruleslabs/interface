@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
 import React, { useMemo, useState, useCallback } from 'react'
 import styled from 'styled-components/macro'
-import { WeiAmount, Unit } from '@rulesorg/sdk-core'
+import { WeiAmount, Unit, constants } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import Link from 'src/components/Link'
@@ -12,7 +12,7 @@ import Status from './Status'
 import useReduceHash from 'src/hooks/useReduceHash'
 import Caret from 'src/components/Caret'
 import Card from 'src/components/Card'
-import Event from './Event'
+import Event, { WalletEvent } from './Event'
 import Message from './Message'
 import OffchainAction from './OffchainAction'
 import useAge from 'src/hooks/useAge'
@@ -80,7 +80,7 @@ interface TransactionRowProps extends React.HTMLAttributes<HTMLDivElement> {
   hash: string
   address?: string
   publicKey: string
-  fromAddress: string
+  fromAddress?: string
   status: string
   code?: string
   blockNumber?: number
@@ -153,6 +153,8 @@ const TransactionRow = React.forwardRef<HTMLDivElement, TransactionRowProps>(
               payload={message.payload}
             />
           ))}
+
+          {!fromAddress && <WalletEvent eventKey={constants.EventKeys.ACCOUNT_INITIALIZED} />}
 
           {!events.length && !l2ToL1Messages.length && offchainData?.action && (
             <OffchainAction action={offchainData.action} status={status} />

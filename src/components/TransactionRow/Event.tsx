@@ -264,7 +264,7 @@ interface WalletEventProps {
   eventKey: string
 }
 
-function WalletEvent({ eventKey }: WalletEventProps) {
+export function WalletEvent({ eventKey }: WalletEventProps) {
   const eventText = useMemo(() => {
     switch (eventKey) {
       case constants.EventKeys.ACCOUNT_INITIALIZED:
