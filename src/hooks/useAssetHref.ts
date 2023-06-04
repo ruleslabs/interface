@@ -15,6 +15,7 @@ export function useAssetHref(tokenId: string) {
     const intSerialNumber = +encode.addHexPrefix(serialNumber)
 
     const artistSlug = slugify(Buffer.from(artist, 'hex').toString())
+    console.log(artist, artistSlug)
     const seasonSlug = `season-${intSeason}`
     const scarcitySlug = constants.Seasons[intSeason][intScarcity].name
 

@@ -141,6 +141,7 @@ function Pack() {
             scarcity: cardModel.scarcity.name,
           }}
           display={{
+            href: `/card/${cardModel.slug}`,
             primaryInfo: cardModel.artist.displayName,
           }}
         />

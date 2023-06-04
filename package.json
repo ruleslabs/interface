@@ -10,8 +10,7 @@
     "i18n:compile": "lingui compile",
     "i18n": "yarn i18n:extract --clean && yarn i18n:compile",
     "prepare": "yarn graphql && yarn i18n",
-    "dev": "craco start",
-    "prod": "craco start",
+    "start": "craco start",
     "serve": "serve build -l 3000",
     "build": "craco build"
   },

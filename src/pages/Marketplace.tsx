@@ -201,6 +201,7 @@ function Marketplace() {
                 scarcity: cardModel.scarcity.name,
               }}
               display={{
+                href: `/card/${cardModel.slug}`,
                 primaryInfo: cardModel.artist.displayName,
                 secondaryInfo: t`${cardModel.cardsOnSaleCount} offers`,
                 subtitle: parsedLowestAsk

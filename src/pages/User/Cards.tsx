@@ -253,6 +253,7 @@ function UserCards() {
             scarcity: card.cardModel.scarcity.name,
           }}
           display={{
+            href: `/card/${card.cardModel.slug}/${card.serialNumber}`,
             primaryInfo: card.cardModel.artist.displayName,
             secondaryInfo: `#${card.serialNumber}`,
             status: 'inDelivery',
@@ -274,6 +275,7 @@ function UserCards() {
             scarcity: card.cardModel.scarcity.name,
           }}
           display={{
+            href: `/card/${card.cardModel.slug}/${card.serialNumber}`,
             primaryInfo: card.cardModel.artist.displayName,
             secondaryInfo: `#${card.serialNumber}`,
             subtitle: card.parsedPrice

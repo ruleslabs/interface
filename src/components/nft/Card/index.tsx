@@ -10,7 +10,6 @@ import { Column, Row } from 'src/theme/components/Flex'
 import Image from 'src/theme/components/Image'
 import { useActiveLocale } from 'src/hooks/useActiveLocale'
 import useAssetsSelection from 'src/hooks/useAssetsSelection'
-import { useAssetHref } from 'src/hooks/useAssetHref'
 import Link from 'src/components/Link'
 import Badges from 'src/components/Badges'
 import { usePendingOperations } from 'src/hooks/usePendingOperations'
@@ -18,6 +17,7 @@ import useTrans from 'src/hooks/useTrans'
 import { LargeSpinner } from 'src/components/Spinner'
 
 interface NftCardDisplay {
+  href?: string
   primaryInfo: string
   secondaryInfo?: string
   subtitle?: string
@@ -56,9 +56,6 @@ export const NftCard = ({ asset, display, onCardClick, badges }: NftCardProps) =
     }
   }, [status, locale])
 
-  // link
-  const href = useAssetHref(asset.tokenId)
-
   // pending operations
   const pendingOperations = usePendingOperations(asset.tokenId)
   const pendingOperation = pendingOperations[0]
@@ -74,7 +71,7 @@ export const NftCard = ({ asset, display, onCardClick, badges }: NftCardProps) =
   return (
     <Container
       className={styles.container({ disabled: (selectionModeEnabled && !selected) || !!pendingOperation })}
-      href={selectionModeEnabled || onCardClick ? 'javascript:void(0)' : href} // TODO: avoid void(0)
+      href={selectionModeEnabled || onCardClick ? 'javascript:void(0)' : display.href} // TODO: avoid void(0)
       onClick={
         selectable
           ? (e) => {
