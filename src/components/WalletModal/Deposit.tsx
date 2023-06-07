@@ -11,6 +11,7 @@ import { ModalBody } from '../Modal/Classic'
 import * as Icons from 'src/theme/components/Icons'
 import Column from '../Column'
 import { useWalletModalToggle } from 'src/state/application/hooks'
+import * as Text from 'src/theme/components/Text'
 
 export default function Deposit() {
   // current user
@@ -27,6 +28,20 @@ export default function Deposit() {
     toggleWalletModal()
     rampSdk?.show()
   }, [toggleWalletModal, rampSdk?.show])
+
+  return (
+    <ModalBody>
+      <Column gap={24}>
+        <Text.HeadlineSmall>
+          <Trans>We are improving Rules !</Trans>
+        </Text.HeadlineSmall>
+
+        <Text.Body>
+          <Trans>Wallet deposits are temporarly unavailable, please try again in a few days.</Trans>
+        </Text.Body>
+      </Column>
+    </ModalBody>
+  )
 
   return (
     <ModalBody>
