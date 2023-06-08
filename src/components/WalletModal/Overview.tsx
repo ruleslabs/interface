@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
@@ -17,6 +17,8 @@ import useRulesAccount from 'src/hooks/useRulesAccount'
 import * as Text from 'src/theme/components/Text'
 
 import { ReactComponent as EthereumIcon } from 'src/images/ethereum-plain.svg'
+import { PaginationSpinner } from '../Spinner'
+import { MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION } from 'src/constants/misc'
 
 const ETHBalance = styled(RowCenter)`
   width: 100%;
@@ -45,13 +47,73 @@ export default function Overview() {
   const onDepositMode = useCallback(() => setWalletModalMode(WalletModalMode.DEPOSIT), [setWalletModalMode])
   const onWithdrawMode = useCallback(() => setWalletModalMode(WalletModalMode.STARKGATE_WITHDRAW), [setWalletModalMode])
   const onDeployMode = useCallback(() => setWalletModalMode(WalletModalMode.DEPLOY), [setWalletModalMode])
+  const onFundsMigrationMode = useCallback(
+    () => setWalletModalMode(WalletModalMode.MIGRATE_FUNDS),
+    [setWalletModalMode]
+  )
 
   // ETH balance
-  const { address } = useRulesAccount()
+  const { address, oldAddress } = useRulesAccount()
   const balance = useETHBalance(address)
+  const oldBalance = useETHBalance(oldAddress)
 
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
+
+  // components
+  const componentContent = useMemo(() => {
+    if ((oldAddress && !oldBalance) || !balance) return <PaginationSpinner loading={true} />
+
+    if (oldBalance?.greaterThan(MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION)) {
+      return (
+        <Column gap={24}>
+          <Text.HeadlineSmall>
+            <Trans>Your wallet has been upgraded, you can migrate the funds from your old wallet</Trans>
+          </Text.HeadlineSmall>
+
+          <PrimaryButton onClick={onFundsMigrationMode} large disabled={!!lockingReason}>
+            <Trans>Migrate - {+oldBalance.toFixed(4)} ETH</Trans>
+          </PrimaryButton>
+        </Column>
+      )
+    }
+
+    if (deployed) {
+      return (
+        <Column gap={8}>
+          <PrimaryButton onClick={onDepositMode} large>
+            <Trans>Add funds</Trans>
+          </PrimaryButton>
+
+          <SecondaryButton onClick={onWithdrawMode} large>
+            <Trans>Withdraw</Trans>
+          </SecondaryButton>
+        </Column>
+      )
+    }
+
+    return (
+      <Column gap={24}>
+        <Text.HeadlineSmall>
+          <Trans>Your wallet is not deployed, you need to deploy it to interact with other users on Rules.</Trans>
+        </Text.HeadlineSmall>
+
+        <PrimaryButton onClick={onDeployMode} large>
+          <Trans>Deploy</Trans>
+        </PrimaryButton>
+      </Column>
+    )
+  }, [
+    oldAddress,
+    balance,
+    oldBalance,
+    deployed,
+    onFundsMigrationMode,
+    onDeployMode,
+    onDepositMode,
+    onWithdrawMode,
+    lockingReason,
+  ])
 
   return (
     <ModalBody>
@@ -71,27 +133,7 @@ export default function Overview() {
           </ErrorCard>
         )}
 
-        {deployed ? (
-          <Column gap={8}>
-            <PrimaryButton onClick={onDepositMode} large>
-              <Trans>Add funds</Trans>
-            </PrimaryButton>
-
-            <SecondaryButton onClick={onWithdrawMode} large>
-              <Trans>Withdraw</Trans>
-            </SecondaryButton>
-          </Column>
-        ) : (
-          <Column gap={24}>
-            <Text.HeadlineSmall>
-              <Trans>Your wallet is not deployed, you need to deploy it to interact with other users on Rules.</Trans>
-            </Text.HeadlineSmall>
-
-            <PrimaryButton onClick={onDeployMode} large>
-              <Trans>Deploy</Trans>
-            </PrimaryButton>
-          </Column>
-        )}
+        {componentContent}
       </Column>
     </ModalBody>
   )

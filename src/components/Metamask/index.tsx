@@ -50,7 +50,7 @@ export default function Metamask({ children }: MetamaskProps) {
     if (metamaskFound) {
       return (
         <Column>
-          <PrimaryButton onClick={activateMetamask}>
+          <PrimaryButton onClick={activateMetamask} large>
             <Trans>Connect Metamask</Trans>
           </PrimaryButton>
         </Column>

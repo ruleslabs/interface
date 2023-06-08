@@ -21,7 +21,7 @@ const CARDS_QUERY = gql`
       slug
       serialNumber
       onSale
-      starknetTokenId
+      tokenId
       cardModel {
         slug
         season
@@ -116,7 +116,7 @@ export default function DeckInsertionModal({ address, cardIndex }: DeckInsertion
           asset={{
             animationUrl: card.cardModel.videoUrl,
             imageUrl: card.cardModel.pictureUrl,
-            tokenId: card.starknetTokenId,
+            tokenId: card.tokenId,
             scarcity: card.cardModel.scarcity.name,
           }}
           display={{

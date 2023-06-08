@@ -13,6 +13,7 @@ import Deposit from './Deposit'
 import StarkgateDeposit from './StarkgateDeposit'
 import StarkgateWithdraw from './StarkgateWithdraw'
 import Deploy from './Deploy'
+import MigrateFunds from './MigrateFunds'
 
 function useModalContent(): ModalContents<WalletModalMode> {
   return useMemo(
@@ -39,6 +40,11 @@ function useModalContent(): ModalContents<WalletModalMode> {
       [WalletModalMode.STARKGATE_WITHDRAW]: {
         Component: StarkgateWithdraw,
         title: t`Withdraw`,
+        previous: WalletModalMode.OVERVIEW,
+      },
+      [WalletModalMode.MIGRATE_FUNDS]: {
+        Component: MigrateFunds,
+        title: t`Migrate your funds`,
         previous: WalletModalMode.OVERVIEW,
       },
     }),

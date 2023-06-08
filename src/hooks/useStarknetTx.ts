@@ -3,7 +3,7 @@ import { shallow } from 'zustand/shallow'
 import { DeployContractResponse, EstimateFee, InvokeFunctionResponse } from 'starknet'
 
 import { useBoundStore } from 'src/zustand'
-import { WeiAmount } from '@rulesorg/sdk-core'
+import { Unit, WeiAmount } from '@rulesorg/sdk-core'
 import { ParsedNetworkFee } from 'src/types/starknetTx'
 import useRulesAccount from './useRulesAccount'
 
@@ -12,11 +12,12 @@ export function useEstimateFees() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const { calls, accountDeploymentPayload, txValue } = useBoundStore(
+  const { calls, accountDeploymentPayload, txValue, migration } = useBoundStore(
     (state) => ({
       calls: state.stxCalls,
       accountDeploymentPayload: state.stxAccountDeploymentPayload,
       txValue: state.stxValue,
+      migration: state.stxMigration,
     }),
     shallow
   )
@@ -24,7 +25,8 @@ export function useEstimateFees() {
   const { account } = useRulesAccount()
 
   const estimatedFees = useCallback(async () => {
-    if (!account) return
+    const stxAccount = migration ? account?.old : account
+    if (!stxAccount) return
 
     setLoading(true)
     setError(null)
@@ -33,9 +35,9 @@ export function useEstimateFees() {
       let estimatedFees: EstimateFee | undefined
 
       if (accountDeploymentPayload) {
-        estimatedFees = await account.estimateAccountDeployFee(accountDeploymentPayload)
+        estimatedFees = await stxAccount.estimateAccountDeployFee(accountDeploymentPayload)
       } else {
-        estimatedFees = await account.estimateFee(calls)
+        estimatedFees = await stxAccount.estimateFee(calls)
       }
 
       const maxFee = estimatedFees.suggestedMaxFee.toString() ?? '0'
@@ -50,7 +52,7 @@ export function useEstimateFees() {
     }
 
     setLoading(false)
-  }, [account, calls, accountDeploymentPayload])
+  }, [account, calls, accountDeploymentPayload, migration])
 
   const parsedTotalCost = useMemo(() => {
     if (!parsedNetworkFee) return null
@@ -73,12 +75,14 @@ export function useExecuteTx() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const { calls, accountDeploymentPayload, txHash, setTxHash } = useBoundStore(
+  const { calls, accountDeploymentPayload, txHash, setTxHash, migration, beforeExecutionCallback } = useBoundStore(
     (state) => ({
       calls: state.stxCalls,
       txHash: state.stxHash,
       setTxHash: state.stxSetHash,
       accountDeploymentPayload: state.stxAccountDeploymentPayload,
+      migration: state.stxMigration,
+      beforeExecutionCallback: state.stxBeforeExecutionCallback,
     }),
     shallow
   )
@@ -87,20 +91,23 @@ export function useExecuteTx() {
 
   const executeTx = useCallback(
     async (parsedMaxFee: WeiAmount) => {
-      if (!account) return
+      const stxAccount = migration ? account?.old : account
+      if (!stxAccount) return
 
       setLoading(true)
       setError(null)
 
-      const maxFee = parsedMaxFee.quotient.toString()
+      const maxFee = parsedMaxFee.toUnitFixed(Unit.WEI)
+
+      const stxCalls = beforeExecutionCallback ? await beforeExecutionCallback(calls, maxFee) : calls
 
       try {
         let tx: InvokeFunctionResponse | DeployContractResponse | undefined
 
         if (accountDeploymentPayload) {
-          tx = await account.deployAccount(accountDeploymentPayload)
+          tx = await stxAccount.deployAccount(accountDeploymentPayload)
         } else {
-          tx = await account.execute(calls, undefined, { maxFee })
+          tx = await stxAccount.execute(stxCalls, undefined, { maxFee })
         }
 
         if (!tx.transaction_hash) throw 'Failed to push transaction on starknet'
@@ -112,7 +119,7 @@ export function useExecuteTx() {
 
       setLoading(false)
     },
-    [account, calls, accountDeploymentPayload]
+    [account, calls, accountDeploymentPayload, migration, beforeExecutionCallback]
   )
 
   return [executeTx, { data: { txHash }, loading, error }] as const
@@ -123,13 +130,23 @@ export default function useStarknetTx() {
     (state) => ({
       setCalls: state.stxSetCalls,
       pushCalls: state.stxPushCalls,
+
       setAccountDeploymentPayload: state.stxSetAccountDeploymentPayload,
+
       resetStarknetTx: state.stxResetStarknetTx,
+
       txValue: state.stxValue,
       increaseTxValue: state.stxIncreaseValue,
+
       setSigning: state.stxSetSigning,
       signing: state.stxSigning,
+
       txHash: state.stxHash,
+
+      migration: state.stxMigration,
+      setMigration: state.stxSetMigration,
+
+      setBeforeExecutionCallback: state.stxSetBeforeExecutionCallback,
     }),
     shallow
   )

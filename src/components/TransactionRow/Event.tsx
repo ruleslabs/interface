@@ -55,7 +55,7 @@ function PackOpeningPreparationEvent({ parsedEvent }: PackOpeningPreparationEven
   // query data
   const query = useTokenAndAddressesQuery('pack', parsedEvent.tokenId, [parsedEvent.from])
 
-  const pack = query.data?.packByStarknetTokenId
+  const pack = query.data?.packByTokenId
   const fromUser = query.data?.usersByStarknetAddresses?.[0]
 
   if (!pack) return null
@@ -92,7 +92,7 @@ function TokenTransferEvent({ parsedEvent }: CardTransferEventProps) {
 
   // get token (pack/card) data
   const token = useMemo(() => {
-    const token = query.data?.cardByStarknetTokenId ?? query.data?.packByStarknetTokenId
+    const token = query.data?.cardByTokenId ?? query.data?.packByTokenId
     if (!token) return null
 
     switch (parsedEvent.type) {
@@ -209,7 +209,7 @@ function OfferCreationAndCancelEvent({ parsedEvent }: OfferCreationAndCancelEven
 
   // get token (pack/card) data
   const card = useMemo(() => {
-    const card = query.data?.cardByStarknetTokenId
+    const card = query.data?.cardByTokenId
     if (!card) return null
 
     return {

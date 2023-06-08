@@ -36,7 +36,8 @@ export function useSetWalletModalMode(): (walletModalMode: WalletModalMode) => v
 
 // balance
 
-export function useETHBalances(addresses: (string | undefined)[]): { [address: string]: WeiAmount | undefined } {
+// TODO: support multiple addresses
+export function useETHBalances(...addresses: (string | undefined)[]): { [address: string]: WeiAmount | undefined } {
   const results = useMultipleContractSingleData(
     [constants.ETH_ADDRESSES[rulesSdk.networkInfos.starknetChainId]],
     ERC20ABI as Abi,
@@ -62,7 +63,7 @@ export function useETHBalances(addresses: (string | undefined)[]): { [address: s
 }
 
 export function useETHBalance(address?: string) {
-  const balances = useETHBalances([address])
+  const balances = useETHBalances(address)
   if (!address) return
 
   return balances?.[address]

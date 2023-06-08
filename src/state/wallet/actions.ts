@@ -6,6 +6,7 @@ export enum WalletModalMode {
   STARKGATE_DEPOSIT,
   STARKGATE_WITHDRAW,
   DEPLOY,
+  MIGRATE_FUNDS,
 }
 
 export interface WalletModalModePayload {

@@ -21,11 +21,11 @@ gql`
       }
       starknetWallet {
         address
+        oldAddress
         deployed
         publicKey
         signerEscapeTriggeredAt
         lockingReason
-        needsUpgrade
         rulesPrivateKey {
           salt
           iv
@@ -82,11 +82,12 @@ export function formatCurrentUserQueryData(queryCurrentUser: NonNullable<Current
 
     starknetWallet: {
       address: queryStarknetWallet.address,
+      oldAddress: queryStarknetWallet.oldAddress,
       publicKey: queryStarknetWallet.publicKey,
       deployed: queryStarknetWallet.deployed,
       // cannot do better with how bad enums are handled in graphql
       lockingReason: queryStarknetWallet.lockingReason as any as constants.StarknetWalletLockingReason,
-      needsUpgrade: queryStarknetWallet.needsUpgrade,
+      needsUpgrade: false,
       rulesPrivateKey: queryStarknetWallet.rulesPrivateKey,
     },
 

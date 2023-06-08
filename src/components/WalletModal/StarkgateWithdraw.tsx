@@ -9,7 +9,7 @@ import CurrencyInput from 'src/components/Input/CurrencyInput'
 import { metaMaskHooks } from 'src/constants/connectors'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/StarknetSigner'
-import { useETHBalances } from 'src/state/wallet/hooks'
+import { useETHBalance } from 'src/state/wallet/hooks'
 import Wallet from 'src/components/Wallet'
 import Metamask from 'src/components/Metamask'
 import * as Text from 'src/theme/components/Text'
@@ -49,7 +49,9 @@ const display: StarknetSignerDisplayProps = {
   transactionText: t`ETH withdraw to your Ethereum wallet`,
 }
 
-export default function WithdrawModal() {
+export default function StarkgateWithdraw() {
+  const [withdrawAmount, setWithdrawAmount] = useState('')
+
   // current user
   const { currentUser } = useCurrentUser()
 
@@ -61,11 +63,9 @@ export default function WithdrawModal() {
 
   // balance
   const address = currentUser?.starknetWallet.address ?? ''
-  const balances = useETHBalances([address])
-  const balance = balances?.[address]
+  const balance = useETHBalance(address)
 
   // withdraw
-  const [withdrawAmount, setWithdrawAmount] = useState('')
   const handleWithdrawAmountUpdate = useCallback((value: string) => setWithdrawAmount(value), [setWithdrawAmount])
   const parsedWithdrawAmount = useMemo(() => tryParseWeiAmount(withdrawAmount), [withdrawAmount])
 

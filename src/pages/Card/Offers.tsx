@@ -62,6 +62,7 @@ const QUERY_CARD_MODEL = gql`
       scarcity {
         name
         maxLowSerial
+        id
       }
       artist {
         displayName
@@ -134,6 +135,7 @@ function Offers() {
                 artistName={cardModel.artist.displayName}
                 season={cardModel.season}
                 scarcityName={cardModel.scarcity.name}
+                scarcityId={cardModel.scarcity.id}
                 pictureUrl={cardModel.pictureUrl}
                 serialNumbers={selectedSerialNumbers}
                 price={selectedOffersPriceTotal}

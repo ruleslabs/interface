@@ -13,6 +13,8 @@ export interface State {
   stxValue: WeiAmount
   stxSigning: boolean
   stxHash: string | null
+  stxMigration: boolean
+  stxBeforeExecutionCallback: ((calls: State['stxCalls'], maxFee: string) => Promise<Call[]>) | null
 }
 
 export interface Actions {
@@ -28,6 +30,10 @@ export interface Actions {
   stxIncreaseValue: (amount: WeiAmount) => void
 
   stxSetHash: (hash: string | null) => void
+
+  stxSetMigration: (migration: boolean) => void
+
+  stxSetBeforeExecutionCallback: (callback: (calls: State['stxCalls'], maxFee: string) => Promise<Call[]>) => void
 }
 
 const resetState = {
@@ -35,6 +41,8 @@ const resetState = {
   stxAccountDeploymentPayload: null,
   stxValue: WeiAmount.ZERO,
   stxSigning: false,
+  stxMigration: false,
+  stxBeforeExecutionCallback: null,
 }
 
 const initialState: State = {
@@ -83,4 +91,13 @@ export const createStarknetTxSlice: StateCreator<StoreState, [['zustand/immer', 
 
     if (hash) createApplicationSlice(set, ...a).subscribeToOperations(hash)
   },
+
+  // MIGRATION
+
+  stxSetMigration: (migration) => set({ stxMigration: migration }),
+
+  // CALLBACK
+
+  stxSetBeforeExecutionCallback: (callback: (calls: State['stxCalls'], maxFee: string) => Promise<Call[]>) =>
+    set({ stxBeforeExecutionCallback: callback }),
 })

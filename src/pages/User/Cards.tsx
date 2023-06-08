@@ -35,7 +35,7 @@ const CARDS_QUERY = gql`
       currentOffer {
         price
       }
-      starknetTokenId
+      tokenId
       cardModel {
         slug
         pictureUrl(derivative: "width=1024")
@@ -58,7 +58,7 @@ const CARDS_IN_DELIVERY_QUERY = gql`
       id
       slug
       serialNumber
-      starknetTokenId
+      tokenId
       cardModel {
         slug
         pictureUrl(derivative: "width=1024")
@@ -249,7 +249,7 @@ function UserCards() {
           asset={{
             animationUrl: card.cardModel.videoUrl,
             imageUrl: card.cardModel.pictureUrl,
-            tokenId: card.starknetTokenId,
+            tokenId: card.tokenId,
             scarcity: card.cardModel.scarcity.name,
           }}
           display={{
@@ -271,7 +271,7 @@ function UserCards() {
           asset={{
             animationUrl: card.cardModel.videoUrl,
             imageUrl: card.cardModel.pictureUrl,
-            tokenId: card.starknetTokenId,
+            tokenId: card.tokenId,
             scarcity: card.cardModel.scarcity.name,
           }}
           display={{

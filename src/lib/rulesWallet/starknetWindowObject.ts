@@ -24,6 +24,7 @@ export const starknetWindowObject: StarknetWindowObject = {
     const currentUser = useBoundStore.getState().currentUser
 
     const address = currentUser?.starknetWallet.address
+    const oldAddress = currentUser?.starknetWallet.oldAddress
 
     if (!address) {
       throw Error("No wallet account")
@@ -40,7 +41,7 @@ export const starknetWindowObject: StarknetWindowObject = {
 
     ;(starknet as any).starknetJsVersion = 'v5'
     starknet.provider = provider
-    starknet.account = new RulesAccount(provider, address)
+    starknet.account = new RulesAccount(provider, address, oldAddress)
 
     starknet.selectedAddress = address
     starknet.chainId = rulesSdk.networkInfos.starknetChainId.toString()

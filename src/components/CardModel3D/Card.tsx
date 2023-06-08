@@ -318,7 +318,7 @@ export default function Card({
       >
         <CardBackImage src={backPictureUrl} alt="card-back" />
         <CardFrontVideo src={videoUrl} width={width} poster={pictureUrl} playsInline loop autoPlay muted />
-        {scarcityName !== 'Common' && (
+        {scarcityName !== 'common' && (
           <HoloWrapper
             as={animated.div}
             style={{

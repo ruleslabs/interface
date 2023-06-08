@@ -55,7 +55,7 @@ export interface StarknetSignerDisplayProps {
 }
 
 interface StarknetSignerProps {
-  children: React.ReactNode
+  children?: React.ReactNode
   display: StarknetSignerDisplayProps
 }
 
@@ -70,11 +70,12 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
   const [estimateFees, estimateFeesRes] = useEstimateFees()
   const { parsedNetworkFee, parsedTotalCost } = estimateFeesRes.data
 
+  // execution
   const [executeTx, executeTxRes] = useExecuteTx()
   const { txHash } = executeTxRes.data
 
   // starknet account
-  const { address, account } = useRulesAccount()
+  const { address, oldAddress, account } = useRulesAccount()
   const updateSigner = useCallback(
     (pk: string) => {
       if (!account) return
@@ -86,10 +87,10 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
   )
 
   // starknet state
-  const { signing, txValue } = useStarknetTx()
+  const { signing, txValue, migration } = useStarknetTx()
 
   // can pay
-  const balance = useETHBalance(address) ?? WeiAmount.ZERO
+  const balance = useETHBalance(migration ? oldAddress : address) ?? WeiAmount.ZERO
   const canPayTransaction = useMemo(() => {
     if (!parsedTotalCost) return false
 

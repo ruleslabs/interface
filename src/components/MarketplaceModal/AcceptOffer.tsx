@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { t, Trans } from '@lingui/macro'
-import { WeiAmount, cardId, constants, uint256 } from '@rulesorg/sdk-core'
+import { WeiAmount, constants, encode, tokens } from '@rulesorg/sdk-core'
 
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
 import { useModalOpened, useAcceptOfferModalToggle, useWalletModalToggle } from 'src/state/application/hooks'
@@ -31,6 +31,7 @@ interface AcceptOfferModalProps {
   artistName: string
   season: number
   scarcityName: string
+  scarcityId: number
   serialNumbers: number[]
   pictureUrl: string
   price: string
@@ -40,6 +41,7 @@ export default function AcceptOfferModal({
   artistName,
   season,
   scarcityName,
+  scarcityId,
   serialNumbers,
   pictureUrl,
   price,
@@ -75,23 +77,20 @@ export default function AcceptOfferModal({
     const marketplaceAddress = constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
     if (!ethAddress || !marketplaceAddress) return
 
-    let scarcityIndex = -1
-
-    for (const [index, scarcity] of constants.Seasons[season].entries()) {
-      if (scarcity.name === scarcityName) {
-        scarcityIndex = index
-        break
-      }
-    }
-
-    if (scarcityIndex < 0) return
-
-    const tokenIds = serialNumbers.map((serialNumber) =>
-      cardId.getStarknetCardId(artistName, season, scarcityIndex, serialNumber)
+    const u256TokenIds = serialNumbers.map((serialNumber) =>
+      tokens.getCardTokenId({ artistName, season, scarcityId, serialNumber })
     )
 
     // save operations
-    pushOperation(...tokenIds.map((tokenId): Operation => ({ tokenId, type: 'offerAcceptance', quantity: 1 })))
+    pushOperation(
+      ...u256TokenIds.map(
+        (u256TokenId): Operation => ({
+          tokenId: encode.encodeUint256(u256TokenId),
+          type: 'offerAcceptance',
+          quantity: 1,
+        })
+      )
+    )
 
     // save calls
     setCalls([
@@ -100,19 +99,17 @@ export default function AcceptOfferModal({
         entrypoint: 'increaseAllowance',
         calldata: [marketplaceAddress, price, 0],
       },
-      ...tokenIds.map((tokenId) => {
-        const uint256TokenId = uint256.uint256HexFromStrHex(tokenId)
-
+      ...u256TokenIds.map((u256TokenId) => {
         return {
           contractAddress: marketplaceAddress,
           entrypoint: 'acceptOffer',
-          calldata: [uint256TokenId.low, uint256TokenId.high],
+          calldata: [u256TokenId.low, u256TokenId.high],
         }
       }),
     ])
 
     setSigning(true)
-  }, [artistName, season, scarcityName, serialNumbers.length])
+  }, [artistName, season, scarcityId, serialNumbers.length])
 
   // on close modal
   useEffect(() => {

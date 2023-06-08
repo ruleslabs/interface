@@ -1,23 +1,25 @@
 import { constants } from '@rulesorg/sdk-core'
 import { Account, ProviderInterface, Signer } from 'starknet'
 
-/**
- *  This is the latest Account Object that is imported from starknet.js.
- *  Currently, this Account Object supports transaction v1 introduced with starknet v0.10.0
- */
 export class RulesAccount extends Account {
-  public needPrivateKey = false
+  public needSignerUpdate = true
+  readonly old?: RulesAccount
 
-  constructor(provider: ProviderInterface, address: string) {
+  constructor(provider: ProviderInterface, address: string, oldAddress?: string) {
     // since account constructor is taking a private key,
     // we set a dummy one (never used anyway)
-    super(provider, address, constants.DUMMY_PK)
-  }
+    // we also assume the cairo account version is 1 if there is an old address
+    super(provider, address, constants.DUMMY_PK, oldAddress ? '1' : '0')
 
-  public needSignerUpdate = true
+    console.log(address, oldAddress)
+
+    this.old = oldAddress ? new RulesAccount(provider, oldAddress) : undefined
+  }
 
   public updateSigner(pk: string) {
     this.signer = new Signer(pk)
     this.needSignerUpdate = false
+
+    this.old?.updateSigner(pk)
   }
 }

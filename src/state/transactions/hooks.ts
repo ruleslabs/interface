@@ -13,8 +13,8 @@ const USERS_QUERY_CONTENT = `
 `
 
 const CARD_AND_USERS_EVENT_QUERY = gql`
-  query ($starknetTokenId: String!, $usersStarknetAddresses: [String!]!) {
-    cardByStarknetTokenId(starknetTokenId: $starknetTokenId) {
+  query ($tokenId: String!, $usersStarknetAddresses: [String!]!) {
+    cardByTokenId(tokenId: $tokenId) {
       serialNumber
       cardModel {
         pictureUrl(derivative: "width=128")
@@ -30,8 +30,8 @@ const CARD_AND_USERS_EVENT_QUERY = gql`
 `
 
 const PACK_AND_USERS_EVENT_QUERY = gql`
-  query ($starknetTokenId: String!, $usersStarknetAddresses: [String!]!) {
-    packByStarknetTokenId(starknetTokenId: $starknetTokenId) {
+  query ($tokenId: String!, $usersStarknetAddresses: [String!]!) {
+    packByTokenId(tokenId: $tokenId) {
       displayName
       pictureUrl(derivative: "width=128")
       slug
@@ -75,7 +75,7 @@ export function useTokenAndAddressesQuery(
 
   // query data
   return useQuery(gqlQuery, {
-    variables: { starknetTokenId: tokenId, usersStarknetAddresses: addresses },
+    variables: { tokenId, usersStarknetAddresses: addresses },
     skip: !gqlQuery,
   })
 }

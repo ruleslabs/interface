@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { Plural, t, Trans } from '@lingui/macro'
 import { useQuery, gql } from '@apollo/client'
-import { WeiAmount, constants, uint256 } from '@rulesorg/sdk-core'
+import { WeiAmount, constants } from '@rulesorg/sdk-core'
 
 import { ModalHeader } from 'src/components/Modal'
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
@@ -26,6 +26,7 @@ import { TYPE } from 'src/styles/theme'
 import useStarknetTx from 'src/hooks/useStarknetTx'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import { useOperations } from 'src/hooks/usePendingOperations'
+import { uint256 } from 'starknet'
 
 const CardBreakdownWrapper = styled.div`
   position: relative;
@@ -46,7 +47,7 @@ const CARDS_QUERY = gql`
   query CardsByTokenIds($tokenIds: [String!]!) {
     cardsByTokenIds(tokenIds: $tokenIds) {
       serialNumber
-      starknetTokenId
+      tokenId
       cardModel {
         id
         pictureUrl(derivative: "width=256")
@@ -90,7 +91,7 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
   const cardsQuery = useQuery(CARDS_QUERY, { variables: { tokenIds }, skip: !isOpen })
   const cards = cardsQuery.data?.cardsByTokenIds ?? []
   const card = cards[cardIndex]
-  const tokenId = card?.starknetTokenId
+  const tokenId = card?.tokenId
 
   // pending operation
   const { pushOperation, cleanOperations } = useOperations()
@@ -120,7 +121,7 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
     const marketplaceAddress = constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
     if (!marketplaceAddress || !parsedPrice || !tokenId) return
 
-    const uint256TokenId = uint256.uint256HexFromStrHex(tokenId)
+    const u256TokenId = uint256.bnToUint256(tokenId)
 
     // save operations
     pushOperation({ tokenId, type: 'offerCreation', quantity: 1 })
@@ -129,7 +130,7 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
     pushCalls({
       contractAddress: marketplaceAddress,
       entrypoint: 'createOffer',
-      calldata: [uint256TokenId.low, uint256TokenId.high, parsedPrice.quotient.toString()],
+      calldata: [u256TokenId.low, u256TokenId.high, parsedPrice.quotient.toString()],
     })
 
     if (cards.length === 1) {

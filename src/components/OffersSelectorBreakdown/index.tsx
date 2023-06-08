@@ -20,6 +20,7 @@ interface OffersSelectorBreakdownProps {
   artistName: string
   season: number
   scarcityName: string
+  scarcityId: number
   pictureUrl: string
   serialNumbers: number[]
   price: string
@@ -29,6 +30,7 @@ export default function OffersSelectorBreakdown({
   artistName,
   season,
   scarcityName,
+  scarcityId,
   pictureUrl,
   serialNumbers,
   price,
@@ -68,6 +70,7 @@ export default function OffersSelectorBreakdown({
         <AcceptOfferModal
           artistName={artistName}
           scarcityName={scarcityName}
+          scarcityId={scarcityId}
           season={season}
           serialNumbers={serialNumbers}
           pictureUrl={pictureUrl}

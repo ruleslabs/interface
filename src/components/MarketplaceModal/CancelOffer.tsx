@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { t, Trans } from '@lingui/macro'
-import { cardId, constants, uint256 } from '@rulesorg/sdk-core'
+import { constants, encode, tokens } from '@rulesorg/sdk-core'
 
 import { ModalHeader } from 'src/components/Modal'
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
@@ -27,6 +27,7 @@ interface CancelOfferModalProps {
   artistName: string
   season: number
   scarcityName: string
+  scarcityId: number
   serialNumber: number
   pictureUrl: string
 }
@@ -36,6 +37,7 @@ export default function CancelOfferModal({
   season,
   scarcityName,
   serialNumber,
+  scarcityId,
   pictureUrl,
 }: CancelOfferModalProps) {
   // current user
@@ -56,34 +58,22 @@ export default function CancelOfferModal({
     const marketplaceAddress = constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
     if (!marketplaceAddress) return
 
-    let scarcityIndex = -1
-
-    for (const [index, scarcity] of constants.Seasons[season].entries()) {
-      if (scarcity.name === scarcityName) {
-        scarcityIndex = index
-        break
-      }
-    }
-
-    if (scarcityIndex < 0) return
-
-    const tokenId = cardId.getStarknetCardId(artistName, season, scarcityIndex, serialNumber)
-    const uint256TokenId = uint256.uint256HexFromStrHex(tokenId)
+    const u256TokenId = tokens.getCardTokenId({ artistName, season, scarcityId, serialNumber })
 
     // save operation
-    pushOperation({ tokenId, type: 'offerCancelation', quantity: 1 })
+    pushOperation({ tokenId: encode.encodeUint256(u256TokenId), type: 'offerCancelation', quantity: 1 })
 
     // save call
     setCalls([
       {
         contractAddress: marketplaceAddress,
         entrypoint: 'cancelOffer',
-        calldata: [uint256TokenId.low, uint256TokenId.high],
+        calldata: [u256TokenId.low, u256TokenId.high],
       },
     ])
 
     setSigning(true)
-  }, [artistName, season, scarcityName, serialNumber])
+  }, [artistName, season, scarcityId, serialNumber])
 
   // on close modal
   useEffect(() => {

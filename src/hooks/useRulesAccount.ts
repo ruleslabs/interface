@@ -9,7 +9,11 @@ export default function useRulesAccount() {
   const rulesAccount = useMemo(() => {
     if (!(account instanceof RulesAccount)) return {}
 
-    return { account, needsSignerUpdate: account.needSignerUpdate }
+    return {
+      account,
+      needsSignerUpdate: account.needSignerUpdate,
+      oldAddress: account.old?.address,
+    }
   }, [account])
 
   return { ...rulesAccount, ...rest }

@@ -5,15 +5,14 @@ import { Trans } from '@lingui/macro'
 
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
-import { useETHBalances } from 'src/state/wallet/hooks'
+import { useETHBalance } from 'src/state/wallet/hooks'
 
 export default function LockedWallet() {
   const { currentUser } = useCurrentUser()
 
   // ETH balance
   const address = currentUser?.starknetWallet.address ?? ''
-  const balances = useETHBalances([address])
-  const balance = balances?.[address] ?? WeiAmount.ZERO
+  const balance = useETHBalance(address) ?? WeiAmount.ZERO
 
   const weiAmountToEURValue = useWeiAmountToEURValue()
 

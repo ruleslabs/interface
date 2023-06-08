@@ -62,7 +62,7 @@ const CARD_QUERY = gql`
     card(slug: $slug) {
       id
       serialNumber
-      starknetTokenId
+      tokenId
       owner {
         user {
           slug
@@ -90,6 +90,7 @@ const CARD_QUERY = gql`
         scarcity {
           name
           maxSupply
+          id
         }
       }
     }
@@ -161,11 +162,7 @@ function CardPage() {
               <div>
                 {card.owner && (
                   <Card>
-                    <CardOwnership
-                      owner={card.owner.user}
-                      tokenId={card.starknetTokenId}
-                      price={cardPrice ?? undefined}
-                    />
+                    <CardOwnership owner={card.owner.user} tokenId={card.tokenId} price={cardPrice ?? undefined} />
                   </Card>
                 )}
               </div>
@@ -181,15 +178,16 @@ function CardPage() {
             </Column>
           </Section>
 
-          <GiftModal tokenIds={[card.starknetTokenId]} />
+          <GiftModal tokenIds={[card.tokenId]} />
 
-          <CreateOfferModal tokenIds={[card.starknetTokenId]} />
+          <CreateOfferModal tokenIds={[card.tokenId]} />
 
           {cardPrice && (
             <>
               <CancelOfferModal
                 artistName={card.cardModel.artist.displayName}
                 scarcityName={card.cardModel.scarcity.name}
+                scarcityId={card.cardModel.scarcity.id}
                 season={card.cardModel.season}
                 serialNumber={card.serialNumber}
                 pictureUrl={card.cardModel.pictureUrl}
@@ -198,6 +196,7 @@ function CardPage() {
               <AcceptOfferModal
                 artistName={card.cardModel.artist.displayName}
                 scarcityName={card.cardModel.scarcity.name}
+                scarcityId={card.cardModel.scarcity.id}
                 season={card.cardModel.season}
                 serialNumbers={[card.serialNumber]}
                 pictureUrl={card.cardModel.pictureUrl}

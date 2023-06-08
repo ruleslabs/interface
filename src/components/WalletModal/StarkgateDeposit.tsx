@@ -41,7 +41,7 @@ const ArrowWrapper = styled(Column)`
   }
 `
 
-export default function DepositModal() {
+export default function StarkgateDeposit() {
   // current user
   const { currentUser } = useCurrentUser()
 

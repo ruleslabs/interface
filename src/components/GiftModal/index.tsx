@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { t, Trans } from '@lingui/macro'
 import { gql, useQuery } from '@apollo/client'
-import { constants, uint256 } from '@rulesorg/sdk-core'
+import { constants } from '@rulesorg/sdk-core'
 
 import { ModalHeader } from 'src/components/Modal'
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
@@ -26,6 +26,7 @@ import { Operation } from 'src/types'
 import { useOperations } from 'src/hooks/usePendingOperations'
 
 import { ReactComponent as Arrow } from 'src/images/arrow.svg'
+import { uint256 } from 'starknet'
 
 const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
 
@@ -119,7 +120,7 @@ const CARDS_QUERY = gql`
   query ($tokenIds: [String!]!) {
     cardsByTokenIds(tokenIds: $tokenIds) {
       serialNumber
-      starknetTokenId
+      tokenId
       cardModel {
         id
         pictureUrl(derivative: "width=256")
@@ -185,8 +186,8 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
   const { setCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()
 
   const handleConfirmation = useCallback(() => {
-    const rulesAddress = constants.RULES_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
-    if (!currentUser?.starknetWallet.address || !recipient?.starknetWallet.address || !rulesAddress) return
+    const rulesTokensAddress = constants.RULES_TOKENS_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+    if (!currentUser?.starknetWallet.address || !recipient?.starknetWallet.address || !rulesTokensAddress) return
 
     // save operations
     pushOperation(...tokenIds.map((tokenId): Operation => ({ tokenId, type: 'transfer', quantity: 1 })))
@@ -194,7 +195,7 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
     // save calls
     setCalls([
       {
-        contractAddress: rulesAddress,
+        contractAddress: rulesTokensAddress,
         entrypoint: 'safeBatchTransferFrom',
         calldata: [
           currentUser.starknetWallet.address,
@@ -202,8 +203,8 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
 
           tokenIds.length, // ids len
           ...tokenIds.flatMap((tokenId) => {
-            const uint256TokenId = uint256.uint256HexFromStrHex(tokenId)
-            return [uint256TokenId.low, uint256TokenId.high]
+            const u256TokenId = uint256.bnToUint256(tokenId)
+            return [u256TokenId.low, u256TokenId.high]
           }), // ids
 
           tokenIds.length, // amounts len
