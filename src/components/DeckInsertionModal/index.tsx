@@ -27,9 +27,7 @@ const CARDS_QUERY = gql`
         season
         pictureUrl(derivative: "width=1024")
         videoUrl
-        artist {
-          displayName
-        }
+        artistName
         scarcity {
           name
         }
@@ -120,7 +118,7 @@ export default function DeckInsertionModal({ address, cardIndex }: DeckInsertion
             scarcity: card.cardModel.scarcity.name,
           }}
           display={{
-            primaryInfo: card.cardModel.artist.displayName,
+            primaryInfo: card.cardModel.artistName,
             secondaryInfo: card.serialNumber,
             status: card.onSale ? 'onSale' : undefined,
           }}

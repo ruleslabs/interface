@@ -20,9 +20,7 @@ const CARD_AND_USERS_EVENT_QUERY = gql`
         pictureUrl(derivative: "width=128")
         season
         slug
-        artist {
-          displayName
-        }
+        artistName
       }
     }
     ${USERS_QUERY_CONTENT}

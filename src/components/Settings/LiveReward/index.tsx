@@ -32,9 +32,7 @@ const GET_ALL_LIVE_EVENTS = gql`
         scarcity {
           name
         }
-        artist {
-          displayName
-        }
+        artistName
       }
     }
   }
@@ -60,9 +58,7 @@ export interface LiveReward {
     scarcity: {
       name: string
     }
-    artist: {
-      displayName: string
-    }
+    artistName: string
   }
 }
 

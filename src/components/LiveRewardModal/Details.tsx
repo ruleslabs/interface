@@ -108,7 +108,7 @@ export default function LiveRewardDetailsModal({ liveReward }: LiveRewardDetails
             <CardBreakdown
               pictureUrl={liveReward.cardModelReward.pictureUrl}
               season={liveReward.cardModelReward.season}
-              artistName={liveReward.cardModelReward.artist.displayName}
+              artistName={liveReward.cardModelReward.artistName}
               scarcityName={liveReward.cardModelReward.scarcity.name}
               serialNumbers={[]}
             />

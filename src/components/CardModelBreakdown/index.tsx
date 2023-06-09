@@ -14,7 +14,6 @@ const UserLogin = styled(RowCenter)`
 
 interface CardModelBreakdownProps {
   artistName: string
-  artistUsername?: string
   season: number
   scarcityName: string
   maxSupply: number
@@ -24,7 +23,6 @@ interface CardModelBreakdownProps {
 
 export default function CardModelBreakdown({
   artistName,
-  artistUsername,
   season,
   scarcityName,
   maxSupply,
@@ -40,15 +38,9 @@ export default function CardModelBreakdown({
       </Link>
 
       <UserLogin>
-        {artistUsername ? (
-          <Link href={`/user/${artistUsername}`}>
-            <TYPE.body clickable>{artistUsername}</TYPE.body>
-          </Link>
-        ) : (
-          <TYPE.body>
-            <Trans>Official card</Trans>
-          </TYPE.body>
-        )}
+        <TYPE.body>
+          <Trans>Official card</Trans>
+        </TYPE.body>
         <CertifiedBadge />
       </UserLogin>
 

@@ -81,12 +81,7 @@ const CARD_QUERY = gql`
         season
         youtubePreviewId
         averageSale
-        artist {
-          displayName
-          user {
-            username
-          }
-        }
+        artistName
         scarcity {
           name
           maxSupply
@@ -150,8 +145,7 @@ function CardPage() {
             <MainSectionCardsWrapper>
               <Card>
                 <CardModelBreakdown
-                  artistName={card.cardModel.artist.displayName}
-                  artistUsername={card.cardModel.artist.user?.username}
+                  artistName={card.cardModel.artistName}
                   season={card.cardModel.season}
                   scarcityName={card.cardModel.scarcity.name}
                   maxSupply={card.cardModel.scarcity.maxSupply}
@@ -185,7 +179,7 @@ function CardPage() {
           {cardPrice && (
             <>
               <CancelOfferModal
-                artistName={card.cardModel.artist.displayName}
+                artistName={card.cardModel.artistName}
                 scarcityName={card.cardModel.scarcity.name}
                 scarcityId={card.cardModel.scarcity.id}
                 season={card.cardModel.season}
@@ -194,7 +188,7 @@ function CardPage() {
               />
 
               <AcceptOfferModal
-                artistName={card.cardModel.artist.displayName}
+                artistName={card.cardModel.artistName}
                 scarcityName={card.cardModel.scarcity.name}
                 scarcityId={card.cardModel.scarcity.id}
                 season={card.cardModel.season}

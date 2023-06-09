@@ -100,7 +100,7 @@ function TokenTransferEvent({ parsedEvent }: CardTransferEventProps) {
         return {
           pictureUrl: token.cardModel.pictureUrl,
           href: `/card/${token.cardModel.slug}/${token.serialNumber}`,
-          name: `${token.cardModel.artist.displayName} - ${t`Season`} ${token.cardModel.season} #${token.serialNumber}`,
+          name: `${token.cardModel.artistName} - ${t`Season`} ${token.cardModel.season} #${token.serialNumber}`,
         }
 
       case 'pack':
@@ -215,7 +215,7 @@ function OfferCreationAndCancelEvent({ parsedEvent }: OfferCreationAndCancelEven
     return {
       pictureUrl: card.cardModel.pictureUrl,
       href: `/card/${card.cardModel.slug}/${card.serialNumber}`,
-      name: `${card.cardModel.artist.displayName} - ${t`Season`} ${card.cardModel.season} #${card.serialNumber}`,
+      name: `${card.cardModel.artistName} - ${t`Season`} ${card.cardModel.season} #${card.serialNumber}`,
     }
   }, [!!query.data])
 

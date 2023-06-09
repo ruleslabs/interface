@@ -64,9 +64,7 @@ const QUERY_CARD_MODEL = gql`
         maxLowSerial
         id
       }
-      artist {
-        displayName
-      }
+      artistName
     }
   }
 `
@@ -132,7 +130,7 @@ function Offers() {
             />
             <OffersSelectorBreakdownCard>
               <OffersSelectorBreakdown
-                artistName={cardModel.artist.displayName}
+                artistName={cardModel.artistName}
                 season={cardModel.season}
                 scarcityName={cardModel.scarcity.name}
                 scarcityId={cardModel.scarcity.id}

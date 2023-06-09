@@ -29,9 +29,7 @@ const TRANSFERS_QUERY = gql`
         maxSupply
         name
       }
-      artist {
-        displayName
-      }
+      artistName
     }
     usersByStarknetAddresses(starknetAddresses: $starknetAddresses) {
       username
@@ -186,7 +184,7 @@ export default function Live() {
           <TradePlaceholder>
             <Link href={`/card/${cardModel.slug}/${transferHit.serialNumber}`}>
               <TYPE.body clickable>
-                {cardModel.artist.displayName} #{transferHit.serialNumber} /{cardModel.scarcity.maxSupply}
+                {cardModel.artistName} #{transferHit.serialNumber} /{cardModel.scarcity.maxSupply}
                 {cardModel.scarcity.name === constants.Seasons[cardModel.season][0].name && '+'}
               </TYPE.body>
             </Link>

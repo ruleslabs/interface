@@ -30,9 +30,7 @@ const OFFERS_QUERY = gql`
         maxSupply
         name
       }
-      artist {
-        displayName
-      }
+      artistName
     }
     usersByStarknetAddresses(starknetAddresses: $starknetAddresses) {
       username
@@ -171,8 +169,8 @@ const MemoizedOfferCard = React.memo(function OfferCards({
 
   // shorten username
   const shortArtistName = useMemo(
-    () => (cardModel?.artist.displayName ? shortenUsername(cardModel?.artist.displayName) : null),
-    [cardModel?.artist.displayName]
+    () => (cardModel?.artistName ? shortenUsername(cardModel?.artistName) : null),
+    [cardModel?.artistName]
   )
 
   return (
@@ -184,7 +182,7 @@ const MemoizedOfferCard = React.memo(function OfferCards({
 
         <InfosWrapper gap={12}>
           <Link href={`/card/${cardModel.slug}/${serialNumber}`}>
-            <ArtistName clickable>{cardModel.artist.displayName}</ArtistName>
+            <ArtistName clickable>{cardModel.artistName}</ArtistName>
             <ShortArtistName clickable>{shortArtistName}</ShortArtistName>
           </Link>
 

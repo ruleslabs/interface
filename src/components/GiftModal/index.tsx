@@ -128,9 +128,7 @@ const CARDS_QUERY = gql`
         scarcity {
           name
         }
-        artist {
-          displayName
-        }
+        artistName
       }
     }
   }
@@ -166,7 +164,7 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
       (cards as any[]).reduce<any>((acc, card) => {
         acc[card.cardModel.id] = acc[card.cardModel.id] ?? {
           pictureUrl: card.cardModel.pictureUrl,
-          artistName: card.cardModel.artist.displayName,
+          artistName: card.cardModel.artistName,
           season: card.cardModel.season,
           scarcityName: card.cardModel.scarcity.name,
           serialNumbers: [],

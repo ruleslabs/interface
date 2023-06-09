@@ -81,9 +81,7 @@ const QUERY_PACK = gql`
           scarcity {
             name
           }
-          artist {
-            displayName
-          }
+          artistName
         }
       }
     }
@@ -142,7 +140,7 @@ function Pack() {
           }}
           display={{
             href: `/card/${cardModel.slug}`,
-            primaryInfo: cardModel.artist.displayName,
+            primaryInfo: cardModel.artistName,
           }}
         />
       )),

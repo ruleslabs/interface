@@ -85,9 +85,7 @@ const CARD_MODELS_QUERY = gql`
       scarcity {
         name
       }
-      artist {
-        displayName
-      }
+      artistName
     }
   }
 `
@@ -202,7 +200,7 @@ function Marketplace() {
               }}
               display={{
                 href: `/card/${cardModel.slug}`,
-                primaryInfo: cardModel.artist.displayName,
+                primaryInfo: cardModel.artistName,
                 secondaryInfo: t`${cardModel.cardsOnSaleCount} offers`,
                 subtitle: parsedLowestAsk
                   ? t`from ${parsedLowestAsk.toSignificant(6)} ETH (€${weiAmountToEURValue(parsedLowestAsk)})`

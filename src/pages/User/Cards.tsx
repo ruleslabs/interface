@@ -41,9 +41,7 @@ const CARDS_QUERY = gql`
         pictureUrl(derivative: "width=1024")
         videoUrl
         season
-        artist {
-          displayName
-        }
+        artistName
         scarcity {
           name
         }
@@ -63,9 +61,7 @@ const CARDS_IN_DELIVERY_QUERY = gql`
         slug
         pictureUrl(derivative: "width=1024")
         season
-        artist {
-          displayName
-        }
+        artistName
       }
     }
   }
@@ -254,7 +250,7 @@ function UserCards() {
           }}
           display={{
             href: `/card/${card.cardModel.slug}/${card.serialNumber}`,
-            primaryInfo: card.cardModel.artist.displayName,
+            primaryInfo: card.cardModel.artistName,
             secondaryInfo: `#${card.serialNumber}`,
             status: 'inDelivery',
           }}
@@ -276,7 +272,7 @@ function UserCards() {
           }}
           display={{
             href: `/card/${card.cardModel.slug}/${card.serialNumber}`,
-            primaryInfo: card.cardModel.artist.displayName,
+            primaryInfo: card.cardModel.artistName,
             secondaryInfo: `#${card.serialNumber}`,
             subtitle: card.parsedPrice
               ? `${card.parsedPrice.toSignificant(6)} ETH (€${weiAmountToEURValue(card.parsedPrice)})`

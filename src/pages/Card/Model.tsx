@@ -64,13 +64,7 @@ const QUERY_CARD_MODEL = gql`
         maxSupply
       }
       cardsOnSaleCount
-      artist {
-        displayName
-        user {
-          slug
-          username
-        }
-      }
+      artistName
     }
   }
 `
@@ -122,8 +116,7 @@ function CardModel() {
             <MainSectionCardsWrapper>
               <Card>
                 <CardModelBreakdown
-                  artistName={cardModel.artist.displayName}
-                  artistUsername={cardModel.artist.user?.username}
+                  artistName={cardModel.artistName}
                   season={cardModel.season}
                   scarcityName={cardModel.scarcity.name}
                   maxSupply={cardModel.scarcity.maxSupply}

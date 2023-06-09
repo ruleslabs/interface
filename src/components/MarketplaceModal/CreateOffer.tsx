@@ -57,9 +57,7 @@ const CARDS_QUERY = gql`
           name
           maxSupply
         }
-        artist {
-          displayName
-        }
+        artistName
       }
     }
   }
@@ -199,7 +197,7 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
                   <CardBreakdown
                     pictureUrl={cards[cardIndex].cardModel.pictureUrl}
                     season={cards[cardIndex].cardModel.season}
-                    artistName={cards[cardIndex].cardModel.artist.displayName}
+                    artistName={cards[cardIndex].cardModel.artistName}
                     serialNumbers={[cards[cardIndex].serialNumber]}
                     scarcityName={cards[cardIndex].cardModel.scarcity.name}
                   />
@@ -226,7 +224,7 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
                     {parsedPrice && (
                       <SaleBreakdown
                         price={parsedPrice.quotient.toString()}
-                        artistName={cards[cardIndex].cardModel.artist.displayName}
+                        artistName={cards[cardIndex].cardModel.artistName}
                       />
                     )}
                   </Column>
