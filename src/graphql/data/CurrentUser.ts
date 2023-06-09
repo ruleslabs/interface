@@ -24,6 +24,7 @@ gql`
         oldAddress
         deployed
         publicKey
+        originalPublicKey
         signerEscapeTriggeredAt
         lockingReason
         rulesPrivateKey {
@@ -84,6 +85,7 @@ export function formatCurrentUserQueryData(queryCurrentUser: NonNullable<Current
       address: queryStarknetWallet.address,
       oldAddress: queryStarknetWallet.oldAddress,
       publicKey: queryStarknetWallet.publicKey,
+      originalPublicKey: queryStarknetWallet.originalPublicKey,
       deployed: queryStarknetWallet.deployed,
       // cannot do better with how bad enums are handled in graphql
       lockingReason: queryStarknetWallet.lockingReason as any as constants.StarknetWalletLockingReason,

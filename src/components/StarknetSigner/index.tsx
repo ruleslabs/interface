@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useMemo, useCallback, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
@@ -57,9 +57,10 @@ export interface StarknetSignerDisplayProps {
 interface StarknetSignerProps {
   children?: React.ReactNode
   display: StarknetSignerDisplayProps
+  skipSignin?: boolean
 }
 
-export default function StarknetSigner({ display, children }: StarknetSignerProps) {
+export default function StarknetSigner({ display, skipSignin = false, children }: StarknetSignerProps) {
   // modal
   const toggleWalletModal = useWalletModalToggle()
 
@@ -98,11 +99,17 @@ export default function StarknetSigner({ display, children }: StarknetSignerProp
   }, [balance, parsedTotalCost])
 
   // loading / error
-  const loading = estimateFeesRes.loading || executeTxRes.loading
+  const loading = estimateFeesRes.loading || executeTxRes.loading || (!parsedNetworkFee && skipSignin)
   const error = estimateFeesRes.error || executeTxRes.error
 
   // fiat value
   const weiAmountToEURValue = useWeiAmountToEURValue()
+
+  useEffect(() => {
+    if (skipSignin && signing) {
+      estimateFees()
+    }
+  }, [skipSignin, signing])
 
   // components
   const modalContent = useMemo(() => {

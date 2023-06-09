@@ -18,8 +18,6 @@ import { Account, ec, hash, stark } from 'starknet'
 import { PaginationSpinner } from '../Spinner'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import { DEPLOYMENT_DEPOSIT_SUGGESTION_FACTOR } from 'src/constants/misc'
-import { useModalOpened } from 'src/state/application/hooks'
-import { ApplicationModal } from 'src/state/application/actions'
 
 export default function Deploy() {
   const [parsedDummyDeploymentMaxFee, setParsedDummyDeploymentMaxFee] = useState<WeiAmount | null>(null)
@@ -34,12 +32,9 @@ export default function Deploy() {
     []
   )
 
-  // modal
-  const isOpen = useModalOpened(ApplicationModal.WALLET)
-
   // current user
   const { currentUser } = useCurrentUser()
-  const { publicKey } = currentUser?.starknetWallet ?? {}
+  const { originalPublicKey } = currentUser?.starknetWallet ?? {}
 
   // modal mode
   const setWalletModalMode = useSetWalletModalMode()
@@ -59,12 +54,12 @@ export default function Deploy() {
   // deployment
   const getWalletConstructorCallData = useGetWalletConstructorCallData()
   useEffect(() => {
-    if (!address || !publicKey || !library) return
+    if (!address || !originalPublicKey || !library) return
 
     setAccountDeploymentPayload({
       classHash: constants.ACCOUNT_CLASS_HASH,
-      addressSalt: publicKey,
-      constructorCalldata: getWalletConstructorCallData(publicKey),
+      addressSalt: originalPublicKey.toLowerCase(),
+      constructorCalldata: getWalletConstructorCallData(originalPublicKey),
       contractAddress: address,
     })
 
@@ -92,14 +87,14 @@ export default function Deploy() {
       .then(({ suggestedMaxFee }) =>
         setParsedDummyDeploymentMaxFee(WeiAmount.fromRawAmount(suggestedMaxFee.toString()))
       )
-  }, [address, library, publicKey])
+  }, [address, library, originalPublicKey])
 
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
   const componentContent = useMemo(() => {
     if (parsedDummyDeploymentMaxFee && balance && balance.lessThan(parsedDummyDeploymentMaxFee)) {
-      // Multipl
+      // Multiply suggested deposit in case of a rapid gas price increase
       const suggestedDeposit = parsedDummyDeploymentMaxFee.multiply(DEPLOYMENT_DEPOSIT_SUGGESTION_FACTOR)
 
       return (
@@ -134,11 +129,13 @@ export default function Deploy() {
 
   useEffect(() => {
     resetStarknetTx()
-  }, [isOpen])
+  }, [])
 
   return (
     <ModalBody>
-      <StarknetSigner display={display}>{componentContent}</StarknetSigner>
+      <StarknetSigner display={display} skipSignin>
+        {componentContent}
+      </StarknetSigner>
     </ModalBody>
   )
 }

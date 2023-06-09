@@ -41,7 +41,7 @@ export const starknetWindowObject: StarknetWindowObject = {
 
     ;(starknet as any).starknetJsVersion = 'v5'
     starknet.provider = provider
-    starknet.account = new RulesAccount(provider, address, oldAddress)
+    starknet.account = new RulesAccount(provider, address, '1', oldAddress)
 
     starknet.selectedAddress = address
     starknet.chainId = rulesSdk.networkInfos.starknetChainId.toString()

@@ -81,7 +81,6 @@ gql`
     $email: String!
     $newPassword: String!
     $walletPublicKey: String!
-    $walletAddress: String!
     $rulesPrivateKey: RulesPrivateKeyAttributes!
     $token: String!
   ) {
@@ -90,7 +89,6 @@ gql`
         email: $email
         newPassword: $newPassword
         walletPublicKey: $walletPublicKey
-        walletAddress: $walletAddress
         rulesPrivateKey: $rulesPrivateKey
         token: $token
       }
