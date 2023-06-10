@@ -1,17 +1,20 @@
 import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 import moment from 'moment'
-import { useQuery, gql } from '@apollo/client'
 import { WeiAmount } from '@rulesorg/sdk-core'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 import { useParams } from 'react-router-dom'
 
-import { NULL_PRICE } from 'src/constants/misc'
 import { TYPE } from 'src/styles/theme'
 import Table from 'src/components/Table'
 import Avatar from 'src/components/Avatar'
 import Link from 'src/components/Link'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import {
+  CardModelSaleTransfersQueryResult,
+  CardTransfersQueryResult,
+} from 'src/graphql/data/__generated__/types-and-hooks'
+import { PaginationSpinner } from '../Spinner'
 
 const StyledAvatar = styled(Avatar)`
   width: 36px;
@@ -28,108 +31,134 @@ const StyledTable = styled(Table)`
   `}
 `
 
-const QUERY_TRANSFERS_USERS = gql`
-  query ($starknetAddresses: [String!]!) {
-    usersByStarknetAddresses(starknetAddresses: $starknetAddresses) {
-      slug
-      username
-      profile {
-        pictureUrl(derivative: "width=128")
-        fallbackUrl(derivative: "width=128")
-      }
-      starknetWallet {
-        address
-      }
-    }
-  }
-`
+type CardTransfers = NonNullable<CardTransfersQueryResult['data']>['cardTransfers']
+type CardSaleTransfers = NonNullable<CardModelSaleTransfersQueryResult['data']>['cardModelSaleTransfers']
 
 interface TransfersTableProps {
-  transfers?: any[]
+  transfers: CardTransfers | CardSaleTransfers
   loading: boolean
-  error: boolean
-  showSerialNumber: boolean
+  withSerial?: boolean
 }
 
-export default function TransfersTable({ transfers, loading, error, showSerialNumber }: TransfersTableProps) {
+export default function TransfersTable({ transfers, loading, withSerial = false }: TransfersTableProps) {
   // query
   const { cardModelSlug } = useParams()
 
-  // user table
-  const starknetAddresses = useMemo(
-    () =>
-      (transfers ?? []).reduce<string[]>((acc, hit: any) => {
-        if (hit.fromStarknetAddress) acc.push(hit.fromStarknetAddress)
-        if (hit.toStarknetAddress) acc.push(hit.toStarknetAddress)
-
-        return acc
-      }, []),
-    [JSON.stringify(transfers)]
-  )
-
-  // usersData
-  const usersQuery = useQuery(QUERY_TRANSFERS_USERS, {
-    variables: { starknetAddresses },
-    skip: !starknetAddresses.length,
-  })
-
-  const usersTable = useMemo(
-    () =>
-      ((usersQuery?.data?.usersByStarknetAddresses ?? []) as any[]).reduce<{ [key: string]: any }>((acc, user: any) => {
-        const address = user.starknetWallet.address
-        if (!address) return acc
-
-        acc[address] = user
-        return acc
-      }, {}),
-    [usersQuery?.data?.usersByStarknetAddresses]
-  )
-
-  // error
-  error = error || !!usersQuery.error
-
-  // loading
-  loading = loading || !!usersQuery.loading
-
-  // parsed price
-  const parsedPrices = useMemo(
-    () =>
-      (transfers ?? []).map((transfer: any) =>
-        transfer.price !== NULL_PRICE ? WeiAmount.fromRawAmount(`0x${transfer.price}`) : null
-      ),
-    [transfers]
-  )
-
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
+
+  // row
+  const rows = useMemo(() => {
+    return (
+      <>
+        {transfers.map((transfer) => {
+          const fromUser = transfer.fromOwner?.user
+          const toUser = transfer.toOwner?.user
+
+          const parsedPrice = transfer.price ? WeiAmount.fromRawAmount(transfer.price) : null
+
+          return (
+            <tr key={transfer.id}>
+              <td>
+                <Link href={`/user/${transfer.toOwner.user?.slug}`}>
+                  <StyledAvatar
+                    src={toUser?.profile.pictureUrl ?? ''}
+                    fallbackSrc={toUser?.profile.fallbackUrl ?? ''}
+                  />
+                </Link>
+              </td>
+
+              <td>
+                {toUser && (
+                  <Link href={`/user/${toUser.slug}`}>
+                    <TYPE.body clickable>{toUser.username}</TYPE.body>
+                  </Link>
+                )}
+              </td>
+
+              <td>
+                {fromUser && (
+                  <Link href={`/user/${fromUser.slug}`}>
+                    <TYPE.body clickable>{fromUser.username}</TYPE.body>
+                  </Link>
+                )}
+                {transfer.__typename === 'CardTransfer' && (
+                  <>
+                    {transfer.kind === 'airdrop' && (
+                      <TYPE.body>
+                        <Trans>Offered by Rules</Trans>
+                      </TYPE.body>
+                    )}
+                    {transfer.kind === 'packOpening' && (
+                      <TYPE.body>
+                        <Trans>Pack opening</Trans>
+                      </TYPE.body>
+                    )}
+                    {transfer.kind === 'liveReward' && (
+                      <TYPE.body>
+                        <Trans>Live reward</Trans>
+                      </TYPE.body>
+                    )}
+                  </>
+                )}
+              </td>
+
+              <td>
+                <TYPE.body>{moment(transfer.date).format('DD/MM/YYYY')}</TYPE.body>
+              </td>
+
+              {withSerial && (
+                <td>
+                  {transfer.__typename === 'CardSaleTransfer' && (
+                    <Link href={`/card/${cardModelSlug}/${transfer.card.serialNumber}`}>
+                      <TYPE.body clickable>#{transfer.card.serialNumber}</TYPE.body>
+                    </Link>
+                  )}
+                </td>
+              )}
+
+              <td>
+                <TYPE.body>{parsedPrice ? `${weiAmountToEURValue(parsedPrice)}€` : '-'}</TYPE.body>
+              </td>
+            </tr>
+          )
+        })}
+      </>
+    )
+  }, [transfers, weiAmountToEURValue, withSerial])
 
   return (
     <StyledTable>
       <thead>
         <tr>
           <td />
+
           <td>
             <TYPE.medium>
               <Trans>Buyer</Trans>
             </TYPE.medium>
           </td>
+
           <td>
             <TYPE.medium>
               <Trans>Seller</Trans>
             </TYPE.medium>
           </td>
+
           <td>
             <TYPE.medium>
               <Trans>Date</Trans>
             </TYPE.medium>
           </td>
-          {showSerialNumber && (
+
+          {withSerial && (
             <td>
               <TYPE.medium>
                 <Trans>Serial</Trans>
               </TYPE.medium>
             </td>
           )}
+
           <td>
             <TYPE.medium>
               <Trans>Price</Trans>
@@ -138,61 +167,12 @@ export default function TransfersTable({ transfers, loading, error, showSerialNu
         </tr>
       </thead>
       <tbody>
-        {!loading && !error && transfers && usersTable ? (
-          transfers.map((transfer, index) => (
-            <tr key={`rule-nft-history-${index}`}>
-              <td>
-                {usersTable[transfer.toStarknetAddress] && (
-                  <Link href={`/user/${usersTable[transfer.toStarknetAddress].slug}`}>
-                    <StyledAvatar
-                      src={usersTable[transfer.toStarknetAddress].profile.pictureUrl}
-                      fallbackSrc={usersTable[transfer.toStarknetAddress].profile.fallbackUrl}
-                    />
-                  </Link>
-                )}
-              </td>
-              <td>
-                {usersTable[transfer.toStarknetAddress] && (
-                  <Link href={`/user/${usersTable[transfer.toStarknetAddress].slug}`}>
-                    <TYPE.body clickable>{usersTable[transfer.toStarknetAddress].username}</TYPE.body>
-                  </Link>
-                )}
-              </td>
-              <td>
-                {transfer.fromStarknetAddress && usersTable[transfer.fromStarknetAddress] ? (
-                  <Link href={`/user/${usersTable[transfer.fromStarknetAddress].slug}`}>
-                    <TYPE.body clickable>{usersTable[transfer.fromStarknetAddress].username}</TYPE.body>
-                  </Link>
-                ) : (
-                  !transfer.fromStarknetAddress && (
-                    <TYPE.body>{transfer.airdrop ? t`Offered by Rules` : t`Pack opening`}</TYPE.body>
-                  )
-                )}
-              </td>
-              <td>
-                <TYPE.body>{moment(transfer.date).format('DD/MM/YYYY')}</TYPE.body>
-              </td>
-              {showSerialNumber && (
-                <td>
-                  <Link href={`/card/${cardModelSlug}/${transfer.serialNumber}`}>
-                    <TYPE.body clickable>#{transfer.serialNumber}</TYPE.body>
-                  </Link>
-                </td>
-              )}
-              <td>
-                <TYPE.body>
-                  {parsedPrices[index] ? `${weiAmountToEURValue(parsedPrices[index] ?? undefined)}€` : '-'}
-                </TYPE.body>
-              </td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td>
-              <TYPE.body>{error ? 'Error' : loading ? 'Loading' : ''}</TYPE.body>
-            </td>
-          </tr>
-        )}
+        {rows}
+        <tr>
+          <td>
+            <PaginationSpinner loading={loading} />
+          </td>
+        </tr>
       </tbody>
     </StyledTable>
   )

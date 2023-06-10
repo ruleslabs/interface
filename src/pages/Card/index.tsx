@@ -166,7 +166,7 @@ function CardPage() {
           <Section size="sm">
             <Column gap={64}>
               <CardTransfersHistoryWrapper>
-                <CardTransfersHistory cardModelId={card.cardModel.id} serialNumber={card.serialNumber} />
+                <CardTransfersHistory tokenId={card.tokenId} />
               </CardTransfersHistoryWrapper>
               <YoutubeEmbed embedId={card.cardModel.youtubePreviewId} style={{ minWidth: '100%' }} />
             </Column>

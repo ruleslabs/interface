@@ -2,28 +2,29 @@ import React from 'react'
 import { Trans } from '@lingui/macro'
 
 import { TYPE } from 'src/styles/theme'
-import { useSearchTransfers } from 'src/state/search/hooks'
 import TransfersTable from './table'
+import {
+  CardTransfersSortingType,
+  SortingOption,
+  useCardTransfersQuery,
+} from 'src/graphql/data/__generated__/types-and-hooks'
 
 interface CardTransfersHistoryProps extends React.HTMLAttributes<HTMLDivElement> {
-  cardModelId: string
-  serialNumber: number
+  tokenId: string
 }
 
-export default function CardTransfersHistory({ cardModelId, serialNumber, ...props }: CardTransfersHistoryProps) {
-  const transfersSearch = useSearchTransfers({ facets: { cardModelId, serialNumber }, sortingKey: 'txIndexDesc' })
+export default function CardTransfersHistory({ tokenId, ...props }: CardTransfersHistoryProps) {
+  const { data, loading } = useCardTransfersQuery({
+    variables: { tokenId, sort: { direction: SortingOption.Desc, type: CardTransfersSortingType.Date } },
+  })
+  const transfers = data?.cardTransfers ?? []
 
   return (
     <div {...props}>
       <TYPE.body fontSize={28} fontWeight={700}>
         <Trans>Latest sales for this card</Trans>
       </TYPE.body>
-      <TransfersTable
-        transfers={transfersSearch.hits}
-        loading={transfersSearch.loading}
-        error={!!transfersSearch.error}
-        showSerialNumber={false}
-      />
+      <TransfersTable transfers={transfers} loading={loading} />
     </div>
   )
 }

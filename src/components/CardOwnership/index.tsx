@@ -35,7 +35,7 @@ const StyledPresent = styled(Present)`
 `
 
 interface CardOwnershipProps {
-  owner: OwnerUser
+  owner?: OwnerUser
   tokenId: string
   price?: string
 }
@@ -63,7 +63,7 @@ export default function CardOwnership({ owner, tokenId, price }: CardOwnershipPr
   const pendingOperations = usePendingOperations(tokenId)
   const pendingOperation = pendingOperations[0]
 
-  const isOwner = currentUser?.slug === owner.slug
+  const isOwner = owner?.slug && currentUser?.slug === owner.slug
   const availableActions = useMemo(() => {
     if (pendingOperation) {
       return <Placeholder>{trans('operation', pendingOperation.type)}</Placeholder>
@@ -134,14 +134,14 @@ export default function CardOwnership({ owner, tokenId, price }: CardOwnershipPr
   return (
     <Column gap={16}>
       <RowCenter gap={12}>
-        <Link href={`/user/${owner.slug}`}>
-          <StyledAvatar src={owner.profile.pictureUrl} fallbackSrc={owner.profile.fallbackUrl} />
+        <Link href={`/user/${owner?.slug}`}>
+          <StyledAvatar src={owner?.profile.pictureUrl ?? ''} fallbackSrc={owner?.profile.fallbackUrl ?? ''} />
         </Link>
         <TYPE.body>
           <Trans>
             Belongs to&nbsp;
-            <Link href={`/user/${owner.slug}`} color="text1" underline>
-              {owner.username}
+            <Link href={`/user/${owner?.slug}`} color="text1" underline>
+              {owner?.username ?? ''}
             </Link>
           </Trans>
         </TYPE.body>
