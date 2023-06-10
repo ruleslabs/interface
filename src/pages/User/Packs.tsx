@@ -19,7 +19,7 @@ const USER_PACKS_BALANCES_QUERY = gql`
     user(slug: $slug) {
       packsBalances {
         balance
-        inDeliveryBalance
+        emptyBalance
         openedBalance
         pack {
           id
@@ -62,7 +62,7 @@ function UserPacks() {
       (packsBalances as any[]).reduce<{ opened: number; sealed: number }>(
         (acc, packBalance) => {
           acc.opened += packBalance.openedBalance
-          acc.sealed += packBalance.balance + packBalance.inDeliveryBalance
+          acc.sealed += packBalance.balance + packBalance.emptyBalance
 
           return acc
         },
@@ -86,34 +86,34 @@ function UserPacks() {
 
         {packsCount.sealed ? (
           <Grid>
-            {packsBalances.map((packBalance: any) => (
-              <>
-                {Array(packBalance.inDeliveryBalance)
-                  .fill(0)
-                  .map((_, index: number) => (
-                    <StyledPackCard
-                      key={index}
-                      slug={packBalance.pack.slug}
-                      name={packBalance.pack.displayName}
-                      releaseDate={packBalance.pack.releaseDate}
-                      pictureUrl={packBalance.pack.pictureUrl}
-                      state="inDelivery"
-                    />
-                  ))}
-                {Array(packBalance.balance)
-                  .fill(0)
-                  .map((_, index: number) => (
-                    <StyledPackCard
-                      key={index}
-                      slug={packBalance.pack.slug}
-                      name={packBalance.pack.displayName}
-                      releaseDate={packBalance.pack.releaseDate}
-                      pictureUrl={packBalance.pack.pictureUrl}
-                      isOwner={user.isCurrentUser}
-                    />
-                  ))}
-              </>
-            ))}
+            {packsBalances.map((packBalance: any) =>
+              Array(packBalance.emptyBalance)
+                .fill(0)
+                .map((_, index: number) => (
+                  <StyledPackCard
+                    key={index}
+                    slug={packBalance.pack.slug}
+                    name={packBalance.pack.displayName}
+                    releaseDate={packBalance.pack.releaseDate}
+                    pictureUrl={packBalance.pack.pictureUrl}
+                    state="inDelivery"
+                  />
+                ))
+            )}
+            {packsBalances.map((packBalance: any) =>
+              Array(packBalance.balance)
+                .fill(0)
+                .map((_, index: number) => (
+                  <StyledPackCard
+                    key={index}
+                    slug={packBalance.pack.slug}
+                    name={packBalance.pack.displayName}
+                    releaseDate={packBalance.pack.releaseDate}
+                    pictureUrl={packBalance.pack.pictureUrl}
+                    isOwner={user.isCurrentUser}
+                  />
+                ))
+            )}
           </Grid>
         ) : (
           !isLoading && (user.isCurrentUser ? <EmptyPacksTabOfCurrentUser /> : <EmptyTab emptyText={t`No packs`} />)

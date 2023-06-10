@@ -121,7 +121,7 @@ export default function Pack({
       <StyledPack width={width} disabled={disabled}>
         <ImageWrapper>
           <Image src={pictureUrl} />
-          {state === 'inDelivery' && <InDelivery src={`/assets/delivery.${locale}.png`} />}
+          {state === 'inDelivery' && <InDelivery src={`/assets/inDelivery.${locale}.png`} />}
           {soldout && <Soldout src={`/assets/soldout.png`} />}
         </ImageWrapper>
 
