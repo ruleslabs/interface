@@ -55,3 +55,46 @@ gql`
     }
   }
 `
+
+gql`
+  query LastSaleOrGiftCardTransfer {
+    lastSaleOrGiftCardTransfer {
+      fromOwner {
+        user {
+          slug
+          username
+          profile {
+            pictureUrl(derivative: "width=128")
+            fallbackUrl(derivative: "width=128")
+          }
+        }
+      }
+      toOwner {
+        user {
+          slug
+          username
+          profile {
+            pictureUrl(derivative: "width=128")
+            fallbackUrl(derivative: "width=128")
+          }
+        }
+      }
+      card {
+        serialNumber
+      }
+      cardModel {
+        id
+        slug
+        videoUrl
+        pictureUrl(derivative: "width=1024")
+        season
+        scarcity {
+          maxSupply
+          name
+        }
+        artistName
+      }
+      price
+    }
+  }
+`

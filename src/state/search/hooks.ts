@@ -3,7 +3,6 @@ import { useLazyQuery, gql } from '@apollo/client'
 import algoliasearch from 'algoliasearch'
 import { Unit } from '@rulesorg/sdk-core'
 
-import { NULL_PRICE } from 'src/constants/misc'
 import { useAppSelector, useAppDispatch } from 'src/state/hooks'
 import {
   updateMarketplaceScarcityFilter,
@@ -311,45 +310,6 @@ function useAlgoliaSearch({
     hasNext: !!pageOffset,
     ...searchResult,
   }
-}
-
-// TRANSFERS
-
-interface SearchTransfersProps {
-  facets?: {
-    cardModelId?: string
-    serialNumber?: number
-    fromStarknetAddress?: string
-    price?: string
-  }
-  hitsPerPage?: number
-  sortingKey?: TransfersSortingKey
-  onlySales?: boolean
-  skip?: boolean
-  onPageFetched?: PageFetchedCallback
-  noMinting?: boolean
-}
-
-export function useSearchTransfers({
-  facets = {},
-  sortingKey = Object.keys(algoliaIndexes.transfers)[0] as TransfersSortingKey,
-  onlySales = false,
-  noMinting = false,
-  hitsPerPage = ASSETS_PAGE_SIZE,
-  onPageFetched,
-  skip = false,
-}: SearchTransfersProps): AlgoliaSearch {
-  return useAlgoliaSearch({
-    facets: {
-      ...facets,
-      price: onlySales ? `-${NULL_PRICE}` : facets.price,
-      fromStarknetAddress: noMinting ? '-0x0' : facets.fromStarknetAddress,
-    },
-    algoliaIndex: algoliaIndexes.transfers[sortingKey],
-    hitsPerPage,
-    onPageFetched,
-    skip,
-  })
 }
 
 // CARDS
