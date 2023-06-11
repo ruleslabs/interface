@@ -26,7 +26,8 @@ import { Operation } from 'src/types'
 import { useOperations } from 'src/hooks/usePendingOperations'
 
 import { ReactComponent as Arrow } from 'src/images/arrow.svg'
-import { uint256 } from 'starknet'
+import { Call, uint256 } from 'starknet'
+import { getVoucherRedeemCall } from 'src/utils/getVoucherRedeemCall'
 
 const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
 
@@ -130,6 +131,13 @@ const CARDS_QUERY = gql`
         }
         artistName
       }
+      voucherSigningData {
+        signature {
+          r
+          s
+        }
+        nonce
+      }
     }
   }
 `
@@ -159,10 +167,12 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
   // cards query
   const cardsQuery = useQuery(CARDS_QUERY, { variables: { tokenIds }, skip: !isOpen })
   const cards = cardsQuery.data?.cardsByTokenIds ?? []
+
+  // card models map
   const cardModelsMap = useMemo(
     () =>
       (cards as any[]).reduce<any>((acc, card) => {
-        acc[card.cardModel.id] = acc[card.cardModel.id] ?? {
+        acc[card.cardModel.id] ??= {
           pictureUrl: card.cardModel.pictureUrl,
           artistName: card.cardModel.artistName,
           season: card.cardModel.season,
@@ -177,6 +187,16 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
     [cards.length]
   )
 
+  // voucher signing data map
+  const vouchersSigningDataMap = useMemo(
+    () =>
+      (cards as any[]).reduce<any>((acc, card) => {
+        acc[card.tokenId] = card.voucherSigningData
+        return acc
+      }, {}),
+    [cards.length]
+  )
+
   // pending operation
   const { pushOperation, cleanOperations } = useOperations()
 
@@ -184,38 +204,47 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
   const { setCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()
 
   const handleConfirmation = useCallback(() => {
+    if (!address || !recipient?.starknetWallet.address) return
+
     const rulesTokensAddress = constants.RULES_TOKENS_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
-    if (!currentUser?.starknetWallet.address || !recipient?.starknetWallet.address || !rulesTokensAddress) return
 
     // save operations
     pushOperation(...tokenIds.map((tokenId): Operation => ({ tokenId, type: 'transfer', quantity: 1 })))
 
+    const voucherRedeemCalls = tokenIds
+      .map((tokenId) =>
+        vouchersSigningDataMap[tokenId]
+          ? getVoucherRedeemCall(address, tokenId, 1, vouchersSigningDataMap[tokenId])
+          : null
+      )
+      .filter((call): call is Call => !!call)
+
     // save calls
     setCalls([
+      ...voucherRedeemCalls,
       {
         contractAddress: rulesTokensAddress,
-        entrypoint: 'safeBatchTransferFrom',
+        entrypoint: 'safe_batch_transfer_from',
         calldata: [
-          currentUser.starknetWallet.address,
-          recipient.starknetWallet.address,
+          { from: address },
+          { to: recipient.starknetWallet.address },
 
-          tokenIds.length, // ids len
+          { idsLen: tokenIds.length },
           ...tokenIds.flatMap((tokenId) => {
             const u256TokenId = uint256.bnToUint256(tokenId)
             return [u256TokenId.low, u256TokenId.high]
           }), // ids
 
-          tokenIds.length, // amounts len
+          { amountsLent: tokenIds.length },
           ...tokenIds.flatMap(() => [1, 0]), // amount.low, amount.high
 
-          1, // data len
-          0, // data
+          { dataLen: 0 },
         ],
       },
     ])
 
     setSigning(true)
-  }, [tokenIds.length, address, recipient?.starknetWallet.address, setSigning, setCalls])
+  }, [tokenIds.length, address, recipient?.starknetWallet.address, setSigning, setCalls, vouchersSigningDataMap])
 
   // on modal status update
   useEffect(() => {
@@ -226,7 +255,7 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
     }
   }, [isOpen])
 
-  if (!currentUser) return null
+  if (!currentUser || !address) return null
 
   return (
     <ClassicModal onDismiss={toggleOfferModal} isOpen={isOpen}>

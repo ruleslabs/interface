@@ -92,7 +92,7 @@ function PackOpening() {
   return (
     <>
       <ControlsSection>
-        <BackButton onClick={() => navigate} />
+        <BackButton onClick={() => navigate(-1)} />
         <SoundSwitch on={!isMute} toggleSound={toggleSound} />
       </ControlsSection>
 
