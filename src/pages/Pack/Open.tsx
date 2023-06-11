@@ -18,7 +18,7 @@ import EmptyLayout from 'src/components/Layout/Empty'
 const PACK_QUERY = gql`
   query ($slug: String!) {
     pack(slug: $slug) {
-      id
+      tokenId
       displayName
       pictureUrl(derivative: "width=512")
     }
@@ -102,7 +102,7 @@ function PackOpening() {
         {cards && <StyledPackOpeningCards cards={cards} />}
 
         <PackOpeningPack
-          id={pack.id}
+          tokenId={pack.tokenId}
           pictureUrl={pack.pictureUrl}
           onError={onError}
           onOpening={setCards}

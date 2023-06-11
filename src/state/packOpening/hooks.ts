@@ -15,26 +15,9 @@ import {
 } from './actions'
 import { useAppDispatch, useAppSelector } from 'src/state/hooks'
 
-const PREPARE_PACK_OPENING_MUTATION = gql`
-  mutation ($packId: ID!) {
-    preparePackOpening(input: { packId: $packId }) {
-      error {
-        code
-        message
-        path
-      }
-    }
-  }
-`
-
 const OPEN_PACK_MUTATION = gql`
-  mutation ($packId: ID!) {
-    openPack(input: { packId: $packId }) {
-      error {
-        code
-        message
-        path
-      }
+  mutation ($tokenId: String!) {
+    openPack(filter: { tokenId: $tokenId }) {
       cards {
         serialNumber
         cardModel {
@@ -48,10 +31,6 @@ const OPEN_PACK_MUTATION = gql`
     }
   }
 `
-
-export function usePackOpeningPreparationMutation() {
-  return useMutation(PREPARE_PACK_OPENING_MUTATION)
-}
 
 export function usePackOpeningMutation() {
   return useMutation(OPEN_PACK_MUTATION)

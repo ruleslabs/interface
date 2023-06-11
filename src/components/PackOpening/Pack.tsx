@@ -54,13 +54,13 @@ const OpenPackButton = styled(PrimaryButton)`
 
 interface PackOpeningPackProps {
   pictureUrl?: string
-  id?: string
+  tokenId?: string
   onOpening(cards: any[]): void
   onError(error: string): void
   isOpen: boolean
 }
 
-export default function PackOpeningPack({ pictureUrl, id, onOpening, onError, isOpen }: PackOpeningPackProps) {
+export default function PackOpeningPack({ pictureUrl, tokenId, onOpening, onError, isOpen }: PackOpeningPackProps) {
   // sound mgmt
   const { loop, fx, latestLoopSound } = useAudioLoop()
 
@@ -73,13 +73,13 @@ export default function PackOpeningPack({ pictureUrl, id, onOpening, onError, is
 
   // approve pack opening
   const openPack = useCallback(() => {
-    if (!id) return
+    if (!tokenId) return
 
     setOpening(true)
     loop(Sound.DURING_PACK_OPENING)
 
     setTimeout(() => {
-      packOpeningMutation({ variables: { packId: id } })
+      packOpeningMutation({ variables: { tokenId } })
         .then((res: any) => {
           if (res.data?.openPack?.cards) {
             setTimeout(() => onOpening(res.data.openPack.cards), PACK_OPENING_FLASH_DURATION)
@@ -95,7 +95,7 @@ export default function PackOpeningPack({ pictureUrl, id, onOpening, onError, is
           console.error(error)
         })
     }, PACK_OPENING_DURATION) // dopamine optimization è_é
-  }, [id, loop])
+  }, [tokenId, loop])
 
   useEffect(() => {
     if (opened && latestLoopSound === Sound.DURING_PACK_OPENING) {
