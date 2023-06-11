@@ -18,6 +18,8 @@ import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import Pending from './Pending'
 import { WeiAmount } from '@rulesorg/sdk-core'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import LockedWallet from '../LockedWallet'
 
 const DummyFocusInput = styled.input`
   max-height: 0;
@@ -64,8 +66,9 @@ export default function StarknetSigner({ display, skipSignin = false, children }
   // modal
   const toggleWalletModal = useWalletModalToggle()
 
-  // wallet lazyness
-  const waitingTransactionHash = null
+  // current user
+  const { currentUser } = useCurrentUser()
+  const { lockingReason, deployed } = currentUser?.starknetWallet ?? {}
 
   // handlers
   const [estimateFees, estimateFeesRes] = useEstimateFees()
@@ -113,6 +116,18 @@ export default function StarknetSigner({ display, skipSignin = false, children }
 
   // components
   const modalContent = useMemo(() => {
+    if (lockingReason) {
+      return (
+        <ErrorCard>
+          <LockedWallet />
+        </ErrorCard>
+      )
+    }
+
+    if (!deployed) {
+      return <ErrorCard>Deployment !</ErrorCard>
+    }
+
     if (!signing) {
       return txHash ? <Pending txHash={txHash} /> : children
     }
@@ -181,7 +196,6 @@ export default function StarknetSigner({ display, skipSignin = false, children }
 
     return <PrivateKeyDecipherForm onPrivateKeyDeciphered={updateSigner} />
   }, [
-    waitingTransactionHash,
     loading,
     error,
     txHash,
@@ -191,6 +205,8 @@ export default function StarknetSigner({ display, skipSignin = false, children }
     parsedTotalCost,
     parsedNetworkFee,
     children,
+    lockingReason,
+    deployed,
   ])
 
   return (

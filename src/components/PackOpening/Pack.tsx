@@ -1,7 +1,6 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-import { ApolloError } from '@apollo/client'
 
 import { PrimaryButton } from 'src/components/Button'
 import { TYPE } from 'src/styles/theme'
@@ -10,8 +9,9 @@ import { Sound } from 'src/state/packOpening/actions'
 import Column, { ColumnCenter } from 'src/components/Column'
 import { PACK_OPENING_DURATION, PACK_OPENING_FLASH_DURATION } from 'src/constants/misc'
 import ProgressBar from 'src/components/ProgressBar'
+import Image from 'src/theme/components/Image'
 
-const PackImage = styled.img<{ opened: boolean }>`
+const PackImage = styled(Image)<{ opened: boolean }>`
   width: 265px;
   margin: 32px auto 0;
   display: block;
@@ -69,58 +69,78 @@ export default function PackOpeningPack({ pictureUrl, tokenId, onOpening, onErro
 
   // opening state
   const [opening, setOpening] = useState(false)
+  const [cards, setCards] = useState([])
   const [opened, setOpened] = useState(false)
 
+  const ready = !!cards.length && opened
+
   // approve pack opening
-  const openPack = useCallback(() => {
+  const openPack = useCallback(async () => {
     if (!tokenId) return
 
     setOpening(true)
     loop(Sound.DURING_PACK_OPENING)
 
-    setTimeout(() => {
-      packOpeningMutation({ variables: { tokenId } })
-        .then((res: any) => {
-          if (res.data?.openPack?.cards) {
-            setTimeout(() => onOpening(res.data.openPack.cards), PACK_OPENING_FLASH_DURATION)
-            setOpened(true)
-          } else {
-            onError('Failed to open pack')
-          }
-        })
-        .catch((packOpeningError: ApolloError) => {
-          const error = packOpeningError?.graphQLErrors?.[0]
-          onError(error?.message ?? 'Failed to open pack')
+    try {
+      const res = await packOpeningMutation({ variables: { tokenId } })
+      if (res.data?.openPack?.cards) {
+        setCards(res.data?.openPack?.cards)
+      } else {
+        onError('Failed to open pack')
+      }
+    } catch (packOpeningError) {
+      const error = packOpeningError?.graphQLErrors?.[0]
+      onError(error?.message ?? 'Failed to open pack')
 
-          console.error(error)
-        })
+      console.error(error)
+    }
+
+    setTimeout(() => {
+      setOpened(true)
     }, PACK_OPENING_DURATION) // dopamine optimization è_é
   }, [tokenId, loop])
 
   useEffect(() => {
-    if (opened && latestLoopSound === Sound.DURING_PACK_OPENING) {
+    if (ready && latestLoopSound === Sound.DURING_PACK_OPENING) {
       loop(Sound.OPENED_PACK)
       fx(Sound.FX_PACK_OPENING)
     }
-  }, [opened, loop, latestLoopSound])
+  }, [ready, loop, latestLoopSound])
 
-  if (!isOpen) return null
+  useEffect(() => {
+    if (ready) {
+      setTimeout(() => onOpening(cards), PACK_OPENING_FLASH_DURATION)
+    }
+  }, [ready, onOpening])
 
-  return (
-    <Column gap={80}>
-      <PackImage src={pictureUrl} opened={opened} />
-      {opening ? (
+  const componentContent = useMemo(() => {
+    if (ready) return null
+
+    if (opening) {
+      return (
         <ColumnCenter gap={12}>
           <TYPE.body>
             <Trans>Creating cards</Trans>
           </TYPE.body>
           <ProgressBar duration={PACK_OPENING_DURATION} maxWidth={200} />
         </ColumnCenter>
-      ) : (
-        <OpenPackButton onClick={openPack} large>
-          <Trans>Open pack</Trans>
-        </OpenPackButton>
-      )}
+      )
+    }
+
+    return (
+      <OpenPackButton onClick={openPack} large>
+        <Trans>Open pack</Trans>
+      </OpenPackButton>
+    )
+  }, [openPack, ready, opening])
+
+  if (!isOpen) return null
+
+  return (
+    <Column gap={80}>
+      <PackImage src={pictureUrl} opened={ready} />
+
+      {componentContent}
     </Column>
   )
 }

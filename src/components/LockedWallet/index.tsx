@@ -9,6 +9,7 @@ import { useETHBalance } from 'src/state/wallet/hooks'
 
 export default function LockedWallet() {
   const { currentUser } = useCurrentUser()
+  const { lockingReason } = currentUser?.starknetWallet ?? {}
 
   // ETH balance
   const address = currentUser?.starknetWallet.address ?? ''
@@ -18,24 +19,24 @@ export default function LockedWallet() {
 
   // forced upgrade
   const isLockedForForcedUpgrade = useMemo(
-    () => currentUser?.starknetWallet.lockingReason === constants.StarknetWalletLockingReason.FORCED_UPGRADE,
-    [currentUser?.starknetWallet.lockingReason]
+    () => lockingReason === constants.StarknetWalletLockingReason.FORCED_UPGRADE,
+    [lockingReason]
   )
 
   // signer escape
   const needsDeposit = useMemo(
     () =>
-      currentUser?.starknetWallet.lockingReason === constants.StarknetWalletLockingReason.SIGNER_ESCAPE &&
+      lockingReason === constants.StarknetWalletLockingReason.SIGNER_ESCAPE &&
       balance &&
       JSBI.lessThan(balance.quotient, constants.MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER),
-    [currentUser?.starknetWallet.lockingReason, balance]
+    [lockingReason, balance]
   )
   const minimumWeiAmountToEscapeSigner = useMemo(
     () => WeiAmount.fromRawAmount(constants.MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER),
     []
   )
   const daysBeforeEscape = useMemo(() => {
-    if (currentUser?.starknetWallet.lockingReason !== constants.StarknetWalletLockingReason.SIGNER_ESCAPE) return
+    if (lockingReason !== constants.StarknetWalletLockingReason.SIGNER_ESCAPE) return
 
     // 7 days if escape is not triggered yet
     if (!currentUser?.starknetWallet.signerEscapeTriggeredAt) return constants.ESCAPE_SECURITY_PERIOD / 24 / 60 / 60 // nb of days
@@ -44,30 +45,36 @@ export default function LockedWallet() {
     return Math.max(Math.ceil((constants.ESCAPE_SECURITY_PERIOD - difference / 1000) / 24 / 60 / 60), 1)
   }, [currentUser?.starknetWallet.signerEscapeTriggeredAt])
 
+  // returns
+
+  if (isLockedForForcedUpgrade) {
+    return (
+      <Trans>
+        We are performing a manual upgrade of your wallet. For this purpose, your wallet has to be locked. Your access
+        will be recovered in a few days.
+      </Trans>
+    )
+  }
+
+  if (needsDeposit) {
+    return (
+      <Trans>
+        Your wallet is locked. This happens when you reset your password. In order to recover your wallet, you need to
+        deposit at least
+        <br />
+        <strong>
+          {minimumWeiAmountToEscapeSigner.toSignificant(18)} ETH ({weiAmountToEURValue(minimumWeiAmountToEscapeSigner)}
+          €)
+        </strong>
+      </Trans>
+    )
+  }
+
   return (
-    <>
-      {isLockedForForcedUpgrade ? (
-        <Trans>
-          We are performing a manual upgrade of your wallet. For this purpose, your wallet has to be locked. Your access
-          will be recovered in a few days.
-        </Trans>
-      ) : needsDeposit ? (
-        <Trans>
-          Your wallet is locked. This happens when you reset your password. In order to recover your wallet, you need to
-          deposit at least
-          <br />
-          <strong>
-            {minimumWeiAmountToEscapeSigner.toSignificant(18)} ETH (
-            {weiAmountToEURValue(minimumWeiAmountToEscapeSigner)}€)
-          </strong>
-        </Trans>
-      ) : (
-        <Trans>
-          Your wallet is locked. This happens when you reset your password. For security reasons, your wallet will be
-          recovered&nbsp;
-          <strong>in {daysBeforeEscape} days.</strong>
-        </Trans>
-      )}
-    </>
+    <Trans>
+      Your wallet is locked. This happens when you reset your password. For security reasons, your wallet will be
+      recovered&nbsp;
+      <strong>in {daysBeforeEscape} days.</strong>
+    </Trans>
   )
 }

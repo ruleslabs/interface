@@ -159,8 +159,8 @@ const SelectedCardsButtonsWrapper = styled(Row)`
 `
 
 const sortsData: SortsData<CardsSortingKey> = [
-  { name: 'Newest', key: 'txIndexDesc', desc: true },
-  { name: 'Oldest', key: 'txIndexAsc', desc: false },
+  { name: 'Newest', key: 'dateDesc', desc: true },
+  { name: 'Oldest', key: 'dateAsc', desc: false },
   { name: 'Low serial', key: 'serialAsc', desc: false },
   { name: 'High serial', key: 'serialDesc', desc: true },
   { name: 'Price: low to high', key: 'lastPriceAsc', desc: false },

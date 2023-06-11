@@ -6,11 +6,9 @@ import { gql, useQuery } from '@apollo/client'
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
 import { useModalOpened, useAcceptOfferModalToggle, useWalletModalToggle } from 'src/state/application/hooks'
 import { ApplicationModal } from 'src/state/application/actions'
-import useCurrentUser from 'src/hooks/useCurrentUser'
 import Column from 'src/components/Column'
 import { PrimaryButton } from 'src/components/Button'
 import { ErrorCard } from 'src/components/Card'
-import LockedWallet from 'src/components/LockedWallet'
 import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/StarknetSigner'
 import { useETHBalance } from 'src/state/wallet/hooks'
 import { PurchaseBreakdown } from './PriceBreakdown'
@@ -63,9 +61,6 @@ interface AcceptOfferModalProps {
 }
 
 export default function AcceptOfferModal({ tokenIds, price }: AcceptOfferModalProps) {
-  // current user
-  const { currentUser } = useCurrentUser()
-
   // modal
   const isOpen = useModalOpened(ApplicationModal.ACCEPT_OFFER)
   const toggleAcceptOfferModal = useAcceptOfferModalToggle()
@@ -178,12 +173,6 @@ export default function AcceptOfferModal({ tokenIds, price }: AcceptOfferModalPr
 
               <PurchaseBreakdown price={price} />
 
-              {!!currentUser?.starknetWallet.lockingReason && (
-                <ErrorCard>
-                  <LockedWallet />
-                </ErrorCard>
-              )}
-
               {!canPayForCard && balance && (
                 <ErrorCard textAlign="center">
                   <Trans>
@@ -194,11 +183,7 @@ export default function AcceptOfferModal({ tokenIds, price }: AcceptOfferModalPr
                 </ErrorCard>
               )}
 
-              <PrimaryButton
-                onClick={handleConfirmation}
-                disabled={!!currentUser?.starknetWallet.lockingReason || !canPayForCard}
-                large
-              >
+              <PrimaryButton onClick={handleConfirmation} disabled={!canPayForCard} large>
                 <Trans>Next</Trans>
               </PrimaryButton>
             </Column>

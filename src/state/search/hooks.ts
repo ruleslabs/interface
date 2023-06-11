@@ -142,13 +142,9 @@ export function useAlgoliaFormatedMarketplaceFilters() {
 
 const client = algoliasearch(process.env.REACT_APP_ALGOLIA_ID ?? '', process.env.REACT_APP_ALGOLIA_KEY ?? '')
 const algoliaIndexes = {
-  transfers: {
-    priceDesc: client.initIndex('transfers-price-desc'),
-    txIndexDesc: client.initIndex('transfers-tx-index-desc'),
-  },
   cards: {
-    txIndexDesc: client.initIndex('cards-tx-index-desc'),
-    txIndexAsc: client.initIndex('cards-tx-index-asc'),
+    dateDesc: client.initIndex('cards-tx-index-desc'), // TODO: rename replica
+    dateAsc: client.initIndex('cards-tx-index-asc'), // TODO: rename replica
     serialDesc: client.initIndex('cards-serial-desc'),
     serialAsc: client.initIndex('cards-serial-asc'),
     lastPriceDesc: client.initIndex('cards-last-price-desc'),
@@ -182,7 +178,6 @@ export interface PageFetchedCallbackData {
 
 export type PageFetchedCallback = (hits: any[], data: PageFetchedCallbackData) => void
 
-export type TransfersSortingKey = keyof typeof algoliaIndexes.transfers
 export type CardsSortingKey = keyof typeof algoliaIndexes.cards
 export type CardModelsSortingKey = keyof typeof algoliaIndexes.cardModels
 export type OffersSortingKey = keyof typeof algoliaIndexes.offers

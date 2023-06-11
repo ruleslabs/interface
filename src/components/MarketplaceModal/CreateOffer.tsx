@@ -8,11 +8,8 @@ import { ModalHeader } from 'src/components/Modal'
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
 import { useModalOpened, useCreateOfferModalToggle } from 'src/state/application/hooks'
 import { ApplicationModal } from 'src/state/application/actions'
-import useCurrentUser from 'src/hooks/useCurrentUser'
 import Column from 'src/components/Column'
 import { PrimaryButton } from 'src/components/Button'
-import { ErrorCard } from 'src/components/Card'
-import LockedWallet from 'src/components/LockedWallet'
 import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/StarknetSigner'
 import EtherInput from 'src/components/Input/EtherInput'
 import tryParseWeiAmount from 'src/utils/tryParseWeiAmount'
@@ -86,9 +83,6 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
   const [cardIndex, setCardIndex] = useState(0)
   const [price, setPrice] = useState('')
   const [parsedPricesTotal, setParsedPricesTotal] = useState(WeiAmount.ZERO)
-
-  // current user
-  const { currentUser } = useCurrentUser()
 
   // rules account
   const { address } = useRulesAccount()
@@ -241,21 +235,15 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
                   averageSale={cards[cardIndex].cardModel.averageSale}
                 />
 
-                {currentUser?.starknetWallet.lockingReason ? (
-                  <ErrorCard>
-                    <LockedWallet />
-                  </ErrorCard>
-                ) : (
-                  <Column gap={32}>
-                    <EtherInput onUserInput={onPriceInput} value={price} placeholder="0.0" />
-                    {parsedPrice && (
-                      <SaleBreakdown
-                        price={parsedPrice.quotient.toString()}
-                        artistName={cards[cardIndex].cardModel.artistName}
-                      />
-                    )}
-                  </Column>
-                )}
+                <Column gap={32}>
+                  <EtherInput onUserInput={onPriceInput} value={price} placeholder="0.0" />
+                  {parsedPrice && (
+                    <SaleBreakdown
+                      price={parsedPrice.quotient.toString()}
+                      artistName={cards[cardIndex].cardModel.artistName}
+                    />
+                  )}
+                </Column>
 
                 <PrimaryButton onClick={handlePriceConfirmation} disabled={!isPriceValid} large>
                   <Trans>Next</Trans>

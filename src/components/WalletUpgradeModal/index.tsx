@@ -7,8 +7,6 @@ import { ApplicationModal } from 'src/state/application/actions'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import Column from 'src/components/Column'
 import { PrimaryButton } from 'src/components/Button'
-import { ErrorCard } from 'src/components/Card'
-import LockedWallet from 'src/components/LockedWallet'
 import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/StarknetSigner'
 import { TYPE } from 'src/styles/theme'
 import useRulesAccount from 'src/hooks/useRulesAccount'
@@ -83,12 +81,6 @@ export default function UpgradeWalletModal() {
                     </Trans>
                   </TYPE.body>
                 </Column>
-
-                {!!currentUser?.starknetWallet.lockingReason && (
-                  <ErrorCard>
-                    <LockedWallet />
-                  </ErrorCard>
-                )}
 
                 <PrimaryButton
                   onClick={handleConfirmation}

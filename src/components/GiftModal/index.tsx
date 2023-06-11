@@ -14,8 +14,6 @@ import Column from 'src/components/Column'
 import { RowCenter } from 'src/components/Row'
 import { TYPE } from 'src/styles/theme'
 import { PrimaryButton } from 'src/components/Button'
-import { ErrorCard } from 'src/components/Card'
-import LockedWallet from 'src/components/LockedWallet'
 import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/StarknetSigner'
 import CardBreakdown from 'src/components/MarketplaceModal/CardBreakdown'
 import Avatar from 'src/components/Avatar'
@@ -282,50 +280,42 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
                 </Column>
               </CardBreakdownsWrapper>
 
-              {currentUser.starknetWallet.lockingReason ? (
-                <ErrorCard>
-                  <LockedWallet />
-                </ErrorCard>
-              ) : (
-                <>
-                  <RowCenter gap={16}>
-                    <TYPE.body style={{ whiteSpace: 'nowrap' }}>
-                      <Trans>Send to</Trans>
+              <RowCenter gap={16}>
+                <TYPE.body style={{ whiteSpace: 'nowrap' }}>
+                  <Trans>Send to</Trans>
+                </TYPE.body>
+                <UsersSearchBar onSelect={setRecipient} selfSearchAllowed={false} />
+              </RowCenter>
+
+              <Column gap={12}>
+                <TransferSummary>
+                  <RowCenter gap={12}>
+                    <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackUrl} />
+                    <TYPE.body fontSize={14}>
+                      <Trans>My account</Trans>
                     </TYPE.body>
-                    <UsersSearchBar onSelect={setRecipient} selfSearchAllowed={false} />
                   </RowCenter>
 
-                  <Column gap={12}>
-                    <TransferSummary>
-                      <RowCenter gap={12}>
-                        <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackUrl} />
-                        <TYPE.body fontSize={14}>
-                          <Trans>My account</Trans>
-                        </TYPE.body>
-                      </RowCenter>
+                  <ArrowWrapper>
+                    <Arrow />
+                  </ArrowWrapper>
 
-                      <ArrowWrapper>
-                        <Arrow />
-                      </ArrowWrapper>
-
-                      <RowCenter gap={12}>
-                        {recipient && (
-                          <>
-                            <Avatar src={recipient.profile.pictureUrl} fallbackSrc={recipient.profile.fallbackSrc} />
-                            <TYPE.body fontSize={14}>{recipient.username}</TYPE.body>
-                          </>
-                        )}
-                      </RowCenter>
-                    </TransferSummary>
-
-                    {recipient && !recipient.starknetWallet.address && (
-                      <TYPE.body color="error">
-                        <Trans>This user does not have a wallet yet, please try again in a few hours.</Trans>
-                      </TYPE.body>
+                  <RowCenter gap={12}>
+                    {recipient && (
+                      <>
+                        <Avatar src={recipient.profile.pictureUrl} fallbackSrc={recipient.profile.fallbackSrc} />
+                        <TYPE.body fontSize={14}>{recipient.username}</TYPE.body>
+                      </>
                     )}
-                  </Column>
-                </>
-              )}
+                  </RowCenter>
+                </TransferSummary>
+
+                {recipient && !recipient.starknetWallet.address && (
+                  <TYPE.body color="error">
+                    <Trans>This user does not have a wallet yet, please try again in a few hours.</Trans>
+                  </TYPE.body>
+                )}
+              </Column>
 
               <PrimaryButton onClick={handleConfirmation} disabled={!recipient?.starknetWallet.address} large>
                 <Trans>Next</Trans>

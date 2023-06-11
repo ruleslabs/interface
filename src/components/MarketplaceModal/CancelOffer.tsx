@@ -6,11 +6,8 @@ import { ModalHeader } from 'src/components/Modal'
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
 import { useModalOpened, useCancelOfferModalToggle } from 'src/state/application/hooks'
 import { ApplicationModal } from 'src/state/application/actions'
-import useCurrentUser from 'src/hooks/useCurrentUser'
 import Column from 'src/components/Column'
 import { PrimaryButton } from 'src/components/Button'
-import { ErrorCard } from 'src/components/Card'
-import LockedWallet from 'src/components/LockedWallet'
 import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/StarknetSigner'
 import CardBreakdown from './CardBreakdown'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
@@ -40,9 +37,6 @@ export default function CancelOfferModal({
   scarcityId,
   pictureUrl,
 }: CancelOfferModalProps) {
-  // current user
-  const { currentUser } = useCurrentUser()
-
   // modal
   const isOpen = useModalOpened(ApplicationModal.CANCEL_OFFER)
   const toggleCancelOfferModal = useCancelOfferModalToggle()
@@ -99,13 +93,7 @@ export default function CancelOfferModal({
                 scarcityName={scarcityName}
               />
 
-              {!!currentUser?.starknetWallet.lockingReason && (
-                <ErrorCard>
-                  <LockedWallet />
-                </ErrorCard>
-              )}
-
-              <PrimaryButton onClick={handleConfirmation} disabled={!!currentUser?.starknetWallet.lockingReason} large>
+              <PrimaryButton onClick={handleConfirmation} large>
                 <Trans>Next</Trans>
               </PrimaryButton>
             </Column>
