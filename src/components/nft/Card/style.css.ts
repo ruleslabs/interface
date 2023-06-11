@@ -38,36 +38,10 @@ export const mediaContainer = recipe({
   base: [
     {
       transition: `${vars.time.medium} ${vars.timing.ease} transform, ${vars.time.medium} ${vars.timing.ease} box-shadow`,
+      boxShadow: '0 5px 5px rgba(0, 0, 0, 0.5)',
 
       ':hover': {
         transform: 'scale(1.05)',
-      },
-
-      selectors: {
-        '&::before, &::after': {
-          content: '',
-          position: 'absolute',
-          bottom: '10px',
-          width: '40%',
-          height: '10px',
-          boxShadow: '0 5px 5px 10px rgba(0,0,0,.5)',
-          zIndex: '-1',
-          transition: 'all .3s ease-in-out',
-        },
-
-        '&:hover::before, &:hover::after': {
-          content: 'none',
-        },
-      },
-
-      '::before': {
-        left: '15px',
-        transform: 'skew(-5deg) rotate(-5deg)',
-      },
-
-      '::after': {
-        right: '15px',
-        transform: 'skew(5deg) rotate(5deg)',
       },
     },
     sprinkles({
