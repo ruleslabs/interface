@@ -27,6 +27,8 @@ import useStarknetTx from 'src/hooks/useStarknetTx'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import { useOperations } from 'src/hooks/usePendingOperations'
 import { uint256 } from 'starknet'
+import { getVoucherRedeemCall } from 'src/utils/getVoucherRedeemCall'
+import useRulesAccount from 'src/hooks/useRulesAccount'
 
 const CardBreakdownWrapper = styled.div`
   position: relative;
@@ -48,6 +50,13 @@ const CARDS_QUERY = gql`
     cardsByTokenIds(tokenIds: $tokenIds) {
       serialNumber
       tokenId
+      voucherSigningData {
+        signature {
+          r
+          s
+        }
+        nonce
+      }
       cardModel {
         id
         pictureUrl(derivative: "width=256")
@@ -81,6 +90,9 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
   // current user
   const { currentUser } = useCurrentUser()
 
+  // rules account
+  const { address } = useRulesAccount()
+
   // modal
   const isOpen = useModalOpened(ApplicationModal.CREATE_OFFER)
   const toggleCreateOfferModal = useCreateOfferModalToggle()
@@ -90,6 +102,16 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
   const cards = cardsQuery.data?.cardsByTokenIds ?? []
   const card = cards[cardIndex]
   const tokenId = card?.tokenId
+
+  // voucher signing data map
+  const vouchersSigningDataMap = useMemo(
+    () =>
+      (cards as any[]).reduce<any>((acc, card) => {
+        acc[card.tokenId] = card.voucherSigningData
+        return acc
+      }, {}),
+    [cards.length]
+  )
 
   // pending operation
   const { pushOperation, cleanOperations } = useOperations()
@@ -117,12 +139,17 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
   // prices confirmation
   const handlePriceConfirmation = useCallback(() => {
     const marketplaceAddress = constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
-    if (!marketplaceAddress || !parsedPrice || !tokenId) return
+    if (!marketplaceAddress || !parsedPrice || !tokenId || !address) return
 
     const u256TokenId = uint256.bnToUint256(tokenId)
 
     // save operations
     pushOperation({ tokenId, type: 'offerCreation', quantity: 1 })
+
+    const voucherSigningData = vouchersSigningDataMap[tokenId]
+    if (voucherSigningData) {
+      pushCalls(getVoucherRedeemCall(address, tokenId, 1, voucherSigningData))
+    }
 
     // save calls
     pushCalls({
@@ -144,7 +171,7 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
       // clean price input
       setPrice('')
     }
-  }, [parsedPrice, tokenId, cards.length])
+  }, [parsedPrice, tokenId, cards.length, vouchersSigningDataMap, address])
 
   // Lowest ask
   const [lowestAsks, setLowestAsks] = useState<{ [id: string]: string }>({})

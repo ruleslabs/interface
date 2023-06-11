@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { Trans, t } from '@lingui/macro'
-import { WeiAmount } from '@rulesorg/sdk-core'
+import { WeiAmount, encode, tokens } from '@rulesorg/sdk-core'
 
 import { TYPE } from 'src/styles/theme'
 import Row from 'src/components/Row'
@@ -44,6 +44,15 @@ export default function OffersSelectorBreakdown({
   // price
   const parsedPrice = useMemo(() => WeiAmount.fromRawAmount(price), [price])
 
+  // token ids
+  const tokenIds = useMemo(
+    () =>
+      serialNumbers.map((serialNumber) =>
+        encode.encodeUint256(tokens.getCardTokenId({ artistName, season, scarcityId, serialNumber }))
+      ),
+    [artistName, season, scarcityId]
+  )
+
   return (
     <>
       <Column gap={32}>
@@ -66,17 +75,7 @@ export default function OffersSelectorBreakdown({
         </PrimaryButton>
       </Column>
 
-      {price && (
-        <AcceptOfferModal
-          artistName={artistName}
-          scarcityName={scarcityName}
-          scarcityId={scarcityId}
-          season={season}
-          serialNumbers={serialNumbers}
-          pictureUrl={pictureUrl}
-          price={price}
-        />
-      )}
+      {price && <AcceptOfferModal tokenIds={tokenIds} price={price} />}
     </>
   )
 }

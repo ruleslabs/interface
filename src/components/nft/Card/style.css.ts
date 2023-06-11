@@ -154,7 +154,7 @@ export const onSale = style([
 
 export const spinner = style([
   {
-    width: '20%',
+    width: '20% !important',
     left: '40%',
     top: '41.5%',
     height: 'auto !important',

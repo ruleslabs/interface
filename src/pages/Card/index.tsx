@@ -187,15 +187,7 @@ function CardPage() {
                 pictureUrl={card.cardModel.pictureUrl}
               />
 
-              <AcceptOfferModal
-                artistName={card.cardModel.artistName}
-                scarcityName={card.cardModel.scarcity.name}
-                scarcityId={card.cardModel.scarcity.id}
-                season={card.cardModel.season}
-                serialNumbers={[card.serialNumber]}
-                pictureUrl={card.cardModel.pictureUrl}
-                price={cardPrice}
-              />
+              <AcceptOfferModal tokenIds={[card.serialNumber]} price={cardPrice} />
             </>
           )}
         </>
