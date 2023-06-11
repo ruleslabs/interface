@@ -29,7 +29,6 @@ const CARDS_QUERY = gql`
     cardsByTokenIds(tokenIds: $tokenIds) {
       serialNumber
       tokenId
-      price
       owner {
         starknetAddress
       }
@@ -118,7 +117,7 @@ export default function AcceptOfferModal({ tokenIds, price }: AcceptOfferModalPr
 
     const voucherRedeemCalls = tokenIds
       .map((tokenId) =>
-        vouchersSigningDataMap[tokenId]
+        vouchersSigningDataMap[tokenId].voucherSigningData
           ? getVoucherRedeemCall(
               vouchersSigningDataMap[tokenId].owner,
               tokenId,

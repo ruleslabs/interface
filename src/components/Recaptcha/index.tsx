@@ -8,7 +8,6 @@ import Link from 'src/components/Link'
 
 const REACT_APP_RECAPTCHA_V2_KEY = process.env.REACT_APP_RECAPTCHA_V2_KEY
 if (!REACT_APP_RECAPTCHA_V2_KEY) {
-  console.log(process.env)
   throw 'env REACT_APP_RECAPTCHA_V2_KEY not provided'
 }
 

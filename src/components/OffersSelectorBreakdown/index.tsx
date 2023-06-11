@@ -50,7 +50,7 @@ export default function OffersSelectorBreakdown({
       serialNumbers.map((serialNumber) =>
         encode.encodeUint256(tokens.getCardTokenId({ artistName, season, scarcityId, serialNumber }))
       ),
-    [artistName, season, scarcityId]
+    [artistName, season, scarcityId, serialNumbers.length]
   )
 
   return (

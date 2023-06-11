@@ -187,7 +187,7 @@ function CardPage() {
                 pictureUrl={card.cardModel.pictureUrl}
               />
 
-              <AcceptOfferModal tokenIds={[card.serialNumber]} price={cardPrice} />
+              <AcceptOfferModal tokenIds={[card.tokenId]} price={cardPrice} />
             </>
           )}
         </>
