@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import clsx from 'clsx'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
@@ -40,13 +41,17 @@ export function ActiveLink({ children, href, perfectMatch = false, ...props }: A
   const { pathname } = useLocation()
   const childClassName = children.props.className ?? ''
 
-  const className = useMemo(
-    () =>
-      (perfectMatch && pathname === href) || (!perfectMatch && pathname.indexOf(href) === 0)
-        ? `${childClassName} active`.trim()
-        : childClassName,
-    [perfectMatch, childClassName, href, pathname]
-  )
+  const className = useMemo(() => {
+    const formatUrl = (url: string) => url.replace(/\/$/, '').toLowerCase()
+
+    const formatedPathname = formatUrl(pathname)
+    const formatedHref = formatUrl(href)
+
+    return (perfectMatch && formatedPathname === formatedHref) ||
+      (!perfectMatch && formatedPathname.indexOf(formatedHref) === 0)
+      ? clsx(childClassName, 'active')
+      : childClassName
+  }, [perfectMatch, childClassName, href, pathname])
 
   if (!children) return null
 
