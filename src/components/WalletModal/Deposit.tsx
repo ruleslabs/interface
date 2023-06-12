@@ -10,23 +10,23 @@ import { WalletModalMode } from 'src/state/wallet/actions'
 import { ModalBody } from '../Modal/Classic'
 import * as Icons from 'src/theme/components/Icons'
 import Column from '../Column'
-import { useWalletModalToggle } from 'src/state/application/hooks'
+import { useCloseModal } from 'src/state/application/hooks'
 
 export default function Deposit() {
   // current user
   const { currentUser } = useCurrentUser()
 
   // modal mode
-  const toggleWalletModal = useWalletModalToggle()
+  const closeModal = useCloseModal()
   const setWalletModalMode = useSetWalletModalMode()
   const onStarkgateDeposit = useCallback(() => setWalletModalMode(WalletModalMode.STARKGATE_DEPOSIT), [])
 
   // Ramp
   const rampSdk = useRampSdk({ email: currentUser?.email, address: currentUser?.starknetWallet.address })
   const openRamp = useCallback(() => {
-    toggleWalletModal()
+    closeModal()
     rampSdk?.show()
-  }, [toggleWalletModal, rampSdk?.show])
+  }, [closeModal, rampSdk?.show])
 
   return (
     <ModalBody>

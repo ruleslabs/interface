@@ -7,7 +7,7 @@ import {
   useNavModalUserDesktopToggle,
   useNavModalUserMobileToggle,
   useNotificationsModalToggle,
-  useWalletModalToggle,
+  useOpenModal,
 } from 'src/state/application/hooks'
 import { useSetAuthMode } from 'src/state/auth/hooks'
 import { AuthMode } from 'src/state/auth/actions'
@@ -24,6 +24,9 @@ import { ReactComponent as BellIcon } from 'src/images/bell.svg'
 import { ReactComponent as WalletIcon } from 'src/images/wallet.svg'
 import WalletButton from './WalletButton'
 import useCurrentUser from 'src/hooks/useCurrentUser'
+import { WalletModalMode } from 'src/state/wallet/actions'
+import { useSetWalletModalMode } from 'src/state/wallet/hooks'
+import { ApplicationModal } from 'src/state/application/actions'
 
 const StyledAccountStatus = styled.div`
   display: flex;
@@ -120,8 +123,14 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
   // current user
   const { currentUser } = useCurrentUser()
 
-  // modal
-  const toggleWalletModal = useWalletModalToggle()
+  // wallet modal
+  const openModal = useOpenModal(ApplicationModal.WALLET)
+  const setWalletModalMode = useSetWalletModalMode()
+
+  const openWalletModal = useCallback(() => {
+    openModal()
+    setWalletModalMode(WalletModalMode.OVERVIEW)
+  }, [])
 
   // nav modal
   const toggleNavModalUserDesktop = useNavModalUserDesktopToggle()
@@ -150,7 +159,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
       <StyledAccountStatus {...props}>
         {!!currentUser ? (
           <>
-            {currentUser?.starknetWallet.address && <StyledWalletButton onClick={toggleWalletModal} />}
+            {currentUser?.starknetWallet.address && <StyledWalletButton onClick={openWalletModal} />}
 
             <AvatarButtonWrapperDesktop>
               <AvatarWrapper onClick={toggleNavModalUserDesktop}>
@@ -169,7 +178,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
             </AvatarButtonWrapperMobile>
 
             {currentUser?.starknetWallet.address && (
-              <MobileIconButton onClick={toggleWalletModal} $alert={!!currentUser?.starknetWallet.lockingReason}>
+              <MobileIconButton onClick={openWalletModal} $alert={!!currentUser?.starknetWallet.lockingReason}>
                 <WalletIcon />
               </MobileIconButton>
             )}

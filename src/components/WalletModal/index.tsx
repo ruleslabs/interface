@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { t } from '@lingui/macro'
 
 import SidebarModal, { ModalContent } from 'src/components/Modal/Sidebar'
@@ -83,12 +83,6 @@ export default function WalletModal() {
       </>
     )
   }, [walletModalMode, toggleWalletModal, setWalletModalMode])
-
-  useEffect(() => {
-    if (isOpen) {
-      setWalletModalMode(WalletModalMode.OVERVIEW)
-    }
-  }, [isOpen])
 
   return (
     <SidebarModal onDismiss={toggleWalletModal} isOpen={isOpen} width={350} fullscreen>

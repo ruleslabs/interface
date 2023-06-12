@@ -1,14 +1,18 @@
 import JSBI from 'jsbi'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { WeiAmount, constants } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
-import { useETHBalance } from 'src/state/wallet/hooks'
+import { useETHBalance, useSetWalletModalMode } from 'src/state/wallet/hooks'
 import { ErrorCard, InfoCard } from '../Card'
 import * as Text from 'src/theme/components/Text'
 import { Column } from 'src/theme/components/Flex'
+import { PrimaryButton } from '../Button'
+import { useOpenModal } from 'src/state/application/hooks'
+import { ApplicationModal } from 'src/state/application/actions'
+import { WalletModalMode } from 'src/state/wallet/actions'
 
 export default function LockedWallet() {
   const { currentUser } = useCurrentUser()
@@ -42,9 +46,21 @@ export default function LockedWallet() {
     return Math.max(Math.ceil((constants.ESCAPE_SECURITY_PERIOD - difference / 1000) / 24 / 60 / 60), 1)
   }, [currentUser?.starknetWallet.signerEscapeTriggeredAt])
 
+  // deploy modal
+  const openModal = useOpenModal(ApplicationModal.WALLET)
+  const setWalletModalMode = useSetWalletModalMode()
+
+  const openDeployModal = useCallback(() => {
+    openModal()
+    setWalletModalMode(WalletModalMode.DEPLOY)
+  }, [])
+
   // returns
 
   switch (lockingReason) {
+    case undefined:
+      return null
+
     case constants.StarknetWalletLockingReason.FORCED_UPGRADE:
       return (
         <InfoCard>
@@ -84,7 +100,6 @@ export default function LockedWallet() {
       }
 
     case constants.StarknetWalletLockingReason.MAINTENANCE:
-    default:
       return (
         <InfoCard>
           <Column gap={'24'}>
@@ -99,11 +114,24 @@ export default function LockedWallet() {
         </InfoCard>
       )
 
-    // default:
-    //   return (
-    //     <ErrorCard>
-    //       <Trans>Your wallet is locked for an unknown reason, please contact support on discord</Trans>
-    //     </ErrorCard>
-    //   )
+    case constants.StarknetWalletLockingReason.UNDEPLOYED:
+      return (
+        <Column gap={'24'}>
+          <Text.HeadlineSmall>
+            <Trans>Your wallet is not deployed, you need to deploy it to interact with other users on Rules.</Trans>
+          </Text.HeadlineSmall>
+
+          <PrimaryButton onClick={openDeployModal} large>
+            <Trans>Deploy</Trans>
+          </PrimaryButton>
+        </Column>
+      )
+
+    default:
+      return (
+        <ErrorCard>
+          <Trans>Your wallet is locked for an unknown reason, please contact support on discord</Trans>
+        </ErrorCard>
+      )
   }
 }

@@ -1,8 +1,9 @@
+import { useCallback } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import { useSidebarModalOpened, useNavModalUserMobileToggle, useWalletModalToggle } from 'src/state/application/hooks'
-import { ApplicationSidebarModal } from 'src/state/application/actions'
+import { useSidebarModalOpened, useNavModalUserMobileToggle, useOpenModal } from 'src/state/application/hooks'
+import { ApplicationModal, ApplicationSidebarModal } from 'src/state/application/actions'
 import { TYPE } from 'src/styles/theme'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import SidebarModal, { ModalBody, ModalContent } from 'src/components/Modal/Sidebar'
@@ -16,6 +17,8 @@ import { ActiveLink } from 'src/components/Link'
 import WalletBalanceButton from 'src/components/AccountStatus/WalletButton'
 import NavProfile from './NavProfile'
 import { ModalHeader } from '../Modal'
+import { useSetWalletModalMode } from 'src/state/wallet/hooks'
+import { WalletModalMode } from 'src/state/wallet/actions'
 
 const WalletRow = styled(RowCenter)`
   padding: 8px;
@@ -49,7 +52,13 @@ export default function NavModalUserMobile() {
   const isOpen = useSidebarModalOpened(ApplicationSidebarModal.NAV_USER_MOBILE)
 
   // wallet modal
-  const toggleWalletModal = useWalletModalToggle()
+  const openModal = useOpenModal(ApplicationModal.WALLET)
+  const setWalletModalMode = useSetWalletModalMode()
+
+  const openWalletModal = useCallback(() => {
+    openModal()
+    setWalletModalMode(WalletModalMode.OVERVIEW)
+  }, [])
 
   // nav links
   const navLinks = useNavUserLinks(currentUser?.slug)
@@ -68,7 +77,7 @@ export default function NavModalUserMobile() {
 
           <Divider />
 
-          <WalletRow onClick={toggleWalletModal}>
+          <WalletRow onClick={openWalletModal}>
             <TYPE.body fontWeight={500}>
               <Trans>My wallet</Trans>
             </TYPE.body>

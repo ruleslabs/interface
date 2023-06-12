@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import { useETHBalance } from 'src/state/wallet/hooks'
+import { useETHBalance, useSetWalletModalMode } from 'src/state/wallet/hooks'
 import Confirmation from './Confirmation'
 import { PaginationSpinner } from '../Spinner'
 import Error from './Error'
@@ -10,9 +10,8 @@ import Column from '../Column'
 import { PrimaryButton } from '../Button'
 import { RowCenter } from '../Row'
 import { TYPE } from 'src/styles/theme'
-import { ErrorCard } from '../Card'
 import PrivateKeyDecipherForm from './PrivateKeyDecipherForm'
-import { useWalletModalToggle } from 'src/state/application/hooks'
+import { useOpenModal } from 'src/state/application/hooks'
 import useStarknetTx, { useEstimateFees, useExecuteTx } from 'src/hooks/useStarknetTx'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import useRulesAccount from 'src/hooks/useRulesAccount'
@@ -20,6 +19,10 @@ import Pending from './Pending'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import LockedWallet from '../LockedWallet'
+import { isSoftLockingReason } from 'src/utils/lockingReason'
+import { ApplicationModal } from 'src/state/application/actions'
+import { WalletModalMode } from 'src/state/wallet/actions'
+import DepositNeeded from '../LockedWallet/DepositNeeded'
 
 const DummyFocusInput = styled.input`
   max-height: 0;
@@ -60,15 +63,27 @@ interface StarknetSignerProps {
   children?: React.ReactNode
   display: StarknetSignerDisplayProps
   skipSignin?: boolean
+  allowSoftWalletLock?: boolean
 }
 
-export default function StarknetSigner({ display, skipSignin = false, children }: StarknetSignerProps) {
-  // modal
-  const toggleWalletModal = useWalletModalToggle()
+export default function StarknetSigner({
+  display,
+  skipSignin = false,
+  allowSoftWalletLock = false,
+  children,
+}: StarknetSignerProps) {
+  // deposit modal
+  const openModal = useOpenModal(ApplicationModal.WALLET)
+  const setWalletModalMode = useSetWalletModalMode()
+
+  const openDesitModal = useCallback(() => {
+    openModal()
+    setWalletModalMode(WalletModalMode.DEPOSIT)
+  }, [])
 
   // current user
   const { currentUser } = useCurrentUser()
-  const { lockingReason, deployed } = currentUser?.starknetWallet ?? {}
+  const { lockingReason } = currentUser?.starknetWallet ?? {}
 
   // handlers
   const [estimateFees, estimateFeesRes] = useEstimateFees()
@@ -116,12 +131,8 @@ export default function StarknetSigner({ display, skipSignin = false, children }
 
   // components
   const modalContent = useMemo(() => {
-    if (lockingReason) {
+    if (lockingReason && (!allowSoftWalletLock || !isSoftLockingReason(lockingReason))) {
       return <LockedWallet />
-    }
-
-    if (!deployed) {
-      return <ErrorCard>Deployment !</ErrorCard>
     }
 
     if (!signing) {
@@ -172,15 +183,7 @@ export default function StarknetSigner({ display, skipSignin = false, children }
               </FeeWrapper>
             )}
 
-            {!canPayTransaction && (
-              <ErrorCard textAlign="center">
-                <Trans>
-                  You do not have enough ETH in your Rules wallet to pay for network fees on Starknet.
-                  <br />
-                  <span onClick={toggleWalletModal}>Buy ETH or deposit from another wallet.</span>
-                </Trans>
-              </ErrorCard>
-            )}
+            {!canPayTransaction && <DepositNeeded />}
 
             <SubmitButton onClick={() => executeTx(parsedNetworkFee.maxFee)} disabled={!canPayTransaction} large>
               {display.confirmationActionText ?? <Trans>Confirm</Trans>}
@@ -202,7 +205,8 @@ export default function StarknetSigner({ display, skipSignin = false, children }
     parsedNetworkFee,
     children,
     lockingReason,
-    deployed,
+    allowSoftWalletLock,
+    openDesitModal,
   ])
 
   return (

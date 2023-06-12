@@ -19,6 +19,7 @@ import { ReactComponent as EthereumIcon } from 'src/images/ethereum-plain.svg'
 import { PaginationSpinner } from '../Spinner'
 import { MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION } from 'src/constants/misc'
 import { constants } from '@rulesorg/sdk-core'
+import { isSoftLockingReason } from 'src/utils/lockingReason'
 
 const ETHBalance = styled(RowCenter)`
   width: 100%;
@@ -73,7 +74,7 @@ export default function Overview() {
             <Trans>Your wallet has been upgraded, you can migrate the funds from your old wallet</Trans>
           </Text.HeadlineSmall>
 
-          <PrimaryButton onClick={onFundsMigrationMode} large disabled={!!lockingReason}>
+          <PrimaryButton onClick={onFundsMigrationMode} large disabled={!isSoftLockingReason(lockingReason)}>
             <Trans>Migrate - {+oldBalance.toFixed(4)} ETH</Trans>
           </PrimaryButton>
         </Column>
@@ -94,17 +95,7 @@ export default function Overview() {
       )
     }
 
-    return (
-      <Column gap={24}>
-        <Text.HeadlineSmall>
-          <Trans>Your wallet is not deployed, you need to deploy it to interact with other users on Rules.</Trans>
-        </Text.HeadlineSmall>
-
-        <PrimaryButton onClick={onDeployMode} large>
-          <Trans>Deploy</Trans>
-        </PrimaryButton>
-      </Column>
-    )
+    return null
   }, [
     oldAddress,
     balance,

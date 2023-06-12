@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components/macro'
-import { constants } from '@rulesorg/sdk-core'
 
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import { PrimaryButton } from 'src/components/Button'
@@ -10,6 +9,7 @@ import { useConnectors } from '@starknet-react/core'
 
 import { ReactComponent as EthereumIcon } from 'src/images/ethereum-plain.svg'
 import Box from 'src/theme/components/Box'
+import { isSoftLockingReason } from 'src/utils/lockingReason'
 
 const StyledWalletButton = styled(PrimaryButton)<{ $alert: boolean }>`
   width: unset;
@@ -54,20 +54,8 @@ export default function WalletButton(props: Parameters<typeof PrimaryButton>[0])
   const { address } = useRulesAccount()
   const balance = useETHBalance(address)
 
-  // alert
-  const alert = useMemo(() => {
-    switch (currentUser?.starknetWallet.lockingReason) {
-      case constants.StarknetWalletLockingReason.SIGNER_ESCAPE:
-      case constants.StarknetWalletLockingReason.UNDEPLOYED:
-        return true
-
-      default:
-        return false
-    }
-  }, [currentUser?.starknetWallet.lockingReason])
-
   return (
-    <StyledWalletButton $alert={alert} {...props}>
+    <StyledWalletButton $alert={!isSoftLockingReason(currentUser?.starknetWallet.lockingReason)} {...props}>
       <Box>{balance ? `${balance.toFixed(4)}` : 'Loading...'}</Box>
       {!!address && <EthereumIcon />}
     </StyledWalletButton>

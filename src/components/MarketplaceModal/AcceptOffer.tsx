@@ -4,11 +4,10 @@ import { WeiAmount, constants } from '@rulesorg/sdk-core'
 import { gql, useQuery } from '@apollo/client'
 
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
-import { useModalOpened, useAcceptOfferModalToggle, useWalletModalToggle } from 'src/state/application/hooks'
+import { useModalOpened, useAcceptOfferModalToggle } from 'src/state/application/hooks'
 import { ApplicationModal } from 'src/state/application/actions'
 import Column from 'src/components/Column'
 import { PrimaryButton } from 'src/components/Button'
-import { ErrorCard } from 'src/components/Card'
 import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/StarknetSigner'
 import { useETHBalance } from 'src/state/wallet/hooks'
 import { PurchaseBreakdown } from './PriceBreakdown'
@@ -21,6 +20,7 @@ import { useOperations } from 'src/hooks/usePendingOperations'
 import { Operation } from 'src/types'
 import { Call, uint256 } from 'starknet'
 import { getVoucherRedeemCall } from 'src/utils/getVoucherRedeemCall'
+import DepositNeeded from '../LockedWallet/DepositNeeded'
 
 const CARDS_QUERY = gql`
   query CardsByTokenIds($tokenIds: [String!]!) {
@@ -64,7 +64,6 @@ export default function AcceptOfferModal({ tokenIds, price }: AcceptOfferModalPr
   // modal
   const isOpen = useModalOpened(ApplicationModal.ACCEPT_OFFER)
   const toggleAcceptOfferModal = useAcceptOfferModalToggle()
-  const toggleWalletModal = useWalletModalToggle()
 
   // cards query
   const cardsQuery = useQuery(CARDS_QUERY, { variables: { tokenIds }, skip: !isOpen })
@@ -173,15 +172,7 @@ export default function AcceptOfferModal({ tokenIds, price }: AcceptOfferModalPr
 
               <PurchaseBreakdown price={price} />
 
-              {!canPayForCard && balance && (
-                <ErrorCard textAlign="center">
-                  <Trans>
-                    You do not have enough ETH in your Rules wallet to purchase this card.
-                    <br />
-                    <span onClick={toggleWalletModal}>Buy ETH or deposit from another wallet.</span>
-                  </Trans>
-                </ErrorCard>
-              )}
+              {!canPayForCard && balance && <DepositNeeded />}
 
               <PrimaryButton onClick={handleConfirmation} disabled={!canPayForCard} large>
                 <Trans>Next</Trans>
