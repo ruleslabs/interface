@@ -18,6 +18,7 @@ import * as Text from 'src/theme/components/Text'
 import { ReactComponent as EthereumIcon } from 'src/images/ethereum-plain.svg'
 import { PaginationSpinner } from '../Spinner'
 import { MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION } from 'src/constants/misc'
+import { constants } from '@rulesorg/sdk-core'
 
 const ETHBalance = styled(RowCenter)`
   width: 100%;
@@ -61,6 +62,8 @@ export default function Overview() {
 
   // components
   const componentContent = useMemo(() => {
+    if (lockingReason === constants.StarknetWalletLockingReason.MAINTENANCE) return null
+
     if ((oldAddress && !oldBalance) || !balance) return <PaginationSpinner loading={true} />
 
     if (oldBalance?.greaterThan(MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION)) {

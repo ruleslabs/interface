@@ -13,6 +13,7 @@ import { RowBetween } from 'src/components/Row'
 import EmptyTab, { EmptyPacksTabOfCurrentUser } from 'src/components/EmptyTab'
 import { PaginationSpinner } from 'src/components/Spinner'
 import useSearchedUser from 'src/hooks/useSearchedUser'
+import LockedWallet from 'src/components/LockedWallet'
 
 const USER_PACKS_BALANCES_QUERY = gql`
   query ($slug: String!) {
@@ -70,6 +71,14 @@ function UserPacks() {
       ),
     [packsBalances]
   )
+
+  const lock: boolean | null = true
+  if (lock)
+    return (
+      <Section marginTop="32px">
+        <LockedWallet />
+      </Section>
+    )
 
   if (!user) return null
 

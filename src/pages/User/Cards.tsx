@@ -23,6 +23,7 @@ import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import CollectionNfts from 'src/components/nft/Collection/CollectionNfts'
 
 import { ReactComponent as Present } from 'src/images/present.svg'
+import LockedWallet from 'src/components/LockedWallet'
 
 // css
 
@@ -283,6 +284,14 @@ function UserCards() {
       )),
     [cards]
   )
+
+  const lock: boolean | null = true
+  if (lock)
+    return (
+      <Section marginTop="32px">
+        <LockedWallet />
+      </Section>
+    )
 
   if (!user) return null
 

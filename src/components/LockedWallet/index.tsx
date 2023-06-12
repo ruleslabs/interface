@@ -84,6 +84,7 @@ export default function LockedWallet() {
       }
 
     case constants.StarknetWalletLockingReason.MAINTENANCE:
+    default:
       return (
         <InfoCard>
           <Column gap={'24'}>
@@ -98,11 +99,11 @@ export default function LockedWallet() {
         </InfoCard>
       )
 
-    default:
-      return (
-        <ErrorCard>
-          <Trans>Your wallet is locked for an unknown reason, please contact support on discord</Trans>
-        </ErrorCard>
-      )
+    // default:
+    //   return (
+    //     <ErrorCard>
+    //       <Trans>Your wallet is locked for an unknown reason, please contact support on discord</Trans>
+    //     </ErrorCard>
+    //   )
   }
 }
