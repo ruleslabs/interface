@@ -7,18 +7,13 @@ import Row from 'src/components/Row'
 import Card from 'src/components/Card'
 import Link from 'src/components/Link'
 import { PrimaryButton } from 'src/components/Button'
-
-import { ReactComponent as Ghost } from 'src/images/ghost.svg'
+import * as Icons from 'src/theme/components/Icons'
 
 const StyledEmptyTab = styled(ColumnCenter)`
   justify-content: center;
   height: 375px;
   gap: 20px;
-
-  svg {
-    width: 70px;
-    fill: ${({ theme }) => theme.text2};
-  }
+  color: ${({ theme }) => theme.bg3};
 `
 
 const StyledEmptyTabOfCurrentUser = styled(Row)`
@@ -81,7 +76,7 @@ export default function EmptyTab({ emptyText }: EmptyTabProps) {
   return (
     <Card>
       <StyledEmptyTab>
-        <Ghost />
+        <Icons.Ghost width={'64'} />
         <TYPE.body>{emptyText}</TYPE.body>
       </StyledEmptyTab>
     </Card>

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Trans, t } from '@lingui/macro'
 import styled from 'styled-components/macro'
+import { ApolloError } from 'apollo-client'
 
 import { useSidebarModalOpened, useNotificationsModalToggle } from 'src/state/application/hooks'
 import SidebarModal, { ModalContent, ModalBody } from 'src/components/Modal/Sidebar'
@@ -11,11 +12,9 @@ import { useCurrentUserNotifications } from 'src/state/search/hooks'
 import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
 import NotificationRow from './NotificationRow'
 import { useMarkNotificationsAsReadMutation } from 'src/state/user/hooks'
-
-import { ReactComponent as GhostIcon } from 'src/images/ghost.svg'
-import { ApolloError } from 'apollo-client'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import { ModalHeader } from '../Modal'
+import * as Icons from 'src/theme/components/Icons'
 
 const StyledModalBody = styled(ModalBody)`
   padding: 0;
@@ -24,10 +23,7 @@ const StyledModalBody = styled(ModalBody)`
 const EmptyBox = styled(ColumnCenter)`
   gap: 16px;
   margin-top: 64px;
-
-  & svg {
-    fill: ${({ theme }) => theme.text2};
-  }
+  color: ${({ theme }) => theme.bg3};
 `
 
 const NotificationsWrapper = styled(Column)`
@@ -79,7 +75,7 @@ export default function NotificationsModal() {
         <StyledModalBody>
           {!notifications.length && !isLoading && (
             <EmptyBox>
-              <GhostIcon />
+              <Icons.Ghost width={'64'} />
 
               <TYPE.body>
                 <Trans>No notifications yet</Trans>
