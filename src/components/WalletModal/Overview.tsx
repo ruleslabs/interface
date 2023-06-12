@@ -12,7 +12,6 @@ import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import { TYPE } from 'src/styles/theme'
 import { PrimaryButton, SecondaryButton } from 'src/components/Button'
 import LockedWallet from 'src/components/LockedWallet'
-import { ErrorCard } from 'src/components/Card'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import * as Text from 'src/theme/components/Text'
 
@@ -127,11 +126,7 @@ export default function Overview() {
           <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)?.toFixed(2)}` : 'Loading ...'}</FiatBalance>
         </Column>
 
-        {lockingReason && (
-          <ErrorCard>
-            <LockedWallet />
-          </ErrorCard>
-        )}
+        {lockingReason && <LockedWallet />}
 
         {componentContent}
       </Column>

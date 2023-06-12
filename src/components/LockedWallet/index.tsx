@@ -6,6 +6,9 @@ import { Trans } from '@lingui/macro'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import { useETHBalance } from 'src/state/wallet/hooks'
+import { ErrorCard, InfoCard } from '../Card'
+import * as Text from 'src/theme/components/Text'
+import { Column } from 'src/theme/components/Flex'
 
 export default function LockedWallet() {
   const { currentUser } = useCurrentUser()
@@ -16,12 +19,6 @@ export default function LockedWallet() {
   const balance = useETHBalance(address) ?? WeiAmount.ZERO
 
   const weiAmountToEURValue = useWeiAmountToEURValue()
-
-  // forced upgrade
-  const isLockedForForcedUpgrade = useMemo(
-    () => lockingReason === constants.StarknetWalletLockingReason.FORCED_UPGRADE,
-    [lockingReason]
-  )
 
   // signer escape
   const needsDeposit = useMemo(
@@ -47,34 +44,65 @@ export default function LockedWallet() {
 
   // returns
 
-  if (isLockedForForcedUpgrade) {
-    return (
-      <Trans>
-        We are performing a manual upgrade of your wallet. For this purpose, your wallet has to be locked. Your access
-        will be recovered in a few days.
-      </Trans>
-    )
-  }
+  switch (lockingReason) {
+    case constants.StarknetWalletLockingReason.FORCED_UPGRADE:
+      return (
+        <InfoCard>
+          <Trans>
+            We are performing a manual upgrade of your wallet. For this purpose, your wallet has to be locked. Your
+            access will be recovered in a few days.
+          </Trans>
+        </InfoCard>
+      )
 
-  if (needsDeposit) {
-    return (
-      <Trans>
-        Your wallet is locked. This happens when you reset your password. In order to recover your wallet, you need to
-        deposit at least
-        <br />
-        <strong>
-          {minimumWeiAmountToEscapeSigner.toSignificant(18)} ETH ({weiAmountToEURValue(minimumWeiAmountToEscapeSigner)}
-          €)
-        </strong>
-      </Trans>
-    )
-  }
+    case constants.StarknetWalletLockingReason.SIGNER_ESCAPE:
+      if (needsDeposit) {
+        return (
+          <ErrorCard>
+            <Trans>
+              Your wallet is locked. This happens when you reset your password. In order to recover your wallet, you
+              need to deposit at least
+              <br />
+              <strong>
+                {minimumWeiAmountToEscapeSigner.toSignificant(18)} ETH (
+                {weiAmountToEURValue(minimumWeiAmountToEscapeSigner)}
+                €)
+              </strong>
+            </Trans>
+          </ErrorCard>
+        )
+      } else {
+        return (
+          <ErrorCard>
+            <Trans>
+              Your wallet is locked. This happens when you reset your password. For security reasons, your wallet will
+              be recovered&nbsp;
+              <strong>in {daysBeforeEscape} days.</strong>
+            </Trans>
+          </ErrorCard>
+        )
+      }
 
-  return (
-    <Trans>
-      Your wallet is locked. This happens when you reset your password. For security reasons, your wallet will be
-      recovered&nbsp;
-      <strong>in {daysBeforeEscape} days.</strong>
-    </Trans>
-  )
+    case constants.StarknetWalletLockingReason.MAINTENANCE:
+      return (
+        <InfoCard>
+          <Column gap={'24'}>
+            <Text.HeadlineSmall>
+              <Trans>We are improving Rules !</Trans>
+            </Text.HeadlineSmall>
+
+            <Text.Body>
+              <Trans>Your wallet is in maintenance, it will be resolved very soon</Trans>
+            </Text.Body>
+          </Column>
+        </InfoCard>
+      )
+
+    default:
+      return (
+        <ErrorCard>
+          <Trans>Your wallet is locked for an unknown reason, please contact support on discord</Trans>
+        </ErrorCard>
+      )
+  }
 }

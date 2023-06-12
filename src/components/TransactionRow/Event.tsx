@@ -88,7 +88,8 @@ function TokenTransferEvent({ parsedEvent }: CardTransferEventProps) {
   const query = useTokenAndAddressesQuery(parsedEvent.type, parsedEvent.tokenId, [parsedEvent.to, parsedEvent.from])
 
   // airdrop
-  const airdrop = constants.ACCOUNTS[rulesSdk.networkInfos.starknetChainId][constants.RulesAccount.AIRDROP_MINTER]
+  // TODO: fix airdrop support
+  const airdrop = false // constants.ACCOUNTS[rulesSdk.networkInfos.starknetChainId][constants.RulesAccount.AIRDROP_MINTER]
 
   // get token (pack/card) data
   const token = useMemo(() => {

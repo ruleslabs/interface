@@ -117,11 +117,7 @@ export default function StarknetSigner({ display, skipSignin = false, children }
   // components
   const modalContent = useMemo(() => {
     if (lockingReason) {
-      return (
-        <ErrorCard>
-          <LockedWallet />
-        </ErrorCard>
-      )
+      return <LockedWallet />
     }
 
     if (!deployed) {
