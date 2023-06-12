@@ -21,12 +21,12 @@ export type ModalContents<TEnum extends string | number | symbol> = {
 
 /* Operations */
 
-export type OperationType = 'transfer' | 'offerCreation' | 'offerCancelation' | 'offerAcceptance'
+export type OperationType = 'transfer' | 'offerCreation' | 'offerCancelation' | 'offerAcceptance' | 'deployment'
 
 export interface Operation {
   tokenId: string
   type: OperationType
-  quantity: number
+  quantity: string | number
 }
 
 export interface PendingOperation extends Operation {

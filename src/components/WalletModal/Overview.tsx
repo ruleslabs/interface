@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-import { constants } from '@rulesorg/sdk-core'
+import { WeiAmount, constants } from '@rulesorg/sdk-core'
 
 import { ModalBody } from 'src/components/Modal/Sidebar'
 import useCurrentUser from 'src/hooks/useCurrentUser'
@@ -17,7 +17,7 @@ import * as Text from 'src/theme/components/Text'
 import Spinner, { PaginationSpinner } from '../Spinner'
 import { MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION } from 'src/constants/misc'
 import { isSoftLockingReason } from 'src/utils/lockingReason'
-import { usePendingOperations } from 'src/hooks/usePendingOperations'
+import { useAllPendingOperations } from 'src/hooks/usePendingOperations'
 import useTrans from 'src/hooks/useTrans'
 import { Row, Column } from 'src/theme/components/Flex'
 import * as Icons from 'src/theme/components/Icons'
@@ -114,7 +114,18 @@ export default function Overview() {
     lockingReason,
   ])
 
-  const pendingOperations = usePendingOperations()
+  const pendingOperations = useAllPendingOperations()
+  const formatedPendingOperations = useMemo(
+    () =>
+      pendingOperations.map((pendingOperation) => ({
+        ...pendingOperation,
+        parsedQuantity:
+          pendingOperation.type === 'transfer' && pendingOperation.tokenId === '0x0'
+            ? WeiAmount.fromRawAmount(pendingOperation.quantity)
+            : null,
+      })),
+    [pendingOperations.length]
+  )
 
   return (
     <ModalBody>
@@ -137,10 +148,13 @@ export default function Overview() {
             <Trans>Recent transactions</Trans>
           </Text.HeadlineMedium>
 
-          {pendingOperations.map((pendingOperation, index) => (
+          {formatedPendingOperations.map((pendingOperation, index) => (
             <Row key={index} gap={'12'}>
               <Spinner style={{ margin: 'unset', width: '24px' }} />
               <Text.Body>{trans('operation', pendingOperation.type)}</Text.Body>
+              {pendingOperation.parsedQuantity && (
+                <Text.Small>({+pendingOperation.parsedQuantity.toFixed(6)} ETH)</Text.Small>
+              )}
             </Row>
           ))}
 

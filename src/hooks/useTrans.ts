@@ -21,6 +21,7 @@ const pendingOperationsMessage: { [id in OperationType]: MessageDescriptor } = {
   offerAcceptance: msg`Transfer in progress...`,
   offerCancelation: msg`Sale canceling in progress...`,
   offerCreation: msg`Sale in progress...`,
+  deployment: msg`Wallet deployment...`,
 }
 
 const scarcities: { [id in ScarcityName]: MessageDescriptor } = {

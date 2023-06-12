@@ -18,6 +18,7 @@ import { Account, ec, hash, stark } from 'starknet'
 import { PaginationSpinner } from '../Spinner'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import { DEPLOYMENT_DEPOSIT_SUGGESTION_FACTOR } from 'src/constants/misc'
+import { useOperations } from 'src/hooks/usePendingOperations'
 
 export default function Deploy() {
   const [parsedDummyDeploymentMaxFee, setParsedDummyDeploymentMaxFee] = useState<WeiAmount | null>(null)
@@ -48,6 +49,9 @@ export default function Deploy() {
   // starknet tx
   const { setAccountDeploymentPayload, setSigning, resetStarknetTx } = useStarknetTx()
 
+  // pending operation
+  const { pushOperation, cleanOperations } = useOperations()
+
   // ETH balance
   const balance = useETHBalance(address)
 
@@ -62,6 +66,9 @@ export default function Deploy() {
       constructorCalldata: getWalletConstructorCallData(originalPublicKey),
       contractAddress: address,
     })
+
+    // save operation
+    pushOperation({ tokenId: '0x0', type: 'deployment', quantity: 0 })
 
     // dummy deployment fee estimation
     const dummyPrivateKey = stark.randomAddress()
@@ -129,6 +136,7 @@ export default function Deploy() {
 
   useEffect(() => {
     resetStarknetTx()
+    cleanOperations()
   }, [])
 
   return (
