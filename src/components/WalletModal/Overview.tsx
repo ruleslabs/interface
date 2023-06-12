@@ -101,7 +101,7 @@ export default function Overview() {
       )
     }
 
-    return null
+    return <LockedWallet />
   }, [
     oldAddress,
     balance,
@@ -139,7 +139,7 @@ export default function Overview() {
           <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)?.toFixed(2)}` : 'Loading ...'}</FiatBalance>
         </Column>
 
-        {lockingReason && <LockedWallet />}
+        {!isSoftLockingReason(lockingReason) && <LockedWallet />}
 
         {componentContent}
 
