@@ -32,6 +32,7 @@ const ErrorMessage = styled(Subtitle)`
   text-align: center;
   width: 100%;
   max-width: 420px;
+  margin: auto;
   color: ${({ theme }) => theme.error};
 `
 

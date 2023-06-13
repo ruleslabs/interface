@@ -17,7 +17,7 @@ import { ModalHeader } from '../Modal'
 const display: StarknetSignerDisplayProps = {
   confirmationText: t`Your wallet will be upgraded`,
   confirmationActionText: t`Confirm wallet upgrade`,
-  transactionText: t`wallet upgrade.`,
+  transactionDesc: t`wallet upgrade.`,
 }
 
 export default function UpgradeWalletModal() {

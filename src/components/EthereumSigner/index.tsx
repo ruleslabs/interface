@@ -4,7 +4,7 @@ import Confirmation from './Confirmation'
 
 interface EthereumSignerProps extends React.HTMLAttributes<HTMLDivElement> {
   confirmationText: string
-  transactionText: string
+  transactionDesc: string
   waitingForTx: boolean
   txHash?: string
   error?: string
@@ -13,7 +13,7 @@ interface EthereumSignerProps extends React.HTMLAttributes<HTMLDivElement> {
 export default function EthereumSigner({
   children,
   confirmationText,
-  transactionText,
+  transactionDesc,
   waitingForTx,
   txHash,
   error,
@@ -25,7 +25,7 @@ export default function EthereumSigner({
           txHash={txHash ?? undefined}
           error={error ?? undefined}
           confirmationText={confirmationText}
-          transactionText={transactionText}
+          transactionDesc={transactionDesc}
         />
       ) : (
         children

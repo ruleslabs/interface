@@ -13,6 +13,8 @@ const colors = {
   gray800: '#33373b',
   gray500: '#828585',
 
+  dangerousRed: '#CB222C',
+
   vibrantPurple: '#9F04DC',
   offWhite: '#e7e7e7',
   spookyOrange: '#af4027',
@@ -71,6 +73,8 @@ const themeContractValues = {
     accent: null,
     accentDark: null,
     accentDarker: null,
+
+    error: null,
 
     common: null,
     platinium: null,
@@ -222,6 +226,8 @@ export const rawTokens = {
     accent: colors.vibrantPurple,
     accentDark: darken(0.05, colors.vibrantPurple),
     accentDarker: darken(0.1, colors.vibrantPurple),
+
+    error: colors.dangerousRed,
 
     common: colors.vibrantPurple,
     platinium: colors.offWhite,

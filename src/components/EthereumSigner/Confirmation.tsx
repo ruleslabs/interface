@@ -82,12 +82,12 @@ const EtherscanButtonWrapper = styled(ColumnCenter)`
 
 interface ConfirmationProps {
   confirmationText: string
-  transactionText: string
+  transactionDesc: string
   txHash?: string
   error?: string
 }
 
-export default function Confirmation({ confirmationText, transactionText, txHash, error }: ConfirmationProps) {
+export default function Confirmation({ confirmationText, transactionDesc, txHash, error }: ConfirmationProps) {
   return (
     <StyledConfirmation>
       <Column gap={24}>
@@ -115,7 +115,7 @@ export default function Confirmation({ confirmationText, transactionText, txHash
               <Trans>Waiting for confirmation</Trans>
             </Title>
 
-            <Subtitle>{transactionText}</Subtitle>
+            <Subtitle>{transactionDesc}</Subtitle>
           </ColumnCenter>
         )}
       </Column>

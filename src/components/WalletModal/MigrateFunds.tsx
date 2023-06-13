@@ -10,12 +10,11 @@ import { ModalBody } from '../Modal/Sidebar'
 import { PaginationSpinner } from '../Spinner'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import useRulesAccount from 'src/hooks/useRulesAccount'
-import { useOperations } from 'src/hooks/usePendingOperations'
 
 const display: StarknetSignerDisplayProps = {
   confirmationText: t`Your migration is on its way`,
   confirmationActionText: t`Confirm migration`,
-  transactionText: t`ETH migration to your upgraded wallet`,
+  transactionDesc: t`ETH migration to your upgraded wallet`,
 }
 
 export default function MigrateFunds() {
@@ -24,9 +23,6 @@ export default function MigrateFunds() {
 
   // balance
   const oldBalance = useETHBalance(oldAddress)
-
-  // pending operation
-  const { pushOperation, cleanOperations } = useOperations()
 
   // starknet tx
   const { setSigning, setCalls, resetStarknetTx, setMigration, setBeforeExecutionCallback } = useStarknetTx()
@@ -51,18 +47,17 @@ export default function MigrateFunds() {
 
       const amount = oldBalance.subtract(maxFee).toUnitFixed(Unit.WEI)
 
-      // save operation
-      pushOperation({ tokenId: '0x0', type: 'transfer', quantity: amount })
+      // edit calls
+      const editedCalls = { ...calls }
 
-      calls[0].calldata = [address, amount, 0]
-      return calls
+      editedCalls[0].calldata = [address, amount, 0]
+      return editedCalls
     },
     [address, oldBalance]
   )
 
   useEffect(() => {
     resetStarknetTx()
-    cleanOperations()
     setMigration(true)
   }, [])
 

@@ -15,6 +15,7 @@ export interface State {
   stxHash: string | null
   stxMigration: boolean
   stxBeforeExecutionCallback: ((calls: State['stxCalls'], maxFee: string) => Promise<Call[]>) | null
+  stxDesc: string | null
 }
 
 export interface Actions {
@@ -29,7 +30,7 @@ export interface Actions {
 
   stxIncreaseValue: (amount: WeiAmount) => void
 
-  stxSetHash: (hash: string | null) => void
+  stxSetHash: (hash: string | null, desc?: string | null) => void
 
   stxSetMigration: (migration: boolean) => void
 
@@ -48,6 +49,7 @@ const resetState = {
 const initialState: State = {
   ...resetState,
   stxHash: null,
+  stxDesc: null,
 }
 
 export const createStarknetTxSlice: StateCreator<StoreState, [['zustand/immer', never]], [], StarknetTxSlice> = (
@@ -86,8 +88,10 @@ export const createStarknetTxSlice: StateCreator<StoreState, [['zustand/immer', 
 
   // HASH
 
-  stxSetHash: (hash) => {
-    set({ stxHash: hash })
+  stxSetHash: (hash, desc = null) => {
+    if (!hash !== !desc) throw 'Bad stx input'
+
+    set({ stxHash: hash, stxDesc: desc })
 
     if (hash) createApplicationSlice(set, ...a).subscribeToOperations(hash)
   },

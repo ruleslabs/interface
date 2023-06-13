@@ -46,7 +46,7 @@ const ArrowWrapper = styled(Column)`
 const display: StarknetSignerDisplayProps = {
   confirmationText: t`Your withdraw is on its way`,
   confirmationActionText: t`Confirm withdraw`,
-  transactionText: t`ETH withdraw to your Ethereum wallet`,
+  transactionDesc: t`ETH withdraw to your Ethereum wallet`,
 }
 
 export default function StarkgateWithdraw() {

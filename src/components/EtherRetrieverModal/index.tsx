@@ -149,7 +149,7 @@ export default function EtherRetrieveModal() {
         <ModalBody>
           <EthereumSigner
             confirmationText={t`Your ETH transfer is on its way`}
-            transactionText={t`${totalParsedAmount?.toSignificant(6)} ETH transfer to your Ethereum wallet`}
+            transactionDesc={t`${totalParsedAmount?.toSignificant(6)} ETH transfer to your Ethereum wallet`}
             waitingForTx={waitingForTx}
             txHash={txHash ?? undefined}
             error={error ?? undefined}

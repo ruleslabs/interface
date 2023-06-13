@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-import { WeiAmount, constants } from '@rulesorg/sdk-core'
+import { constants } from '@rulesorg/sdk-core'
 
 import { ModalBody } from 'src/components/Modal/Sidebar'
 import useCurrentUser from 'src/hooks/useCurrentUser'
@@ -17,13 +17,13 @@ import * as Text from 'src/theme/components/Text'
 import Spinner, { PaginationSpinner } from '../Spinner'
 import { MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION } from 'src/constants/misc'
 import { isSoftLockingReason } from 'src/utils/lockingReason'
-import { useAllPendingOperations } from 'src/hooks/usePendingOperations'
-import useTrans from 'src/hooks/useTrans'
 import { Row, Column } from 'src/theme/components/Flex'
 import * as Icons from 'src/theme/components/Icons'
+import DeploymentNeeded from '../LockedWallet/DeploymentNeeded'
+import { useStxHistory } from 'src/hooks/useStarknetTx'
 
 import { ReactComponent as EthereumIcon } from 'src/images/ethereum-plain.svg'
-import DeploymentNeeded from '../LockedWallet/DeploymentNeeded'
+import Box from 'src/theme/components/Box'
 
 const ETHBalance = styled(RowCenter)`
   width: 100%;
@@ -45,9 +45,6 @@ export default function Overview() {
   // current user
   const { currentUser } = useCurrentUser()
   const { lockingReason } = currentUser?.starknetWallet ?? {}
-
-  // i18n
-  const trans = useTrans()
 
   // modal mode
   const setWalletModalMode = useSetWalletModalMode()
@@ -122,18 +119,7 @@ export default function Overview() {
     lockingReason,
   ])
 
-  const pendingOperations = useAllPendingOperations()
-  const formatedPendingOperations = useMemo(
-    () =>
-      pendingOperations.map((pendingOperation) => ({
-        ...pendingOperation,
-        parsedQuantity:
-          pendingOperation.type === 'transfer' && pendingOperation.tokenId === '0x0'
-            ? WeiAmount.fromRawAmount(pendingOperation.quantity)
-            : null,
-      })),
-    [pendingOperations.length]
-  )
+  const stxHistory = useStxHistory()
 
   return (
     <ModalBody>
@@ -156,17 +142,25 @@ export default function Overview() {
             <Trans>Recent transactions</Trans>
           </Text.HeadlineMedium>
 
-          {formatedPendingOperations.map((pendingOperation, index) => (
-            <Row key={index} gap={'12'}>
-              <Spinner style={{ margin: 'unset', width: '24px' }} />
-              <Text.Body>{trans('operation', pendingOperation.type)}</Text.Body>
-              {pendingOperation.parsedQuantity && (
-                <Text.Small>({+pendingOperation.parsedQuantity.toFixed(6)} ETH)</Text.Small>
+          {stxHistory.map((tx) => (
+            <Row key={tx.hash} gap={'12'}>
+              {tx.loading ? (
+                <Spinner style={{ margin: 'unset', width: '24px' }} />
+              ) : tx.success ? (
+                <Box color={'accent'}>
+                  <Icons.Checkmark width={'24'} />
+                </Box>
+              ) : (
+                <Box color={'error'}>
+                  <Icons.Close width={'24'} />
+                </Box>
               )}
+
+              <Text.Body>{tx.desc}</Text.Body>
             </Row>
           ))}
 
-          {!pendingOperations.length && (
+          {!stxHistory.length && (
             <Column color={'bg3'} alignItems={'center'} gap={'8'} marginTop={'16'}>
               <Icons.Ghost width={'64'} />
 

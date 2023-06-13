@@ -89,3 +89,9 @@ export const Ghost = (props: SVGProps) => (
     />
   </svg>
 )
+
+export const Checkmark = (props: SVGProps) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path d="M8,23a2.6,2.6,0,0,1-1.8-.7L.7,16.8a2.7,2.7,0,0,1,0-3.6,2.7,2.7,0,0,1,3.6,0L8,17,19.7,5.2a2.7,2.7,0,0,1,3.6,0,2.7,2.7,0,0,1,0,3.6L9.8,22.3A2.6,2.6,0,0,1,8,23Z" />
+  </svg>
+)

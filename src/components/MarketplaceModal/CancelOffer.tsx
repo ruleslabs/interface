@@ -17,7 +17,7 @@ import { useOperations } from 'src/hooks/usePendingOperations'
 const display: StarknetSignerDisplayProps = {
   confirmationText: t`Your offer will be canceled`,
   confirmationActionText: t`Confirm offer cancelation`,
-  transactionText: t`offer cancelation.`,
+  transactionDesc: t`offer cancelation.`,
 }
 
 interface CancelOfferModalProps {

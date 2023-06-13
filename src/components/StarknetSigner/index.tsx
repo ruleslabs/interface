@@ -56,7 +56,7 @@ const FeeWrapper = styled(RowCenter)`
 export interface StarknetSignerDisplayProps {
   confirmationText: string
   confirmationActionText?: string
-  transactionText: string
+  transactionDesc: string
 }
 
 interface StarknetSignerProps {
@@ -190,7 +190,11 @@ export default function StarknetSigner({
 
             {!canPayTransaction && <DepositNeeded />}
 
-            <SubmitButton onClick={() => executeTx(parsedNetworkFee.maxFee)} disabled={!canPayTransaction} large>
+            <SubmitButton
+              onClick={() => executeTx(parsedNetworkFee.maxFee, display.transactionDesc)}
+              disabled={!canPayTransaction}
+              large
+            >
               {display.confirmationActionText ?? <Trans>Confirm</Trans>}
             </SubmitButton>
           </Column>
@@ -200,6 +204,7 @@ export default function StarknetSigner({
 
     return <PrivateKeyDecipherForm onPrivateKeyDeciphered={updateSigner} />
   }, [
+    display,
     loading,
     error,
     txHash,

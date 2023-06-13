@@ -143,7 +143,7 @@ const CARDS_QUERY = gql`
 
 const display: StarknetSignerDisplayProps = {
   confirmationText: t`Your card is on its way`,
-  transactionText: t`card transfer.`,
+  transactionDesc: t`card transfer.`,
 }
 
 interface GiftModalProps {

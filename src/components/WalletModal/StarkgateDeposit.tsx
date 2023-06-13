@@ -128,7 +128,7 @@ export default function StarkgateDeposit() {
     <ModalBody>
       <EthereumSigner
         confirmationText={t`Your ${depositAmount} ETH deposit is on its way`}
-        transactionText={t`${depositAmount} ETH deposit to your Rules wallet`}
+        transactionDesc={t`${depositAmount} ETH deposit to your Rules wallet`}
         waitingForTx={waitingForTx}
         txHash={txHash ?? undefined}
         error={error ?? undefined}

@@ -72,7 +72,7 @@ const CARDS_QUERY = gql`
 const display: StarknetSignerDisplayProps = {
   confirmationText: t`Your offer will be created`,
   confirmationActionText: t`Confirm offer creation`,
-  transactionText: t`offer creation.`,
+  transactionDesc: t`offer creation.`,
 }
 
 interface CreateOfferModalProps {

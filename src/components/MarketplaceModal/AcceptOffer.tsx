@@ -52,7 +52,7 @@ const CARDS_QUERY = gql`
 const display: StarknetSignerDisplayProps = {
   confirmationText: t`Your purchase will be accepted`,
   confirmationActionText: t`Confirm purchase`,
-  transactionText: t`offer acceptance.`,
+  transactionDesc: t`offer acceptance.`,
 }
 
 interface AcceptOfferModalProps {

@@ -54,6 +54,12 @@ export interface OwnerUser {
 export interface ExecutedTx {
   hash: string
   success: boolean
+  desc: string
+}
+
+export type ExecutedOrPendingTx = ExecutedTx & {
+  success?: ExecutedTx['success']
+  loading?: boolean
 }
 
 /* badges */
