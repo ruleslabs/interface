@@ -62,12 +62,34 @@ export function useETHBalances(...addresses: (string | undefined)[]): { [address
   }, [results, addresses])
 }
 
-export function useETHBalance(address?: string) {
+export function useETHBalance(address?: string): WeiAmount | undefined {
   const balances = useETHBalances(address)
   if (!address) return
 
   return balances?.[address]
 }
+
+/**
+ * Is deployed
+ */
+
+export function useIsDeployed(address?: string): boolean | undefined {
+  const [deployed, setDeployed] = useState<boolean | undefined>()
+
+  useEffect(() => {
+    if (!address) return
+
+    rulesSdk.starknet.getNonceForAddress(address).then((nonce) => {
+      setDeployed(!!+nonce)
+    })
+  }, [address])
+
+  return deployed
+}
+
+/**
+ * ETH Balance
+ */
 
 export function useEthereumETHBalance(address?: string): WeiAmount | undefined {
   const { provider } = useWeb3React()

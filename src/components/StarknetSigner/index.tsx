@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import { useETHBalance, useSetWalletModalMode } from 'src/state/wallet/hooks'
+import { useETHBalance, useIsDeployed, useSetWalletModalMode } from 'src/state/wallet/hooks'
 import Confirmation from './Confirmation'
 import { PaginationSpinner } from '../Spinner'
 import Error from './Error'
@@ -19,10 +19,10 @@ import Pending from './Pending'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import LockedWallet from '../LockedWallet'
-import { isSoftLockingReason } from 'src/utils/lockingReason'
 import { ApplicationModal } from 'src/state/application/actions'
 import { WalletModalMode } from 'src/state/wallet/actions'
 import DepositNeeded from '../LockedWallet/DepositNeeded'
+import DeploymentNeeded from '../LockedWallet/DeploymentNeeded'
 
 const DummyFocusInput = styled.input`
   max-height: 0;
@@ -63,13 +63,13 @@ interface StarknetSignerProps {
   children?: React.ReactNode
   display: StarknetSignerDisplayProps
   skipSignin?: boolean
-  allowSoftWalletLock?: boolean
+  allowUndeployed?: boolean
 }
 
 export default function StarknetSigner({
   display,
   skipSignin = false,
-  allowSoftWalletLock = false,
+  allowUndeployed = false,
   children,
 }: StarknetSignerProps) {
   // deposit modal
@@ -105,6 +105,9 @@ export default function StarknetSigner({
     [estimateFees, account]
   )
 
+  // is deployed
+  const deployed = useIsDeployed(address)
+
   // starknet state
   const { signing, txValue, migration } = useStarknetTx()
 
@@ -123,15 +126,17 @@ export default function StarknetSigner({
   // fiat value
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
-  useEffect(() => {
-    if (skipSignin && signing) {
-      estimateFees()
-    }
-  }, [skipSignin, signing])
-
   // components
   const modalContent = useMemo(() => {
-    if (lockingReason && (!allowSoftWalletLock || !isSoftLockingReason(lockingReason))) {
+    if (deployed === undefined) {
+      return <PaginationSpinner loading={true} />
+    }
+
+    if (deployed === false && !allowUndeployed) {
+      return <DeploymentNeeded />
+    }
+
+    if (lockingReason) {
       return <LockedWallet />
     }
 
@@ -205,9 +210,16 @@ export default function StarknetSigner({
     parsedNetworkFee,
     children,
     lockingReason,
-    allowSoftWalletLock,
+    allowUndeployed,
     openDesitModal,
+    deployed,
   ])
+
+  useEffect(() => {
+    if (skipSignin && signing) {
+      estimateFees()
+    }
+  }, [skipSignin, signing])
 
   return (
     <>

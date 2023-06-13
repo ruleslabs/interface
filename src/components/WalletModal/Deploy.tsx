@@ -141,7 +141,7 @@ export default function Deploy() {
 
   return (
     <ModalBody>
-      <StarknetSigner display={display} skipSignin allowSoftWalletLock>
+      <StarknetSigner display={display} skipSignin allowUndeployed>
         {componentContent}
       </StarknetSigner>
     </ModalBody>

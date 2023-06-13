@@ -5,7 +5,7 @@ import { WeiAmount, constants } from '@rulesorg/sdk-core'
 
 import { ModalBody } from 'src/components/Modal/Sidebar'
 import useCurrentUser from 'src/hooks/useCurrentUser'
-import { useSetWalletModalMode, useETHBalance } from 'src/state/wallet/hooks'
+import { useSetWalletModalMode, useETHBalance, useIsDeployed } from 'src/state/wallet/hooks'
 import { WalletModalMode } from 'src/state/wallet/actions'
 import { RowCenter } from 'src/components/Row'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
@@ -23,6 +23,7 @@ import { Row, Column } from 'src/theme/components/Flex'
 import * as Icons from 'src/theme/components/Icons'
 
 import { ReactComponent as EthereumIcon } from 'src/images/ethereum-plain.svg'
+import DeploymentNeeded from '../LockedWallet/DeploymentNeeded'
 
 const ETHBalance = styled(RowCenter)`
   width: 100%;
@@ -43,7 +44,7 @@ const FiatBalance = styled(TYPE.subtitle)`
 export default function Overview() {
   // current user
   const { currentUser } = useCurrentUser()
-  const { deployed, lockingReason } = currentUser?.starknetWallet ?? {}
+  const { lockingReason } = currentUser?.starknetWallet ?? {}
 
   // i18n
   const trans = useTrans()
@@ -64,6 +65,9 @@ export default function Overview() {
   const balance = useETHBalance(address)
   const oldBalance = useETHBalance(oldAddress)
 
+  // is deployed
+  const deployed = useIsDeployed(address)
+
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
@@ -71,19 +75,23 @@ export default function Overview() {
   const componentContent = useMemo(() => {
     if (lockingReason === constants.StarknetWalletLockingReason.MAINTENANCE) return null
 
-    if ((oldAddress && !oldBalance) || !balance) return <PaginationSpinner loading={true} />
+    if ((oldAddress && !oldBalance) || !balance || deployed === undefined) return <PaginationSpinner loading={true} />
 
     if (oldBalance?.greaterThan(MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION)) {
       return (
-        <Column gap={'24'}>
-          <Text.HeadlineSmall>
-            <Trans>Your wallet has been upgraded, you can migrate the funds from your old wallet</Trans>
-          </Text.HeadlineSmall>
+        <>
+          <Column gap={'24'}>
+            <Text.HeadlineSmall>
+              <Trans>Your wallet has been upgraded, you can migrate the funds from your old wallet</Trans>
+            </Text.HeadlineSmall>
 
-          <PrimaryButton onClick={onFundsMigrationMode} large disabled={!isSoftLockingReason(lockingReason)}>
-            <Trans>Migrate - {+oldBalance.toFixed(4)} ETH</Trans>
-          </PrimaryButton>
-        </Column>
+            <PrimaryButton onClick={onFundsMigrationMode} large disabled={!isSoftLockingReason(lockingReason)}>
+              <Trans>Migrate - {+oldBalance.toFixed(4)} ETH</Trans>
+            </PrimaryButton>
+          </Column>
+
+          <DeploymentNeeded priority={'secondary'} />
+        </>
       )
     }
 
@@ -101,7 +109,7 @@ export default function Overview() {
       )
     }
 
-    return <LockedWallet />
+    return <DeploymentNeeded />
   }, [
     oldAddress,
     balance,
@@ -139,7 +147,7 @@ export default function Overview() {
           <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)?.toFixed(2)}` : 'Loading ...'}</FiatBalance>
         </Column>
 
-        {!isSoftLockingReason(lockingReason) && <LockedWallet />}
+        {deployed && <LockedWallet />}
 
         {componentContent}
 

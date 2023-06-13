@@ -80,7 +80,7 @@ export default function MigrateFunds() {
 
   return (
     <ModalBody>
-      <StarknetSigner display={display} allowSoftWalletLock>
+      <StarknetSigner display={display} allowUndeployed>
         <PaginationSpinner loading={true} />
       </StarknetSigner>
     </ModalBody>

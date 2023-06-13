@@ -1,18 +1,14 @@
 import JSBI from 'jsbi'
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import { WeiAmount, constants } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
-import { useETHBalance, useSetWalletModalMode } from 'src/state/wallet/hooks'
+import { useETHBalance } from 'src/state/wallet/hooks'
 import { ErrorCard, InfoCard } from '../Card'
 import * as Text from 'src/theme/components/Text'
 import { Column } from 'src/theme/components/Flex'
-import { PrimaryButton } from '../Button'
-import { useOpenModal } from 'src/state/application/hooks'
-import { ApplicationModal } from 'src/state/application/actions'
-import { WalletModalMode } from 'src/state/wallet/actions'
 
 export default function LockedWallet() {
   const { currentUser } = useCurrentUser()
@@ -45,15 +41,6 @@ export default function LockedWallet() {
     const difference = +new Date() - +new Date(currentUser.starknetWallet.signerEscapeTriggeredAt)
     return Math.max(Math.ceil((constants.ESCAPE_SECURITY_PERIOD - difference / 1000) / 24 / 60 / 60), 1)
   }, [currentUser?.starknetWallet.signerEscapeTriggeredAt])
-
-  // deploy modal
-  const openModal = useOpenModal(ApplicationModal.WALLET)
-  const setWalletModalMode = useSetWalletModalMode()
-
-  const openDeployModal = useCallback(() => {
-    openModal()
-    setWalletModalMode(WalletModalMode.DEPLOY)
-  }, [])
 
   // returns
 
@@ -112,19 +99,6 @@ export default function LockedWallet() {
             </Text.Body>
           </Column>
         </InfoCard>
-      )
-
-    case constants.StarknetWalletLockingReason.UNDEPLOYED:
-      return (
-        <Column gap={'24'}>
-          <Text.HeadlineSmall>
-            <Trans>Your wallet is not deployed, you need to deploy it to interact with other users on Rules.</Trans>
-          </Text.HeadlineSmall>
-
-          <PrimaryButton onClick={openDeployModal} large>
-            <Trans>Deploy</Trans>
-          </PrimaryButton>
-        </Column>
       )
 
     default:
