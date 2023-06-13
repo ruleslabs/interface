@@ -100,7 +100,15 @@ export function useExecuteTx() {
 
       const maxFee = parsedMaxFee.toUnitFixed(Unit.WEI)
 
-      const stxCalls = beforeExecutionCallback ? await beforeExecutionCallback(calls, maxFee) : calls
+      const stxCalls = beforeExecutionCallback
+        ? await beforeExecutionCallback(JSON.parse(JSON.stringify(calls)), maxFee)
+        : calls
+
+      if (stxCalls) {
+        setLoading(false)
+        setError('bye')
+        return
+      }
 
       try {
         let tx: InvokeFunctionResponse | DeployContractResponse | undefined

@@ -48,10 +48,8 @@ export default function MigrateFunds() {
       const amount = oldBalance.subtract(maxFee).toUnitFixed(Unit.WEI)
 
       // edit calls
-      const editedCalls = { ...calls }
-
-      editedCalls[0].calldata = [address, amount, 0]
-      return editedCalls
+      calls[0].calldata = [address, amount, 0]
+      return calls
     },
     [address, oldBalance]
   )

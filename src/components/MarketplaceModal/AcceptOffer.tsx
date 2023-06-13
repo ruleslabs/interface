@@ -116,7 +116,7 @@ export default function AcceptOfferModal({ tokenIds, price }: AcceptOfferModalPr
               vouchersSigningDataMap[tokenId].owner,
               tokenId,
               1,
-              vouchersSigningDataMap[tokenId].voucherSigningDataMap
+              vouchersSigningDataMap[tokenId].voucherSigningData
             )
           : null
       )
