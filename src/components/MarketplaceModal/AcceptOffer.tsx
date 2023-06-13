@@ -101,7 +101,7 @@ export default function AcceptOfferModal({ tokenIds, price }: AcceptOfferModalPr
     if (!ethAddress || !marketplaceAddress) return
 
     // save operations
-    pushOperation(...tokenIds.map((tokenId): Operation => ({ tokenId, type: 'offerAcceptance', quantity: 1 })))
+    pushOperation(...tokenIds.map((tokenId): Operation => ({ tokenId, action: 'offerAcceptance', quantity: 1 })))
 
     const voucherRedeemCalls = tokenIds
       .map((tokenId) =>

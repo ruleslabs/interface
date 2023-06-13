@@ -156,9 +156,9 @@ export default function useStarknetTx() {
 }
 
 export function useStxHistory() {
-  const { txDesc, txHash, executedTxs } = useBoundStore(
+  const { txAction, txHash, executedTxs } = useBoundStore(
     (state) => ({
-      txDesc: state.stxAction,
+      txAction: state.stxAction,
       txHash: state.stxHash,
       executedTxs: state.executedStxs,
     }),
@@ -166,8 +166,8 @@ export function useStxHistory() {
   )
 
   return useMemo(() => {
-    const receivedTxs = txHash ? [{ hash: txHash, desc: txDesc, loading: true }] : []
+    const receivedTxs = txHash ? [{ hash: txHash, action: txAction, loading: true }] : []
 
     return [...receivedTxs, ...executedTxs.filter((tx) => !!tx.action)] as ExecutedOrPendingTx[]
-  }, [executedTxs.length, txHash, txDesc])
+  }, [executedTxs.length, txHash, txAction])
 }

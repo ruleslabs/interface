@@ -66,7 +66,7 @@ export default function CardOwnership({ owner, tokenId, price }: CardOwnershipPr
   const isOwner = owner?.slug && currentUser?.slug === owner.slug
   const availableActions = useMemo(() => {
     if (pendingOperation) {
-      return <Placeholder>{trans('operation', pendingOperation.type)}</Placeholder>
+      return <Placeholder>{trans('stxActionDesc', pendingOperation.action)}</Placeholder>
     }
 
     if (isOwner) {

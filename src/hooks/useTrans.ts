@@ -2,11 +2,10 @@ import { useLingui } from '@lingui/react'
 import { useCallback } from 'react'
 import { msg } from '@lingui/macro'
 
-import { OperationType } from 'src/types'
 import { ScarcityName } from '@rulesorg/sdk-core'
 import { StxAction } from 'src/types/starknetTx'
 
-type Prefix = 'operation' | 'liveReward' | 'scarcity' | 'stxActionDesc' | 'stxActionSuccess' | 'stxActionConfirm'
+type Prefix = 'liveReward' | 'scarcity' | 'stxActionDesc' | 'stxActionSuccess' | 'stxActionConfirm'
 
 const prefix = (obj: Messages, prefix: Prefix) =>
   Object.keys(obj).reduce<Messages>((acc, e) => {
@@ -18,28 +17,16 @@ type MessageDescriptor = any
 type Messages = { [id: string]: MessageDescriptor }
 
 /**
- * Pending operations
- */
-
-const pendingOperationsMessage: { [id in OperationType]: MessageDescriptor } = {
-  transfer: msg`Transfer in progress...`,
-  offerAcceptance: msg`Transfer in progress...`,
-  offerCancelation: msg`Sale canceling in progress...`,
-  offerCreation: msg`Sale in progress...`,
-  deployment: msg`Wallet deployment...`,
-}
-
-/**
  * Starknet TX Actions
  */
 
 const stxActionDesc: { [id in StxAction]: MessageDescriptor } = {
-  transfer: msg`Transfer in progress...`,
-  offerAcceptance: msg`Transfer in progress...`,
-  offerCancelation: msg`Sale canceling in progress...`,
-  offerCreation: msg`Sale in progress...`,
+  transfer: msg`Card transfer...`,
+  offerAcceptance: msg`Card purchase...`,
+  offerCancelation: msg`Sale canceling...`,
+  offerCreation: msg`Sale listing...`,
   walletDeployment: msg`Wallet deployment...`,
-  ethTransfer: msg`ETH transfer in progress...`,
+  ethTransfer: msg`ETH transfer...`,
 }
 
 const stxActionConfirm: { [id in StxAction]: MessageDescriptor } = {
@@ -81,8 +68,6 @@ const liveReward: Messages = {}
  */
 
 const messages: Messages = {
-  ...prefix(pendingOperationsMessage, 'operation'),
-
   ...prefix(stxActionDesc, 'stxActionDesc'),
   ...prefix(stxActionConfirm, 'stxActionConfirm'),
   ...prefix(stxActionSuccess, 'stxActionSuccess'),

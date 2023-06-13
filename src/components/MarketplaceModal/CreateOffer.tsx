@@ -132,7 +132,7 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
     const u256TokenId = uint256.bnToUint256(tokenId)
 
     // save operations
-    pushOperation({ tokenId, type: 'offerCreation', quantity: 1 })
+    pushOperation({ tokenId, action: 'offerCreation', quantity: 1 })
 
     const voucherSigningData = vouchersSigningDataMap[tokenId]
     if (voucherSigningData) {

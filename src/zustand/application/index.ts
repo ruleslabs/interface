@@ -73,7 +73,7 @@ export const createApplicationSlice: StateCreator<StoreState, [['zustand/immer',
         state.pendingOperations[operation.tokenId] ??= {}
         state.pendingOperations[operation.tokenId][txHash] = {
           quantity: operation.quantity,
-          type: operation.type,
+          action: operation.action,
         }
       })
 

@@ -1584,8 +1584,12 @@ msgstr "Récupérer"
 
 
 #: src/hooks/useTrans.ts
-msgid "Sale canceling in progress..."
-msgstr "Annulation de la vente en cours..."
+msgid "Sale canceling..."
+msgstr "Annulation de la vente..."
+
+#: src/hooks/useTrans.ts
+msgid "Card purchase..."
+msgstr "Achat de carte..."
 
 #: src/hooks/useTrans.ts
 msgid "Your purchase will be accetped very soon."
@@ -1596,16 +1600,16 @@ msgid "Confirm offer cancelation"
 msgstr "Confirmer l'annulation de l'offre"
 
 #: src/hooks/useTrans.ts
-msgid "Sale in progress..."
-msgstr "Mise en vente en cours..."
+msgid "Sale listing..."
+msgstr "Mise en vente..."
 
 #: src/hooks/useTrans.ts
-msgid "Transfer in progress..."
-msgstr "Transfert en cours..."
+msgid "Card transfer..."
+msgstr "Transfert de carte..."
 
 #: src/hooks/useTrans.ts
-msgid "ETH transfer in progress..."
-msgstr "Transfert d'ETH en cours..."
+msgid "ETH transfer..."
+msgstr "Transfert d'ETH..."
 
 #: src/hooks/useTrans.ts
 msgid "Your ETH is on its way !"

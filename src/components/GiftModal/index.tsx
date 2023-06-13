@@ -206,7 +206,7 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
     const rulesTokensAddress = constants.RULES_TOKENS_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
 
     // save operations
-    pushOperation(...tokenIds.map((tokenId): Operation => ({ tokenId, type: 'transfer', quantity: 1 })))
+    pushOperation(...tokenIds.map((tokenId): Operation => ({ tokenId, action: 'transfer', quantity: 1 })))
 
     const voucherRedeemCalls = tokenIds
       .map((tokenId) =>

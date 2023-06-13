@@ -104,7 +104,9 @@ export const NftCard = ({ asset, display, onCardClick, badges }: NftCardProps) =
           </Row>
 
           {(subtitle || pendingOperation) && (
-            <Text.Subtitle>{pendingOperation ? trans('operation', pendingOperation.type) : subtitle}</Text.Subtitle>
+            <Text.Subtitle>
+              {pendingOperation ? trans('stxActionDesc', pendingOperation.action) : subtitle}
+            </Text.Subtitle>
           )}
         </Column>
       </Box>

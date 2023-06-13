@@ -49,7 +49,7 @@ export default function CancelOfferModal({
     const u256TokenId = tokens.getCardTokenId({ artistName, season, scarcityId, serialNumber })
 
     // save operation
-    pushOperation({ tokenId: encode.encodeUint256(u256TokenId), type: 'offerCancelation', quantity: 1 })
+    pushOperation({ tokenId: encode.encodeUint256(u256TokenId), action: 'offerCancelation', quantity: 1 })
 
     // save call
     setCalls([
