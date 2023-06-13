@@ -26,6 +26,7 @@ import { useOperations } from 'src/hooks/usePendingOperations'
 import { ReactComponent as Arrow } from 'src/images/arrow.svg'
 import { Call, uint256 } from 'starknet'
 import { getVoucherRedeemCall } from 'src/utils/getVoucherRedeemCall'
+import { useIsDeployed } from 'src/state/wallet/hooks'
 
 const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
 
@@ -157,6 +158,9 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
 
   // starknet account
   const { address } = useRulesAccount()
+
+  // recipient deployed
+  const recipientDeployed = useIsDeployed(recipient?.starknetWallet.address ?? undefined)
 
   // modal
   const isOpen = useModalOpened(ApplicationModal.OFFER)
@@ -310,15 +314,15 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
                   </RowCenter>
                 </TransferSummary>
 
-                {recipient && !recipient.starknetWallet.address && (
+                {recipientDeployed === false && (
                   <TYPE.body color="error">
-                    <Trans>This user does not have a wallet yet, please try again in a few hours.</Trans>
+                    <Trans>This user does not deployed his wallet yet.</Trans>
                   </TYPE.body>
                 )}
               </Column>
 
-              <PrimaryButton onClick={handleConfirmation} disabled={!recipient?.starknetWallet.address} large>
-                <Trans>Next</Trans>
+              <PrimaryButton onClick={handleConfirmation} disabled={!recipientDeployed} large>
+                {recipientDeployed === undefined && recipient ? <Trans>Loading ...</Trans> : <Trans>Next</Trans>}
               </PrimaryButton>
             </Column>
           </StarknetSigner>

@@ -77,6 +77,8 @@ export function useIsDeployed(address?: string): boolean | undefined {
   const [deployed, setDeployed] = useState<boolean | undefined>()
 
   useEffect(() => {
+    setDeployed(undefined)
+
     if (!address) return
 
     rulesSdk.starknet.getNonceForAddress(address).then((nonce) => {
