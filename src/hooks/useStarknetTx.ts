@@ -104,12 +104,6 @@ export function useExecuteTx() {
         ? await beforeExecutionCallback(JSON.parse(JSON.stringify(calls)), maxFee)
         : calls
 
-      if (stxCalls) {
-        setLoading(false)
-        setError('bye')
-        return
-      }
-
       try {
         let tx: InvokeFunctionResponse | DeployContractResponse | undefined
 
