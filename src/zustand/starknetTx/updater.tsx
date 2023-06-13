@@ -24,13 +24,16 @@ export default function StarknetTxUpdater(): null {
   )
 
   const fetchTxHashStatus = useCallback(async () => {
-    if (!txHash || !desc) return
+    if (!txHash) return
 
     // get starknet tx status
     const { tx_status: txStatus } = await rulesSdk.starknet.getTransactionStatus(txHash)
     if (txStatus !== TransactionStatus.NOT_RECEIVED && txStatus !== TransactionStatus.RECEIVED) {
       setTxHash(null)
-      saveExecutedStx({ hash: txHash, success: txStatus !== TransactionStatus.REJECTED, desc })
+
+      if (desc) {
+        saveExecutedStx({ hash: txHash, success: txStatus !== TransactionStatus.REJECTED, desc })
+      }
     }
   }, [txHash, desc])
 

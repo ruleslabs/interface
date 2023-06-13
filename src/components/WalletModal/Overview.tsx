@@ -21,9 +21,12 @@ import { Row, Column } from 'src/theme/components/Flex'
 import * as Icons from 'src/theme/components/Icons'
 import DeploymentNeeded from '../LockedWallet/DeploymentNeeded'
 import { useStxHistory } from 'src/hooks/useStarknetTx'
+import Box from 'src/theme/components/Box'
+import Link from '../Link'
+import { getChainInfo } from 'src/constants/chainInfo'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 
 import { ReactComponent as EthereumIcon } from 'src/images/ethereum-plain.svg'
-import Box from 'src/theme/components/Box'
 
 const ETHBalance = styled(RowCenter)`
   width: 100%;
@@ -137,28 +140,38 @@ export default function Overview() {
 
         {componentContent}
 
-        <Column gap={'16'} marginTop={'32'}>
+        <Column gap={'24'} marginTop={'32'}>
           <Text.HeadlineMedium>
             <Trans>Recent transactions</Trans>
           </Text.HeadlineMedium>
 
-          {stxHistory.map((tx) => (
-            <Row key={tx.hash} gap={'12'}>
-              {tx.loading ? (
-                <Spinner style={{ margin: 'unset', width: '24px' }} />
-              ) : tx.success ? (
-                <Box color={'accent'}>
-                  <Icons.Checkmark width={'24'} />
-                </Box>
-              ) : (
-                <Box color={'error'}>
-                  <Icons.Close width={'24'} />
-                </Box>
-              )}
+          <Column gap={'12'}>
+            {stxHistory.map((tx) => (
+              <Row key={tx.hash} gap={'12'}>
+                {tx.loading ? (
+                  <Spinner style={{ margin: 'unset', width: '24px' }} />
+                ) : tx.success ? (
+                  <Box color={'accent'}>
+                    <Icons.Checkmark width={'24'} />
+                  </Box>
+                ) : (
+                  <Box color={'error'}>
+                    <Icons.Close width={'24'} />
+                  </Box>
+                )}
 
-              <Text.Body>{tx.desc}</Text.Body>
-            </Row>
-          ))}
+                <Text.Body>{tx.desc}</Text.Body>
+
+                <Link
+                  target="_blank"
+                  href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId).explorer}tx/${tx.hash}`}
+                  color={'text2'}
+                >
+                  <Icons.ExternalLink width={'16'} display={'block'} />
+                </Link>
+              </Row>
+            ))}
+          </Column>
 
           {!stxHistory.length && (
             <Column color={'bg3'} alignItems={'center'} gap={'8'} marginTop={'16'}>
