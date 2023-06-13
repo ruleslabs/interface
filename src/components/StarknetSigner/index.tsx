@@ -23,6 +23,8 @@ import { ApplicationModal } from 'src/state/application/actions'
 import { WalletModalMode } from 'src/state/wallet/actions'
 import DepositNeeded from '../LockedWallet/DepositNeeded'
 import DeploymentNeeded from '../LockedWallet/DeploymentNeeded'
+import { StxAction } from 'src/types/starknetTx'
+import useTrans from 'src/hooks/useTrans'
 
 const DummyFocusInput = styled.input`
   max-height: 0;
@@ -53,25 +55,22 @@ const FeeWrapper = styled(RowCenter)`
   `}
 `
 
-export interface StarknetSignerDisplayProps {
-  confirmationText: string
-  confirmationActionText?: string
-  transactionDesc: string
-}
-
 interface StarknetSignerProps {
   children?: React.ReactNode
-  display: StarknetSignerDisplayProps
+  action: StxAction
   skipSignin?: boolean
   allowUndeployed?: boolean
 }
 
 export default function StarknetSigner({
-  display,
+  action,
   skipSignin = false,
   allowUndeployed = false,
   children,
 }: StarknetSignerProps) {
+  // i18n
+  const trans = useTrans()
+
   // deposit modal
   const openModal = useOpenModal(ApplicationModal.WALLET)
   const setWalletModalMode = useSetWalletModalMode()
@@ -144,7 +143,7 @@ export default function StarknetSigner({
       return txHash ? <Pending txHash={txHash} /> : children
     }
 
-    if (txHash) return <Confirmation txHash={txHash} confirmationText={display.confirmationText} />
+    if (txHash) return <Confirmation txHash={txHash} action={action} />
 
     if (error) return <Error error={error} />
 
@@ -191,11 +190,11 @@ export default function StarknetSigner({
             {!canPayTransaction && <DepositNeeded />}
 
             <SubmitButton
-              onClick={() => executeTx(parsedNetworkFee.maxFee, display.transactionDesc)}
+              onClick={() => executeTx(parsedNetworkFee.maxFee, action)}
               disabled={!canPayTransaction}
               large
             >
-              {display.confirmationActionText ?? <Trans>Confirm</Trans>}
+              {trans('stxActionConfirm', action)}
             </SubmitButton>
           </Column>
         </StyledForm>
@@ -204,7 +203,7 @@ export default function StarknetSigner({
 
     return <PrivateKeyDecipherForm onPrivateKeyDeciphered={updateSigner} />
   }, [
-    display,
+    action,
     loading,
     error,
     txHash,

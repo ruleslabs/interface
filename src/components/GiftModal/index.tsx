@@ -14,7 +14,7 @@ import Column from 'src/components/Column'
 import { RowCenter } from 'src/components/Row'
 import { TYPE } from 'src/styles/theme'
 import { PrimaryButton } from 'src/components/Button'
-import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/StarknetSigner'
+import StarknetSigner from 'src/components/StarknetSigner'
 import CardBreakdown from 'src/components/MarketplaceModal/CardBreakdown'
 import Avatar from 'src/components/Avatar'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
@@ -141,11 +141,6 @@ const CARDS_QUERY = gql`
   }
 `
 
-const display: StarknetSignerDisplayProps = {
-  confirmationText: t`Your card is on its way`,
-  transactionDesc: t`card transfer.`,
-}
-
 interface GiftModalProps {
   tokenIds: string[]
 }
@@ -265,7 +260,7 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
         <ModalHeader onDismiss={toggleOfferModal} title={signing ? undefined : t`Offer this card`} />
 
         <ModalBody>
-          <StarknetSigner display={display}>
+          <StarknetSigner action={'transfer'}>
             <Column gap={24}>
               <CardBreakdownsWrapper
                 needsScroll={Object.keys(cardModelsMap).length > MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING}

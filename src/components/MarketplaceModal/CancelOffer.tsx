@@ -8,17 +8,11 @@ import { useModalOpened, useCancelOfferModalToggle } from 'src/state/application
 import { ApplicationModal } from 'src/state/application/actions'
 import Column from 'src/components/Column'
 import { PrimaryButton } from 'src/components/Button'
-import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/StarknetSigner'
+import StarknetSigner from 'src/components/StarknetSigner'
 import CardBreakdown from './CardBreakdown'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import useStarknetTx from 'src/hooks/useStarknetTx'
 import { useOperations } from 'src/hooks/usePendingOperations'
-
-const display: StarknetSignerDisplayProps = {
-  confirmationText: t`Your offer will be canceled`,
-  confirmationActionText: t`Confirm offer cancelation`,
-  transactionDesc: t`offer cancelation.`,
-}
 
 interface CancelOfferModalProps {
   artistName: string
@@ -83,7 +77,7 @@ export default function CancelOfferModal({
         <ModalHeader onDismiss={toggleCancelOfferModal} title={signing ? undefined : t`Confirm offer cancelation`} />
 
         <ModalBody>
-          <StarknetSigner display={display}>
+          <StarknetSigner action={'offerCancelation'}>
             <Column gap={32}>
               <CardBreakdown
                 pictureUrl={pictureUrl}

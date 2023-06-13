@@ -27,6 +27,7 @@ import { getChainInfo } from 'src/constants/chainInfo'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 
 import { ReactComponent as EthereumIcon } from 'src/images/ethereum-plain.svg'
+import useTrans from 'src/hooks/useTrans'
 
 const ETHBalance = styled(RowCenter)`
   width: 100%;
@@ -48,6 +49,9 @@ export default function Overview() {
   // current user
   const { currentUser } = useCurrentUser()
   const { lockingReason } = currentUser?.starknetWallet ?? {}
+
+  // i18n
+  const trans = useTrans()
 
   // modal mode
   const setWalletModalMode = useSetWalletModalMode()
@@ -82,11 +86,11 @@ export default function Overview() {
         <>
           <Column gap={'24'}>
             <Text.HeadlineSmall>
-              <Trans>Your wallet has been upgraded, you can migrate the funds from your old wallet</Trans>
+              <Trans>Your wallet has been upgraded, you can retrieve the funds from your old wallet</Trans>
             </Text.HeadlineSmall>
 
             <PrimaryButton onClick={onFundsMigrationMode} large disabled={!isSoftLockingReason(lockingReason)}>
-              <Trans>Migrate - {+oldBalance.toFixed(4)} ETH</Trans>
+              <Trans>Retrieve - {+oldBalance.toFixed(4)} ETH</Trans>
             </PrimaryButton>
           </Column>
 
@@ -136,7 +140,7 @@ export default function Overview() {
           <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)?.toFixed(2)}` : 'Loading ...'}</FiatBalance>
         </Column>
 
-        {deployed && <LockedWallet />}
+        {(deployed || lockingReason === constants.StarknetWalletLockingReason.MAINTENANCE) && <LockedWallet />}
 
         {componentContent}
 
@@ -160,7 +164,7 @@ export default function Overview() {
                   </Box>
                 )}
 
-                <Text.Body>{tx.desc}</Text.Body>
+                <Text.Body>{trans('stxActionDesc', tx.action)}</Text.Body>
 
                 <Link
                   target="_blank"

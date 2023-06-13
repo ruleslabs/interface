@@ -6,6 +6,7 @@ import { TYPE } from 'src/styles/theme'
 import { EtherscanButton } from 'src/components/Button'
 
 import { ReactComponent as Checkmark } from 'src/images/checkmark.svg'
+import useTrans from 'src/hooks/useTrans'
 
 const StyledCheckmark = styled(Checkmark)`
   border-radius: 50%;
@@ -30,18 +31,20 @@ const Subtitle = styled(TYPE.body)`
 `
 
 interface ConfirmationProps {
-  confirmationText: string
+  action: string
   txHash: string
 }
 
-export default function Confirmation({ confirmationText, txHash }: ConfirmationProps) {
+export default function Confirmation({ action, txHash }: ConfirmationProps) {
+  const trans = useTrans()
+
   return (
     <ColumnCenter gap={32}>
       <Column gap={24}>
         <StyledCheckmark />
 
         <ColumnCenter gap={8}>
-          <Title>{confirmationText}</Title>
+          <Title>{trans('stxActionSuccess', action)}</Title>
 
           <Subtitle>
             <Trans>The transaction might take a few minutes to succeed.</Trans>

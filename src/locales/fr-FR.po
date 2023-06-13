@@ -407,14 +407,6 @@ msgstr "Saisons"
 msgid "Season {season}"
 msgstr "Saison {season}"
 
-#: src/components/MarketplaceSidebar/index.tsx
-msgid "Common"
-msgstr "Commune"
-
-#: src/components/MarketplaceSidebar/index.tsx
-msgid "Platinium"
-msgstr "Platine"
-
 #: src/components/OffersSelector/index.tsx
 msgid "{offersCount, plural, =1 {{offersCount} available} other {{offersCount} available}}"
 msgstr "{offersCount, plural, =1 {{offersCount} disponible} other {{offersCount} disponibles}}"
@@ -982,10 +974,6 @@ msgid "Waiting for confirmation"
 msgstr "Confirmation en attente"
 
 #: src/components/OfferModal/Confirmation.tsx
-msgid "Your card is on its way"
-msgstr "Votre carte est en route"
-
-#: src/components/OfferModal/Confirmation.tsx
 msgid "The transaction might take a few hours to succeed."
 msgstr "La transaction peut prendre quelques heures."
 
@@ -1033,10 +1021,6 @@ msgstr "Récupéré en cas de vente"
 msgid "You do not have enough ETH in your Rules wallet to purchase this card.<0/><1>Buy ETH or deposit from another wallet.</1>"
 msgstr "Tu n'as pas assez d'ETH sur ton Wallet pour acheter cette carte.<0/><1>Achete de l'ETH ou dépose-en depuis un autre Wallet.</1>"
 
-#: src/components/MarketplaceModal/AcceptOffer.tsx
-msgid "Confirm purchase"
-msgstr "Confirmer l'achat"
-
 #: src/components/MarketplaceModal/PriceBreakdown.tsx
 msgid "You Pay"
 msgstr "Paiement"
@@ -1056,38 +1040,6 @@ msgstr "création de l'offre."
 #: src/components/MarketplaceModal/ComingSoon.tsx
 msgid "Coming Soon"
 msgstr "Bientôt disponible"
-
-#: src/components/MarketplaceModal/CancelOffer.tsx
-msgid "Confirm offer cancelation"
-msgstr "Confirmer l'annulation de l'offre"
-
-#: src/components/MarketplaceModal/AcceptOffer.tsx
-msgid "Your purchase will be accepted"
-msgstr "Ton achat va être traité"
-
-#: src/components/MarketplaceModal/CancelOffer.tsx
-msgid "Your offer will be canceled"
-msgstr "Ton offre va être annulée"
-
-#: src/components/MarketplaceModal/CreateOffer.tsx
-msgid "Your offer will be created"
-msgstr "Ton offre va être créée"
-
-#: src/components/MarketplaceModal/CreateOffer.tsx
-msgid "Confirm offer creation"
-msgstr "Confirmer la mise en vente"
-
-#: src/components/CardPendingStatusText/index.tsx
-msgid "Transfer in progress..."
-msgstr "Transfert en cours..."
-
-#: src/components/CardPendingStatusText/index.tsx
-msgid "Sale canceling in progress..."
-msgstr "Annulation de la vente en cours..."
-
-#: src/components/CardPendingStatusText/index.tsx
-msgid "Sale in progress..."
-msgstr "Mise en vente en cours..."
 
 #: src/components/WithdrawModal/index.tsx
 msgid "Confirm withdraw"
@@ -1156,10 +1108,6 @@ msgstr "Transfert de {0} ETH sur ton portefeuille Ethereum"
 #: src/components/WithdrawModal/Retrieve.tsx
 msgid "Your ETH transfer is on its way"
 msgstr "Ton transfert d'ETH est en route"
-
-#: src/components/WithdrawModal/Retrieve.tsx
-msgid "Confirm transfer"
-msgstr "Confirmer le transfert"
 
 #: src/components/CardModelBreakdown/index.tsx
 msgid "Currently edited"
@@ -1292,10 +1240,6 @@ msgstr "a retiré {0} ETH vers"
 #: src/components/TransactionRow/index.tsx
 msgid "See transaction"
 msgstr "Afficher la transaction"
-
-#: src/components/TransactionRow/OffchainAction.tsx
-msgid "Wallet deployment"
-msgstr "Déploiement du portefeuille"
 
 #: src/components/TransactionRow/OffchainAction.tsx
 msgid "Wallet password update"
@@ -1611,3 +1555,110 @@ msgstr "Live reward | Ticket"
 #: src/components/WalletModal/Overview.tsx
 msgid "Add funds"
 msgstr "Ajouter des fonds"
+
+#: src/components/LockedWallet/DeploymentNeeded.tsx
+msgid "Your wallet is not deployed, you need to deploy it to interact with other users on Rules."
+msgstr "Ton portefeuille n'est pas déployé, il faut le déployer si tu souhaites intéragir avec d'autres collectionneurs"
+
+#: src/components/WalletModal/Overview.tsx
+msgid "Your wallet has been upgraded, you can retrieve the funds from your old wallet"
+msgstr "Ton portefeuille a été mis à jour, tu peux récuperer les fonds de ton ancien portefeuille"
+
+#: src/components/LockedWallet/DeploymentNeeded.tsx
+msgid "Deploy"
+msgstr "Déployer"
+
+#: src/components/LockedWallet/DeploymentNeeded.tsx
+msgid "Retrieve"
+msgstr "Récupérer"
+
+
+
+
+
+
+
+
+
+
+
+
+#: src/hooks/useTrans.ts
+msgid "Sale canceling in progress..."
+msgstr "Annulation de la vente en cours..."
+
+#: src/hooks/useTrans.ts
+msgid "Your purchase will be accetped very soon."
+msgstr "Ton achat va être traité rapidement."
+
+#: src/hooks/useTrans.ts
+msgid "Confirm offer cancelation"
+msgstr "Confirmer l'annulation de l'offre"
+
+#: src/hooks/useTrans.ts
+msgid "Sale in progress..."
+msgstr "Mise en vente en cours..."
+
+#: src/hooks/useTrans.ts
+msgid "Transfer in progress..."
+msgstr "Transfert en cours..."
+
+#: src/hooks/useTrans.ts
+msgid "ETH transfer in progress..."
+msgstr "Transfert d'ETH en cours..."
+
+#: src/hooks/useTrans.ts
+msgid "Your ETH is on its way !"
+msgstr "Ton ETH est en route !"
+
+#: src/hooks/useTrans.ts
+msgid "Your card is on its way !"
+msgstr "Ta carte est en route !"
+
+#: src/hooks/useTrans.ts
+msgid "Your offer will be created very soon."
+msgstr "Ton offre va être créée rapidement."
+
+#: src/hooks/useTrans.ts
+msgid "Your wallet deployment is on its way !"
+msgstr "Le déploiement de ton portefeuille est lancé !"
+
+#: src/hooks/useTrans.ts
+msgid "Wallet deployment..."
+msgstr "Déploiement du portefeuille..."
+
+#: src/hooks/useTrans.ts
+msgid "Confirm transfer"
+msgstr "Confirmer le transfert"
+
+#: src/hooks/useTrans.ts
+msgid "Your offer will be canceled very soon."
+msgstr "Ton offre va être annulée rapidement."
+
+#: src/hooks/useTrans.ts
+msgid "Confirm offer creation"
+msgstr "Confirmer la mise en vente"
+
+#: src/hooks/useTrans.ts
+msgid "Platinium"
+msgstr "Platine"
+
+#: src/hooks/useTrans.ts
+msgid "Confirm deployment"
+msgstr "Confirmer le déploiement"
+
+#: src/hooks/useTrans.ts
+msgid "Halloween"
+msgstr "Halloween"
+
+#: src/hooks/useTrans.ts
+msgid "Confirm purchase"
+msgstr "Confirmer l'achat"
+
+#: src/hooks/useTrans.ts
+msgid "Confrim transfer"
+msgstr "Confrimer le transfert"
+
+#: src/hooks/useTrans.ts
+msgid "Common"
+msgstr "Commune"

@@ -4,7 +4,7 @@ import { DeployContractResponse, EstimateFee, InvokeFunctionResponse } from 'sta
 
 import { useBoundStore } from 'src/zustand'
 import { Unit, WeiAmount } from '@rulesorg/sdk-core'
-import { ParsedNetworkFee } from 'src/types/starknetTx'
+import { ParsedNetworkFee, StxAction } from 'src/types/starknetTx'
 import useRulesAccount from './useRulesAccount'
 import { ExecutedOrPendingTx } from 'src/types'
 
@@ -91,7 +91,7 @@ export function useExecuteTx() {
   const { account } = useRulesAccount()
 
   const executeTx = useCallback(
-    async (parsedMaxFee: WeiAmount, desc: string) => {
+    async (parsedMaxFee: WeiAmount, action: StxAction) => {
       const stxAccount = migration ? account?.old : account
       if (!stxAccount) return
 
@@ -115,7 +115,7 @@ export function useExecuteTx() {
 
         if (!tx.transaction_hash) throw 'Failed to push transaction on starknet'
 
-        setTxHash(tx.transaction_hash, desc)
+        setTxHash(tx.transaction_hash, action)
       } catch (error) {
         setError(error?.message ?? 'Unkown error')
       }
@@ -158,7 +158,7 @@ export default function useStarknetTx() {
 export function useStxHistory() {
   const { txDesc, txHash, executedTxs } = useBoundStore(
     (state) => ({
-      txDesc: state.stxDesc,
+      txDesc: state.stxAction,
       txHash: state.stxHash,
       executedTxs: state.executedStxs,
     }),
@@ -168,6 +168,6 @@ export function useStxHistory() {
   return useMemo(() => {
     const receivedTxs = txHash ? [{ hash: txHash, desc: txDesc, loading: true }] : []
 
-    return [...receivedTxs, ...executedTxs.filter((tx) => !!tx.desc)] as ExecutedOrPendingTx[]
+    return [...receivedTxs, ...executedTxs.filter((tx) => !!tx.action)] as ExecutedOrPendingTx[]
   }, [executedTxs.length, txHash, txDesc])
 }

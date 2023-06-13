@@ -8,7 +8,7 @@ import { useModalOpened, useAcceptOfferModalToggle } from 'src/state/application
 import { ApplicationModal } from 'src/state/application/actions'
 import Column from 'src/components/Column'
 import { PrimaryButton } from 'src/components/Button'
-import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/StarknetSigner'
+import StarknetSigner from 'src/components/StarknetSigner'
 import { useETHBalance } from 'src/state/wallet/hooks'
 import { PurchaseBreakdown } from './PriceBreakdown'
 import CardBreakdown from './CardBreakdown'
@@ -48,12 +48,6 @@ const CARDS_QUERY = gql`
     }
   }
 `
-
-const display: StarknetSignerDisplayProps = {
-  confirmationText: t`Your purchase will be accepted`,
-  confirmationActionText: t`Confirm purchase`,
-  transactionDesc: t`offer acceptance.`,
-}
 
 interface AcceptOfferModalProps {
   tokenIds: string[]
@@ -158,7 +152,7 @@ export default function AcceptOfferModal({ tokenIds, price }: AcceptOfferModalPr
         <ModalHeader onDismiss={toggleAcceptOfferModal} title={signing ? undefined : t`Confirm purchase`} />
 
         <ModalBody>
-          <StarknetSigner display={display}>
+          <StarknetSigner action={'offerAcceptance'}>
             <Column gap={32}>
               {cardModel && (
                 <CardBreakdown

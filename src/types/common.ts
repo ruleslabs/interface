@@ -54,7 +54,7 @@ export interface OwnerUser {
 export interface ExecutedTx {
   hash: string
   success: boolean
-  desc: string
+  action: string
 }
 
 export type ExecutedOrPendingTx = ExecutedTx & {

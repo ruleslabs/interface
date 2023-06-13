@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 import { WeiAmount, constants } from '@rulesorg/sdk-core'
 import { useStarknet } from '@starknet-react/core'
 
@@ -21,16 +21,6 @@ import { DEPLOYMENT_DEPOSIT_SUGGESTION_FACTOR } from 'src/constants/misc'
 
 export default function Deploy() {
   const [parsedDummyDeploymentMaxFee, setParsedDummyDeploymentMaxFee] = useState<WeiAmount | null>(null)
-
-  // display
-  const display = useMemo(
-    () => ({
-      confirmationText: t`Your deployment is on its way`,
-      confirmationActionText: t`Confirm deployment`,
-      transactionDesc: t`Wallet deployment`,
-    }),
-    []
-  )
 
   // current user
   const { currentUser } = useCurrentUser()
@@ -133,7 +123,7 @@ export default function Deploy() {
 
   return (
     <ModalBody>
-      <StarknetSigner display={display} skipSignin allowUndeployed>
+      <StarknetSigner action={'walletDeployment'} skipSignin allowUndeployed>
         {componentContent}
       </StarknetSigner>
     </ModalBody>

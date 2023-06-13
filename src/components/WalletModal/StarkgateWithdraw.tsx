@@ -1,6 +1,6 @@
 import { useCallback, useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components/macro'
-import { t, Trans } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 
 import Column from 'src/components/Column'
 import { PrimaryButton } from 'src/components/Button'
@@ -8,7 +8,7 @@ import tryParseWeiAmount from 'src/utils/tryParseWeiAmount'
 import CurrencyInput from 'src/components/Input/CurrencyInput'
 import { metaMaskHooks } from 'src/constants/connectors'
 import useCurrentUser from 'src/hooks/useCurrentUser'
-import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/StarknetSigner'
+import StarknetSigner from 'src/components/StarknetSigner'
 import { useETHBalance } from 'src/state/wallet/hooks'
 import Wallet from 'src/components/Wallet'
 import Metamask from 'src/components/Metamask'
@@ -42,12 +42,6 @@ const ArrowWrapper = styled(Column)`
     transform: rotate(90deg);
   }
 `
-
-const display: StarknetSignerDisplayProps = {
-  confirmationText: t`Your withdraw is on its way`,
-  confirmationActionText: t`Confirm withdraw`,
-  transactionDesc: t`ETH withdraw to your Ethereum wallet`,
-}
 
 export default function StarkgateWithdraw() {
   const [withdrawAmount, setWithdrawAmount] = useState('')
@@ -108,7 +102,7 @@ export default function StarkgateWithdraw() {
 
   return (
     <ModalBody>
-      <StarknetSigner display={display}>
+      <StarknetSigner action={'ethTransfer'}>
         <Metamask>
           <Column gap={32}>
             <Text.Body>

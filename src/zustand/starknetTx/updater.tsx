@@ -13,10 +13,10 @@ const TX_STATUS_POLLING = ms`5s`
 export default function StarknetTxUpdater(): null {
   const windowVisible = useIsWindowVisible()
 
-  const { desc, txHash, setTxHash, saveExecutedStx } = useBoundStore(
+  const { txAction, txHash, setTxHash, saveExecutedStx } = useBoundStore(
     (state) => ({
       txHash: state.stxHash,
-      desc: state.stxDesc,
+      txAction: state.stxAction,
       setTxHash: state.stxSetHash,
       saveExecutedStx: state.saveExecutedStx,
     }),
@@ -31,11 +31,11 @@ export default function StarknetTxUpdater(): null {
     if (txStatus !== TransactionStatus.NOT_RECEIVED && txStatus !== TransactionStatus.RECEIVED) {
       setTxHash(null)
 
-      if (desc) {
-        saveExecutedStx({ hash: txHash, success: txStatus !== TransactionStatus.REJECTED, desc })
+      if (txAction) {
+        saveExecutedStx({ hash: txHash, success: txStatus !== TransactionStatus.REJECTED, action: txAction })
       }
     }
-  }, [txHash, desc])
+  }, [txHash, txAction])
 
   useInterval(fetchTxHashStatus, windowVisible && txHash ? TX_STATUS_POLLING : null)
 

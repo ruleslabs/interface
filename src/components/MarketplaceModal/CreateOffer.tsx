@@ -10,7 +10,7 @@ import { useModalOpened, useCreateOfferModalToggle } from 'src/state/application
 import { ApplicationModal } from 'src/state/application/actions'
 import Column from 'src/components/Column'
 import { PrimaryButton } from 'src/components/Button'
-import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/StarknetSigner'
+import StarknetSigner from 'src/components/StarknetSigner'
 import EtherInput from 'src/components/Input/EtherInput'
 import tryParseWeiAmount from 'src/utils/tryParseWeiAmount'
 import { SaleBreakdown, PurchaseBreakdown } from './PriceBreakdown'
@@ -68,12 +68,6 @@ const CARDS_QUERY = gql`
     }
   }
 `
-
-const display: StarknetSignerDisplayProps = {
-  confirmationText: t`Your offer will be created`,
-  confirmationActionText: t`Confirm offer creation`,
-  transactionDesc: t`offer creation.`,
-}
 
 interface CreateOfferModalProps {
   tokenIds: string[]
@@ -211,7 +205,7 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
         />
 
         <ModalBody>
-          <StarknetSigner display={display}>
+          <StarknetSigner action={'offerCreation'}>
             {!!(card && lowestAsks[card.cardModel.id]) && (
               <Column gap={32}>
                 <CardBreakdownWrapper>

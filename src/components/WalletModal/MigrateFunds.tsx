@@ -1,21 +1,14 @@
 import { useCallback, useEffect } from 'react'
-import { t } from '@lingui/macro'
 import { Unit, constants } from '@rulesorg/sdk-core'
 import { Call } from 'starknet'
 
-import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/StarknetSigner'
+import StarknetSigner from 'src/components/StarknetSigner'
 import { useETHBalance } from 'src/state/wallet/hooks'
 import useStarknetTx from 'src/hooks/useStarknetTx'
 import { ModalBody } from '../Modal/Sidebar'
 import { PaginationSpinner } from '../Spinner'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import useRulesAccount from 'src/hooks/useRulesAccount'
-
-const display: StarknetSignerDisplayProps = {
-  confirmationText: t`Your migration is on its way`,
-  confirmationActionText: t`Confirm migration`,
-  transactionDesc: t`ETH migration to your upgraded wallet`,
-}
 
 export default function MigrateFunds() {
   // account
@@ -73,7 +66,7 @@ export default function MigrateFunds() {
 
   return (
     <ModalBody>
-      <StarknetSigner display={display} allowUndeployed>
+      <StarknetSigner action={'ethTransfer'} allowUndeployed>
         <PaginationSpinner loading={true} />
       </StarknetSigner>
     </ModalBody>

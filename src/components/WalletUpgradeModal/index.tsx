@@ -7,18 +7,12 @@ import { ApplicationModal } from 'src/state/application/actions'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import Column from 'src/components/Column'
 import { PrimaryButton } from 'src/components/Button'
-import StarknetSigner, { StarknetSignerDisplayProps } from 'src/components/StarknetSigner'
+import StarknetSigner from 'src/components/StarknetSigner'
 import { TYPE } from 'src/styles/theme'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import useStarknetTx from 'src/hooks/useStarknetTx'
 import ClassicModal, { ModalBody, ModalContent } from '../Modal/Classic'
 import { ModalHeader } from '../Modal'
-
-const display: StarknetSignerDisplayProps = {
-  confirmationText: t`Your wallet will be upgraded`,
-  confirmationActionText: t`Confirm wallet upgrade`,
-  transactionDesc: t`wallet upgrade.`,
-}
 
 export default function UpgradeWalletModal() {
   // current user
@@ -64,7 +58,7 @@ export default function UpgradeWalletModal() {
 
         <ModalBody>
           {currentUser.starknetWallet.needsUpgrade ? (
-            <StarknetSigner display={display}>
+            <StarknetSigner action={'walletDeployment'}>
               <Column gap={32}>
                 <Column gap={16}>
                   <TYPE.large>
