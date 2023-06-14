@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { gql } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-import { apolloClient } from 'src/graphql/data/apollo'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import Section from 'src/components/Section'
@@ -13,11 +12,11 @@ import Row from 'src/components/Row'
 import Column from 'src/components/Column'
 import Card from 'src/components/Card'
 import { PackPosterWrapper } from 'src/components/PackWrapper'
-import useCurrentUser from 'src/hooks/useCurrentUser'
 import DefaultLayout from 'src/components/Layout'
 import Image from 'src/theme/components/Image'
 import CollectionNfts from 'src/components/nft/Collection/CollectionNfts'
 import { NftCard } from 'src/components/nft/Card'
+import { PaginationSpinner } from 'src/components/Spinner'
 
 const StyledMainSection = styled(Section)`
   margin-bottom: 84px;
@@ -58,9 +57,9 @@ const ExplanationsCard = styled(Card)`
   }
 `
 
-const QUERY_PACK = gql`
-  query ($slug: String!) {
-    pack(slug: $slug) {
+const PACK_QUERY = gql`
+  query ($packSlug: String!) {
+    pack(slug: $packSlug) {
       id
       availableQuantity
       displayName
@@ -69,7 +68,7 @@ const QUERY_PACK = gql`
       cardsPerPack
       pictureUrl(derivative: "width=512")
       supply
-      # season
+      season
       soldout
       cardModelsOverview {
         slug
@@ -94,26 +93,8 @@ function Pack() {
   // nav
   const navigate = useNavigate()
 
-  // current user
-  const { currentUser } = useCurrentUser()
-
-  const [packQuery, setPackQuery] = useState<any>({})
-
-  // TODO: wtf ??
-  useEffect(() => {
-    apolloClient
-      ?.query({ query: QUERY_PACK, variables: { slug: packSlug } })
-      ?.then((response) => {
-        setPackQuery(response)
-      })
-      ?.catch((error) => {
-        setPackQuery({ error })
-      })
-  }, [!!currentUser])
-
-  const pack = packQuery.data?.pack
-  const error = packQuery.error
-  const isLoading = packQuery.loading || !pack
+  const { data, loading, error } = useQuery(PACK_QUERY, { variables: { packSlug }, skip: !packSlug })
+  const pack = data?.pack
 
   // purchase
   const [availableQuantity, setAvailableQuantity] = useState(0)
@@ -154,8 +135,6 @@ function Pack() {
     )
   }
 
-  if (!pack) return null
-
   return (
     <>
       <Section marginTop="36px">
@@ -163,46 +142,50 @@ function Pack() {
       </Section>
 
       <StyledMainSection>
-        <Row gap={52} switchDirection="medium">
-          <PackPosterWrapper>
-            <Image src={pack.pictureUrl} zIndex={'1'} width={'256'} />
-          </PackPosterWrapper>
-          <CardsColumn>
-            <Card>
-              <PackBreakdown
-                name={pack.displayName}
-                id={pack.id}
-                price={pack.price}
-                cardsPerPack={pack.cardsPerPack}
-                season={pack.season ?? 1}
-                soldout={pack.soldout}
-                releaseDate={pack.releaseDate ? new Date(pack.releaseDate) : undefined}
-                availableQuantity={availableQuantity}
-                onSuccessfulPackPurchase={onSuccessfulPackPurchase}
-              />
-            </Card>
-            <ExplanationsCard>
-              <Column gap={28}>
-                <TYPE.body>
-                  <strong>
-                    <Trans id={pack.description}>{pack.description}</Trans>
-                  </strong>
-                </TYPE.body>
-                <TYPE.body>
-                  <Trans>Cards of this pack are created by working closely with the artists.</Trans>
-                </TYPE.body>
-                <TYPE.body>
-                  <Trans>50% of revenues will be distributed to them directly.</Trans>
-                </TYPE.body>
-                <TYPE.body>
-                  <Trans>
-                    Each card gives access to specific Discord channel and to airdrops of gifts during the year.
-                  </Trans>
-                </TYPE.body>
-              </Column>
-            </ExplanationsCard>
-          </CardsColumn>
-        </Row>
+        {pack ? (
+          <Row gap={52} switchDirection="medium">
+            <PackPosterWrapper>
+              <Image src={pack.pictureUrl} zIndex={'1'} width={'256'} />
+            </PackPosterWrapper>
+            <CardsColumn>
+              <Card>
+                <PackBreakdown
+                  name={pack.displayName}
+                  id={pack.id}
+                  price={pack.price}
+                  cardsPerPack={pack.cardsPerPack}
+                  season={pack.season}
+                  soldout={pack.soldout}
+                  releaseDate={pack.releaseDate ? new Date(pack.releaseDate) : undefined}
+                  availableQuantity={availableQuantity}
+                  onSuccessfulPackPurchase={onSuccessfulPackPurchase}
+                />
+              </Card>
+              <ExplanationsCard>
+                <Column gap={28}>
+                  <TYPE.body>
+                    <strong>
+                      <Trans id={pack.description}>{pack.description}</Trans>
+                    </strong>
+                  </TYPE.body>
+                  <TYPE.body>
+                    <Trans>Cards of this pack are created by working closely with the artists.</Trans>
+                  </TYPE.body>
+                  <TYPE.body>
+                    <Trans>50% of revenues will be distributed to them directly.</Trans>
+                  </TYPE.body>
+                  <TYPE.body>
+                    <Trans>
+                      Each card gives access to specific Discord channel and to airdrops of gifts during the year.
+                    </Trans>
+                  </TYPE.body>
+                </Column>
+              </ExplanationsCard>
+            </CardsColumn>
+          </Row>
+        ) : (
+          <PaginationSpinner loading={loading} />
+        )}
       </StyledMainSection>
 
       <Section>
@@ -210,7 +193,7 @@ function Pack() {
           <Trans>Example of possible cards</Trans>
         </CardModelsSelectionTitle>
 
-        <CollectionNfts hasNext={isLoading} dataLength={cardModels.length ?? 0}>
+        <CollectionNfts hasNext={loading} dataLength={cardModels.length ?? 0}>
           {assets}
         </CollectionNfts>
       </Section>
