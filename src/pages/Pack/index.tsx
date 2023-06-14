@@ -82,6 +82,9 @@ const PACK_QUERY = gql`
       ... on QuantityLimitedPack {
         releaseDate
       }
+      ... on TimeLimitedPack {
+        releaseDate
+      }
     }
   }
 `
