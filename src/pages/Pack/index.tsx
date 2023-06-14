@@ -128,7 +128,7 @@ function Pack() {
   const cardModels = pack?.cardModelsOverview ?? []
   const assets = useMemo(
     () =>
-      cardModels.map(({ cardModel }: any) => (
+      cardModels.map((cardModel: any) => (
         <NftCard
           key={cardModel.slug}
           asset={{
