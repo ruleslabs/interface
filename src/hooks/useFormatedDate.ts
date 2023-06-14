@@ -7,6 +7,8 @@ export default function useFormatedDate(date?: Date) {
   const locale = useActiveLocale()
 
   return useMemo(() => {
+    if (!date) return
+
     const releaseMoment = moment(date)
     releaseMoment.locale(locale)
 

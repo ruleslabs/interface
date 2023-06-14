@@ -68,21 +68,20 @@ const QUERY_PACK = gql`
       price
       cardsPerPack
       pictureUrl(derivative: "width=512")
-      releaseDate
-      maxBuyableSupply
       supply
-      season
-      seasons
+      # season
+      soldout
       cardModelsOverview {
-        cardModel {
-          slug
-          pictureUrl(derivative: "width=512")
-          videoUrl
-          scarcity {
-            name
-          }
-          artistName
+        slug
+        pictureUrl(derivative: "width=512")
+        videoUrl
+        scarcity {
+          name
         }
+        artistName
+      }
+      ... on QuantityLimitedPack {
+        releaseDate
       }
     }
   }
@@ -175,9 +174,9 @@ function Pack() {
                 id={pack.id}
                 price={pack.price}
                 cardsPerPack={pack.cardsPerPack}
-                seasons={pack.seasons}
+                season={pack.season ?? 1}
+                soldout={pack.soldout}
                 releaseDate={new Date(pack.releaseDate)}
-                availableSupply={pack.maxBuyableSupply ? pack.maxBuyableSupply - pack.supply : undefined}
                 availableQuantity={availableQuantity}
                 onSuccessfulPackPurchase={onSuccessfulPackPurchase}
               />

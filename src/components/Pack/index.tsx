@@ -9,10 +9,7 @@ import Link from 'src/components/Link'
 import { useActiveLocale } from 'src/hooks/useActiveLocale'
 import { TYPE } from 'src/styles/theme'
 import { ColumnCenter } from 'src/components/Column'
-
-const Image = styled.img`
-  width: 100%;
-`
+import Image from 'src/theme/components/Image'
 
 const ImageWrapper = styled.div`
   position: relative;
@@ -55,11 +52,11 @@ const StyledPack = styled(ColumnCenter)<{ width?: number; disabled: boolean }>`
   ${({ disabled }) =>
     disabled &&
     `
-      ${Image} {
+      img:first-child {
         opacity: 0.5;
       }
 
-      &:hover ${Image} {
+      &:hover img:first-child {
         opacity: 0.7;
       }
     `}
@@ -102,6 +99,8 @@ export default function Pack({
   const locale = useActiveLocale()
 
   const releaseDateFormatted = useMemo(() => {
+    if (!releaseDate) return
+
     const releaseMoment = moment(releaseDate)
     releaseMoment.locale(locale)
 
@@ -120,7 +119,7 @@ export default function Pack({
     <Link href={packLink}>
       <StyledPack width={width} disabled={disabled}>
         <ImageWrapper>
-          <Image src={pictureUrl} />
+          <Image src={pictureUrl} width={'full'} />
           {state === 'inDelivery' && <InDelivery src={`/assets/inDelivery.${locale}.png`} />}
           {soldout && <Soldout src={`/assets/soldout.png`} />}
         </ImageWrapper>
@@ -130,9 +129,12 @@ export default function Pack({
             <TYPE.body textAlign="center" fontWeight={500}>
               {name}
             </TYPE.body>
-            <TYPE.subtitle textAlign="center">
-              <Trans>Edited in {releaseDateFormatted}</Trans>
-            </TYPE.subtitle>
+
+            {releaseDateFormatted && (
+              <TYPE.subtitle textAlign="center">
+                <Trans>Edited in {releaseDateFormatted}</Trans>
+              </TYPE.subtitle>
+            )}
           </PackInfos>
         )}
       </StyledPack>

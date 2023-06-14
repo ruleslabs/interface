@@ -19,20 +19,28 @@ import DefaultLayout from 'src/components/Layout'
 
 const PACKS_COUNT = 4
 
-const PACK_CONTENT = `
-  pictureUrl(derivative: "width=320")
-  slug
-  maxBuyableSupply
-  supply
-  releaseDate
-`
-
 const PACKS_QUERY = gql`
   query {
     allClassicPacks(first: ${PACKS_COUNT}) {
-      nodes { ${PACK_CONTENT} }
+      nodes {
+        pictureUrl(derivative: "width=512")
+        slug
+        supply
+        soldout
+        ... on QuantityLimitedPack {
+          releaseDate
+        }
+        ... on TimeLimitedPack {
+          releaseDate
+        }
+      }
     }
-    lastStarterPack { ${PACK_CONTENT} }
+    lastStarterPack {
+      pictureUrl(derivative: "width=512")
+      slug
+      supply
+      soldout
+    }
   }
 `
 
@@ -153,7 +161,7 @@ function Packs() {
               <PackCard
                 slug={pack.slug}
                 pictureUrl={pack.pictureUrl}
-                soldout={pack.maxBuyableSupply ? pack.supply >= pack.maxBuyableSupply : false}
+                soldout={pack.soldout}
                 width={200}
                 state="buyable"
               />

@@ -1,7 +1,7 @@
 import 'moment/locale/fr'
 
-import { useCallback, useState, useEffect } from 'react'
-import { Plural, Trans, t } from '@lingui/macro'
+import { useCallback, useState, useEffect, useMemo } from 'react'
+import { Plural, Trans } from '@lingui/macro'
 
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import Column from 'src/components/Column'
@@ -19,24 +19,24 @@ import useFormatedDate from 'src/hooks/useFormatedDate'
 interface PackBreakdownProps {
   name: string
   id: string
-  seasons: number[]
+  season: number
   cardsPerPack: number
   price: number
   releaseDate?: Date
-  availableSupply?: number
-  availableQuantity?: number
+  availableQuantity: number
+  soldout: boolean
   onSuccessfulPackPurchase: (boughtQuantity: number) => void
 }
 
 export default function PackBreakdown({
   name,
   id,
-  seasons,
+  season,
   cardsPerPack,
   price,
   releaseDate,
-  availableSupply,
   availableQuantity,
+  soldout,
   onSuccessfulPackPurchase,
 }: PackBreakdownProps) {
   const { currentUser } = useCurrentUser()
@@ -59,7 +59,7 @@ export default function PackBreakdown({
 
   // release
   const releaseDateFormatted = useFormatedDate(releaseDate)
-  const released = releaseDate ? +releaseDate - +new Date() <= 0 : true
+  const released = useMemo(() => (releaseDate ? new Date().getTime() >= releaseDate.getTime() : true), [releaseDate])
 
   // quantity
   const [quantity, setQuantity] = useState(1)
@@ -70,6 +70,57 @@ export default function PackBreakdown({
     if (availableQuantity && quantity > availableQuantity) setQuantity(availableQuantity)
   }, [availableQuantity, quantity, setQuantity])
 
+  const actionComponent = useMemo(() => {
+    if (released && availableQuantity) {
+      return (
+        <Column gap={12}>
+          <InputStepCounter
+            value={quantity}
+            onIncrement={incrementQuantity}
+            onDecrement={decrementQuantity}
+            min={1}
+            max={availableQuantity}
+          />
+          <PrimaryButton onClick={handlePackPurchase} large>
+            <Trans>Buy - {((price * quantity) / 100).toFixed(2)}€</Trans>
+          </PrimaryButton>
+        </Column>
+      )
+    }
+
+    if (soldout) {
+      return (
+        <Placeholder>
+          <Trans>Soldout</Trans>
+        </Placeholder>
+      )
+    }
+
+    if (!released) {
+      return (
+        <Placeholder>
+          <Trans>On sale {releaseDateFormatted}</Trans>
+        </Placeholder>
+      )
+    }
+
+    return (
+      <Placeholder>
+        <Trans>Already bought</Trans>
+      </Placeholder>
+    )
+  }, [
+    released,
+    availableQuantity,
+    quantity,
+    incrementQuantity,
+    decrementQuantity,
+    handlePackPurchase,
+    price,
+    releaseDateFormatted,
+    soldout,
+  ])
+
   return (
     <>
       <Column gap={28}>
@@ -78,33 +129,16 @@ export default function PackBreakdown({
             <Trans id={name}>{name}</Trans>
           </TYPE.body>
           <TYPE.body>
-            <Plural value={seasons.length} _1="Season" other="Seasons" />
-            {seasons.map((season, index) => `${index > 0 ? ', ' : ' '}${season}`)}
+            <Trans>Season {season}</Trans>
           </TYPE.body>
           <TYPE.body>
             <Plural value={cardsPerPack} _1="Includes {cardsPerPack} card" other="Includes {cardsPerPack} cards" />
           </TYPE.body>
         </Column>
 
-        {released && (availableSupply === undefined || availableSupply > 0) && availableQuantity ? (
-          <Column gap={12}>
-            <InputStepCounter
-              value={quantity}
-              onIncrement={incrementQuantity}
-              onDecrement={decrementQuantity}
-              min={1}
-              max={availableQuantity}
-            />
-            <PrimaryButton onClick={handlePackPurchase} large>
-              <Trans>Buy - {((price * quantity) / 100).toFixed(2)}€</Trans>
-            </PrimaryButton>
-          </Column>
-        ) : (
-          <Placeholder>
-            {released ? (availableQuantity ? t`Sold out` : t`Already bought`) : t`On sale ${releaseDateFormatted}`}
-          </Placeholder>
-        )}
+        {actionComponent}
       </Column>
+
       <PackPurchaseModal
         price={price}
         quantity={quantity}

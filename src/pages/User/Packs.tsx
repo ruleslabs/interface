@@ -25,8 +25,13 @@ const USER_PACKS_BALANCES_QUERY = gql`
           id
           slug
           displayName
-          releaseDate
           pictureUrl(derivative: "width=320")
+          ... on QuantityLimitedPack {
+            releaseDate
+          }
+          ... on TimeLimitedPack {
+            releaseDate
+          }
         }
       }
     }
