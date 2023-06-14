@@ -176,7 +176,7 @@ function Pack() {
                 cardsPerPack={pack.cardsPerPack}
                 season={pack.season ?? 1}
                 soldout={pack.soldout}
-                releaseDate={new Date(pack.releaseDate)}
+                releaseDate={pack.releaseDate ? new Date(pack.releaseDate) : undefined}
                 availableQuantity={availableQuantity}
                 onSuccessfulPackPurchase={onSuccessfulPackPurchase}
               />
