@@ -62,11 +62,7 @@ export default function MarketplaceFilters({ maximumPriceUpperBound, ...props }:
         <Subtitle value={t`Seasons`} />
 
         {Object.keys(constants.Seasons).map((season) => (
-          <Checkbox
-            key={season}
-            value={!filters.seasons.includes(+season)}
-            onChange={() => toggleSeasonFilter(+season)}
-          >
+          <Checkbox key={season} value={filters.seasons.includes(+season)} onChange={() => toggleSeasonFilter(+season)}>
             <TYPE.body>
               <Trans>Season {season}</Trans>
             </TYPE.body>
@@ -82,7 +78,7 @@ export default function MarketplaceFilters({ maximumPriceUpperBound, ...props }:
         {Object.values(constants.ScarcityName).map((scarcity, index) => (
           <Checkbox
             key={scarcity}
-            value={!filters.scarcities.includes(index)}
+            value={filters.scarcities.includes(index)}
             onChange={() => toggleScarcityFilter(index)}
           >
             <TYPE.body>{trans('scarcity', scarcity)}</TYPE.body>

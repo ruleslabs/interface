@@ -3,6 +3,7 @@ import { onError } from '@apollo/client/link/error'
 
 import refreshToken from 'src/utils/refreshToken'
 import { storeAccessToken, getAccessToken } from 'src/utils/accessToken'
+import { relayStylePagination } from '@apollo/client/utilities'
 
 const GRAPHQL_URL = process.env.REACT_APP_GRAPHQL_URI
 if (!GRAPHQL_URL) {
@@ -78,7 +79,14 @@ export const apolloClient = new ApolloClient({
   connectToDevTools: true,
   link: from([authMiddleware, errorLink, httpLink]),
   cache: new InMemoryCache({
-    typePolicies: {},
+    typePolicies: {
+      Query: {
+        fields: {
+          cardListings: relayStylePagination(),
+          cardModels: relayStylePagination(),
+        },
+      },
+    },
   }),
   defaultOptions: {
     watchQuery: {

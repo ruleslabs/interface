@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useState, useEffect } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components/macro'
-import { gql, useLazyQuery } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import Section from 'src/components/Section'
@@ -17,9 +17,9 @@ import GiftModal from 'src/components/GiftModal'
 import CreateOfferModal from 'src/components/MarketplaceModal/CreateOffer'
 import CancelOfferModal from 'src/components/MarketplaceModal/CancelOffer'
 import AcceptOfferModal from 'src/components/MarketplaceModal/AcceptOffer'
-import { useSearchOffers } from 'src/state/search/hooks'
 import { PaginationSpinner } from 'src/components/Spinner'
 import DefaultLayout from 'src/components/Layout'
+import * as Text from 'src/theme/components/Text'
 
 const MainSection = styled(Section)`
   position: relative;
@@ -58,8 +58,8 @@ const CardTransfersHistoryWrapper = styled(Card)`
 `
 
 const CARD_QUERY = gql`
-  query ($slug: String!) {
-    card(slug: $slug) {
+  query ($cardSlug: String!) {
+    card(slug: $cardSlug) {
       id
       serialNumber
       tokenId
@@ -88,6 +88,9 @@ const CARD_QUERY = gql`
           id
         }
       }
+      listing {
+        price
+      }
     }
   }
 `
@@ -100,32 +103,16 @@ function CardPage() {
   // nav
   const navigate = useNavigate()
 
-  // card
-  const [card, setCard] = useState<any | null>(null)
-
   // query cards data
-  const onCardsQueryCompleted = useCallback((data: any) => setCard(data.card), [])
-  const [queryCardData, cardQuery] = useLazyQuery(CARD_QUERY, {
-    onCompleted: onCardsQueryCompleted,
-    fetchPolicy: 'cache-and-network',
-  })
-
-  useEffect(() => {
-    if (cardSlug) queryCardData({ variables: { slug: cardSlug } })
-  }, [queryCardData, cardSlug])
+  const { data, loading, error } = useQuery(CARD_QUERY, { variables: { cardSlug }, skip: !cardSlug })
+  const card = data?.card
 
   // card's back
   const backPictureUrl = useCardsBackPictureUrl(512)
 
-  // card price
-  const offerSearch = useSearchOffers({ facets: { cardId: card?.id }, skip: !card?.id, hitsPerPage: 1 })
-  const cardPrice = useMemo(
-    () => (offerSearch?.hits?.[0]?.price ? `0x${offerSearch?.hits?.[0]?.price}` : null),
-    [offerSearch?.hits?.[0]?.price]
-  )
-
-  // loading
-  const isLoading = cardQuery.loading
+  if (error) {
+    return <Text.Body>{error}</Text.Body>
+  }
 
   return (
     <>
@@ -156,7 +143,7 @@ function CardPage() {
               <div>
                 {card.owner && (
                   <Card>
-                    <CardOwnership owner={card.owner.user} tokenId={card.tokenId} price={cardPrice ?? undefined} />
+                    <CardOwnership owner={card.owner.user} tokenId={card.tokenId} price={card.listing?.price} />
                   </Card>
                 )}
               </div>
@@ -176,7 +163,7 @@ function CardPage() {
 
           <CreateOfferModal tokenIds={[card.tokenId]} />
 
-          {cardPrice && (
+          {card.listing && (
             <>
               <CancelOfferModal
                 artistName={card.cardModel.artistName}
@@ -187,13 +174,13 @@ function CardPage() {
                 pictureUrl={card.cardModel.pictureUrl}
               />
 
-              <AcceptOfferModal tokenIds={[card.tokenId]} price={cardPrice} />
+              <AcceptOfferModal tokenIds={[card.tokenId]} price={card.listing.price} />
             </>
           )}
         </>
       )}
 
-      <PaginationSpinner loading={isLoading} />
+      <PaginationSpinner loading={loading} />
     </>
   )
 }

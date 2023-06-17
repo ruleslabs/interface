@@ -152,19 +152,6 @@ const algoliaIndexes = {
     artistDesc: client.initIndex('cards-artist-desc'),
     artistAsc: client.initIndex('cards-artist-asc'),
   },
-  cardModels: {
-    lowestAskDesc: client.initIndex('card-models-lowest-ask-desc'),
-    lowestAskAsc: client.initIndex('card-models-lowest-ask-asc'),
-    lowSerialLowestAskDesc: client.initIndex('card-models-low-serial-lowest-ask-desc'),
-    lowSerialLowestAskAsc: client.initIndex('card-models-low-serial-lowest-ask-asc'),
-  },
-  offers: {
-    priceDesc: client.initIndex('offers-price-desc'),
-    priceAsc: client.initIndex('offers-price-asc'),
-    serialDesc: client.initIndex('offers-serial-desc'),
-    serialAsc: client.initIndex('offers-serial-asc'),
-    txIndexDesc: client.initIndex('offers-tx-index-desc'),
-  },
   users: {
     certified: client.initIndex('users'),
     cScore: client.initIndex('users-c-score-desc'),
@@ -179,8 +166,6 @@ export interface PageFetchedCallbackData {
 export type PageFetchedCallback = (hits: any[], data: PageFetchedCallbackData) => void
 
 export type CardsSortingKey = keyof typeof algoliaIndexes.cards
-export type CardModelsSortingKey = keyof typeof algoliaIndexes.cardModels
-export type OffersSortingKey = keyof typeof algoliaIndexes.offers
 export type UsersSortingKey = keyof typeof algoliaIndexes.users
 
 interface AlgoliaSearch {
@@ -340,82 +325,6 @@ export function useSearchCards({
     onPageFetched,
     skip,
     search,
-  })
-}
-
-// CARD MODELS
-
-interface SearchCardModelsProps {
-  facets?: {
-    season?: string[]
-    scarcity?: string[]
-    lowestAsk?: string
-    lowSerialLowestAsk?: string
-    cardModelId?: string | string[]
-  }
-  filters?: string
-  sortingKey?: CardModelsSortingKey
-  search?: string
-  skip?: boolean
-  hitsPerPage?: number
-  onPageFetched?: PageFetchedCallback
-}
-
-export function useSearchCardModels({
-  search = '',
-  facets = {},
-  filters,
-  sortingKey = Object.keys(algoliaIndexes.cardModels)[0] as CardModelsSortingKey,
-  hitsPerPage = ASSETS_PAGE_SIZE,
-  onPageFetched,
-  skip = false,
-}: SearchCardModelsProps): AlgoliaSearch {
-  return useAlgoliaSearch({
-    facets: {
-      ...facets,
-      cardModelId: undefined,
-      objectID: facets.cardModelId,
-    },
-    filters,
-    algoliaIndex: algoliaIndexes.cardModels[sortingKey],
-    hitsPerPage,
-    onPageFetched,
-    skip,
-    search,
-  })
-}
-
-// OFFERS
-
-interface SearchOffersProps {
-  facets?: {
-    cardModelId?: string
-    cardId?: string
-    objectID?: string[]
-  }
-  priceDesc?: boolean
-  skip?: boolean
-  hitsPerPage?: number
-  onPageFetched?: PageFetchedCallback
-  sortingKey?: OffersSortingKey
-}
-
-export function useSearchOffers({
-  facets = {},
-  sortingKey = Object.keys(algoliaIndexes.offers)[0] as OffersSortingKey,
-  skip = false,
-  hitsPerPage = ASSETS_PAGE_SIZE,
-  onPageFetched,
-}: SearchOffersProps): AlgoliaSearch {
-  return useAlgoliaSearch({
-    facets: {
-      ...facets,
-      available: '-false',
-    },
-    algoliaIndex: algoliaIndexes.offers[sortingKey],
-    hitsPerPage,
-    onPageFetched,
-    skip,
   })
 }
 

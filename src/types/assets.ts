@@ -6,3 +6,15 @@ export interface NftAsset {
   tokenId: string
   scarcity: ScarcityName
 }
+
+export interface CardModel {
+  slug: string
+  listedCardsCount: number
+  imageUrl: string
+  animationUrl: string
+  season: number
+  artistName: string
+  scarcityName: ScarcityName
+  lowestAsk: string
+  lowSerialLowestAsk: string
+}

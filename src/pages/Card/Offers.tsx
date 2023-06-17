@@ -59,6 +59,7 @@ const QUERY_CARD_MODEL = gql`
       id
       pictureUrl(derivative: "width=256")
       season
+      listedCardsCount
       scarcity {
         name
         maxLowSerial
@@ -123,6 +124,7 @@ function Offers() {
           <>
             <StyledOffersSelector
               cardModelId={cardModel.id}
+              listedCardsCount={cardModel.listedCardsCount}
               acceptedSerialNumbers={acceptedSerialNumbers}
               selectedSerialNumbers={selectedSerialNumbers}
               toggleSelection={toggleOfferSelection}

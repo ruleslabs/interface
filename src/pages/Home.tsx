@@ -123,7 +123,7 @@ const Aside = styled(Column)`
   }
 `
 
-const LastOffersColumn = styled(Column)`
+const LastListingsColumn = styled(Column)`
   flex: 1;
 `
 
@@ -225,11 +225,11 @@ function Home() {
           </Article>
         </Aside>
 
-        <LastOffersColumn>
+        <LastListingsColumn>
           <Article title={t`Last offers`}>
-            <HOMEPAGE.LastOffers />
+            <HOMEPAGE.LastListings />
           </Article>
-        </LastOffersColumn>
+        </LastListingsColumn>
       </StyledHome>
 
       <ClaimLiveRewardModal />

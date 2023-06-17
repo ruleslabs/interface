@@ -18,7 +18,6 @@ import { BIG_INT_MIN_MARKETPLACE_OFFER_PRICE, BIG_INT_MAX_MARKETPLACE_OFFER_PRIC
 import CardModelPriceStats from 'src/components/CardModelSales/CardModelPriceStats'
 import CardBreakdown from './CardBreakdown'
 import { PaginationSpinner } from 'src/components/Spinner'
-import { useSearchCardModels } from 'src/state/search/hooks'
 import { TYPE } from 'src/styles/theme'
 import useStarknetTx from 'src/hooks/useStarknetTx'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
@@ -64,6 +63,7 @@ const CARDS_QUERY = gql`
           maxSupply
         }
         artistName
+        lowestAsk
       }
     }
   }
@@ -161,40 +161,18 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
     }
   }, [parsedPrice, tokenId, cards.length, vouchersSigningDataMap, address])
 
-  // Lowest ask
-  const [lowestAsks, setLowestAsks] = useState<{ [id: string]: string }>({})
-
-  // card model search
-  const cardModelsIds = useMemo(() => cards.map((card: any) => card.cardModel.id), [cards.length])
-
-  const onPageFetched = useCallback((hits: any[]) => {
-    setLowestAsks(
-      hits.reduce<typeof lowestAsks>((acc, hit) => {
-        acc[hit.objectID] = hit.lowestAsk
-        return acc
-      }, {})
-    )
-  }, [])
-  const cardModelSearch = useSearchCardModels({
-    facets: { cardModelId: cardModelsIds },
-    skip: !cardModelsIds.length,
-    hitsPerPage: cardModelsIds.length,
-    onPageFetched,
-  })
-
   // on close modal
   useEffect(() => {
     if (isOpen) {
       setPrice('')
       setCardIndex(0)
-      setLowestAsks({})
       resetStarknetTx()
       cleanOperations()
     }
   }, [isOpen])
 
   // loading
-  const isLoading = cardsQuery.loading || cardModelSearch.loading
+  const isLoading = cardsQuery.loading
 
   return (
     <ClassicModal onDismiss={toggleCreateOfferModal} isOpen={isOpen}>
@@ -206,7 +184,7 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
 
         <ModalBody>
           <StarknetSigner action={'offerCreation'}>
-            {!!(card && lowestAsks[card.cardModel.id]) && (
+            {!!card && (
               <Column gap={32}>
                 <CardBreakdownWrapper>
                   <CardBreakdown
@@ -225,7 +203,7 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
                 </CardBreakdownWrapper>
 
                 <StyledCardModelPriceStats
-                  lowestAsk={lowestAsks[cards[cardIndex].cardModel.id]}
+                  lowestAsk={cards[cardIndex].cardModel.lowestAsk}
                   averageSale={cards[cardIndex].cardModel.averageSale}
                 />
 

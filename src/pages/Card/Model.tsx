@@ -1,4 +1,3 @@
-import { useState, useCallback } from 'react'
 import styled from 'styled-components/macro'
 import { useQuery, gql } from '@apollo/client'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -13,9 +12,9 @@ import YoutubeEmbed from 'src/components/YoutubeEmbed'
 import CardModel3D from 'src/components/CardModel3D'
 import Card from 'src/components/Card'
 import useCardsBackPictureUrl from 'src/hooks/useCardsBackPictureUrl'
-import { useSearchCardModels } from 'src/state/search/hooks'
 import { PaginationSpinner } from 'src/components/Spinner'
 import DefaultLayout from 'src/components/Layout'
+import * as Text from 'src/theme/components/Text'
 
 const MainSection = styled(Section)`
   position: relative;
@@ -49,9 +48,9 @@ const CardTransfersHistoryWrapper = styled(Card)`
   `}
 `
 
-const QUERY_CARD_MODEL = gql`
-  query ($slug: String!) {
-    cardModel(slug: $slug) {
+const CARD_MODEL_QUERY = gql`
+  query ($cardModelSlug: String!) {
+    cardModel(slug: $cardModelSlug) {
       id
       slug
       pictureUrl(derivative: "width=1024")
@@ -59,6 +58,7 @@ const QUERY_CARD_MODEL = gql`
       averageSale
       youtubePreviewId
       season
+      listedCardsCount
       scarcity {
         name
         maxSupply
@@ -76,26 +76,16 @@ function CardModel() {
   // nav
   const navigate = useNavigate()
 
-  // hits
-  const [cardModelHit, setCardModelHit] = useState<any | null>(null)
-
   // card model query
-  const cardModelQuery = useQuery(QUERY_CARD_MODEL, { variables: { slug: cardModelSlug }, skip: !cardModelSlug })
-  const cardModel = cardModelQuery?.data?.cardModel
+  const { data, loading, error } = useQuery(CARD_MODEL_QUERY, { variables: { cardModelSlug }, skip: !cardModelSlug })
+  const cardModel = data?.cardModel
 
   // card's back
   const backPictureUrl = useCardsBackPictureUrl(512)
 
-  // card model search
-  const onPageFetched = useCallback((hits) => setCardModelHit(hits[0] ?? null), [])
-  const cardModelSearch = useSearchCardModels({
-    facets: { cardModelId: cardModel?.id },
-    skip: !cardModel?.id,
-    onPageFetched,
-  })
-
-  // loading
-  const isLoading = cardModelSearch.loading || cardModelQuery.loading
+  if (error) {
+    return <Text.Body>{error}</Text.Body>
+  }
 
   return (
     <>
@@ -103,7 +93,7 @@ function CardModel() {
         <BackButton onClick={() => navigate(-1)} />
       </Section>
 
-      {cardModel && cardModelHit && (
+      {cardModel && (
         <>
           <MainSection size="sm">
             <CardModel3D
@@ -127,8 +117,9 @@ function CardModel() {
                 <CardModelSales
                   slug={`${cardModelSlug}`}
                   cardModelId={cardModel.id}
-                  lowestAsk={cardModelHit.lowestAsk}
+                  lowestAsk={cardModel.lowestAsk}
                   averageSale={cardModel.averageSale}
+                  listingsCount={cardModel.listedCardsCount}
                 />
               </Card>
             </MainSectionCardsWrapper>
@@ -145,7 +136,7 @@ function CardModel() {
         </>
       )}
 
-      <PaginationSpinner loading={isLoading} />
+      <PaginationSpinner loading={loading} />
     </>
   )
 }
