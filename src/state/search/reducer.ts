@@ -6,6 +6,7 @@ import {
   updateMarketplaceLowSerialsFilter,
   updateMarketplaceMaximumPrice,
 } from './actions'
+import { constants } from '@rulesorg/sdk-core'
 
 export interface MarketplaceState {
   filters: {
@@ -18,8 +19,8 @@ export interface MarketplaceState {
 
 export const initialState: MarketplaceState = {
   filters: {
-    scarcities: [],
-    seasons: [],
+    scarcities: Object.values(constants.ScarcityName).map((_, index) => index),
+    seasons: Object.keys(constants.Seasons).map((key) => +key),
     maximumPrice: null,
     lowSerials: false,
   },

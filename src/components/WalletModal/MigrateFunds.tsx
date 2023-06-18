@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { Unit, constants } from '@rulesorg/sdk-core'
 import { Call } from 'starknet'
 
-import StarknetSigner from 'src/components/StarknetSigner'
+import StarknetSigner from 'src/components/StarknetSigner/Transaction'
 import { useETHBalance } from 'src/state/wallet/hooks'
 import useStarknetTx from 'src/hooks/useStarknetTx'
 import { ModalBody } from '../Modal/Sidebar'

@@ -13,7 +13,7 @@ import { TYPE } from 'src/styles/theme'
 import EmptyTab, { EmptyCardsTabOfCurrentUser } from 'src/components/EmptyTab'
 import SortButton, { SortsData } from 'src/components/Button/SortButton'
 import { PrimaryButton, SecondaryButton } from 'src/components/Button'
-import CreateOfferModal from 'src/components/MarketplaceModal/CreateOffer'
+import CreateOfferModal from 'src/components/MarketplaceModal/ListCard'
 import { useCreateOfferModalToggle, useOfferModalToggle } from 'src/state/application/hooks'
 import GiftModal from 'src/components/GiftModal'
 import useSearchedUser from 'src/hooks/useSearchedUser'
@@ -23,6 +23,7 @@ import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import CollectionNfts from 'src/components/nft/Collection/CollectionNfts'
 
 import { ReactComponent as Present } from 'src/images/present.svg'
+import { MAX_LISTINGS_BATCH_SIZE } from 'src/constants/misc'
 
 // css
 
@@ -32,7 +33,7 @@ const CARDS_QUERY = gql`
       id
       slug
       serialNumber
-      currentOffer {
+      listing {
         price
       }
       tokenId
@@ -184,7 +185,7 @@ function UserCards() {
   // query cards data
   const onCardsQueryCompleted = useCallback((data: any) => {
     const cards = (data.cardsByIds ?? []).map((card: any) => {
-      const price = card.currentOffer?.price
+      const price = card.listing?.price
       const parsedPrice = price ? WeiAmount.fromRawAmount(price) : undefined
 
       return {
@@ -332,7 +333,10 @@ function UserCards() {
           </TYPE.body>
 
           <SelectedCardsButtonsWrapper>
-            <PrimaryButton onClick={toggleCreateOfferModal}>
+            <PrimaryButton
+              onClick={toggleCreateOfferModal}
+              disabled={selectedTokenIds.length > MAX_LISTINGS_BATCH_SIZE}
+            >
               <Trans>Place for Sale</Trans>
             </PrimaryButton>
 

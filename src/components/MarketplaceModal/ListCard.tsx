@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { Plural, t, Trans } from '@lingui/macro'
 import { useQuery, gql } from '@apollo/client'
-import { WeiAmount, constants } from '@rulesorg/sdk-core'
+import { Signature, Unit, WeiAmount, constants } from '@rulesorg/sdk-core'
 
 import { ModalHeader } from 'src/components/Modal'
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
@@ -10,7 +10,7 @@ import { useModalOpened, useCreateOfferModalToggle } from 'src/state/application
 import { ApplicationModal } from 'src/state/application/actions'
 import Column from 'src/components/Column'
 import { PrimaryButton } from 'src/components/Button'
-import StarknetSigner from 'src/components/StarknetSigner'
+import StarknetSigner from 'src/components/StarknetSigner/Messages'
 import EtherInput from 'src/components/Input/EtherInput'
 import tryParseWeiAmount from 'src/utils/tryParseWeiAmount'
 import { SaleBreakdown, PurchaseBreakdown } from './PriceBreakdown'
@@ -19,12 +19,9 @@ import CardModelPriceStats from 'src/components/CardModelSales/CardModelPriceSta
 import CardBreakdown from './CardBreakdown'
 import { PaginationSpinner } from 'src/components/Spinner'
 import { TYPE } from 'src/styles/theme'
-import useStarknetTx from 'src/hooks/useStarknetTx'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
-import { useOperations } from 'src/hooks/usePendingOperations'
-import { uint256 } from 'starknet'
-import { getVoucherRedeemCall } from 'src/utils/getVoucherRedeemCall'
 import useRulesAccount from 'src/hooks/useRulesAccount'
+import useStarknetMessages from 'src/hooks/useStarknetMessages'
 
 const CardBreakdownWrapper = styled.div`
   position: relative;
@@ -46,13 +43,6 @@ const CARDS_QUERY = gql`
     cardsByTokenIds(tokenIds: $tokenIds) {
       serialNumber
       tokenId
-      voucherSigningData {
-        signature {
-          r
-          s
-        }
-        nonce
-      }
       cardModel {
         id
         pictureUrl(derivative: "width=256")
@@ -73,7 +63,7 @@ interface CreateOfferModalProps {
   tokenIds: string[]
 }
 
-export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
+export default function ListCardMocal({ tokenIds }: CreateOfferModalProps) {
   const [cardIndex, setCardIndex] = useState(0)
   const [price, setPrice] = useState('')
   const [parsedPricesTotal, setParsedPricesTotal] = useState(WeiAmount.ZERO)
@@ -86,8 +76,8 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
   const toggleCreateOfferModal = useCreateOfferModalToggle()
 
   // cards query
-  const cardsQuery = useQuery(CARDS_QUERY, { variables: { tokenIds }, skip: !isOpen })
-  const cards = cardsQuery.data?.cardsByTokenIds ?? []
+  const { data, loading } = useQuery(CARDS_QUERY, { variables: { tokenIds }, skip: !isOpen })
+  const cards = data?.cardsByTokenIds ?? []
   const card = cards[cardIndex]
   const tokenId = card?.tokenId
 
@@ -101,11 +91,8 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
     [cards.length]
   )
 
-  // pending operation
-  const { pushOperation, cleanOperations } = useOperations()
-
   // starknet tx
-  const { pushCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()
+  const { pushMessages, resetStarknetTx, signing, setSigning } = useStarknetMessages()
 
   // offers creation overview
   const handleOverviewConfirmation = useCallback(() => setSigning(true), [])
@@ -125,26 +112,14 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
   }, [parsedPrice])
 
   // prices confirmation
-  const handlePriceConfirmation = useCallback(() => {
+  const handlePriceConfirmation = useCallback(async () => {
     const marketplaceAddress = constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
     if (!marketplaceAddress || !parsedPrice || !tokenId || !address) return
 
-    const u256TokenId = uint256.bnToUint256(tokenId)
-
-    // save operations
-    pushOperation({ tokenId, action: 'offerCreation', quantity: 1 })
-
-    const voucherSigningData = vouchersSigningDataMap[tokenId]
-    if (voucherSigningData) {
-      pushCalls(getVoucherRedeemCall(address, tokenId, 1, voucherSigningData))
-    }
+    const hash = await rulesSdk.computeListingOrderHash(address, tokenId, 1, parsedPrice.toUnitFixed(Unit.WEI))
 
     // save calls
-    pushCalls({
-      contractAddress: marketplaceAddress,
-      entrypoint: 'createOffer',
-      calldata: [u256TokenId.low, u256TokenId.high, parsedPrice.quotient.toString()],
-    })
+    pushMessages(hash)
 
     if (cards.length === 1) {
       // if overview is not needed, just start signing process
@@ -161,18 +136,17 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
     }
   }, [parsedPrice, tokenId, cards.length, vouchersSigningDataMap, address])
 
+  const onSignature = useCallback(async (signatures: Signature[]) => {
+    console.log(signatures)
+  }, [])
+
   // on close modal
   useEffect(() => {
     if (isOpen) {
-      setPrice('')
-      setCardIndex(0)
       resetStarknetTx()
-      cleanOperations()
+      setCardIndex(0)
     }
   }, [isOpen])
-
-  // loading
-  const isLoading = cardsQuery.loading
 
   return (
     <ClassicModal onDismiss={toggleCreateOfferModal} isOpen={isOpen}>
@@ -183,7 +157,7 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
         />
 
         <ModalBody>
-          <StarknetSigner action={'offerCreation'}>
+          <StarknetSigner onSignature={onSignature} action={'offerCreation'}>
             {!!card && (
               <Column gap={32}>
                 <CardBreakdownWrapper>
@@ -236,7 +210,7 @@ export default function CreateOfferModal({ tokenIds }: CreateOfferModalProps) {
               </Column>
             )}
 
-            <PaginationSpinner loading={isLoading} />
+            <PaginationSpinner loading={loading} />
           </StarknetSigner>
         </ModalBody>
       </ModalContent>

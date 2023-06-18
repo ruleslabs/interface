@@ -4,8 +4,7 @@ import { Trans } from '@lingui/macro'
 import Column, { ColumnCenter } from 'src/components/Column'
 import { TYPE } from 'src/styles/theme'
 import { EtherscanButton } from 'src/components/Button'
-
-import Spinner from '../Spinner'
+import Spinner from 'src/components/Spinner'
 
 const StyledSpinner = styled(Spinner)`
   margin: 0 auto;

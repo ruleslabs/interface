@@ -8,7 +8,7 @@ import { useModalOpened, useAcceptOfferModalToggle } from 'src/state/application
 import { ApplicationModal } from 'src/state/application/actions'
 import Column from 'src/components/Column'
 import { PrimaryButton } from 'src/components/Button'
-import StarknetSigner from 'src/components/StarknetSigner'
+import StarknetSigner from 'src/components/StarknetSigner/Transaction'
 import { useETHBalance } from 'src/state/wallet/hooks'
 import { PurchaseBreakdown } from './PriceBreakdown'
 import CardBreakdown from './CardBreakdown'

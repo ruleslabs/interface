@@ -8,7 +8,7 @@ import { useModalOpened, useCancelOfferModalToggle } from 'src/state/application
 import { ApplicationModal } from 'src/state/application/actions'
 import Column from 'src/components/Column'
 import { PrimaryButton } from 'src/components/Button'
-import StarknetSigner from 'src/components/StarknetSigner'
+import StarknetSigner from 'src/components/StarknetSigner/Transaction'
 import CardBreakdown from './CardBreakdown'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import useStarknetTx from 'src/hooks/useStarknetTx'

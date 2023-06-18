@@ -3115,10 +3115,10 @@
   dependencies:
     eslint-scope "5.1.1"
 
-"@noble/curves@^0.8.2", "@noble/curves@^0.8.3":
-  version "0.8.3"
-  resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-0.8.3.tgz#ad6d48baf2599cf1d58dcb734c14d5225c8996e0"
-  integrity sha512-OqaOf4RWDaCRuBKJLDURrgVxjLmneGsiCXGuzYB5y95YithZMA6w4uk34DHSm0rKMrrYiaeZj48/81EvaAScLQ==
+"@noble/curves@~1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.0.0.tgz#e40be8c7daf088aaf291887cbc73f43464a92932"
+  integrity sha512-2upgEu0iLiDVDZkNLeFV2+ht0BAVgQnEmCk6JsOch9Rp8xfkMCbvbAZlA2pBHQc73dbl+vFOXfqkf4uemdn0bw==
   dependencies:
     "@noble/hashes" "1.3.0"
 
@@ -3439,10 +3439,10 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@rulesorg/sdk-core@^1.3.9":
-  version "1.3.9"
-  resolved "https://registry.yarnpkg.com/@rulesorg/sdk-core/-/sdk-core-1.3.9.tgz#94217c2494ada326e212e1658fe7f5c1c74665d6"
-  integrity sha512-fBoEa66J2k4kPB9ziP0aMNFZSyW9bfUawVD+EY9Wl/CRgZ0okwZyuFGnC/428maOUYhhEiVVrj5S6W6M3bzTWg==
+"@rulesorg/sdk-core@^1.4.3":
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/@rulesorg/sdk-core/-/sdk-core-1.4.3.tgz#aa84b21e2ad1aeb4051d80b2920d4b338b7adea3"
+  integrity sha512-Bszq1AK8r1s55cKP5WB6gSC8eN2JBcEVR2Zchv2vDZ7ZO9YoyMHPTX/LcUuhBEYUmnfnEwH8lJNIv3dzgbq+TA==
   dependencies:
     big.js "^6.2.1"
     decimal.js-light "^2.5.1"
@@ -10413,12 +10413,12 @@ methods@~1.1.2:
   resolved "https://registry.npmjs.org/methods/-/methods-1.1.2.tgz"
   integrity sha1-VSmk1nZUE07cxSZmVoNbD4Ua/O4=
 
-micro-starknet@^0.2.1:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/micro-starknet/-/micro-starknet-0.2.2.tgz#bc31816c5d43e1be14fbbc305a74c379c28fb80a"
-  integrity sha512-e7a4asBag5HJ/M+1AcXWFVnoC5uTFUAYaq5xkMeSkCVU6pOj0i6m84K9lFmkqN3+FrXj+lS+g2Xo5vHmi3E9fw==
+micro-starknet@~0.2.1:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/micro-starknet/-/micro-starknet-0.2.3.tgz#ff4e7caf599255d2110e9c57bb483dfaf493ccb3"
+  integrity sha512-6XBcC+GerlwJSR4iA0VaeXtS2wrayWFcA4PEzrJPMuFmWCaUtuGIq5K/DB5F/XgnL54/zl2Bxo690Lj7mYVA8A==
   dependencies:
-    "@noble/curves" "^0.8.3"
+    "@noble/curves" "~1.0.0"
     "@noble/hashes" "~1.3.0"
 
 micromatch@4.0.2:
@@ -13472,15 +13472,15 @@ stackframe@^1.3.4:
   resolved "https://registry.yarnpkg.com/stackframe/-/stackframe-1.3.4.tgz#b881a004c8c149a5e8efef37d51b16e412943310"
   integrity sha512-oeVtt7eWQS+Na6F//S4kJ2K2VbRlS9D43mAlMyVpVWovy9o+jfgH8O9agzANzaiLjclA0oYzUXEM4PurhSUChw==
 
-starknet@^5.10.0:
-  version "5.10.2"
-  resolved "https://registry.yarnpkg.com/starknet/-/starknet-5.10.2.tgz#2bd8adce94fabba6f505c1624279ba6fafc202c9"
-  integrity sha512-KdZI6srNXrjicTj7+xwLasIchjXumfr5o28HFv4+7AtjyDtzzwzN7SrVQI936nylwl4hPywn38E0CDkKJGH1bg==
+starknet@^5.13.2:
+  version "5.13.2"
+  resolved "https://registry.yarnpkg.com/starknet/-/starknet-5.13.2.tgz#d93f1da9f65b4bec6b232e4ac9beeff2634824ca"
+  integrity sha512-0DmD5RDTEpTDHkCuimfWxehv+WmczeBws+a2ROwt/SUoVq4O/YfG4nJ3X1ru+QeiEHAPRWRr0N1hdJ2E4Yf94A==
   dependencies:
-    "@noble/curves" "^0.8.2"
+    "@noble/curves" "~1.0.0"
     isomorphic-fetch "^3.0.0"
     lossless-json "^2.0.8"
-    micro-starknet "^0.2.1"
+    micro-starknet "~0.2.1"
     pako "^2.0.4"
     url-join "^4.0.1"
 

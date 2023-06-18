@@ -4,13 +4,13 @@ import { Trans } from '@lingui/macro'
 
 import { useETHBalance, useIsDeployed, useSetWalletModalMode } from 'src/state/wallet/hooks'
 import Confirmation from './Confirmation'
-import { PaginationSpinner } from '../Spinner'
-import Error from './Error'
-import Column from '../Column'
-import { PrimaryButton } from '../Button'
-import { RowCenter } from '../Row'
+import { PaginationSpinner } from 'src/components/Spinner'
+import Error from '../Error'
+import Column from 'src/components/Column'
+import { PrimaryButton } from 'src/components/Button'
+import { RowCenter } from 'src/components/Row'
 import { TYPE } from 'src/styles/theme'
-import PrivateKeyDecipherForm from './PrivateKeyDecipherForm'
+import PrivateKeyDecipherForm from '../PrivateKeyDecipherForm'
 import { useOpenModal } from 'src/state/application/hooks'
 import useStarknetTx, { useEstimateFees, useExecuteTx } from 'src/hooks/useStarknetTx'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
@@ -18,11 +18,11 @@ import useRulesAccount from 'src/hooks/useRulesAccount'
 import Pending from './Pending'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import useCurrentUser from 'src/hooks/useCurrentUser'
-import LockedWallet from '../LockedWallet'
+import LockedWallet from 'src/components/LockedWallet'
 import { ApplicationModal } from 'src/state/application/actions'
 import { WalletModalMode } from 'src/state/wallet/actions'
-import DepositNeeded from '../LockedWallet/DepositNeeded'
-import DeploymentNeeded from '../LockedWallet/DeploymentNeeded'
+import DepositNeeded from 'src/components/LockedWallet/DepositNeeded'
+import DeploymentNeeded from 'src/components/LockedWallet/DeploymentNeeded'
 import { StxAction } from 'src/types/starknetTx'
 import useTrans from 'src/hooks/useTrans'
 
@@ -217,6 +217,7 @@ export default function StarknetSigner({
     allowUndeployed,
     openDesitModal,
     deployed,
+    signing,
   ])
 
   useEffect(() => {

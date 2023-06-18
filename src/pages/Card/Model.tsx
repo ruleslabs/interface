@@ -63,7 +63,7 @@ const CARD_MODEL_QUERY = gql`
         name
         maxSupply
       }
-      cardsOnSaleCount
+      listedCardsCount
       artistName
     }
   }

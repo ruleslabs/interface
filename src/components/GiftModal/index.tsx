@@ -14,7 +14,7 @@ import Column from 'src/components/Column'
 import { RowCenter } from 'src/components/Row'
 import { TYPE } from 'src/styles/theme'
 import { PrimaryButton } from 'src/components/Button'
-import StarknetSigner from 'src/components/StarknetSigner'
+import StarknetSigner from 'src/components/StarknetSigner/Transaction'
 import CardBreakdown from 'src/components/MarketplaceModal/CardBreakdown'
 import Avatar from 'src/components/Avatar'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
@@ -135,7 +135,7 @@ const CARDS_QUERY = gql`
           r
           s
         }
-        nonce
+        salt
       }
     }
   }

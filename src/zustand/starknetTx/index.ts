@@ -9,6 +9,7 @@ export type StarknetTxSlice = State & Actions
 
 export interface State {
   stxCalls: Call[]
+  stxMessages: string[]
   stxAccountDeploymentPayload: DeployAccountContractPayload | null
   stxValue: WeiAmount
   stxSigning: boolean
@@ -21,6 +22,8 @@ export interface State {
 export interface Actions {
   stxSetCalls: (calls: Call[]) => void
   stxPushCalls: (...calls: Call[]) => void
+
+  stxPushMessages: (...hashes: string[]) => void
 
   stxSetAccountDeploymentPayload: (accountDeploymentPayload: DeployAccountContractPayload | null) => void
 
@@ -39,6 +42,7 @@ export interface Actions {
 
 const resetState = {
   stxCalls: [],
+  stxMessages: [],
   stxAccountDeploymentPayload: null,
   stxValue: WeiAmount.ZERO,
   stxSigning: false,
@@ -64,6 +68,13 @@ export const createStarknetTxSlice: StateCreator<StoreState, [['zustand/immer', 
   stxPushCalls: (...calls: Call[]) =>
     set((state) => {
       state.stxCalls.push(...(calls as any[]))
+    }),
+
+  // MESSAGES
+
+  stxPushMessages: (...hashes: string[]) =>
+    set((state) => {
+      state.stxMessages.push(...(hashes as any[]))
     }),
 
   // DEPLOY
