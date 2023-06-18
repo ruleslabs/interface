@@ -22,6 +22,8 @@ import { TYPE } from 'src/styles/theme'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import useStarknetMessages from 'src/hooks/useStarknetMessages'
+import { useListCards } from 'src/graphql/data/CardListings'
+import { stark } from 'starknet'
 
 const CardBreakdownWrapper = styled.div`
   position: relative;
@@ -66,6 +68,8 @@ interface CreateOfferModalProps {
 export default function ListCardMocal({ tokenIds }: CreateOfferModalProps) {
   const [cardIndex, setCardIndex] = useState(0)
   const [price, setPrice] = useState('')
+  const [prices, setPrices] = useState<string[]>([])
+  const [salts, setSalts] = useState<string[]>([])
   const [parsedPricesTotal, setParsedPricesTotal] = useState(WeiAmount.ZERO)
 
   // rules account
@@ -116,7 +120,19 @@ export default function ListCardMocal({ tokenIds }: CreateOfferModalProps) {
     const marketplaceAddress = constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
     if (!marketplaceAddress || !parsedPrice || !tokenId || !address) return
 
-    const hash = await rulesSdk.computeListingOrderHash(address, tokenId, 1, parsedPrice.toUnitFixed(Unit.WEI))
+    const salt = stark.randomAddress()
+
+    const weiPrice = parsedPrice.toUnitFixed(Unit.WEI)
+
+    const hash = await rulesSdk.computeListingOrderHash(address, tokenId, 1, weiPrice, salt)
+
+    console.log(hash)
+
+    // push new price
+    setPrices((prices) => [...prices, weiPrice])
+
+    // push new salt
+    setSalts((salts) => [...salts, salt])
 
     // save calls
     pushMessages(hash)
@@ -136,15 +152,33 @@ export default function ListCardMocal({ tokenIds }: CreateOfferModalProps) {
     }
   }, [parsedPrice, tokenId, cards.length, vouchersSigningDataMap, address])
 
-  const onSignature = useCallback(async (signatures: Signature[]) => {
-    console.log(signatures)
-  }, [])
+  // graphql mutations
+  const [listCardsMutation, { error }] = useListCards()
+
+  const onSignature = useCallback(
+    async (signatures: Signature[], fullPublicKey: string) => {
+      return listCardsMutation({
+        variables: {
+          cardListings: signatures.map((signature, index) => ({
+            tokenId: cards[index].tokenId,
+            price: prices[index],
+            orderSigningData: { salt: salts[index], signature },
+          })),
+          fullPublicKey,
+        },
+      })
+    },
+    [cards.length, prices.length, salts.length, listCardsMutation]
+  )
 
   // on close modal
   useEffect(() => {
     if (isOpen) {
       resetStarknetTx()
       setCardIndex(0)
+      setPrice('')
+      setPrices([])
+      setSalts([])
     }
   }, [isOpen])
 
@@ -157,7 +191,7 @@ export default function ListCardMocal({ tokenIds }: CreateOfferModalProps) {
         />
 
         <ModalBody>
-          <StarknetSigner onSignature={onSignature} action={'offerCreation'}>
+          <StarknetSigner onSignature={onSignature} action={'offerCreation'} error={error?.message}>
             {!!card && (
               <Column gap={32}>
                 <CardBreakdownWrapper>

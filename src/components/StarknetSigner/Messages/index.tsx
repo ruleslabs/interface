@@ -11,6 +11,7 @@ import { PaginationSpinner } from 'src/components/Spinner'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import LockedWallet from 'src/components/LockedWallet'
 import Confirmation from './Confirmation'
+import { ec, encode } from 'starknet'
 
 const DummyFocusInput = styled.input`
   max-height: 0;
@@ -22,13 +23,13 @@ const DummyFocusInput = styled.input`
 interface StarknetSignerProps {
   children?: React.ReactNode
   action: StxAction
-  onSignature: (signatures: Signature[]) => Promise<void>
+  onSignature: (signatures: Signature[], fullPublicKey: string) => Promise<{ success: boolean }>
+  error?: string | null
 }
 
-export default function StarknetSigner({ children, action, onSignature }: StarknetSignerProps) {
+export default function StarknetSigner({ children, action, onSignature, error }: StarknetSignerProps) {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
   // current user
   const { currentUser } = useCurrentUser()
@@ -42,19 +43,12 @@ export default function StarknetSigner({ children, action, onSignature }: Starkn
     async (pk: string) => {
       setLoading(true)
 
-      onSignature(messages.map((hash) => sign.signHash(hash, pk)))
-        .then((res) => {
-          console.log(res)
-
-          setLoading(false)
-          setSuccess(true)
-        })
-        .catch((err) => {
-          console.error(err)
-
-          setLoading(false)
-          setError('Failure')
-        })
+      const ret = await onSignature(
+        messages.map((hash) => sign.signHash(hash, pk)),
+        encode.buf2hex(ec.starkCurve.getPublicKey(pk))
+      )
+      setSuccess(ret.success)
+      setLoading(false)
     },
     [messages.length]
   )

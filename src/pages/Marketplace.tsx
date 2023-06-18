@@ -70,8 +70,8 @@ const GridHeader = styled(RowBetween)`
 
 // TODO: new sorting support
 const sortsData: SortData<any>[] = [
-  { name: 'Price: low to high', key: '', desc: true },
-  { name: 'Price: high to low', key: '', desc: false },
+  { name: 'Price: low to high', key: '', desc: false },
+  { name: 'Price: high to low', key: '', desc: true },
 ]
 
 function Marketplace() {
@@ -105,7 +105,7 @@ function Marketplace() {
     filter: {
       seasons: marketplaceFilters.seasons,
       scarcityAbsoluteIds: marketplaceFilters.scarcities,
-      maxGweiPrice: '9999999999',
+      maxGweiPrice: '9999999999999999',
     },
     sort,
   })

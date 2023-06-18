@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import gql from 'graphql-tag'
+import { ScarcityName } from '@rulesorg/sdk-core'
 
 import { CardListing } from 'src/types'
 import {
@@ -8,8 +9,9 @@ import {
   CardListingsSortInput,
   CardModelsQueryVariables,
   useCardListingsQuery,
+  useListCardsMutation,
 } from './__generated__/types-and-hooks'
-import { ScarcityName } from '@rulesorg/sdk-core'
+import { formatApolloError, formatMutationFunction } from './utils'
 
 gql`
   query CardListings($filter: CardListingsFilterInput!, $sort: CardListingsSortInput!, $after: String, $first: Int) {
@@ -60,6 +62,32 @@ gql`
     }
   }
 `
+
+gql`
+  mutation ListCards($cardListings: [CardListingParametersInput!]!, $fullPublicKey: String!) {
+    listCards(input: { cardListings: $cardListings, fullPublicKey: $fullPublicKey }) {
+      id
+    }
+  }
+`
+
+// HOOKS
+
+export function useListCards() {
+  const [mutation, { loading, error }] = useListCardsMutation()
+
+  return useMemo(
+    () =>
+      [
+        formatMutationFunction(mutation, (data) => ({ success: !!data })),
+        {
+          loading,
+          error: formatApolloError(error),
+        },
+      ] as const,
+    [mutation, loading, error]
+  )
+}
 
 export function formatCardListingQueryData({
   node: queryCardListing,

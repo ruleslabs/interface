@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components/macro'
-import { useLazyQuery, useQuery, gql } from '@apollo/client'
+import { useLazyQuery, gql } from '@apollo/client'
 import { t, Trans, Plural } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
@@ -46,23 +46,6 @@ const CARDS_QUERY = gql`
         scarcity {
           name
         }
-      }
-    }
-  }
-`
-
-const CARDS_IN_DELIVERY_QUERY = gql`
-  query ($userId: ID!) {
-    cardsInDeliveryForUser(userId: $userId) {
-      id
-      slug
-      serialNumber
-      tokenId
-      cardModel {
-        slug
-        pictureUrl(derivative: "width=1024")
-        season
-        artistName
       }
     }
   }
@@ -171,7 +154,7 @@ const sortsData: SortsData<CardsSortingKey> = [
 ]
 
 function UserCards() {
-  const [deliveredCardsCount, setDeliveredCardsCount] = useState(0)
+  const [cardsCount, setCardsCount] = useState(0)
   const [cards, setCards] = useState<any[]>([])
   const [sortIndex, setSortIndex] = useState(0)
 
@@ -201,16 +184,6 @@ function UserCards() {
     fetchPolicy: 'cache-and-network',
   })
 
-  // query cards in delivery data
-  const cardsInDeliveryQuery = useQuery(CARDS_IN_DELIVERY_QUERY, { variables: { userId: user?.id }, skip: !user?.id })
-  const cardsInDelivery = cardsInDeliveryQuery.data?.cardsInDeliveryForUser ?? []
-
-  // cards count
-  const cardsCount = useMemo(
-    () => deliveredCardsCount + cardsInDelivery.length,
-    [cardsInDelivery.length, deliveredCardsCount]
-  )
-
   // search cards
   const onPageFetched = useCallback(
     (hits, { pageNumber, totalHitsCount }) => {
@@ -218,7 +191,7 @@ function UserCards() {
 
       queryCardsData({ variables: { ids: hits.map((hit: any) => hit.objectID) } })
 
-      setDeliveredCardsCount(totalHitsCount)
+      setCardsCount(totalHitsCount)
     },
     [queryCardsData]
   )
@@ -230,35 +203,13 @@ function UserCards() {
   })
 
   // loading
-  const isLoading = cardsSearch.loading || cardsQuery.loading || cardsInDelivery.loading
+  const isLoading = cardsSearch.loading || cardsQuery.loading
 
   // cards selection
   const { selectedTokenIds, selectionModeEnabled, toggleSelectionMode } = useAssetsSelection()
 
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
-
-  const cardsInDeliveryComponent = useMemo(
-    () =>
-      cardsInDelivery.map((card: any) => (
-        <NftCard
-          key={card.slug}
-          asset={{
-            animationUrl: card.cardModel.videoUrl,
-            imageUrl: card.cardModel.pictureUrl,
-            tokenId: card.tokenId,
-            scarcity: card.cardModel.scarcity.name,
-          }}
-          display={{
-            href: `/card/${card.cardModel.slug}/${card.serialNumber}`,
-            primaryInfo: card.cardModel.artistName,
-            secondaryInfo: `#${card.serialNumber}`,
-            status: 'inDelivery',
-          }}
-        />
-      )),
-    [cardsInDelivery.length]
-  )
 
   const cardsComponents = useMemo(
     () =>
@@ -315,9 +266,8 @@ function UserCards() {
         <CollectionNfts
           next={cardsSearch.nextPage ?? (() => {})}
           hasNext={cardsSearch.hasNext}
-          dataLength={(cards.length ?? 0) + (cardsInDelivery.length ?? 0)}
+          dataLength={cards.length ?? 0}
         >
-          {cardsInDeliveryComponent}
           {cardsComponents}
         </CollectionNfts>
 
