@@ -98,7 +98,7 @@ function Offers() {
   const selectedOffersPriceTotal = useMemo(
     () =>
       selectedOffers
-        .reduce<WeiAmount>((acc, { price }) => acc.add(WeiAmount.fromRawAmount(`0x${price}`)), WeiAmount.ZERO)
+        .reduce<WeiAmount>((acc, { price }) => acc.add(WeiAmount.fromRawAmount(price)), WeiAmount.ZERO)
         .toUnitFixed(Unit.WEI),
     [selectedOffers.length]
   )

@@ -70,7 +70,7 @@ export default function OffersSelectorBreakdown({
         </Row>
         <PrimaryButton onClick={toggleAcceptOfferModal} disabled={!serialNumbers.length} large>
           {serialNumbers.length
-            ? t`Buy - ${parsedPrice.toSignificant(6)} ETH (${weiAmountToEURValue(parsedPrice) ?? 0}€)`
+            ? t`Buy - ${+parsedPrice.toFixed(6)} ETH (${weiAmountToEURValue(parsedPrice) ?? 0}€)`
             : t`Select a card`}
         </PrimaryButton>
       </Column>
