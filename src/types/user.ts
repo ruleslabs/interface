@@ -9,7 +9,7 @@ export interface GenieStarknetWallet {
   address: string
   oldAddress?: string
   publicKey: string
-  originalPublicKey: string
+  currentPublicKey: string
   lockingReason: constants.StarknetWalletLockingReason
   signerEscapeTriggeredAt?: Date
   needsUpgrade: boolean

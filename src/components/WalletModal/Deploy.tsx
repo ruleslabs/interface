@@ -24,7 +24,7 @@ export default function Deploy() {
 
   // current user
   const { currentUser } = useCurrentUser()
-  const { originalPublicKey } = currentUser?.starknetWallet ?? {}
+  const { currentPublicKey } = currentUser?.starknetWallet ?? {}
 
   // modal mode
   const setWalletModalMode = useSetWalletModalMode()
@@ -44,12 +44,12 @@ export default function Deploy() {
   // deployment
   const getWalletConstructorCallData = useGetWalletConstructorCallData()
   useEffect(() => {
-    if (!address || !originalPublicKey || !library) return
+    if (!address || !currentPublicKey || !library) return
 
     setAccountDeploymentPayload({
       classHash: constants.ACCOUNT_CLASS_HASH,
-      addressSalt: originalPublicKey.toLowerCase(),
-      constructorCalldata: getWalletConstructorCallData(originalPublicKey),
+      addressSalt: currentPublicKey.toLowerCase(),
+      constructorCalldata: getWalletConstructorCallData(currentPublicKey),
       contractAddress: address,
     })
 
@@ -77,7 +77,7 @@ export default function Deploy() {
       .then(({ suggestedMaxFee }) =>
         setParsedDummyDeploymentMaxFee(WeiAmount.fromRawAmount(suggestedMaxFee.toString()))
       )
-  }, [address, library, originalPublicKey])
+  }, [address, library, currentPublicKey])
 
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
