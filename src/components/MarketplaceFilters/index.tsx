@@ -98,21 +98,25 @@ export default function MarketplaceFilters({ maximumPriceUpperBound, ...props }:
         </Checkbox>
       </Column>
 
-      <Divider />
+      {false && (
+        <>
+          <Divider />
 
-      <Column gap={16}>
-        <Subtitle value={t`Maximum price`} />
+          <Column gap={16}>
+            <Subtitle value={t`Maximum price`} />
 
-        <Slider
-          unit="€"
-          min={0}
-          max={maximumPriceUpperBound}
-          onInputChange={handleDebouncedMaximumPriceUpdate}
-          onSlidingChange={setMaximumPrice}
-          value={maximumPrice}
-          onSliderRelease={debounceMaximumPrice}
-        />
-      </Column>
+            <Slider
+              unit="€"
+              min={0}
+              max={maximumPriceUpperBound}
+              onInputChange={handleDebouncedMaximumPriceUpdate}
+              onSlidingChange={setMaximumPrice}
+              value={maximumPrice}
+              onSliderRelease={debounceMaximumPrice}
+            />
+          </Column>
+        </>
+      )}
     </Column>
   )
 }
