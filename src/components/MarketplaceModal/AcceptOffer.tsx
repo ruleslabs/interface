@@ -20,6 +20,7 @@ import { useOperations } from 'src/hooks/usePendingOperations'
 import { Operation } from 'src/types'
 import DepositNeeded from '../LockedWallet/DepositNeeded'
 import { PaginationSpinner } from '../Spinner'
+import { useGetWalletConstructorCallData } from 'src/hooks/useCreateWallet'
 
 const CARDS_QUERY = gql`
   query CardsByTokenIds($tokenIds: [String!]!) {
@@ -28,6 +29,11 @@ const CARDS_QUERY = gql`
       tokenId
       owner {
         starknetAddress
+        user {
+          starknetWallet {
+            currentPublicKey
+          }
+        }
       }
       voucherSigningData {
         signature {
@@ -98,6 +104,9 @@ export default function AcceptOfferModal({ tokenIds }: AcceptOfferModalProps) {
     return !balance.lessThan(parsedTotalPrice)
   }, [balance, parsedTotalPrice])
 
+  // undeployed offerer
+  const getWalletConstructorCallData = useGetWalletConstructorCallData()
+
   // call
   const handleConfirmation = useCallback(() => {
     // save operations
@@ -114,8 +123,10 @@ export default function AcceptOfferModal({ tokenIds }: AcceptOfferModalProps) {
           0,
         ],
       },
-      ...cards.map((card) =>
-        card.voucherSigningData
+      ...cards.map((card) => {
+        const offererPublicKey = card.owner.user?.starknetWallet?.currentPublicKey
+
+        return card.voucherSigningData
           ? rulesSdk.getVoucherReedemAndOrderFulfillCall(
               card.owner.starknetAddress,
               card.tokenId,
@@ -124,7 +135,8 @@ export default function AcceptOfferModal({ tokenIds }: AcceptOfferModalProps) {
               card.voucherSigningData.salt,
               card.voucherSigningData.signature,
               card.listing.orderSigningData.salt,
-              card.listing.orderSigningData.signature
+              card.listing.orderSigningData.signature,
+              offererPublicKey ? getWalletConstructorCallData(offererPublicKey) : undefined
             )
           : rulesSdk.getOrderFulfillCall(
               card.owner.starknetAddress,
@@ -134,11 +146,11 @@ export default function AcceptOfferModal({ tokenIds }: AcceptOfferModalProps) {
               card.listing.orderSigningData.salt,
               card.listing.orderSigningData.signature
             )
-      )
+      })
     )
 
     setSigning(true)
-  }, [cards.length, parsedTotalPrice])
+  }, [cards.length, parsedTotalPrice, getWalletConstructorCallData])
 
   // on close modal
   useEffect(() => {
