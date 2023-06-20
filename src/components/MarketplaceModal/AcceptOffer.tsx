@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { t, Trans } from '@lingui/macro'
-import { WeiAmount, constants } from '@rulesorg/sdk-core'
+import { Unit, WeiAmount, constants } from '@rulesorg/sdk-core'
 import { gql, useQuery } from '@apollo/client'
 
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
@@ -18,9 +18,8 @@ import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import { useOperations } from 'src/hooks/usePendingOperations'
 import { Operation } from 'src/types'
-import { Call, uint256 } from 'starknet'
-import { getVoucherRedeemCall } from 'src/utils/getVoucherRedeemCall'
 import DepositNeeded from '../LockedWallet/DepositNeeded'
+import { PaginationSpinner } from '../Spinner'
 
 const CARDS_QUERY = gql`
   query CardsByTokenIds($tokenIds: [String!]!) {
@@ -35,7 +34,17 @@ const CARDS_QUERY = gql`
           r
           s
         }
-        nonce
+        salt
+      }
+      listing {
+        price
+        orderSigningData {
+          signature {
+            r
+            s
+          }
+          salt
+        }
       }
       cardModel {
         pictureUrl(derivative: "width=256")
@@ -51,29 +60,24 @@ const CARDS_QUERY = gql`
 
 interface AcceptOfferModalProps {
   tokenIds: string[]
-  price: string
 }
 
-export default function AcceptOfferModal({ tokenIds, price }: AcceptOfferModalProps) {
+export default function AcceptOfferModal({ tokenIds }: AcceptOfferModalProps) {
   // modal
   const isOpen = useModalOpened(ApplicationModal.ACCEPT_OFFER)
   const toggleAcceptOfferModal = useAcceptOfferModalToggle()
 
   // cards query
-  const cardsQuery = useQuery(CARDS_QUERY, { variables: { tokenIds }, skip: !isOpen })
-  const cards = cardsQuery.data?.cardsByTokenIds ?? []
+  const { data, loading } = useQuery(CARDS_QUERY, { variables: { tokenIds }, skip: !isOpen })
+  const cards: any[] = data?.cardsByTokenIds ?? []
   const cardModel = cards[0]?.cardModel // TODO: support multiple card models
 
   // serial numbers
   const serialNumbers = useMemo(() => cards.map((card: any) => card.serialNumber), [cards.length])
 
-  // voucher signing data map
-  const vouchersSigningDataMap = useMemo(
-    () =>
-      (cards as any[]).reduce<any>((acc, card) => {
-        acc[card.tokenId] = { voucherSigningData: card.voucherSigningData, owner: card.owner.starknetAddress }
-        return acc
-      }, {}),
+  // price total
+  const parsedTotalPrice = useMemo(
+    () => cards.reduce<WeiAmount>((acc, { listing }) => acc.add(listing.price), WeiAmount.ZERO),
     [cards.length]
   )
 
@@ -91,52 +95,50 @@ export default function AcceptOfferModal({ tokenIds, price }: AcceptOfferModalPr
   const canPayForCard = useMemo(() => {
     if (!balance) return true // we avoid displaying error message if not necessary
 
-    return !balance.lessThan(WeiAmount.fromRawAmount(price))
-  }, [balance, price])
+    return !balance.lessThan(parsedTotalPrice)
+  }, [balance, parsedTotalPrice])
 
   // call
   const handleConfirmation = useCallback(() => {
-    const ethAddress = constants.ETH_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
-    const marketplaceAddress = constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
-    if (!ethAddress || !marketplaceAddress) return
-
     // save operations
-    pushOperation(...tokenIds.map((tokenId): Operation => ({ tokenId, action: 'offerAcceptance', quantity: 1 })))
-
-    const voucherRedeemCalls = tokenIds
-      .map((tokenId) =>
-        vouchersSigningDataMap[tokenId].voucherSigningData
-          ? getVoucherRedeemCall(
-              vouchersSigningDataMap[tokenId].owner,
-              tokenId,
-              1,
-              vouchersSigningDataMap[tokenId].voucherSigningData
-            )
-          : null
-      )
-      .filter((call): call is Call => !!call)
+    pushOperation(...cards.map(({ tokenId }): Operation => ({ tokenId, action: 'offerAcceptance', quantity: 1 })))
 
     // save calls
     pushCalls(
       {
-        contractAddress: ethAddress,
+        contractAddress: constants.ETH_ADDRESSES[rulesSdk.networkInfos.starknetChainId],
         entrypoint: 'increaseAllowance',
-        calldata: [marketplaceAddress, price, 0],
+        calldata: [
+          constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId],
+          parsedTotalPrice.toUnitFixed(Unit.WEI),
+          0,
+        ],
       },
-      ...voucherRedeemCalls,
-      ...tokenIds.map((tokenId) => {
-        const u256TokenId = uint256.bnToUint256(tokenId)
-
-        return {
-          contractAddress: marketplaceAddress,
-          entrypoint: 'acceptOffer',
-          calldata: [u256TokenId.low, u256TokenId.high],
-        }
-      })
+      ...cards.map((card) =>
+        card.voucherSigningData
+          ? rulesSdk.getVoucherReedemAndOrderFulfillCall(
+              card.owner.starknetAddress,
+              card.tokenId,
+              1,
+              card.listing.price,
+              card.voucherSigningData.salt,
+              card.voucherSigningData.signature,
+              card.listing.orderSigningData.salt,
+              card.listing.orderSigningData.signature
+            )
+          : rulesSdk.getOrderFulfillCall(
+              card.owner.starknetAddress,
+              card.tokenId,
+              1,
+              card.listing.price,
+              card.listing.orderSigningData.salt,
+              card.listing.orderSigningData.signature
+            )
+      )
     )
 
     setSigning(true)
-  }, [tokenIds.length, vouchersSigningDataMap])
+  }, [cards.length, parsedTotalPrice])
 
   // on close modal
   useEffect(() => {
@@ -154,23 +156,27 @@ export default function AcceptOfferModal({ tokenIds, price }: AcceptOfferModalPr
         <ModalBody>
           <StarknetSigner action={'offerAcceptance'}>
             <Column gap={32}>
-              {cardModel && (
-                <CardBreakdown
-                  pictureUrl={cardModel.pictureUrl}
-                  season={cardModel.season}
-                  artistName={cardModel.artistName}
-                  serialNumbers={serialNumbers}
-                  scarcityName={cardModel.scarcity.name}
-                />
+              {cardModel ? (
+                <>
+                  <CardBreakdown
+                    pictureUrl={cardModel.pictureUrl}
+                    season={cardModel.season}
+                    artistName={cardModel.artistName}
+                    serialNumbers={serialNumbers}
+                    scarcityName={cardModel.scarcity.name}
+                  />
+
+                  <PurchaseBreakdown price={parsedTotalPrice.toUnitFixed(Unit.WEI)} />
+
+                  {!canPayForCard && balance && <DepositNeeded />}
+
+                  <PrimaryButton onClick={handleConfirmation} disabled={!canPayForCard} large>
+                    <Trans>Next</Trans>
+                  </PrimaryButton>
+                </>
+              ) : (
+                <PaginationSpinner loading={loading} />
               )}
-
-              <PurchaseBreakdown price={price} />
-
-              {!canPayForCard && balance && <DepositNeeded />}
-
-              <PrimaryButton onClick={handleConfirmation} disabled={!canPayForCard} large>
-                <Trans>Next</Trans>
-              </PrimaryButton>
             </Column>
           </StarknetSigner>
         </ModalBody>

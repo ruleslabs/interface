@@ -14,8 +14,8 @@ import YoutubeEmbed from 'src/components/YoutubeEmbed'
 import CardModel3D from 'src/components/CardModel3D'
 import useCardsBackPictureUrl from 'src/hooks/useCardsBackPictureUrl'
 import GiftModal from 'src/components/GiftModal'
-import CreateOfferModal from 'src/components/MarketplaceModal/ListCard'
-import CancelOfferModal from 'src/components/MarketplaceModal/CancelOffer'
+import ListCardMocal from 'src/components/MarketplaceModal/ListCard'
+import CancelListingModal from 'src/components/MarketplaceModal/CancelOffer'
 import AcceptOfferModal from 'src/components/MarketplaceModal/AcceptOffer'
 import { PaginationSpinner } from 'src/components/Spinner'
 import DefaultLayout from 'src/components/Layout'
@@ -88,6 +88,7 @@ const CARD_QUERY = gql`
           id
         }
       }
+      listed
       listing {
         price
       }
@@ -104,14 +105,14 @@ function CardPage() {
   const navigate = useNavigate()
 
   // query cards data
-  const { data, loading, error } = useQuery(CARD_QUERY, { variables: { cardSlug }, skip: !cardSlug })
+  const { data, loading, error, refetch } = useQuery(CARD_QUERY, { variables: { cardSlug }, skip: !cardSlug })
   const card = data?.card
 
   // card's back
   const backPictureUrl = useCardsBackPictureUrl(512)
 
   if (error) {
-    return <Text.Body>{error}</Text.Body>
+    return <Text.Body>{JSON.stringify(error)}</Text.Body>
   }
 
   return (
@@ -161,20 +162,13 @@ function CardPage() {
 
           <GiftModal tokenIds={[card.tokenId]} />
 
-          <CreateOfferModal tokenIds={[card.tokenId]} />
+          <ListCardMocal tokenIds={[card.tokenId]} onSuccess={() => refetch()} />
 
-          {card.listing && (
+          {card.listed && (
             <>
-              <CancelOfferModal
-                artistName={card.cardModel.artistName}
-                scarcityName={card.cardModel.scarcity.name}
-                scarcityId={card.cardModel.scarcity.id}
-                season={card.cardModel.season}
-                serialNumber={card.serialNumber}
-                pictureUrl={card.cardModel.pictureUrl}
-              />
+              <CancelListingModal tokenId={card.tokenId} />
 
-              <AcceptOfferModal tokenIds={[card.tokenId]} price={card.listing.price} />
+              <AcceptOfferModal tokenIds={[card.tokenId]} />
             </>
           )}
         </>

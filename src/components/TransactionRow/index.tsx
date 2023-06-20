@@ -154,7 +154,7 @@ const TransactionRow = React.forwardRef<HTMLDivElement, TransactionRowProps>(
             />
           ))}
 
-          {!fromAddress && <WalletEvent eventKey={constants.EventKeys.ACCOUNT_INITIALIZED} />}
+          {!fromAddress && <WalletEvent eventKey={constants.OldEventKeys.ACCOUNT_INITIALIZED} />}
 
           {!events.length && !l2ToL1Messages.length && offchainData?.action && (
             <OffchainAction action={offchainData.action} status={status} />

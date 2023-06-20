@@ -25,7 +25,6 @@ import { useOperations } from 'src/hooks/usePendingOperations'
 
 import { ReactComponent as Arrow } from 'src/images/arrow.svg'
 import { Call, uint256 } from 'starknet'
-import { getVoucherRedeemCall } from 'src/utils/getVoucherRedeemCall'
 import { useIsDeployed } from 'src/state/wallet/hooks'
 
 const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
@@ -211,7 +210,13 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
     const voucherRedeemCalls = tokenIds
       .map((tokenId) =>
         vouchersSigningDataMap[tokenId]
-          ? getVoucherRedeemCall(address, tokenId, 1, vouchersSigningDataMap[tokenId])
+          ? rulesSdk.getVoucherRedeemCall(
+              address,
+              tokenId,
+              1,
+              vouchersSigningDataMap[tokenId].salt,
+              vouchersSigningDataMap[tokenId].signature
+            )
           : null
       )
       .filter((call): call is Call => !!call)

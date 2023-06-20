@@ -71,6 +71,7 @@ export default function LastListings() {
     data: cardListings,
     hasNext,
     loadMore,
+    loading,
   } = useCardListings({
     sort: { type: CardListingsSortingType.Date, direction: SortingOption.Desc },
     filter: {},
@@ -176,7 +177,9 @@ export default function LastListings() {
     })
   }, [cardListings, locale, weiAmountToEURValue])
 
-  return (
+  return loading ? (
+    <PaginationSpinner loading />
+  ) : (
     <InfiniteScroll
       next={loadMore}
       hasMore={hasNext ?? false}

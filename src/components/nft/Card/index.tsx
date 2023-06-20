@@ -43,7 +43,13 @@ export const NftCard = ({ asset, display, onCardClick, badges }: NftCardProps) =
   // locale
   const locale = useActiveLocale()
 
+  // pending operations
+  const pendingOperations = usePendingOperations(asset.tokenId)
+  const pendingOperation = pendingOperations[0]
+
   const statusComponent = useMemo(() => {
+    if (pendingOperation) return null
+
     switch (status) {
       case 'inDelivery':
         return <Image className={styles.inDelivery} src={`/assets/inDelivery.${locale}.png`} />
@@ -54,11 +60,7 @@ export const NftCard = ({ asset, display, onCardClick, badges }: NftCardProps) =
       default:
         return null
     }
-  }, [status, locale])
-
-  // pending operations
-  const pendingOperations = usePendingOperations(asset.tokenId)
-  const pendingOperation = pendingOperations[0]
+  }, [status, locale, pendingOperation])
 
   // selection
   const { selectionModeEnabled, toggleTokenIdSelection, selectedTokenIds } = useAssetsSelection()

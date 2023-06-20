@@ -1620,8 +1620,8 @@ msgid "Your card is on its way !"
 msgstr "Ta carte est en route !"
 
 #: src/hooks/useTrans.ts
-msgid "Your offer will be created very soon."
-msgstr "Ton offre va être créée rapidement."
+msgid "Your card has been listed on the marketplace"
+msgstr "Ta carte est listée sur marketplace."
 
 #: src/hooks/useTrans.ts
 msgid "Your wallet deployment is on its way !"

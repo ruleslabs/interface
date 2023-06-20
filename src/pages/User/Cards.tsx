@@ -13,7 +13,7 @@ import { TYPE } from 'src/styles/theme'
 import EmptyTab, { EmptyCardsTabOfCurrentUser } from 'src/components/EmptyTab'
 import SortButton, { SortsData } from 'src/components/Button/SortButton'
 import { PrimaryButton, SecondaryButton } from 'src/components/Button'
-import CreateOfferModal from 'src/components/MarketplaceModal/ListCard'
+import ListCardMocal from 'src/components/MarketplaceModal/ListCard'
 import { useCreateOfferModalToggle, useOfferModalToggle } from 'src/state/application/hooks'
 import GiftModal from 'src/components/GiftModal'
 import useSearchedUser from 'src/hooks/useSearchedUser'
@@ -157,6 +157,18 @@ function UserCards() {
   const [cardsCount, setCardsCount] = useState(0)
   const [cards, setCards] = useState<any[]>([])
   const [sortIndex, setSortIndex] = useState(0)
+  const [listings, setListings] = useState<{ [tokenId: string]: string }>({})
+
+  // add new listings
+  const addListings = useCallback((tokenIds: string[], prices: string[]) => {
+    setListings((state) => ({
+      ...state,
+      ...tokenIds.reduce<{ [tokenId: string]: string }>((acc, tokenId, index) => {
+        acc[tokenId] = prices[index]
+        return acc
+      }, {}),
+    }))
+  }, [])
 
   // current user
   const [user] = useSearchedUser()
@@ -203,7 +215,7 @@ function UserCards() {
   })
 
   // loading
-  const isLoading = cardsSearch.loading || cardsQuery.loading
+  const loading = cardsSearch.loading || cardsQuery.loading
 
   // cards selection
   const { selectedTokenIds, selectionModeEnabled, toggleSelectionMode } = useAssetsSelection()
@@ -213,27 +225,32 @@ function UserCards() {
 
   const cardsComponents = useMemo(
     () =>
-      cards.map((card: any) => (
-        <NftCard
-          key={card.slug}
-          asset={{
-            animationUrl: card.cardModel.videoUrl,
-            imageUrl: card.cardModel.pictureUrl,
-            tokenId: card.tokenId,
-            scarcity: card.cardModel.scarcity.name,
-          }}
-          display={{
-            href: `/card/${card.cardModel.slug}/${card.serialNumber}`,
-            primaryInfo: card.cardModel.artistName,
-            secondaryInfo: `#${card.serialNumber}`,
-            subtitle: card.parsedPrice
-              ? `${card.parsedPrice.toSignificant(6)} ETH (€${weiAmountToEURValue(card.parsedPrice)})`
-              : undefined,
-            status: card.parsedPrice ? 'onSale' : undefined,
-          }}
-        />
-      )),
-    [cards]
+      cards.map((card) => {
+        const parsedPrice =
+          card.parsedPrice ?? (listings[card.tokenId] ? WeiAmount.fromRawAmount(listings[card.tokenId]) : undefined)
+
+        return (
+          <NftCard
+            key={card.slug}
+            asset={{
+              animationUrl: card.cardModel.videoUrl,
+              imageUrl: card.cardModel.pictureUrl,
+              tokenId: card.tokenId,
+              scarcity: card.cardModel.scarcity.name,
+            }}
+            display={{
+              href: `/card/${card.cardModel.slug}/${card.serialNumber}`,
+              primaryInfo: card.cardModel.artistName,
+              secondaryInfo: `#${card.serialNumber}`,
+              subtitle: parsedPrice
+                ? `${parsedPrice.toSignificant(6)} ETH (€${weiAmountToEURValue(parsedPrice)})`
+                : undefined,
+              status: parsedPrice ? 'onSale' : undefined,
+            }}
+          />
+        )
+      }),
+    [cards, listings]
   )
 
   if (!user) return null
@@ -267,11 +284,12 @@ function UserCards() {
           next={cardsSearch.nextPage ?? (() => {})}
           hasNext={cardsSearch.hasNext}
           dataLength={cards.length ?? 0}
+          loading={loading}
         >
           {cardsComponents}
         </CollectionNfts>
 
-        {!isLoading &&
+        {!loading &&
           !cardsCount &&
           (user.isCurrentUser ? <EmptyCardsTabOfCurrentUser /> : <EmptyTab emptyText={t`No cards`} />)}
       </Section>
@@ -300,7 +318,7 @@ function UserCards() {
         </SelectedCardsAction>
       </SelectedCardsActionWrapper>
 
-      <CreateOfferModal tokenIds={selectedTokenIds} />
+      <ListCardMocal tokenIds={selectedTokenIds} onSuccess={addListings} />
       <GiftModal tokenIds={selectedTokenIds} />
     </>
   )

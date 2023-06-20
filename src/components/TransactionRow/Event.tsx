@@ -1,14 +1,6 @@
 import { useMemo } from 'react'
 import styled from 'styled-components/macro'
-import {
-  WeiAmount,
-  TransferEvent,
-  TransferSingleEvent,
-  OfferCreatedEvent,
-  AccountInitializedEvent,
-  constants,
-  evt,
-} from '@rulesorg/sdk-core'
+import { WeiAmount, TransferEvent, TransferSingleEvent, OfferCreatedEvent, constants, evt } from '@rulesorg/sdk-core'
 import { getChecksumAddress } from 'starknet'
 import { t, Trans } from '@lingui/macro'
 
@@ -268,10 +260,10 @@ interface WalletEventProps {
 export function WalletEvent({ eventKey }: WalletEventProps) {
   const eventText = useMemo(() => {
     switch (eventKey) {
-      case constants.EventKeys.ACCOUNT_INITIALIZED:
+      case constants.OldEventKeys.ACCOUNT_INITIALIZED:
         return t`Wallet deployed`
 
-      case constants.EventKeys.ACCOUNT_UPGRADED:
+      case constants.OldEventKeys.ACCOUNT_UPGRADED:
         return t`Wallet upgraded`
 
       case constants.EventKeys.SIGNER_ESCAPE_TRIGGERED:
@@ -306,18 +298,18 @@ interface EventProps {
 
 export default function Event({ address, publicKey, $key, $data }: EventProps) {
   const [parsedEvents, involvedAddresses] = useMemo(() => {
-    const [parsedEvent, involvedAddresses] = evt.parseEvent($key, $data)
+    const [parsedEvent, involvedAddresses] = evt.parseEvent(rulesSdk.networkInfos.starknetChainId, $key, $data)
     if (!parsedEvent || !involvedAddresses) return []
 
     const parsedEvents = Array.isArray(parsedEvent) ? parsedEvent : [parsedEvent]
 
     // fix events lack of informations
-    if (parsedEvents[0]?.key === constants.EventKeys.OFFER_CANCELED) {
-      ;(parsedEvents[0] as OfferCreatedEvent).seller = address
+    if (parsedEvents[0]?.key === constants.OldEventKeys.OFFER_CANCELED) {
+      ;(parsedEvents[0] as any).seller = address
       involvedAddresses.push(address)
     } else if (
-      parsedEvents[0]?.key === constants.EventKeys.ACCOUNT_INITIALIZED &&
-      getChecksumAddress((parsedEvents[0] as AccountInitializedEvent).signerPublicKey) === publicKey
+      parsedEvents[0]?.key === constants.OldEventKeys.ACCOUNT_INITIALIZED &&
+      getChecksumAddress(parsedEvents[0].signerPublicKey) === publicKey
     ) {
       involvedAddresses.push(address)
     }
@@ -343,11 +335,11 @@ export default function Event({ address, publicKey, $key, $data }: EventProps) {
           case constants.EventKeys.TRANSFER:
             return <EtherTransferEvent key={index} parsedEvent={parsedEvent as TransferEvent} />
 
-          case constants.EventKeys.OFFER_CREATED:
-          case constants.EventKeys.OFFER_CANCELED:
+          case constants.OldEventKeys.OFFER_CREATED:
+          case constants.OldEventKeys.OFFER_CANCELED:
             return <OfferCreationAndCancelEvent key={index} parsedEvent={parsedEvent as OfferCreatedEvent} />
 
-          case constants.EventKeys.ACCOUNT_INITIALIZED:
+          case constants.OldEventKeys.ACCOUNT_INITIALIZED:
             return <WalletEvent key={index} eventKey={$key} />
         }
 

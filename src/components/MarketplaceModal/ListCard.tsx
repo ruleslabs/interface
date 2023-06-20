@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { Plural, t, Trans } from '@lingui/macro'
 import { useQuery, gql } from '@apollo/client'
-import { Signature, Unit, WeiAmount, constants } from '@rulesorg/sdk-core'
+import { Signature, Unit, WeiAmount } from '@rulesorg/sdk-core'
 
 import { ModalHeader } from 'src/components/Modal'
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
@@ -61,16 +61,18 @@ const CARDS_QUERY = gql`
   }
 `
 
-interface CreateOfferModalProps {
+interface ListCardMocalProps {
   tokenIds: string[]
+  onSuccess: (tokenIds: string[], prices: string[]) => void
 }
 
-export default function ListCardMocal({ tokenIds }: CreateOfferModalProps) {
+export default function ListCardMocal({ tokenIds, onSuccess }: ListCardMocalProps) {
   const [cardIndex, setCardIndex] = useState(0)
   const [price, setPrice] = useState('')
   const [prices, setPrices] = useState<string[]>([])
   const [salts, setSalts] = useState<string[]>([])
   const [parsedPricesTotal, setParsedPricesTotal] = useState(WeiAmount.ZERO)
+  const [error, setError] = useState<string | null>(null)
 
   // rules account
   const { address } = useRulesAccount()
@@ -81,14 +83,14 @@ export default function ListCardMocal({ tokenIds }: CreateOfferModalProps) {
 
   // cards query
   const { data, loading } = useQuery(CARDS_QUERY, { variables: { tokenIds }, skip: !isOpen })
-  const cards = data?.cardsByTokenIds ?? []
+  const cards: any[] = data?.cardsByTokenIds ?? []
   const card = cards[cardIndex]
   const tokenId = card?.tokenId
 
   // voucher signing data map
   const vouchersSigningDataMap = useMemo(
     () =>
-      (cards as any[]).reduce<any>((acc, card) => {
+      cards.reduce<any>((acc, card) => {
         acc[card.tokenId] = card.voucherSigningData
         return acc
       }, {}),
@@ -117,16 +119,13 @@ export default function ListCardMocal({ tokenIds }: CreateOfferModalProps) {
 
   // prices confirmation
   const handlePriceConfirmation = useCallback(async () => {
-    const marketplaceAddress = constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
-    if (!marketplaceAddress || !parsedPrice || !tokenId || !address) return
+    if (!parsedPrice || !tokenId || !address) return
 
     const salt = stark.randomAddress()
 
     const weiPrice = parsedPrice.toUnitFixed(Unit.WEI)
 
     const hash = await rulesSdk.computeListingOrderHash(address, tokenId, 1, weiPrice, salt)
-
-    console.log(hash)
 
     // push new price
     setPrices((prices) => [...prices, weiPrice])
@@ -153,7 +152,7 @@ export default function ListCardMocal({ tokenIds }: CreateOfferModalProps) {
   }, [parsedPrice, tokenId, cards.length, vouchersSigningDataMap, address])
 
   // graphql mutations
-  const [listCardsMutation, { error }] = useListCards()
+  const [listCardsMutation, { error: listCardMutationError }] = useListCards()
 
   const onSignature = useCallback(
     async (signatures: Signature[], fullPublicKey: string) => {
@@ -166,10 +165,24 @@ export default function ListCardMocal({ tokenIds }: CreateOfferModalProps) {
           })),
           fullPublicKey,
         },
+      }).then((res) => {
+        if (res.success) {
+          onSuccess(
+            cards.map(({ tokenId }) => tokenId),
+            prices
+          )
+        }
+
+        return res
       })
     },
     [cards.length, prices.length, salts.length, listCardsMutation]
   )
+
+  // error
+  useEffect(() => {
+    setError(listCardMutationError?.message ?? null)
+  }, [listCardMutationError?.message])
 
   // on close modal
   useEffect(() => {
@@ -179,6 +192,7 @@ export default function ListCardMocal({ tokenIds }: CreateOfferModalProps) {
       setPrice('')
       setPrices([])
       setSalts([])
+      setError(null)
     }
   }, [isOpen])
 
@@ -191,7 +205,7 @@ export default function ListCardMocal({ tokenIds }: CreateOfferModalProps) {
         />
 
         <ModalBody>
-          <StarknetSigner onSignature={onSignature} action={'offerCreation'} error={error?.message}>
+          <StarknetSigner onSignature={onSignature} action={'offerCreation'} error={error}>
             {!!card && (
               <Column gap={32}>
                 <CardBreakdownWrapper>

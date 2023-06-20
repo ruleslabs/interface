@@ -75,7 +75,7 @@ export default function OffersSelectorBreakdown({
         </PrimaryButton>
       </Column>
 
-      {price && <AcceptOfferModal tokenIds={tokenIds} price={price} />}
+      {!!tokenIds.length && <AcceptOfferModal tokenIds={tokenIds} />}
     </>
   )
 }

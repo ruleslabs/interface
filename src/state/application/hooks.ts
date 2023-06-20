@@ -110,8 +110,8 @@ export function useCreateOfferModalToggle(): () => void {
   return useToggleModal(ApplicationModal.CREATE_OFFER)
 }
 
-export function useCancelOfferModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.CANCEL_OFFER)
+export function useCancelListingModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.CANCEL_LISTING)
 }
 
 export function useAcceptOfferModalToggle(): () => void {

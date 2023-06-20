@@ -1,10 +1,10 @@
 import { useCallback, useEffect } from 'react'
 import { t, Trans } from '@lingui/macro'
-import { constants, encode, tokens } from '@rulesorg/sdk-core'
+import { gql, useQuery } from '@apollo/client'
 
 import { ModalHeader } from 'src/components/Modal'
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
-import { useModalOpened, useCancelOfferModalToggle } from 'src/state/application/hooks'
+import { useModalOpened, useCancelListingModalToggle } from 'src/state/application/hooks'
 import { ApplicationModal } from 'src/state/application/actions'
 import Column from 'src/components/Column'
 import { PrimaryButton } from 'src/components/Button'
@@ -13,27 +13,46 @@ import CardBreakdown from './CardBreakdown'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import useStarknetTx from 'src/hooks/useStarknetTx'
 import { useOperations } from 'src/hooks/usePendingOperations'
+import { PaginationSpinner } from '../Spinner'
 
-interface CancelOfferModalProps {
-  artistName: string
-  season: number
-  scarcityName: string
-  scarcityId: number
-  serialNumber: number
-  pictureUrl: string
+const CARDS_QUERY = gql`
+  query CardsByTokenIds($tokenIds: [String!]!) {
+    cardsByTokenIds(tokenIds: $tokenIds) {
+      serialNumber
+      listing {
+        price
+        orderSigningData {
+          signature {
+            r
+            s
+          }
+          salt
+        }
+      }
+      cardModel {
+        artistName
+        pictureUrl(derivative: "width=256")
+        season
+        scarcity {
+          name
+        }
+      }
+    }
+  }
+`
+
+interface CancelListingModalProps {
+  tokenId: string
 }
 
-export default function CancelOfferModal({
-  artistName,
-  season,
-  scarcityName,
-  serialNumber,
-  scarcityId,
-  pictureUrl,
-}: CancelOfferModalProps) {
+export default function CancelListingModal({ tokenId }: CancelListingModalProps) {
   // modal
-  const isOpen = useModalOpened(ApplicationModal.CANCEL_OFFER)
-  const toggleCancelOfferModal = useCancelOfferModalToggle()
+  const isOpen = useModalOpened(ApplicationModal.CANCEL_LISTING)
+  const toggleCancelListingModal = useCancelListingModalToggle()
+
+  // cards query
+  const { data, loading } = useQuery(CARDS_QUERY, { variables: { tokenIds: [tokenId] }, skip: !isOpen })
+  const card = (data?.cardsByTokenIds ?? [])[0]
 
   // pending operation
   const { pushOperation, cleanOperations } = useOperations()
@@ -43,25 +62,24 @@ export default function CancelOfferModal({
 
   // call
   const handleConfirmation = useCallback(() => {
-    const marketplaceAddress = constants.MARKETPLACE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
-    if (!marketplaceAddress) return
-
-    const u256TokenId = tokens.getCardTokenId({ artistName, season, scarcityId, serialNumber })
+    if (!card.listing) return
 
     // save operation
-    pushOperation({ tokenId: encode.encodeUint256(u256TokenId), action: 'offerCancelation', quantity: 1 })
+    pushOperation({ tokenId, action: 'offerCancelation', quantity: 1 })
 
     // save call
     setCalls([
-      {
-        contractAddress: marketplaceAddress,
-        entrypoint: 'cancelOffer',
-        calldata: [u256TokenId.low, u256TokenId.high],
-      },
+      rulesSdk.getOrderCancelationCall(
+        tokenId,
+        1,
+        card.listing.price,
+        card.listing.orderSigningData.salt,
+        card.listing.orderSigningData.signature
+      ),
     ])
 
     setSigning(true)
-  }, [artistName, season, scarcityId, serialNumber])
+  }, [card?.listing?.price, card?.listing?.orderSigningData, tokenId])
 
   // on close modal
   useEffect(() => {
@@ -72,24 +90,30 @@ export default function CancelOfferModal({
   }, [isOpen])
 
   return (
-    <ClassicModal onDismiss={toggleCancelOfferModal} isOpen={isOpen}>
+    <ClassicModal onDismiss={toggleCancelListingModal} isOpen={isOpen}>
       <ModalContent>
-        <ModalHeader onDismiss={toggleCancelOfferModal} title={signing ? undefined : t`Confirm offer cancelation`} />
+        <ModalHeader onDismiss={toggleCancelListingModal} title={signing ? undefined : t`Confirm offer cancelation`} />
 
         <ModalBody>
           <StarknetSigner action={'offerCancelation'}>
             <Column gap={32}>
-              <CardBreakdown
-                pictureUrl={pictureUrl}
-                season={season}
-                artistName={artistName}
-                serialNumbers={[serialNumber]}
-                scarcityName={scarcityName}
-              />
+              {card ? (
+                <>
+                  <CardBreakdown
+                    pictureUrl={card.cardModel.pictureUrl}
+                    season={card.cardModel.season}
+                    artistName={card.cardModel.artistName}
+                    serialNumbers={[card.serialNumber]}
+                    scarcityName={card.cardModel.scarcity.name}
+                  />
 
-              <PrimaryButton onClick={handleConfirmation} large>
-                <Trans>Next</Trans>
-              </PrimaryButton>
+                  <PrimaryButton onClick={handleConfirmation} large>
+                    <Trans>Next</Trans>
+                  </PrimaryButton>
+                </>
+              ) : (
+                <PaginationSpinner loading={loading} />
+              )}
             </Column>
           </StarknetSigner>
         </ModalBody>

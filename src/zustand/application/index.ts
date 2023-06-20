@@ -36,6 +36,8 @@ export const createApplicationSlice: StateCreator<StoreState, [['zustand/immer',
   pendingOperations: {},
   operations: [],
 
+  listings: {},
+
   /* Search user */
 
   setSearchedUser: (searchedUser) => set({ searchedUser }),
@@ -62,7 +64,7 @@ export const createApplicationSlice: StateCreator<StoreState, [['zustand/immer',
 
   unsubscribeFromPendingOperation: (txHash) =>
     set((state) => {
-      for (const tokenId of Object.keys(state.pendingOperations)) {
+      for (const tokenId in state.pendingOperations) {
         delete state.pendingOperations[tokenId][txHash]
       }
     }),

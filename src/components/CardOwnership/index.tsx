@@ -13,7 +13,7 @@ import Placeholder from 'src/components/Placeholder'
 import {
   useOfferModalToggle,
   useCreateOfferModalToggle,
-  useCancelOfferModalToggle,
+  useCancelListingModalToggle,
   useAcceptOfferModalToggle,
 } from 'src/state/application/hooks'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
@@ -50,7 +50,7 @@ export default function CardOwnership({ owner, tokenId, price }: CardOwnershipPr
   // modal
   const toggleOfferModal = useOfferModalToggle()
   const toggleCreateOfferModal = useCreateOfferModalToggle()
-  const toggleCancelOfferModal = useCancelOfferModalToggle()
+  const toggleCancelListingModal = useCancelListingModalToggle()
   const toggleAcceptOfferModal = useAcceptOfferModalToggle()
 
   // price parsing
@@ -74,15 +74,9 @@ export default function CardOwnership({ owner, tokenId, price }: CardOwnershipPr
 
       if (parsedPrice) {
         return (
-          <>
-            <PrimaryButton onClick={toggleCancelOfferModal} width={'full'} large>
-              <Trans>Close offer</Trans>
-            </PrimaryButton>
-
-            <SecondaryButton onClick={toggleCreateOfferModal} width={'full'} large>
-              <Trans>Update price</Trans>
-            </SecondaryButton>
-          </>
+          <SecondaryButton onClick={toggleCancelListingModal} width={'full'} large>
+            <Trans>Close offer</Trans>
+          </SecondaryButton>
         )
       } else {
         return (
@@ -124,7 +118,7 @@ export default function CardOwnership({ owner, tokenId, price }: CardOwnershipPr
     parsedPrice,
     toggleAcceptOfferModal,
     toggleCreateOfferModal,
-    toggleCancelOfferModal,
+    toggleCancelListingModal,
     toggleOfferModal,
     weiAmountToEURValue,
     !!pendingOperation,

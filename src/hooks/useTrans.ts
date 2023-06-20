@@ -42,7 +42,7 @@ const stxActionSuccess: { [id in StxAction]: MessageDescriptor } = {
   transfer: msg`Your card is on its way !`,
   offerAcceptance: msg`Your purchase will be accetped very soon.`,
   offerCancelation: msg`Your offer will be canceled very soon.`,
-  offerCreation: msg`Your offer will be created very soon.`,
+  offerCreation: msg`Your card has been listed on the marketplace.`,
   walletDeployment: msg`Your wallet deployment is on its way !`,
   ethTransfer: msg`Your ETH is on its way !`,
 }
