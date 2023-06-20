@@ -58,7 +58,6 @@ export default function Overview() {
 
   const onDepositMode = useCallback(() => setWalletModalMode(WalletModalMode.DEPOSIT), [setWalletModalMode])
   const onWithdrawMode = useCallback(() => setWalletModalMode(WalletModalMode.STARKGATE_WITHDRAW), [setWalletModalMode])
-  const onDeployMode = useCallback(() => setWalletModalMode(WalletModalMode.DEPLOY), [setWalletModalMode])
   const onFundsMigrationMode = useCallback(
     () => setWalletModalMode(WalletModalMode.MIGRATE_FUNDS),
     [setWalletModalMode]
@@ -75,29 +74,17 @@ export default function Overview() {
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
+  // loading
+  const loading = (oldAddress && !oldBalance) || !balance || deployed === undefined
+
+  // migration
+  const canMigrate = useMemo(() => oldBalance?.greaterThan(MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION), [oldBalance])
+
   // components
   const componentContent = useMemo(() => {
     if (lockingReason === constants.StarknetWalletLockingReason.MAINTENANCE) return null
 
-    if ((oldAddress && !oldBalance) || !balance || deployed === undefined) return <PaginationSpinner loading={true} />
-
-    if (oldBalance?.greaterThan(MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION)) {
-      return (
-        <>
-          <Column gap={'24'}>
-            <Text.HeadlineSmall>
-              <Trans>Your wallet has been upgraded, you can retrieve the funds from your old wallet</Trans>
-            </Text.HeadlineSmall>
-
-            <PrimaryButton onClick={onFundsMigrationMode} large disabled={!isSoftLockingReason(lockingReason)}>
-              <Trans>Retrieve - {+oldBalance.toFixed(4)} ETH</Trans>
-            </PrimaryButton>
-          </Column>
-
-          <DeploymentNeeded priority={'secondary'} />
-        </>
-      )
-    }
+    if (loading) return <PaginationSpinner loading />
 
     if (deployed) {
       return (
@@ -113,18 +100,8 @@ export default function Overview() {
       )
     }
 
-    return <DeploymentNeeded />
-  }, [
-    oldAddress,
-    balance,
-    oldBalance,
-    deployed,
-    onFundsMigrationMode,
-    onDeployMode,
-    onDepositMode,
-    onWithdrawMode,
-    lockingReason,
-  ])
+    return <DeploymentNeeded priority={canMigrate ? 'secondary' : 'primary'} />
+  }, [loading, deployed, onDepositMode, onWithdrawMode, lockingReason, canMigrate])
 
   const stxHistory = useStxHistory()
 
@@ -140,7 +117,19 @@ export default function Overview() {
           <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)?.toFixed(2)}` : 'Loading ...'}</FiatBalance>
         </Column>
 
-        {(deployed || lockingReason === constants.StarknetWalletLockingReason.MAINTENANCE) && <LockedWallet />}
+        <LockedWallet />
+
+        {canMigrate && oldBalance && (
+          <Column gap={'24'} marginBottom={'32'}>
+            <Text.HeadlineSmall>
+              <Trans>Your wallet has been upgraded, you can retrieve the funds from your old wallet</Trans>
+            </Text.HeadlineSmall>
+
+            <PrimaryButton onClick={onFundsMigrationMode} large disabled={!isSoftLockingReason(lockingReason)}>
+              <Trans>Retrieve - {+oldBalance.toFixed(4)} ETH</Trans>
+            </PrimaryButton>
+          </Column>
+        )}
 
         {componentContent}
 
