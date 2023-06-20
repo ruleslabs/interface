@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useEffect } from 'react'
+import React, { useMemo, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
@@ -68,6 +68,8 @@ export default function StarknetSigner({
   allowUndeployed = false,
   children,
 }: StarknetSignerProps) {
+  const [error, setError] = useState<string | null>(null)
+
   // i18n
   const trans = useTrans()
 
@@ -120,7 +122,13 @@ export default function StarknetSigner({
 
   // loading / error
   const loading = estimateFeesRes.loading || executeTxRes.loading || (!parsedNetworkFee && skipSignin)
-  const error = estimateFeesRes.error || executeTxRes.error
+
+  useEffect(() => {
+    setError(estimateFeesRes.error || executeTxRes.error)
+  }, [estimateFeesRes.error, executeTxRes.error])
+
+  // retry
+  const retry = estimateFees
 
   // fiat value
   const weiAmountToEURValue = useWeiAmountToEURValue()
@@ -145,7 +153,7 @@ export default function StarknetSigner({
 
     if (txHash) return <Confirmation txHash={txHash} action={action} />
 
-    if (error) return <Error error={error} />
+    if (error) return <Error error={error} retry={() => setError(null)} />
 
     if (loading) return <PaginationSpinner loading={true} />
 
@@ -218,6 +226,7 @@ export default function StarknetSigner({
     openDesitModal,
     deployed,
     signing,
+    retry,
   ])
 
   useEffect(() => {

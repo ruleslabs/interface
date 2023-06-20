@@ -5,6 +5,7 @@ import { TYPE } from 'src/styles/theme'
 
 import { ReactComponent as Close } from 'src/images/close.svg'
 import { Column } from 'src/theme/components/Flex'
+import { SecondaryButton } from '../Button'
 
 const StyledFail = styled(Close)`
   border-radius: 50%;
@@ -38,9 +39,10 @@ const ErrorMessage = styled(Subtitle)`
 
 interface ErrorProps {
   error?: string
+  retry?: () => void
 }
 
-export default function Error({ error }: ErrorProps) {
+export default function Error({ error, retry }: ErrorProps) {
   return (
     <Column gap={'24'} width={'full'}>
       <StyledFail />
@@ -51,6 +53,12 @@ export default function Error({ error }: ErrorProps) {
         </Title>
 
         <ErrorMessage>{error}</ErrorMessage>
+
+        {retry && (
+          <SecondaryButton onClick={retry} marginTop={'16'} large>
+            <Trans>Retry</Trans>
+          </SecondaryButton>
+        )}
       </Column>
     </Column>
   )
