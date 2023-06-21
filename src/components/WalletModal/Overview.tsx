@@ -79,6 +79,7 @@ export default function Overview() {
 
   // migration
   const canMigrate = useMemo(() => oldBalance?.greaterThan(MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION), [oldBalance])
+  const migrationDisabled = !isSoftLockingReason(lockingReason)
 
   // components
   const componentContent = useMemo(() => {
@@ -120,12 +121,16 @@ export default function Overview() {
         <LockedWallet />
 
         {canMigrate && oldBalance && (
-          <Column gap={'24'} marginBottom={'32'}>
+          <Column gap={'24'} marginBottom={'32'} opacity={migrationDisabled ? 'disabled' : undefined}>
             <Text.HeadlineSmall>
               <Trans>Your wallet has been upgraded, you can retrieve the funds from your old wallet</Trans>
             </Text.HeadlineSmall>
 
-            <PrimaryButton onClick={onFundsMigrationMode} large disabled={!isSoftLockingReason(lockingReason)}>
+            <PrimaryButton
+              onClick={migrationDisabled ? undefined : onFundsMigrationMode}
+              disabled={migrationDisabled}
+              large
+            >
               <Trans>Retrieve - {+oldBalance.toFixed(4)} ETH</Trans>
             </PrimaryButton>
           </Column>

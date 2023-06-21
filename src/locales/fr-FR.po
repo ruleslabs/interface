@@ -1697,3 +1697,15 @@ msgstr "déploie ton portefeuille"
 #: src/components/LockedWallet/SignerEscape.tsx
 msgid "To regain full access to the app you must follow these steps:"
 msgstr "Pour retrouver un accès complet à l'application, tu dois suivre les étapes suivantes:"
+
+
+
+
+
+
+
+
+
+#: src/components/WalletModal/Overview.tsx
+msgid "Retrieve - {0} ETH"
+msgstr "Récupérer - {0} ETH"
