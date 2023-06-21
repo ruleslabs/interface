@@ -143,7 +143,7 @@ export default function StarknetSigner({
       return <DeploymentNeeded />
     }
 
-    if (lockingReason) {
+    if (lockingReason && !skipSignin) {
       return <LockedWallet />
     }
 
@@ -227,6 +227,7 @@ export default function StarknetSigner({
     deployed,
     signing,
     retry,
+    skipSignin,
   ])
 
   useEffect(() => {

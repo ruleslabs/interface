@@ -1666,3 +1666,34 @@ msgstr "Confrimer le transfert"
 #: src/hooks/useTrans.ts
 msgid "Common"
 msgstr "Commune"
+
+
+
+
+
+
+
+
+
+
+
+
+#: src/components/LockedWallet/SignerEscape.tsx
+msgid "wait {daysBeforeEscape} days"
+msgstr "attend {daysBeforeEscape} jours"
+
+#: src/components/LockedWallet/SignerEscape.tsx
+msgid "You have recently changed your password. For security reasons, you no longer have access to some Rules features."
+msgstr "Tu as récement changé ton mot de passe. Pour des raisons de sécurité, tu n'as plus accès à certaines fonctionnalités de Rules"
+
+#: src/components/LockedWallet/SignerEscape.tsx
+msgid "deposit <0>{0} ETH ({1}€)</0>"
+msgstr "dépose <0>{0} ETH ({1}€)</0>"
+
+#: src/components/LockedWallet/SignerEscape.tsx
+msgid "deploy your wallet"
+msgstr "déploie ton portefeuille"
+
+#: src/components/LockedWallet/SignerEscape.tsx
+msgid "To regain full access to the app you must follow these steps:"
+msgstr "Pour retrouver un accès complet à l'application, tu dois suivre les étapes suivantes:"

@@ -31,7 +31,7 @@ export const ErrorCard = styled(TYPE.body)`
   }
 `
 
-export const InfoCard = styled(TYPE.body)`
+export const InfoCard = styled(TYPE.body)<{ $alert?: boolean }>`
   border: 1px solid ${({ theme }) => theme.bg3};
   border-radius: 6px;
   padding: 24px;
@@ -42,4 +42,6 @@ export const InfoCard = styled(TYPE.body)`
     text-decoration: underline;
     cursor: pointer;
   }
+
+  ${({ theme, $alert = false }) => $alert && theme.before.alert``}
 `
