@@ -70,7 +70,7 @@ export default function NavModalUserMobile() {
       <ModalContent>
         <ModalHeader onDismiss={toggleNavModalUserMobile} />
 
-        <ModalBody gap={6}>
+        <ModalBody gap={'6'}>
           <ActiveLink href={`/user/${currentUser.slug}`} perfectMatch>
             <NavProfile />
           </ActiveLink>

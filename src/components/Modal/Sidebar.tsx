@@ -6,8 +6,11 @@ import { animated, useTransition } from '@react-spring/web'
 import useCloseModalOnNavigation from 'src/hooks/useCloseModalOnNavigation'
 import { round } from 'src/utils/math'
 import { MEDIA_QUERIES_BREAKPOINTS } from 'src/styles/theme'
-import Column from 'src/components/Column'
 import useWindowSize from 'src/hooks/useWindowSize'
+import Box, { BoxProps } from 'src/theme/components/Box'
+import { Column } from 'src/theme/components/Flex'
+import * as styles from './Sidebar.css'
+import clsx from 'clsx'
 
 const DEFAULT_SIDEBAR_WIDTH = 280
 
@@ -119,7 +122,12 @@ export function ModalContent({ children, ...props }: React.HTMLAttributes<HTMLDi
 
 // MODAL BODY
 
-export const ModalBody = styled(Column)`
-  width: 100%;
-  padding: 16px;
-`
+export function ModalBody({ children, className, ...props }: BoxProps) {
+  return (
+    <Column className={clsx(className, styles.modalBody)} {...props}>
+      <Box width={'full'} padding={'16'}>
+        {children}
+      </Box>
+    </Column>
+  )
+}

@@ -39,7 +39,7 @@ export default function NavModalMobile() {
       <ModalContent>
         <ModalHeader onDismiss={toggleNavModalMobile} />
 
-        <ModalBody gap={8}>
+        <ModalBody gap={'8'}>
           {navLinks.map((navLinks, index) => (
             <Column key={`nav-links-${index}`} gap={8}>
               {navLinks.map((navLink) => (
