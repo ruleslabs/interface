@@ -14,3 +14,21 @@ export default function useCurrentUser() {
 
   return { currentUser, setCurrentUser, refreshCurrentUser }
 }
+
+export function useNeedsSignerEscape() {
+  const { currentUser } = useCurrentUser()
+
+  return currentUser?.starknetWallet.publicKey !== currentUser?.starknetWallet.currentPublicKey
+}
+
+export function useNeedsOldSignerEscape() {
+  const { currentUser } = useCurrentUser()
+
+  return currentUser?.starknetWallet.publicKey !== currentUser?.starknetWallet.currentOldPublicKey
+}
+
+export function useMaintenance() {
+  const { currentUser } = useCurrentUser()
+
+  return currentUser?.starknetWallet.maintenance
+}

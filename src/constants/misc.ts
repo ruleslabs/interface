@@ -1,3 +1,4 @@
+import { WeiAmount } from '@rulesorg/sdk-core'
 import JSBI from 'jsbi'
 
 export const EMAIL_VERIFICATION_CODE_LENGTH = 8
@@ -32,6 +33,6 @@ export const MAX_RECENT_WALLET_ACTIVITY_LEN = 10
 
 export const DEPLOYMENT_DEPOSIT_SUGGESTION_FACTOR = 2
 
-export const MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(14))
+export const MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION = WeiAmount.fromEtherAmount(0.0000005)
 
 export const MAX_LISTINGS_BATCH_SIZE = 0x10

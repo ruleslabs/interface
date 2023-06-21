@@ -2,6 +2,7 @@ import { createAction } from '@reduxjs/toolkit'
 
 export enum WalletModalMode {
   OVERVIEW,
+  OLD_OVERVIEW,
   DEPOSIT,
   STARKGATE_DEPOSIT,
   STARKGATE_WITHDRAW,

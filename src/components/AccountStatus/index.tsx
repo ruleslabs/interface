@@ -23,7 +23,7 @@ import NotificationsModal from 'src/components/NotificationsModal'
 import { ReactComponent as BellIcon } from 'src/images/bell.svg'
 import { ReactComponent as WalletIcon } from 'src/images/wallet.svg'
 import WalletButton from './WalletButton'
-import useCurrentUser from 'src/hooks/useCurrentUser'
+import useCurrentUser, { useNeedsSignerEscape } from 'src/hooks/useCurrentUser'
 import { WalletModalMode } from 'src/state/wallet/actions'
 import { useSetWalletModalMode } from 'src/state/wallet/hooks'
 import { ApplicationModal } from 'src/state/application/actions'
@@ -122,6 +122,7 @@ const MobileIconButton = styled(IconButton)`
 export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement>) {
   // current user
   const { currentUser } = useCurrentUser()
+  const needsSignerEscape = useNeedsSignerEscape()
 
   // wallet modal
   const openModal = useOpenModal(ApplicationModal.WALLET)
@@ -157,7 +158,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
   return (
     <>
       <StyledAccountStatus {...props}>
-        {!!currentUser ? (
+        {currentUser ? (
           <>
             {currentUser?.starknetWallet.address && <StyledWalletButton onClick={openWalletModal} />}
 
@@ -178,7 +179,7 @@ export default function AccountStatus(props: React.HTMLAttributes<HTMLDivElement
             </AvatarButtonWrapperMobile>
 
             {currentUser?.starknetWallet.address && (
-              <MobileIconButton onClick={openWalletModal} $alert={!!currentUser?.starknetWallet.lockingReason}>
+              <MobileIconButton onClick={openWalletModal} $alert={needsSignerEscape}>
                 <WalletIcon />
               </MobileIconButton>
             )}

@@ -5,4 +5,5 @@ export const modalBody = sprinkles({
   overflow: 'auto',
   bottom: '0',
   top: '64',
+  width: 'full',
 })

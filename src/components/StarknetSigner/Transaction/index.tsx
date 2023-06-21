@@ -17,14 +17,15 @@ import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import Pending from './Pending'
 import { WeiAmount } from '@rulesorg/sdk-core'
-import useCurrentUser from 'src/hooks/useCurrentUser'
-import LockedWallet from 'src/components/LockedWallet'
 import { ApplicationModal } from 'src/state/application/actions'
 import { WalletModalMode } from 'src/state/wallet/actions'
 import DepositNeeded from 'src/components/LockedWallet/DepositNeeded'
 import DeploymentNeeded from 'src/components/LockedWallet/DeploymentNeeded'
 import { StxAction } from 'src/types/starknetTx'
 import useTrans from 'src/hooks/useTrans'
+import SignerEscape from 'src/components/LockedWallet/SignerEscape'
+import { useMaintenance, useNeedsSignerEscape } from 'src/hooks/useCurrentUser'
+import Maintenance from 'src/components/LockedWallet/Maintenance'
 
 const DummyFocusInput = styled.input`
   max-height: 0;
@@ -83,8 +84,8 @@ export default function StarknetSigner({
   }, [])
 
   // current user
-  const { currentUser } = useCurrentUser()
-  const { lockingReason } = currentUser?.starknetWallet ?? {}
+  const needsSignerEscape = useNeedsSignerEscape()
+  const maintenance = useMaintenance()
 
   // handlers
   const [estimateFees, estimateFeesRes] = useEstimateFees()
@@ -135,6 +136,10 @@ export default function StarknetSigner({
 
   // components
   const modalContent = useMemo(() => {
+    if (maintenance) {
+      return <Maintenance />
+    }
+
     if (deployed === undefined) {
       return <PaginationSpinner loading={true} />
     }
@@ -143,8 +148,8 @@ export default function StarknetSigner({
       return <DeploymentNeeded />
     }
 
-    if (lockingReason && !skipSignin) {
-      return <LockedWallet />
+    if (needsSignerEscape && !skipSignin) {
+      return <SignerEscape />
     }
 
     if (!signing) {
@@ -221,13 +226,14 @@ export default function StarknetSigner({
     parsedTotalCost,
     parsedNetworkFee,
     children,
-    lockingReason,
     allowUndeployed,
     openDesitModal,
     deployed,
     signing,
     retry,
     skipSignin,
+    needsSignerEscape,
+    maintenance,
   ])
 
   useEffect(() => {

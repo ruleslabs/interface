@@ -8,7 +8,7 @@ export function useCScoreRank(cScore = 0): number {
   const userRankSearch = useSearchUsers({
     sortingKey: 'cScore',
     hitsPerPage: 0,
-    filters: `cScore > ${cScore}`,
+    numericFilters: [`cScore>${cScore}`],
     skip: !cScore,
   })
   const userRank = useMemo(

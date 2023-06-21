@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 import { useLazyQuery, gql } from '@apollo/client'
-import algoliasearch from 'algoliasearch'
+import algoliasearch, { SearchIndex } from 'algoliasearch'
 import { Unit } from '@rulesorg/sdk-core'
 
 import { useAppSelector, useAppDispatch } from 'src/state/hooks'
@@ -218,8 +218,8 @@ const ALGOLIA_FIRST_PAGE = 0
 interface AlgoliaSearchProps {
   search?: string
   facets: any
-  filters?: string
-  algoliaIndex: any
+  numericFilters?: string[]
+  algoliaIndex: SearchIndex
   hitsPerPage: number
   onPageFetched?: PageFetchedCallback
   skip: boolean
@@ -229,7 +229,7 @@ interface AlgoliaSearchProps {
 function useAlgoliaSearch({
   search = '',
   facets = {},
-  filters,
+  numericFilters = [],
   algoliaIndex,
   hitsPerPage,
   onPageFetched,
@@ -250,7 +250,7 @@ function useAlgoliaSearch({
       setSearchResult((searchResult) => ({ ...searchResult, loading: true, error: null }))
 
       algoliaIndex
-        .search(search, { facetFilters, filters, page: pageNumber, hitsPerPage })
+        .search(search, { facetFilters, numericFilters, page: pageNumber, hitsPerPage })
         .then((res: any) => {
           setSearchResult((searchResult) => ({
             hits: onPageFetched ? [] : (searchResult.hits ?? []).concat(res.hits),
@@ -269,7 +269,7 @@ function useAlgoliaSearch({
           console.error(err)
         })
     },
-    [algoliaIndex, facetFilters, hitsPerPage, filters, search, onPageFetched]
+    [algoliaIndex, facetFilters, hitsPerPage, numericFilters.join(''), search, onPageFetched]
   )
 
   // next page callback
@@ -336,7 +336,7 @@ interface SearchUsersProps {
   sortingKey?: UsersSortingKey
   onPageFetched?: PageFetchedCallback
   skip?: boolean
-  filters?: string
+  numericFilters?: string[]
   pageNumber?: number
   facets?: {
     username?: string
@@ -347,7 +347,7 @@ interface SearchUsersProps {
 export function useSearchUsers({
   search = '',
   facets = {},
-  filters,
+  numericFilters,
   sortingKey = Object.keys(algoliaIndexes.users)[0] as UsersSortingKey,
   hitsPerPage = 10,
   skip = false,
@@ -356,7 +356,7 @@ export function useSearchUsers({
 }: SearchUsersProps) {
   return useAlgoliaSearch({
     facets: { ...facets, userId: undefined, objectID: facets.userId },
-    filters,
+    numericFilters,
     search,
     algoliaIndex: algoliaIndexes.users[sortingKey],
     hitsPerPage,

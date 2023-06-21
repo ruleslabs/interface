@@ -6,6 +6,7 @@ import { useWeb3React } from '@web3-react/core'
 import { gql, useMutation } from '@apollo/client'
 
 import ERC20ABI from 'src/abis/ERC20.json'
+import AccountABI from 'src/abis/Account.json'
 
 import { useMultipleContractSingleData } from 'src/lib/hooks/multicall'
 import { useEthereumBlockNumber } from 'src/state/application/hooks'
@@ -87,6 +88,25 @@ export function useIsDeployed(address?: string): boolean | undefined {
   }, [address])
 
   return deployed
+}
+
+/**
+ * signer escape activation date
+ */
+
+export function useSignerEscapeActivationDate(address?: string): number | undefined {
+  const deployed = useIsDeployed(address)
+
+  const callResult = useMultipleContractSingleData(
+    [deployed ? address : undefined],
+    AccountABI as Abi,
+    'get_signer_escape_activation_date',
+    {} // TODO use the right hook ^^
+  )[0]
+
+  const activeDate = callResult?.result?.active_date
+
+  return activeDate ? +activeDate : undefined
 }
 
 /**

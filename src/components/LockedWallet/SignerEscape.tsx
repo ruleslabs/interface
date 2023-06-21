@@ -2,21 +2,29 @@ import { useMemo } from 'react'
 import { WeiAmount, constants } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
-import useCurrentUser from 'src/hooks/useCurrentUser'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
-import { useETHBalance, useIsDeployed } from 'src/state/wallet/hooks'
+import { useETHBalance, useIsDeployed, useSignerEscapeActivationDate } from 'src/state/wallet/hooks'
 import { InfoCard } from '../Card'
 import * as Text from 'src/theme/components/Text'
 import { Column, Row } from 'src/theme/components/Flex'
 import * as Icons from 'src/theme/components/Icons'
 import Box from 'src/theme/components/Box'
+import useRulesAccount from 'src/hooks/useRulesAccount'
 
-export default function SignerEscape() {
-  const { currentUser } = useCurrentUser()
+interface SignerEscapeProps {
+  old?: boolean
+}
 
-  // ETH balance
-  const address = currentUser?.starknetWallet.address ?? ''
+export default function SignerEscape({ old = false }: SignerEscapeProps) {
+  // Address to use
+  const { address: newAddress, oldAddress } = useRulesAccount()
+  const address = old ? oldAddress : newAddress
+
+  // balance
   const balance = useETHBalance(address)
+
+  // activation date
+  const activeDate = useSignerEscapeActivationDate(address)
 
   // is deployed
   const deployed = useIsDeployed(address)
@@ -26,13 +34,10 @@ export default function SignerEscape() {
 
   // signer escape
   const needsDeposit = useMemo(() => {
-    if (!balance) return undefined
+    if (!balance || activeDate === undefined) return true
 
-    return (
-      balance.lessThan(constants.MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER) &&
-      !currentUser?.starknetWallet.signerEscapeTriggeredAt
-    )
-  }, [balance, currentUser?.starknetWallet.signerEscapeTriggeredAt])
+    return balance.lessThan(constants.MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER) && !activeDate
+  }, [balance, activeDate])
 
   const minimumWeiAmountToEscapeSigner = useMemo(
     () => WeiAmount.fromRawAmount(constants.MINIMUM_ETH_BALANCE_TO_ESCAPE_SIGNER),
@@ -41,11 +46,11 @@ export default function SignerEscape() {
 
   const daysBeforeEscape = useMemo(() => {
     // full security period if escape is not triggered yet
-    if (!currentUser?.starknetWallet.signerEscapeTriggeredAt) return constants.ESCAPE_SECURITY_PERIOD / 24 / 60 / 60 // nb of days
+    if (!activeDate) return constants.ESCAPE_SECURITY_PERIOD / 24 / 60 / 60 // nb of days
 
-    const difference = +new Date() - +new Date(currentUser.starknetWallet.signerEscapeTriggeredAt)
+    const difference = +new Date() - +new Date(activeDate)
     return Math.max(Math.ceil((constants.ESCAPE_SECURITY_PERIOD - difference / 1000) / 24 / 60 / 60), 1)
-  }, [currentUser?.starknetWallet.signerEscapeTriggeredAt])
+  }, [activeDate])
 
   // returns
 

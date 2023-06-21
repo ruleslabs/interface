@@ -8,10 +8,11 @@ import useStarknetMessages from 'src/hooks/useStarknetMessages'
 import { StxAction } from 'src/types/starknetTx'
 import Error from '../Error'
 import { PaginationSpinner } from 'src/components/Spinner'
-import useCurrentUser from 'src/hooks/useCurrentUser'
-import LockedWallet from 'src/components/LockedWallet'
+import { useMaintenance, useNeedsSignerEscape } from 'src/hooks/useCurrentUser'
 import Confirmation from './Confirmation'
 import { ec, encode } from 'starknet'
+import SignerEscape from 'src/components/LockedWallet/SignerEscape'
+import Maintenance from 'src/components/LockedWallet/Maintenance'
 
 const DummyFocusInput = styled.input`
   max-height: 0;
@@ -32,8 +33,8 @@ export default function StarknetSigner({ children, action, onSignature, error }:
   const [success, setSuccess] = useState(false)
 
   // current user
-  const { currentUser } = useCurrentUser()
-  const { lockingReason } = currentUser?.starknetWallet ?? {}
+  const needsSignerEscape = useNeedsSignerEscape()
+  const maintenance = useMaintenance()
 
   // starknet state
   const { signing, messages } = useStarknetMessages()
@@ -54,12 +55,16 @@ export default function StarknetSigner({ children, action, onSignature, error }:
   )
 
   const modalContent = useMemo(() => {
+    if (maintenance) {
+      return <Maintenance />
+    }
+
     if (success) {
       return <Confirmation action={action} />
     }
 
-    if (lockingReason) {
-      return <LockedWallet />
+    if (needsSignerEscape) {
+      return <SignerEscape />
     }
 
     if (!signing) {
@@ -75,7 +80,7 @@ export default function StarknetSigner({ children, action, onSignature, error }:
     }
 
     return <PrivateKeyDecipherForm onPrivateKeyDeciphered={signMessages} />
-  }, [action, signing, loading, error, signMessages, children, lockingReason, success])
+  }, [action, signing, loading, error, signMessages, children, needsSignerEscape, maintenance, success])
 
   return (
     <>

@@ -1,5 +1,3 @@
-import { constants } from '@rulesorg/sdk-core'
-
 export interface GenieRetrievableEthers {
   amount: string
   l1Recipient: string
@@ -8,16 +6,19 @@ export interface GenieRetrievableEthers {
 export interface GenieStarknetWallet {
   address: string
   oldAddress?: string
-  publicKey: string
-  currentPublicKey: string
-  lockingReason: constants.StarknetWalletLockingReason
-  signerEscapeTriggeredAt?: Date
-  needsUpgrade: boolean
+
   rulesPrivateKey: {
+    encryptedPrivateKey: string
     salt: string
     iv: string
-    encryptedPrivateKey: string
   }
+
+  publicKey: string
+  currentPublicKey: string
+  currentOldPublicKey?: string
+
+  maintenance: boolean
+  needsUpgrade: boolean
 }
 
 export interface GenieProfile {

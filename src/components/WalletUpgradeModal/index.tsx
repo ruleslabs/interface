@@ -76,11 +76,7 @@ export default function UpgradeWalletModal() {
                   </TYPE.body>
                 </Column>
 
-                <PrimaryButton
-                  onClick={handleConfirmation}
-                  disabled={!!currentUser?.starknetWallet.lockingReason}
-                  large
-                >
+                <PrimaryButton onClick={handleConfirmation} large>
                   <Trans>Upgrade</Trans>
                 </PrimaryButton>
               </Column>

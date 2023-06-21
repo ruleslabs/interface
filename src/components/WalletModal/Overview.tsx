@@ -1,22 +1,18 @@
 import { useCallback, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-import { constants } from '@rulesorg/sdk-core'
 
 import { ModalBody } from 'src/components/Modal/Sidebar'
-import useCurrentUser from 'src/hooks/useCurrentUser'
+import { useMaintenance, useNeedsSignerEscape } from 'src/hooks/useCurrentUser'
 import { useSetWalletModalMode, useETHBalance, useIsDeployed } from 'src/state/wallet/hooks'
 import { WalletModalMode } from 'src/state/wallet/actions'
 import { RowCenter } from 'src/components/Row'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import { TYPE } from 'src/styles/theme'
 import { PrimaryButton, SecondaryButton } from 'src/components/Button'
-import LockedWallet from 'src/components/LockedWallet'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import * as Text from 'src/theme/components/Text'
 import Spinner, { PaginationSpinner } from '../Spinner'
-import { MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION } from 'src/constants/misc'
-import { isSoftLockingReason } from 'src/utils/lockingReason'
 import { Row, Column } from 'src/theme/components/Flex'
 import * as Icons from 'src/theme/components/Icons'
 import DeploymentNeeded from '../LockedWallet/DeploymentNeeded'
@@ -25,9 +21,10 @@ import Box from 'src/theme/components/Box'
 import Link from '../Link'
 import { getChainInfo } from 'src/constants/chainInfo'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import useTrans from 'src/hooks/useTrans'
+import SignerEscape from '../LockedWallet/SignerEscape'
 
 import { ReactComponent as EthereumIcon } from 'src/images/ethereum-plain.svg'
-import useTrans from 'src/hooks/useTrans'
 
 const ETHBalance = styled(RowCenter)`
   width: 100%;
@@ -47,8 +44,8 @@ const FiatBalance = styled(TYPE.subtitle)`
 
 export default function Overview() {
   // current user
-  const { currentUser } = useCurrentUser()
-  const { lockingReason } = currentUser?.starknetWallet ?? {}
+  const needsSignerEscape = useNeedsSignerEscape()
+  const maintenance = useMaintenance()
 
   // i18n
   const trans = useTrans()
@@ -58,10 +55,7 @@ export default function Overview() {
 
   const onDepositMode = useCallback(() => setWalletModalMode(WalletModalMode.DEPOSIT), [setWalletModalMode])
   const onWithdrawMode = useCallback(() => setWalletModalMode(WalletModalMode.STARKGATE_WITHDRAW), [setWalletModalMode])
-  const onFundsMigrationMode = useCallback(
-    () => setWalletModalMode(WalletModalMode.MIGRATE_FUNDS),
-    [setWalletModalMode]
-  )
+  const onOldOverviewMode = useCallback(() => setWalletModalMode(WalletModalMode.OLD_OVERVIEW), [setWalletModalMode])
 
   // ETH balance
   const { address, oldAddress } = useRulesAccount()
@@ -77,13 +71,9 @@ export default function Overview() {
   // loading
   const loading = (oldAddress && !oldBalance) || !balance || deployed === undefined
 
-  // migration
-  const canMigrate = useMemo(() => oldBalance?.greaterThan(MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION), [oldBalance])
-  const migrationDisabled = !isSoftLockingReason(lockingReason)
-
   // components
   const componentContent = useMemo(() => {
-    if (lockingReason === constants.StarknetWalletLockingReason.MAINTENANCE) return null
+    if (maintenance) return null
 
     if (loading) return <PaginationSpinner loading />
 
@@ -101,8 +91,8 @@ export default function Overview() {
       )
     }
 
-    return <DeploymentNeeded priority={canMigrate ? 'secondary' : 'primary'} />
-  }, [loading, deployed, onDepositMode, onWithdrawMode, lockingReason, canMigrate])
+    return <DeploymentNeeded />
+  }, [loading, deployed, onDepositMode, onWithdrawMode])
 
   const stxHistory = useStxHistory()
 
@@ -118,23 +108,9 @@ export default function Overview() {
           <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)?.toFixed(2)}` : 'Loading ...'}</FiatBalance>
         </Column>
 
-        <LockedWallet />
+        {oldAddress && <SecondaryButton onClick={onOldOverviewMode}>See my old wallet</SecondaryButton>}
 
-        {canMigrate && oldBalance && (
-          <Column gap={'24'} marginBottom={'32'} opacity={migrationDisabled ? 'disabled' : undefined}>
-            <Text.HeadlineSmall>
-              <Trans>Your wallet has been upgraded, you can retrieve the funds from your old wallet</Trans>
-            </Text.HeadlineSmall>
-
-            <PrimaryButton
-              onClick={migrationDisabled ? undefined : onFundsMigrationMode}
-              disabled={migrationDisabled}
-              large
-            >
-              <Trans>Retrieve - {+oldBalance.toFixed(4)} ETH</Trans>
-            </PrimaryButton>
-          </Column>
-        )}
+        {needsSignerEscape && <SignerEscape />}
 
         {componentContent}
 

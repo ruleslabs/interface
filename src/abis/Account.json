@@ -1,0 +1,14 @@
+[
+  {
+    "inputs": [],
+    "name": "get_signer_escape_activation_date",
+    "outputs": [
+      {
+        "name": "active_date",
+        "type": "felt"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
