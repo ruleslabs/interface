@@ -91,7 +91,7 @@ export default function AcceptOfferModal({ tokenIds }: AcceptOfferModalProps) {
   const { pushOperation, cleanOperations } = useOperations()
 
   // starknet tx
-  const { pushCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()
+  const { pushCalls, resetStarknetTx, signing, setSigning, increaseTxValue } = useStarknetTx()
 
   // starknet account
   const { address } = useRulesAccount()
@@ -111,6 +111,8 @@ export default function AcceptOfferModal({ tokenIds }: AcceptOfferModalProps) {
   const handleConfirmation = useCallback(() => {
     // save operations
     pushOperation(...cards.map(({ tokenId }): Operation => ({ tokenId, action: 'offerAcceptance', quantity: 1 })))
+
+    increaseTxValue(parsedTotalPrice)
 
     // save calls
     pushCalls(
