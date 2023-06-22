@@ -63,26 +63,28 @@ function Newcomer() {
   return (
     <>
       <Column as={'section'} style={{ height: `${windowHeight}px` }} className={styles.sectionContainer}>
-        <Box className={styles.logoContainer}>
-          <Logo />
-        </Box>
-
-        {loading ? (
-          <PaginationSpinner loading />
-        ) : (
-          <Box className={styles.carouselContainer}>
-            <Carousel items={items} itemWith={'256'} interval={ms('1.5s')} />
+        <Column className={styles.contentContainer}>
+          <Box className={styles.logoContainer}>
+            <Logo />
           </Box>
-        )}
 
-        <Column gap={'16'} alignItems={'center'}>
-          <Text.HeadlineMedium>
-            <Trans>Start your collection</Trans>
-          </Text.HeadlineMedium>
+          {loading ? (
+            <PaginationSpinner loading />
+          ) : (
+            <Box className={styles.carouselContainer}>
+              <Carousel items={items} itemWith={'256'} interval={ms('1.5s')} />
+            </Box>
+          )}
 
-          <PrimaryButton width={'256'} onClick={toggleSignUpModal} large>
-            <Trans>Start</Trans>
-          </PrimaryButton>
+          <Column gap={'16'} alignItems={'center'}>
+            <Text.HeadlineMedium>
+              <Trans>Start your collection</Trans>
+            </Text.HeadlineMedium>
+
+            <PrimaryButton width={'256'} onClick={toggleSignUpModal} large>
+              <Trans>Start</Trans>
+            </PrimaryButton>
+          </Column>
         </Column>
       </Column>
 

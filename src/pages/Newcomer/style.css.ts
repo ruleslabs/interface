@@ -3,12 +3,21 @@ import { sprinkles } from 'src/theme/css/sprinkles.css'
 import { vars } from 'src/theme/css/vars.css'
 
 export const sectionContainer = sprinkles({
-  gap: '64',
   justifyContent: 'center',
-  paddingX: '16',
+  padding: '16',
   maxWidth: '1242',
   marginX: 'auto',
 })
+
+export const contentContainer = style([
+  {
+    maxHeight: '850px',
+  },
+  sprinkles({
+    justifyContent: 'space-around',
+    height: 'full',
+  }),
+])
 
 export const logoContainer = style([
   {
