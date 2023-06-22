@@ -3,9 +3,11 @@ import { sprinkles } from 'src/theme/css/sprinkles.css'
 import { vars } from 'src/theme/css/vars.css'
 
 export const sectionContainer = sprinkles({
-  display: 'flex',
-  flexDirection: 'column',
   gap: '64',
+  justifyContent: 'center',
+  paddingX: '16',
+  maxWidth: '1242',
+  marginX: 'auto',
 })
 
 export const logoContainer = style([

@@ -146,6 +146,7 @@ export const dimensions = {
   '332': '332px',
   '386': '386px',
   '440': '440px',
+  '1242': '1242px',
   half: '50%',
   full: '100%',
   min: 'min-content',

@@ -1,10 +1,9 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { gql, useQuery } from '@apollo/client'
 
 import Image from 'src/theme/components/Image'
 import Box from 'src/theme/components/Box'
 import ms from 'ms.macro'
-import Section from 'src/components/Section'
 import { PaginationSpinner } from 'src/components/Spinner'
 import Carousel from 'src/components/Carousel'
 import EmptyLayout from 'src/components/Layout/Empty'
@@ -15,6 +14,11 @@ import { ReactComponent as Logo } from 'src/images/logo.svg'
 import { PrimaryButton } from 'src/components/Button'
 import { Trans } from '@lingui/macro'
 import { Column } from 'src/theme/components/Flex'
+import useWindowSize from 'src/hooks/useWindowSize'
+import { useAuthModalToggle } from 'src/state/application/hooks'
+import { useSetAuthMode } from 'src/state/auth/hooks'
+import { AuthMode } from 'src/state/auth/actions'
+import AuthModal from 'src/components/AuthModal'
 
 const CARD_MODELS_SAMPLE_QUERY = gql`
   query {
@@ -26,6 +30,16 @@ const CARD_MODELS_SAMPLE_QUERY = gql`
 `
 
 function Newcomer() {
+  // auth modal
+  const toggleAuthModal = useAuthModalToggle()
+  const setAuthMode = useSetAuthMode()
+
+  const toggleSignUpModal = useCallback(() => {
+    setAuthMode(AuthMode.SIGN_UP)
+    toggleAuthModal()
+  }, [toggleAuthModal])
+
+  // sample query
   const { data, loading, error } = useQuery(CARD_MODELS_SAMPLE_QUERY)
   const cardModels: any[] = data?.currentSeasonCardModelsSample
 
@@ -39,34 +53,41 @@ function Newcomer() {
     ))
   }, [cardModels])
 
+  // window height
+  const { height: windowHeight } = useWindowSize()
+
+  if (!windowHeight) return null
+
   if (error) return null
 
   return (
-    <Section className={styles.sectionContainer}>
-      <div />
-
-      <Box className={styles.logoContainer}>
-        <Logo />
-      </Box>
-
-      {loading ? (
-        <PaginationSpinner loading />
-      ) : (
-        <Box className={styles.carouselContainer}>
-          <Carousel items={items} itemWith={'256'} interval={ms('1.5s')} />
+    <>
+      <Column as={'section'} style={{ height: `${windowHeight}px` }} className={styles.sectionContainer}>
+        <Box className={styles.logoContainer}>
+          <Logo />
         </Box>
-      )}
 
-      <Column gap={'16'} alignItems={'center'}>
-        <Text.HeadlineMedium>
-          <Trans>Start your collection</Trans>
-        </Text.HeadlineMedium>
+        {loading ? (
+          <PaginationSpinner loading />
+        ) : (
+          <Box className={styles.carouselContainer}>
+            <Carousel items={items} itemWith={'256'} interval={ms('1.5s')} />
+          </Box>
+        )}
 
-        <PrimaryButton width={'256'} large>
-          <Trans>Start</Trans>
-        </PrimaryButton>
+        <Column gap={'16'} alignItems={'center'}>
+          <Text.HeadlineMedium>
+            <Trans>Start your collection</Trans>
+          </Text.HeadlineMedium>
+
+          <PrimaryButton width={'256'} onClick={toggleSignUpModal} large>
+            <Trans>Start</Trans>
+          </PrimaryButton>
+        </Column>
       </Column>
-    </Section>
+
+      <AuthModal />
+    </>
   )
 }
 
