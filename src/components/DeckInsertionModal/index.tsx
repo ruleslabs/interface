@@ -20,7 +20,6 @@ const CARDS_QUERY = gql`
       id
       slug
       serialNumber
-      onSale
       tokenId
       cardModel {
         slug
@@ -120,7 +119,6 @@ export default function DeckInsertionModal({ address, cardIndex }: DeckInsertion
           display={{
             primaryInfo: card.cardModel.artistName,
             secondaryInfo: card.serialNumber,
-            status: card.onSale ? 'onSale' : undefined,
           }}
           onCardClick={() => handleCardInsertion(card)}
         />
@@ -131,7 +129,7 @@ export default function DeckInsertionModal({ address, cardIndex }: DeckInsertion
   return (
     <ClassicModal onDismiss={onDismiss} isOpen={isOpen}>
       <ModalContent fullscreen>
-        <ModalHeader onDismiss={onDismiss} />
+        <ModalHeader onDismiss={onDismiss} title={t`Deck`} />
 
         <ModalBody id="scrollableModal">
           <Column gap={32}>
