@@ -108,11 +108,15 @@ export default function Overview() {
           <FiatBalance>{balance ? `€${weiAmountToEURValue(balance)?.toFixed(2)}` : 'Loading ...'}</FiatBalance>
         </Column>
 
-        {oldAddress && <SecondaryButton onClick={onOldOverviewMode}>See my old wallet</SecondaryButton>}
-
         {needsSignerEscape && <SignerEscape />}
 
         {componentContent}
+
+        {oldAddress && (
+          <Text.Link onClick={onOldOverviewMode} textDecoration={'underline'}>
+            See my old wallet
+          </Text.Link>
+        )}
 
         <Column gap={'24'} marginTop={'32'}>
           <Text.HeadlineMedium>

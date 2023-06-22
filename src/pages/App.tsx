@@ -30,6 +30,7 @@ import Card from './Card'
 import CardModel from './Card/Model'
 import Offers from './Card/Offers'
 
+import Newcomer from './Newcomer'
 import Onboard from './Onboard'
 
 export default function App() {
@@ -66,6 +67,7 @@ export default function App() {
       <Route path={'card/:cardModelSlug/offers'} element={Offers.withLayout()} />
 
       <Route path={'onboard'} element={Onboard.withLayout()} />
+      <Route path={'newcomer'} element={Newcomer.withLayout()} />
     </Routes>
   )
 }
