@@ -6,6 +6,7 @@ import { RowCenter } from 'src/components/Row'
 import Column from 'src/components/Column'
 import { CertifiedBadge } from 'src/components/User/Badge'
 import Link from 'src/components/Link'
+import useTrans from 'src/hooks/useTrans'
 
 const UserLogin = styled(RowCenter)`
   margin 4px 0 32px;
@@ -29,8 +30,10 @@ export default function CardModelBreakdown({
   serial,
   slug,
 }: CardModelBreakdownProps) {
+  const trans = useTrans()
+
   return (
-    <>
+    <Column gap={4}>
       <Link href={`/card/${slug}`}>
         <TYPE.medium fontSize={28} fontWeight={700} clickable>
           {artistName}
@@ -44,13 +47,11 @@ export default function CardModelBreakdown({
         <CertifiedBadge />
       </UserLogin>
 
-      <Column gap={8}>
+      <Column gap={16}>
         <TYPE.body>
           <Trans>Season {season}</Trans>
         </TYPE.body>
-        <TYPE.body>
-          <Trans id={`${scarcityName} card`}>{`${scarcityName} card`}</Trans>
-        </TYPE.body>
+        <TYPE.body>{trans('scarcityCard', scarcityName)}</TYPE.body>
         {serial ? (
           <TYPE.body spanColor="text2">
             #{serial}
@@ -62,6 +63,6 @@ export default function CardModelBreakdown({
           </TYPE.subtitle>
         )}
       </Column>
-    </>
+    </Column>
   )
 }

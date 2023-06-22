@@ -28,10 +28,6 @@ const communityCreationsData = [
     name: 'Playlists streaming',
     link: 'https://multy.me/ljQNes',
   },
-  {
-    name: 'Rulescore',
-    link: 'https://rulescore.herokuapp.com/',
-  },
 ]
 
 const LinkIconWrapper = styled(RowCenter)`

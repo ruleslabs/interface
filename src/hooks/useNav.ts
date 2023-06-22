@@ -1,6 +1,7 @@
 import { useUpgradeWalletModalToggle } from 'src/state/application/hooks'
 import { useMemo } from 'react'
 import useLogout from './useLogout'
+import { t } from '@lingui/macro'
 
 export interface NavLink {
   name: string
@@ -15,9 +16,9 @@ export function useNavLinks(): MenuLinks {
   return useMemo(
     () => [
       [
-        { name: 'Packs', link: '/packs' },
-        { name: 'Marketplace', link: '/marketplace' },
-        { name: 'Community', link: '/community' },
+        { name: t`Packs`, link: '/packs' },
+        { name: t`Marketplace`, link: '/marketplace' },
+        { name: t`Community`, link: '/community' },
       ],
       [{ name: 'Discord', link: 'https://discord.gg/DrfezKYUhH', external: true }],
     ],
@@ -48,22 +49,22 @@ export function useNavUserLinks(userSlug?: string): NavUserLinks | null {
 
     return {
       profile: {
-        name: 'Profile',
+        name: t`Profile`,
         links: [
-          { name: 'Cards', link: `/user/${userSlug}/cards` },
-          { name: 'Packs', link: `/user/${userSlug}/packs` },
-          { name: 'Rulédex', link: `/user/${userSlug}/ruledex` },
-          { name: 'Activity', link: `/user/${userSlug}/activity` },
+          { name: t`Cards`, link: `/user/${userSlug}/cards` },
+          { name: t`Packs`, link: `/user/${userSlug}/packs` },
+          { name: t`Rulédex`, link: `/user/${userSlug}/ruledex` },
+          { name: t`Activity`, link: `/user/${userSlug}/activity` },
         ],
       },
       wallet: {
-        name: 'Wallet',
-        links: [{ name: 'Upgrade wallet', handler: toggleUpgradeWalletModal }],
+        name: t`Wallet`,
+        links: [{ name: t`Upgrade wallet`, handler: toggleUpgradeWalletModal }],
       },
       misc: {
         links: [
-          { name: 'Settings', link: '/settings/profile' },
-          { name: 'Logout', handler: logout },
+          { name: t`Settings`, link: '/settings/profile' },
+          { name: t`Logout`, handler: logout },
         ],
       },
     }

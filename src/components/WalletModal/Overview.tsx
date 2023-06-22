@@ -114,7 +114,7 @@ export default function Overview() {
 
         {oldAddress && (
           <Text.Link onClick={onOldOverviewMode} textDecoration={'underline'}>
-            See my old wallet
+            <Trans>See my old wallet</Trans>
           </Text.Link>
         )}
 

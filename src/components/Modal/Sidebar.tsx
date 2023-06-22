@@ -124,10 +124,10 @@ export function ModalContent({ children, ...props }: React.HTMLAttributes<HTMLDi
 
 export function ModalBody({ children, className, ...props }: BoxProps) {
   return (
-    <Column className={clsx(className, styles.modalBody)} {...props}>
-      <Box width={'full'} padding={'16'}>
+    <Box className={clsx(className, styles.modalBody)}>
+      <Column width={'full'} padding={'16'} {...props}>
         {children}
-      </Box>
-    </Column>
+      </Column>
+    </Box>
   )
 }

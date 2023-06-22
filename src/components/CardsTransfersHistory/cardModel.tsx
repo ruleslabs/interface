@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import styled from 'styled-components/macro'
-import { Trans } from '@lingui/macro'
+import { Trans, t } from '@lingui/macro'
 
 import { TYPE } from 'src/styles/theme'
 import Row from 'src/components/Row'
@@ -26,23 +26,29 @@ const SortingTitle = styled(Row)`
   }
 `
 
-const sorts = [
-  {
-    name: 'Last sales',
-    type: CardTransfersSortingType.Date,
-  },
-  {
-    name: 'Highest sales',
-    type: CardTransfersSortingType.Price,
-  },
-]
+const useSortsData = () =>
+  useMemo(
+    () => [
+      {
+        name: t`Last sales`,
+        type: CardTransfersSortingType.Date,
+      },
+      {
+        name: t`Highest sales`,
+        type: CardTransfersSortingType.Price,
+      },
+    ],
+    []
+  )
 
 interface CardModelHistoryProps {
   cardModelId: string
 }
 
 export default function CardModelHistory({ cardModelId }: CardModelHistoryProps) {
-  const [sortingType, setSortingType] = useState(sorts[0].type)
+  const sortsData = useSortsData()
+
+  const [sortingType, setSortingType] = useState(sortsData[0].type)
 
   const { data, loading } = useCardModelSaleTransfersQuery({
     variables: { cardModelId, sort: { direction: SortingOption.Desc, type: sortingType } },
@@ -52,16 +58,16 @@ export default function CardModelHistory({ cardModelId }: CardModelHistoryProps)
   return (
     <>
       <SortingTitle>
-        {sorts
-          .sort((sort) => (sort.type === sortingType ? -1 : 1))
-          .map((sort) => (
+        {sortsData
+          .sort((sortData) => (sortData.type === sortingType ? -1 : 1))
+          .map((sortData) => (
             <TYPE.body
-              key={sort.type}
+              key={sortData.type}
               color="text2"
               fontWeight={700}
-              onClick={sort.type === sortingType ? undefined : () => setSortingType(sort.type)}
+              onClick={sortData.type === sortingType ? undefined : () => setSortingType(sortData.type)}
             >
-              <Trans id={sort.name}>{sort.name}</Trans>
+              <Trans id={sortData.name}>{sortData.name}</Trans>
             </TYPE.body>
           ))}
       </SortingTitle>

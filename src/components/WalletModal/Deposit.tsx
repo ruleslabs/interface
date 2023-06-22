@@ -32,7 +32,7 @@ export default function Deposit() {
     <ModalBody>
       <Column gap={24}>
         <CardButton
-          title="Credit card or bank transfer"
+          title={t`Credit card or bank transfer`}
           subtitle={t`might take a few days`}
           onClick={openRamp}
           disabled={!rampSdk?.show}

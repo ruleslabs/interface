@@ -59,12 +59,13 @@ const CARD_MODEL_QUERY = gql`
       youtubePreviewId
       season
       listedCardsCount
+      listedCardsCount
+      artistName
+      lowestAsk
       scarcity {
         name
         maxSupply
       }
-      listedCardsCount
-      artistName
     }
   }
 `

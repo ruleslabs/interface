@@ -5,7 +5,7 @@ import { msg } from '@lingui/macro'
 import { ScarcityName } from '@rulesorg/sdk-core'
 import { StxAction } from 'src/types/starknetTx'
 
-type Prefix = 'liveReward' | 'scarcity' | 'stxActionDesc' | 'stxActionSuccess' | 'stxActionConfirm'
+type Prefix = 'liveReward' | 'scarcity' | 'stxActionDesc' | 'stxActionSuccess' | 'stxActionConfirm' | 'scarcityCard'
 
 const prefix = (obj: Messages, prefix: Prefix) =>
   Object.keys(obj).reduce<Messages>((acc, e) => {
@@ -40,7 +40,7 @@ const stxActionConfirm: { [id in StxAction]: MessageDescriptor } = {
 
 const stxActionSuccess: { [id in StxAction]: MessageDescriptor } = {
   transfer: msg`Your card is on its way !`,
-  offerAcceptance: msg`Your purchase will be accetped very soon.`,
+  offerAcceptance: msg`Your purchase will be accepted very soon.`,
   offerCancelation: msg`Your offer will be canceled very soon.`,
   offerCreation: msg`Your card has been listed on the marketplace.`,
   walletDeployment: msg`Your wallet deployment is on its way !`,
@@ -55,6 +55,12 @@ const scarcities: { [id in ScarcityName]: MessageDescriptor } = {
   common: msg`Common`,
   platinium: msg`Platinium`,
   halloween: msg`Halloween`,
+}
+
+const scarcitiesCards: { [id in ScarcityName]: MessageDescriptor } = {
+  common: msg`Common card`,
+  platinium: msg`Platinium card`,
+  halloween: msg`Halloween card`,
 }
 
 /**
@@ -73,6 +79,7 @@ const messages: Messages = {
   ...prefix(stxActionSuccess, 'stxActionSuccess'),
 
   ...prefix(scarcities, 'scarcity'),
+  ...prefix(scarcitiesCards, 'scarcityCard'),
 
   ...prefix(liveReward, 'liveReward'),
 }

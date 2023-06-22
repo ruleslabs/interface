@@ -1,10 +1,11 @@
+import { t } from '@lingui/macro'
 import { Buffer } from 'buffer'
 
 export const DECRYPTION_ERROR = 'DecryptionError'
 
 export class DecryptionError extends Error {
   constructor(message?: string) {
-    super(message || 'Invalid password')
+    super(message || t`Invalid password`)
     this.name = DECRYPTION_ERROR
   }
 }

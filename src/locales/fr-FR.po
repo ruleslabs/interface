@@ -247,6 +247,10 @@ msgstr "Carte commune"
 msgid "Platinium card"
 msgstr "Carte platine"
 
+#: src/components/CardModelBreakdown
+msgid "Halloween card"
+msgstr "Carte halloween"
+
 #: src/components/CardModelSales
 msgid "Average sale"
 msgstr "Vente moyenne"
@@ -260,8 +264,8 @@ msgid "Select and buy"
 msgstr "Selectionner et acheter"
 
 #: src/components/CardModelSales/index.tsx
-msgid "{0, plural, =1 {{0} card on sale} other {{0} cards on sale}}"
-msgstr "{0, plural, =1 {{0} carte en vente} other {{0} cartes en vente}}"
+msgid "{listingsCount, plural, =1 {one card on sale} other {{listingsCount} cards on sale}}"
+msgstr "{listingsCount, plural, =1 {une carte en vente} other {{listingsCount} cartes en vente}}"
 
 #: src/components/CardOwnership/index.tsx
 msgid "Belongs to <0>{ownerUsername}</0>"
@@ -535,41 +539,9 @@ msgstr "Vus récemment"
 msgid "starting from"
 msgstr "à partir de"
 
-#: src/pages/marketplace/index.tsx
-msgid "Price: low to high"
-msgstr "Prix croissant"
-
-#: src/pages/marketplace/index.tsx
-msgid "Price: high to low"
-msgstr "Prix décroissant"
-
 #: src/pages/pack/[packSlug].tsx
 msgid "Example of possible cards"
 msgstr "Exemple de cartes possibles"
-
-#: src/pages/user/[username]/cards.tsx
-msgid "Oldest"
-msgstr "Moins récentes"
-
-#: src/pages/user/[username]/cards.tsx
-msgid "Newest"
-msgstr "Plus récentes"
-
-#: src/pages/user/[username]/cards.tsx
-msgid "Low serial"
-msgstr "Serial bas"
-
-#: src/pages/user/[username]/cards.tsx
-msgid "High serial"
-msgstr "Serial haut"
-
-#: src/pages/user/[username]/cards.tsx
-msgid "Alphabetical A-Z"
-msgstr "Alphabétique A-Z"
-
-#: src/pages/user/[username]/cards.tsx
-msgid "Alphabetical Z-A"
-msgstr "Alphabétique Z-A"
 
 #: src/pages/user/[username]/cards.tsx
 msgid "{cardsCount, plural, =1 {{cardsCount} card} other {{cardsCount} cards}}"
@@ -1592,7 +1564,7 @@ msgid "Card purchase..."
 msgstr "Achat de carte..."
 
 #: src/hooks/useTrans.ts
-msgid "Your purchase will be accetped very soon."
+msgid "Your purchase will be accepted very soon."
 msgstr "Ton achat va être traité rapidement."
 
 #: src/hooks/useTrans.ts
@@ -1709,3 +1681,160 @@ msgstr "Pour retrouver un accès complet à l'application, tu dois suivre les é
 #: src/components/WalletModal/Overview.tsx
 msgid "Retrieve - {0} ETH"
 msgstr "Récupérer - {0} ETH"
+
+
+
+
+
+
+
+#: src/pages/Newcomer/index.tsx
+msgid "Start your collection"
+msgstr "Commence ta collection"
+
+#: src/pages/Newcomer/index.tsx
+msgid "Start"
+msgstr "Commencer"
+
+
+
+
+
+
+#: src/components/WalletModal/Overview.tsx
+msgid "See my old wallet"
+msgstr "Voir mon ancien portefeuille"
+
+#: src/components/WalletModal/index.tsx
+msgid "Old Wallet"
+msgstr "Ancien portefeuille"
+
+#: src/components/WalletModal/index.tsx
+msgid "Retrieve your funds"
+msgstr "Récupère tes fonds"
+
+
+
+
+
+#: src/components/WalletModal/Deposit.tsx
+msgid "might take a few days"
+msgstr "peut prendre quelques jours"
+
+#: src/components/WalletModal/Deposit.tsx
+msgid "a few minutes"
+msgstr "quelques minutes"
+
+#: src/components/WalletModal/Deposit.tsx
+msgid "Credit card or bank transfer"
+msgstr "Carte de crédit ou virement"
+
+
+
+
+
+
+#: src/components/WalletModal/StarkgateWithdraw.tsx
+msgid "There will be an additional step in a few hours to finalize the withdraw. Please note that this step will require a small amount of ETH on your Metamask."
+msgstr "Une étape supplémentaire sera requise dans quelques heures, afin de finaliser le retrait. Cette étape nécessitera une petite quantité d'ETH sur ton Metamask."
+
+
+
+
+
+
+#: src/utils/encryption.ts
+msgid "Invalid password"
+msgstr "Mot de passe invalide"
+
+
+
+
+
+#: src/components/WalletModal/Overview.tsx
+msgid "Recent transactions"
+msgstr "Transactions récentes"
+
+#: src/components/WalletModal/Overview.tsx
+msgid "No transactions"
+msgstr "Pas de transactions"
+
+
+
+#: src/hooks/useNav.ts
+msgid "Cards"
+msgstr "Cartes"
+
+#: src/hooks/useNav.ts
+msgid "Activity"
+msgstr "Activité"
+
+#: src/hooks/useNav.ts
+msgid "Wallet"
+msgstr "Portefeuille"
+
+#: src/hooks/useNav.ts
+msgid "Upgrade wallet"
+msgstr "Mettre à jour le portefeuille"
+
+#: src/hooks/useNav.ts
+msgid "Settings"
+msgstr "Paramètres"
+
+#: src/hooks/useNav.ts
+msgid "Logout"
+msgstr "Se déconnecter"
+
+
+
+
+
+
+#: src/pages/Marketplace.tsx
+msgid "{0} offers"
+msgstr "{0} offres"
+
+#: src/pages/Marketplace.tsx
+msgid "from {0} ETH (€{1})"
+msgstr "dès {0} ETH (€{1})"
+
+
+
+
+
+
+
+
+
+
+#: src/pages/marketplace/index.tsx
+msgid "Price: low to high"
+msgstr "Prix croissant"
+
+#: src/pages/marketplace/index.tsx
+msgid "Price: high to low"
+msgstr "Prix décroissant"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "Oldest"
+msgstr "Moins récentes"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "Newest"
+msgstr "Plus récentes"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "Low serial"
+msgstr "Serial bas"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "High serial"
+msgstr "Serial haut"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "Alphabetical A-Z"
+msgstr "Alphabétique A-Z"
+
+#: src/pages/user/[username]/cards.tsx
+msgid "Alphabetical Z-A"
+msgstr "Alphabétique Z-A"

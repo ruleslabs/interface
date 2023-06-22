@@ -1,17 +1,11 @@
-import styled from 'styled-components/macro'
 import { Trans, Plural } from '@lingui/macro'
 
 import Column from 'src/components/Column'
-import { TYPE } from 'src/styles/theme'
 import { PrimaryButton } from 'src/components/Button'
 import Link from 'src/components/Link'
 import Placeholder from 'src/components/Placeholder'
 import CardModelPriceStats from './CardModelPriceStats'
-
-const CardsOnSaleCount = styled(TYPE.body)`
-  text-align: center;
-  width: 100%;
-`
+import * as Text from 'src/theme/components/Text'
 
 interface CardModelSalesProps {
   slug: string
@@ -34,9 +28,9 @@ export default function CardModelSales({ slug, listingsCount, lowestAsk, average
             </PrimaryButton>
           </Link>
 
-          <CardsOnSaleCount textAlign="center">
-            <Plural value={listingsCount} _1="{0} card on sale" other="{0} cards on sale" />
-          </CardsOnSaleCount>
+          <Text.Body textAlign={'center'} width={'full'}>
+            <Plural value={listingsCount} _1="one card on sale" other="{listingsCount} cards on sale" />
+          </Text.Body>
         </Column>
       ) : (
         <Placeholder>

@@ -142,22 +142,29 @@ const SelectedCardsButtonsWrapper = styled(Row)`
   `}
 `
 
-const sortsData: SortsData<CardsSortingKey> = [
-  { name: 'Newest', key: 'dateDesc', desc: true },
-  { name: 'Oldest', key: 'dateAsc', desc: false },
-  { name: 'Low serial', key: 'serialAsc', desc: false },
-  { name: 'High serial', key: 'serialDesc', desc: true },
-  { name: 'Price: low to high', key: 'lastPriceAsc', desc: false },
-  { name: 'Price: high to low', key: 'lastPriceDesc', desc: true },
-  { name: 'Alphabetical A-Z', key: 'artistAsc', desc: false },
-  { name: 'Alphabetical Z-A', key: 'artistDesc', desc: true },
-]
+const useSortsData = (): SortsData<CardsSortingKey> =>
+  useMemo(
+    () => [
+      { name: t`Newest`, key: 'dateDesc', desc: true },
+      { name: t`Oldest`, key: 'dateAsc', desc: false },
+      { name: t`Low serial`, key: 'serialAsc', desc: false },
+      { name: t`High serial`, key: 'serialDesc', desc: true },
+      { name: t`Price: low to high`, key: 'lastPriceAsc', desc: false },
+      { name: t`Price: high to low`, key: 'lastPriceDesc', desc: true },
+      { name: t`Alphabetical A-Z`, key: 'artistAsc', desc: false },
+      { name: t`Alphabetical Z-A`, key: 'artistDesc', desc: true },
+    ],
+    []
+  )
 
 function UserCards() {
   const [cardsCount, setCardsCount] = useState(0)
   const [cards, setCards] = useState<any[]>([])
   const [sortIndex, setSortIndex] = useState(0)
   const [listings, setListings] = useState<{ [tokenId: string]: string }>({})
+
+  // sorts data
+  const sortsData = useSortsData()
 
   // add new listings
   const addListings = useCallback((tokenIds: string[], prices: string[]) => {

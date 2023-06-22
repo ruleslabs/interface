@@ -8,7 +8,7 @@ import Section from 'src/components/Section'
 import Column from 'src/components/Column'
 import Row, { RowBetween } from 'src/components/Row'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
-import SortButton, { SortData } from 'src/components/Button/SortButton'
+import SortButton, { SortsData } from 'src/components/Button/SortButton'
 import { useMarketplaceFiltersModalToggle } from 'src/state/application/hooks'
 import MarketplaceFiltersModal from 'src/components/MarketplaceFiltersModal'
 import DefaultLayout from 'src/components/Layout'
@@ -69,13 +69,20 @@ const GridHeader = styled(RowBetween)`
 `
 
 // TODO: new sorting support
-const sortsData: SortData<any>[] = [
-  { name: 'Price: low to high', key: '', desc: false },
-  { name: 'Price: high to low', key: '', desc: true },
-]
+const useSortsData = (): SortsData<any> =>
+  useMemo(
+    () => [
+      { name: t`Price: low to high`, key: '', desc: false },
+      { name: t`Price: high to low`, key: '', desc: true },
+    ],
+    []
+  )
 
 function Marketplace() {
   const [sortIndex, setSortIndex] = useState(0)
+
+  // sorts data
+  const sortsData = useSortsData()
 
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()

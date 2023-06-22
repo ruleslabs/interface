@@ -26,6 +26,7 @@ export const logoContainer = style([
   sprinkles({
     color: 'text1',
     marginX: 'auto',
+    maxWidth: '440',
   }),
 ])
 

@@ -50,7 +50,7 @@ function useModalContent(): ModalContents<WalletModalMode> {
       },
       [WalletModalMode.MIGRATE_FUNDS]: {
         Component: MigrateFunds,
-        title: t`Migrate your funds`,
+        title: t`Retrieve your funds`,
         previous: WalletModalMode.OLD_OVERVIEW,
       },
     }),

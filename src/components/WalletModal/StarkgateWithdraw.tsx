@@ -108,7 +108,7 @@ export default function StarkgateWithdraw() {
             <Text.Body>
               <Trans>
                 There will be an additional step in a few hours to finalize the withdraw. Please note that this step
-                will require a small amount of ETH on your metamask
+                will require a small amount of ETH on your Metamask.
               </Trans>
             </Text.Body>
 
