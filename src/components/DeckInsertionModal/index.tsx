@@ -24,7 +24,7 @@ const CARDS_QUERY = gql`
       cardModel {
         slug
         season
-        pictureUrl(derivative: "width=1024")
+        pictureUrl(derivative: "width=512")
         videoUrl
         artistName
         scarcity {
