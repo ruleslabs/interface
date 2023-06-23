@@ -5,7 +5,7 @@ import * as styles from './style.css'
 import Box, { BoxProps } from 'src/theme/components/Box'
 import SizingImage from 'src/images/sizingImage.png'
 import { NftPlayableMedia } from './media'
-import { Badge, NftAsset } from 'src/types'
+import { NftAsset } from 'src/types'
 import { Column, Row } from 'src/theme/components/Flex'
 import Image from 'src/theme/components/Image'
 import { useActiveLocale } from 'src/hooks/useActiveLocale'
@@ -15,6 +15,7 @@ import Badges from 'src/components/Badges'
 import { usePendingOperations } from 'src/hooks/usePendingOperations'
 import useTrans from 'src/hooks/useTrans'
 import { LargeSpinner } from 'src/components/Spinner'
+import { Badge } from 'src/graphql/data/__generated__/types-and-hooks'
 
 interface NftCardDisplay {
   href?: string

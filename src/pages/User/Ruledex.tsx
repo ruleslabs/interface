@@ -1,6 +1,5 @@
 import { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components/macro'
-import { useQuery, gql } from '@apollo/client'
 import { constants } from '@rulesorg/sdk-core'
 
 import { SecondaryButton } from 'src/components/Button'
@@ -8,45 +7,25 @@ import DefaultLayout from 'src/components/Layout'
 import ProfileLayout from 'src/components/Layout/Profile'
 import Section from 'src/components/Section'
 import Grid from 'src/components/Grid'
-import Row, { RowCenter } from 'src/components/Row'
+import { RowCenter } from 'src/components/Row'
 import Column from 'src/components/Column'
 import { TYPE } from 'src/styles/theme'
-import { RULEDEX_CARDS_COUNT_LEVELS_MINS } from 'src/constants/misc'
 import Badges from 'src/components/Badges'
 import useSearchedUser from 'src/hooks/useSearchedUser'
 import useTrans from 'src/hooks/useTrans'
 import Link from 'src/components/Link'
 import Image from 'src/theme/components/Image'
-import { Badge } from 'src/types'
-
-const RULEDEX_QUERY = gql`
-  query Ruledex($season: Int!, $slug: String!) {
-    allCardModelsBySeason(season: $season) {
-      slug
-      uid
-      scarcity {
-        name
-      }
-      pictureUrl(derivative: "width=256")
-    }
-    user(slug: $slug) {
-      ownedCardModels {
-        serialNumbers
-        cardModel {
-          uid
-          scarcity {
-            name
-            maxLowSerial
-          }
-        }
-      }
-    }
-  }
-`
+import * as Text from 'src/theme/components/Text'
+import { useRuledex } from 'src/graphql/data/ruledex'
+import { PaginationSpinner } from 'src/components/Spinner'
+import * as styles from './Ruledex.css'
+import { Row } from 'src/theme/components/Flex'
+import Box from 'src/theme/components/Box'
 
 const ScarcitySelectorWrapper = styled(Row)`
   gap: 42px;
   flex-wrap: wrap;
+  width: 100%;
 
   ${({ theme }) => theme.media.medium`
     justify-content: space-around;
@@ -84,12 +63,12 @@ const StyledGrid = styled(Grid)`
   margin-top: 64px;
 `
 
-const LockableCardModel = styled(Column)<{ locked?: boolean }>`
+const RuledexCardModel = styled(Column)<{ owned?: boolean }>`
   gap: 12px;
   position: relative;
 
-  ${({ theme, locked = false }) =>
-    locked &&
+  ${({ theme, owned = false }) =>
+    !owned &&
     `
     * {
       color: ${theme.text2};
@@ -112,6 +91,9 @@ const CardModelId = styled(TYPE.body)`
 `
 
 function UserRuledex() {
+  const [selectedSeason, setSelectedSeason] = useState(constants.CURRENT_SEASON)
+  const [selectedScarcity, setSelectedScarcity] = useState<number | null>(null)
+
   // trans
   const trans = useTrans()
 
@@ -119,103 +101,91 @@ function UserRuledex() {
   const [user] = useSearchedUser()
 
   // Query rulédex
-  const ruledexQuery = useQuery(RULEDEX_QUERY, {
-    variables: { slug: user?.slug, season: 1 },
-    skip: !user?.slug,
-  })
-  const ownedCardModels = ruledexQuery.data?.user.ownedCardModels ?? []
-  const allCardModels = ruledexQuery.data?.allCardModelsBySeason ?? []
-
-  // owned card models
-  const cardModelsBadges = useMemo(
-    () =>
-      (ownedCardModels as any[]).reduce<{ [uid: number]: Badge[] }>((acc, ownedCardModel) => {
-        // skip if needed
-        if (!ownedCardModel.serialNumbers.length) return acc
-
-        // init badges
-        acc[ownedCardModel.cardModel.uid] = acc[ownedCardModel.cardModel.uid] ?? []
-
-        // low serial badge
-        for (const serialNumber of ownedCardModel.serialNumbers) {
-          if (serialNumber <= ownedCardModel.cardModel.scarcity.maxLowSerial) {
-            acc[ownedCardModel.cardModel.uid].push(Badge.LOW_SERIAL)
-            break
-          }
-        }
-
-        // card counts badges
-        let level = 0
-        for (const cardCountMin of RULEDEX_CARDS_COUNT_LEVELS_MINS) {
-          if (ownedCardModel.serialNumbers.length >= cardCountMin) ++level
-        }
-
-        acc[ownedCardModel.cardModel.uid].push(Badge[`CARDS_COUNT_LEVEL_${level}` as keyof typeof Badge])
-
-        return acc
-      }, {}),
-    [ownedCardModels.length]
-  )
+  const { data, loading, error } = useRuledex(selectedSeason, user?.slug)
+  const ruledexCardModels = data?.user?.ruledex?.ruledexCardModels ?? []
+  const ruledexScarcities = data?.user?.ruledex?.ruledexScarcities ?? []
 
   // selected scarcity
-  const [selectedScarcity, setSelectedScarcity] = useState<string | null>(null)
   const toggleSelectedScarcity = useCallback(
-    (scarcityName: string) => setSelectedScarcity(selectedScarcity === scarcityName ? null : scarcityName),
+    (scarcityName: number) => setSelectedScarcity(selectedScarcity === scarcityName ? null : scarcityName),
     [selectedScarcity]
   )
 
-  // scarcities max
-  const scarcitiesMax = useMemo(
-    () =>
-      (allCardModels as any[]).reduce<{ [scarcityName: string]: number }>((acc, cardModel: any) => {
-        acc[cardModel.scarcity.name] = (acc[cardModel.scarcity.name] ?? 0) + 1
-        return acc
-      }, {}),
-    [allCardModels.length]
+  const isScarcitySelected = useCallback(
+    (scarcityId) => selectedScarcity === null || scarcityId === selectedScarcity,
+    [selectedScarcity]
   )
 
-  // scarcities balance
-  const scarcitiesBalance = useMemo(
-    () =>
-      (allCardModels as any[]).reduce<{ [scarcityName: string]: number }>((acc, cardModel: any) => {
-        acc[cardModel.scarcity.name] = (acc[cardModel.scarcity.name] ?? 0) + (cardModelsBadges[cardModel.uid] ? 1 : 0)
-        return acc
-      }, {}),
-    [allCardModels.length, Object.keys(cardModelsBadges).length]
-  )
+  // select season
+  const selectSeason = useCallback((season: number) => {
+    setSelectedSeason(season)
+    setSelectedScarcity(null)
+  }, [])
 
-  return (
-    <Section marginTop="32px">
-      <ScarcitySelectorWrapper>
-        {constants.Seasons[1].map((scarcity) => (
-          <ScarcitySelector key={scarcity.name} active={selectedScarcity === scarcity.name} scarcity={scarcity.name}>
-            <RowCenter onClick={() => toggleSelectedScarcity(scarcity.name)}>
+  // components
+  const scarcitiesComponents = useMemo(
+    () =>
+      ruledexScarcities.map(({ balance, maxBalance, scarcityId }) => {
+        const scarcity = constants.Seasons[selectedSeason][scarcityId]
+
+        return (
+          <ScarcitySelector key={scarcity.name} active={isScarcitySelected(scarcityId)} scarcity={scarcity.name}>
+            <RowCenter onClick={() => toggleSelectedScarcity(scarcityId)}>
               <TYPE.body fontWeight={700}>{trans('scarcity', scarcity.name)}</TYPE.body>
 
               <TYPE.large spanColor="text2" fontSize={32}>
-                {scarcitiesBalance[scarcity.name] ?? 0} <span>/{scarcitiesMax[scarcity.name] ?? 0}</span>
+                {balance} <span>/{maxBalance}</span>
               </TYPE.large>
             </RowCenter>
           </ScarcitySelector>
-        ))}
-      </ScarcitySelectorWrapper>
+        )
+      }),
+    [ruledexScarcities, selectedSeason, toggleSelectedScarcity, isScarcitySelected]
+  )
 
-      <StyledGrid gap={28} maxWidth={132}>
-        {allCardModels
-          .filter((cardModel: any) => !selectedScarcity || cardModel.scarcity.name === selectedScarcity)
-          .sort((a: any, b: any) => a.uid - b.uid)
-          .map((cardModel: any) => (
-            <LockableCardModel key={cardModel.slug} locked={!cardModelsBadges[cardModel.uid]}>
-              <Link href={`/card/${cardModel.slug}`}>
-                <Image src={cardModel.pictureUrl} display={'block'} width={'full'} />
-              </Link>
+  if (error) {
+    return <Text.Body>{JSON.stringify(error)}</Text.Body>
+  }
 
-              <Badges badges={cardModelsBadges[cardModel.uid]} />
+  return (
+    <Section marginTop="32px">
+      {loading ? (
+        <PaginationSpinner loading />
+      ) : (
+        <>
+          <Box className={styles.actionsContainer}>
+            <ScarcitySelectorWrapper>{scarcitiesComponents}</ScarcitySelectorWrapper>
 
-              <CardModelId>#{cardModel.uid.toString().padStart(3, '0')}</CardModelId>
-            </LockableCardModel>
-          ))}
-      </StyledGrid>
+            <Row className={styles.seasonsContainer}>
+              {Object.keys(constants.Seasons).map((season) => (
+                <Text.HeadlineMedium
+                  key={season}
+                  className={styles.seasonButton({ active: selectedSeason === +season })}
+                  onClick={() => selectSeason(+season)}
+                >
+                  S{season}
+                </Text.HeadlineMedium>
+              ))}
+            </Row>
+          </Box>
+
+          <StyledGrid gap={28} maxWidth={132}>
+            {ruledexCardModels
+              .filter(({ cardModel }) => selectedScarcity === null || cardModel.scarcity.id === selectedScarcity)
+              .map(({ cardModel, owned, badges }) => (
+                <RuledexCardModel key={cardModel.slug} owned={owned}>
+                  <Link href={`/card/${cardModel.slug}`}>
+                    <Image src={cardModel.pictureUrl} display={'block'} width={'full'} />
+                  </Link>
+
+                  <Badges badges={badges} />
+
+                  <CardModelId>#{cardModel.uid.toString().padStart(3, '0')}</CardModelId>
+                </RuledexCardModel>
+              ))}
+          </StyledGrid>
+        </>
+      )}
     </Section>
   )
 }

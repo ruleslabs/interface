@@ -112,6 +112,7 @@ export function colors(darkMode: boolean) {
     common: '#8C04C1',
     platinium: '#E7E7E7',
     halloween: '#AF4027',
+    holo: '#56c8fe',
 
     lowSerial: '#44DD53',
 

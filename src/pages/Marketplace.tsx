@@ -16,9 +16,8 @@ import { NftCard } from 'src/components/nft/Card'
 
 import { ReactComponent as HopperIcon } from 'src/images/hopper.svg'
 import CollectionNfts from 'src/components/nft/Collection/CollectionNfts'
-import { Badge } from 'src/types'
 import { useCardModels } from 'src/graphql/data/CardModels'
-import { CardModelsSortingType, SortingOption } from 'src/graphql/data/__generated__/types-and-hooks'
+import { BadgeType, CardModelsSortingType, SortingOption } from 'src/graphql/data/__generated__/types-and-hooks'
 import { useMarketplaceFilters } from 'src/state/search/hooks'
 import { IconButton } from 'src/components/Button'
 
@@ -141,7 +140,7 @@ function Marketplace() {
               ? t`from ${parsedLowestAsk.toSignificant(6)} ETH (€${weiAmountToEURValue(parsedLowestAsk)})`
               : undefined,
           }}
-          badges={marketplaceFilters.lowSerials ? [Badge.LOW_SERIAL] : undefined}
+          badges={marketplaceFilters.lowSerials ? [{ type: BadgeType.LowSerial, level: 1 }] : undefined}
         />
       )
     })

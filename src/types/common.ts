@@ -60,13 +60,3 @@ export type ExecutedOrPendingTx = ExecutedTx & {
   success?: ExecutedTx['success']
   loading?: boolean
 }
-
-/* badges */
-
-export enum Badge {
-  LOW_SERIAL,
-  CARDS_COUNT_LEVEL_1,
-  CARDS_COUNT_LEVEL_2,
-  CARDS_COUNT_LEVEL_3,
-  CARDS_COUNT_LEVEL_4,
-}

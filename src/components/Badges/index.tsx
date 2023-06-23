@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 
 import Column from '../Column'
-import { Badge } from 'src/types'
+import { Badge, BadgeType } from 'src/graphql/data/__generated__/types-and-hooks'
 
 import { ReactComponent as RuledexBadgeLowSerial } from 'src/images/ruledex-badge-low-serial.svg'
 import { ReactComponent as RuledexBadgeCardsCountLevel1 } from 'src/images/ruledex-badge-cards-count-level-1.svg'
@@ -24,28 +24,34 @@ const BadgesWrapper = styled(Column)`
 `
 
 interface BadgesProps {
-  badges?: Badge[]
+  badges?: Omit<Badge, 'quantity'>[]
 }
 
 export default function Badges({ badges = [] }: BadgesProps) {
   return (
     <BadgesWrapper>
       {badges.map((badge) => {
-        switch (badge) {
-          case Badge.LOW_SERIAL:
+        switch (badge.type) {
+          case BadgeType.LowSerial:
             return <RuledexBadgeLowSerial />
 
-          case Badge.CARDS_COUNT_LEVEL_1:
-            return <RuledexBadgeCardsCountLevel1 />
+          case BadgeType.CardsCount: {
+            switch (badge.level) {
+              case 1:
+                return <RuledexBadgeCardsCountLevel1 />
 
-          case Badge.CARDS_COUNT_LEVEL_2:
-            return <RuledexBadgeCardsCountLevel2 />
+              case 2:
+                return <RuledexBadgeCardsCountLevel2 />
 
-          case Badge.CARDS_COUNT_LEVEL_3:
-            return <RuledexBadgeCardsCountLevel3 />
+              case 3:
+                return <RuledexBadgeCardsCountLevel3 />
 
-          case Badge.CARDS_COUNT_LEVEL_4:
-            return <RuledexBadgeCardsCountLevel4 />
+              case 4:
+                return <RuledexBadgeCardsCountLevel4 />
+            }
+
+            return null
+          }
         }
       })}
     </BadgesWrapper>
