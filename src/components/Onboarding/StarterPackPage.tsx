@@ -9,9 +9,19 @@ import * as Text from 'src/theme/components/Text'
 import Image from 'src/theme/components/Image'
 import { PrimaryButton } from '../Button'
 
-const LAST_STARTER_PACK = gql`
+// const LAST_STARTER_PACK = gql`
+//   query {
+//     lastStarterPack {
+//       slug
+//       pictureUrl(derivative: "width=512")
+//       price
+//     }
+//   }
+// `
+
+const LAUNCH_PACK_S2_QUERY = gql`
   query {
-    lastStarterPack {
+    pack(slug: "launch-pack-s2") {
       slug
       pictureUrl(derivative: "width=512")
       price
@@ -20,8 +30,9 @@ const LAST_STARTER_PACK = gql`
 `
 
 export default function StarterPackPage() {
-  const lastStarterPackQuery = useQuery(LAST_STARTER_PACK)
-  const pack = lastStarterPackQuery.data?.lastStarterPack
+  const lastStarterPackQuery = useQuery(LAUNCH_PACK_S2_QUERY)
+  const pack = lastStarterPackQuery.data?.pack
+  // const pack = lastStarterPackQuery.data?.lastStarterPack
 
   return (
     <Box className={styles.infoPageContainer}>

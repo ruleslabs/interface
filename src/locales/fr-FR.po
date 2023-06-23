@@ -864,6 +864,9 @@ msgstr "Retirer du deck"
 msgid "The Launch Pack of the 1st Season."
 msgstr "Le pack de lancement de la Saison 1."
 
+msgid "The Launch Pack of the 2nd Season."
+msgstr "Le pack de lancement de la Saison 2."
+
 msgid "Contains 3 common cards to start your journey."
 msgstr "Contient 3 cartes communes pour commencer sa collection."
 
