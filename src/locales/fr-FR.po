@@ -252,8 +252,8 @@ msgid "Halloween card"
 msgstr "Carte halloween"
 
 #: src/hooks/useTrans.ts
-msgid "Holographic card"
-msgstr "Carte holographique"
+msgid "Holo card"
+msgstr "Carte holo"
 
 #: src/components/CardModelSales
 msgid "Average sale"
@@ -1627,8 +1627,8 @@ msgid "Platinium"
 msgstr "Platine"
 
 #: src/hooks/useTrans.ts
-msgid "Holographic"
-msgstr "Holographique"
+msgid "Holo"
+msgstr "Holo"
 
 #: src/hooks/useTrans.ts
 msgid "Confirm deployment"

@@ -79,8 +79,8 @@ export const cardImage = recipe({
       halloween: {
         boxShadow: `0 0 12px ${rawTokens.color.halloween}80`,
       },
-      holographic: {
-        boxShadow: `0 0 12px ${rawTokens.color.holographic}80`,
+      holo: {
+        boxShadow: `0 0 12px ${rawTokens.color.holo}80`,
       },
     },
   },

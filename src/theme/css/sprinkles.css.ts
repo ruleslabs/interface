@@ -27,6 +27,7 @@ const flexAlignment = [
   'baseline',
   'space-around',
   'space-between',
+  'normal',
 ] as const
 
 // STYLES

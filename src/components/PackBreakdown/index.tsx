@@ -73,7 +73,7 @@ export default function PackBreakdown({
   const actionComponent = useMemo(() => {
     if (released && availableQuantity) {
       return (
-        <Column gap={12}>
+        <Column gap={16}>
           <InputStepCounter
             value={quantity}
             onIncrement={incrementQuantity}

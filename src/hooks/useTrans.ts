@@ -55,14 +55,14 @@ const scarcities: { [id in ScarcityName]: MessageDescriptor } = {
   common: msg`Common`,
   platinium: msg`Platinium`,
   halloween: msg`Halloween`,
-  holographic: msg`Holographic`,
+  holo: msg`Holo`,
 }
 
 const scarcitiesCards: { [id in ScarcityName]: MessageDescriptor } = {
   common: msg`Common card`,
   platinium: msg`Platinium card`,
   halloween: msg`Halloween card`,
-  holographic: msg`Holographic card`,
+  holo: msg`Holo card`,
 }
 
 /**

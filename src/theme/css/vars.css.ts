@@ -80,7 +80,7 @@ const themeContractValues = {
     common: null,
     platinium: null,
     halloween: null,
-    holographic: null,
+    holo: null,
   },
   border: {
     light: null,
@@ -235,7 +235,7 @@ export const rawTokens = {
     common: colors.vibrantPurple,
     platinium: colors.offWhite,
     halloween: colors.spookyOrange,
-    holographic: colors.mayaBlue,
+    holo: colors.mayaBlue,
   },
   border: {
     light: '1px solid rgba(0, 0, 0, 0.3)',
