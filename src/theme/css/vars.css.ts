@@ -18,6 +18,7 @@ const colors = {
   vibrantPurple: '#9F04DC',
   offWhite: '#e7e7e7',
   spookyOrange: '#af4027',
+  mayaBlue: '#56c8fe',
 }
 
 export const fontSizes = {
@@ -79,6 +80,7 @@ const themeContractValues = {
     common: null,
     platinium: null,
     halloween: null,
+    holographic: null,
   },
   border: {
     light: null,
@@ -233,6 +235,7 @@ export const rawTokens = {
     common: colors.vibrantPurple,
     platinium: colors.offWhite,
     halloween: colors.spookyOrange,
+    holographic: colors.mayaBlue,
   },
   border: {
     light: '1px solid rgba(0, 0, 0, 0.3)',

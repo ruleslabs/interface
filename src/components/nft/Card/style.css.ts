@@ -67,6 +67,11 @@ export const mediaContainer = recipe({
           boxShadow: `0 4px 12px ${rawTokens.color.halloween}80`,
         },
       },
+      holographic: {
+        ':hover': {
+          boxShadow: `0 4px 12px ${rawTokens.color.holographic}80`,
+        },
+      },
     },
   },
 })

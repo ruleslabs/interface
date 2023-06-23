@@ -19,6 +19,31 @@ import Link from 'src/components/Link'
 import Image from 'src/theme/components/Image'
 import { Badge } from 'src/types'
 
+const RULEDEX_QUERY = gql`
+  query Ruledex($season: Int!, $slug: String!) {
+    allCardModelsBySeason(season: $season) {
+      slug
+      uid
+      scarcity {
+        name
+      }
+      pictureUrl(derivative: "width=256")
+    }
+    user(slug: $slug) {
+      ownedCardModels {
+        serialNumbers
+        cardModel {
+          uid
+          scarcity {
+            name
+            maxLowSerial
+          }
+        }
+      }
+    }
+  }
+`
+
 const ScarcitySelectorWrapper = styled(Row)`
   gap: 42px;
   flex-wrap: wrap;
@@ -86,36 +111,6 @@ const CardModelId = styled(TYPE.body)`
   border-radius: 6px;
 `
 
-const ALL_CARD_MODELS_QUERY = gql`
-  query {
-    allCardModels {
-      slug
-      uid
-      scarcity {
-        name
-      }
-      pictureUrl(derivative: "width=512")
-    }
-  }
-`
-
-const USER_OWNED_CARD_MODELS_QUERY = gql`
-  query ($slug: String!) {
-    user(slug: $slug) {
-      ownedCardModels {
-        serialNumbers
-        cardModel {
-          uid
-          scarcity {
-            name
-            maxLowSerial
-          }
-        }
-      }
-    }
-  }
-`
-
 function UserRuledex() {
   // trans
   const trans = useTrans()
@@ -123,16 +118,13 @@ function UserRuledex() {
   // searched user
   const [user] = useSearchedUser()
 
-  // Query cards
-  const ownedCardModelsQuery = useQuery(USER_OWNED_CARD_MODELS_QUERY, {
-    variables: { slug: user?.slug },
+  // Query rulédex
+  const ruledexQuery = useQuery(RULEDEX_QUERY, {
+    variables: { slug: user?.slug, season: 1 },
     skip: !user?.slug,
   })
-  const ownedCardModels = ownedCardModelsQuery.data?.user.ownedCardModels ?? []
-
-  // Query card models
-  const allCardModelsQuery = useQuery(ALL_CARD_MODELS_QUERY)
-  const allCardModels = allCardModelsQuery.data?.allCardModels ?? []
+  const ownedCardModels = ruledexQuery.data?.user.ownedCardModels ?? []
+  const allCardModels = ruledexQuery.data?.allCardModelsBySeason ?? []
 
   // owned card models
   const cardModelsBadges = useMemo(

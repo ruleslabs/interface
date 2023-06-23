@@ -251,6 +251,10 @@ msgstr "Carte platine"
 msgid "Halloween card"
 msgstr "Carte halloween"
 
+#: src/hooks/useTrans.ts
+msgid "Holographic card"
+msgstr "Carte holographique"
+
 #: src/components/CardModelSales
 msgid "Average sale"
 msgstr "Vente moyenne"
@@ -1618,6 +1622,10 @@ msgstr "Confirmer la mise en vente"
 #: src/hooks/useTrans.ts
 msgid "Platinium"
 msgstr "Platine"
+
+#: src/hooks/useTrans.ts
+msgid "Holographic"
+msgstr "Holographique"
 
 #: src/hooks/useTrans.ts
 msgid "Confirm deployment"

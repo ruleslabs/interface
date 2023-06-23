@@ -86,7 +86,6 @@ const StyledClose = styled(Close)`
 const CardsStack = styled.div<{ $smallHeight?: number }>`
   img {
     position: absolute;
-    z-index: -1;
     height: 100%;
   }
 
@@ -163,7 +162,11 @@ export default function CardModel3D({
   const onStart = useCallback(() => setMoving(true), [])
 
   useEffect(() => {
-    api({ stackOpacity: +(!moving && revealed && !fullscreen) })
+    console.log(moving, revealed, fullscreen)
+    api({
+      stackOpacity: +(!moving && revealed && !fullscreen),
+      immediate: true,
+    })
   }, [moving])
 
   // on fullscreen

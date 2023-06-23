@@ -131,7 +131,9 @@ function CardModel() {
               <CardTransfersHistoryWrapper>
                 <CardModelTransfersHistory cardModelId={cardModel.id} />
               </CardTransfersHistoryWrapper>
-              <YoutubeEmbed embedId={cardModel.youtubePreviewId} style={{ minWidth: '100%' }} />
+              {cardModel.youtubePreviewId && (
+                <YoutubeEmbed embedId={cardModel.youtubePreviewId} style={{ minWidth: '100%' }} />
+              )}
             </Column>
           </Section>
         </>

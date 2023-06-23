@@ -266,7 +266,7 @@ export function WalletEvent({ eventKey }: WalletEventProps) {
       case constants.OldEventKeys.ACCOUNT_UPGRADED:
         return t`Wallet upgraded`
 
-      case constants.EventKeys.SIGNER_ESCAPE_TRIGGERED:
+      case constants.OldEventKeys.SIGNER_ESCAPE_TRIGGERED:
         return t`Password update triggered`
 
       case constants.EventKeys.SIGNER_ESCAPED:

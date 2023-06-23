@@ -156,7 +156,9 @@ function CardPage() {
               <CardTransfersHistoryWrapper>
                 <CardTransfersHistory tokenId={card.tokenId} />
               </CardTransfersHistoryWrapper>
-              <YoutubeEmbed embedId={card.cardModel.youtubePreviewId} style={{ minWidth: '100%' }} />
+              {card.cardModel.youtubePreviewId && (
+                <YoutubeEmbed embedId={card.cardModel.youtubePreviewId} style={{ minWidth: '100%' }} />
+              )}
             </Column>
           </Section>
 
