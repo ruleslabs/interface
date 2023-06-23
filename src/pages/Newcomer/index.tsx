@@ -25,6 +25,9 @@ const CARD_MODELS_SAMPLE_QUERY = gql`
     currentSeasonCardModelsSample {
       id
       pictureUrl(derivative: "width=512")
+      scarcity {
+        name
+      }
     }
   }
 `
@@ -48,7 +51,7 @@ function Newcomer() {
 
     return cardModels.map((cardModel) => (
       <Box key={cardModel.id} width={'full'}>
-        <Image src={cardModel.pictureUrl} display={'block'} width={'full'} borderRadius={'card'} />
+        <Image src={cardModel.pictureUrl} className={styles.cardImage({ scarcity: cardModel.scarcity.name })} />
       </Box>
     ))
   }, [cardModels])
