@@ -8,7 +8,7 @@ export const actionsContainer = style([
     display: 'flex',
     flexDirection: {
       default: 'row',
-      lg: 'column',
+      lg: 'column-reverse',
     },
   }),
 ])

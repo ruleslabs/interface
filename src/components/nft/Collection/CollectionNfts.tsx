@@ -21,7 +21,7 @@ export default function CollectionNfts({
   loading = false,
   ...props
 }: CollectionNftsProps) {
-  return loading ? (
+  return loading && !hasNext ? (
     <Box className={styles.assetsGrid}>
       <LoadingAssets />
     </Box>
