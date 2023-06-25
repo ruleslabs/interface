@@ -41,13 +41,14 @@ export default function PackOpeningCards({ cards, ...props }: PackOpeningCardsPr
         const card = cards[cardIndex]
 
         switch (card.cardModel.scarcity.name) {
-          case 'Common':
-          case 'Halloween':
+          case 'common':
+          case 'halloween':
             if (latestLoopSound !== Sound.PLATINIUM_FOCUS) loop(Sound.COMMON_FOCUS)
             fx(Sound.FX_COMMON)
             break
 
-          case 'Platinium':
+          case 'holo':
+          case 'platinium':
             loop(Sound.PLATINIUM_FOCUS)
             fx(Sound.FX_PLATINIUM)
             break
