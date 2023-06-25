@@ -154,19 +154,23 @@ export default function CheckoutForm({
           card: cardNumberElement,
         })
         .then(async (res: any) => {
-          if (!res?.paymentMethod?.id) throw { error: 'Invalid payment method', raw: res }
+          if (!res?.paymentMethod?.id) {
+            throw { error: 'Invalid payment method', raw: res }
+          }
 
           return validatePaymentMethod(res.paymentMethod.id).catch((err) => {
-            throw { error: err?.error?.message, raw: res }
+            throw { error: err?.error?.message, raw: err }
           })
         })
         .then(async (res: any) => {
-          if (!res?.paymentMethod) throw { failure: 'An error has occured with your payment method', raw: res }
+          if (!res?.paymentMethod) {
+            throw { failure: 'An error has occured with your payment method', raw: res }
+          }
 
           onConfirm()
 
           return confirmPaymentIntent(paymentIntent, res.paymentMethod).catch((err) => {
-            throw { failure: err, raw: res }
+            throw { failure: err, raw: err }
           })
         })
         .then((res: any) => {
@@ -175,7 +179,7 @@ export default function CheckoutForm({
           } else if (res?.paymentIntent?.next_action) {
             // Handle next action
             return stripe.handleCardAction(res.paymentIntent.client_secret).catch((err) => {
-              throw { failure: err, raw: res }
+              throw { failure: err, raw: err }
             })
           } else {
             // confirm payment
@@ -192,19 +196,17 @@ export default function CheckoutForm({
 
           // confirm payment after next action
           return confirmPaymentIntent(res.paymentIntent.id, res.paymentIntent.payment_method).catch((err) => {
-            throw { failure: err, raw: res }
+            throw { failure: err, raw: err }
           })
         })
         .then((res: any) => {
-          if (res?.paymentIntent?.status === 'succeeded') onSuccess()
-          else {
-            console.log(res)
+          if (res?.paymentIntent?.status === 'succeeded') {
+            onSuccess()
+          } else {
             throw { failure: res?.error?.message ?? 'Invalid confirmation response after card action', raw: res }
           }
         })
         .catch((err) => {
-          console.error(err)
-
           if (err?.error) {
             setError(err.error)
             setLoading(false)
