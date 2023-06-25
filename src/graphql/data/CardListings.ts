@@ -6,8 +6,8 @@ import { CardListing } from 'src/types'
 import {
   CardListingsFilterInput,
   CardListingsQuery,
+  CardListingsQueryVariables,
   CardListingsSortInput,
-  CardModelsQueryVariables,
   useCardListingsQuery,
   useListCardsMutation,
 } from './__generated__/types-and-hooks'
@@ -132,7 +132,7 @@ export interface CardListingsFetcherParams {
 
 export const LISTINGS_PAGE_SIZE = 32
 
-const defaultCardListingsFetcherParams: Omit<CardModelsQueryVariables, 'filter' | 'sort'> = {
+const defaultCardListingsFetcherParams: Omit<CardListingsQueryVariables, 'filter' | 'sort'> = {
   first: LISTINGS_PAGE_SIZE,
 }
 
@@ -151,7 +151,7 @@ export function useCardListings(params: CardListingsFetcherParams, skip?: boolea
     [data?.cardListings?.pageInfo?.endCursor, fetchMore]
   )
 
-  const assets: CardListing[] | undefined = useMemo(
+  const cardListings: CardListing[] | undefined = useMemo(
     () =>
       data?.cardListings?.edges?.map((queryCardListing) => {
         return formatCardListingQueryData(queryCardListing)
@@ -161,10 +161,10 @@ export function useCardListings(params: CardListingsFetcherParams, skip?: boolea
 
   return useMemo(() => {
     return {
-      data: assets,
+      data: cardListings,
       hasNext,
       loading,
       loadMore,
     }
-  }, [assets, hasNext, loadMore, loading])
+  }, [cardListings, hasNext, loadMore, loading])
 }

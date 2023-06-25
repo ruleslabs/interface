@@ -44,10 +44,10 @@ const USERS_EVENT_QUERY = gql`
   }
 `
 
-export function useMapUsersByAddress(users?: any) {
+export function useMapUsersByAddress(users: any[] = []) {
   return useMemo(
     () =>
-      ((users ?? []) as any[]).reduce<{ [address: string]: any }>((acc, user) => {
+      users.reduce<{ [address: string]: any }>((acc, user) => {
         acc[user.starknetWallet.address] = user
         return acc
       }, {}),

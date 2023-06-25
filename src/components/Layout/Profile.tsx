@@ -15,7 +15,6 @@ import { useDefaultAvatarIdFromUrl } from 'src/hooks/useDefaultAvatarUrls'
 import Avatar from 'src/components/Avatar'
 import { CertifiedBadge } from 'src/components/User/Badge'
 import UserRank from 'src/components/User/Rank'
-import { useCScoreRank } from 'src/hooks/useCScore'
 import { useAvatarEditModalToggle } from 'src/state/application/hooks'
 import * as Icons from 'src/theme/components/Icons'
 import useCurrentUser from 'src/hooks/useCurrentUser'
@@ -153,9 +152,6 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
   // pp edit modal
   const toggleAvatarEditModal = useAvatarEditModalToggle()
 
-  // cScore rank
-  const rank = useCScoreRank(user?.cScore ?? 0)
-
   // TODO: clean this ugly code bruh
   if (error) return <TYPE.body>User not found</TYPE.body>
   else if (!user || !userSlug) return null
@@ -183,7 +179,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
               <TYPE.body>{user.username}</TYPE.body>
 
               {user.profile.certified && <CertifiedBadge />}
-              <UserRank rank={rank} />
+              <UserRank rank={user.rank} />
             </RowCenter>
 
             <RowCenter gap={12}>

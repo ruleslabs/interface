@@ -43,6 +43,7 @@ export interface GenieCurrentUser {
   email: string
   boughtStarterPack: boolean
   cScore: number
+  rank: number
   unreadNotificationsCount: number
   retrievableEthers: Array<GenieRetrievableEthers>
   starknetWallet: GenieStarknetWallet

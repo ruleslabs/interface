@@ -32,7 +32,8 @@ const CERTIFIED_USERS_QUERY = gql`
     certifiedUsersOverview {
       slug
       username
-      cScore
+      cScore(season: 1)
+      rank(season: 1)
       profile {
         certified
         pictureUrl(derivative: "width=512")
@@ -48,7 +49,8 @@ const SEARCHED_USERS_QUERY = gql`
       searchedUsers {
         slug
         username
-        cScore
+        cScore(season: 1)
+        rank(season: 1)
         profile {
           pictureUrl(derivative: "width=512")
           fallbackUrl(derivative: "width=512")
@@ -64,11 +66,11 @@ interface CustomUsersRowProps {
   pictureUrl: string
   fallbackUrl: string
   certified: boolean
-  cScore: number
+  rank: number
 }
 
-function User({ username, pictureUrl, fallbackUrl, certified, cScore }: CustomUsersRowProps) {
-  const isTopCollector = useCScoreTopCollector(cScore)
+function User({ username, pictureUrl, fallbackUrl, certified, rank }: CustomUsersRowProps) {
+  const isTopCollector = useCScoreTopCollector(rank)
 
   return (
     <ColumnCenter gap={8}>
@@ -125,7 +127,7 @@ function Community() {
                     pictureUrl={user.profile.pictureUrl}
                     fallbackUrl={user.profile.fallbackUrl}
                     certified={user.profile.certified}
-                    cScore={user.cScore}
+                    rank={user.rank}
                   />
                 ))}
               </UsersRow>
@@ -142,7 +144,7 @@ function Community() {
                     pictureUrl={user.profile.pictureUrl}
                     fallbackUrl={user.profile.fallbackUrl}
                     certified={user.profile.certified}
-                    cScore={user.cScore}
+                    rank={user.rank}
                   />
                 ))}
               </UsersRow>

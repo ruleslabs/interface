@@ -12,7 +12,8 @@ gql`
       email
       slug
       boughtStarterPack
-      cScore
+      cScore(season: 1)
+      rank(season: 1)
       unreadNotificationsCount
       retrievableEthers {
         amount
@@ -75,6 +76,7 @@ export function formatCurrentUserQueryData(queryCurrentUser: NonNullable<Current
     email: queryCurrentUser.email,
     boughtStarterPack: queryCurrentUser.boughtStarterPack,
     cScore: queryCurrentUser.cScore,
+    rank: queryCurrentUser.rank,
     unreadNotificationsCount: queryCurrentUser.unreadNotificationsCount,
     hasTwoFactorAuthActivated: queryCurrentUser.hasTwoFactorAuthActivated,
     retrievableEthers: queryCurrentUser.retrievableEthers,
