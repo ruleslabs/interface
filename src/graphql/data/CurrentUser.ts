@@ -12,8 +12,8 @@ gql`
       email
       slug
       boughtStarterPack
-      cScore(season: 1)
-      rank(season: 1)
+      cScore
+      rank
       unreadNotificationsCount
       retrievableEthers {
         amount

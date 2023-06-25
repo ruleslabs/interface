@@ -32,8 +32,8 @@ const CERTIFIED_USERS_QUERY = gql`
     certifiedUsersOverview {
       slug
       username
-      cScore(season: 1)
-      rank(season: 1)
+      cScore
+      rank
       profile {
         certified
         pictureUrl(derivative: "width=512")
@@ -49,8 +49,8 @@ const SEARCHED_USERS_QUERY = gql`
       searchedUsers {
         slug
         username
-        cScore(season: 1)
-        rank(season: 1)
+        cScore
+        rank
         profile {
           pictureUrl(derivative: "width=512")
           fallbackUrl(derivative: "width=512")

@@ -12,8 +12,8 @@ const SEARCH_USER_MUTATION = gql`
       id
       username
       slug
-      cScore(season: 1)
-      rank(season: 1)
+      cScore
+      rank
       profile {
         pictureUrl(derivative: "width=320")
         fallbackUrl(derivative: "width=320")
