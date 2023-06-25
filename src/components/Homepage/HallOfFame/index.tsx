@@ -12,7 +12,7 @@ export default function HallOfFame() {
   const { currentUser } = useCurrentUser()
 
   // query offers data
-  const { data, loading } = useHallOfFame(1)
+  const { data, loading } = useHallOfFame()
   const users = data ?? []
 
   return (
