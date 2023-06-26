@@ -39,7 +39,6 @@ const PACKS_QUERY = gql`
       pictureUrl(derivative: "width=512")
       slug
       supply
-      soldout
     }
   }
 `
