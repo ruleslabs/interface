@@ -2,7 +2,7 @@ import JSBI from 'jsbi'
 import { useMemo, useState, useCallback, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { t, Trans } from '@lingui/macro'
-import { WeiAmount } from '@rulesorg/sdk-core'
+import { WeiAmount, addr } from '@rulesorg/sdk-core'
 import { ApolloError } from '@apollo/client'
 
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
@@ -105,7 +105,7 @@ export default function EtherRetrieveModal() {
       target: ethereumStarkgateContract.address,
       callData: ethereumStarkgateContract.interface.encodeFunctionData(fragment, [
         retrievableEther.amount,
-        retrievableEther.l1Recipient,
+        addr.checksum(retrievableEther.l1Recipient),
       ]),
     }))
 
