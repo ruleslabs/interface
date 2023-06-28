@@ -1,8 +1,7 @@
 import styled from 'styled-components/macro'
-import { t } from '@lingui/macro'
-import { useEffect, useState } from 'react'
+import { Trans, t } from '@lingui/macro'
+import { useCallback, useMemo, useState } from 'react'
 import { gql, useMutation } from '@apollo/client'
-import { ApolloError } from 'apollo-client'
 
 import { ModalHeader } from 'src/components/Modal'
 import ClassicModal, { ModalContent, ModalBody } from 'src/components/Modal/Classic'
@@ -10,11 +9,14 @@ import { useClaimLiveRewardModalToggle, useModalOpened } from 'src/state/applica
 import { ApplicationModal } from 'src/state/application/actions'
 import { TYPE } from 'src/styles/theme'
 import Column, { ColumnCenter } from 'src/components/Column'
-import Spinner from 'src/components/Spinner'
+import { PaginationSpinner } from 'src/components/Spinner'
 import useLocationQuery from 'src/hooks/useLocationQuery'
 
 import { ReactComponent as Checkmark } from 'src/images/checkmark.svg'
 import { ReactComponent as Close } from 'src/images/close.svg'
+import { PrimaryButton } from '../Button'
+import { Row } from 'src/theme/components/Flex'
+import CardBreakdown from '../MarketplaceModal/CardBreakdown'
 
 const StyledCheckmark = styled(Checkmark)`
   border-radius: 50%;
@@ -36,10 +38,6 @@ const StyledFail = styled(Close)`
   padding: 24px;
   margin: 0 auto;
   stroke: ${({ theme }) => theme.text1};
-`
-
-const StyledSpinner = styled(Spinner)`
-  margin: 0 auto;
 `
 
 const Title = styled(TYPE.large)`
@@ -66,11 +64,25 @@ const CLAIM_LIVE_REWARD = gql`
       user {
         username
       }
+      card {
+        serialNumber
+        cardModel {
+          pictureUrl(derivative: "width=256")
+          season
+          scarcity {
+            name
+          }
+          artistName
+        }
+      }
     }
   }
 `
 
 export default function ClaimLiveRewardModal() {
+  const [user, setUser] = useState<any | null>(null)
+  const [card, setCard] = useState<any | null>(null)
+
   // router
   const query = useLocationQuery()
   const userId = query.get('userId')
@@ -80,58 +92,69 @@ export default function ClaimLiveRewardModal() {
   const toggleClaimLiveRewardModal = useClaimLiveRewardModalToggle()
   const isOpen = useModalOpened(ApplicationModal.CLAIM_LIVE_REWARD)
 
-  // user
-  const [user, setUser] = useState<any | null>(null)
-
   // graphql mutations
-  const [claimLiveRewardMutation] = useMutation(CLAIM_LIVE_REWARD)
-
-  // errors
-  const [error, setError] = useState<string | null>(null)
+  const [claimLiveRewardMutation, { loading, error }] = useMutation(CLAIM_LIVE_REWARD)
 
   // claim live reward
-  const [claimed, setClaimed] = useState(false)
-  useEffect(() => {
-    if (claimed || !isOpen) return
-    setClaimed(true)
+  const claim = useCallback(async () => {
+    const { data } = await claimLiveRewardMutation({ variables: { liveRewardId, userId } })
 
-    claimLiveRewardMutation({ variables: { liveRewardId, userId } })
-      .then((res: any) => {
-        setUser(res?.data?.claimLiveReward?.user ?? null)
-      })
-      .catch((claimLiveRewardError: ApolloError) => {
-        const error = claimLiveRewardError?.graphQLErrors?.[0]
-        if (error) setError(error.message)
-        else setError('Unknown error')
-      })
-  }, [claimLiveRewardMutation, userId, liveRewardId, claimed, isOpen])
+    setUser(data?.claimLiveReward?.user ?? null)
+    setCard(data?.claimLiveReward?.card ?? null)
+  }, [claimLiveRewardMutation, userId, liveRewardId])
+
+  const modalContent = useMemo(() => {
+    if (error) {
+      return (
+        <ColumnCenter gap={32}>
+          <StyledFail />
+
+          <ErrorMessage>{JSON.stringify(error)}</ErrorMessage>
+        </ColumnCenter>
+      )
+    }
+
+    if (loading) {
+      return <PaginationSpinner loading />
+    }
+
+    if (user && card) {
+      return (
+        <ColumnCenter gap={32}>
+          <Column gap={24}>
+            <StyledCheckmark />
+
+            <ColumnCenter gap={8}>
+              <Title>Live reward sent to {user.username}</Title>
+            </ColumnCenter>
+
+            <CardBreakdown
+              pictureUrl={card.cardModel.pictureUrl}
+              season={card.cardModel.season}
+              artistName={card.cardModel.artistName}
+              scarcityName={card.cardModel.scarcity.name}
+              serialNumbers={[card.serialNumber]}
+            />
+          </Column>
+        </ColumnCenter>
+      )
+    }
+
+    return (
+      <Row justifyContent={'center'}>
+        <PrimaryButton onClick={claim} width={'256'} large>
+          <Trans>Confirm</Trans>
+        </PrimaryButton>
+      </Row>
+    )
+  }, [error, loading, user, card, claim])
 
   return (
     <ClassicModal onDismiss={toggleClaimLiveRewardModal} isOpen={isOpen}>
       <ModalContent>
         <ModalHeader onDismiss={toggleClaimLiveRewardModal} title={t`Live reward | Claim`} />
 
-        <ModalBody>
-          <ColumnCenter gap={32}>
-            <Column gap={24}>
-              {user ? <StyledCheckmark /> : error ? <StyledFail /> : <StyledSpinner fill="primary1" />}
-
-              {user ? (
-                <ColumnCenter gap={8}>
-                  <Title>Live reward sent to {user.username}</Title>
-                </ColumnCenter>
-              ) : (
-                error && (
-                  <ColumnCenter gap={8}>
-                    <Title>Your live reward claim</Title>
-
-                    <ErrorMessage>{error}</ErrorMessage>
-                  </ColumnCenter>
-                )
-              )}
-            </Column>
-          </ColumnCenter>
-        </ModalBody>
+        <ModalBody>{modalContent}</ModalBody>
       </ModalContent>
     </ClassicModal>
   )

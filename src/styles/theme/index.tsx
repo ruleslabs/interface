@@ -113,6 +113,7 @@ export function colors(darkMode: boolean) {
     platinium: '#E7E7E7',
     halloween: '#AF4027',
     holo: '#56c8fe',
+    live: '#1d2357',
 
     lowSerial: '#44DD53',
 

@@ -255,6 +255,10 @@ msgstr "Carte halloween"
 msgid "Holo card"
 msgstr "Carte holo"
 
+#: src/hooks/useTrans.ts
+msgid "Live card"
+msgstr "Carte live"
+
 #: src/components/CardModelSales
 msgid "Average sale"
 msgstr "Vente moyenne"
@@ -1649,6 +1653,10 @@ msgstr "Confrimer le transfert"
 #: src/hooks/useTrans.ts
 msgid "Common"
 msgstr "Commune"
+
+#: src/hooks/useTrans.ts
+msgid "Live"
+msgstr "Live"
 
 
 

@@ -72,6 +72,11 @@ export const mediaContainer = recipe({
           boxShadow: `0 4px 12px ${rawTokens.color.holo}80`,
         },
       },
+      live: {
+        ':hover': {
+          boxShadow: `0 4px 12px ${rawTokens.color.live}80`,
+        },
+      },
     },
   },
 })

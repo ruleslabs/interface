@@ -19,6 +19,7 @@ const colors = {
   offWhite: '#e7e7e7',
   spookyOrange: '#af4027',
   mayaBlue: '#56c8fe',
+  regalBlue: '#1d2357',
 }
 
 export const fontSizes = {
@@ -81,6 +82,7 @@ const themeContractValues = {
     platinium: null,
     halloween: null,
     holo: null,
+    live: null,
   },
   border: {
     light: null,
@@ -236,6 +238,7 @@ export const rawTokens = {
     platinium: colors.offWhite,
     halloween: colors.spookyOrange,
     holo: colors.mayaBlue,
+    live: colors.regalBlue,
   },
   border: {
     light: '1px solid rgba(0, 0, 0, 0.3)',
