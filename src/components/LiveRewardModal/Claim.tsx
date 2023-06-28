@@ -8,14 +8,14 @@ import ClassicModal, { ModalContent, ModalBody } from 'src/components/Modal/Clas
 import { useClaimLiveRewardModalToggle, useModalOpened } from 'src/state/application/hooks'
 import { ApplicationModal } from 'src/state/application/actions'
 import { TYPE } from 'src/styles/theme'
-import Column, { ColumnCenter } from 'src/components/Column'
+import { ColumnCenter } from 'src/components/Column'
 import { PaginationSpinner } from 'src/components/Spinner'
 import useLocationQuery from 'src/hooks/useLocationQuery'
 
 import { ReactComponent as Checkmark } from 'src/images/checkmark.svg'
 import { ReactComponent as Close } from 'src/images/close.svg'
 import { PrimaryButton } from '../Button'
-import { Row } from 'src/theme/components/Flex'
+import { Column, Row } from 'src/theme/components/Flex'
 import CardBreakdown from '../MarketplaceModal/CardBreakdown'
 
 const StyledCheckmark = styled(Checkmark)`
@@ -121,11 +121,13 @@ export default function ClaimLiveRewardModal() {
     if (user && card) {
       return (
         <ColumnCenter gap={32}>
-          <Column gap={24}>
+          <Column gap={'24'} width={'full'}>
             <StyledCheckmark />
 
             <ColumnCenter gap={8}>
-              <Title>Live reward sent to {user.username}</Title>
+              <Title>
+                <Trans>Live reward sent to {user.username}</Trans>
+              </Title>
             </ColumnCenter>
 
             <CardBreakdown

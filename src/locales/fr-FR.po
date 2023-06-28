@@ -1857,3 +1857,13 @@ msgstr "Alphabétique A-Z"
 #: src/pages/user/[username]/cards.tsx
 msgid "Alphabetical Z-A"
 msgstr "Alphabétique Z-A"
+
+
+
+
+
+
+
+#: src/components/LiveRewardModal/Claim.tsx
+msgid "Live reward sent to {0}"
+msgstr "Récompense envoyée à {0}"
