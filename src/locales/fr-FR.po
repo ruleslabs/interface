@@ -1498,8 +1498,8 @@ msgid "Purchased packs"
 msgstr "Packs achetés"
 
 #: src/components/MarketplaceModal/CardBreakdown.tsx
-msgid "Any serial"
-msgstr "Any serial"
+msgid "Random serial"
+msgstr "Serial aléatoire"
 
 #: src/components/LiveRewardDetailsModal/index.tsx
 msgid "REWARD"

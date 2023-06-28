@@ -8,6 +8,9 @@ import { RowCenter } from 'src/components/Row'
 import { SecondaryButton, PrimaryButton } from 'src/components/Button'
 import { LiveReward } from '.'
 import { useLiveRewardDetailsModalToggle, useLiveRewardTicketModalToggle } from 'src/state/application/hooks'
+import Box from 'src/theme/components/Box'
+import * as styles from './LiveReward.css'
+import Image from 'src/theme/components/Image'
 
 const StyledLiveRewardRow = styled(ColumnCenter)<{ closed: boolean }>`
   width: 100%;
@@ -28,11 +31,6 @@ const StyledLiveRewardRow = styled(ColumnCenter)<{ closed: boolean }>`
         box-shadow: 0 0 16px 10px ${theme.primary1}40;
       `}
 
-  img {
-    aspect-ratio: 3 / 1;
-    object-fit: cover;
-  }
-
   & > * {
     width: 100%;
   }
@@ -41,6 +39,7 @@ const StyledLiveRewardRow = styled(ColumnCenter)<{ closed: boolean }>`
 const LiveRewardButtonsWrapper = styled(RowCenter)`
   gap: 32px;
   width: fit-content;
+  margin-top: 16px;
 
   & > * {
     min-width: 150px;
@@ -96,7 +95,7 @@ export interface LiveRewardRowProps {
   onSelected: (liveReward: LiveReward) => void
 }
 
-export default function LiveRewardRow({ liveReward, onSelected }: LiveRewardRowProps) {
+export default function LiveRewardComponent({ liveReward, onSelected }: LiveRewardRowProps) {
   // modal
   const toggleLiveRewardDetailsModal = useLiveRewardDetailsModalToggle()
   const toggleLiveRewardTicketModal = useLiveRewardTicketModalToggle()
@@ -125,26 +124,26 @@ export default function LiveRewardRow({ liveReward, onSelected }: LiveRewardRowP
   }, [onSelected, JSON.stringify(liveReward)])
 
   return (
-    <>
-      <StyledLiveRewardRow closed={closed}>
-        <img src={liveReward.pictureUrl} />
+    <StyledLiveRewardRow closed={closed}>
+      <Box className={styles.bannerContainer}>
+        <Image src={liveReward.pictureUrl} className={styles.banner} />
+      </Box>
 
-        <LiveRewardButtonsWrapper>
-          <PrimaryButton onClick={onClaim} disabled={!liveReward.eligible || !!liveReward.claimed}>
-            <Trans>Claim</Trans>
-          </PrimaryButton>
+      <LiveRewardButtonsWrapper>
+        <PrimaryButton onClick={onClaim} disabled={!liveReward.eligible || !!liveReward.claimed}>
+          <Trans>Claim</Trans>
+        </PrimaryButton>
 
-          <SecondaryButton onClick={onDetails}>
-            <Trans>See more</Trans>
-          </SecondaryButton>
-        </LiveRewardButtonsWrapper>
+        <SecondaryButton onClick={onDetails}>
+          <Trans>See more</Trans>
+        </SecondaryButton>
+      </LiveRewardButtonsWrapper>
 
-        <ProgressBar
-          value={(liveReward.claimedSlotsCount / liveReward.totalSlotsCount) * 100}
-          leftText={`${liveReward.claimedSlotsCount} / ${liveReward.totalSlotsCount}`}
-          rightText={statusText}
-        />
-      </StyledLiveRewardRow>
-    </>
+      <ProgressBar
+        value={(liveReward.claimedSlotsCount / liveReward.totalSlotsCount) * 100}
+        leftText={`${liveReward.claimedSlotsCount} / ${liveReward.totalSlotsCount}`}
+        rightText={statusText}
+      />
+    </StyledLiveRewardRow>
   )
 }

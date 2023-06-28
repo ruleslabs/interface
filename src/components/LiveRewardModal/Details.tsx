@@ -6,7 +6,7 @@ import ClassicModal, { ModalContent, ModalBody } from 'src/components/Modal/Clas
 import { useLiveRewardDetailsModalToggle, useModalOpened } from 'src/state/application/hooks'
 import { ApplicationModal } from 'src/state/application/actions'
 import { TYPE } from 'src/styles/theme'
-import { LiveReward } from 'src/components/Settings/LiveReward'
+import { LiveReward } from 'src/components/Settings/LiveRewards'
 import Column from 'src/components/Column'
 import { RowCenter } from 'src/components/Row'
 import useFormatedDate from 'src/hooks/useFormatedDate'
@@ -50,11 +50,11 @@ interface LiveRewardDetailsModalProps {
 }
 
 export default function LiveRewardDetailsModal({ liveReward }: LiveRewardDetailsModalProps) {
-  const toggleLiveRewardDetailsModal = useLiveRewardDetailsModalToggle()
-  const isOpen = useModalOpened(ApplicationModal.LIVE_REWARD_DETAILS)
-
   // trans
   const trans = useTrans()
+
+  const toggleLiveRewardDetailsModal = useLiveRewardDetailsModalToggle()
+  const isOpen = useModalOpened(ApplicationModal.LIVE_REWARD_DETAILS)
 
   // date
   const formatedDate = useFormatedDate(liveReward?.date)
@@ -92,7 +92,7 @@ export default function LiveRewardDetailsModal({ liveReward }: LiveRewardDetails
                 .filter(({ key }) => !!ELIGIBILITY_DESCRIPTION[key])
                 .map(({ key, value }) => (
                   <RowCenter key={key} gap={8}>
-                    <TYPE.subtitle>{ELIGIBILITY_DESCRIPTION[key]}</TYPE.subtitle>
+                    <TYPE.subtitle>{trans('liveRewardEligibility', key)}</TYPE.subtitle>
                     <TYPE.subtitle>-</TYPE.subtitle>
                     <TYPE.medium>x{value}</TYPE.medium>
                   </RowCenter>

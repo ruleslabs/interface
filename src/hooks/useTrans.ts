@@ -5,7 +5,14 @@ import { msg } from '@lingui/macro'
 import { ScarcityName } from '@rulesorg/sdk-core'
 import { StxAction } from 'src/types/starknetTx'
 
-type Prefix = 'liveReward' | 'scarcity' | 'stxActionDesc' | 'stxActionSuccess' | 'stxActionConfirm' | 'scarcityCard'
+type Prefix =
+  | 'liveReward'
+  | 'scarcity'
+  | 'stxActionDesc'
+  | 'stxActionSuccess'
+  | 'stxActionConfirm'
+  | 'scarcityCard'
+  | 'liveRewardEligibility'
 
 const prefix = (obj: Messages, prefix: Prefix) =>
   Object.keys(obj).reduce<Messages>((acc, e) => {
@@ -71,6 +78,10 @@ const scarcitiesCards: { [id in ScarcityName]: MessageDescriptor } = {
 
 const liveReward: Messages = {}
 
+const liveRewardEligibility: Messages = {
+  packOrdersCount: msg`Purchased packs`,
+}
+
 /**
  * Merge
  */
@@ -84,6 +95,7 @@ const messages: Messages = {
   ...prefix(scarcitiesCards, 'scarcityCard'),
 
   ...prefix(liveReward, 'liveReward'),
+  ...prefix(liveRewardEligibility, 'liveRewardEligibility'),
 }
 
 /**

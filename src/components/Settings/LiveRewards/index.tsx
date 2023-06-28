@@ -5,7 +5,7 @@ import { Plural, Trans } from '@lingui/macro'
 import Column from 'src/components/Column'
 import { TYPE } from 'src/styles/theme'
 import { PaginationSpinner } from 'src/components/Spinner'
-import LiveRewardRow from './LiveRewardRow'
+import LiveReward from './LiveReward'
 import LiveRewardDetailsModal from 'src/components/LiveRewardModal/Details'
 import LiveRewardTicketModal from 'src/components/LiveRewardModal/Ticket'
 
@@ -14,7 +14,7 @@ const GET_ALL_LIVE_EVENTS = gql`
     allLiveRewards {
       id
       displayName
-      pictureUrl(derivative: "width=1568")
+      pictureUrl(derivative: "width=1500")
       date
       location
       displayName
@@ -98,9 +98,9 @@ export default function LiveRewards() {
             )}
           </TYPE.body>
 
-          <Column gap={16}>
+          <Column gap={48}>
             {liveRewards.map((liveReward, index) => (
-              <LiveRewardRow key={index} liveReward={liveReward} onSelected={setSelectedLiveReward} />
+              <LiveReward key={index} liveReward={liveReward} onSelected={setSelectedLiveReward} />
             ))}
           </Column>
         </>

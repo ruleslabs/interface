@@ -53,7 +53,7 @@ export default function CardBreakdown({
             serialNumbers.map((serialNumber) => <Tag key={serialNumber}>#{serialNumber}</Tag>)
           ) : (
             <Tag>
-              <Trans>Any serial</Trans>
+              <Trans>Random serial</Trans>
             </Tag>
           )}
         </SerialNumbersWrapper>
