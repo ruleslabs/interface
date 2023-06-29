@@ -148,7 +148,7 @@ export default function StarknetSigner({
       return <DeploymentNeeded />
     }
 
-    if (needsSignerEscape && !skipSignin) {
+    if (needsSignerEscape && !skipSignin && !allowUndeployed) {
       return <SignerEscape />
     }
 
