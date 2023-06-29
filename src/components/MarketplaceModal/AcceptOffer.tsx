@@ -32,6 +32,7 @@ const CARDS_QUERY = gql`
         user {
           starknetWallet {
             currentPublicKey
+            deployed
           }
         }
       }
@@ -127,6 +128,7 @@ export default function AcceptOfferModal({ tokenIds }: AcceptOfferModalProps) {
       },
       ...cards.map((card) => {
         const offererPublicKey = card.owner.user?.starknetWallet?.currentPublicKey
+        const isOwnerDeployed = card.owner.user?.starknetWallet?.deployed ?? true
 
         return card.voucherSigningData
           ? rulesSdk.getVoucherReedemAndOrderFulfillCall(
@@ -138,7 +140,7 @@ export default function AcceptOfferModal({ tokenIds }: AcceptOfferModalProps) {
               card.voucherSigningData.signature,
               card.listing.orderSigningData.salt,
               card.listing.orderSigningData.signature,
-              offererPublicKey ? getWalletConstructorCallData(offererPublicKey) : undefined
+              offererPublicKey && !isOwnerDeployed ? getWalletConstructorCallData(offererPublicKey) : undefined
             )
           : rulesSdk.getOrderFulfillCall(
               card.owner.starknetAddress,

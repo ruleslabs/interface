@@ -190,7 +190,6 @@ export default function CheckoutForm({
         .then((res: any) => {
           if (res?.paymentIntent?.error) throw { failure: res.paymentIntent.error?.message, raw: res }
           if (!res?.paymentIntent || !res.paymentIntent.payment_method) {
-            console.log(res)
             throw { failure: res?.error?.message ?? 'Invalid card action response', raw: res }
           }
 

@@ -162,7 +162,6 @@ export default function CardModel3D({
   const onStart = useCallback(() => setMoving(true), [])
 
   useEffect(() => {
-    console.log(moving, revealed, fullscreen)
     api({
       stackOpacity: +(!moving && revealed && !fullscreen),
       immediate: true,
