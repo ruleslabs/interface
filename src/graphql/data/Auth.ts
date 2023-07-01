@@ -46,6 +46,7 @@ gql`
     $rulesPrivateKey: RulesPrivateKeyAttributes!
     $emailVerificationCode: String!
     $acceptCommercialEmails: Boolean!
+    $newcomer: Boolean!
   ) {
     signUp(
       input: {
@@ -57,6 +58,7 @@ gql`
         rulesPrivateKey: $rulesPrivateKey
         emailVerificationCode: $emailVerificationCode
         acceptCommercialEmails: $acceptCommercialEmails
+        newcomer: $newcomer
       }
     ) {
       accessToken
