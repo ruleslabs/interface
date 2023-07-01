@@ -1867,3 +1867,33 @@ msgstr "Alphabétique Z-A"
 #: src/components/LiveRewardModal/Claim.tsx
 msgid "Live reward sent to {0}"
 msgstr "Récompense envoyée à {0}"
+
+
+
+
+
+#: src/components/PackBreakdown/index.tsx
+msgid "Not in sale"
+msgstr "Pas en vente"
+
+
+
+
+
+
+
+#: src/pages/Referal/index.tsx
+msgid "A Rookie pack offered if you buy a starter pack to start your collection"
+msgstr "Un pack rookie offert si tu achètes un starter pack pour commencer ta collection"
+
+#: src/pages/Settings/Referal.tsx
+msgid "Invite your friends on Rules and win a pack"
+msgstr "Invite tes amis sur Rules et gagne un pack"
+
+#: src/pages/Settings/Referal.tsx
+msgid "Share your referal link with your friends and receive a rookie pack for each invitee who buy a pack"
+msgstr "Partage ton lien de parrainage avec tes amis et reçoit un pack rookie pour chaque personne qui achète un pack"
+
+#: src/pages/Referal/index.tsx
+msgid "{0} offers you a pack of cards !"
+msgstr "{0} t'offre un pack de cartes !"

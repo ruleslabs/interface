@@ -25,13 +25,15 @@ const PACKS_QUERY = gql`
       nodes {
         pictureUrl(derivative: "width=512")
         slug
-        supply
-        soldout
         ... on QuantityLimitedPack {
           releaseDate
+          supply
+          soldout
         }
         ... on TimeLimitedPack {
           releaseDate
+          supply
+          soldout
         }
       }
     }

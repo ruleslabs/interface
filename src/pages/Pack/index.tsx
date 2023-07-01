@@ -61,15 +61,11 @@ const PACK_QUERY = gql`
   query ($packSlug: String!) {
     pack(slug: $packSlug) {
       id
-      availableQuantity
       displayName
       description
-      price
       cardsPerPack
       pictureUrl(derivative: "width=512")
-      supply
       season
-      soldout
       cardModelsOverview {
         slug
         pictureUrl(derivative: "width=512")
@@ -79,11 +75,25 @@ const PACK_QUERY = gql`
         }
         artistName
       }
+      ... on StarterPack {
+        availableQuantity
+        supply
+        soldout
+        price
+      }
       ... on QuantityLimitedPack {
         releaseDate
+        availableQuantity
+        supply
+        soldout
+        price
       }
       ... on TimeLimitedPack {
         releaseDate
+        availableQuantity
+        supply
+        soldout
+        price
       }
     }
   }

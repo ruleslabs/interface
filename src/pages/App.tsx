@@ -33,6 +33,7 @@ import Offers from './Card/Offers'
 
 import Newcomer from './Newcomer'
 import Onboard from './Onboard'
+import Referal from './Referal'
 
 export default function App() {
   return (
@@ -70,6 +71,7 @@ export default function App() {
 
       <Route path={'onboard'} element={Onboard.withLayout()} />
       <Route path={'newcomer'} element={Newcomer.withLayout()} />
+      <Route path={'r/:referentSlug'} element={Referal.withLayout()} />
     </Routes>
   )
 }

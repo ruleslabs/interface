@@ -21,10 +21,10 @@ interface PackBreakdownProps {
   id: string
   season: number
   cardsPerPack: number
-  price: number
+  price?: number
   releaseDate?: Date
-  availableQuantity: number
-  soldout: boolean
+  availableQuantity?: number
+  soldout?: boolean
   onSuccessfulPackPurchase: (boughtQuantity: number) => void
 }
 
@@ -71,6 +71,14 @@ export default function PackBreakdown({
   }, [availableQuantity, quantity, setQuantity])
 
   const actionComponent = useMemo(() => {
+    if (!price) {
+      return (
+        <Placeholder>
+          <Trans>Not in sale</Trans>
+        </Placeholder>
+      )
+    }
+
     if (released && availableQuantity) {
       return (
         <Column gap={16}>
@@ -139,13 +147,15 @@ export default function PackBreakdown({
         {actionComponent}
       </Column>
 
-      <PackPurchaseModal
-        price={price}
-        quantity={quantity}
-        onSuccessfulPackPurchase={onSuccessfulPackPurchase}
-        packId={id}
-        packName={name}
-      />
+      {price && (
+        <PackPurchaseModal
+          price={price}
+          quantity={quantity}
+          onSuccessfulPackPurchase={onSuccessfulPackPurchase}
+          packId={id}
+          packName={name}
+        />
+      )}
     </>
   )
 }

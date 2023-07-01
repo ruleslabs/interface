@@ -1,24 +1,24 @@
 import { useCallback, useMemo } from 'react'
 import { gql, useQuery } from '@apollo/client'
+import { Trans } from '@lingui/macro'
+import ms from 'ms.macro'
 
 import Image from 'src/theme/components/Image'
 import Box from 'src/theme/components/Box'
-import ms from 'ms.macro'
 import { PaginationSpinner } from 'src/components/Spinner'
 import Carousel from 'src/components/Carousel'
 import EmptyLayout from 'src/components/Layout/Empty'
 import * as styles from './style.css'
 import * as Text from 'src/theme/components/Text'
-
-import { ReactComponent as Logo } from 'src/images/logo.svg'
-import { PrimaryButton } from 'src/components/Button'
-import { Trans } from '@lingui/macro'
 import { Column } from 'src/theme/components/Flex'
 import useWindowSize from 'src/hooks/useWindowSize'
 import { useAuthModalToggle } from 'src/state/application/hooks'
 import { useSetAuthMode } from 'src/state/auth/hooks'
 import { AuthMode } from 'src/state/auth/actions'
 import AuthModal from 'src/components/AuthModal'
+import { PrimaryButton } from 'src/components/Button'
+
+import { ReactComponent as Logo } from 'src/images/logo.svg'
 
 const CARD_MODELS_SAMPLE_QUERY = gql`
   query {
