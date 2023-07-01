@@ -8,7 +8,7 @@ import { useModalOpened, useStarknetAccountPrivateKeyModalToggle } from 'src/sta
 import { ApplicationModal } from 'src/state/application/actions'
 import Column from 'src/components/Column'
 import { ErrorCard } from 'src/components/Card'
-import LongHex from 'src/components/Text/LongHex'
+import LongString from 'src/components/Text/LongString'
 import PrivateKeyDecipherForm from 'src/components/StarknetSigner/PrivateKeyDecipherForm'
 
 const PrivateKeyWarning = styled(ErrorCard)`
@@ -55,7 +55,7 @@ export default function StarknetAccountPrivateKeyModal() {
                 </Trans>
               </PrivateKeyWarning>
 
-              <LongHex value={privateKey} />
+              <LongString value={privateKey} copiable />
             </Column>
           ) : (
             <PrivateKeyDecipherForm onPrivateKeyDeciphered={handlePrivateKey} />

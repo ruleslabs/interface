@@ -14,6 +14,7 @@ import { ReactComponent as ShieldIcon } from 'src/images/shield.svg'
 import { ReactComponent as SessionsIcon } from 'src/images/sessions.svg'
 import { ReactComponent as StarknetIcon } from 'src/images/starknet.svg'
 import { ReactComponent as TicketIcon } from 'src/images/ticket.svg'
+import { ReactComponent as PresentIcon } from 'src/images/present.svg'
 
 const StyledSection = styled(Section)`
   margin-top: 64px;
@@ -82,6 +83,11 @@ const categories = [
     name: 'Profile',
     slug: 'profile',
     icon: <UserIcon />,
+  },
+  {
+    name: 'Invite friends',
+    slug: 'referal',
+    icon: <PresentIcon />,
   },
   {
     name: 'Security',

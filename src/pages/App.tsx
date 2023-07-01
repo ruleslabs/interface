@@ -16,6 +16,7 @@ import UserPacks from './User/Packs'
 import UserProfile from './User'
 import UserCards from './User/Cards'
 
+import ReferalSettings from './Settings/Referal'
 import EthereumSettings from './Settings/Ethereum'
 import LiveEventsSettings from './Settings/LiveEvents'
 import ProfileSettings from './Settings/Profile'
@@ -58,6 +59,7 @@ export default function App() {
       <Route path={'settings/security'} element={SecuritySettings.withLayout()} />
       <Route path={'settings/sessions'} element={SessionsSettings.withLayout()} />
       <Route path={'settings/starknet'} element={StarknetSettings.withLayout()} />
+      <Route path={'settings/referal'} element={ReferalSettings.withLayout()} />
 
       <Route path={'pack/:packSlug'} element={Pack.withLayout()} />
       <Route path={'pack/:packSlug/open'} element={PackOpening.withLayout()} />

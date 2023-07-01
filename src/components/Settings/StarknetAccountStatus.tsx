@@ -3,7 +3,7 @@ import { Trans, t } from '@lingui/macro'
 
 import Column from 'src/components/Column'
 import { PrimaryButton, SecondaryButton } from '../Button'
-import LongHex from 'src/components/Text/LongHex'
+import LongString from 'src/components/Text/LongString'
 import Link from 'src/components/Link'
 import Row from 'src/components/Row'
 import Subtitle from 'src/components/Text/Subtitle'
@@ -41,7 +41,7 @@ export default function StarknetAccountStatus() {
     <>
       <Column gap={12}>
         <Subtitle value={t`Wallet address`} />
-        <LongHex value={address} />
+        <LongString value={address} copiable />
 
         <ButtonsWrapper>
           <Link

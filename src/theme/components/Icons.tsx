@@ -110,3 +110,29 @@ export const ExternalLink = (props: SVGProps) => (
     />
   </svg>
 )
+
+export const Copy = (props: SVGProps) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55" stroke="currentColor" fill="currentColor" {...props}>
+    <rect x="2.5" y="12.5" width="40" height="40" strokeLinecap="round" strokeLinejoin="round" strokeWidth="5" />
+    <polyline
+      points="52.5 42.5 52.5 2.5 12.5 2.5"
+      fill="none"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="5"
+    />
+  </svg>
+)
+
+export const Copied = (props: SVGProps) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55" stroke="currentColor" fill="currentColor" {...props}>
+    <path d="M42.5,10H2.5A2.5,2.5,0,0,0,0,12.5v40A2.5,2.5,0,0,0,2.5,55h40A2.5,2.5,0,0,0,45,52.5v-40A2.5,2.5,0,0,0,42.5,10ZM36.8,27.8l-15,15a2.7,2.7,0,0,1-3.6,0l-10-10a2.7,2.7,0,0,1,0-3.6,2.7,2.7,0,0,1,3.6,0L20,37.5,33.2,24.2a2.7,2.7,0,0,1,3.6,0A2.5,2.5,0,0,1,36.8,27.8Z" />
+    <polyline
+      points="52.5 42.5 52.5 2.5 12.5 2.5"
+      fill="none"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="5"
+    />
+  </svg>
+)

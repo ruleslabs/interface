@@ -19,7 +19,7 @@ import Link from 'src/components/Link'
 import { useRetrieveEtherMutation } from 'src/state/wallet/hooks'
 import { useModalOpened, useRetrieveEthersModalToggle } from 'src/state/application/hooks'
 import { ApplicationModal } from 'src/state/application/actions'
-import LongHex from 'src/components/Text/LongHex'
+import LongString from 'src/components/Text/LongString'
 import Subtitle from 'src/components/Text/Subtitle'
 import Divider from 'src/components/Divider'
 
@@ -161,7 +161,7 @@ export default function EtherRetrieveModal() {
                     <Subtitle value={t`Recipient`} />
 
                     <Column gap={8}>
-                      <LongHex value={retrievableEther.l1Recipient} />
+                      <LongString value={retrievableEther.l1Recipient} copiable />
 
                       <Link
                         target="_blank"
