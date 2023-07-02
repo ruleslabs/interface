@@ -2,7 +2,6 @@ import { useState, useCallback, useRef, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import GoogleReCAPTCHA from 'react-google-recaptcha'
-import { useLocation } from 'react-router-dom'
 
 import { ModalHeader } from 'src/components/Modal'
 import { ModalBody } from 'src/components/Modal/Classic'
@@ -34,11 +33,16 @@ const ResendCode = styled(TYPE.subtitle)`
   cursor: pointer;
 `
 
-export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFormProps) {
-  // newcomer
-  const { pathname } = useLocation()
-  const newcomer = useMemo(() => !!pathname.match(/^\/newcomer($|\/.*)/), [pathname])
+interface EmailVerificationFormProps extends AuthFormProps {
+  newcomer: boolean
+  referentSlug?: string
+}
 
+export default function EmailVerificationForm({
+  onSuccessfulConnection,
+  newcomer,
+  referentSlug,
+}: EmailVerificationFormProps) {
   // Wallet
   const createWallet = useCreateWallet()
 
@@ -92,6 +96,7 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFo
             emailVerificationCode: code,
             acceptCommercialEmails,
             newcomer,
+            referentSlug,
           },
         })
 
@@ -101,7 +106,17 @@ export default function EmailVerificationForm({ onSuccessfulConnection }: AuthFo
         return
       }
     },
-    [password, createWallet, signUpMutation, email, username, acceptCommercialEmails, onSuccessfulConnection, newcomer]
+    [
+      password,
+      createWallet,
+      signUpMutation,
+      email,
+      username,
+      acceptCommercialEmails,
+      onSuccessfulConnection,
+      newcomer,
+      referentSlug,
+    ]
   )
 
   // fields

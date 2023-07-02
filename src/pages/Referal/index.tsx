@@ -87,7 +87,7 @@ function Newcomer() {
         </Column>
       </Column>
 
-      <AuthModal />
+      <AuthModal referentSlug={referentSlug} />
     </>
   )
 }

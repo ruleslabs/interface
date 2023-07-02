@@ -82,3 +82,18 @@ export const discordPageContainer = style([
     alignItems: 'center',
   }),
 ])
+
+export const starterPack = style([
+  {
+    width: '70%',
+  },
+])
+
+export const rookiePack = style([
+  {
+    width: '25%',
+  },
+  sprinkles({
+    paddingLeft: '8',
+  }),
+])

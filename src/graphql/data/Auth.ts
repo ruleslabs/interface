@@ -47,6 +47,7 @@ gql`
     $emailVerificationCode: String!
     $acceptCommercialEmails: Boolean!
     $newcomer: Boolean!
+    $referentSlug: String
   ) {
     signUp(
       input: {
@@ -59,6 +60,7 @@ gql`
         emailVerificationCode: $emailVerificationCode
         acceptCommercialEmails: $acceptCommercialEmails
         newcomer: $newcomer
+        referentSlug: $referentSlug
       }
     ) {
       accessToken

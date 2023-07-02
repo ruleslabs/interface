@@ -19,7 +19,12 @@ import TwoFactorAuthForm from './TwoFactorAuthForm'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import { OnSuccessfulConnectionResponse } from './types'
 
-export default function AuthModal() {
+interface AuthModalProps {
+  newcomer?: boolean
+  referentSlug?: string
+}
+
+export default function AuthModal({ newcomer = false, referentSlug }: AuthModalProps) {
   // nav
   const navigate = useNavigate()
 
@@ -57,7 +62,13 @@ export default function AuthModal() {
         return <SignUpForm />
 
       case AuthMode.EMAIL_VERIFICATION:
-        return <EmailVerificationForm onSuccessfulConnection={onSuccessfulConnection} />
+        return (
+          <EmailVerificationForm
+            onSuccessfulConnection={onSuccessfulConnection}
+            newcomer={newcomer}
+            referentSlug={referentSlug}
+          />
+        )
 
       case AuthMode.REQUEST_PASSWORD_UPDATE:
         return <RequestPasswordUpdateForm />

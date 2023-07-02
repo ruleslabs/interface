@@ -55,6 +55,10 @@ export const imagesContainer = style([
   sprinkles({
     maxWidth: '386',
     justifyContent: 'space-between',
+    width: {
+      default: 'auto',
+      xs: '256',
+    },
   }),
 ])
 
