@@ -74,7 +74,7 @@ function Newcomer() {
                   </Text.HeadlineMedium>
 
                   <Text.Body>
-                    <Trans>A Rookie pack offered if you buy a starter pack to start your collection</Trans>
+                    <Trans>A Rookie Pack offered if you buy a starter pack to start your collection</Trans>
                   </Text.Body>
 
                   <PrimaryButton onClick={toggleSignUpModal} large>

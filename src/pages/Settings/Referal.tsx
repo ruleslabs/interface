@@ -23,7 +23,7 @@ function ReferalSettings() {
 
         <Text.Body>
           <Trans>
-            Share your referal link with your friends and receive a rookie pack for each invitee who buy a pack
+            Share your referal link with your friends and receive a Rookie Pack for each invitee who buy a pack
           </Trans>
         </Text.Body>
 

@@ -64,7 +64,7 @@ export default function StarterPackPage() {
 
         {referentUsername && (
           <Text.Body>
-            <Trans>A 2nd pack (Rookie pack) offered by {referentUsername} will be delivered.</Trans>
+            <Trans>A 2nd pack (Rookie Pack) offered by {referentUsername} will be delivered with.</Trans>
           </Text.Body>
         )}
 
