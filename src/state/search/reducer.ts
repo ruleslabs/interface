@@ -20,7 +20,7 @@ export interface MarketplaceState {
 export const initialState: MarketplaceState = {
   filters: {
     scarcities: Object.values(constants.ScarcityName).map((_, index) => index),
-    seasons: [constants.CURRENT_SEASON],
+    seasons: Object.keys(constants.Seasons).map((season) => +season),
     maximumPrice: null,
     lowSerials: false,
   },
