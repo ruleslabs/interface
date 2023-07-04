@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css'
 import { sprinkles } from 'src/theme/css/sprinkles.css'
+import { vars } from 'src/theme/css/vars.css'
 
 export const sectionContainer = sprinkles({
   justifyContent: 'center',
@@ -52,8 +53,19 @@ export const infoPageContainer = style([
 ])
 
 export const imagesContainer = style([
+  {
+    ':before': {
+      content: '',
+      position: 'absolute',
+      height: '4px',
+      left: '16px',
+      right: '50%',
+      background: vars.color.gray500,
+    },
+  },
   sprinkles({
     maxWidth: '386',
+    position: 'relative',
     justifyContent: 'space-between',
     width: {
       default: 'auto',
@@ -64,12 +76,14 @@ export const imagesContainer = style([
 
 export const avatar = style([
   {
-    width: '25%',
+    width: '32%',
+    zIndex: '1',
   },
 ])
 
 export const packImage = style([
   {
-    width: '70%',
+    width: '62%',
+    zIndex: '1',
   },
 ])
