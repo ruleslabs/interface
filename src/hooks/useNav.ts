@@ -20,7 +20,7 @@ export function useNavLinks(): MenuLinks {
         { name: t`Marketplace`, link: '/marketplace' },
         { name: t`Community`, link: '/community' },
       ],
-      [{ name: 'Discord', link: 'https://discord.gg/DrfezKYUhH', external: true }],
+      [{ name: 'Discord', link: 'https://discord.gg/rulesart', external: true }],
     ],
     []
   )

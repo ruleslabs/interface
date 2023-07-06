@@ -201,7 +201,7 @@ function Packs() {
               </TYPE.body>
               <TYPE.body>
                 <Trans>
-                  <Link href="https://discord.gg/DrfezKYUhH" target="_blank" underline>
+                  <Link href="https://discord.gg/rulesart" target="_blank" underline>
                     Rules’ Discord
                   </Link>
                   <span>&nbsp;</span>
