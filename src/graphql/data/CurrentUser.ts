@@ -15,6 +15,11 @@ gql`
       cScore
       rank
       unreadNotificationsCount
+      badges {
+        type
+        level
+        quantity
+      }
       retrievableEthers {
         amount
         l1Recipient
@@ -42,6 +47,7 @@ gql`
         isDiscordVisible
         certified
         discordMember {
+          id
           username
           discriminator
           avatarUrl(derivative: "width=320")
@@ -66,6 +72,7 @@ export function formatCurrentUserQueryData(queryCurrentUser: NonNullable<Current
       username: queryProfile.discordMember.username ?? '',
       discriminator: queryProfile.discordMember.discriminator ?? '',
       avatarUrl: queryProfile.discordMember.guildAvatarUrl ?? queryProfile.discordMember.avatarUrl,
+      id: queryProfile.discordMember.id ?? '',
     }
   }
 
@@ -80,6 +87,12 @@ export function formatCurrentUserQueryData(queryCurrentUser: NonNullable<Current
     unreadNotificationsCount: queryCurrentUser.unreadNotificationsCount,
     hasTwoFactorAuthActivated: queryCurrentUser.hasTwoFactorAuthActivated,
     retrievableEthers: queryCurrentUser.retrievableEthers,
+
+    badges: queryCurrentUser.badges.map(({ level, quantity, type }) => ({
+      level,
+      type,
+      quantity: quantity ?? 1,
+    })),
 
     starknetWallet: {
       address: queryStarknetWallet.address,

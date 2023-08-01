@@ -1,15 +1,14 @@
 import React, { useEffect, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { Trans, t } from '@lingui/macro'
+import { useParams } from 'react-router-dom'
 
 import { ActiveLink } from 'src/components/Link'
 import Section from 'src/components/Section'
 import { TYPE } from 'src/styles/theme'
 import { RowBetween, RowCenter } from 'src/components/Row'
-import { ColumnCenter } from 'src/components/Column'
 import { TabButton } from 'src/components/Button'
 import { useSearchUser } from 'src/state/user/hooks'
-import DiscordMember from 'src/components/DiscordStatus/DiscordMember'
 import AvatarEditModal from 'src/components/AvatarEditModal'
 import { useDefaultAvatarIdFromUrl } from 'src/hooks/useDefaultAvatarUrls'
 import Avatar from 'src/components/Avatar'
@@ -19,23 +18,36 @@ import { useAvatarEditModalToggle } from 'src/state/application/hooks'
 import * as Icons from 'src/theme/components/Icons'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import useSearchedUser from 'src/hooks/useSearchedUser'
-import { useParams } from 'react-router-dom'
+import { Column, Row } from 'src/theme/components/Flex'
+import * as Text from 'src/theme/components/Text'
+import * as styles from './Profile.css'
+import useParsedCScore from 'src/hooks/useParsedCScore'
+import { GenieBadge } from 'src/types'
+import { BadgeIcon } from '../Badges'
 
 const Gradient = styled.div`
   background: ${({ theme }) => theme.gradient1};
   box-shadow: inset 0 -5px 5px -5px rgb(0 0 0 / 50%);
   height: 140px;
   width: 100%;
+
+  ${({ theme }) => theme.media.small`
+    height: 85px;
+  `}
 `
 
 const UserWrapper = styled(RowBetween)`
   z-index: 2;
-  margin-top: -104px;
+  margin-top: -124px;
   justify-content: space-between;
 
   ${({ theme }) => theme.media.small`
     flex-direction: column;
     align-items: center;
+  `}
+
+  ${({ theme }) => theme.media.small`
+    margin-top: -90px;
   `}
 `
 
@@ -48,6 +60,10 @@ const AvatarWrapper = styled.div`
     border: 10px solid ${({ theme }) => theme.bg1};
     background-color: ${({ theme }) => theme.bg1};
   }
+
+  ${({ theme }) => theme.media.small`
+    width: 116px;
+  `}
 `
 
 const AvatarEditButton = styled(RowCenter)`
@@ -68,11 +84,7 @@ const AvatarEditButton = styled(RowCenter)`
 `
 
 const SocialLink = styled.a`
-  color: ${({ theme }) => theme.text2};
-
-  &:hover {
-    color: ${({ theme }) => theme.text1};
-  }
+  color: ${({ theme }) => theme.text1};
 
   svg {
     width: 24px;
@@ -92,15 +104,6 @@ const TabBarSection = styled(Section)`
 
   ${({ theme }) => theme.media.extraSmall`
     padding: 0;
-  `}
-`
-
-const StyledDiscordMember = styled(DiscordMember)`
-  margin-top: 128px; // 208px / 2 + 24px
-
-  ${({ theme }) => theme.media.small`
-    margin: 16px auto;
-    width: fit-content;
   `}
 `
 
@@ -152,6 +155,32 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
   // pp edit modal
   const toggleAvatarEditModal = useAvatarEditModalToggle()
 
+  // parsed cScore
+  const parsedCScore = useParsedCScore(user?.cScore)
+
+  // badges
+  const badges: GenieBadge[] = user?.badges ?? []
+  const badgesCount = useMemo(
+    () => badges.reduce<number>((acc, { quantity }) => acc + (quantity ?? 1), 0),
+    [badges.length]
+  )
+
+  // badges component
+  const badgesComponent = useMemo(() => {
+    return (
+      <>
+        {badges.map((badge) => (
+          <Row key={`${badge.type}-${badge.level}`} gap={'4'}>
+            <BadgeIcon badge={badge} width={'18'} />
+            <Text.Body>
+              <strong>{badge.quantity}</strong>
+            </Text.Body>
+          </Row>
+        ))}
+      </>
+    )
+  }, [badges.length])
+
   // TODO: clean this ugly code bruh
   if (error) return <TYPE.body>User not found</TYPE.body>
   else if (!user || !userSlug) return null
@@ -161,48 +190,60 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
       <Gradient />
 
       <Section>
-        <UserWrapper>
-          <ColumnCenter gap={12} style={{ width: 'fit-content' }}>
-            <AvatarWrapper>
-              <Avatar src={user.profile.pictureUrl} fallbackSrc={user.profile.fallbackUrl} />
+        <Row className={styles.profileContainer}>
+          <UserWrapper>
+            <Column style={{ width: 'fit-content' }}>
+              <AvatarWrapper>
+                <Avatar src={user.profile.pictureUrl} fallbackSrc={user.profile.fallbackUrl} />
 
-              {userSlug === currentUser?.slug && (
-                <AvatarEditButton onClick={toggleAvatarEditModal}>
-                  <TYPE.medium>
-                    <Trans>Edit</Trans>
-                  </TYPE.medium>
-                </AvatarEditButton>
-              )}
-            </AvatarWrapper>
+                {userSlug === currentUser?.slug && (
+                  <AvatarEditButton onClick={toggleAvatarEditModal}>
+                    <TYPE.medium>
+                      <Trans>Edit</Trans>
+                    </TYPE.medium>
+                  </AvatarEditButton>
+                )}
+              </AvatarWrapper>
 
-            <RowCenter gap={4}>
-              <TYPE.body>{user.username}</TYPE.body>
+              <Row gap={'4'}>
+                <Text.HeadlineMedium>{user.username}</Text.HeadlineMedium>
 
-              {user.profile.certified && <CertifiedBadge />}
-              <UserRank rank={user.rank} />
-            </RowCenter>
+                {user.profile.certified && <CertifiedBadge />}
+                <UserRank rank={user.rank} />
+              </Row>
 
-            <RowCenter gap={12}>
-              {user?.profile?.instagramUsername && (
-                <SocialLink target="_blank" href={`https://instagram.com/${user.profile.instagramUsername}`}>
-                  <Icons.Instagram />
-                </SocialLink>
-              )}
-              {user?.profile?.twitterUsername && (
-                <SocialLink target="_blank" href={`https://twitter.com/${user.profile.twitterUsername}`}>
-                  <Icons.Twitter />
-                </SocialLink>
-              )}
-            </RowCenter>
-          </ColumnCenter>
+              <Column marginTop={'16'} gap={'6'}>
+                <Text.Body>
+                  Rules Score <strong>{parsedCScore}</strong>
+                </Text.Body>
 
-          {user.profile.discordMember && (
-            <StyledDiscordMember
-              username={user.profile.discordMember.username}
-              discriminator={user.profile.discordMember.discriminator}
-            />
-          )}
-        </UserWrapper>
+                <Text.Body>
+                  Badges <strong>{badgesCount}</strong>
+                </Text.Body>
+
+                <Row gap={'12'}>{badgesComponent}</Row>
+              </Column>
+            </Column>
+          </UserWrapper>
+
+          <RowCenter gap={12}>
+            {user?.profile?.instagramUsername && (
+              <SocialLink target="_blank" href={`https://instagram.com/${user.profile.instagramUsername}`}>
+                <Icons.Instagram />
+              </SocialLink>
+            )}
+            {user?.profile?.twitterUsername && (
+              <SocialLink target="_blank" href={`https://twitter.com/${user.profile.twitterUsername}`}>
+                <Icons.Twitter />
+              </SocialLink>
+            )}
+            {user?.profile?.discordMember && (
+              <SocialLink target="_blank" href={`https://discordapp.com/users/${user?.profile?.discordMember.id}`}>
+                <Icons.Discord />
+              </SocialLink>
+            )}
+          </RowCenter>
+        </Row>
       </Section>
 
       <TabBarSection>

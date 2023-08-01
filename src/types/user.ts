@@ -1,3 +1,5 @@
+import { BadgeType } from 'src/graphql/data/__generated__/types-and-hooks'
+
 export interface GenieRetrievableEthers {
   amount: string
   l1Recipient: string
@@ -33,6 +35,7 @@ export interface GenieProfile {
     username: string
     discriminator: string
     avatarUrl?: string
+    id: string
   }
 }
 
@@ -49,6 +52,13 @@ export interface GenieCurrentUser {
   starknetWallet: GenieStarknetWallet
   hasTwoFactorAuthActivated: boolean
   profile: GenieProfile
+  badges: Array<GenieBadge>
+}
+
+export interface GenieBadge {
+  type: BadgeType
+  level: number
+  quantity: number
 }
 
 export interface GenieSearchedUser {

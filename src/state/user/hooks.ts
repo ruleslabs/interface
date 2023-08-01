@@ -14,6 +14,11 @@ const SEARCH_USER_MUTATION = gql`
       slug
       cScore
       rank
+      badges {
+        type
+        level
+        quantity
+      }
       profile {
         pictureUrl(derivative: "width=320")
         fallbackUrl(derivative: "width=320")
@@ -21,8 +26,7 @@ const SEARCH_USER_MUTATION = gql`
         twitterUsername
         instagramUsername
         discordMember {
-          username
-          discriminator
+          id
         }
       }
       starknetWallet {
