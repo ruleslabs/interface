@@ -236,9 +236,9 @@ interface CardButtonProps extends BoxProps {
   disabled?: boolean
 }
 
-export const CardButton = ({ className, title, subtitle, icon, ...props }: CardButtonProps) => {
+export const CardButton = ({ className, title, subtitle, icon, disabled, ...props }: CardButtonProps) => {
   return (
-    <Box as={'button'} className={clsx(className, styles.cardButton())} {...props}>
+    <Box as={'button'} className={clsx(className, styles.cardButton({ disabled }))} disabled={disabled} {...props}>
       <Row gap={'12'} alignItems={'flex-start'}>
         <Box className={styles.cardButtonIconContainer}>{icon()}</Box>
 

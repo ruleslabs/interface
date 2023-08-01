@@ -11,6 +11,7 @@ import { ModalHeader } from '../Modal'
 import Overview from './Overview'
 import Deposit from './Deposit'
 import StarkgateDeposit from './StarkgateDeposit'
+import Withdraw from './Withdraw'
 import StarkgateWithdraw from './StarkgateWithdraw'
 import Deploy from './Deploy'
 import MigrateFunds from './MigrateFunds'
@@ -43,10 +44,15 @@ function useModalContent(): ModalContents<WalletModalMode> {
         title: t`Add funds`,
         previous: WalletModalMode.DEPOSIT,
       },
-      [WalletModalMode.STARKGATE_WITHDRAW]: {
-        Component: StarkgateWithdraw,
+      [WalletModalMode.WITHDRAW]: {
+        Component: Withdraw,
         title: t`Withdraw`,
         previous: WalletModalMode.OVERVIEW,
+      },
+      [WalletModalMode.STARKGATE_WITHDRAW]: {
+        Component: StarkgateWithdraw,
+        title: t`Withdraw to Ethereum`,
+        previous: WalletModalMode.WITHDRAW,
       },
       [WalletModalMode.MIGRATE_FUNDS]: {
         Component: MigrateFunds,

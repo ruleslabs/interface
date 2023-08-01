@@ -54,7 +54,7 @@ export default function Overview() {
   const setWalletModalMode = useSetWalletModalMode()
 
   const onDepositMode = useCallback(() => setWalletModalMode(WalletModalMode.DEPOSIT), [setWalletModalMode])
-  const onWithdrawMode = useCallback(() => setWalletModalMode(WalletModalMode.STARKGATE_WITHDRAW), [setWalletModalMode])
+  const onWithdrawMode = useCallback(() => setWalletModalMode(WalletModalMode.WITHDRAW), [setWalletModalMode])
   const onOldOverviewMode = useCallback(() => setWalletModalMode(WalletModalMode.OLD_OVERVIEW), [setWalletModalMode])
 
   // ETH balance

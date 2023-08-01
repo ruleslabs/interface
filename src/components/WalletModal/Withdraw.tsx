@@ -12,17 +12,17 @@ import * as Icons from 'src/theme/components/Icons'
 import Column from '../Column'
 import { useCloseModal } from 'src/state/application/hooks'
 
-export default function Deposit() {
+export default function Withdraw() {
   // current user
   const { currentUser } = useCurrentUser()
 
   // modal mode
   const closeModal = useCloseModal()
   const setWalletModalMode = useSetWalletModalMode()
-  const onStarkgateDeposit = useCallback(() => setWalletModalMode(WalletModalMode.STARKGATE_DEPOSIT), [])
+  const onStarkgateWithdraw = useCallback(() => setWalletModalMode(WalletModalMode.STARKGATE_WITHDRAW), [])
 
   // Ramp
-  const rampSdk = useRampSdk({ email: currentUser?.email, address: currentUser?.starknetWallet.address, flow: 'on' })
+  const rampSdk = useRampSdk({ email: currentUser?.email, address: currentUser?.starknetWallet.address, flow: 'off' })
   const openRamp = useCallback(() => {
     closeModal()
     rampSdk?.show()
@@ -32,10 +32,10 @@ export default function Deposit() {
     <ModalBody>
       <Column gap={24}>
         <CardButton
-          title={t`Credit card or bank transfer`}
-          subtitle={t`might take a few days`}
+          title={t`Bank account`}
+          subtitle={t`coming soon (very soon)`}
           onClick={openRamp}
-          disabled={!rampSdk?.show}
+          disabled={!rampSdk?.show || true}
           icon={() => <Icons.CreditCard />}
         />
 
@@ -45,8 +45,8 @@ export default function Deposit() {
 
         <CardButton
           title={t`Ethereum`}
-          subtitle={t`a few minutes`}
-          onClick={onStarkgateDeposit}
+          subtitle={t`might take a few hours`}
+          onClick={onStarkgateWithdraw}
           icon={() => <Icons.Ethereum />}
         />
       </Column>
