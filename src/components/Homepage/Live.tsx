@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import styled from 'styled-components/macro'
-import { WeiAmount, constants } from '@rulesorg/sdk-core'
+import { WeiAmount } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import { TYPE } from 'src/styles/theme'
@@ -113,10 +113,7 @@ export default function Live() {
           <TradePlaceholder>
             <Link href={`/card/${cardTransfer.cardModel.slug}/${cardTransfer.card.serialNumber}`}>
               <TYPE.body clickable>
-                {cardTransfer.cardModel.artistName} #{cardTransfer.card.serialNumber} /
-                {cardTransfer.cardModel.scarcity.maxSupply}
-                {cardTransfer.cardModel.scarcity.name === constants.Seasons[cardTransfer.cardModel.season][0].name &&
-                  '+'}
+                {cardTransfer.cardModel.artistName} #{cardTransfer.card.serialNumber}
               </TYPE.body>
             </Link>
 
