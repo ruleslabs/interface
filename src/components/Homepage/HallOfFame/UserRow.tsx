@@ -9,6 +9,7 @@ import Avatar from 'src/components/Avatar'
 import { TYPE } from 'src/styles/theme'
 import Tooltip from 'src/components/Tooltip'
 import useParsedCScore from 'src/hooks/useParsedCScore'
+import { Row } from 'src/theme/components/Flex'
 
 const StyledTooltip = styled(Tooltip)`
   width: 236px;
@@ -97,19 +98,21 @@ const MemoizedUserRow = React.memo(function UserRow({
         )}
       </Link>
 
-      <Link href={`/user/${slug}`}>
-        <TYPE.body clickable>{shortUsername}</TYPE.body>
-      </Link>
+      <Row justifyContent={'space-between'} width={'full'}>
+        <Link href={`/user/${slug}`}>
+          <TYPE.body clickable>{shortUsername}</TYPE.body>
+        </Link>
 
-      <CScore>
-        <TYPE.body color="text2">{roundedParsedCScore}</TYPE.body>
+        <CScore>
+          <TYPE.body color="text2">{roundedParsedCScore}</TYPE.body>
 
-        <StyledTooltip direction="left">
-          <TYPE.body>
-            <Trans>Collection score: {fullParsedCScore}</Trans>
-          </TYPE.body>
-        </StyledTooltip>
-      </CScore>
+          <StyledTooltip direction="left">
+            <TYPE.body>
+              <Trans>Collection score: {fullParsedCScore}</Trans>
+            </TYPE.body>
+          </StyledTooltip>
+        </CScore>
+      </Row>
     </StyledUserRow>
   )
 },
