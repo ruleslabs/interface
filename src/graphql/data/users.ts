@@ -1,9 +1,11 @@
 import { useCallback, useMemo } from 'react'
 import gql from 'graphql-tag'
 import {
+  CurrentUserHallOfFameQuery,
   HallOfFameQueryVariables,
   SortingOption,
   UsersSortingType,
+  useCurrentUserHallOfFameQuery,
   useHallOfFameQuery,
 } from './__generated__/types-and-hooks'
 import { constants } from '@rulesorg/sdk-core'
@@ -27,6 +29,15 @@ gql`
           }
         }
       }
+    }
+  }
+`
+
+gql`
+  query CurrentUserHallOfFame($season: Int!) {
+    currentUser {
+      cScore(season: $season)
+      rank(season: $season)
     }
   }
 `
@@ -74,4 +85,16 @@ export function useHallOfFame(season = constants.CURRENT_SEASON) {
       loadMore,
     }
   }, [users, hasNext, loadMore, loading])
+}
+
+export function useCurrentUserHallOfFame(season = constants.CURRENT_SEASON) {
+  const { data: queryData, loading } = useCurrentUserHallOfFameQuery({ variables: { season } })
+
+  const queryCurrentUser = queryData?.currentUser as NonNullable<CurrentUserHallOfFameQuery['currentUser']>
+  return useMemo(() => {
+    return {
+      data: queryCurrentUser,
+      loading,
+    }
+  }, [loading, queryCurrentUser])
 }

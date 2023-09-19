@@ -21,6 +21,7 @@ import { PaginationSpinner } from 'src/components/Spinner'
 import * as styles from './Ruledex.css'
 import { Row } from 'src/theme/components/Flex'
 import Box from 'src/theme/components/Box'
+import SeasonSelector from 'src/components/SeasonSelector'
 
 const ScarcitySelectorWrapper = styled(Row)`
   gap: 42px;
@@ -156,17 +157,7 @@ function UserRuledex() {
           <Box className={styles.actionsContainer}>
             <ScarcitySelectorWrapper>{scarcitiesComponents}</ScarcitySelectorWrapper>
 
-            <Row className={styles.seasonsContainer}>
-              {Object.keys(constants.Seasons).map((season) => (
-                <Text.HeadlineMedium
-                  key={season}
-                  className={styles.seasonButton({ active: selectedSeason === +season })}
-                  onClick={() => selectSeason(+season)}
-                >
-                  S{season}
-                </Text.HeadlineMedium>
-              ))}
-            </Row>
+            <SeasonSelector selectedSeason={selectedSeason} selectSeason={selectSeason} />
           </Box>
 
           <StyledGrid gap={28} maxWidth={132}>
