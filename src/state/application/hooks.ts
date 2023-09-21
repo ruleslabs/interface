@@ -122,8 +122,8 @@ export function useUpgradeWalletModalToggle(): () => void {
   return useToggleModal(ApplicationModal.UPGRADE_WALLET)
 }
 
-export function useMarketplaceFiltersModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.MARKETPLACE_FILTERS)
+export function useFiltersModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.FILTERS)
 }
 
 export function useStarknetAccountPrivateKeyModalToggle(): () => void {

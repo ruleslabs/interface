@@ -3,23 +3,23 @@ import styled from 'styled-components/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 import { t } from '@lingui/macro'
 
-import MarketplaceFilters from 'src/components/MarketplaceFilters'
+import MarketplaceFilters from 'src/components/Filters/Marketplace'
 import Section from 'src/components/Section'
 import Column from 'src/components/Column'
 import Row, { RowBetween } from 'src/components/Row'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import SortButton, { SortsData } from 'src/components/Button/SortButton'
-import { useMarketplaceFiltersModalToggle } from 'src/state/application/hooks'
-import MarketplaceFiltersModal from 'src/components/MarketplaceFiltersModal'
+import { useFiltersModalToggle } from 'src/state/application/hooks'
 import DefaultLayout from 'src/components/Layout'
 import { NftCard } from 'src/components/nft/Card'
-
-import { ReactComponent as HopperIcon } from 'src/images/hopper.svg'
 import CollectionNfts from 'src/components/nft/Collection/CollectionNfts'
 import { useCardModels } from 'src/graphql/data/CardModels'
 import { BadgeType, CardModelsSortingType, SortingOption } from 'src/graphql/data/__generated__/types-and-hooks'
 import { useMarketplaceFilters } from 'src/state/search/hooks'
 import { IconButton } from 'src/components/Button'
+import { MarketplaceFiltersModal } from 'src/components/FiltersModal'
+
+import { ReactComponent as HopperIcon } from 'src/images/hopper.svg'
 
 const StyledSection = styled(Section)`
   width: 100%;
@@ -85,13 +85,12 @@ function Marketplace() {
 
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
-  // const etherPrice = useEtherPrice()
 
   // filters
   const marketplaceFilters = useMarketplaceFilters()
 
   // filters modal
-  const toggleMarketplaceFiltersModal = useMarketplaceFiltersModalToggle()
+  const toggleMarketplaceFiltersModal = useFiltersModalToggle()
 
   // sort
   const sort = useMemo(
@@ -159,7 +158,7 @@ function Marketplace() {
 
         <Row gap={32}>
           <FiltersWrapper>
-            <MarketplaceFilters maximumPriceUpperBound={9999999999} />
+            <MarketplaceFilters />
           </FiltersWrapper>
 
           <GridWrapper>
@@ -175,7 +174,7 @@ function Marketplace() {
         </Row>
       </StyledSection>
 
-      <MarketplaceFiltersModal maximumPriceUpperBound={9999999999} />
+      <MarketplaceFiltersModal />
     </>
   )
 }

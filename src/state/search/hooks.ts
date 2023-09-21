@@ -1,16 +1,15 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 import { useLazyQuery, gql } from '@apollo/client'
 import algoliasearch, { SearchIndex } from 'algoliasearch'
-import { Unit } from '@rulesorg/sdk-core'
 
 import { useAppSelector, useAppDispatch } from 'src/state/hooks'
 import {
   updateMarketplaceScarcityFilter,
   updateMarketplaceSeasonsFilter,
   updateMarketplaceLowSerialsFilter,
-  updateMarketplaceMaximumPrice,
+  updateCardsScarcityFilter,
+  updateCardsSeasonsFilter,
 } from './actions'
-import { useEurAmountToWeiAmount } from 'src/hooks/useFiatPrice'
 
 export const ASSETS_PAGE_SIZE = 25
 
@@ -69,14 +68,17 @@ const ALL_CURRENT_USER_NOTIFICATIONS_QUERY = gql`
 // Marketplace
 
 export function useMarketplaceFilters() {
-  return useAppSelector((state) => state.search.filters)
+  return useAppSelector((state) => state.search.marketplaceFilters)
+}
+
+export function useCardsFilters() {
+  return useAppSelector((state) => state.search.cardsFilters)
 }
 
 export function useMarketplaceFiltersHandlers(): {
   toggleScarcityFilter: (scarcity: number) => void
   toggleSeasonFilter: (season: number) => void
   toggleLowSerialsFilter: () => void
-  setMaximumPrice: (price: number) => void
 } {
   const dispatch = useAppDispatch()
 
@@ -98,44 +100,34 @@ export function useMarketplaceFiltersHandlers(): {
     dispatch(updateMarketplaceLowSerialsFilter())
   }, [dispatch])
 
-  const setMaximumPrice = useCallback(
-    (price: number) => {
-      dispatch(updateMarketplaceMaximumPrice({ price }))
-    },
-    [dispatch]
-  )
-
   return {
     toggleScarcityFilter,
     toggleSeasonFilter,
     toggleLowSerialsFilter,
-    setMaximumPrice,
   }
 }
 
-export function useAlgoliaFormatedMarketplaceFilters() {
-  const filters = useMarketplaceFilters()
+export function useCardsFiltersHandlers(): {
+  toggleScarcityFilter: (scarcity: number) => void
+  toggleSeasonFilter: (season: number) => void
+} {
+  const dispatch = useAppDispatch()
 
-  // maximum price in gwei
-  const eurAmountToWeiAmount = useEurAmountToWeiAmount()
-  const gweiMaximumPrice = useMemo(
-    () => +(eurAmountToWeiAmount(filters.maximumPrice ?? undefined)?.toUnitFixed(Unit.GWEI, 0) ?? 0),
-    [filters.maximumPrice, eurAmountToWeiAmount]
+  const toggleScarcityFilter = useCallback(
+    (scarcity: number) => {
+      dispatch(updateCardsScarcityFilter({ scarcity }))
+    },
+    [dispatch]
   )
 
-  return useMemo(
-    () => ({
-      facets: {
-        scarcity: filters.scarcities.map((scarcity) => `-${scarcity}`),
-        season: filters.seasons.map((season) => `-${season}`),
-        lowestAsk: filters.lowSerials ? undefined : '-0',
-        lowSerialLowestAsk: filters.lowSerials ? '-0' : undefined,
-      },
-      filters: `${filters.lowSerials ? 'gweiLowSerialLowestAsk' : 'gweiLowestAsk'} <= ${gweiMaximumPrice}`,
-      skip: !gweiMaximumPrice,
-    }),
-    [JSON.stringify(filters.scarcities), JSON.stringify(filters.seasons), filters.lowSerials, gweiMaximumPrice]
+  const toggleSeasonFilter = useCallback(
+    (season: number) => {
+      dispatch(updateCardsSeasonsFilter({ season }))
+    },
+    [dispatch]
   )
+
+  return { toggleScarcityFilter, toggleSeasonFilter }
 }
 
 // algolia
@@ -184,7 +176,9 @@ interface ApolloSearch {
   error: any
 }
 
-function useFacetFilters(facets: any) {
+type FacetFilters = Record<string, string | string[] | undefined>
+
+function useFacetFilters(facets: FacetFilters) {
   return useMemo(
     () =>
       Object.keys(facets).reduce<(string | string[])[]>((acc, facetKey) => {
@@ -217,7 +211,7 @@ const ALGOLIA_FIRST_PAGE = 0
 
 interface AlgoliaSearchProps {
   search?: string
-  facets: any
+  facets: FacetFilters
   numericFilters?: string[]
   algoliaIndex: SearchIndex
   hitsPerPage: number
@@ -298,6 +292,8 @@ interface SearchCardsProps {
   facets?: {
     ownerStarknetAddress?: string
     cardId?: string | string[]
+    scarcityAbsoluteId?: string[]
+    season?: string[]
   }
   sortingKey?: CardsSortingKey
   search?: string

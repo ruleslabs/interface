@@ -8,22 +8,28 @@ import DefaultLayout from 'src/components/Layout'
 import ProfileLayout from 'src/components/Layout/Profile'
 import Row, { RowBetween, RowCenter } from 'src/components/Row'
 import Section from 'src/components/Section'
-import { useSearchCards, CardsSortingKey } from 'src/state/search/hooks'
+import { useSearchCards, CardsSortingKey, useCardsFilters } from 'src/state/search/hooks'
 import { TYPE } from 'src/styles/theme'
 import EmptyTab, { EmptyCardsTabOfCurrentUser } from 'src/components/EmptyTab'
 import SortButton, { SortsData } from 'src/components/Button/SortButton'
-import { PrimaryButton, SecondaryButton } from 'src/components/Button'
+import { IconButton, PrimaryButton, SecondaryButton } from 'src/components/Button'
 import ListCardMocal from 'src/components/MarketplaceModal/ListCard'
-import { useCreateOfferModalToggle, useOfferModalToggle } from 'src/state/application/hooks'
+import { useCreateOfferModalToggle, useFiltersModalToggle, useOfferModalToggle } from 'src/state/application/hooks'
 import GiftModal from 'src/components/GiftModal'
 import useSearchedUser from 'src/hooks/useSearchedUser'
 import { NftCard } from 'src/components/nft/Card'
 import useAssetsSelection from 'src/hooks/useAssetsSelection'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import CollectionNfts from 'src/components/nft/Collection/CollectionNfts'
+import { MAX_LISTINGS_BATCH_SIZE } from 'src/constants/misc'
+import CardsFilters from 'src/components/Filters/Cards'
+import * as styles from './Cards.css'
+import { Column } from 'src/theme/components/Flex'
+import Box from 'src/theme/components/Box'
+import { CardsFiltersModal } from 'src/components/FiltersModal'
 
 import { ReactComponent as Present } from 'src/images/present.svg'
-import { MAX_LISTINGS_BATCH_SIZE } from 'src/constants/misc'
+import { ReactComponent as HopperIcon } from 'src/images/hopper.svg'
 
 // css
 
@@ -56,16 +62,15 @@ const StyledPresent = styled(Present)`
   fill: ${({ theme }) => theme.text1};
 `
 
-const StickyWrapper = styled.div`
-  margin: 16px 0;
-  position: sticky;
-  z-index: 1;
-  top: ${({ theme }) => theme.size.headerHeight}px;
-  background: ${({ theme }) => theme.bg1};
-  box-shadow: 0 4px 4px ${({ theme }) => theme.bg1}80;
+const HopperIconButton = styled(IconButton)`
+  visibility: hidden;
+
+  svg {
+    margin-top: 2px; // needed to make it looks better centered
+  }
 
   ${({ theme }) => theme.media.medium`
-    top: ${theme.size.headerHeightMedium}px;
+    visibility: visible;
   `}
 `
 
@@ -163,6 +168,12 @@ function UserCards() {
   const [sortIndex, setSortIndex] = useState(0)
   const [listings, setListings] = useState<{ [tokenId: string]: string }>({})
 
+  // filters
+  const cardsFilters = useCardsFilters()
+
+  // filters modal
+  const toggleCardsFiltersModal = useFiltersModalToggle()
+
   // sorts data
   const sortsData = useSortsData()
 
@@ -215,7 +226,11 @@ function UserCards() {
     [queryCardsData]
   )
   const cardsSearch = useSearchCards({
-    facets: { ownerStarknetAddress: user?.address },
+    facets: {
+      ownerStarknetAddress: user?.address,
+      season: cardsFilters.seasons.map(String),
+      scarcityAbsoluteId: cardsFilters.scarcities.map(String),
+    },
     sortingKey: sortsData[sortIndex].key,
     skip: !user?.address,
     onPageFetched,
@@ -264,9 +279,13 @@ function UserCards() {
 
   return (
     <>
-      <StickyWrapper>
-        {cardsCount > 0 && (
-          <Section marginBottom="0px">
+      <Section>
+        <Row gap={32}>
+          <Box className={styles.sidebaseContainer}>
+            <CardsFilters />
+          </Box>
+
+          <Column gap={'16'}>
             <GridHeader>
               <SelectionButtonWrapper>
                 <TYPE.body>
@@ -280,25 +299,29 @@ function UserCards() {
                 )}
               </SelectionButtonWrapper>
 
-              <SortButton sortsData={sortsData} onChange={setSortIndex} sortIndex={sortIndex} />
+              <RowCenter gap={16}>
+                <HopperIconButton onClick={toggleCardsFiltersModal} square>
+                  <HopperIcon />
+                </HopperIconButton>
+
+                <SortButton sortsData={sortsData} onChange={setSortIndex} sortIndex={sortIndex} />
+              </RowCenter>
             </GridHeader>
-          </Section>
-        )}
-      </StickyWrapper>
 
-      <Section>
-        <CollectionNfts
-          next={cardsSearch.nextPage ?? (() => {})}
-          hasNext={cardsSearch.hasNext}
-          dataLength={cards.length ?? 0}
-          loading={loading}
-        >
-          {cardsComponents}
-        </CollectionNfts>
+            <CollectionNfts
+              next={cardsSearch.nextPage ?? (() => {})}
+              hasNext={cardsSearch.hasNext}
+              dataLength={cards.length ?? 0}
+              loading={loading}
+            >
+              {cardsComponents}
+            </CollectionNfts>
 
-        {!loading &&
-          !cardsCount &&
-          (user.isCurrentUser ? <EmptyCardsTabOfCurrentUser /> : <EmptyTab emptyText={t`No cards`} />)}
+            {!loading &&
+              !cardsCount &&
+              (user.isCurrentUser ? <EmptyCardsTabOfCurrentUser /> : <EmptyTab emptyText={t`No cards`} />)}
+          </Column>
+        </Row>
       </Section>
 
       <SelectedCardsActionWrapper active={selectedTokenIds.length > 0}>
@@ -327,6 +350,7 @@ function UserCards() {
 
       <ListCardMocal tokenIds={selectedTokenIds} onSuccess={addListings} />
       <GiftModal tokenIds={selectedTokenIds} />
+      <CardsFiltersModal />
     </>
   )
 }

@@ -4,55 +4,63 @@ import {
   updateMarketplaceScarcityFilter,
   updateMarketplaceSeasonsFilter,
   updateMarketplaceLowSerialsFilter,
-  updateMarketplaceMaximumPrice,
+  updateCardsScarcityFilter,
+  updateCardsSeasonsFilter,
 } from './actions'
 import { constants } from '@rulesorg/sdk-core'
 
 export interface MarketplaceState {
-  filters: {
+  marketplaceFilters: {
     scarcities: number[]
     seasons: number[]
-    maximumPrice: number | null
     lowSerials: boolean
+  }
+  cardsFilters: {
+    scarcities: number[]
+    seasons: number[]
   }
 }
 
 export const initialState: MarketplaceState = {
-  filters: {
+  marketplaceFilters: {
     scarcities: Object.values(constants.ScarcityName).map((_, index) => index),
     seasons: Object.keys(constants.Seasons).map((season) => +season),
-    maximumPrice: null,
     lowSerials: false,
+  },
+  cardsFilters: {
+    scarcities: Object.values(constants.ScarcityName).map((_, index) => index),
+    seasons: Object.keys(constants.Seasons).map((season) => +season),
   },
 }
 
 export default createReducer(initialState, (builder) =>
   builder
     .addCase(updateMarketplaceScarcityFilter, (state, { payload: { scarcity } }) => {
-      const scarcities = state.filters.scarcities
+      const scarcities = state.marketplaceFilters.scarcities
 
-      if (scarcities.includes(scarcity)) state.filters.scarcities = scarcities.filter((e) => e !== scarcity)
+      if (scarcities.includes(scarcity)) state.marketplaceFilters.scarcities = scarcities.filter((e) => e !== scarcity)
       else scarcities.push(scarcity)
-
-      // reset max price
-      state.filters.maximumPrice = null
     })
     .addCase(updateMarketplaceSeasonsFilter, (state, { payload: { season } }) => {
-      const seasons = state.filters.seasons
+      const seasons = state.marketplaceFilters.seasons
 
-      if (seasons.includes(season)) state.filters.seasons = seasons.filter((e) => e !== season)
+      if (seasons.includes(season)) state.marketplaceFilters.seasons = seasons.filter((e) => e !== season)
       else seasons.push(season)
-
-      // reset max price
-      state.filters.maximumPrice = null
     })
     .addCase(updateMarketplaceLowSerialsFilter, (state) => {
-      state.filters.lowSerials = !state.filters.lowSerials
-
-      // reset max price
-      state.filters.maximumPrice = null
+      state.marketplaceFilters.lowSerials = !state.marketplaceFilters.lowSerials
     })
-    .addCase(updateMarketplaceMaximumPrice, (state, { payload: { price } }) => {
-      state.filters.maximumPrice = price
+
+    .addCase(updateCardsScarcityFilter, (state, { payload: { scarcity } }) => {
+      const scarcities = state.cardsFilters.scarcities
+
+      if (scarcities.includes(scarcity)) state.cardsFilters.scarcities = scarcities.filter((e) => e !== scarcity)
+      else scarcities.push(scarcity)
+    })
+    .addCase(updateCardsSeasonsFilter, (state, { payload: { season } }) => {
+      const seasons = state.cardsFilters.seasons
+
+      if (seasons.includes(season)) state.cardsFilters.seasons = seasons.filter((e) => e !== season)
+      else seasons.push(season)
     })
 )

@@ -22,6 +22,11 @@ const colors = {
   regalBlue: '#1d2357',
 }
 
+export const sizes = {
+  headerHeight: 57,
+  headerHeightMedium: 62,
+}
+
 export const fontSizes = {
   '0': '0',
   '14': '14px',
@@ -143,6 +148,7 @@ export const dimensions = {
   '100': '100px',
   '120': '120px',
   '140': '140px',
+  '200': '200px',
   '256': '256px',
   '276': '276px',
   '288': '288px',
