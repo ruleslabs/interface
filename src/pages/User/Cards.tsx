@@ -6,7 +6,7 @@ import { WeiAmount } from '@rulesorg/sdk-core'
 
 import DefaultLayout from 'src/components/Layout'
 import ProfileLayout from 'src/components/Layout/Profile'
-import Row, { RowBetween, RowCenter } from 'src/components/Row'
+import { RowBetween, RowCenter } from 'src/components/Row'
 import Section from 'src/components/Section'
 import { useSearchCards, CardsSortingKey, useCardsFilters } from 'src/state/search/hooks'
 import { TYPE } from 'src/styles/theme'
@@ -24,7 +24,7 @@ import CollectionNfts from 'src/components/nft/Collection/CollectionNfts'
 import { MAX_LISTINGS_BATCH_SIZE } from 'src/constants/misc'
 import CardsFilters from 'src/components/Filters/Cards'
 import * as styles from './Cards.css'
-import { Column } from 'src/theme/components/Flex'
+import { Column, Row } from 'src/theme/components/Flex'
 import Box from 'src/theme/components/Box'
 import { CardsFiltersModal } from 'src/components/FiltersModal'
 
@@ -76,15 +76,22 @@ const HopperIconButton = styled(IconButton)`
 
 const GridHeader = styled(RowBetween)`
   align-items: center;
-  padding: 12px 16px;
+  padding: 0 16px 12px;
+  width: 100%;
+
+  ${({ theme }) => theme.media.medium`
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 32px;
+  `}
 `
 
 const SelectionButtonWrapper = styled(RowCenter)`
   gap: 12px;
 
-  ${({ theme }) => theme.media.extraSmall`
-    flex-direction: column;
-    gap: 6px
+  ${({ theme }) => theme.media.medium`
+    justify-content: space-between;
+    width: 100%;
   `}
 `
 
@@ -280,7 +287,7 @@ function UserCards() {
   return (
     <>
       <Section>
-        <Row gap={32}>
+        <Row gap={'32'}>
           <Box className={styles.sidebaseContainer}>
             <CardsFilters />
           </Box>
@@ -299,13 +306,13 @@ function UserCards() {
                 )}
               </SelectionButtonWrapper>
 
-              <RowCenter gap={16}>
+              <Row className={styles.searchButtonsContainer}>
                 <HopperIconButton onClick={toggleCardsFiltersModal} square>
                   <HopperIcon />
                 </HopperIconButton>
 
                 <SortButton sortsData={sortsData} onChange={setSortIndex} sortIndex={sortIndex} />
-              </RowCenter>
+              </Row>
             </GridHeader>
 
             <CollectionNfts

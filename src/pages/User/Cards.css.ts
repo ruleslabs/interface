@@ -24,3 +24,15 @@ export const sidebaseContainer = style([
     },
   }),
 ])
+
+export const searchButtonsContainer = style([
+  sprinkles({
+    gap: '16',
+    justifyContent: {
+      lg: 'space-between',
+    },
+    width: {
+      lg: 'full',
+    },
+  }),
+])
