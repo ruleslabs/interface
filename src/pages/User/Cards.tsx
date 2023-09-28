@@ -287,7 +287,7 @@ function UserCards() {
   return (
     <>
       <Section>
-        <Row gap={'32'}>
+        <Row gap={'32'} alignItems={'flex-start'}>
           <Box className={styles.sidebaseContainer}>
             <CardsFilters />
           </Box>
