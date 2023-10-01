@@ -1,6 +1,5 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components/macro'
-import { useLazyQuery, gql } from '@apollo/client'
 import { t, Trans, Plural } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
 
@@ -8,7 +7,7 @@ import DefaultLayout from 'src/components/Layout'
 import ProfileLayout from 'src/components/Layout/Profile'
 import { RowBetween, RowCenter } from 'src/components/Row'
 import Section from 'src/components/Section'
-import { useSearchCards, CardsSortingKey, useCardsFilters } from 'src/state/search/hooks'
+import { useCardsFilters } from 'src/state/search/hooks'
 import { TYPE } from 'src/styles/theme'
 import EmptyTab, { EmptyCardsTabOfCurrentUser } from 'src/components/EmptyTab'
 import SortButton, { SortsData } from 'src/components/Button/SortButton'
@@ -30,32 +29,10 @@ import { CardsFiltersModal } from 'src/components/FiltersModal'
 
 import { ReactComponent as Present } from 'src/images/present.svg'
 import { ReactComponent as HopperIcon } from 'src/images/hopper.svg'
+import { useCards } from 'src/graphql/data/Cards'
+import { CardsSortingType, SortingOption } from 'src/graphql/data/__generated__/types-and-hooks'
 
 // css
-
-const CARDS_QUERY = gql`
-  query ($ids: [ID!]!) {
-    cardsByIds(ids: $ids) {
-      id
-      slug
-      serialNumber
-      listing {
-        price
-      }
-      tokenId
-      cardModel {
-        slug
-        pictureUrl(derivative: "width=1024")
-        videoUrl
-        season
-        artistName
-        scarcity {
-          name
-        }
-      }
-    }
-  }
-`
 
 const StyledPresent = styled(Present)`
   width: 16px;
@@ -154,26 +131,27 @@ const SelectedCardsButtonsWrapper = styled(Row)`
   `}
 `
 
-const useSortsData = (): SortsData<CardsSortingKey> =>
+const useSortsData = (): SortsData<CardsSortingType> =>
   useMemo(
     () => [
-      { name: t`Newest`, key: 'dateDesc', desc: true },
-      { name: t`Oldest`, key: 'dateAsc', desc: false },
-      { name: t`Low serial`, key: 'serialAsc', desc: false },
-      { name: t`High serial`, key: 'serialDesc', desc: true },
-      { name: t`Price: low to high`, key: 'lastPriceAsc', desc: false },
-      { name: t`Price: high to low`, key: 'lastPriceDesc', desc: true },
-      { name: t`Alphabetical A-Z`, key: 'artistAsc', desc: false },
-      { name: t`Alphabetical Z-A`, key: 'artistDesc', desc: true },
+      { name: t`Newest`, key: CardsSortingType.Age, desc: true },
+      { name: t`Oldest`, key: CardsSortingType.Age, desc: false },
+      { name: t`Low serial`, key: CardsSortingType.Serial, desc: false },
+      { name: t`High serial`, key: CardsSortingType.Serial, desc: true },
+      { name: t`Price: low to high`, key: CardsSortingType.Price, desc: false },
+      { name: t`Price: high to low`, key: CardsSortingType.Price, desc: true },
+      { name: t`Alphabetical A-Z`, key: CardsSortingType.Name, desc: false },
+      { name: t`Alphabetical Z-A`, key: CardsSortingType.Name, desc: true },
     ],
     []
   )
 
 function UserCards() {
-  const [cardsCount, setCardsCount] = useState(0)
-  const [cards, setCards] = useState<any[]>([])
   const [sortIndex, setSortIndex] = useState(0)
   const [listings, setListings] = useState<{ [tokenId: string]: string }>({})
+
+  // sorts data
+  const sortsData = useSortsData()
 
   // filters
   const cardsFilters = useCardsFilters()
@@ -181,8 +159,14 @@ function UserCards() {
   // filters modal
   const toggleCardsFiltersModal = useFiltersModalToggle()
 
-  // sorts data
-  const sortsData = useSortsData()
+  // sort
+  const sort = useMemo(
+    () => ({
+      type: sortsData[sortIndex].key,
+      direction: sortsData[sortIndex].desc ? SortingOption.Desc : SortingOption.Asc,
+    }),
+    [sortIndex]
+  )
 
   // add new listings
   const addListings = useCallback((tokenIds: string[], prices: string[]) => {
@@ -202,85 +186,57 @@ function UserCards() {
   const toggleCreateOfferModal = useCreateOfferModalToggle()
   const toggleOfferModal = useOfferModalToggle()
 
-  // query cards data
-  const onCardsQueryCompleted = useCallback((data: any) => {
-    const cards = (data.cardsByIds ?? []).map((card: any) => {
-      const price = card.listing?.price
-      const parsedPrice = price ? WeiAmount.fromRawAmount(price) : undefined
-
-      return {
-        ...card,
-        parsedPrice,
-      }
-    })
-
-    setCards((state) => state.concat(cards))
-  }, [])
-  const [queryCardsData, cardsQuery] = useLazyQuery(CARDS_QUERY, {
-    onCompleted: onCardsQueryCompleted,
-    fetchPolicy: 'cache-and-network',
-  })
-
-  // search cards
-  const onPageFetched = useCallback(
-    (hits, { pageNumber, totalHitsCount }) => {
-      if (!pageNumber) setCards([])
-
-      queryCardsData({ variables: { ids: hits.map((hit: any) => hit.objectID) } })
-
-      setCardsCount(totalHitsCount)
-    },
-    [queryCardsData]
-  )
-  const cardsSearch = useSearchCards({
-    facets: {
-      ownerStarknetAddress: user?.address,
-      season: cardsFilters.seasons.map(String),
-      scarcityAbsoluteId: cardsFilters.scarcities.map(String),
-    },
-    sortingKey: sortsData[sortIndex].key,
-    skip: !user?.address,
-    onPageFetched,
-  })
-
-  // loading
-  const loading = cardsSearch.loading || cardsQuery.loading
-
   // cards selection
   const { selectedTokenIds, selectionModeEnabled, toggleSelectionMode } = useAssetsSelection()
 
   // fiat
   const weiAmountToEURValue = useWeiAmountToEURValue()
 
-  const cardsComponents = useMemo(
-    () =>
-      cards.map((card) => {
-        const parsedPrice =
-          card.parsedPrice ?? (listings[card.tokenId] ? WeiAmount.fromRawAmount(listings[card.tokenId]) : undefined)
+  const {
+    data: cards,
+    loading,
+    hasNext,
+    loadMore,
+  } = useCards({
+    filter: {
+      ownerStarknetAddress: user?.address ?? '0x0',
+      seasons: cardsFilters.seasons,
+      scarcityAbsoluteIds: cardsFilters.scarcities,
+    },
+    sort,
+  })
 
-        return (
-          <NftCard
-            key={card.slug}
-            asset={{
-              animationUrl: card.cardModel.videoUrl,
-              imageUrl: card.cardModel.pictureUrl,
-              tokenId: card.tokenId,
-              scarcity: card.cardModel.scarcity.name,
-            }}
-            display={{
-              href: `/card/${card.cardModel.slug}/${card.serialNumber}`,
-              primaryInfo: card.cardModel.artistName,
-              secondaryInfo: `#${card.serialNumber}`,
-              subtitle: parsedPrice
-                ? `${parsedPrice.toSignificant(6)} ETH (€${weiAmountToEURValue(parsedPrice)})`
-                : undefined,
-              status: parsedPrice ? 'onSale' : undefined,
-            }}
-          />
-        )
-      }),
-    [cards, listings]
-  )
+  const cardsComponents = useMemo(() => {
+    if (!cards) return null
+
+    return cards.map((card) => {
+      const price = card.ask ?? listings[card.tokenId]
+      const parsedPrice = price && WeiAmount.fromRawAmount(price)
+
+      return (
+        <NftCard
+          key={card.slug}
+          asset={{
+            animationUrl: card.cardModel.animationUrl,
+            imageUrl: card.cardModel.imageUrl,
+            tokenId: card.tokenId,
+            scarcity: card.cardModel.scarcityName,
+          }}
+          display={{
+            href: `/card/${card.cardModel.slug}/${card.serialNumber}`,
+            primaryInfo: card.cardModel.artistName,
+            secondaryInfo: `#${card.serialNumber}`,
+            subtitle: parsedPrice
+              ? `${parsedPrice.toSignificant(6)} ETH (€${weiAmountToEURValue(parsedPrice)})`
+              : undefined,
+            status: parsedPrice ? 'onSale' : undefined,
+          }}
+        />
+      )
+    })
+  }, [cards, listings])
+
+  const cardsCount = 1
 
   if (!user) return null
 
@@ -316,9 +272,9 @@ function UserCards() {
             </GridHeader>
 
             <CollectionNfts
-              next={cardsSearch.nextPage ?? (() => {})}
-              hasNext={cardsSearch.hasNext}
-              dataLength={cards.length ?? 0}
+              next={loadMore}
+              hasNext={hasNext ?? false}
+              dataLength={cards?.length ?? 0}
               loading={loading}
             >
               {cardsComponents}

@@ -9,12 +9,20 @@ export interface NftAsset {
 
 export interface CardModel {
   slug: string
-  listedCardsCount: number
+  listedCardsCount?: number
   imageUrl: string
   animationUrl: string
   season: number
   artistName: string
   scarcityName: ScarcityName
-  lowestAsk: string
-  lowSerialLowestAsk: string
+  lowestAsk?: string
+  lowSerialLowestAsk?: string
+}
+
+export interface Card {
+  slug: string
+  serialNumber: number
+  ask?: string
+  tokenId: string
+  cardModel: CardModel
 }
