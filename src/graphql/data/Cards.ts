@@ -69,15 +69,15 @@ export interface CardsFetcherParams {
   after?: string
 }
 
-export const CARD_MODELS_PAGE_SIZE = 25
+export const CARDS_PAGE_SIZE = 25
 
-const defaultCardModelsFetcherParams: Omit<CardsQueryVariables, 'filter'> = {
-  first: CARD_MODELS_PAGE_SIZE,
+const defaultCardsFetcherParams: Omit<CardsQueryVariables, 'filter'> = {
+  first: CARDS_PAGE_SIZE,
   sort: { direction: SortingOption.Desc, type: CardsSortingType.Age },
 }
 
 export function useCards(params: CardsFetcherParams, skip?: boolean) {
-  const variables = useMemo(() => ({ ...defaultCardModelsFetcherParams, ...params }), [params])
+  const variables = useMemo(() => ({ ...defaultCardsFetcherParams, ...params }), [params])
 
   const { data, loading, fetchMore } = useCardsQuery({ variables, skip })
   const hasNext = data?.cards?.pageInfo?.hasNextPage

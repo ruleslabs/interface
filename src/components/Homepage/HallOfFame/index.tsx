@@ -7,7 +7,7 @@ import Column from 'src/components/Column'
 import { PaginationSpinner } from 'src/components/Spinner'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import UserRow from './UserRow'
-import { useCurrentUserHallOfFame, useHallOfFame } from 'src/graphql/data/users'
+import { useCurrentUserHallOfFame, useHallOfFame } from 'src/graphql/data/Users'
 import SeasonSelector from 'src/components/SeasonSelector'
 
 export default function HallOfFame() {

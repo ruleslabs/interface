@@ -1,35 +1,17 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import styled from 'styled-components/macro'
-import { useLazyQuery, gql } from '@apollo/client'
 import { t } from '@lingui/macro'
 
 import { SearchBar } from 'src/components/Input'
 import Column from 'src/components/Column'
 import { RowCenter } from 'src/components/Row'
-import { useSearchUsers } from 'src/state/search/hooks'
 import useDebounce from 'src/hooks/useDebounce'
 import { TYPE } from 'src/styles/theme'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import { CertifiedBadge } from 'src/components/User/Badge'
 import Avatar from 'src/components/Avatar'
-
-const USERS_QUERY = gql`
-  query ($ids: [ID!]!) {
-    usersByIds(ids: $ids) {
-      id
-      slug
-      username
-      starknetWallet {
-        address
-      }
-      profile {
-        pictureUrl(derivative: "width=128")
-        fallbackUrl(derivative: "width=128")
-        certified
-      }
-    }
-  }
-`
+import { useUsers } from 'src/graphql/data/Users'
+import { PaginationSpinner } from '../Spinner'
 
 const StyledSearchBar = styled(SearchBar)`
   width: 100%;
@@ -124,46 +106,29 @@ export default function UsersSearchBar({ onSelect, selfSearchAllowed = true }: U
 
   const onSearchBarFocus = useCallback(() => setIsSearchBarFocused(true), [setIsSearchBarFocused])
 
-  // hits
-  const [usersHits, setUsersHits] = useState<any[]>([])
-  const [finalUsersHits, setFinalUsersHits] = useState<any[]>([])
-
-  // tables
-  const [usersTable, setUsersTable] = useState<{ [key: string]: any }>({})
-
-  // query offers data
-  const onUsersQueryCompleted = useCallback(
-    (data: any) => {
-      // compute users table
-      setUsersTable(
-        (data.usersByIds as any[]).reduce<{ [key: string]: any }>((acc, user) => {
-          acc[user.id] = user
-          return acc
-        }, {})
-      )
-
-      // final hits
-      setFinalUsersHits(usersHits)
+  // fetch users
+  const { data: users, loading } = useUsers({
+    filter: {
+      search: debouncedSearch,
     },
-    [usersHits]
-  )
-  const [queryUsersData] = useLazyQuery(USERS_QUERY, { onCompleted: onUsersQueryCompleted })
+  })
 
-  // algolia facets
-  const facets = useMemo(
-    () => ({ username: selfSearchAllowed || !currentUser?.username ? undefined : `-${currentUser.username}` }),
-    [selfSearchAllowed, currentUser?.username]
-  )
+  // users component
+  const usersComponents = useMemo(() => {
+    if (!users) return null
 
-  // top 10 search
-  const onPageFetched = useCallback(
-    (hits: any) => {
-      setUsersHits(hits)
-      queryUsersData({ variables: { ids: hits.map((hit: any) => hit.objectID) } })
-    },
-    [queryUsersData]
-  )
-  useSearchUsers({ search: debouncedSearch, facets, onPageFetched })
+    return users
+      .filter((user) => selfSearchAllowed || user.slug !== currentUser?.slug)
+      .map((user) => (
+        <SearchSuggestedUser key={user.slug} onClick={() => handleSelect(user)}>
+          {user.profile.certified && <StyledCertified />}
+          <Avatar src={user.profile.pictureUrl} fallbackSrc={user.profile.fallbackUrl} />
+          <RowCenter gap={4}>
+            <TYPE.body>{user.username}</TYPE.body>
+          </RowCenter>
+        </SearchSuggestedUser>
+      ))
+  }, [users])
 
   // selection
   const handleSelect = useCallback(
@@ -175,30 +140,15 @@ export default function UsersSearchBar({ onSelect, selfSearchAllowed = true }: U
   )
 
   return (
-    <SearchBarWrapper ref={searchBarWrapperRef} focused={isSearchBarFocused && usersHits?.length > 0}>
+    <SearchBarWrapper ref={searchBarWrapperRef} focused={isSearchBarFocused && !!users?.length}>
       <StyledSearchBar
         placeholder={t`Look for a collector...`}
         onUserInput={onSearchBarInput}
         onFocus={onSearchBarFocus}
       />
       <SearchResults>
-        {finalUsersHits
-          .filter((hit) => usersTable[hit.objectID])
-          .map((hit) => (
-            <SearchSuggestedUser
-              key={`user-${usersTable[hit.objectID].username}`}
-              onClick={() => handleSelect(usersTable[hit.objectID])}
-            >
-              {usersTable[hit.objectID].profile.certified && <StyledCertified />}
-              <Avatar
-                src={usersTable[hit.objectID].profile.pictureUrl}
-                fallbackSrc={usersTable[hit.objectID].profile.fallbackUrl}
-              />
-              <RowCenter gap={4}>
-                <TYPE.body>{usersTable[hit.objectID].username}</TYPE.body>
-              </RowCenter>
-            </SearchSuggestedUser>
-          ))}
+        <PaginationSpinner loading={loading} />
+        {usersComponents}
       </SearchResults>
     </SearchBarWrapper>
   )
