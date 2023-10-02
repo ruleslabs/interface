@@ -182,7 +182,13 @@ const DeckCards = ({ deck, indexes, onInsertion, onRemove, isCurrentUserProfile 
               </RemoveButton>
             )}
             <Link href={`/card/${deck[index].cardModel.slug}/${deck[index].serialNumber}`}>
-              <CardVideo src={deck[index].cardModel.videoUrl} playsInline loop autoPlay muted />
+              <CardVideo
+                src={deck[index].cardModel.videoUrl ?? deck[index].cardModel.animationUrl}
+                playsInline
+                loop
+                autoPlay
+                muted
+              />
             </Link>
           </StyledDeckCard>
         ) : (

@@ -1,5 +1,4 @@
 import { useMemo, useCallback, useState } from 'react'
-import { useLazyQuery, gql } from '@apollo/client'
 import { t } from '@lingui/macro'
 
 import { ModalHeader } from 'src/components/Modal'
@@ -8,32 +7,11 @@ import { useModalOpened, useDeckInsertionModalToggle } from 'src/state/applicati
 import { ApplicationModal } from 'src/state/application/actions'
 import Column from 'src/components/Column'
 import { SearchBar } from 'src/components/Input'
-import { useSearchCards } from 'src/state/search/hooks'
 import { useDeckState, useDeckActionHandlers } from 'src/state/deck/hooks'
 import useDebounce from 'src/hooks/useDebounce'
 import CollectionNfts from '../nft/Collection/CollectionNfts'
 import { NftCard } from '../nft/Card'
-
-const CARDS_QUERY = gql`
-  query ($ids: [ID!]!) {
-    cardsByIds(ids: $ids) {
-      id
-      slug
-      serialNumber
-      tokenId
-      cardModel {
-        slug
-        season
-        pictureUrl(derivative: "width=512")
-        videoUrl
-        artistName
-        scarcity {
-          name
-        }
-      }
-    }
-  }
-`
+import { useCards } from 'src/graphql/data/Cards'
 
 interface DeckInsertionModalProps {
   address?: string
@@ -41,7 +19,6 @@ interface DeckInsertionModalProps {
 }
 
 export default function DeckInsertionModal({ address, cardIndex }: DeckInsertionModalProps) {
-  const [cards, setCards] = useState<any[]>([])
   const [search, setSearch] = useState('')
 
   // search bar
@@ -62,7 +39,6 @@ export default function DeckInsertionModal({ address, cardIndex }: DeckInsertion
 
   const handleCardInsertion = useCallback(
     (card: any) => {
-      setCards([])
       setSearch('')
       onInsertion({ card, cardIndex })
       toggleDeckInsertionModal()
@@ -70,61 +46,52 @@ export default function DeckInsertionModal({ address, cardIndex }: DeckInsertion
     [onInsertion, toggleDeckInsertionModal]
   )
 
-  // cards already in deck
-  const dashedDeckCardIds = useMemo(
-    () =>
-      Object.keys(deck).reduce<string[]>((acc, key: string) => {
-        if (deck[+key]) acc.push(`-${deck[+key].id}`) // dashed to exclude them from the algolia search
-        return acc
-      }, []),
-    [deck]
-  )
-
-  // query cards data
-  const onCardsQueryCompleted = useCallback((data: any) => {
-    setCards((state) => state.concat(data.cardsByIds))
-  }, [])
-  const [queryCardsData] = useLazyQuery(CARDS_QUERY, {
-    onCompleted: onCardsQueryCompleted,
-    fetchPolicy: 'cache-and-network',
-  })
-
-  // search cards
-  const onPageFetched = useCallback(
-    (hits, { pageNumber }) => {
-      if (!pageNumber) setCards([])
-
-      queryCardsData({ variables: { ids: hits.map((hit: any) => hit.objectID) } })
+  const {
+    data: cards,
+    loading,
+    hasNext,
+    loadMore,
+  } = useCards(
+    {
+      filter: {
+        ownerStarknetAddress: address ?? '0x0',
+        search: debouncedSearch.length ? debouncedSearch : undefined,
+        seasons: [],
+        scarcityAbsoluteIds: [],
+      },
     },
-    [queryCardsData]
+    !isOpen
   )
-  const cardsSearch = useSearchCards({
-    facets: { ownerStarknetAddress: address, cardId: dashedDeckCardIds },
-    search: debouncedSearch,
-    skip: !isOpen || !address,
-    onPageFetched,
-  })
 
-  const assets = useMemo(
-    () =>
-      cards.map((card) => (
-        <NftCard
-          key={card.slug}
-          asset={{
-            animationUrl: card.cardModel.videoUrl,
-            imageUrl: card.cardModel.pictureUrl,
-            tokenId: card.tokenId,
-            scarcity: card.cardModel.scarcity.name,
-          }}
-          display={{
-            primaryInfo: card.cardModel.artistName,
-            secondaryInfo: card.serialNumber,
-          }}
-          onCardClick={() => handleCardInsertion(card)}
-        />
-      )),
-    [cards]
-  )
+  const cardsComponents = useMemo(() => {
+    if (!cards) return null
+
+    return cards
+      .filter((card) => {
+        for (const cardIndex in deck) {
+          if (deck[cardIndex]?.slug === card.slug) return false
+        }
+        return true
+      })
+      .map((card) => {
+        return (
+          <NftCard
+            key={card.slug}
+            asset={{
+              animationUrl: card.cardModel.animationUrl,
+              imageUrl: card.cardModel.imageUrl,
+              tokenId: card.tokenId,
+              scarcity: card.cardModel.scarcityName,
+            }}
+            display={{
+              primaryInfo: card.cardModel.artistName,
+              secondaryInfo: `#${card.serialNumber}`,
+            }}
+            onCardClick={() => handleCardInsertion(card)}
+          />
+        )
+      })
+  }, [cards, handleCardInsertion])
 
   return (
     <ClassicModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -141,12 +108,13 @@ export default function DeckInsertionModal({ address, cardIndex }: DeckInsertion
             />
 
             <CollectionNfts
-              next={cardsSearch.nextPage}
-              hasNext={cardsSearch.hasNext}
-              dataLength={cards.length}
+              next={loadMore}
+              hasNext={hasNext ?? false}
+              dataLength={cards?.length ?? 0}
               scrollableTarget="scrollableModal"
+              loading={loading}
             >
-              {assets}
+              {cardsComponents}
             </CollectionNfts>
           </Column>
         </ModalBody>

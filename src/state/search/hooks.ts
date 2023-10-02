@@ -134,19 +134,8 @@ export function useCardsFiltersHandlers(): {
 
 const client = algoliasearch(process.env.REACT_APP_ALGOLIA_ID ?? '', process.env.REACT_APP_ALGOLIA_KEY ?? '')
 const algoliaIndexes = {
-  cards: {
-    dateDesc: client.initIndex('cards-tx-index-desc'), // TODO: rename replica
-    dateAsc: client.initIndex('cards-tx-index-asc'), // TODO: rename replica
-    serialDesc: client.initIndex('cards-serial-desc'),
-    serialAsc: client.initIndex('cards-serial-asc'),
-    lastPriceDesc: client.initIndex('cards-last-price-desc'),
-    lastPriceAsc: client.initIndex('cards-last-price-asc'),
-    artistDesc: client.initIndex('cards-artist-desc'),
-    artistAsc: client.initIndex('cards-artist-asc'),
-  },
   users: {
     certified: client.initIndex('users'),
-    cScore: client.initIndex('users-c-score-desc'),
   },
 }
 
@@ -157,7 +146,6 @@ export interface PageFetchedCallbackData {
 
 export type PageFetchedCallback = (hits: any[], data: PageFetchedCallbackData) => void
 
-export type CardsSortingKey = keyof typeof algoliaIndexes.cards
 export type UsersSortingKey = keyof typeof algoliaIndexes.users
 
 interface AlgoliaSearch {
@@ -216,18 +204,15 @@ interface AlgoliaSearchProps {
   algoliaIndex: SearchIndex
   hitsPerPage: number
   onPageFetched?: PageFetchedCallback
-  skip: boolean
   pageNumber?: number
 }
 
 function useAlgoliaSearch({
   search = '',
   facets = {},
-  numericFilters = [],
   algoliaIndex,
   hitsPerPage,
   onPageFetched,
-  skip,
   pageNumber = ALGOLIA_FIRST_PAGE,
 }: AlgoliaSearchProps): AlgoliaSearch {
   const [searchResult, setSearchResult] = useState<Omit<AlgoliaSearch, 'hasNext' | 'nextPage'>>({
@@ -244,7 +229,7 @@ function useAlgoliaSearch({
       setSearchResult((searchResult) => ({ ...searchResult, loading: true, error: null }))
 
       algoliaIndex
-        .search(search, { facetFilters, numericFilters, page: pageNumber, hitsPerPage })
+        .search(search, { facetFilters, page: pageNumber, hitsPerPage })
         .then((res: any) => {
           setSearchResult((searchResult) => ({
             hits: onPageFetched ? [] : (searchResult.hits ?? []).concat(res.hits),
@@ -263,7 +248,7 @@ function useAlgoliaSearch({
           console.error(err)
         })
     },
-    [algoliaIndex, facetFilters, hitsPerPage, numericFilters.join(''), search, onPageFetched]
+    [algoliaIndex, facetFilters, hitsPerPage, search, onPageFetched]
   )
 
   // next page callback
@@ -273,11 +258,9 @@ function useAlgoliaSearch({
 
   // refresh
   useEffect(() => {
-    if (!skip) {
-      setPageOffset(0)
-      runSearch(pageNumber)
-    }
-  }, [skip, runSearch])
+    setPageOffset(0)
+    runSearch(pageNumber)
+  }, [runSearch])
 
   return {
     nextPage: () => (pageOffset === null ? undefined : nextPage()),
@@ -286,79 +269,24 @@ function useAlgoliaSearch({
   }
 }
 
-// CARDS
-
-interface SearchCardsProps {
-  facets?: {
-    ownerStarknetAddress?: string
-    cardId?: string | string[]
-    scarcityAbsoluteId?: string[]
-    season?: string[]
-  }
-  sortingKey?: CardsSortingKey
-  search?: string
-  skip?: boolean
-  hitsPerPage?: number
-  onPageFetched?: PageFetchedCallback
-}
-
-export function useSearchCards({
-  search = '',
-  facets = {},
-  sortingKey = Object.keys(algoliaIndexes.cards)[0] as CardsSortingKey,
-  hitsPerPage = ASSETS_PAGE_SIZE,
-  onPageFetched,
-  skip = false,
-}: SearchCardsProps): AlgoliaSearch {
-  return useAlgoliaSearch({
-    facets: {
-      ...facets,
-      cardId: undefined,
-      objectID: facets.cardId,
-    },
-    algoliaIndex: algoliaIndexes.cards[sortingKey],
-    hitsPerPage,
-    onPageFetched,
-    skip,
-    search,
-  })
-}
-
 // USERS
 
 interface SearchUsersProps {
   search?: string
-  hitsPerPage?: number
-  sortingKey?: UsersSortingKey
   onPageFetched?: PageFetchedCallback
-  skip?: boolean
-  numericFilters?: string[]
-  pageNumber?: number
   facets?: {
     username?: string
     userId?: string
   }
 }
 
-export function useSearchUsers({
-  search = '',
-  facets = {},
-  numericFilters,
-  sortingKey = Object.keys(algoliaIndexes.users)[0] as UsersSortingKey,
-  hitsPerPage = 10,
-  skip = false,
-  onPageFetched,
-  pageNumber,
-}: SearchUsersProps) {
+export function useSearchUsers({ search = '', facets = {}, onPageFetched }: SearchUsersProps) {
   return useAlgoliaSearch({
     facets: { ...facets, userId: undefined, objectID: facets.userId },
-    numericFilters,
     search,
-    algoliaIndex: algoliaIndexes.users[sortingKey],
-    hitsPerPage,
+    algoliaIndex: algoliaIndexes.users['certified'],
+    hitsPerPage: 10,
     onPageFetched,
-    skip,
-    pageNumber,
   })
 }
 

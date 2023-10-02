@@ -3,10 +3,12 @@ import gql from 'graphql-tag'
 import { ScarcityName } from '@rulesorg/sdk-core'
 
 import {
-  CardModelsQueryVariables,
   CardsFilterInput,
   CardsQuery,
+  CardsQueryVariables,
   CardsSortInput,
+  CardsSortingType,
+  SortingOption,
   useCardsQuery,
 } from './__generated__/types-and-hooks'
 import { Card } from 'src/types'
@@ -62,15 +64,16 @@ export function formatCardQueryData({ node: queryCard }: NonNullable<CardsQuery[
 
 export interface CardsFetcherParams {
   filter: CardsFilterInput
-  sort: CardsSortInput
+  sort?: CardsSortInput
   first?: number
   after?: string
 }
 
 export const CARD_MODELS_PAGE_SIZE = 25
 
-const defaultCardModelsFetcherParams: Omit<CardModelsQueryVariables, 'filter' | 'sort'> = {
+const defaultCardModelsFetcherParams: Omit<CardsQueryVariables, 'filter'> = {
   first: CARD_MODELS_PAGE_SIZE,
+  sort: { direction: SortingOption.Desc, type: CardsSortingType.Age },
 }
 
 export function useCards(params: CardsFetcherParams, skip?: boolean) {

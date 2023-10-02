@@ -84,6 +84,7 @@ export const apolloClient = new ApolloClient({
         fields: {
           cardListings: relayStylePagination(),
           cardModels: relayStylePagination(),
+          cards: relayStylePagination(),
         },
       },
     },
