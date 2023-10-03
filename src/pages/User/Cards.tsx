@@ -29,7 +29,7 @@ import { CardsFiltersModal } from 'src/components/FiltersModal'
 
 import { ReactComponent as Present } from 'src/images/present.svg'
 import { ReactComponent as HopperIcon } from 'src/images/hopper.svg'
-import { useCards } from 'src/graphql/data/Cards'
+import { useCards, useCardsCount } from 'src/graphql/data/Cards'
 import { CardsSortingType, SortingOption } from 'src/graphql/data/__generated__/types-and-hooks'
 
 // css
@@ -206,6 +206,14 @@ function UserCards() {
     sort,
   })
 
+  const { data: cardsCount } = useCardsCount({
+    filter: {
+      ownerStarknetAddress: user?.address ?? '0x0',
+      seasons: cardsFilters.seasons,
+      scarcityAbsoluteIds: cardsFilters.scarcities,
+    },
+  })
+
   const cardsComponents = useMemo(() => {
     if (!cards) return null
 
@@ -236,7 +244,7 @@ function UserCards() {
     })
   }, [cards, listings])
 
-  const cardsCount = 1
+  console.log(cardsCount)
 
   if (!user) return null
 
@@ -251,14 +259,18 @@ function UserCards() {
           <Column gap={'16'}>
             <GridHeader>
               <SelectionButtonWrapper>
-                <TYPE.body>
-                  <Plural value={cardsCount} _1="{cardsCount} card" other="{cardsCount} cards" />
-                </TYPE.body>
+                {cardsCount && (
+                  <>
+                    <TYPE.body>
+                      <Plural value={cardsCount} _1="{cardsCount} card" other="{cardsCount} cards" />
+                    </TYPE.body>
 
-                {user.isCurrentUser && (
-                  <SelectionButton onClick={toggleSelectionMode}>
-                    {selectionModeEnabled ? t`Cancel` : t`Select`}
-                  </SelectionButton>
+                    {user.isCurrentUser && (
+                      <SelectionButton onClick={toggleSelectionMode}>
+                        {selectionModeEnabled ? t`Cancel` : t`Select`}
+                      </SelectionButton>
+                    )}
+                  </>
                 )}
               </SelectionButtonWrapper>
 

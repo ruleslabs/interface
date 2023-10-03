@@ -9,6 +9,7 @@ import {
   CardsSortInput,
   CardsSortingType,
   SortingOption,
+  useCardsCountQuery,
   useCardsQuery,
 } from './__generated__/types-and-hooks'
 import { Card } from 'src/types'
@@ -42,6 +43,12 @@ gql`
         }
       }
     }
+  }
+`
+
+gql`
+  query CardsCount($filter: CardsFilterInput!) {
+    cardsCount(filter: $filter)
   }
 `
 
@@ -107,4 +114,23 @@ export function useCards(params: CardsFetcherParams, skip?: boolean) {
       loadMore,
     }
   }, [cards, hasNext, loadMore, loading])
+}
+
+// Cards count
+
+export interface CardsCountFetcherParams {
+  filter: CardsFilterInput
+}
+
+export function useCardsCount(params: CardsCountFetcherParams, skip?: boolean) {
+  const { data, loading } = useCardsCountQuery({ variables: params, skip })
+
+  const cardsCount = data?.cardsCount
+
+  return useMemo(() => {
+    return {
+      data: cardsCount,
+      loading,
+    }
+  }, [cardsCount, loading])
 }
