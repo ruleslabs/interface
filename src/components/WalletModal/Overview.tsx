@@ -142,7 +142,7 @@ export default function Overview() {
 
                 <Link
                   target="_blank"
-                  href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId).explorer}tx/${tx.hash}`}
+                  href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId)?.explorer}tx/${tx.hash}`}
                   color={'text2'}
                 >
                   <Icons.ExternalLink width={'16'} display={'block'} />

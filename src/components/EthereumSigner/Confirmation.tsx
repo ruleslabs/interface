@@ -122,7 +122,7 @@ export default function Confirmation({ confirmationText, transactionDesc, txHash
 
       {txHash && (
         <EtherscanButtonWrapper>
-          <Link target="_blank" href={`${getChainInfo(rulesSdk.networkInfos.ethereumChainId).explorer}tx/${txHash}`}>
+          <Link target="_blank" href={`${getChainInfo(rulesSdk.networkInfos.ethereumChainId)?.explorer}tx/${txHash}`}>
             <PrimaryButton large>
               <Trans>See on Etherscan</Trans>
             </PrimaryButton>

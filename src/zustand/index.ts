@@ -6,8 +6,9 @@ import { UserSlice, createUserSlice } from './user'
 import { StarknetTxSlice, createStarknetTxSlice } from './starknetTx'
 import { ApplicationSlice, createApplicationSlice } from './application'
 import { AssetsSlice, createAssetsSlice } from './assets'
+import { L1WalletSlice, createL1WalletSlice } from './l1Wallet'
 
-export type StoreState = UserSlice & StarknetTxSlice & ApplicationSlice & AssetsSlice
+export type StoreState = UserSlice & StarknetTxSlice & ApplicationSlice & AssetsSlice & L1WalletSlice
 
 const PERSISTING_KEYS: Array<keyof StoreState> = ['stxHash', 'stxAction', 'pendingOperations', 'executedStxs']
 
@@ -18,6 +19,7 @@ export const useBoundStore = create<StoreState>()(
       ...createStarknetTxSlice(...a),
       ...createApplicationSlice(...a),
       ...createAssetsSlice(...a),
+      ...createL1WalletSlice(...a),
     })),
     {
       name: 'rules-state-storage',

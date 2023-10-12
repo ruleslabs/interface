@@ -11,7 +11,7 @@ import Column from 'src/components/Column'
 import { RowCenter } from 'src/components/Row'
 import { TYPE } from 'src/styles/theme'
 import { PrimaryButton } from 'src/components/Button'
-import Metamask from 'src/components/Metamask'
+import { EthereumStatus } from 'src/components/Web3Status'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import EthereumSigner from 'src/components/EthereumSigner'
 import { useEthereumMulticallContract, useEthereumStarkgateContract } from 'src/hooks/useContract'
@@ -165,7 +165,7 @@ export default function EtherRetrieveModal() {
 
                       <Link
                         target="_blank"
-                        href={`${getChainInfo(rulesSdk.networkInfos.ethereumChainId).explorer}/address/${
+                        href={`${getChainInfo(rulesSdk.networkInfos.ethereumChainId)?.explorer}/address/${
                           retrievableEther.l1Recipient
                         }`}
                       >
@@ -189,11 +189,11 @@ export default function EtherRetrieveModal() {
                 </RetrievableWrapper>
               ))}
 
-              <Metamask>
+              <EthereumStatus>
                 <PrimaryButton onClick={onRetrieve} large>
                   <Trans>Validate all</Trans>
                 </PrimaryButton>
-              </Metamask>
+              </EthereumStatus>
             </Column>
           </EthereumSigner>
         </ModalBody>

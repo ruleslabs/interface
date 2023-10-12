@@ -1,17 +1,17 @@
 import { useCallback, useState, useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { Trans, t } from '@lingui/macro'
+import { useWeb3React } from '@web3-react/core'
 
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import Column from 'src/components/Column'
 import CurrencyInput from 'src/components/Input/CurrencyInput'
-import { metaMaskHooks } from 'src/constants/connectors'
 import { PrimaryButton } from 'src/components/Button'
 import { useEthereumETHBalance } from 'src/state/wallet/hooks'
 import tryParseWeiAmount from 'src/utils/tryParseWeiAmount'
 import { useEthereumStarkgateContract } from 'src/hooks/useContract'
 import Wallet from 'src/components/Wallet'
-import Metamask from 'src/components/Metamask'
+import { EthereumStatus } from 'src/components/Web3Status'
 import EthereumSigner from 'src/components/EthereumSigner'
 import { L2_STARKGATE_DEPOSIT_HANDLER_SELECTOR_NAME } from 'src/constants/misc'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
@@ -19,8 +19,6 @@ import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import { ReactComponent as Arrow } from 'src/images/arrow.svg'
 import { constants } from '@rulesorg/sdk-core'
 import { ModalBody } from '../Modal/Sidebar'
-
-const { useAccount: useEthereumAccount } = metaMaskHooks
 
 const ArrowWrapper = styled(Column)`
   width: 36px;
@@ -46,7 +44,7 @@ export default function StarkgateDeposit() {
   const { currentUser } = useCurrentUser()
 
   // metamask
-  const ethereumAddress = useEthereumAccount()
+  const { account: l1Account } = useWeb3React()
 
   // deposit amount
   const [depositAmount, setDepositAmount] = useState('')
@@ -54,7 +52,7 @@ export default function StarkgateDeposit() {
   const parsedDepositAmount = useMemo(() => tryParseWeiAmount(depositAmount), [depositAmount])
 
   // balance
-  const balance = useEthereumETHBalance(ethereumAddress)
+  const balance = useEthereumETHBalance(l1Account)
 
   // tx
   const [txHash, setTxHash] = useState<string | null>(null)
@@ -133,7 +131,7 @@ export default function StarkgateDeposit() {
         txHash={txHash ?? undefined}
         error={error ?? undefined}
       >
-        <Metamask>
+        <EthereumStatus>
           <Column gap={32}>
             <Column>
               <CurrencyInput
@@ -160,7 +158,7 @@ export default function StarkgateDeposit() {
               )}
             </PrimaryButton>
           </Column>
-        </Metamask>
+        </EthereumStatus>
       </EthereumSigner>
     </ModalBody>
   )

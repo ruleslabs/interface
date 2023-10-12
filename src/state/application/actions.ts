@@ -21,6 +21,11 @@ export enum ApplicationModal {
   CLAIM_LIVE_REWARD,
 }
 
+export enum WalletConnectModal {
+  ETHEREUM,
+  STARKNET,
+}
+
 export enum ApplicationSidebarModal {
   NAV_MOBILE,
   NAV_USER_MOBILE,
@@ -30,6 +35,9 @@ export enum ApplicationSidebarModal {
 export const setOpenedModal = createAction<{ modal: ApplicationModal | null }>('application/setOpenModal')
 export const setOpenedSidebarModal = createAction<{ modal: ApplicationSidebarModal | null }>(
   'application/setOpenSidebarModal'
+)
+export const setOpenedWalletConnectModal = createAction<{ modal: WalletConnectModal | null }>(
+  'application/setOpenedWalletConnectModal'
 )
 
 export const updateEtherPrice = createAction<{ price?: number }>('application/updateEtherPrice')

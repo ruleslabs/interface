@@ -83,7 +83,7 @@ function EtherWithdrawMessage({ address, parsedMessage }: EtherWithdrawMessagePr
         <span> </span>
         <EtherscanLink
           target="_blank"
-          href={`${getChainInfo(rulesSdk.networkInfos.ethereumChainId).explorer}/address/${parsedMessage.l1Recipient}`}
+          href={`${getChainInfo(rulesSdk.networkInfos.ethereumChainId)?.explorer}/address/${parsedMessage.l1Recipient}`}
         >
           <RowCenter gap={6}>
             {reducedL1Recipient}

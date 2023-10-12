@@ -1,17 +1,17 @@
 import { useCallback, useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
+import { useWeb3React } from '@web3-react/core'
 
 import Column from 'src/components/Column'
 import { PrimaryButton } from 'src/components/Button'
 import tryParseWeiAmount from 'src/utils/tryParseWeiAmount'
 import CurrencyInput from 'src/components/Input/CurrencyInput'
-import { metaMaskHooks } from 'src/constants/connectors'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import StarknetSigner from 'src/components/StarknetSigner/Transaction'
 import { useETHBalance } from 'src/state/wallet/hooks'
 import Wallet from 'src/components/Wallet'
-import Metamask from 'src/components/Metamask'
+import { EthereumStatus } from 'src/components/Web3Status'
 import * as Text from 'src/theme/components/Text'
 
 import { ReactComponent as Arrow } from 'src/images/arrow.svg'
@@ -21,8 +21,6 @@ import { useModalOpened } from 'src/state/application/hooks'
 import { ApplicationModal } from 'src/state/application/actions'
 import useStarknetTx from 'src/hooks/useStarknetTx'
 import { ModalBody } from '../Modal/Sidebar'
-
-const { useAccount } = metaMaskHooks
 
 const ArrowWrapper = styled(Column)`
   width: 36px;
@@ -53,7 +51,7 @@ export default function StarkgateWithdraw() {
   const isOpen = useModalOpened(ApplicationModal.WALLET)
 
   // metamask
-  const account = useAccount()
+  const { account: l1Account } = useWeb3React()
 
   // balance
   const address = currentUser?.starknetWallet.address ?? ''
@@ -70,7 +68,7 @@ export default function StarkgateWithdraw() {
   const handleConfirmation = useCallback(() => {
     const ethAddress = constants.ETH_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
     const l2StarkgateAddress = constants.STARKGATE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
-    if (!parsedWithdrawAmount || !account || !ethAddress || !l2StarkgateAddress) return
+    if (!parsedWithdrawAmount || !l1Account || !ethAddress || !l2StarkgateAddress) return
 
     const amount = parsedWithdrawAmount.quotient.toString()
 
@@ -83,12 +81,12 @@ export default function StarkgateWithdraw() {
       {
         contractAddress: l2StarkgateAddress,
         entrypoint: 'initiate_withdraw',
-        calldata: [account, amount, 0],
+        calldata: [l1Account, amount, 0],
       },
     ])
     increaseTxValue(parsedWithdrawAmount)
     setSigning(true)
-  }, [parsedWithdrawAmount, account, setSigning, increaseTxValue, setCalls])
+  }, [parsedWithdrawAmount, l1Account, setSigning, increaseTxValue, setCalls])
 
   // next step check
   const canWithdraw = useMemo(
@@ -103,7 +101,7 @@ export default function StarkgateWithdraw() {
   return (
     <ModalBody>
       <StarknetSigner action={'ethTransfer'}>
-        <Metamask>
+        <EthereumStatus>
           <Column gap={32}>
             <Text.Body>
               <Trans>
@@ -137,7 +135,7 @@ export default function StarkgateWithdraw() {
               )}
             </PrimaryButton>
           </Column>
-        </Metamask>
+        </EthereumStatus>
       </StarknetSigner>
     </ModalBody>
   )

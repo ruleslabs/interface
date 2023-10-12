@@ -3,7 +3,14 @@ import { useWeb3React } from '@web3-react/core'
 
 import { AppState } from 'src/state'
 import { useAppSelector, useAppDispatch } from 'src/state/hooks'
-import { setOpenedModal, setOpenedSidebarModal, ApplicationModal, ApplicationSidebarModal } from './actions'
+import {
+  setOpenedModal,
+  setOpenedSidebarModal,
+  ApplicationModal,
+  ApplicationSidebarModal,
+  WalletConnectModal,
+  setOpenedWalletConnectModal,
+} from './actions'
 
 // BLOCK NUMBER
 
@@ -34,6 +41,11 @@ export function useModalOpened(modal: ApplicationModal | ApplicationSidebarModal
 export function useSidebarModalOpened(modal: ApplicationSidebarModal): boolean {
   const openedSidebarModal = useAppSelector((state) => state.application.openedSidebarModal)
   return openedSidebarModal === modal
+}
+
+export function useWalletConnectModalOpened(modal: WalletConnectModal): boolean {
+  const openedWalletConnectModal = useAppSelector((state) => state.application.openedWalletConnectModal)
+  return openedWalletConnectModal === modal
 }
 
 // OPEN
@@ -70,6 +82,15 @@ export function useToggleSidebarModal(modal: ApplicationSidebarModal): () => voi
   const isOpen = useSidebarModalOpened(modal)
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setOpenedSidebarModal({ modal: isOpen ? null : modal })), [dispatch, modal, isOpen])
+}
+
+export function useToggleWalletConnectModal(modal: WalletConnectModal): () => void {
+  const isOpen = useWalletConnectModalOpened(modal)
+  const dispatch = useAppDispatch()
+  return useCallback(
+    () => dispatch(setOpenedWalletConnectModal({ modal: isOpen ? null : modal })),
+    [dispatch, modal, isOpen]
+  )
 }
 
 // CLASSIC
@@ -158,4 +179,14 @@ export function useNavModalMobileToggle(): () => void {
 
 export function useNavModalUserMobileToggle(): () => void {
   return useToggleSidebarModal(ApplicationSidebarModal.NAV_USER_MOBILE)
+}
+
+// WALLET CONNECT
+
+export function useEthereumWalletConnectModalToggle(): () => void {
+  return useToggleWalletConnectModal(WalletConnectModal.ETHEREUM)
+}
+
+export function useStarknetWalletConnectModalToggle(): () => void {
+  return useToggleWalletConnectModal(WalletConnectModal.STARKNET)
 }

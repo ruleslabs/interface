@@ -6,6 +6,7 @@ import SettingsLayout from 'src/components/Layout/Settings'
 import Column from 'src/components/Column'
 import Title from 'src/components/Text/Title'
 import StarknetAccountStatus from 'src/components/Settings/StarknetAccountStatus'
+import { ExternalStarknetAccountStatus } from 'src/components/Settings/ExternalWalletStatus'
 
 const StyledStarknetSettings = styled(Column)`
   width: 100%;
@@ -19,6 +20,12 @@ function StarknetSettings() {
         <Title value={t`My account`} />
 
         <StarknetAccountStatus />
+      </Column>
+
+      <Column gap={24}>
+        <Title value={t`External wallet`} />
+
+        <ExternalStarknetAccountStatus />
       </Column>
     </StyledStarknetSettings>
   )

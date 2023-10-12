@@ -277,7 +277,7 @@ interface EtherscanButtonProps {
 
 export const EtherscanButton = ({ txHash }: EtherscanButtonProps) => (
   <StyledEtherscanButton>
-    <Link target="_blank" href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId).explorer}tx/${txHash}`}>
+    <Link target="_blank" href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId)?.explorer}tx/${txHash}`}>
       <PrimaryButton large>
         <Trans>See on Starkscan</Trans>
       </PrimaryButton>

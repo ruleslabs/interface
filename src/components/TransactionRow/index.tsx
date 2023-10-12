@@ -202,7 +202,7 @@ const TransactionRow = React.forwardRef<HTMLDivElement, TransactionRowProps>(
           </HeaderRow>
 
           <div>
-            <Link target="_blank" href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId).explorer}/tx/${hash}`}>
+            <Link target="_blank" href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId)?.explorer}/tx/${hash}`}>
               <RowCenter gap={6}>
                 <StarkscanLink>{reducedHash}</StarkscanLink>
                 <StyledExternalLinkIcon />
@@ -214,7 +214,7 @@ const TransactionRow = React.forwardRef<HTMLDivElement, TransactionRowProps>(
             {blockNumber ? (
               <Link
                 target="_blank"
-                href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId).explorer}/block/${blockNumber}`}
+                href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId)?.explorer}/block/${blockNumber}`}
               >
                 <RowCenter gap={6}>
                   <StarkscanLink>{blockNumber}</StarkscanLink>
