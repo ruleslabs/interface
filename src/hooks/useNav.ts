@@ -57,10 +57,10 @@ export function useNavUserLinks(userSlug?: string): NavUserLinks | null {
           { name: t`Activity`, link: `/user/${userSlug}/activity` },
         ],
       },
-      // wallet: {
-      //   name: t`Wallet`,
-      //   links: [{ name: t`Migrate collection`, handler: toggleMigrateCollectionModal }],
-      // },
+      wallet: {
+        name: t`Wallet`,
+        links: [],
+      },
       misc: {
         links: [
           { name: t`Settings`, link: '/settings/profile' },
