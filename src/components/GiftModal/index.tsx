@@ -3,6 +3,7 @@ import styled from 'styled-components/macro'
 import { t, Trans } from '@lingui/macro'
 import { gql, useQuery } from '@apollo/client'
 import { constants } from '@rulesorg/sdk-core'
+import { Call, uint256 } from 'starknet'
 
 import { ModalHeader } from 'src/components/Modal'
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
@@ -21,11 +22,10 @@ import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import useStarknetTx from 'src/hooks/useStarknetTx'
 import { Operation } from 'src/types'
+import { useIsDeployed } from 'src/state/wallet/hooks'
 import { useOperations } from 'src/hooks/usePendingOperations'
 
 import { ReactComponent as Arrow } from 'src/images/arrow.svg'
-import { Call, uint256 } from 'starknet'
-import { useIsDeployed } from 'src/state/wallet/hooks'
 
 const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
 
@@ -226,7 +226,7 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
       ...voucherRedeemCalls,
       {
         contractAddress: rulesTokensAddress,
-        entrypoint: 'safe_batch_transfer_from',
+        entrypoint: 'batch_transfer_from',
         calldata: [
           { from: address },
           { to: recipient.starknetWallet.address },
@@ -239,8 +239,6 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
 
           { amountsLent: tokenIds.length },
           ...tokenIds.flatMap(() => [1, 0]), // amount.low, amount.high
-
-          { dataLen: 0 },
         ],
       },
     ])

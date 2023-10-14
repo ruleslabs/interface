@@ -5,38 +5,38 @@ import DefaultLayout from 'src/components/Layout'
 import SettingsLayout from 'src/components/Layout/Settings'
 import Column from 'src/components/Column'
 import Title from 'src/components/Text/Title'
-import StarknetAccountStatus from 'src/components/Settings/StarknetAccountStatus'
-import { ExternalStarknetAccountStatus } from 'src/components/Settings/ExternalWalletStatus'
+import EtherRetriever from 'src/components/Settings/EtherRetriever'
+import { ExternalEthereumWalletStatus } from 'src/components/Settings/ExternalWalletStatus'
 
-const StyledStarknetSettings = styled(Column)`
+const StyledEthereumSettings = styled(Column)`
   width: 100%;
   gap: 48px;
 `
 
-function StarknetSettings() {
+function EthereumSettings() {
   return (
-    <StyledStarknetSettings>
+    <StyledEthereumSettings>
       <Column gap={24}>
-        <Title value={t`My account`} />
+        <Title value={t`ETH retrieve`} />
 
-        <StarknetAccountStatus />
+        <EtherRetriever />
       </Column>
 
       <Column gap={24}>
         <Title value={t`External wallet`} />
 
-        <ExternalStarknetAccountStatus />
+        <ExternalEthereumWalletStatus />
       </Column>
-    </StyledStarknetSettings>
+    </StyledEthereumSettings>
   )
 }
 
-StarknetSettings.withLayout = () => (
+EthereumSettings.withLayout = () => (
   <DefaultLayout>
     <SettingsLayout>
-      <StarknetSettings />
+      <EthereumSettings />
     </SettingsLayout>
   </DefaultLayout>
 )
 
-export default StarknetSettings
+export default EthereumSettings

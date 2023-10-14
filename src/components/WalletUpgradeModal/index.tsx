@@ -1,46 +1,131 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { constants } from '@rulesorg/sdk-core'
 import { Trans, t } from '@lingui/macro'
+import { useAccount } from '@starknet-react/core'
+import { gql, useQuery } from '@apollo/client'
+import { Call, uint256 } from 'starknet'
 
-import { useModalOpened, useUpgradeWalletModalToggle } from 'src/state/application/hooks'
+import { useModalOpened, useMigrateCollectionModalToggle } from 'src/state/application/hooks'
 import { ApplicationModal } from 'src/state/application/actions'
 import useCurrentUser from 'src/hooks/useCurrentUser'
-import Column from 'src/components/Column'
 import { PrimaryButton } from 'src/components/Button'
-import StarknetSigner from 'src/components/StarknetSigner/Transaction'
 import { TYPE } from 'src/styles/theme'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import useStarknetTx from 'src/hooks/useStarknetTx'
 import ClassicModal, { ModalBody, ModalContent } from '../Modal/Classic'
 import { ModalHeader } from '../Modal'
+import { StarknetStatus } from '../Web3Status'
+import { Column } from 'src/theme/components/Flex'
+import StarknetSigner from '../StarknetSigner/Transaction'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { PaginationSpinner } from '../Spinner'
 
-export default function UpgradeWalletModal() {
+const CARDS_QUERY = gql`
+  query ($address: String!) {
+    cards(
+      filter: { ownerStarknetAddress: $address, seasons: [], scarcityAbsoluteIds: [] }
+      sort: { direction: DESC, type: AGE }
+    ) {
+      nodes {
+        serialNumber
+        tokenId
+        cardModel {
+          id
+          pictureUrl(derivative: "width=256")
+          season
+          scarcity {
+            name
+          }
+          artistName
+        }
+        voucherSigningData {
+          signature {
+            r
+            s
+          }
+          salt
+        }
+      }
+    }
+  }
+`
+
+export default function MigrateCollectionModal() {
   // current user
   const { currentUser } = useCurrentUser()
 
   // modal
-  const isOpen = useModalOpened(ApplicationModal.UPGRADE_WALLET)
-  const toggleUpgradeWalletModal = useUpgradeWalletModalToggle()
+  const isOpen = useModalOpened(ApplicationModal.MIGRATE_COLLECTION)
+  const toggleMigrateCollectionModal = useMigrateCollectionModalToggle()
 
-  // starknet account
-  const { address } = useRulesAccount()
+  // starknet accounts
+  const { address: rulesAddress } = useRulesAccount()
+  const { address: externalAddress } = useAccount()
 
   // starknet tx
   const { setCalls, resetStarknetTx, setSigning, signing } = useStarknetTx()
 
-  // call
-  const handleConfirmation = useCallback(() => {
-    if (!address) return
+  // cards query
+  const cardsQuery = useQuery(CARDS_QUERY, { variables: { address: rulesAddress }, skip: !isOpen })
+  const cards: any[] = cardsQuery.data?.cards?.nodes ?? []
 
+  // voucher signing data map
+  const vouchersSigningDataMap = useMemo(
+    () =>
+      (cards as any[]).reduce<any>((acc, card) => {
+        acc[card.tokenId] = card.voucherSigningData
+        return acc
+      }, {}),
+    [cards.length]
+  )
+
+  // call
+  const handleMigration = useCallback(() => {
+    if (!rulesAddress || !externalAddress) return
+
+    const rulesTokensAddress = constants.RULES_TOKENS_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+
+    const voucherRedeemCalls = cards
+      .map((card) =>
+        vouchersSigningDataMap[card.tokenId]
+          ? rulesSdk.getVoucherRedeemToCall(
+              rulesAddress,
+              externalAddress,
+              card.tokenId,
+              1,
+              vouchersSigningDataMap[card.tokenId].salt,
+              vouchersSigningDataMap[card.tokenId].signature
+            )
+          : null
+      )
+      .filter((call): call is Call => !!call)
+
+    const mintedCards = cards.filter((card) => !vouchersSigningDataMap[card.tokenId])
+
+    // save calls
     setCalls([
+      ...voucherRedeemCalls,
       {
-        contractAddress: address,
-        entrypoint: 'upgrade',
-        calldata: [constants.ACCOUNT_CLASS_HASH],
+        contractAddress: rulesTokensAddress,
+        entrypoint: 'batch_transfer_from',
+        calldata: [
+          { from: rulesAddress },
+          { to: externalAddress },
+
+          { idsLen: mintedCards.length },
+          ...mintedCards.flatMap((card) => {
+            const u256TokenId = uint256.bnToUint256(card.tokenId)
+            return [u256TokenId.low, u256TokenId.high]
+          }), // ids
+
+          { amountsLent: mintedCards.length },
+          ...mintedCards.flatMap(() => [1, 0]), // amount.low, amount.high
+        ],
       },
     ])
+
     setSigning(true)
-  }, [address, setCalls, setSigning])
+  }, [rulesAddress, externalAddress, setCalls, setSigning, cards.length])
 
   // on close modal
   useEffect(() => {
@@ -49,43 +134,46 @@ export default function UpgradeWalletModal() {
     }
   }, [isOpen])
 
+  // loading
+  const loading = cardsQuery.loading
+
+  const modalContent = useMemo(() => {
+    if (loading) {
+      return <PaginationSpinner loading />
+    }
+
+    if (cards.length) {
+      return (
+        <Column gap={'24'}>
+          <TYPE.medium textAlign="center">
+            <Trans>You need to migrate {cards.length} cards and packs to an external Starknet wallet.</Trans>
+          </TYPE.medium>
+
+          <StarknetStatus>
+            <PrimaryButton onClick={handleMigration} large>
+              <Trans>Migrate !</Trans>
+            </PrimaryButton>
+          </StarknetStatus>
+        </Column>
+      )
+    }
+
+    return (
+      <TYPE.medium textAlign="center">
+        <Trans>Nothing to migrate !</Trans>
+      </TYPE.medium>
+    )
+  }, [loading, cards.length, handleMigration])
+
   if (!currentUser) return null
 
   return (
-    <ClassicModal onDismiss={toggleUpgradeWalletModal} isOpen={isOpen}>
+    <ClassicModal onDismiss={toggleMigrateCollectionModal} isOpen={isOpen}>
       <ModalContent>
-        <ModalHeader onDismiss={toggleUpgradeWalletModal} title={signing ? undefined : t`Wallet upgrade`} />
+        <ModalHeader onDismiss={toggleMigrateCollectionModal} title={signing ? undefined : t`Collection migration`} />
 
         <ModalBody>
-          {currentUser.starknetWallet.needsUpgrade ? (
-            <StarknetSigner action={'walletDeployment'}>
-              <Column gap={32}>
-                <Column gap={16}>
-                  <TYPE.large>
-                    <Trans>Your wallet needs to be upgraded.</Trans>
-                  </TYPE.large>
-
-                  <TYPE.body>
-                    <Trans>
-                      Starknet released a new update to improve the network, and it implies some changes for your
-                      wallet. To keep on working, your wallet needs to be upgraded as soon as possible.
-                      <br />
-                      <br />
-                      If you don&apos;t perform the upgrade on time, your wallet will be temporarily locked.
-                    </Trans>
-                  </TYPE.body>
-                </Column>
-
-                <PrimaryButton onClick={handleConfirmation} large>
-                  <Trans>Upgrade</Trans>
-                </PrimaryButton>
-              </Column>
-            </StarknetSigner>
-          ) : (
-            <TYPE.large textAlign="center">
-              <Trans>Your wallet is up-to-date 🎉</Trans>
-            </TYPE.large>
-          )}
+          <StarknetSigner action={'transfer'}>{modalContent}</StarknetSigner>
         </ModalBody>
       </ModalContent>
     </ClassicModal>

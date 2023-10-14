@@ -25,35 +25,42 @@ export function useEstimateFees() {
 
   const { account } = useRulesAccount()
 
-  const estimatedFees = useCallback(async () => {
-    const stxAccount = migration ? account?.old : account
-    if (!stxAccount) return
+  const estimatedFees = useCallback(
+    async (privateKey?: string) => {
+      const stxAccount = migration ? account?.old : account
+      if (!stxAccount) return
 
-    setLoading(true)
-    setError(null)
-
-    try {
-      let estimatedFees: EstimateFee | undefined
-
-      if (accountDeploymentPayload) {
-        estimatedFees = await stxAccount.estimateAccountDeployFee(accountDeploymentPayload)
-      } else {
-        estimatedFees = await stxAccount.estimateFee(calls)
+      if (privateKey) {
+        stxAccount.updateSigner(privateKey)
       }
 
-      const maxFee = estimatedFees.suggestedMaxFee.toString() ?? '0'
-      const fee = estimatedFees.overall_fee.toString() ?? '0'
-      if (!+maxFee || !+fee) {
-        throw new Error('Failed to estimate fees')
+      setLoading(true)
+      setError(null)
+
+      try {
+        let estimatedFees: EstimateFee | undefined
+
+        if (accountDeploymentPayload) {
+          estimatedFees = await stxAccount.estimateAccountDeployFee(accountDeploymentPayload)
+        } else {
+          estimatedFees = await stxAccount.estimateFee(calls)
+        }
+
+        const maxFee = estimatedFees.suggestedMaxFee.toString() ?? '0'
+        const fee = estimatedFees.overall_fee.toString() ?? '0'
+        if (!+maxFee || !+fee) {
+          throw new Error('Failed to estimate fees')
+        }
+
+        setParsedNetworkFee({ maxFee: WeiAmount.fromRawAmount(maxFee), fee: WeiAmount.fromRawAmount(fee) })
+      } catch (error) {
+        setError(error?.message ?? 'Unkown error')
       }
 
-      setParsedNetworkFee({ maxFee: WeiAmount.fromRawAmount(maxFee), fee: WeiAmount.fromRawAmount(fee) })
-    } catch (error) {
-      setError(error?.message ?? 'Unkown error')
-    }
-
-    setLoading(false)
-  }, [account, calls, accountDeploymentPayload, migration])
+      setLoading(false)
+    },
+    [account, calls, accountDeploymentPayload, migration]
+  )
 
   const parsedTotalCost = useMemo(() => {
     if (!parsedNetworkFee) return null
@@ -91,9 +98,13 @@ export function useExecuteTx() {
   const { account } = useRulesAccount()
 
   const executeTx = useCallback(
-    async (parsedMaxFee: WeiAmount, action: StxAction) => {
+    async (parsedMaxFee: WeiAmount, action: StxAction, privateKey?: string) => {
       const stxAccount = migration ? account?.old : account
       if (!stxAccount) return
+
+      if (privateKey) {
+        stxAccount.updateSigner(privateKey)
+      }
 
       setLoading(true)
       setError(null)

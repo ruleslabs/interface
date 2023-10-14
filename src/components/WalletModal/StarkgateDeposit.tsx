@@ -64,7 +64,7 @@ export default function StarkgateDeposit() {
   // deposit
   const ethereumStarkgateContract = useEthereumStarkgateContract()
   const deposit = useCallback(async () => {
-    const l2StarkgateAddress = constants.STARKGATE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+    const l2StarkgateAddress = (constants.STARKGATE_ADDRESSES as any)[rulesSdk.networkInfos.starknetChainId]
     if (
       !ethereumStarkgateContract ||
       !parsedDepositAmount ||

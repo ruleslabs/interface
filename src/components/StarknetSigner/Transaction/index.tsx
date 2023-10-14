@@ -70,6 +70,7 @@ export default function StarknetSigner({
   children,
 }: StarknetSignerProps) {
   const [error, setError] = useState<string | null>(null)
+  const [privateKey, setPrivateKey] = useState<string | null>(null)
 
   // i18n
   const trans = useTrans()
@@ -96,15 +97,13 @@ export default function StarknetSigner({
   const { txHash } = executeTxRes.data
 
   // starknet account
-  const { address, oldAddress, account } = useRulesAccount()
+  const { address, oldAddress } = useRulesAccount()
   const updateSigner = useCallback(
     (pk: string) => {
-      if (!account) return
-
-      account.updateSigner(pk)
-      estimateFees()
+      setPrivateKey(pk)
+      estimateFees(pk)
     },
-    [estimateFees, account]
+    [estimateFees]
   )
 
   // is deployed
@@ -203,7 +202,7 @@ export default function StarknetSigner({
             {!canPayTransaction && <DepositNeeded />}
 
             <SubmitButton
-              onClick={() => executeTx(parsedNetworkFee.maxFee, action)}
+              onClick={() => executeTx(parsedNetworkFee.maxFee, action, privateKey ?? undefined)}
               disabled={!canPayTransaction}
               large
             >
@@ -234,6 +233,7 @@ export default function StarknetSigner({
     skipSignin,
     needsSignerEscape,
     maintenance,
+    privateKey,
   ])
 
   useEffect(() => {

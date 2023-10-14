@@ -67,7 +67,7 @@ export default function StarkgateWithdraw() {
   // call
   const handleConfirmation = useCallback(() => {
     const ethAddress = constants.ETH_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
-    const l2StarkgateAddress = constants.STARKGATE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+    const l2StarkgateAddress = (constants.STARKGATE_ADDRESSES as any)[rulesSdk.networkInfos.starknetChainId]
     if (!parsedWithdrawAmount || !l1Account || !ethAddress || !l2StarkgateAddress) return
 
     const amount = parsedWithdrawAmount.quotient.toString()

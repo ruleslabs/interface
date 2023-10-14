@@ -1,4 +1,4 @@
-import { useUpgradeWalletModalToggle } from 'src/state/application/hooks'
+import { useMigrateCollectionModalToggle } from 'src/state/application/hooks'
 import { useMemo } from 'react'
 import useLogout from './useLogout'
 import { t } from '@lingui/macro'
@@ -33,7 +33,7 @@ export interface NavUserSublinks {
 
 export interface NavUserLinks {
   profile: NavUserSublinks
-  wallet: NavUserSublinks
+  // wallet: NavUserSublinks
   misc: NavUserSublinks
 }
 
@@ -42,7 +42,7 @@ export function useNavUserLinks(userSlug?: string): NavUserLinks | null {
   const [logout] = useLogout()
 
   // wallet upgrade
-  const toggleUpgradeWalletModal = useUpgradeWalletModalToggle()
+  const toggleMigrateCollectionModal = useMigrateCollectionModalToggle()
 
   return useMemo(() => {
     if (!userSlug) return null
@@ -57,10 +57,10 @@ export function useNavUserLinks(userSlug?: string): NavUserLinks | null {
           { name: t`Activity`, link: `/user/${userSlug}/activity` },
         ],
       },
-      wallet: {
-        name: t`Wallet`,
-        links: [{ name: t`Upgrade wallet`, handler: toggleUpgradeWalletModal }],
-      },
+      // wallet: {
+      //   name: t`Wallet`,
+      //   links: [{ name: t`Migrate collection`, handler: toggleMigrateCollectionModal }],
+      // },
       misc: {
         links: [
           { name: t`Settings`, link: '/settings/profile' },

@@ -106,7 +106,7 @@ interface EventProps {
 
 export default function Message({ address, fromAddress, toAddress, payload }: EventProps) {
   const parsedMessage = useMemo(() => {
-    const l2StarkgateAddress = constants.STARKGATE_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+    const l2StarkgateAddress = (constants.STARKGATE_ADDRESSES as any)[rulesSdk.networkInfos.starknetChainId]
     const l1StarkgateAddress = constants.STARKGATE_ADDRESSES[rulesSdk.networkInfos.ethereumChainId]
 
     if (fromAddress === l2StarkgateAddress && toAddress === l1StarkgateAddress)
