@@ -12,9 +12,13 @@ export type FormatedMutationFunction<TData, TVariables, TFormatedData> = (
   options: Parameters<MutationFunction<TData, TVariables>>[0]
 ) => Promise<NonNullable<TFormatedData>>
 
+export interface ModalContentProps<TEnum> {
+  setModalMode?: (mode: TEnum) => void
+}
+
 export type ModalContents<TEnum extends string | number | symbol> = {
   [key in TEnum]: {
-    Component: () => JSX.Element
+    Component: (props: ModalContentProps<TEnum>) => JSX.Element | null
     title?: string
     previous?: TEnum
   }

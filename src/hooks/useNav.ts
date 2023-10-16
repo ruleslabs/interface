@@ -33,7 +33,7 @@ export interface NavUserSublinks {
 
 export interface NavUserLinks {
   profile: NavUserSublinks
-  // wallet: NavUserSublinks
+  wallet: NavUserSublinks
   misc: NavUserSublinks
 }
 
@@ -59,7 +59,7 @@ export function useNavUserLinks(userSlug?: string): NavUserLinks | null {
       },
       wallet: {
         name: t`Wallet`,
-        links: [],
+        links: [{ name: t`Migrate collection`, handler: toggleMigrateCollectionModal }],
       },
       misc: {
         links: [

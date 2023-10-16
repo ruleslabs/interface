@@ -1,24 +1,23 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { constants } from '@rulesorg/sdk-core'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 import { useAccount } from '@starknet-react/core'
 import { gql, useQuery } from '@apollo/client'
 import { Call, uint256 } from 'starknet'
 
-import { useModalOpened, useMigrateCollectionModalToggle } from 'src/state/application/hooks'
-import { ApplicationModal } from 'src/state/application/actions'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import { PrimaryButton } from 'src/components/Button'
 import { TYPE } from 'src/styles/theme'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import useStarknetTx from 'src/hooks/useStarknetTx'
-import ClassicModal, { ModalBody, ModalContent } from '../Modal/Classic'
-import { ModalHeader } from '../Modal'
+import { ModalBody } from '../Modal/Classic'
 import { StarknetStatus } from '../Web3Status'
 import { Column } from 'src/theme/components/Flex'
 import StarknetSigner from '../StarknetSigner/Transaction'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import { PaginationSpinner } from '../Spinner'
+import { useModalOpened } from 'src/state/application/hooks'
+import { ApplicationModal } from 'src/state/application/actions'
 
 const CARDS_QUERY = gql`
   query ($address: String!) {
@@ -50,23 +49,22 @@ const CARDS_QUERY = gql`
   }
 `
 
-export default function MigrateCollectionModal() {
+export default function CardsTransferModal() {
   // current user
   const { currentUser } = useCurrentUser()
 
   // modal
   const isOpen = useModalOpened(ApplicationModal.MIGRATE_COLLECTION)
-  const toggleMigrateCollectionModal = useMigrateCollectionModalToggle()
 
   // starknet accounts
   const { address: rulesAddress } = useRulesAccount()
   const { address: externalAddress } = useAccount()
 
   // starknet tx
-  const { setCalls, resetStarknetTx, setSigning, signing } = useStarknetTx()
+  const { setCalls, resetStarknetTx, setSigning } = useStarknetTx()
 
   // cards query
-  const cardsQuery = useQuery(CARDS_QUERY, { variables: { address: rulesAddress }, skip: !isOpen })
+  const cardsQuery = useQuery(CARDS_QUERY, { variables: { address: rulesAddress } })
   const cards: any[] = cardsQuery.data?.cards?.nodes ?? []
 
   // voucher signing data map
@@ -79,7 +77,7 @@ export default function MigrateCollectionModal() {
     [cards.length]
   )
 
-  // call
+  // cards transfer call
   const handleMigration = useCallback(() => {
     if (!rulesAddress || !externalAddress) return
 
@@ -127,55 +125,38 @@ export default function MigrateCollectionModal() {
     setSigning(true)
   }, [rulesAddress, externalAddress, setCalls, setSigning, cards.length])
 
-  // on close modal
+  // on modal update
   useEffect(() => {
-    if (isOpen) {
-      resetStarknetTx()
-    }
+    resetStarknetTx()
   }, [isOpen])
 
   // loading
   const loading = cardsQuery.loading
 
-  const modalContent = useMemo(() => {
-    if (loading) {
-      return <PaginationSpinner loading />
-    }
-
-    if (cards.length) {
-      return (
-        <Column gap={'24'}>
-          <TYPE.medium textAlign="center">
-            <Trans>You need to migrate {cards.length} cards and packs to an external Starknet wallet.</Trans>
-          </TYPE.medium>
-
-          <StarknetStatus>
-            <PrimaryButton onClick={handleMigration} large>
-              <Trans>Migrate !</Trans>
-            </PrimaryButton>
-          </StarknetStatus>
-        </Column>
-      )
-    }
-
-    return (
-      <TYPE.medium textAlign="center">
-        <Trans>Nothing to migrate !</Trans>
-      </TYPE.medium>
-    )
-  }, [loading, cards.length, handleMigration])
-
   if (!currentUser) return null
 
   return (
-    <ClassicModal onDismiss={toggleMigrateCollectionModal} isOpen={isOpen}>
-      <ModalContent>
-        <ModalHeader onDismiss={toggleMigrateCollectionModal} title={signing ? undefined : t`Collection migration`} />
+    <ModalBody>
+      <StarknetSigner action={'transfer'}>
+        {loading ? (
+          <PaginationSpinner loading />
+        ) : (
+          <Column gap={'24'}>
+            <TYPE.body textAlign="justify">
+              <Trans>
+                Due to Starknet limitations, you cannot transfer more than 50 cards per transaction. If necessary you
+                will have to repeat this operation to transfer all your cards.
+              </Trans>
+            </TYPE.body>
 
-        <ModalBody>
-          <StarknetSigner action={'transfer'}>{modalContent}</StarknetSigner>
-        </ModalBody>
-      </ModalContent>
-    </ClassicModal>
+            <StarknetStatus>
+              <PrimaryButton onClick={handleMigration} large>
+                <Trans>Confirm</Trans>
+              </PrimaryButton>
+            </StarknetStatus>
+          </Column>
+        )}
+      </StarknetSigner>
+    </ModalBody>
   )
 }
