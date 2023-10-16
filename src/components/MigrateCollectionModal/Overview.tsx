@@ -1,5 +1,6 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { Trans } from '@lingui/macro'
+import { gql, useQuery } from '@apollo/client'
 
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import { PrimaryButton } from 'src/components/Button'
@@ -14,6 +15,17 @@ import Link from '../Link'
 import { ModalContentProps } from 'src/types'
 import { MigrateCollectionModalMode } from '.'
 
+const USER_PACKS_BALANCES_QUERY = gql`
+  query ($slug: String!) {
+    user(slug: $slug) {
+      packsBalances {
+        balance
+        voucherBalance
+      }
+    }
+  }
+`
+
 export default function MigrateCollectionModal({ setModalMode }: ModalContentProps<MigrateCollectionModalMode>) {
   // current user
   const { currentUser } = useCurrentUser()
@@ -21,14 +33,34 @@ export default function MigrateCollectionModal({ setModalMode }: ModalContentPro
   // starknet accounts
   const { address: rulesAddress } = useRulesAccount()
 
+  // query packs
+  const packsBalancesQuery = useQuery(USER_PACKS_BALANCES_QUERY, {
+    variables: { slug: currentUser?.slug },
+    skip: !currentUser?.slug,
+  })
+
+  // aggregate packs
+  const packsBalances = packsBalancesQuery.data?.user?.packsBalances ?? []
+
+  // packs count
+  const packsCount = useMemo(
+    () =>
+      (packsBalances as any[]).reduce<number>(
+        (acc, packBalance) => acc + packBalance.balance + packBalance.voucherBalance,
+        0
+      ),
+    [packsBalances]
+  )
+
   // cards count
-  const { data: cardsCount, loading } = useCardsCount({
+  const cardsCountQuery = useCardsCount({
     filter: {
       ownerStarknetAddress: rulesAddress ?? '0x0',
       seasons: [],
       scarcityAbsoluteIds: [],
     },
   })
+  const cardsCount = cardsCountQuery.data
 
   // cards transfer
   const onCardsTransfer = useCallback(() => {
@@ -43,6 +75,9 @@ export default function MigrateCollectionModal({ setModalMode }: ModalContentPro
 
     setModalMode(MigrateCollectionModalMode.PACKS)
   }, [setModalMode])
+
+  // loading
+  const loading = cardsCountQuery.loading || packsBalancesQuery.loading
 
   if (!currentUser) return null
 
@@ -86,7 +121,7 @@ export default function MigrateCollectionModal({ setModalMode }: ModalContentPro
               )}
 
               <PrimaryButton onClick={onPacksTransfer} width={'full'} large>
-                <Trans>Transfer 10 packs</Trans>
+                <Trans>Transfer {packsCount} packs</Trans>
               </PrimaryButton>
             </Row>
           </StarknetStatus>
