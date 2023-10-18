@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { Trans } from '@lingui/macro'
+import { Plural, Trans } from '@lingui/macro'
 import { gql, useQuery } from '@apollo/client'
 
 import useCurrentUser from 'src/hooks/useCurrentUser'
@@ -60,7 +60,7 @@ export default function MigrateCollectionModal({ setModalMode }: ModalContentPro
       scarcityAbsoluteIds: [],
     },
   })
-  const cardsCount = cardsCountQuery.data
+  const cardsCount = cardsCountQuery.data ?? 0
 
   // cards transfer
   const onCardsTransfer = useCallback(() => {
@@ -86,7 +86,7 @@ export default function MigrateCollectionModal({ setModalMode }: ModalContentPro
       {loading ? (
         <PaginationSpinner loading />
       ) : (
-        <Column gap={'24'}>
+        <Column gap={'32'}>
           <TYPE.large>
             <Trans>Dear Rulers</Trans>
           </TYPE.large>
@@ -114,14 +114,22 @@ export default function MigrateCollectionModal({ setModalMode }: ModalContentPro
 
           <StarknetStatus>
             <Row gap={'16'}>
-              {!!cardsCount && (
-                <PrimaryButton onClick={onCardsTransfer} width={'full'} large>
-                  <Trans>Transfer {cardsCount} cards</Trans>
-                </PrimaryButton>
-              )}
+              <PrimaryButton onClick={onCardsTransfer} width={'full'} disabled={!cardsCount} large>
+                <Plural
+                  value={cardsCount}
+                  _0="No card to transfer"
+                  _1="Transfer {cardsCount} card"
+                  other="Transfer {cardsCount} cards"
+                />
+              </PrimaryButton>
 
-              <PrimaryButton onClick={onPacksTransfer} width={'full'} large>
-                <Trans>Transfer {packsCount} packs</Trans>
+              <PrimaryButton onClick={onPacksTransfer} width={'full'} disabled={!packsCount} large>
+                <Plural
+                  value={packsCount}
+                  _0="No pack to transfer"
+                  _1="Transfer {packsCount} pack"
+                  other="Transfer {packsCount} packs"
+                />
               </PrimaryButton>
             </Row>
           </StarknetStatus>

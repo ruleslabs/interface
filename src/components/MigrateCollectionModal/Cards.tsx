@@ -141,7 +141,7 @@ export default function CardsTransferModal() {
         {loading ? (
           <PaginationSpinner loading />
         ) : (
-          <Column gap={'24'}>
+          <Column gap={'32'}>
             <TYPE.body textAlign="justify">
               <Trans>
                 Due to Starknet limitations, you cannot transfer more than 50 cards per transaction. If necessary you

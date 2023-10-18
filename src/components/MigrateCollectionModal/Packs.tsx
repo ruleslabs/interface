@@ -19,7 +19,7 @@ import { Call } from 'starknet'
 
 const PREPARE_PACKS_MUTATION = gql`
   mutation {
-    preparePackMinting {
+    preparePacksMinting {
       amount
       tokenId
       voucherSigningData {
@@ -47,7 +47,7 @@ export default function CardsTransfers() {
   // packs migration
   const migratePacks = useCallback(
     (data: any) => {
-      const packsVouchers: any[] = data?.preparePackMinting
+      const packsVouchers: any[] = data?.preparePacksMinting
 
       if (!rulesAddress || !externalAddress || !packsVouchers) return
 
@@ -85,11 +85,11 @@ export default function CardsTransfers() {
 
   return (
     <ModalBody>
-      <StarknetSigner action={'transfer'}>
+      <StarknetSigner action={'packTransfer'}>
         {loading ? (
           <PaginationSpinner loading />
         ) : (
-          <Column gap={'24'}>
+          <Column gap={'32'}>
             <TYPE.body textAlign="justify">
               <Trans>
                 Please note that the transfer of packs is final and will irrevocably seal the transferred packs,
