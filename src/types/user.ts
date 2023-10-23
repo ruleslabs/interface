@@ -53,6 +53,7 @@ export interface GenieCurrentUser {
   hasTwoFactorAuthActivated: boolean
   profile: GenieProfile
   badges: Array<GenieBadge>
+  admin: boolean
 }
 
 export interface GenieBadge {

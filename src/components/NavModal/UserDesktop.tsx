@@ -115,9 +115,13 @@ export default function NavModalUserDesktop() {
 
           <Divider />
 
-          <NavUserSublinksDesktop navSublinks={navLinks.wallet} />
+          {currentUser.admin && (
+            <>
+              <NavUserSublinksDesktop navSublinks={navLinks.wallet} />
 
-          <Divider />
+              <Divider />
+            </>
+          )}
 
           <NavUserSublinksDesktop navSublinks={navLinks.misc} />
         </Column>

@@ -46,6 +46,7 @@ gql`
         instagramUsername
         isDiscordVisible
         certified
+        admin
         discordMember {
           id
           username
@@ -87,6 +88,7 @@ export function formatCurrentUserQueryData(queryCurrentUser: NonNullable<Current
     unreadNotificationsCount: queryCurrentUser.unreadNotificationsCount,
     hasTwoFactorAuthActivated: queryCurrentUser.hasTwoFactorAuthActivated,
     retrievableEthers: queryCurrentUser.retrievableEthers,
+    admin: !!queryCurrentUser.profile.admin,
 
     badges: queryCurrentUser.badges.map(({ level, quantity, type }) => ({
       level,
