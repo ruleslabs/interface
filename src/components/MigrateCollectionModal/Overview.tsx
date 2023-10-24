@@ -108,7 +108,7 @@ export default function MigrateCollectionModal({ setModalMode }: ModalContentPro
               <Link href="https://braavos.app" target="_blank" underline>
                 Braavos
               </Link>
-              )
+              ).
             </Trans>
           </TYPE.body>
 

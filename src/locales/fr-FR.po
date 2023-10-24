@@ -1901,3 +1901,52 @@ msgstr "{0} t'offre un pack de cartes !"
 #: src/components/Onboarding/StarterPackPage.tsx
 msgid "A 2nd pack (Rookie Pack) offered by {referentUsername} will be delivered with."
 msgstr "Un 2ème pack (Rookie Pack) offert par {referentUsername} te sera livré avec."
+
+
+
+
+
+
+#: src/pages/Settings/Starknet.tsx
+msgid "External wallet"
+msgstr "Portefeuille externe"
+
+#: src/hooks/useNav.ts
+msgid "Migrate collection"
+msgstr "Migration de la collection"
+
+#: src/components/MigrateCollectionModal/index.tsx
+msgid "Collection Migration"
+msgstr "Migration de la collection"
+
+#: src/components/MigrateCollectionModal/Overview.tsx
+msgid "Dear Rulers"
+msgstr "Chers Rulers"
+
+#: src/components/MigrateCollectionModal/Overview.tsx
+msgid "Thank you for your confidence in our platform. As previously announced, <0>Rules is about to close.</0><1/><2/>To ensure that you can continue to enjoy your collection, we have set up a simple transfer process to an external wallet (<3>ArgentX</3><4> or </4><5>Braavos</5>)."
+msgstr "Merci pour votre confiance et pour avoir participé à cette aventure avec nous. Comme annoncé sur discord, <0>Rules prend fin.</0><1/><2/>Pour que vous puissiez continuer à profiter de votre collection, nous avons mis en place un moyen simple de transférer vos cartes et packs vers un portefeuille externe (<3>ArgentX</3><4> ou </4><5>Braavos</5>)."
+
+#: src/components/MigrateCollectionModal/Overview.tsx
+msgid "{cardsCount, plural, =0 {No card to transfer} =1 {Transfer {cardsCount} card} other {Transfer {cardsCount} cards}}"
+msgstr "{cardsCount, plural, =0 {Pas de cartes à transférer} =1 {Transférer {cardsCount} carte} other {Transférer {cardsCount} cartes}}"
+
+#: src/components/MigrateCollectionModal/Overview.tsx
+msgid "{packsCount, plural, =0 {No pack to transfer} =1 {Transfer {packsCount} pack} other {Transfer {packsCount} packs}}"
+msgstr "{packsCount, plural, =0 {Pas de packs à transférer} =1 {Transférer {packsCount} pack} other {Transférer {packsCount} packs}}"
+
+#: src/hooks/useTrans.ts
+msgid "Pack transfer..."
+msgstr "Transfert de pack..."
+
+#: src/components/MigrateCollectionModal/Packs.tsx
+msgid "Please note that the transfer of packs is final and will irrevocably seal the transferred packs, preventing them from being opened in the future."
+msgstr "Le transfert des packs est irrévocable et aura pour effet de les sceller à jamais, il ne sera plus jamais possible de les ouvrir."
+
+#: src/components/MigrateCollectionModal/index.tsx
+msgid "Packs transfer"
+msgstr "Transfert de packs"
+
+#: src/components/MigrateCollectionModal/Cards.tsx
+msgid "Due to Starknet limitations, you cannot transfer more than 50 cards per transaction. If necessary you will have to repeat this operation to transfer all your cards."
+msgstr "Les limitations de Starknet ne permettent pas de transférer plus de 50 cartes par transaction. Si nécessaire, tu devras répéter cette opération plusieurs fois pour transférer toutes tes cartes."
