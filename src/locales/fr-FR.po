@@ -1950,3 +1950,7 @@ msgstr "Transfert de packs"
 #: src/components/MigrateCollectionModal/Cards.tsx
 msgid "Due to Starknet limitations, you cannot transfer more than 50 cards per transaction. If necessary you will have to repeat this operation to transfer all your cards."
 msgstr "Les limitations de Starknet ne permettent pas de transférer plus de 50 cartes par transaction. Si nécessaire, tu devras répéter cette opération plusieurs fois pour transférer toutes tes cartes."
+
+#: src/hooks/useTrans.ts
+msgid "Your pack is on its way !"
+msgstr "Ton pack est en route !"
