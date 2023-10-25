@@ -91,13 +91,9 @@ export default function NavModalUserMobile() {
 
           <Divider />
 
-          {currentUser.admin && (
-            <>
-              <NavUserSublinksMobile navSublinks={navLinks.wallet} />
+          <NavUserSublinksMobile navSublinks={navLinks.wallet} />
 
-              <Divider />
-            </>
-          )}
+          <Divider />
 
           <NavUserSublinksMobile navSublinks={navLinks.misc} />
         </ModalBody>
