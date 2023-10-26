@@ -20,6 +20,7 @@ export default function Withdraw() {
   const closeModal = useCloseModal()
   const setWalletModalMode = useSetWalletModalMode()
   const onStarkgateWithdraw = useCallback(() => setWalletModalMode(WalletModalMode.STARKGATE_WITHDRAW), [])
+  const onStarknetWithdraw = useCallback(() => setWalletModalMode(WalletModalMode.STARKNET_WITHDRAW), [])
 
   // Ramp
   const rampSdk = useRampSdk({ email: currentUser?.email, address: currentUser?.starknetWallet.address, flow: 'off' })
@@ -33,7 +34,7 @@ export default function Withdraw() {
       <Column gap={24}>
         <CardButton
           title={t`Bank account`}
-          subtitle={t`coming soon (very soon)`}
+          subtitle={t`coming soon (maybe)`}
           onClick={openRamp}
           disabled={!rampSdk?.show || true}
           icon={() => <Icons.CreditCard />}
@@ -48,6 +49,17 @@ export default function Withdraw() {
           subtitle={t`might take a few hours`}
           onClick={onStarkgateWithdraw}
           icon={() => <Icons.Ethereum />}
+        />
+
+        <Separator>
+          <Trans>or</Trans>
+        </Separator>
+
+        <CardButton
+          title={t`Starknet`}
+          subtitle={t`a few seconds`}
+          onClick={onStarknetWithdraw}
+          icon={() => <Icons.Starknet />}
         />
       </Column>
     </ModalBody>

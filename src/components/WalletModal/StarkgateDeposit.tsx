@@ -145,7 +145,7 @@ export default function StarkgateDeposit() {
                 <Arrow />
               </ArrowWrapper>
 
-              <Wallet layer={2} />
+              <Wallet layer={'rules'} />
             </Column>
 
             <PrimaryButton onClick={onDeposit} disabled={!canDeposit} large>

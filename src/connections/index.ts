@@ -154,7 +154,7 @@ const argentXWalletConnection: L2Connection = {
   connector: starknetArgentXWallet,
   type: ConnectionType.ARGENT_X,
   getIcon: () => ARGENT_X_ICON,
-  shouldDisplay: () => Boolean(!isMobile),
+  shouldDisplay: () => true,
   // If on non-injected, non-mobile browser, prompt user to install ArgentX
   overrideActivate: () => {
     if (getShouldAdvertiseArgentX()) {

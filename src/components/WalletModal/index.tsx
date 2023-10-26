@@ -16,6 +16,7 @@ import StarkgateWithdraw from './StarkgateWithdraw'
 import Deploy from './Deploy'
 import MigrateFunds from './MigrateFunds'
 import OldOverview from './OldOverview'
+import StarknetWithdraw from './StarknetWithdraw'
 
 function useModalContent(): ModalContents<WalletModalMode> {
   return useMemo(
@@ -52,6 +53,11 @@ function useModalContent(): ModalContents<WalletModalMode> {
       [WalletModalMode.STARKGATE_WITHDRAW]: {
         Component: StarkgateWithdraw,
         title: t`Withdraw to Ethereum`,
+        previous: WalletModalMode.WITHDRAW,
+      },
+      [WalletModalMode.STARKNET_WITHDRAW]: {
+        Component: StarknetWithdraw,
+        title: t`Withdraw to Starknet`,
         previous: WalletModalMode.WITHDRAW,
       },
       [WalletModalMode.MIGRATE_FUNDS]: {

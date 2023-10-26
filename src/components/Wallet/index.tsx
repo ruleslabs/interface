@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
 import { RowCenter } from 'src/components/Row'
 import { TYPE } from 'src/styles/theme'
+import * as Icons from 'src/theme/components/Icons'
 
 import { ReactComponent as RulesPlainIcon } from 'src/images/logo-plain.svg'
-import { ReactComponent as EthereumPlainIcon } from 'src/images/ethereum-plain.svg'
 
 const StyledWallet = styled(RowCenter)`
   padding: 12px;
@@ -34,27 +34,43 @@ const StyledWallet = styled(RowCenter)`
 `
 
 interface WalletProps extends React.InputHTMLAttributes<HTMLDivElement> {
-  layer: 1 | 2
+  layer: 1 | 2 | 'rules'
 }
 
 export default function Wallet({ layer, ...props }: WalletProps) {
-  return (
-    <StyledWallet {...props}>
-      {layer === 1 ? (
-        <>
-          <EthereumPlainIcon />
-          <TYPE.body>
-            <Trans>Your Ethereum Wallet</Trans>
-          </TYPE.body>
-        </>
-      ) : (
-        <>
-          <RulesPlainIcon />
-          <TYPE.body>
-            <Trans>Your Rules Wallet</Trans>
-          </TYPE.body>
-        </>
-      )}
-    </StyledWallet>
-  )
+  const content = useMemo(() => {
+    switch (layer) {
+      case 1:
+        return (
+          <>
+            <Icons.Ethereum />
+            <TYPE.body>
+              <Trans>Your Ethereum Wallet</Trans>
+            </TYPE.body>
+          </>
+        )
+
+      case 2:
+        return (
+          <>
+            <Icons.Starknet />
+            <TYPE.body>
+              <Trans>Your Starknet Wallet</Trans>
+            </TYPE.body>
+          </>
+        )
+
+      case 'rules':
+        return (
+          <>
+            <RulesPlainIcon />
+            <TYPE.body>
+              <Trans>Your Rules Wallet</Trans>
+            </TYPE.body>
+          </>
+        )
+    }
+  }, [layer])
+
+  return <StyledWallet {...props}>{content}</StyledWallet>
 }
