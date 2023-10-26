@@ -1,8 +1,13 @@
 import { useAccount } from '@starknet-react/core'
+import { useWeb3React } from '@web3-react/core'
+import { Trans } from '@lingui/macro'
 
 import { EthereumStatus, StarknetStatus } from '../Web3Status'
 import LongString from '../Text/LongString'
-import { useWeb3React } from '@web3-react/core'
+import { PrimaryButton } from '../Button'
+import { getChainInfo } from 'src/constants/chainInfo'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import Link from '../Link'
 
 // ETHEREUM
 
@@ -21,11 +26,18 @@ export function ExternalEthereumWalletStatus() {
 export function ExternalStarknetAccountStatus() {
   const { address } = useAccount()
 
-  console.log(address)
-
   return (
     <StarknetStatus>
       <LongString value={address ?? ''} copiable />
+
+      <Link
+        target="_blank"
+        href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId)?.explorer}/contract/${address}#portfolio-sub-nfts`}
+      >
+        <PrimaryButton>
+          <Trans>See on Starkscan</Trans>
+        </PrimaryButton>
+      </Link>
     </StarknetStatus>
   )
 }

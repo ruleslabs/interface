@@ -46,7 +46,9 @@ export default function StarknetAccountStatus() {
         <ButtonsWrapper>
           <Link
             target="_blank"
-            href={`${getChainInfo(rulesSdk.networkInfos.starknetChainId)?.explorer}/contract/${address}`}
+            href={`${
+              getChainInfo(rulesSdk.networkInfos.starknetChainId)?.explorer
+            }/contract/${address}#portfolio-sub-nfts`}
           >
             <PrimaryButton>
               <Trans>See on Starkscan</Trans>
