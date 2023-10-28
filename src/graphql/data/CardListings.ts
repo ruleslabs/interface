@@ -10,6 +10,8 @@ import {
   CardListingsSortInput,
   useCardListingsQuery,
   useListCardsMutation,
+  useListingToSweepQuery,
+  useMaxListedSerialQuery,
 } from './__generated__/types-and-hooks'
 import { formatApolloError, formatMutationFunction } from './utils'
 
@@ -34,7 +36,6 @@ gql`
           }
           card {
             serialNumber
-            tokenId
             cardModel {
               id
               slug
@@ -46,13 +47,6 @@ gql`
               }
               artistName
             }
-            voucherSigningData {
-              signature {
-                r
-                s
-              }
-              salt
-            }
           }
           offerer {
             starknetAddress
@@ -63,12 +57,66 @@ gql`
                 pictureUrl(derivative: "width=128")
                 fallbackUrl(derivative: "width=128")
               }
-              starknetWallet {
-                currentPublicKey
-                deployed
-              }
             }
           }
+        }
+      }
+    }
+  }
+`
+
+gql`
+  query ListingToSweep($filter: CardListingsFilterInput!, $first: Int) {
+    cardListings(filter: $filter, sort: { direction: ASC, type: PRICE }, first: $first) {
+      nodes {
+        price
+        orderSigningData {
+          signature {
+            r
+            s
+          }
+          salt
+        }
+        card {
+          serialNumber
+          tokenId
+          cardModel {
+            slug
+            pictureUrl(derivative: "width=512")
+            season
+            scarcity {
+              name
+            }
+            artistName
+          }
+          voucherSigningData {
+            signature {
+              r
+              s
+            }
+            salt
+          }
+        }
+        offerer {
+          starknetAddress
+          user {
+            starknetWallet {
+              currentPublicKey
+              deployed
+            }
+          }
+        }
+      }
+    }
+  }
+`
+
+gql`
+  query MaxListedSerial {
+    cardListings(filter: {}, sort: { direction: DESC, type: SERIAL_NUMBER }, first: 1) {
+      nodes {
+        card {
+          serialNumber
         }
       }
     }
@@ -114,8 +162,6 @@ export function formatCardListingQueryData({
     createdAt: new Date(queryCardListing.createdAt),
     card: {
       serialNumber: card.serialNumber,
-      tokenId: card.tokenId,
-      voucherSigningData: card.voucherSigningData,
     },
     cardModel: {
       slug: cardModel.slug,
@@ -133,8 +179,6 @@ export function formatCardListingQueryData({
         fallbackUrl: offererUser?.profile.fallbackUrl ?? '',
       },
       starknetAddress: queryCardListing.offerer.starknetAddress,
-      currentPublicKey: offererUser?.starknetWallet.currentPublicKey,
-      deployed: offererUser?.starknetWallet.deployed,
     },
   }
 }
@@ -184,4 +228,34 @@ export function useCardListings(params: CardListingsFetcherParams, skip?: boolea
       loadMore,
     }
   }, [cardListings, hasNext, loadMore, loading])
+}
+
+// SWEEP
+
+export function useMaxListedSerialNumber(skip?: boolean) {
+  const { data, loading } = useMaxListedSerialQuery({ skip, fetchPolicy: 'no-cache' })
+
+  const serialNumber = data?.cardListings?.nodes?.[0].card.serialNumber
+
+  return useMemo(() => {
+    return {
+      data: serialNumber,
+      loading,
+    }
+  }, [serialNumber, loading])
+}
+
+export function useListingsToSweep(maxSerial: number, first: number, skip?: boolean) {
+  const variables = useMemo(() => ({ filter: { maxSerial }, first }), [maxSerial, first])
+
+  const { data, loading } = useListingToSweepQuery({ variables, skip, fetchPolicy: 'no-cache' })
+
+  const listings = data?.cardListings?.nodes ?? []
+
+  return useMemo(() => {
+    return {
+      data: listings,
+      loading,
+    }
+  }, [listings, loading])
 }

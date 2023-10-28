@@ -12,8 +12,7 @@ import StarknetSigner from 'src/components/StarknetSigner/Transaction'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import useStarknetTx from 'src/hooks/useStarknetTx'
 import { useOperations } from 'src/hooks/usePendingOperations'
-import { useCardListings } from 'src/graphql/data/CardListings'
-import { CardListingsSortingType, SortingOption } from 'src/graphql/data/__generated__/types-and-hooks'
+import { useListingsToSweep, useMaxListedSerialNumber } from 'src/graphql/data/CardListings'
 import { Column } from 'src/theme/components/Flex'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import { PrimaryButton } from '../Button'
@@ -27,6 +26,8 @@ import { useETHBalance } from 'src/state/wallet/hooks'
 import { TYPE } from 'src/styles/theme'
 
 const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
+
+const MIN_MAX_SERIAL = 1
 
 const MIN_ITEMS_COUNT = 1
 const MAX_ITEMS_COUNT = 50
@@ -53,6 +54,8 @@ const CardBreakdownsWrapper = styled.div<{ needsScroll: boolean }>`
 `
 
 export default function SweepModal() {
+  const [maxSerial, setMaxSerial] = useState(MIN_MAX_SERIAL)
+  const [debouncedMaxSerial, setDebouncedMaxSerial] = useState(MIN_MAX_SERIAL)
   const [itemsCount, setItemsCount] = useState(MIN_ITEMS_COUNT)
   const [debouncedItemsCount, setDebouncedItemsCount] = useState(MIN_ITEMS_COUNT)
 
@@ -66,25 +69,36 @@ export default function SweepModal() {
   const isOpen = useModalOpened(ApplicationModal.SWEEP)
   const toggleOfferModal = useSweepModalToggle()
 
+  // get max serial listed
+  const { data: absoluteMaxSerial, ...maxSerialQuery } = useMaxListedSerialNumber(!isOpen)
+
+  useEffect(() => {
+    if (!absoluteMaxSerial) return
+
+    setMaxSerial(absoluteMaxSerial)
+    setDebouncedMaxSerial(absoluteMaxSerial)
+  }, [absoluteMaxSerial])
+
   // get listings
-  const { data: cardListings, loading } = useCardListings({
-    sort: { type: CardListingsSortingType.Price, direction: SortingOption.Asc },
-    first: debouncedItemsCount,
-  })
+  const { data: cardListings, ...listingsQuery } = useListingsToSweep(
+    debouncedMaxSerial,
+    debouncedItemsCount,
+    !absoluteMaxSerial // skip
+  )
 
   // card models map
   const cardModelsMap = useMemo(
     () =>
-      (cardListings ?? []).reduce<any>((acc, { card, cardModel }) => {
-        acc[cardModel.slug] ??= {
-          pictureUrl: cardModel.imageUrl,
-          artistName: cardModel.artistName,
-          season: cardModel.season,
-          scarcityName: cardModel.scarcityName,
+      (cardListings ?? []).reduce<any>((acc, { card }) => {
+        acc[card.cardModel.slug] ??= {
+          pictureUrl: card.cardModel.pictureUrl,
+          artistName: card.cardModel.artistName,
+          season: card.cardModel.season,
+          scarcityName: card.cardModel.scarcity.name,
           serialNumbers: [],
         }
 
-        acc[cardModel.slug].serialNumbers.push(card.serialNumber)
+        acc[card.cardModel.slug].serialNumbers.push(card.serialNumber)
 
         return acc
       }, {}),
@@ -101,6 +115,13 @@ export default function SweepModal() {
       WeiAmount.ZERO,
     [cardListings?.length]
   )
+
+  // maxSerial
+  const debounceMaxSerial = useCallback(() => setDebouncedMaxSerial(maxSerial), [maxSerial])
+  const setAndDebounceMaxSerial = useCallback((value: number) => {
+    setMaxSerial(value)
+    setDebouncedMaxSerial(value)
+  }, [])
 
   // itemsCount
   const debounceItemsCount = useCallback(() => setDebouncedItemsCount(itemsCount), [itemsCount])
@@ -149,8 +170,8 @@ export default function SweepModal() {
         ],
       },
       ...cardListings.map(({ card, offerer, ...listing }) => {
-        const offererPublicKey = offerer.currentPublicKey
-        const isOwnerDeployed = offerer.deployed ?? true
+        const offererPublicKey = offerer.user?.starknetWallet.currentPublicKey
+        const isOwnerDeployed = offerer.user?.starknetWallet.deployed ?? true
 
         return card.voucherSigningData
           ? rulesSdk.getVoucherReedemAndOrderFulfillCall(
@@ -178,11 +199,16 @@ export default function SweepModal() {
     setSigning(true)
   }, [cardListings?.length, parsedTotalPrice, getWalletConstructorCallData])
 
+  // loading
+  const loading = maxSerialQuery.loading || listingsQuery.loading
+
   // on modal status update
   useEffect(() => {
     if (isOpen) {
       resetStarknetTx()
       cleanOperations()
+      setMaxSerial(MIN_MAX_SERIAL)
+      setDebouncedMaxSerial(MIN_MAX_SERIAL)
     }
   }, [isOpen])
 
@@ -218,6 +244,18 @@ export default function SweepModal() {
               )}
 
               <Slider
+                value={maxSerial}
+                min={MIN_MAX_SERIAL}
+                max={absoluteMaxSerial ?? MIN_MAX_SERIAL + 1}
+                onSlidingChange={setMaxSerial}
+                onInputChange={setAndDebounceMaxSerial}
+                onSliderRelease={debounceMaxSerial}
+                unit={t`Max serial`}
+                unitWidth={100}
+                loading={!absoluteMaxSerial}
+              />
+
+              <Slider
                 value={itemsCount}
                 min={MIN_ITEMS_COUNT}
                 max={MAX_ITEMS_COUNT}
@@ -225,6 +263,7 @@ export default function SweepModal() {
                 onInputChange={setAndDebounceItemsCount}
                 onSliderRelease={debounceItemsCount}
                 unit={t`Cards`}
+                unitWidth={100}
               />
 
               <Column gap={'8'}>

@@ -56,13 +56,17 @@ const Unit = styled(Text.Body)`
   height: 32px;
   display: flex;
   align-items: center;
+  text-align: center;
+  justify-content: center;
 `
 
 interface SliderProps {
   value: number
   unit?: string
+  unitWidth?: number
   min?: number
   max: number
+  loading?: boolean
   onSlidingChange: (value: number) => void
   onInputChange: (value: number) => void
   onSliderRelease?: () => void
@@ -76,6 +80,8 @@ export default function Slider({
   onInputChange,
   onSliderRelease,
   unit,
+  unitWidth,
+  loading = false,
 }: SliderProps) {
   const theme = useTheme() as DefaultTheme
 
@@ -100,23 +106,29 @@ export default function Slider({
   )
 
   return (
-    <SliderWrapper>
+    <SliderWrapper style={{ opacity: loading ? 0.5 : 1 }}>
       <StyledSlider
         type="range"
         min={min}
         max={max}
         value={value}
         step="1"
-        onChange={handleSlidingUpdate}
+        onChange={loading ? undefined : handleSlidingUpdate}
         style={sliderStyle}
         onMouseUp={onSliderRelease}
         onTouchEnd={onSliderRelease}
       />
 
       <RowCenter gap={8}>
-        <StyledNumericalInput type="text" value={value} onUserInput={handleInputUpdate} placeholder="0" />
+        <StyledNumericalInput
+          type="text"
+          value={value}
+          onUserInput={loading ? undefined : handleInputUpdate}
+          placeholder="0"
+          disabled={loading}
+        />
 
-        {!!unit && <Unit>{unit}</Unit>}
+        {!!unit && <Unit style={{ width: unitWidth ? `${unitWidth}px` : 'auto' }}>{unit}</Unit>}
       </RowCenter>
     </SliderWrapper>
   )

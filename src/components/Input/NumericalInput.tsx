@@ -23,10 +23,14 @@ const StyledNumericalInput = styled.input`
   &:active {
     outline-width: 2px;
   }
+
+  &:disabled:hover {
+    outline-width: 0;
+  }
 `
 
 interface SliderInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  value: string | number // avoid string[] value
+  value?: string | number // avoid string[] value
   onUserInput?: (value: string) => void
 }
 

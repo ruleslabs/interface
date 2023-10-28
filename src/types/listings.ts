@@ -7,8 +7,6 @@ export interface CardListing {
   createdAt: Date
   card: {
     serialNumber: number
-    tokenId: string
-    voucherSigningData?: MessageSigningData
   }
   cardModel: Pick<CardModel, 'slug' | 'imageUrl' | 'season' | 'scarcityName' | 'artistName'> & {
     scarcityMaxSupply?: number
@@ -21,7 +19,5 @@ export interface CardListing {
       fallbackUrl: string
     }
     starknetAddress: string
-    currentPublicKey?: string
-    deployed?: boolean
   }
 }
