@@ -22,6 +22,7 @@ import CardBreakdown from '../MarketplaceModal/CardBreakdown'
 import { useGetWalletConstructorCallData } from 'src/hooks/useCreateWallet'
 import { Operation } from 'src/types/common'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { PaginationSpinner } from '../Spinner'
 
 const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
 
@@ -185,22 +186,26 @@ export default function SweepModal() {
         <ModalBody>
           <StarknetSigner action={'offerAcceptance'}>
             <Column gap={'32'}>
-              <CardBreakdownsWrapper
-                needsScroll={Object.keys(cardModelsMap).length > MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING}
-              >
-                <Column>
-                  {Object.keys(cardModelsMap).map((cardModelId) => (
-                    <CardBreakdown
-                      key={cardModelId}
-                      pictureUrl={cardModelsMap[cardModelId].pictureUrl}
-                      season={cardModelsMap[cardModelId].season}
-                      artistName={cardModelsMap[cardModelId].artistName}
-                      serialNumbers={cardModelsMap[cardModelId].serialNumbers}
-                      scarcityName={cardModelsMap[cardModelId].scarcityName}
-                    />
-                  ))}
-                </Column>
-              </CardBreakdownsWrapper>
+              {loading ? (
+                <PaginationSpinner loading />
+              ) : (
+                <CardBreakdownsWrapper
+                  needsScroll={Object.keys(cardModelsMap).length > MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING}
+                >
+                  <Column>
+                    {Object.keys(cardModelsMap).map((cardModelId) => (
+                      <CardBreakdown
+                        key={cardModelId}
+                        pictureUrl={cardModelsMap[cardModelId].pictureUrl}
+                        season={cardModelsMap[cardModelId].season}
+                        artistName={cardModelsMap[cardModelId].artistName}
+                        serialNumbers={cardModelsMap[cardModelId].serialNumbers}
+                        scarcityName={cardModelsMap[cardModelId].scarcityName}
+                      />
+                    ))}
+                  </Column>
+                </CardBreakdownsWrapper>
+              )}
 
               <Slider
                 value={itemsCount}
