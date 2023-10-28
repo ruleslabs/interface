@@ -44,11 +44,7 @@ export default function MigrateCollectionModal({ setModalMode }: ModalContentPro
 
   // packs count
   const packsCount = useMemo(
-    () =>
-      (packsBalances as any[]).reduce<number>(
-        (acc, packBalance) => acc + packBalance.balance + packBalance.voucherBalance,
-        0
-      ),
+    () => (packsBalances as any[]).reduce<number>((acc, packBalance) => acc + packBalance.balance, 0),
     [packsBalances]
   )
 
