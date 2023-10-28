@@ -23,6 +23,8 @@ import { useGetWalletConstructorCallData } from 'src/hooks/useCreateWallet'
 import { Operation } from 'src/types/common'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import { PaginationSpinner } from '../Spinner'
+import { useETHBalance } from 'src/state/wallet/hooks'
+import { TYPE } from 'src/styles/theme'
 
 const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
 
@@ -106,6 +108,14 @@ export default function SweepModal() {
     setItemsCount(value)
     setDebouncedItemsCount(value)
   }, [])
+
+  // can pay for card
+  const balance = useETHBalance(address)
+  const canPayForCard = useMemo(() => {
+    if (!balance) return true // we avoid displaying error message if not necessary
+
+    return !balance.lessThan(parsedTotalPrice)
+  }, [balance, parsedTotalPrice])
 
   // pending operation
   const { pushOperation, cleanOperations } = useOperations()
@@ -217,15 +227,23 @@ export default function SweepModal() {
                 unit={t`Cards`}
               />
 
-              <PrimaryButton onClick={handleConfirmation} disabled={loading} large>
-                {loading ? (
-                  <Trans>Loading</Trans>
-                ) : (
-                  <Trans>
-                    Buy - {+parsedTotalPrice.toFixed(6)} ETH ({weiAmountToEURValue(parsedTotalPrice) ?? 0}€)
-                  </Trans>
+              <Column gap={'8'}>
+                {!canPayForCard && balance && (
+                  <TYPE.body color="error">
+                    <Trans>Insufficient ETH balance</Trans>
+                  </TYPE.body>
                 )}
-              </PrimaryButton>
+
+                <PrimaryButton onClick={handleConfirmation} disabled={loading || !canPayForCard} large>
+                  {loading ? (
+                    <Trans>Loading</Trans>
+                  ) : (
+                    <Trans>
+                      Buy - {+parsedTotalPrice.toFixed(6)} ETH ({weiAmountToEURValue(parsedTotalPrice) ?? 0}€)
+                    </Trans>
+                  )}
+                </PrimaryButton>
+              </Column>
             </Column>
           </StarknetSigner>
         </ModalBody>
