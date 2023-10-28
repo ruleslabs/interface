@@ -93,24 +93,15 @@ const CardBreakdownsWrapper = styled.div<{ needsScroll: boolean }>`
   ${({ theme, needsScroll }) =>
     needsScroll &&
     `
-    border-radius: 6px;
+    padding: 0 8px;
     position: relative;
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(0deg, ${theme.bg1} 0, ${theme.bg1}00 150px);
-      pointer-events: none;
-    }
+    border-width: 1px 0;
+    border-style: solid;
+    border-color: ${theme.bg3}80;
+    overflow: scroll;
 
     & > div {
-      max-height: 250px;
-      overflow: scroll;
-      padding: 0 0 64px;
+      max-height: 300px;
     }
   `}
 `

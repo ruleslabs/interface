@@ -19,6 +19,7 @@ export enum ApplicationModal {
   LIVE_REWARD_DETAILS,
   LIVE_REWARD_TICKET,
   CLAIM_LIVE_REWARD,
+  SWEEP,
 }
 
 export enum WalletConnectModal {

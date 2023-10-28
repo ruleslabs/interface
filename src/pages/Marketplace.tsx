@@ -9,7 +9,7 @@ import Column from 'src/components/Column'
 import Row, { RowBetween, RowCenter } from 'src/components/Row'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import SortButton, { SortsData } from 'src/components/Button/SortButton'
-import { useFiltersModalToggle } from 'src/state/application/hooks'
+import { useFiltersModalToggle, useSweepModalToggle } from 'src/state/application/hooks'
 import DefaultLayout from 'src/components/Layout'
 import { NftCard } from 'src/components/nft/Card'
 import CollectionNfts from 'src/components/nft/Collection/CollectionNfts'
@@ -23,6 +23,8 @@ import * as Text from 'src/theme/components/Text'
 
 import { ReactComponent as HopperIcon } from 'src/images/hopper.svg'
 import { darken } from 'polished'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import SweepModal from 'src/components/SweepModal'
 
 const StyledSection = styled(Section)`
   width: 100%;
@@ -107,6 +109,9 @@ const useSortsData = (): SortsData<any> =>
 function Marketplace() {
   const [sortIndex, setSortIndex] = useState(0)
 
+  // current user
+  const { currentUser } = useCurrentUser()
+
   // sorts data
   const sortsData = useSortsData()
 
@@ -116,8 +121,9 @@ function Marketplace() {
   // filters
   const marketplaceFilters = useMarketplaceFilters()
 
-  // filters modal
+  // modals
   const toggleMarketplaceFiltersModal = useFiltersModalToggle()
+  const toggleSweepModal = useSweepModalToggle()
 
   // sort
   const sort = useMemo(
@@ -201,13 +207,16 @@ function Marketplace() {
         </Row>
       </StyledSection>
 
-      <SweepButton>
-        <RowCenter gap={4}>
-          <Icons.Sweep />
-          <Text.HeadlineSmall>Sweep</Text.HeadlineSmall>
-        </RowCenter>
-      </SweepButton>
+      {!!currentUser && (
+        <SweepButton onClick={toggleSweepModal}>
+          <RowCenter gap={4}>
+            <Icons.Sweep />
+            <Text.HeadlineSmall>Sweep</Text.HeadlineSmall>
+          </RowCenter>
+        </SweepButton>
+      )}
 
+      <SweepModal />
       <MarketplaceFiltersModal />
     </>
   )

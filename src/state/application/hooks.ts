@@ -167,6 +167,10 @@ export function useClaimLiveRewardModalToggle(): () => void {
   return useToggleModal(ApplicationModal.CLAIM_LIVE_REWARD)
 }
 
+export function useSweepModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.SWEEP)
+}
+
 // SIDEBAR
 
 export function useNotificationsModalToggle(): () => void {

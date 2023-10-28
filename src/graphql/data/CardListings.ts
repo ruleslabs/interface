@@ -34,6 +34,7 @@ gql`
           }
           card {
             serialNumber
+            tokenId
             cardModel {
               id
               slug
@@ -45,6 +46,13 @@ gql`
               }
               artistName
             }
+            voucherSigningData {
+              signature {
+                r
+                s
+              }
+              salt
+            }
           }
           offerer {
             starknetAddress
@@ -54,6 +62,10 @@ gql`
               profile {
                 pictureUrl(derivative: "width=128")
                 fallbackUrl(derivative: "width=128")
+              }
+              starknetWallet {
+                currentPublicKey
+                deployed
               }
             }
           }
@@ -102,6 +114,8 @@ export function formatCardListingQueryData({
     createdAt: new Date(queryCardListing.createdAt),
     card: {
       serialNumber: card.serialNumber,
+      tokenId: card.tokenId,
+      voucherSigningData: card.voucherSigningData,
     },
     cardModel: {
       slug: cardModel.slug,
@@ -119,12 +133,14 @@ export function formatCardListingQueryData({
         fallbackUrl: offererUser?.profile.fallbackUrl ?? '',
       },
       starknetAddress: queryCardListing.offerer.starknetAddress,
+      currentPublicKey: offererUser?.starknetWallet.currentPublicKey,
+      deployed: offererUser?.starknetWallet.deployed,
     },
   }
 }
 
 export interface CardListingsFetcherParams {
-  filter: CardListingsFilterInput
+  filter?: CardListingsFilterInput
   sort: CardListingsSortInput
   first?: number
   after?: string
@@ -132,8 +148,9 @@ export interface CardListingsFetcherParams {
 
 export const LISTINGS_PAGE_SIZE = 32
 
-const defaultCardListingsFetcherParams: Omit<CardListingsQueryVariables, 'filter' | 'sort'> = {
+const defaultCardListingsFetcherParams: Omit<CardListingsQueryVariables, 'sort'> = {
   first: LISTINGS_PAGE_SIZE,
+  filter: {},
 }
 
 export function useCardListings(params: CardListingsFetcherParams, skip?: boolean) {

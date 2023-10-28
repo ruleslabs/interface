@@ -1,26 +1,27 @@
 import React, { useCallback, useMemo } from 'react'
 import styled, { DefaultTheme, useTheme } from 'styled-components/macro'
 
-import SliderInput from 'src/components/Input/SliderInput'
-import Column from 'src/components/Column'
+import { RowCenter } from '../Row'
+import NumericalInput from 'src/components/Input/NumericalInput'
+import * as Text from 'src/theme/components/Text'
 
-const SliderWrapper = styled(Column)`
+const SliderWrapper = styled(RowCenter)`
   z-index: 1;
-  gap: 24px;
+  gap: 16px;
 `
 
 const StyledSlider = styled.input`
   -webkit-appearance: none;
   width: 100%;
-  height: 2px;
-  border-radius: 1px;
+  height: 8px;
+  border-radius: 2px;
   outline: none;
   position: relative;
 
   &::before {
-    height: 2px;
-    background: ${({ theme }) => theme.text1};
-    border-radius: 1px;
+    height: 8px;
+    background: linear-gradient(135deg, #8e2de2 0, #4a00e0 100%);
+    border-radius: 2px;
     content: '';
     left: 0;
     right: 0;
@@ -29,30 +30,32 @@ const StyledSlider = styled.input`
     z-index: -1;
   }
 
-  &:active,
-  &focus {
-    &::before {
-      background: ${({ theme }) => theme.primary1};
-    }
-
-    &::-webkit-slider-thumb {
-      border: 2px solid ${({ theme }) => theme.primary1};
-    }
-  }
-
   &::-webkit-slider-thumb {
-    background: ${({ theme }) => theme.bg2};
-    border: 2px solid ${({ theme }) => theme.text1};
+    background: ${({ theme }) => theme.primary1};
     border-radius: 2px;
-    width: 20px;
+    width: 12px;
     -webkit-appearance: none;
     height: 20px;
     cursor: pointer;
   }
 
   &::-moz-range-thumb {
-    background: ${({ theme }) => theme.text1};
+    background: ${({ theme }) => theme.primary2};
   }
+`
+
+const StyledNumericalInput = styled(NumericalInput)`
+  height: 32px;
+  width: auto;
+`
+
+const Unit = styled(Text.Body)`
+  background: ${({ theme }) => theme.bg3}80;
+  padding: 0 6px;
+  border-radius: 6px;
+  height: 32px;
+  display: flex;
+  align-items: center;
 `
 
 interface SliderProps {
@@ -65,7 +68,15 @@ interface SliderProps {
   onSliderRelease?: () => void
 }
 
-export default function Slider({ value, min = 0, max, onSlidingChange, onInputChange, onSliderRelease }: SliderProps) {
+export default function Slider({
+  value,
+  min = 0,
+  max,
+  onSlidingChange,
+  onInputChange,
+  onSliderRelease,
+  unit,
+}: SliderProps) {
   const theme = useTheme() as DefaultTheme
 
   const sliderStyle = useMemo(
@@ -101,7 +112,12 @@ export default function Slider({ value, min = 0, max, onSlidingChange, onInputCh
         onMouseUp={onSliderRelease}
         onTouchEnd={onSliderRelease}
       />
-      <SliderInput type="text" value={value} onUserInput={handleInputUpdate} placeholder="0" unit="€" />
+
+      <RowCenter gap={8}>
+        <StyledNumericalInput type="text" value={value} onUserInput={handleInputUpdate} placeholder="0" />
+
+        {!!unit && <Unit>{unit}</Unit>}
+      </RowCenter>
     </SliderWrapper>
   )
 }

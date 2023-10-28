@@ -2,6 +2,7 @@ import styled from 'styled-components/macro'
 
 import { SecondaryButton } from 'src/components/Button'
 import { Row } from 'src/theme/components/Flex'
+import NumericalInput from './NumericalInput'
 
 const SmallButton = styled(SecondaryButton)<{ glow?: boolean }>`
   font-size: 24px;
@@ -40,17 +41,6 @@ const SmallButton = styled(SecondaryButton)<{ glow?: boolean }>`
   &:disabled:hover {
     background: none;
   }
-`
-
-const NumericalInput = styled.input`
-  background: ${({ theme }) => theme.bg3}80;
-  border: 1px solid ${({ theme }) => theme.bg3};
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 500;
-  text-align: center;
-  min-width: 46px;
-  max-width: 80px;
 `
 
 interface InputStepCounterProps {
