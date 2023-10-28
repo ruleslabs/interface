@@ -6,7 +6,7 @@ import { t } from '@lingui/macro'
 import MarketplaceFilters from 'src/components/Filters/Marketplace'
 import Section from 'src/components/Section'
 import Column from 'src/components/Column'
-import Row, { RowBetween } from 'src/components/Row'
+import Row, { RowBetween, RowCenter } from 'src/components/Row'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import SortButton, { SortsData } from 'src/components/Button/SortButton'
 import { useFiltersModalToggle } from 'src/state/application/hooks'
@@ -18,8 +18,11 @@ import { BadgeType, CardModelsSortingType, SortingOption } from 'src/graphql/dat
 import { useMarketplaceFilters } from 'src/state/search/hooks'
 import { IconButton } from 'src/components/Button'
 import { MarketplaceFiltersModal } from 'src/components/FiltersModal'
+import * as Icons from 'src/theme/components/Icons'
+import * as Text from 'src/theme/components/Text'
 
 import { ReactComponent as HopperIcon } from 'src/images/hopper.svg'
+import { darken } from 'polished'
 
 const StyledSection = styled(Section)`
   width: 100%;
@@ -65,6 +68,30 @@ const GridHeader = styled(RowBetween)`
   margin-bottom: 16px;
   padding: 0 8px;
   align-items: center;
+`
+
+const SweepButton = styled.button`
+  height: 48px;
+  border-radius: 10px;
+  position: fixed;
+  bottom: 16px;
+  right: 24px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #8e2de2 0, #4a00e0 100%);
+  outline-width: 0;
+  z-index: 999;
+  box-shadow: 0 0 8px #00000080;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  &:hover {
+    background: linear-gradient(135deg, ${darken(0.05, '#8e2de2')} 0, ${darken(0.05, '#4a00e0')} 100%);
+  }
+
+  svg {
+    width: 28px;
+  }
 `
 
 // TODO: new sorting support
@@ -173,6 +200,13 @@ function Marketplace() {
           </GridWrapper>
         </Row>
       </StyledSection>
+
+      <SweepButton>
+        <RowCenter gap={4}>
+          <Icons.Sweep />
+          <Text.HeadlineSmall>Sweep</Text.HeadlineSmall>
+        </RowCenter>
+      </SweepButton>
 
       <MarketplaceFiltersModal />
     </>
