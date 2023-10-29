@@ -7,7 +7,7 @@ if (!STARKNET_NETWORK_NAME || !Object.values(constants.StarknetNetworkName).incl
 
 const STARKNET_NODE_URL = process.env.REACT_APP_STARKNET_NODE_URL
 if (!STARKNET_NODE_URL) {
-  throw 'STARKNET_NETWORK_NAME is invalid'
+  throw 'STARKNET_NODE_URL is invalid'
 }
 
 export const rulesSdk = new RulesSdk(STARKNET_NETWORK_NAME as constants.StarknetNetworkName, STARKNET_NODE_URL)
