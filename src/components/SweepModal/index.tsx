@@ -30,7 +30,7 @@ const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
 const MIN_MAX_SERIAL = 1
 
 const MIN_ITEMS_COUNT = 1
-const MAX_ITEMS_COUNT = 50
+const MAX_ITEMS_COUNT = 80
 
 const CardBreakdownsWrapper = styled.div<{ needsScroll: boolean }>`
   & > div {
@@ -207,8 +207,6 @@ export default function SweepModal() {
     if (isOpen) {
       resetStarknetTx()
       cleanOperations()
-      setMaxSerial(MIN_MAX_SERIAL)
-      setDebouncedMaxSerial(MIN_MAX_SERIAL)
     }
   }, [isOpen])
 
@@ -273,7 +271,7 @@ export default function SweepModal() {
                   </TYPE.body>
                 )}
 
-                <PrimaryButton onClick={handleConfirmation} disabled={loading || !canPayForCard} large>
+                <PrimaryButton onClick={handleConfirmation} disabled={loading} large>
                   {loading ? (
                     <Trans>Loading</Trans>
                   ) : (

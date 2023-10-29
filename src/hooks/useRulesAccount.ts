@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { SequencerProvider } from 'starknet'
+import { RpcProvider } from 'starknet'
 
 import useCurrentUser from './useCurrentUser'
 import { RulesAccount } from 'src/lib/rulesWallet/RulesAccount'
@@ -8,7 +8,7 @@ import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 function buildRulesAccount(address: string, oldAddress?: string): RulesAccount {
   // rulesSdk.starknet is not an instance of a vanilla starknet.js provider
   // then it is not supported by Account class and a default provider will be used
-  const provider = new SequencerProvider({ baseUrl: rulesSdk.starknet.baseUrl })
+  const provider = new RpcProvider({ nodeUrl: rulesSdk.starknet.nodeUrl })
 
   return new RulesAccount(provider, address, '1', oldAddress)
 }

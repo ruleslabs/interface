@@ -13,7 +13,6 @@ import { useEthereumStarkgateContract } from 'src/hooks/useContract'
 import Wallet from 'src/components/Wallet'
 import { EthereumStatus } from 'src/components/Web3Status'
 import EthereumSigner from 'src/components/EthereumSigner'
-import { L2_STARKGATE_DEPOSIT_HANDLER_SELECTOR_NAME } from 'src/constants/misc'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 
 import { ReactComponent as Arrow } from 'src/images/arrow.svg'
@@ -78,15 +77,17 @@ export default function StarkgateDeposit() {
 
     const amount = parsedDepositAmount.quotient.toString()
 
-    const messageFee = await rulesSdk.starknet.estimateMessageFee({
-      from_address: ethereumStarkgateContract.address,
-      to_address: l2StarkgateAddress,
-      entry_point_selector: L2_STARKGATE_DEPOSIT_HANDLER_SELECTOR_NAME,
-      payload: [currentUser.starknetWallet.address, amount, '0x0'],
-    })
+    // TODO use message fee when it will be needed
 
-    const parsedMessageFee = (messageFee as any).overall_fee?.toString()
-    if (!parsedMessageFee) throw 'Failed to estimate message fee'
+    // const messageFee = await rulesSdk.starknet.estimateMessageFee({
+    //   from_address: ethereumStarkgateContract.address,
+    //   to_address: l2StarkgateAddress,
+    //   entry_point_selector: L2_STARKGATE_DEPOSIT_HANDLER_SELECTOR_NAME,
+    //   payload: [currentUser.starknetWallet.address, amount, '0x0'],
+    // })
+
+    // const parsedMessageFee = (messageFee as any).overall_fee?.toString()
+    // if (!parsedMessageFee) throw 'Failed to estimate message fee'
 
     // save some wei while we can 🐀
     const payableAmount = parsedDepositAmount.add('1')

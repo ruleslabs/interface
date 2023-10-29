@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import ms from 'ms.macro'
 import { shallow } from 'zustand/shallow'
-import { TransactionStatus } from 'starknet'
 
 import useInterval from 'src/hooks/useInterval'
 import useIsWindowVisible from 'src/hooks/useIsWindowVisible'
@@ -27,12 +26,12 @@ export default function StarknetTxUpdater(): null {
     if (!txHash) return
 
     // get starknet tx status
-    const { tx_status: txStatus } = await rulesSdk.starknet.getTransactionStatus(txHash)
-    if (txStatus !== TransactionStatus.NOT_RECEIVED && txStatus !== TransactionStatus.RECEIVED) {
+    const { execution_status: txStatus } = await rulesSdk.starknet.getTransactionReceipt(txHash)
+    if (txStatus) {
       setTxHash(null)
 
       if (txAction) {
-        saveExecutedStx({ hash: txHash, success: txStatus !== TransactionStatus.REJECTED, action: txAction })
+        saveExecutedStx({ hash: txHash, success: txStatus === 'SUCCEEDED', action: txAction })
       }
     }
   }, [txHash, txAction])

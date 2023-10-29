@@ -19,6 +19,8 @@ import { PaginationSpinner } from '../Spinner'
 import { useModalOpened } from 'src/state/application/hooks'
 import { ApplicationModal } from 'src/state/application/actions'
 
+const MAX_CARDS_TRANSFERS = 200
+
 const CARDS_QUERY = gql`
   query ($address: String!) {
     cards(
@@ -144,8 +146,8 @@ export default function CardsTransferModal() {
           <Column gap={'32'}>
             <TYPE.body textAlign="justify">
               <Trans>
-                Due to Starknet limitations, you cannot transfer more than 50 cards per transaction. If necessary you
-                will have to repeat this operation to transfer all your cards.
+                Due to Starknet limitations, you cannot transfer more than {MAX_CARDS_TRANSFERS} cards per transaction.
+                If necessary you will have to repeat this operation to transfer all your cards.
               </Trans>
             </TYPE.body>
 

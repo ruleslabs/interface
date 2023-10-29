@@ -3440,10 +3440,10 @@
   resolved "https://registry.yarnpkg.com/@rometools/cli-win32-x64/-/cli-win32-x64-12.1.3.tgz#b4f53491d2ca8f1234b3613b7cc73418ad8d76bb"
   integrity sha512-yHSKYidqJMV9nADqg78GYA+cZ0hS1twANAjiFibQdXj9aGzD+s/IzIFEIi/U/OBLvWYg/SCw0QVozi2vTlKFDQ==
 
-"@rulesorg/sdk-core@^1.4.30":
-  version "1.4.30"
-  resolved "https://registry.yarnpkg.com/@rulesorg/sdk-core/-/sdk-core-1.4.30.tgz#58d638ee560ffef233081c9be573ee0e92166616"
-  integrity sha512-bCQs79pXSYawLpD948OdzqqO1JrRouBRMMwf6RNwlh1UXrW1RSKBRHQrxoYgAT2CVVHmN4lGn8obfKJAQCQoHg==
+"@rulesorg/sdk-core@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@rulesorg/sdk-core/-/sdk-core-1.5.0.tgz#ed3dc94bc27898a278a5c845aff6f6d72c32f9e8"
+  integrity sha512-uvdKjVlw5kVUEs6G93IDuJ4pGhlnxwQmpCq1mkoi9LZEo+Brotm2Q0MYG8RNPcK+I2N46cEf3NIqdY0NZeDqvQ==
   dependencies:
     big.js "^6.2.1"
     decimal.js-light "^2.5.1"
