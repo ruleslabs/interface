@@ -82,9 +82,14 @@ export function useIsDeployed(address?: string): boolean | undefined {
 
     if (!address) return
 
-    rulesSdk.starknet.getNonceForAddress(address).then((nonce) => {
-      setDeployed(!!+nonce)
-    })
+    rulesSdk.starknet
+      .getNonceForAddress(address)
+      .then((nonce) => {
+        setDeployed(!!+nonce)
+      })
+      .catch(() => {
+        setDeployed(false)
+      })
   }, [address])
 
   return deployed
