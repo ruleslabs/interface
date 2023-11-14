@@ -22,10 +22,11 @@ import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import useStarknetTx from 'src/hooks/useStarknetTx'
 import { Operation } from 'src/types'
-import { useIsDeployed } from 'src/state/wallet/hooks'
 import { useOperations } from 'src/hooks/usePendingOperations'
 
 import { ReactComponent as Arrow } from 'src/images/arrow.svg'
+import { StarknetStatus } from '../Web3Status'
+import { useAccount } from '@starknet-react/core'
 
 const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
 
@@ -136,7 +137,8 @@ interface GiftModalProps {
 }
 
 export default function GiftModal({ tokenIds }: GiftModalProps) {
-  const [recipient, setRecipient] = useState<any | null>(null)
+  const [external, setExternal] = useState(false)
+  const [rulesRecipient, setRulesRecipient] = useState<any | null>(null)
 
   // current user
   const { currentUser } = useCurrentUser()
@@ -144,8 +146,11 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
   // starknet account
   const { address } = useRulesAccount()
 
-  // recipient deployed
-  const recipientDeployed = useIsDeployed(recipient?.starknetWallet.address ?? undefined)
+  // external account
+  const { address: externalRecipient } = useAccount()
+
+  // toggle external
+  const toggleExternal = useCallback(() => setExternal((state) => !state), [])
 
   // modal
   const isOpen = useModalOpened(ApplicationModal.OFFER)
@@ -190,57 +195,60 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
   // starknet tx
   const { setCalls, resetStarknetTx, signing, setSigning } = useStarknetTx()
 
-  const handleConfirmation = useCallback(() => {
-    if (!address || !recipient?.starknetWallet.address) return
+  const handleConfirmation = useCallback(
+    (recipient?: string) => {
+      if (!address || !recipient) return
 
-    const rulesTokensAddress = constants.RULES_TOKENS_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+      const rulesTokensAddress = constants.RULES_TOKENS_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
 
-    // save operations
-    pushOperation(...tokenIds.map((tokenId): Operation => ({ tokenId, action: 'transfer', quantity: 1 })))
+      // save operations
+      pushOperation(...tokenIds.map((tokenId): Operation => ({ tokenId, action: 'transfer', quantity: 1 })))
 
-    const voucherRedeemCalls = tokenIds
-      .map((tokenId) =>
-        vouchersSigningDataMap[tokenId]
-          ? rulesSdk.getVoucherRedeemCall(
-              address,
-              tokenId,
-              1,
-              vouchersSigningDataMap[tokenId].salt,
-              vouchersSigningDataMap[tokenId].signature
-            )
-          : null
-      )
-      .filter((call): call is Call => !!call)
+      const voucherRedeemCalls = tokenIds
+        .map((tokenId) =>
+          vouchersSigningDataMap[tokenId]
+            ? rulesSdk.getVoucherRedeemCall(
+                address,
+                tokenId,
+                1,
+                vouchersSigningDataMap[tokenId].salt,
+                vouchersSigningDataMap[tokenId].signature
+              )
+            : null
+        )
+        .filter((call): call is Call => !!call)
 
-    // save calls
-    setCalls([
-      ...voucherRedeemCalls,
-      {
-        contractAddress: rulesTokensAddress,
-        entrypoint: 'batch_transfer_from',
-        calldata: [
-          { from: address },
-          { to: recipient.starknetWallet.address },
+      // save calls
+      setCalls([
+        ...voucherRedeemCalls,
+        {
+          contractAddress: rulesTokensAddress,
+          entrypoint: 'batch_transfer_from',
+          calldata: [
+            { from: address },
+            { to: recipient },
 
-          { idsLen: tokenIds.length },
-          ...tokenIds.flatMap((tokenId) => {
-            const u256TokenId = uint256.bnToUint256(tokenId)
-            return [u256TokenId.low, u256TokenId.high]
-          }), // ids
+            { idsLen: tokenIds.length },
+            ...tokenIds.flatMap((tokenId) => {
+              const u256TokenId = uint256.bnToUint256(tokenId)
+              return [u256TokenId.low, u256TokenId.high]
+            }), // ids
 
-          { amountsLent: tokenIds.length },
-          ...tokenIds.flatMap(() => [1, 0]), // amount.low, amount.high
-        ],
-      },
-    ])
+            { amountsLent: tokenIds.length },
+            ...tokenIds.flatMap(() => [1, 0]), // amount.low, amount.high
+          ],
+        },
+      ])
 
-    setSigning(true)
-  }, [tokenIds.length, address, recipient?.starknetWallet.address, setSigning, setCalls, vouchersSigningDataMap])
+      setSigning(true)
+    },
+    [tokenIds.length, address, setSigning, setCalls, vouchersSigningDataMap]
+  )
 
   // on modal status update
   useEffect(() => {
     if (isOpen) {
-      setRecipient(null)
+      setRulesRecipient(null)
       resetStarknetTx()
       cleanOperations()
     }
@@ -273,46 +281,66 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
                 </Column>
               </CardBreakdownsWrapper>
 
-              <RowCenter gap={16}>
-                <TYPE.body style={{ whiteSpace: 'nowrap' }}>
-                  <Trans>Send to</Trans>
-                </TYPE.body>
-                <UsersSearchBar onSelect={setRecipient} selfSearchAllowed={false} />
-              </RowCenter>
-
-              <Column gap={12}>
-                <TransferSummary>
-                  <RowCenter gap={12}>
-                    <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackUrl} />
-                    <TYPE.body fontSize={14}>
-                      <Trans>My account</Trans>
+              {external ? (
+                <>
+                  <StarknetStatus>
+                    <PrimaryButton onClick={() => handleConfirmation(externalRecipient)} large>
+                      <Trans>Next</Trans>
+                    </PrimaryButton>
+                  </StarknetStatus>
+                  <TYPE.subtitle onClick={toggleExternal} clickable>
+                    <Trans>Transfer to a Rules user</Trans>
+                  </TYPE.subtitle>
+                </>
+              ) : (
+                <>
+                  <RowCenter gap={16}>
+                    <TYPE.body style={{ whiteSpace: 'nowrap' }}>
+                      <Trans>Send to</Trans>
                     </TYPE.body>
+                    <UsersSearchBar onSelect={setRulesRecipient} selfSearchAllowed={false} />
                   </RowCenter>
 
-                  <ArrowWrapper>
-                    <Arrow />
-                  </ArrowWrapper>
+                  <Column gap={12}>
+                    <TransferSummary>
+                      <RowCenter gap={12}>
+                        <Avatar src={currentUser.profile.pictureUrl} fallbackSrc={currentUser.profile.fallbackUrl} />
+                        <TYPE.body fontSize={14}>
+                          <Trans>My account</Trans>
+                        </TYPE.body>
+                      </RowCenter>
 
-                  <RowCenter gap={12}>
-                    {recipient && (
-                      <>
-                        <Avatar src={recipient.profile.pictureUrl} fallbackSrc={recipient.profile.fallbackSrc} />
-                        <TYPE.body fontSize={14}>{recipient.username}</TYPE.body>
-                      </>
-                    )}
-                  </RowCenter>
-                </TransferSummary>
+                      <ArrowWrapper>
+                        <Arrow />
+                      </ArrowWrapper>
 
-                {recipientDeployed === false && (
-                  <TYPE.body color="error">
-                    <Trans>This user does not deployed his wallet yet.</Trans>
-                  </TYPE.body>
-                )}
-              </Column>
+                      <RowCenter gap={12}>
+                        {rulesRecipient && (
+                          <>
+                            <Avatar
+                              src={rulesRecipient.profile.pictureUrl}
+                              fallbackSrc={rulesRecipient.profile.fallbackSrc}
+                            />
+                            <TYPE.body fontSize={14}>{rulesRecipient.username}</TYPE.body>
+                          </>
+                        )}
+                      </RowCenter>
+                    </TransferSummary>
 
-              <PrimaryButton onClick={handleConfirmation} disabled={!recipientDeployed} large>
-                {recipientDeployed === undefined && recipient ? <Trans>Loading ...</Trans> : <Trans>Next</Trans>}
-              </PrimaryButton>
+                    <TYPE.subtitle onClick={toggleExternal} clickable>
+                      <Trans>Transfer to an external wallet</Trans>
+                    </TYPE.subtitle>
+                  </Column>
+
+                  <PrimaryButton
+                    onClick={() => handleConfirmation(rulesRecipient?.starknetWallet.address)}
+                    disabled={!rulesRecipient}
+                    large
+                  >
+                    <Trans>Next</Trans>
+                  </PrimaryButton>
+                </>
+              )}
             </Column>
           </StarknetSigner>
         </ModalBody>
