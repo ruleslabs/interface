@@ -26,6 +26,8 @@ import useTrans from 'src/hooks/useTrans'
 import SignerEscape from 'src/components/LockedWallet/SignerEscape'
 import { useMaintenance, useNeedsSignerEscape } from 'src/hooks/useCurrentUser'
 import Maintenance from 'src/components/LockedWallet/Maintenance'
+import Link from 'src/components/Link'
+import { MAX_SUITABLE_GAS_PRICE } from 'src/constants/misc'
 
 const DummyFocusInput = styled.input`
   max-height: 0;
@@ -90,7 +92,7 @@ export default function StarknetSigner({
 
   // handlers
   const [estimateFees, estimateFeesRes] = useEstimateFees()
-  const { parsedNetworkFee, parsedTotalCost } = estimateFeesRes.data
+  const { parsedNetworkFee, parsedTotalCost, gasPrice } = estimateFeesRes.data
 
   // execution
   const [executeTx, executeTxRes] = useExecuteTx()
@@ -126,6 +128,9 @@ export default function StarknetSigner({
   useEffect(() => {
     setError(estimateFeesRes.error || executeTxRes.error)
   }, [estimateFeesRes.error, executeTxRes.error])
+
+  // gas price
+  const suitableGasPricePercentage = useMemo(() => ((gasPrice ?? 0) / MAX_SUITABLE_GAS_PRICE) * 100 - 100, [gasPrice])
 
   // retry
   const retry = estimateFees
@@ -165,39 +170,59 @@ export default function StarknetSigner({
       return (
         <StyledForm>
           <Column gap={20}>
-            <Column gap={12}>
-              <FeeWrapper>
-                <TYPE.body fontWeight={700}>
-                  <Trans>Network fee</Trans>
-                </TYPE.body>
-                <Column gap={8} alignItems="end">
-                  <TYPE.body>
-                    {parsedNetworkFee.fee.toSignificant(4)} ETH ({weiAmountToEURValue(parsedNetworkFee.fee)}€)
+            <Column gap={8}>
+              <Column gap={12}>
+                <FeeWrapper>
+                  <TYPE.body fontWeight={700}>
+                    <Trans>Network fee</Trans>
                   </TYPE.body>
-                  <TYPE.subtitle fontSize={12}>
-                    Max {parsedNetworkFee.maxFee.toSignificant(4)} ETH ({weiAmountToEURValue(parsedNetworkFee.maxFee)}
-                    €)
-                  </TYPE.subtitle>
-                </Column>
-              </FeeWrapper>
-            </Column>
+                  <Column gap={8} alignItems="end">
+                    <TYPE.body>
+                      {parsedNetworkFee.fee.toSignificant(4)} ETH ({weiAmountToEURValue(parsedNetworkFee.fee)}€)
+                    </TYPE.body>
+                    <TYPE.subtitle fontSize={12}>
+                      Max {parsedNetworkFee.maxFee.toSignificant(4)} ETH ({weiAmountToEURValue(parsedNetworkFee.maxFee)}
+                      €)
+                    </TYPE.subtitle>
+                  </Column>
+                </FeeWrapper>
+              </Column>
 
-            {parsedTotalCost && !txValue.isNull() && (
-              <FeeWrapper>
-                <TYPE.body fontWeight={700}>
-                  <Trans>Total</Trans>
-                </TYPE.body>
-                <Column gap={8} alignItems="end">
-                  <TYPE.body>
-                    {parsedTotalCost.cost.toSignificant(4)} ETH ({weiAmountToEURValue(parsedTotalCost.cost)}€)
+              {parsedTotalCost && !txValue.isNull() && (
+                <FeeWrapper>
+                  <TYPE.body fontWeight={700}>
+                    <Trans>Total</Trans>
                   </TYPE.body>
-                  <TYPE.subtitle fontSize={12}>
-                    Max {parsedTotalCost.maxCost.toSignificant(4)} ETH ({weiAmountToEURValue(parsedTotalCost.maxCost)}
-                    €)
+                  <Column gap={8} alignItems="end">
+                    <TYPE.body>
+                      {parsedTotalCost.cost.toSignificant(4)} ETH ({weiAmountToEURValue(parsedTotalCost.cost)}€)
+                    </TYPE.body>
+                    <TYPE.subtitle fontSize={12}>
+                      Max {parsedTotalCost.maxCost.toSignificant(4)} ETH ({weiAmountToEURValue(parsedTotalCost.maxCost)}
+                      €)
+                    </TYPE.subtitle>
+                  </Column>
+                </FeeWrapper>
+              )}
+
+              {suitableGasPricePercentage > 0 && (
+                <Column gap={8}>
+                  <TYPE.subtitle>
+                    <Trans>
+                      Fees are currently {suitableGasPricePercentage.toFixed(2)}% too high. If you are not in a hurry,
+                      you should probably come back in a few hours/days.
+                    </Trans>
+                  </TYPE.subtitle>
+                  <TYPE.subtitle underline>
+                    <Trans>
+                      <Link href="https://voyager.online/analytics?page=fee" target="_blank" color="text2">
+                        Track gas price here.
+                      </Link>
+                    </Trans>
                   </TYPE.subtitle>
                 </Column>
-              </FeeWrapper>
-            )}
+              )}
+            </Column>
 
             {!canPayTransaction && <DepositNeeded />}
 

@@ -1954,3 +1954,19 @@ msgstr "Les limitations de Starknet ne permettent pas de transférer plus de {MA
 #: src/hooks/useTrans.ts
 msgid "Your pack is on its way !"
 msgstr "Ton pack est en route !"
+
+#: src/components/StarknetSigner/Transaction/index.tsx
+msgid "Fees are currently {0}% too high. If you are not in a hurry, you should probably come back in a few hours/days."
+msgstr "Les frais sont actuellement {0}% trop hauts. Si tu n'es pas pressé, tu devrais probablement revenir dans quelques heures/jours."
+
+#: src/components/StarknetSigner/Transaction/index.tsx
+msgid "<0>Track gas price here.</0>"
+msgstr "<0>Suis les prix du gas ici.</0>"
+
+#: src/components/GiftModal/index.tsx
+msgid "Transfer to an external wallet"
+msgstr "Transfert vers un portefeuille externe"
+
+#: src/components/GiftModal/index.tsx
+msgid "Transfer to a Rules user"
+msgstr "Transfert vers un compte Rules"

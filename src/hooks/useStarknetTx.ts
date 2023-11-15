@@ -48,11 +48,16 @@ export function useEstimateFees() {
 
         const maxFee = estimatedFees.suggestedMaxFee.toString() ?? '0'
         const fee = estimatedFees.overall_fee.toString() ?? '0'
-        if (!+maxFee || !+fee) {
+        const gasPrice = +(estimatedFees.gas_price?.toString() ?? '0')
+        if (!+maxFee || !+fee || !gasPrice) {
           throw new Error('Failed to estimate fees')
         }
 
-        setParsedNetworkFee({ maxFee: WeiAmount.fromRawAmount(maxFee), fee: WeiAmount.fromRawAmount(fee) })
+        setParsedNetworkFee({
+          maxFee: WeiAmount.fromRawAmount(maxFee),
+          fee: WeiAmount.fromRawAmount(fee),
+          gasPrice,
+        })
       } catch (error) {
         setError(error?.message ?? 'Unkown error')
       }
@@ -74,6 +79,7 @@ export function useEstimateFees() {
   const data = {
     parsedNetworkFee,
     parsedTotalCost,
+    gasPrice: parsedNetworkFee?.gasPrice,
   }
 
   return [estimatedFees, { data, loading, error }] as const

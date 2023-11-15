@@ -1,4 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
+import { GetBlockResponse } from 'starknet'
 
 export enum ApplicationModal {
   SETTINGS,
@@ -42,7 +43,7 @@ export const setOpenedWalletConnectModal = createAction<{ modal: WalletConnectMo
 )
 
 export const updateEtherPrice = createAction<{ price?: number }>('application/updateEtherPrice')
-export const updateBlockNumber = createAction<{ blockNumber: number }>('application/updateBlockNumber')
+export const updateBlock = createAction<{ block: GetBlockResponse }>('application/updateBlock')
 export const updateEthereumBlockNumber = createAction<{ chainId: number; blockNumber: number }>(
   'application/updateEthereumBlockNumber'
 )

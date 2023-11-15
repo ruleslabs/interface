@@ -4,7 +4,7 @@ import {
   setOpenedModal,
   setOpenedSidebarModal,
   updateEtherPrice,
-  updateBlockNumber,
+  updateBlock,
   updateEthereumBlockNumber,
   ApplicationModal,
   ApplicationSidebarModal,
@@ -46,8 +46,8 @@ export default createReducer(initialState, (builder) =>
     .addCase(updateEtherPrice, (state, { payload: { price } }) => {
       state.etherPrice = price
     })
-    .addCase(updateBlockNumber, (state, { payload: { blockNumber } }) => {
-      state.blockNumber = Math.max(state.blockNumber ?? 0, blockNumber)
+    .addCase(updateBlock, (state, { payload: { block } }) => {
+      state.blockNumber = Math.max(state.blockNumber ?? 0, block.block_number)
     })
     .addCase(updateEthereumBlockNumber, (state, { payload: { blockNumber, chainId } }) => {
       if (typeof state.ethereumBlockNumber[chainId] !== 'number') {

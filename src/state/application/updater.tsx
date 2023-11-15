@@ -2,10 +2,11 @@ import { useEffect, useCallback, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 
 import { useAppDispatch } from 'src/state/hooks'
-import { updateEtherPrice, updateBlockNumber, updateEthereumBlockNumber } from './actions'
+import { updateEtherPrice, updateBlock, updateEthereumBlockNumber } from './actions'
 import useDebounce from 'src/hooks/useDebounce'
 import { BLOCK_POLLING, ETH_PRICE_POLLING } from 'src/constants/misc'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { BlockTag } from 'starknet'
 
 export function useEtherEURPrice() {
   const dispatch = useAppDispatch()
@@ -36,12 +37,12 @@ export function useEtherEURPrice() {
   }, [fetchEthPrice])
 }
 
-function useBlockNumber() {
+function useBlock() {
   const dispatch = useAppDispatch()
 
   const fetchBlock = useCallback(async () => {
-    const block = await rulesSdk.starknet.getBlock('latest')
-    dispatch(updateBlockNumber({ blockNumber: block.block_number }))
+    const block = await rulesSdk.starknet.getBlock(BlockTag.latest)
+    dispatch(updateBlock({ block }))
   }, [rulesSdk.starknet, dispatch])
 
   useEffect(() => {
@@ -105,7 +106,7 @@ function useEthereumBlockNumber() {
 }
 
 export default function Updater(): null {
-  useBlockNumber()
+  useBlock()
   useEthereumBlockNumber()
   useEtherEURPrice()
   return null

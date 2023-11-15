@@ -12,7 +12,7 @@ import {
   setOpenedWalletConnectModal,
 } from './actions'
 
-// BLOCK NUMBER
+// BLOCKS
 
 export function useBlockNumber(): number | undefined {
   return useAppSelector((state: AppState) => state.application.blockNumber)
