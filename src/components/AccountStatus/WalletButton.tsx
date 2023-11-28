@@ -5,7 +5,7 @@ import useCurrentUser, { useNeedsSignerEscape } from 'src/hooks/useCurrentUser'
 import { PrimaryButton } from 'src/components/Button'
 import { useETHBalance } from 'src/state/wallet/hooks'
 import useRulesAccount from 'src/hooks/useRulesAccount'
-import { useConnectors } from '@starknet-react/core'
+import { useConnect } from '@starknet-react/core'
 
 import { ReactComponent as EthereumIcon } from 'src/images/ethereum-plain.svg'
 import Box from 'src/theme/components/Box'
@@ -43,10 +43,10 @@ export default function WalletButton(props: Parameters<typeof PrimaryButton>[0])
   const needsSignerEscape = useNeedsSignerEscape()
 
   // auto wallet conect
-  const { connect, connectors } = useConnectors()
+  const { connect, connectors } = useConnect()
   useEffect(() => {
     if (currentUser && connectors[0]) {
-      connect(connectors[0])
+      connect({ connector: connectors[0] })
     }
   }, [!!currentUser, !!connectors[0]])
 

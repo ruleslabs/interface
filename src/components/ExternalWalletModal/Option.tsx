@@ -4,7 +4,7 @@ import * as Text from 'src/theme/components/Text'
 import * as styles from './Option.css'
 import { useTryL1Activation } from 'src/hooks/useL1WalletActivation'
 import noop from 'src/utils/noop'
-import { useConnectors } from '@starknet-react/core'
+import { useConnect } from '@starknet-react/core'
 
 interface OptionProps {
   connection: Connection
@@ -38,8 +38,8 @@ interface L2OptionProps {
 
 export function L2Option({ connection }: L2OptionProps) {
   // wallet activation
-  const { connect } = useConnectors()
-  const activate = () => connect(connection.connector)
+  const { connect } = useConnect()
+  const activate = () => connect({ connector: connection.connector })
 
   return <Option connection={connection} activate={activate} />
 }

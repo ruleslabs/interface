@@ -4,7 +4,8 @@ import { Connector } from '@web3-react/types'
 
 import useEagerlyConnect from 'src/hooks/useEagerlyConnect'
 import { getL1Connections, getL2Connections } from 'src/connections'
-import { InjectedConnector, StarknetConfig } from '@starknet-react/core'
+import { InjectedConnector, StarknetConfig, alchemyProvider } from '@starknet-react/core'
+import { goerli, mainnet } from '@starknet-react/chains'
 
 // ETHEREUM
 
@@ -42,7 +43,13 @@ export function StarknetProvider({ children }: StarknetProviderProps) {
   const key = useMemo(() => connections.map((connection) => connection.getName()).join('-'), [connections])
 
   return (
-    <StarknetConfig connectors={connectors} key={key} autoConnect>
+    <StarknetConfig
+      connectors={connectors}
+      provider={alchemyProvider({ apiKey: process.env.REACT_APP_STARKNET_NODE_URL ?? '' })}
+      key={key}
+      chains={[mainnet, goerli]}
+      autoConnect
+    >
       {children}
     </StarknetConfig>
   )
