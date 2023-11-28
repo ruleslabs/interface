@@ -45,7 +45,7 @@ export function StarknetProvider({ children }: StarknetProviderProps) {
   return (
     <StarknetConfig
       connectors={connectors}
-      provider={alchemyProvider({ apiKey: process.env.REACT_APP_STARKNET_NODE_URL ?? '' })}
+      provider={alchemyProvider({ apiKey: process.env.REACT_APP_ALCHEMY_KEY ?? '' })}
       key={key}
       chains={[mainnet, goerli]}
       autoConnect

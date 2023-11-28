@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Trans } from '@lingui/macro'
 import { WeiAmount, constants } from '@rulesorg/sdk-core'
 import { useProvider } from '@starknet-react/core'
-import { BlockTag } from 'starknet'
 
 import { ModalBody } from 'src/components/Modal/Sidebar'
 import useCurrentUser from 'src/hooks/useCurrentUser'
@@ -15,6 +14,7 @@ import * as Text from 'src/theme/components/Text'
 import { useGetWalletConstructorCallData } from 'src/hooks/useCreateWallet'
 import StarknetSigner from '../StarknetSigner/Transaction'
 import useStarknetTx from 'src/hooks/useStarknetTx'
+import { Account, ec, hash, stark } from 'starknet'
 import { PaginationSpinner } from '../Spinner'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
 import { DEPLOYMENT_DEPOSIT_SUGGESTION_FACTOR } from 'src/constants/misc'
@@ -49,13 +49,32 @@ export default function Deploy() {
   // deployment
   const getWalletConstructorCallData = useGetWalletConstructorCallData()
   useEffect(() => {
-    if (!provider) return
+    if (!address || !currentPublicKey || !provider) return
 
-    provider.getBlock(BlockTag.pending).then((block) => {
-      if (block.gas_price) {
-        setParsedDummyDeploymentMaxFee(WeiAmount.fromRawAmount(block.gas_price).multiply(13_333))
-      }
-    })
+    // dummy deployment fee estimation
+    const dummyPrivateKey = stark.randomAddress()
+    const dummyPublicKey = ec.starkCurve.getStarkKey(dummyPrivateKey)
+    const dummyCalldata = getWalletConstructorCallData(dummyPublicKey)
+
+    const dummyAddress = hash.calculateContractAddressFromHash(
+      dummyPublicKey,
+      constants.ACCOUNT_CLASS_HASH,
+      dummyCalldata,
+      0
+    )
+
+    const dummyAccount = new Account(provider, dummyAddress, dummyPrivateKey)
+
+    dummyAccount
+      .estimateAccountDeployFee({
+        classHash: constants.ACCOUNT_CLASS_HASH,
+        addressSalt: dummyPublicKey,
+        constructorCalldata: dummyCalldata,
+        contractAddress: dummyAddress,
+      })
+      .then(({ suggestedMaxFee }) =>
+        setParsedDummyDeploymentMaxFee(WeiAmount.fromRawAmount(suggestedMaxFee.toString()))
+      )
   }, [address, provider, currentPublicKey])
 
   // fiat

@@ -38,5 +38,3 @@ export const MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION = WeiAmount.fromEtherAmount(0.
 export const MAX_LISTINGS_BATCH_SIZE = 0x10
 
 export const MAX_SUITABLE_GAS_PRICE = 10_000_000_000 // quite arbitrary
-
-export const MAX_WALLET_DEPLOY_GAS_CONSUMED = 13_333 // real gas consumption + ~60%
