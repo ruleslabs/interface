@@ -12,6 +12,7 @@ import StarknetAccountPrivateKeyModal from 'src/components/StarknetAccountPrivat
 import { getChainInfo } from 'src/constants/chainInfo'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import useRulesAccount from 'src/hooks/useRulesAccount'
+import { getChecksumAddress } from 'starknet'
 
 const ButtonsWrapper = styled(Row)`
   gap: 16px;
@@ -41,7 +42,7 @@ export default function StarknetAccountStatus() {
     <>
       <Column gap={12}>
         <Subtitle value={t`Wallet address`} />
-        <LongString value={address} copiable />
+        <LongString value={getChecksumAddress(address)} copiable />
 
         <ButtonsWrapper>
           <Link
