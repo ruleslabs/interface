@@ -1,5 +1,4 @@
 import { style } from '@vanilla-extract/css'
-
 import { breakpoints, sprinkles } from 'src/theme/css/sprinkles.css'
 
 export const assetsGrid = style([

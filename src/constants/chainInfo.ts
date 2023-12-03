@@ -1,6 +1,5 @@
-import { SupportedChainId, constants } from '@rulesorg/sdk-core'
+import { constants, SupportedChainId } from '@rulesorg/sdk-core'
 import ms from 'ms.macro'
-
 import * as Icons from 'src/theme/components/Icons'
 
 export const AVERAGE_L1_BLOCK_TIME = ms`12s`

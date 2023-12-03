@@ -1,15 +1,15 @@
-import { useMemo } from 'react'
-import { WeiAmount, constants } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
-
+import { constants, WeiAmount } from '@rulesorg/sdk-core'
+import { useMemo } from 'react'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import useRulesAccount from 'src/hooks/useRulesAccount'
 import { useETHBalance, useIsDeployed, useSignerEscapeActivationDate } from 'src/state/wallet/hooks'
-import { InfoCard } from '../Card'
-import * as Text from 'src/theme/components/Text'
+import Box from 'src/theme/components/Box'
 import { Column, Row } from 'src/theme/components/Flex'
 import * as Icons from 'src/theme/components/Icons'
-import Box from 'src/theme/components/Box'
-import useRulesAccount from 'src/hooks/useRulesAccount'
+import * as Text from 'src/theme/components/Text'
+
+import { InfoCard } from '../Card'
 
 interface SignerEscapeProps {
   old?: boolean
@@ -56,7 +56,7 @@ export default function SignerEscape({ old = false }: SignerEscapeProps) {
 
   return (
     <InfoCard $alert>
-      <Column gap={'16'} textAlign={'left'}>
+      <Column gap="16" textAlign="left">
         <Text.Body>
           <Trans>
             You have recently changed your password. For security reasons, you no longer have access to some Rules
@@ -67,13 +67,13 @@ export default function SignerEscape({ old = false }: SignerEscapeProps) {
         <Text.Body>
           <Trans>To regain full access to the app you must follow these steps:</Trans>
         </Text.Body>
-        <Column gap={'4'}>
-          <Row gap={'8'}>
+        <Column gap="4">
+          <Row gap="8">
             {!deployed ? (
               <Text.HeadlineSmall>-</Text.HeadlineSmall>
             ) : (
-              <Box color={'accent'}>
-                <Icons.Checkmark width={'16'} />
+              <Box color="accent">
+                <Icons.Checkmark width="16" />
               </Box>
             )}
 
@@ -82,12 +82,12 @@ export default function SignerEscape({ old = false }: SignerEscapeProps) {
             </Text.HeadlineSmall>
           </Row>
 
-          <Row gap={'8'}>
+          <Row gap="8">
             {needsDeposit ? (
               <Text.HeadlineSmall>-</Text.HeadlineSmall>
             ) : (
-              <Box color={'accent'}>
-                <Icons.Checkmark width={'16'} />
+              <Box color="accent">
+                <Icons.Checkmark width="16" />
               </Box>
             )}
 
@@ -103,7 +103,7 @@ export default function SignerEscape({ old = false }: SignerEscapeProps) {
             </Text.HeadlineSmall>
           </Row>
 
-          <Row gap={'8'}>
+          <Row gap="8">
             <Text.HeadlineSmall>-</Text.HeadlineSmall>
 
             <Text.HeadlineSmall>

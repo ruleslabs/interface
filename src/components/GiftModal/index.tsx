@@ -1,32 +1,31 @@
-import { useState, useCallback, useEffect, useMemo } from 'react'
-import styled from 'styled-components/macro'
-import { t, Trans } from '@lingui/macro'
 import { gql, useQuery } from '@apollo/client'
+import { t, Trans } from '@lingui/macro'
 import { constants } from '@rulesorg/sdk-core'
-import { Call, uint256 } from 'starknet'
-
+import { useAccount } from '@starknet-react/core'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import Avatar from 'src/components/Avatar'
+import { PrimaryButton } from 'src/components/Button'
+import Column from 'src/components/Column'
+import CardBreakdown from 'src/components/MarketplaceModal/CardBreakdown'
 import { ModalHeader } from 'src/components/Modal'
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
-import { useModalOpened, useOfferModalToggle } from 'src/state/application/hooks'
-import { ApplicationModal } from 'src/state/application/actions'
+import { RowCenter } from 'src/components/Row'
+import StarknetSigner from 'src/components/StarknetSigner/Transaction'
 import UsersSearchBar from 'src/components/UsersSearchBar'
 import useCurrentUser from 'src/hooks/useCurrentUser'
-import Column from 'src/components/Column'
-import { RowCenter } from 'src/components/Row'
-import { TYPE } from 'src/styles/theme'
-import { PrimaryButton } from 'src/components/Button'
-import StarknetSigner from 'src/components/StarknetSigner/Transaction'
-import CardBreakdown from 'src/components/MarketplaceModal/CardBreakdown'
-import Avatar from 'src/components/Avatar'
-import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { useOperations } from 'src/hooks/usePendingOperations'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import useStarknetTx from 'src/hooks/useStarknetTx'
-import { Operation } from 'src/types'
-import { useOperations } from 'src/hooks/usePendingOperations'
-
 import { ReactComponent as Arrow } from 'src/images/arrow.svg'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { ApplicationModal } from 'src/state/application/actions'
+import { useModalOpened, useOfferModalToggle } from 'src/state/application/hooks'
+import { TYPE } from 'src/styles/theme'
+import { Operation } from 'src/types'
+import { Call, uint256 } from 'starknet'
+import styled from 'styled-components/macro'
+
 import { StarknetStatus } from '../Web3Status'
-import { useAccount } from '@starknet-react/core'
 
 const MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING = 2
 
@@ -262,7 +261,7 @@ export default function GiftModal({ tokenIds }: GiftModalProps) {
         <ModalHeader onDismiss={toggleOfferModal} title={signing ? undefined : t`Offer this card`} />
 
         <ModalBody>
-          <StarknetSigner action={'transfer'}>
+          <StarknetSigner action="transfer">
             <Column gap={24}>
               <CardBreakdownsWrapper
                 needsScroll={Object.keys(cardModelsMap).length > MAX_CARD_MODEL_BREAKDOWNS_WITHOUT_SCROLLING}

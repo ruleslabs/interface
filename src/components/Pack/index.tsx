@@ -1,15 +1,14 @@
 import 'moment/locale/fr'
 
-import { useMemo } from 'react'
-import moment from 'moment'
-import styled, { css } from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-
+import moment from 'moment'
+import { useMemo } from 'react'
+import { ColumnCenter } from 'src/components/Column'
 import Link from 'src/components/Link'
 import { useActiveLocale } from 'src/hooks/useActiveLocale'
 import { TYPE } from 'src/styles/theme'
-import { ColumnCenter } from 'src/components/Column'
 import Image from 'src/theme/components/Image'
+import styled, { css } from 'styled-components/macro'
 
 const ImageWrapper = styled.div`
   position: relative;
@@ -73,7 +72,7 @@ const StyledPack = styled(ColumnCenter)<{ width?: number; disabled: boolean }>`
   `}
 `
 
-export type PackState = 'opened' | 'inDelivery' | 'delivered' | 'buyable'
+type PackState = 'opened' | 'inDelivery' | 'delivered' | 'buyable'
 
 interface PackProps {
   slug: string
@@ -119,9 +118,9 @@ export default function Pack({
     <Link href={packLink}>
       <StyledPack width={width} disabled={disabled}>
         <ImageWrapper>
-          <Image src={pictureUrl} width={'full'} />
+          <Image src={pictureUrl} width="full" />
           {state === 'inDelivery' && <InDelivery src={`/assets/inDelivery.${locale}.png`} />}
-          {soldout && <Soldout src={`/assets/soldout.png`} />}
+          {soldout && <Soldout src="/assets/soldout.png" />}
         </ImageWrapper>
 
         {name && (

@@ -1,10 +1,8 @@
-import styled from 'styled-components/macro'
-
 import Column, { ColumnCenter } from 'src/components/Column'
-import { TYPE } from 'src/styles/theme'
-
-import { ReactComponent as Checkmark } from 'src/images/checkmark.svg'
 import useTrans from 'src/hooks/useTrans'
+import { ReactComponent as Checkmark } from 'src/images/checkmark.svg'
+import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
 
 const StyledCheckmark = styled(Checkmark)`
   border-radius: 50%;

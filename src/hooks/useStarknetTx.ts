@@ -1,12 +1,12 @@
-import { useCallback, useMemo, useState } from 'react'
-import { shallow } from 'zustand/shallow'
-import { DeployContractResponse, EstimateFee, InvokeFunctionResponse } from 'starknet'
-
-import { useBoundStore } from 'src/zustand'
 import { Unit, WeiAmount } from '@rulesorg/sdk-core'
-import { ParsedNetworkFee, StxAction } from 'src/types/starknetTx'
-import useRulesAccount from './useRulesAccount'
+import { useCallback, useMemo, useState } from 'react'
 import { ExecutedOrPendingTx } from 'src/types'
+import { ParsedNetworkFee, StxAction } from 'src/types/starknetTx'
+import { useBoundStore } from 'src/zustand'
+import { DeployContractResponse, EstimateFee, InvokeFunctionResponse } from 'starknet'
+import { shallow } from 'zustand/shallow'
+
+import useRulesAccount from './useRulesAccount'
 
 export function useEstimateFees() {
   const [parsedNetworkFee, setParsedNetworkFee] = useState<ParsedNetworkFee | null>(null)

@@ -1,15 +1,15 @@
-import { useCallback } from 'react'
 import { useWeb3React } from '@web3-react/core'
-
+import { useCallback } from 'react'
 import { AppState } from 'src/state'
-import { useAppSelector, useAppDispatch } from 'src/state/hooks'
+import { useAppDispatch, useAppSelector } from 'src/state/hooks'
+
 import {
-  setOpenedModal,
-  setOpenedSidebarModal,
   ApplicationModal,
   ApplicationSidebarModal,
-  WalletConnectModal,
+  setOpenedModal,
+  setOpenedSidebarModal,
   setOpenedWalletConnectModal,
+  WalletConnectModal,
 } from './actions'
 
 // BLOCKS
@@ -72,19 +72,19 @@ export function useCloseModal(): () => void {
 
 // TOGGLE
 
-export function useToggleModal(modal: ApplicationModal): () => void {
+function useToggleModal(modal: ApplicationModal): () => void {
   const isOpen = useModalOpened(modal)
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setOpenedModal({ modal: isOpen ? null : modal })), [dispatch, modal, isOpen])
 }
 
-export function useToggleSidebarModal(modal: ApplicationSidebarModal): () => void {
+function useToggleSidebarModal(modal: ApplicationSidebarModal): () => void {
   const isOpen = useSidebarModalOpened(modal)
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setOpenedSidebarModal({ modal: isOpen ? null : modal })), [dispatch, modal, isOpen])
 }
 
-export function useToggleWalletConnectModal(modal: WalletConnectModal): () => void {
+function useToggleWalletConnectModal(modal: WalletConnectModal): () => void {
   const isOpen = useWalletConnectModalOpened(modal)
   const dispatch = useAppDispatch()
   return useCallback(
@@ -95,20 +95,8 @@ export function useToggleWalletConnectModal(modal: WalletConnectModal): () => vo
 
 // CLASSIC
 
-export function useSettingsModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.SETTINGS)
-}
-
 export function useAuthModalToggle(): () => void {
   return useToggleModal(ApplicationModal.AUTH)
-}
-
-export function useDeckInsertionModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.DECK_INSERTION)
-}
-
-export function usePackPurchaseModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.PACK_PURCHASE)
 }
 
 export function useNavModalUserDesktopToggle(): () => void {
@@ -121,22 +109,6 @@ export function useWalletModalToggle(): () => void {
 
 export function useAvatarEditModalToggle(): () => void {
   return useToggleModal(ApplicationModal.AVATAR_EDIT)
-}
-
-export function useOfferModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.OFFER)
-}
-
-export function useCreateOfferModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.CREATE_OFFER)
-}
-
-export function useCancelListingModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.CANCEL_LISTING)
-}
-
-export function useAcceptOfferModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.ACCEPT_OFFER)
 }
 
 export function useMigrateCollectionModalToggle(): () => void {
@@ -155,20 +127,8 @@ export function useRetrieveEthersModalToggle(): () => void {
   return useToggleModal(ApplicationModal.RETRIEVE_ETHERS)
 }
 
-export function useLiveRewardDetailsModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.LIVE_REWARD_DETAILS)
-}
-
-export function useLiveRewardTicketModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.LIVE_REWARD_TICKET)
-}
-
-export function useClaimLiveRewardModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.CLAIM_LIVE_REWARD)
-}
-
-export function useSweepModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.SWEEP)
+export function useOfferModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.OFFER)
 }
 
 // SIDEBAR

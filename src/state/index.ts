@@ -1,15 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query/react'
 import { load, save } from 'redux-localstorage-simple'
-
 import multicall from 'src/lib/state/multicall'
-import search from './search/reducer'
+
 import application from './application/reducer'
 import auth from './auth/reducer'
+import search from './search/reducer'
 import user from './user/reducer'
-import deck from './deck/reducer'
-import onboarding from './onboarding/reducer'
-import packOpening from './packOpening/reducer'
 import wallet from './wallet/reducer'
 
 const PERSISTED_KEYS: string[] = ['user']
@@ -20,9 +17,6 @@ const store = configureStore({
     search,
     auth,
     user,
-    deck,
-    onboarding,
-    packOpening,
     wallet,
     multicall: multicall.reducer,
   },

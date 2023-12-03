@@ -1,9 +1,7 @@
 import React from 'react'
-import styled from 'styled-components/macro'
-
 import Section from 'src/components/Section'
-
 import { ReactComponent as Logo } from 'src/images/logo.svg'
+import styled from 'styled-components/macro'
 
 const StyledLegalLayout = styled(Section)`
   h1#title {

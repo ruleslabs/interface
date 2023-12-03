@@ -8,7 +8,7 @@ interface EmptyLayoutProps {
 export default function EmptyLayout({ children }: EmptyLayoutProps) {
   return (
     <>
-      <Box position={'sticky'} style={{ height: '1px' }} />
+      <Box position="sticky" style={{ height: '1px' }} />
       {children}
     </>
   )

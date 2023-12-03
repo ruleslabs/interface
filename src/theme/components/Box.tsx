@@ -1,11 +1,11 @@
 /* eslint-disable react/display-name */
 // Inspired by https://github.com/Uniswap/interface/blob/main/src/nft/components/Box.ts
 
-import React from 'react'
 import clsx, { ClassValue } from 'clsx'
+import React from 'react'
 
-import { sprinkles, Sprinkles } from '../css/sprinkles.css'
 import { atoms } from '../css/atoms'
+import { Sprinkles, sprinkles } from '../css/sprinkles.css'
 
 type HTMLProperties<T = HTMLElement> = Omit<
   React.AllHTMLAttributes<T>,

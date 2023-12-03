@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
 export default function useCheckbox(value: boolean): [boolean, () => void] {
   const [checked, setChecked] = useState(value)

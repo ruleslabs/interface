@@ -1,14 +1,14 @@
+import { constants, Unit } from '@rulesorg/sdk-core'
 import { useCallback, useEffect } from 'react'
-import { Unit, constants } from '@rulesorg/sdk-core'
+import StarknetSigner from 'src/components/StarknetSigner/Transaction'
+import useRulesAccount from 'src/hooks/useRulesAccount'
+import useStarknetTx from 'src/hooks/useStarknetTx'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { useETHBalance } from 'src/state/wallet/hooks'
 import { Call } from 'starknet'
 
-import StarknetSigner from 'src/components/StarknetSigner/Transaction'
-import { useETHBalance } from 'src/state/wallet/hooks'
-import useStarknetTx from 'src/hooks/useStarknetTx'
 import { ModalBody } from '../Modal/Sidebar'
 import { PaginationSpinner } from '../Spinner'
-import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
-import useRulesAccount from 'src/hooks/useRulesAccount'
 
 export default function MigrateFunds() {
   // account
@@ -66,7 +66,7 @@ export default function MigrateFunds() {
 
   return (
     <ModalBody>
-      <StarknetSigner action={'ethTransfer'} allowUndeployed>
+      <StarknetSigner action="ethTransfer" allowUndeployed>
         <PaginationSpinner loading={true} />
       </StarknetSigner>
     </ModalBody>

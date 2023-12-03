@@ -1,12 +1,12 @@
+import { MAX_RECENT_WALLET_ACTIVITY_LEN } from 'src/constants/misc'
+import { ExecutedTx, GenieSearchedUser, Operation, PendingOperation, PendingOperations } from 'src/types'
 import { StateCreator } from 'zustand'
 
-import { ExecutedTx, GenieSearchedUser, Operation, PendingOperation, PendingOperations } from 'src/types'
 import { StoreState } from '../index'
-import { MAX_RECENT_WALLET_ACTIVITY_LEN } from 'src/constants/misc'
 
 export type ApplicationSlice = State & Actions
 
-export interface State {
+interface State {
   searchedUser: GenieSearchedUser | null
 
   executedStxs: ExecutedTx[]
@@ -15,7 +15,7 @@ export interface State {
   pendingOperations: PendingOperations
 }
 
-export interface Actions {
+interface Actions {
   setSearchedUser: (searchedUser: GenieSearchedUser | null) => void
 
   saveExecutedStx: (executedStx: ExecutedTx) => void

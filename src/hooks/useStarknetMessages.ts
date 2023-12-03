@@ -1,6 +1,5 @@
-import { shallow } from 'zustand/shallow'
-
 import { useBoundStore } from 'src/zustand'
+import { shallow } from 'zustand/shallow'
 
 export default function useStarknetMessages() {
   return useBoundStore(

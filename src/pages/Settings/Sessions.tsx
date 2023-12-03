@@ -1,11 +1,10 @@
-import styled from 'styled-components/macro'
 import { t } from '@lingui/macro'
-
+import Column from 'src/components/Column'
 import DefaultLayout from 'src/components/Layout'
 import SettingsLayout from 'src/components/Layout/Settings'
-import Column from 'src/components/Column'
-import Title from 'src/components/Text/Title'
 import SessionsManager from 'src/components/Settings/SessionsManager'
+import Title from 'src/components/Text/Title'
+import styled from 'styled-components/macro'
 
 const StyledSessionsSettings = styled(Column)`
   width: 100%;

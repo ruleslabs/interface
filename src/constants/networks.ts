@@ -15,7 +15,7 @@ if (typeof INFURA_KEY === 'undefined') {
  *
  * These "Safe" URLs are listed first, followed by other fallback URLs, which are taken from chainlist.org.
  */
-export const FALLBACK_URLS = {
+const FALLBACK_URLS = {
   [constants.EthereumChainId.MAINNET]: [
     // "Safe" URLs
     'https://api.mycryptoapi.com/eth',

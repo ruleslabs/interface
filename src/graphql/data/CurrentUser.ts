@@ -1,7 +1,7 @@
-import { useCallback, useMemo } from 'react'
 import gql from 'graphql-tag'
-
+import { useCallback, useMemo } from 'react'
 import { GenieCurrentUser, GenieProfile } from 'src/types'
+
 import { CurrentUser, useCurrentUserQuery } from './__generated__/types-and-hooks'
 
 gql`
@@ -59,7 +59,7 @@ gql`
   }
 `
 
-export function formatCurrentUserQueryData(queryCurrentUser: NonNullable<CurrentUser>): GenieCurrentUser | null {
+function formatCurrentUserQueryData(queryCurrentUser: NonNullable<CurrentUser>): GenieCurrentUser | null {
   if (!queryCurrentUser) return null
 
   const queryStarknetWallet = queryCurrentUser.starknetWallet

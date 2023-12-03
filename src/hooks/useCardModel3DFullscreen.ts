@@ -1,7 +1,6 @@
 import { useLayoutEffect, useState } from 'react'
-
-import { round } from 'src/utils/math'
 import useWindowSize from 'src/hooks/useWindowSize'
+import { round } from 'src/utils/math'
 
 export default function useCardModel3DFullscreen(
   fullscreen: boolean,

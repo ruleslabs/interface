@@ -1,6 +1,5 @@
-import { useCallback, useMemo } from 'react'
 import { loadStripe, PaymentIntent, PaymentMethod } from '@stripe/stripe-js'
-
+import { useCallback, useMemo } from 'react'
 import RulesAPI from 'src/utils/rulesAPI'
 
 export function useStripePromise(): Promise<any> {

@@ -1,9 +1,8 @@
-import { ApolloClient, InMemoryCache, HttpLink, Observable, ApolloLink, from } from '@apollo/client'
+import { ApolloClient, ApolloLink, from, HttpLink, InMemoryCache, Observable } from '@apollo/client'
 import { onError } from '@apollo/client/link/error'
-
-import refreshToken from 'src/utils/refreshToken'
-import { storeAccessToken, getAccessToken } from 'src/utils/accessToken'
 import { relayStylePagination } from '@apollo/client/utilities'
+import { getAccessToken, storeAccessToken } from 'src/utils/accessToken'
+import refreshToken from 'src/utils/refreshToken'
 
 const GRAPHQL_URL = process.env.REACT_APP_GRAPHQL_URI
 if (!GRAPHQL_URL) {

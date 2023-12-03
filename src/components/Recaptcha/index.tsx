@@ -1,10 +1,9 @@
-import React from 'react'
-import styled from 'styled-components/macro'
-import GoogleReCAPTCHA from 'react-google-recaptcha'
 import { Trans } from '@lingui/macro'
-
-import { TYPE } from 'src/styles/theme'
+import React from 'react'
+import GoogleReCAPTCHA from 'react-google-recaptcha'
 import Link from 'src/components/Link'
+import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
 
 const REACT_APP_RECAPTCHA_V2_KEY = process.env.REACT_APP_RECAPTCHA_V2_KEY
 if (!REACT_APP_RECAPTCHA_V2_KEY) {

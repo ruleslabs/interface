@@ -1,30 +1,22 @@
 import { useCallback, useMemo } from 'react'
-
-import ClassicModal, { ModalContent } from 'src/components/Modal/Classic'
-import { useModalOpened, useAuthModalToggle } from 'src/state/application/hooks'
-import { ApplicationModal } from 'src/state/application/actions'
-import { useAuthMode } from 'src/state/auth/hooks'
-import { AuthMode } from 'src/state/auth/actions'
-import { storeAccessToken } from 'src/utils/accessToken'
 import { useNavigate } from 'react-router-dom'
+import ClassicModal, { ModalContent } from 'src/components/Modal/Classic'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import { ApplicationModal } from 'src/state/application/actions'
+import { useAuthModalToggle, useModalOpened } from 'src/state/application/hooks'
+import { AuthMode } from 'src/state/auth/actions'
+import { useAuthMode } from 'src/state/auth/hooks'
+import { storeAccessToken } from 'src/utils/accessToken'
 
-import EmailVerificationForm from './EmailVerificationForm'
-import SignUpForm from './SignUpForm'
-import SignInForm from './SignInForm'
-import UpdatePasswordForm from './UpdatePasswordForm'
 import RemoveTwoFactorAuthSecret from './RemoveTwoFactorAuthSecret'
 import RequestPasswordUpdateForm from './RequestPasswordUpdateForm'
 import RequestTwoFactorAuthSecretUpdateForm from './RequestTwoFactorAuthSecretUpdateForm'
+import SignInForm from './SignInForm'
 import TwoFactorAuthForm from './TwoFactorAuthForm'
-import useCurrentUser from 'src/hooks/useCurrentUser'
 import { OnSuccessfulConnectionResponse } from './types'
+import UpdatePasswordForm from './UpdatePasswordForm'
 
-interface AuthModalProps {
-  newcomer?: boolean
-  referentSlug?: string
-}
-
-export default function AuthModal({ newcomer = false, referentSlug }: AuthModalProps) {
+export default function AuthModal() {
   // nav
   const navigate = useNavigate()
 
@@ -57,18 +49,6 @@ export default function AuthModal({ newcomer = false, referentSlug }: AuthModalP
     switch (authMode) {
       case AuthMode.SIGN_IN:
         return <SignInForm onSuccessfulConnection={onSuccessfulConnection} />
-
-      case AuthMode.SIGN_UP:
-        return <SignUpForm />
-
-      case AuthMode.EMAIL_VERIFICATION:
-        return (
-          <EmailVerificationForm
-            onSuccessfulConnection={onSuccessfulConnection}
-            newcomer={newcomer}
-            referentSlug={referentSlug}
-          />
-        )
 
       case AuthMode.REQUEST_PASSWORD_UPDATE:
         return <RequestPasswordUpdateForm />

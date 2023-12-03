@@ -1,16 +1,16 @@
+import { t, Trans } from '@lingui/macro'
 import { useCallback } from 'react'
-import { Trans, t } from '@lingui/macro'
-
-import useCurrentUser from 'src/hooks/useCurrentUser'
-import useRampSdk from 'src/hooks/useRampSdk'
 import { CardButton } from 'src/components/Button'
 import Separator from 'src/components/Text/Separator'
-import { useSetWalletModalMode } from 'src/state/wallet/hooks'
-import { WalletModalMode } from 'src/state/wallet/actions'
-import { ModalBody } from '../Modal/Classic'
-import * as Icons from 'src/theme/components/Icons'
-import Column from '../Column'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import useRampSdk from 'src/hooks/useRampSdk'
 import { useCloseModal } from 'src/state/application/hooks'
+import { WalletModalMode } from 'src/state/wallet/actions'
+import { useSetWalletModalMode } from 'src/state/wallet/hooks'
+import * as Icons from 'src/theme/components/Icons'
+
+import Column from '../Column'
+import { ModalBody } from '../Modal/Classic'
 
 export default function Withdraw() {
   // current user

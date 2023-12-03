@@ -1,13 +1,11 @@
-import React, { useCallback, useRef } from 'react'
-import styled from 'styled-components/macro'
-import { WeiAmount } from '@rulesorg/sdk-core'
 import { Trans } from '@lingui/macro'
-
-import Row, { RowCenter } from 'src/components/Row'
+import { WeiAmount } from '@rulesorg/sdk-core'
+import React, { useCallback, useRef } from 'react'
 import Column from 'src/components/Column'
-import { TYPE } from 'src/styles/theme'
-
+import Row, { RowCenter } from 'src/components/Row'
 import { ReactComponent as EthereumIcon } from 'src/images/ethereum.svg'
+import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
 
 const StyledCurrencyInput = styled(Column)`
   padding: 16px;

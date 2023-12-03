@@ -1,7 +1,7 @@
 import { style } from '@vanilla-extract/css'
 import { recipe } from '@vanilla-extract/recipes'
-
 import { breakpoints, sprinkles } from 'src/theme/css/sprinkles.css'
+
 import { mediaContainer } from './style.css'
 
 export const image = style([

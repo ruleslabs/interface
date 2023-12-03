@@ -1,14 +1,14 @@
-import { useEffect, useCallback, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
-
-import { useAppDispatch } from 'src/state/hooks'
-import { updateEtherPrice, updateBlock, updateEthereumBlockNumber } from './actions'
-import useDebounce from 'src/hooks/useDebounce'
+import { useCallback, useEffect, useState } from 'react'
 import { BLOCK_POLLING, ETH_PRICE_POLLING } from 'src/constants/misc'
+import useDebounce from 'src/hooks/useDebounce'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { useAppDispatch } from 'src/state/hooks'
 import { BlockTag } from 'starknet'
 
-export function useEtherEURPrice() {
+import { updateBlock, updateEthereumBlockNumber, updateEtherPrice } from './actions'
+
+function useEtherEURPrice() {
   const dispatch = useAppDispatch()
 
   const fetchEthPrice = useCallback(
@@ -18,7 +18,7 @@ export function useEtherEURPrice() {
         .then((res: any) => {
           const amount = res?.EUR
 
-          dispatch(updateEtherPrice({ price: !!amount ? +amount : undefined }))
+          dispatch(updateEtherPrice({ price: amount ? +amount : undefined }))
         })
         .catch((err) => console.error(err)),
     [dispatch]

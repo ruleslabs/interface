@@ -1,14 +1,13 @@
-import React from 'react'
+import { t, Trans } from '@lingui/macro'
 import { constants } from '@rulesorg/sdk-core'
-import { Trans, t } from '@lingui/macro'
-
-import Column from 'src/components/Column'
+import React from 'react'
 import Checkbox from 'src/components/Checkbox'
-import { TYPE } from 'src/styles/theme'
-import { useMarketplaceFilters, useMarketplaceFiltersHandlers } from 'src/state/search/hooks'
-import Subtitle from 'src/components/Text/Subtitle'
+import Column from 'src/components/Column'
 import Divider from 'src/components/Divider'
+import Subtitle from 'src/components/Text/Subtitle'
 import useTrans from 'src/hooks/useTrans'
+import { useMarketplaceFilters, useMarketplaceFiltersHandlers } from 'src/state/search/hooks'
+import { TYPE } from 'src/styles/theme'
 
 export default function MarketplaceFilters(props: React.HTMLAttributes<HTMLDivElement>) {
   // trans

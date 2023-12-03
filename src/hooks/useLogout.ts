@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
 import { redirect } from 'react-router-dom'
+import { useRevokeSession } from 'src/graphql/data/Auth'
+import { storeAccessToken } from 'src/utils/accessToken'
 
 import useCurrentUser from './useCurrentUser'
-import { storeAccessToken } from 'src/utils/accessToken'
-import { useRevokeSession } from 'src/graphql/data/Auth'
 
 export default function useLogout() {
   const [revokeSessionMutation, { loading, error }] = useRevokeSession()

@@ -1,6 +1,6 @@
-import { useState, useCallback, useEffect, useMemo } from 'react'
+import { RampInstantEventTypes, RampInstantSDK } from '@ramp-network/ramp-instant-sdk'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { getChecksumAddress } from 'starknet'
-import { RampInstantSDK, RampInstantEventTypes } from '@ramp-network/ramp-instant-sdk'
 
 const apiKey = process.env.REACT_APP_RAMP_API_KEY
 

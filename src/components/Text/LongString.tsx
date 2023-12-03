@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react'
-
-import * as Text from 'src/theme/components/Text'
-import * as Icons from 'src/theme/components/Icons'
 import Box from 'src/theme/components/Box'
 import { Row } from 'src/theme/components/Flex'
+import * as Icons from 'src/theme/components/Icons'
+import * as Text from 'src/theme/components/Text'
+
 import * as styles from './LongString.css'
 
 interface LongStringProps {

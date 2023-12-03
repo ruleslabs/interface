@@ -1,15 +1,14 @@
-import { useCallback, useEffect, useState } from 'react'
-import { useQuery, gql } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
+import { t, Trans } from '@lingui/macro'
 import moment, { Duration } from 'moment'
-import styled from 'styled-components/macro'
-import { Trans, t } from '@lingui/macro'
-
-import Column from 'src/components/Column'
-import { RowBetween, RowCenter } from 'src/components/Row'
-import { TYPE } from 'src/styles/theme'
-import Label from 'src/components/Label'
+import { useCallback, useEffect, useState } from 'react'
 import { SecondaryButton } from 'src/components/Button'
+import Column from 'src/components/Column'
+import Label from 'src/components/Label'
+import { RowBetween, RowCenter } from 'src/components/Row'
 import { useRevokeSession } from 'src/graphql/data/Auth'
+import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
 
 const StyledSessionRow = styled(RowCenter)`
   width: 100%;

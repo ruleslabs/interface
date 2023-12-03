@@ -1,13 +1,12 @@
-import styled from 'styled-components/macro'
 import { t } from '@lingui/macro'
-
+import Column from 'src/components/Column'
+import Label from 'src/components/Label'
 import DefaultLayout from 'src/components/Layout'
 import SettingsLayout from 'src/components/Layout/Settings'
-import Column from 'src/components/Column'
-import Title from 'src/components/Text/Title'
 import TwoFactorStatus from 'src/components/Settings/TwoFactorStatus'
+import Title from 'src/components/Text/Title'
 import useCurrentUser from 'src/hooks/useCurrentUser'
-import Label from 'src/components/Label'
+import styled from 'styled-components/macro'
 
 const StyledSecuritySettings = styled(Column)`
   width: 100%;

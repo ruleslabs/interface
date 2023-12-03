@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react'
 import clsx from 'clsx'
+import React, { useMemo } from 'react'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
@@ -15,7 +15,7 @@ const StyledLink = styled(RouterLink)<{ color?: string; underline: boolean }>`
   `}
 `
 
-export interface LinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
+interface LinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
   href: string
   target?: string
   color?: string

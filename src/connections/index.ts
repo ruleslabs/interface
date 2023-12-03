@@ -1,21 +1,21 @@
-import { useCallback } from 'react'
+import { constants } from '@rulesorg/sdk-core'
+import { InjectedConnector } from '@starknet-react/core'
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
-import { Web3ReactHooks, initializeConnector } from '@web3-react/core'
+import { initializeConnector, Web3ReactHooks } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 import { Network } from '@web3-react/network'
 import { Connector } from '@web3-react/types'
-import { constants } from '@rulesorg/sdk-core'
-import { InjectedConnector } from '@starknet-react/core'
-
-import COINBASE_WALLET_ICON from 'src/images/coinbase-wallet.svg'
-import ARGENT_X_ICON from 'src/images/argent-x.svg'
-import BRAAVOS_ICON from 'src/images/braavos.svg'
-import METAMASK_ICON from 'src/images/metamask.svg'
-import WALLET_CONNECT_ICON from 'src/images/wallet-connect.svg'
-import RULES_LOGO from 'src/images/logo.svg'
-import { isMobile } from 'src/utils/userAgent'
+import { useCallback } from 'react'
 import { RPC_URLS } from 'src/constants/networks'
 import { RPC_PROVIDERS } from 'src/constants/providers'
+import ARGENT_X_ICON from 'src/images/argent-x.svg'
+import BRAAVOS_ICON from 'src/images/braavos.svg'
+import COINBASE_WALLET_ICON from 'src/images/coinbase-wallet.svg'
+import RULES_LOGO from 'src/images/logo.svg'
+import METAMASK_ICON from 'src/images/metamask.svg'
+import WALLET_CONNECT_ICON from 'src/images/wallet-connect.svg'
+import { isMobile } from 'src/utils/userAgent'
+
 import {
   getIsCoinbaseWalletBrowser,
   getIsGenericInjector,
@@ -102,7 +102,7 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
   (actions) => new WalletConnectPopup({ actions, onError })
 )
 
-export const walletConnectConnection: L1Connection = {
+const walletConnectConnection: L1Connection = {
   getName: () => 'WalletConnect',
   connector: web3WalletConnect,
   hooks: web3WalletConnectHooks,
@@ -216,29 +216,6 @@ export function useGetL1Connection() {
 
         case ConnectionType.NETWORK:
           return networkConnection
-
-        default:
-          throw Error('unsupported connector')
-      }
-    }
-  }, [])
-}
-
-export function useGetL2Connection() {
-  return useCallback((c: InjectedConnector | ConnectionType) => {
-    if (c instanceof InjectedConnector) {
-      const connection = getL2Connections().find((connection) => connection.connector === c)
-      if (!connection) {
-        throw Error('unsupported connector')
-      }
-      return connection
-    } else {
-      switch (c) {
-        case ConnectionType.ARGENT_X:
-          return argentXWalletConnection
-
-        case ConnectionType.BRAAVOS:
-          return braavosWalletConnection
 
         default:
           throw Error('unsupported connector')

@@ -1,7 +1,7 @@
 import { ApolloError, MutationFunction } from '@apollo/client'
-
 import { FormatedMutationFunction, GenieError } from 'src/types'
 import { formatError } from 'src/utils/error'
+import noop from 'src/utils/noop'
 
 export function formatApolloError(error?: ApolloError): GenieError {
   const grapqlError = error?.graphQLErrors?.[0]
@@ -18,7 +18,7 @@ export function formatMutationFunction<TData, TVariables, TFormatedData>(
   formatResult: (data: TData) => TFormatedData
 ): FormatedMutationFunction<TData, TVariables, TFormatedData> {
   return async (options: Parameters<typeof mutationFunction>[0]) => {
-    const res = await mutationFunction(options).catch(() => {})
+    const res = await mutationFunction(options).catch(noop)
     return (res && res.data ? formatResult(res.data) : {}) as NonNullable<TFormatedData>
   }
 }

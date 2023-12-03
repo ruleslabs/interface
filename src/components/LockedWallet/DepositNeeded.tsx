@@ -1,11 +1,11 @@
-import { useCallback } from 'react'
 import { Trans } from '@lingui/macro'
+import { useCallback } from 'react'
+import { ApplicationModal } from 'src/state/application/actions'
+import { useOpenModal } from 'src/state/application/hooks'
+import { WalletModalMode } from 'src/state/wallet/actions'
+import { useSetWalletModalMode } from 'src/state/wallet/hooks'
 
 import { ErrorCard } from '../Card'
-import { WalletModalMode } from 'src/state/wallet/actions'
-import { ApplicationModal } from 'src/state/application/actions'
-import { useSetWalletModalMode } from 'src/state/wallet/hooks'
-import { useOpenModal } from 'src/state/application/hooks'
 
 export default function DepositNeeded() {
   // deposit modal

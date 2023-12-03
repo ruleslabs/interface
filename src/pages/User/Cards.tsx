@@ -1,36 +1,33 @@
-import { useState, useMemo, useCallback } from 'react'
-import styled from 'styled-components/macro'
-import { t, Trans, Plural } from '@lingui/macro'
+import { Plural, t, Trans } from '@lingui/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
-
+import { useMemo, useState } from 'react'
+import { IconButton, PrimaryButton, SecondaryButton } from 'src/components/Button'
+import SortButton, { SortsData } from 'src/components/Button/SortButton'
+import EmptyTab, { EmptyCardsTabOfCurrentUser } from 'src/components/EmptyTab'
+import CardsFilters from 'src/components/Filters/Cards'
+import { CardsFiltersModal } from 'src/components/FiltersModal'
+import GiftModal from 'src/components/GiftModal'
 import DefaultLayout from 'src/components/Layout'
 import ProfileLayout from 'src/components/Layout/Profile'
+import { NftCard } from 'src/components/nft/Card'
+import CollectionNfts from 'src/components/nft/Collection/CollectionNfts'
 import { RowBetween, RowCenter } from 'src/components/Row'
 import Section from 'src/components/Section'
-import { useCardsFilters } from 'src/state/search/hooks'
-import { TYPE } from 'src/styles/theme'
-import EmptyTab, { EmptyCardsTabOfCurrentUser } from 'src/components/EmptyTab'
-import SortButton, { SortsData } from 'src/components/Button/SortButton'
-import { IconButton, PrimaryButton, SecondaryButton } from 'src/components/Button'
-import ListCardMocal from 'src/components/MarketplaceModal/ListCard'
-import { useCreateOfferModalToggle, useFiltersModalToggle, useOfferModalToggle } from 'src/state/application/hooks'
-import GiftModal from 'src/components/GiftModal'
-import useSearchedUser from 'src/hooks/useSearchedUser'
-import { NftCard } from 'src/components/nft/Card'
+import { CardsSortingType, SortingOption } from 'src/graphql/data/__generated__/types-and-hooks'
+import { useCards, useCardsCount } from 'src/graphql/data/Cards'
 import useAssetsSelection from 'src/hooks/useAssetsSelection'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
-import CollectionNfts from 'src/components/nft/Collection/CollectionNfts'
-import { MAX_LISTINGS_BATCH_SIZE } from 'src/constants/misc'
-import CardsFilters from 'src/components/Filters/Cards'
-import * as styles from './Cards.css'
-import { Column, Row } from 'src/theme/components/Flex'
-import Box from 'src/theme/components/Box'
-import { CardsFiltersModal } from 'src/components/FiltersModal'
-
-import { ReactComponent as Present } from 'src/images/present.svg'
+import useSearchedUser from 'src/hooks/useSearchedUser'
 import { ReactComponent as HopperIcon } from 'src/images/hopper.svg'
-import { useCards, useCardsCount } from 'src/graphql/data/Cards'
-import { CardsSortingType, SortingOption } from 'src/graphql/data/__generated__/types-and-hooks'
+import { ReactComponent as Present } from 'src/images/present.svg'
+import { useFiltersModalToggle, useOfferModalToggle } from 'src/state/application/hooks'
+import { useCardsFilters } from 'src/state/search/hooks'
+import { TYPE } from 'src/styles/theme'
+import Box from 'src/theme/components/Box'
+import { Column, Row } from 'src/theme/components/Flex'
+import styled from 'styled-components/macro'
+
+import * as styles from './Cards.css'
 
 // css
 
@@ -148,7 +145,7 @@ const useSortsData = (): SortsData<CardsSortingType> =>
 
 function UserCards() {
   const [sortIndex, setSortIndex] = useState(0)
-  const [listings, setListings] = useState<{ [tokenId: string]: string }>({})
+  const [listings] = useState<{ [tokenId: string]: string }>({})
 
   // sorts data
   const sortsData = useSortsData()
@@ -168,22 +165,10 @@ function UserCards() {
     [sortIndex]
   )
 
-  // add new listings
-  const addListings = useCallback((tokenIds: string[], prices: string[]) => {
-    setListings((state) => ({
-      ...state,
-      ...tokenIds.reduce<{ [tokenId: string]: string }>((acc, tokenId, index) => {
-        acc[tokenId] = prices[index]
-        return acc
-      }, {}),
-    }))
-  }, [])
-
   // current user
   const [user] = useSearchedUser()
 
   // modals
-  const toggleCreateOfferModal = useCreateOfferModalToggle()
   const toggleOfferModal = useOfferModalToggle()
 
   // cards selection
@@ -251,12 +236,12 @@ function UserCards() {
   return (
     <>
       <Section>
-        <Row gap={'32'} alignItems={'flex-start'}>
+        <Row gap="32" alignItems="flex-start">
           <Box className={styles.sidebaseContainer}>
             <CardsFilters />
           </Box>
 
-          <Column gap={'16'}>
+          <Column gap="16">
             <GridHeader>
               <SelectionButtonWrapper>
                 {cardsCount && (
@@ -306,24 +291,16 @@ function UserCards() {
           </TYPE.body>
 
           <SelectedCardsButtonsWrapper>
-            <PrimaryButton
-              onClick={toggleCreateOfferModal}
-              disabled={selectedTokenIds.length > MAX_LISTINGS_BATCH_SIZE}
-            >
-              <Trans>Place for Sale</Trans>
-            </PrimaryButton>
-
-            <SecondaryButton onClick={toggleOfferModal}>
+            <PrimaryButton onClick={toggleOfferModal}>
               <RowCenter justify="center" gap={4}>
                 <StyledPresent />
                 <Trans>Gift</Trans>
               </RowCenter>
-            </SecondaryButton>
+            </PrimaryButton>
           </SelectedCardsButtonsWrapper>
         </SelectedCardsAction>
       </SelectedCardsActionWrapper>
 
-      <ListCardMocal tokenIds={selectedTokenIds} onSuccess={addListings} />
       <GiftModal tokenIds={selectedTokenIds} />
       <CardsFiltersModal />
     </>

@@ -1,8 +1,7 @@
 import { useCallback } from 'react'
-
-import { useBoundStore } from 'src/zustand'
 import { L1Connection } from 'src/connections'
 import { didUserReject } from 'src/connections/utils'
+import { useBoundStore } from 'src/zustand'
 import { ActivationStatus } from 'src/zustand/l1Wallet'
 import { shallow } from 'zustand/shallow'
 

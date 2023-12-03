@@ -1,8 +1,7 @@
 import 'moment/locale/fr'
 
-import { useMemo } from 'react'
 import moment from 'moment'
-
+import { useMemo } from 'react'
 import { useActiveLocale } from 'src/hooks/useActiveLocale'
 
 export default function useAge(date?: Date): string | undefined {

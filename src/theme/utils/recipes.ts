@@ -1,9 +1,9 @@
-import { recipe } from '@vanilla-extract/recipes'
 import { addFunctionSerializer } from '@vanilla-extract/css/functionSerializer'
+import { recipe } from '@vanilla-extract/recipes'
 
-export type RecipeRuntimeFn = ReturnType<typeof recipe>
+type RecipeRuntimeFn = ReturnType<typeof recipe>
 type VariantsArg<R> = R extends RecipeRuntimeFn ? Parameters<R>[0] : never
-export type RecipeMeta = {
+type RecipeMeta = {
   importPath: string
   importName: string
   args: [

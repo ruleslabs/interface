@@ -1,11 +1,10 @@
-import { useMemo } from 'react'
+import { goerli, mainnet } from '@starknet-react/chains'
+import { alchemyProvider, InjectedConnector, StarknetConfig } from '@starknet-react/core'
 import { Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
-
-import useEagerlyConnect from 'src/hooks/useEagerlyConnect'
+import { useMemo } from 'react'
 import { getL1Connections, getL2Connections } from 'src/connections'
-import { InjectedConnector, StarknetConfig, alchemyProvider } from '@starknet-react/core'
-import { goerli, mainnet } from '@starknet-react/chains'
+import useEagerlyConnect from 'src/hooks/useEagerlyConnect'
 
 // ETHEREUM
 

@@ -1,6 +1,6 @@
 // https://github.com/reduxjs/redux-toolkit/blob/master/packages/toolkit/src/serializableStateInvariantMiddleware.ts
 
-export default function isPlainObject(value: unknown): value is object {
+function isPlainObject(value: unknown): value is object {
   if (typeof value !== 'object' || value === null) return false
 
   const proto = Object.getPrototypeOf(value)

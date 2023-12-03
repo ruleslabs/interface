@@ -1,16 +1,15 @@
-import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
-import styled from 'styled-components/macro'
 import { t } from '@lingui/macro'
-
-import { SearchBar } from 'src/components/Input'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import Avatar from 'src/components/Avatar'
 import Column from 'src/components/Column'
+import { SearchBar } from 'src/components/Input'
 import { RowCenter } from 'src/components/Row'
+import { useUsers } from 'src/graphql/data/Users'
+import useCurrentUser from 'src/hooks/useCurrentUser'
 import useDebounce from 'src/hooks/useDebounce'
 import { TYPE } from 'src/styles/theme'
-import useCurrentUser from 'src/hooks/useCurrentUser'
-import { CertifiedBadge } from 'src/components/User/Badge'
-import Avatar from 'src/components/Avatar'
-import { useUsers } from 'src/graphql/data/Users'
+import styled from 'styled-components/macro'
+
 import { PaginationSpinner } from '../Spinner'
 
 const StyledSearchBar = styled(SearchBar)`
@@ -68,12 +67,6 @@ const SearchSuggestedUser = styled(RowCenter)`
   }
 `
 
-const StyledCertified = styled(CertifiedBadge)`
-  position: absolute;
-  top: 6px;
-  left: 47px;
-`
-
 interface UsersSearchBarProps {
   onSelect(user: any): void
   selfSearchAllowed?: boolean
@@ -121,7 +114,6 @@ export default function UsersSearchBar({ onSelect, selfSearchAllowed = true }: U
       .filter((user) => selfSearchAllowed || user.slug !== currentUser?.slug)
       .map((user) => (
         <SearchSuggestedUser key={user.slug} onClick={() => handleSelect(user)}>
-          {user.profile.certified && <StyledCertified />}
           <Avatar src={user.profile.pictureUrl} fallbackSrc={user.profile.fallbackUrl} />
           <RowCenter gap={4}>
             <TYPE.body>{user.username}</TYPE.body>

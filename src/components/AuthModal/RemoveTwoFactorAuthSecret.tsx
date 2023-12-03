@@ -1,20 +1,19 @@
-import { useMemo, useEffect, useState } from 'react'
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-
+import { useEffect, useMemo, useState } from 'react'
+import { PrimaryButton } from 'src/components/Button'
+import Column, { ColumnCenter } from 'src/components/Column'
+import Link from 'src/components/Link'
 import { ModalHeader } from 'src/components/Modal'
 import { ModalBody } from 'src/components/Modal/Classic'
-import Column, { ColumnCenter } from 'src/components/Column'
-import { TYPE } from 'src/styles/theme'
-import { useAuthModalToggle } from 'src/state/application/hooks'
-import Link from 'src/components/Link'
-import { PrimaryButton } from 'src/components/Button'
-
-import { ReactComponent as Checkmark } from 'src/images/checkmark.svg'
-import { AuthFormProps } from './types'
 import { useRemoveTwoFactorAuthSecret } from 'src/graphql/data/Auth'
-import { PaginationSpinner } from '../Spinner'
 import useLocationQuery from 'src/hooks/useLocationQuery'
+import { ReactComponent as Checkmark } from 'src/images/checkmark.svg'
+import { useAuthModalToggle } from 'src/state/application/hooks'
+import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
+
+import { PaginationSpinner } from '../Spinner'
+import { AuthFormProps } from './types'
 
 const StyledCheckmark = styled(Checkmark)`
   border-radius: 50%;

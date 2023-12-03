@@ -1,25 +1,24 @@
-import { useCallback, useState, useMemo, useEffect } from 'react'
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
+import { constants } from '@rulesorg/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-
-import Column from 'src/components/Column'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { PrimaryButton } from 'src/components/Button'
-import tryParseWeiAmount from 'src/utils/tryParseWeiAmount'
+import Column from 'src/components/Column'
 import CurrencyInput from 'src/components/Input/CurrencyInput'
-import useCurrentUser from 'src/hooks/useCurrentUser'
 import StarknetSigner from 'src/components/StarknetSigner/Transaction'
-import { useETHBalance } from 'src/state/wallet/hooks'
 import Wallet from 'src/components/Wallet'
 import { EthereumStatus } from 'src/components/Web3Status'
-import * as Text from 'src/theme/components/Text'
-
-import { ReactComponent as Arrow } from 'src/images/arrow.svg'
-import { constants } from '@rulesorg/sdk-core'
-import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
-import { useModalOpened } from 'src/state/application/hooks'
-import { ApplicationModal } from 'src/state/application/actions'
+import useCurrentUser from 'src/hooks/useCurrentUser'
 import useStarknetTx from 'src/hooks/useStarknetTx'
+import { ReactComponent as Arrow } from 'src/images/arrow.svg'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { ApplicationModal } from 'src/state/application/actions'
+import { useModalOpened } from 'src/state/application/hooks'
+import { useETHBalance } from 'src/state/wallet/hooks'
+import * as Text from 'src/theme/components/Text'
+import tryParseWeiAmount from 'src/utils/tryParseWeiAmount'
+import styled from 'styled-components/macro'
+
 import { ModalBody } from '../Modal/Sidebar'
 
 const ArrowWrapper = styled(Column)`
@@ -100,7 +99,7 @@ export default function StarkgateWithdraw() {
 
   return (
     <ModalBody>
-      <StarknetSigner action={'ethTransfer'}>
+      <StarknetSigner action="ethTransfer">
         <EthereumStatus>
           <Column gap={32}>
             <Text.Body>

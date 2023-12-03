@@ -1,21 +1,21 @@
-import { useState, useCallback, useMemo } from 'react'
-import styled from 'styled-components/macro'
 import { t } from '@lingui/macro'
+import { useCallback, useMemo, useState } from 'react'
 import { redirect } from 'react-router-dom'
-
-import { ModalHeader } from 'src/components/Modal'
-import { ModalBody } from 'src/components/Modal/Classic'
-import { passwordHasher, validatePassword } from 'src/utils/password'
+import { PrimaryButton } from 'src/components/Button'
 import Column from 'src/components/Column'
 import Input from 'src/components/Input'
-import { useAuthModalToggle } from 'src/state/application/hooks'
-import { PrimaryButton } from 'src/components/Button'
-import useCreateWallet from 'src/hooks/useCreateWallet'
-import { AuthFormProps } from './types'
+import { ModalHeader } from 'src/components/Modal'
+import { ModalBody } from 'src/components/Modal/Classic'
 import { useUpdatePassword } from 'src/graphql/data/Auth'
+import useCreateWallet from 'src/hooks/useCreateWallet'
+import useLocationQuery from 'src/hooks/useLocationQuery'
+import { useAuthModalToggle } from 'src/state/application/hooks'
 import { GenieError } from 'src/types'
 import { formatError } from 'src/utils/error'
-import useLocationQuery from 'src/hooks/useLocationQuery'
+import { passwordHasher, validatePassword } from 'src/utils/password'
+import styled from 'styled-components/macro'
+
+import { AuthFormProps } from './types'
 
 const StyledForm = styled.form`
   width: 100%;

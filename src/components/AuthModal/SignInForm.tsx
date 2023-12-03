@@ -1,29 +1,22 @@
+import { t, Trans } from '@lingui/macro'
 import { useCallback } from 'react'
-import styled from 'styled-components/macro'
-import { Trans, t } from '@lingui/macro'
-
-import { ModalHeader } from 'src/components/Modal'
-import { ModalBody } from 'src/components/Modal/Classic'
+import { PrimaryButton } from 'src/components/Button'
 import Column from 'src/components/Column'
 import Input from 'src/components/Input'
-import { TYPE } from 'src/styles/theme'
-import { PrimaryButton } from 'src/components/Button'
-import { AuthMode } from 'src/state/auth/actions'
-import { useAuthForm, useAuthActionHanlders, useSetAuthMode, useSetTwoFactorAuthToken } from 'src/state/auth/hooks'
-import { useAuthModalToggle } from 'src/state/application/hooks'
-import { passwordHasher } from 'src/utils/password'
-import { AuthFormProps } from './types'
+import { ModalHeader } from 'src/components/Modal'
+import { ModalBody } from 'src/components/Modal/Classic'
 import { useSignIn } from 'src/graphql/data/Auth'
+import { useAuthModalToggle } from 'src/state/application/hooks'
+import { AuthMode } from 'src/state/auth/actions'
+import { useAuthActionHanlders, useAuthForm, useSetAuthMode, useSetTwoFactorAuthToken } from 'src/state/auth/hooks'
+import { TYPE } from 'src/styles/theme'
+import { passwordHasher } from 'src/utils/password'
+import styled from 'styled-components/macro'
+
+import { AuthFormProps } from './types'
 
 const StyledForm = styled.form`
   width: 100%;
-`
-
-const SwitchAuthModeButton = styled(TYPE.subtitle)`
-  display: inline;
-  text-decoration: underline;
-  font-weight: 500;
-  cursor: pointer;
 `
 
 const SubmitButton = styled(PrimaryButton)`
@@ -106,12 +99,6 @@ export default function SignInForm({ onSuccessfulConnection }: AuthFormProps) {
         <Column gap={12} style={{ padding: '0 8px' }}>
           <TYPE.subtitle onClick={() => setAuthMode(AuthMode.REQUEST_PASSWORD_UPDATE)} clickable>
             <Trans>Forgot your password?</Trans>
-          </TYPE.subtitle>
-          <TYPE.subtitle>
-            <Trans>
-              No account?&nbsp;
-              <SwitchAuthModeButton onClick={() => setAuthMode(AuthMode.SIGN_UP)}>Join Rules</SwitchAuthModeButton>
-            </Trans>
           </TYPE.subtitle>
         </Column>
       </ModalBody>

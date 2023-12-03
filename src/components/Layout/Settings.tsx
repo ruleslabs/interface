@@ -1,20 +1,15 @@
-import React from 'react'
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-
-import { TYPE } from 'src/styles/theme'
-import Section from 'src/components/Section'
+import React from 'react'
 import { ActiveLink } from 'src/components/Link'
 import { RowCenter } from 'src/components/Row'
+import Section from 'src/components/Section'
 import useCurrentUser from 'src/hooks/useCurrentUser'
-
-import { ReactComponent as UserIcon } from 'src/images/user.svg'
 import { ReactComponent as EthereumIcon } from 'src/images/ethereum-plain.svg'
-import { ReactComponent as ShieldIcon } from 'src/images/shield.svg'
 import { ReactComponent as SessionsIcon } from 'src/images/sessions.svg'
+import { ReactComponent as ShieldIcon } from 'src/images/shield.svg'
 import { ReactComponent as StarknetIcon } from 'src/images/starknet.svg'
-import { ReactComponent as TicketIcon } from 'src/images/ticket.svg'
-import { ReactComponent as PresentIcon } from 'src/images/present.svg'
+import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
 
 const StyledSection = styled(Section)`
   margin-top: 64px;
@@ -80,16 +75,6 @@ const SettingsCategoryButton = styled(RowCenter)`
 
 const categories = [
   {
-    name: 'Profile',
-    slug: 'profile',
-    icon: <UserIcon />,
-  },
-  {
-    name: 'Invite friends',
-    slug: 'referal',
-    icon: <PresentIcon />,
-  },
-  {
     name: 'Security',
     slug: 'security',
     icon: <ShieldIcon />,
@@ -108,11 +93,6 @@ const categories = [
     name: 'Ethereum',
     slug: 'ethereum',
     icon: <EthereumIcon />,
-  },
-  {
-    name: 'Live events',
-    slug: 'live-events',
-    icon: <TicketIcon />,
   },
 ] // TODO: move it somewhere else as a single source of truth
 

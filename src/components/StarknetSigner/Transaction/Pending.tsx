@@ -1,10 +1,9 @@
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-
-import Column, { ColumnCenter } from 'src/components/Column'
-import { TYPE } from 'src/styles/theme'
 import { EtherscanButton } from 'src/components/Button'
+import Column, { ColumnCenter } from 'src/components/Column'
 import Spinner from 'src/components/Spinner'
+import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
 
 const StyledSpinner = styled(Spinner)`
   margin: 0 auto;

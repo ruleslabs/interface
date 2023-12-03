@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
 import gql from 'graphql-tag'
+import { useMemo } from 'react'
 
 import {
   useConnectDiscordAccountMutation,

@@ -30,8 +30,4 @@ export const RowBetween = styled(Row)`
   justify-content: space-between;
 `
 
-export const RowReverse = styled(Row)`
-  flex-direction: row-reverse;
-`
-
 export default Row

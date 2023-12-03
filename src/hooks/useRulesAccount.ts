@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
+import { RulesAccount } from 'src/lib/rulesWallet/RulesAccount'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import { RpcProvider } from 'starknet'
 
 import useCurrentUser from './useCurrentUser'
-import { RulesAccount } from 'src/lib/rulesWallet/RulesAccount'
-import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 
 function buildRulesAccount(address: string, oldAddress?: string): RulesAccount {
   // rulesSdk.starknet is not an instance of a vanilla starknet.js provider

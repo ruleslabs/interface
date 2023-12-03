@@ -1,19 +1,18 @@
-import React from 'react'
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-
+import React from 'react'
+import { SidebarNavButton } from 'src/components/Button'
+import Column from 'src/components/Column'
+import Divider from 'src/components/Divider'
+import LanguageSelector from 'src/components/LanguageSelector'
 import SidebarModal, { ModalBody, ModalContent } from 'src/components/Modal/Sidebar'
 import { RowCenter } from 'src/components/Row'
-import { useNavModalMobileToggle, useSidebarModalOpened } from 'src/state/application/hooks'
-import { ApplicationSidebarModal } from 'src/state/application/actions'
-import LanguageSelector from 'src/components/LanguageSelector'
-import { SidebarNavButton } from 'src/components/Button'
 import { useNavLinks } from 'src/hooks/useNav'
-import Actionable from '../Actionable'
-import Divider from 'src/components/Divider'
-import Column from 'src/components/Column'
-
 import { ReactComponent as ExternalLinkIcon } from 'src/images/external-link.svg'
+import { ApplicationSidebarModal } from 'src/state/application/actions'
+import { useNavModalMobileToggle, useSidebarModalOpened } from 'src/state/application/hooks'
+import styled from 'styled-components/macro'
+
+import Actionable from '../Actionable'
 import { ModalHeader } from '../Modal'
 
 const StyledLanguageSelector = styled(LanguageSelector)`
@@ -39,7 +38,7 @@ export default function NavModalMobile() {
       <ModalContent>
         <ModalHeader onDismiss={toggleNavModalMobile} />
 
-        <ModalBody gap={'8'}>
+        <ModalBody gap="8">
           {navLinks.map((navLinks, index) => (
             <Column key={`nav-links-${index}`} gap={8}>
               {navLinks.map((navLink) => (

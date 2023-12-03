@@ -1,11 +1,9 @@
 import { t } from '@lingui/macro'
-
-import { ModalHeader } from 'src/components/Modal'
-import ClassicModal, { ModalContent, ModalBody } from 'src/components/Modal/Classic'
 import CardsFilters from 'src/components/Filters/Cards'
-import MarketplaceFilters from 'src/components/Filters/Marketplace'
-import { useModalOpened, useFiltersModalToggle } from 'src/state/application/hooks'
+import { ModalHeader } from 'src/components/Modal'
+import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
 import { ApplicationModal } from 'src/state/application/actions'
+import { useFiltersModalToggle, useModalOpened } from 'src/state/application/hooks'
 
 function FiltersModal({ children }: React.HTMLAttributes<HTMLDivElement>) {
   // modal
@@ -27,14 +25,6 @@ export function CardsFiltersModal() {
   return (
     <FiltersModal>
       <CardsFilters />
-    </FiltersModal>
-  )
-}
-
-export function MarketplaceFiltersModal() {
-  return (
-    <FiltersModal>
-      <MarketplaceFilters />
     </FiltersModal>
   )
 }

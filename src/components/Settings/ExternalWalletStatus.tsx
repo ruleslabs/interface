@@ -1,13 +1,13 @@
+import { Trans } from '@lingui/macro'
 import { useAccount } from '@starknet-react/core'
 import { useWeb3React } from '@web3-react/core'
-import { Trans } from '@lingui/macro'
-
-import { EthereumStatus, StarknetStatus } from '../Web3Status'
-import LongString from '../Text/LongString'
-import { PrimaryButton } from '../Button'
 import { getChainInfo } from 'src/constants/chainInfo'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+
+import { PrimaryButton } from '../Button'
 import Link from '../Link'
+import LongString from '../Text/LongString'
+import { EthereumStatus, StarknetStatus } from '../Web3Status'
 
 // ETHEREUM
 

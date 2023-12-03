@@ -1,6 +1,5 @@
 import { style } from '@vanilla-extract/css'
 import { recipe } from '@vanilla-extract/recipes'
-
 import { sprinkles } from 'src/theme/css/sprinkles.css'
 import { rawTokens, vars } from 'src/theme/css/vars.css'
 

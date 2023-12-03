@@ -1,4 +1,5 @@
 import { keyframes, style } from '@vanilla-extract/css'
+
 import { vars } from './vars.css'
 
 const placeholderShimmer = keyframes({

@@ -1,6 +1,5 @@
-import styled from 'styled-components/macro'
-
 import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
 
 const Placeholder = styled(TYPE.body)`
   text-align: center;

@@ -1,7 +1,6 @@
 import React from 'react'
-import styled, { css } from 'styled-components/macro'
-
 import { ReactComponent as Hover } from 'src/images/hover.svg'
+import styled, { css } from 'styled-components/macro'
 
 const StyledHover = styled(Hover)<{ $reverse: boolean }>`
   ${({ $reverse }) => css`

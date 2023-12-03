@@ -1,22 +1,22 @@
-import { useEffect, useMemo } from 'react'
 import { t } from '@lingui/macro'
-import { useWeb3React } from '@web3-react/core'
 import { useAccount } from '@starknet-react/core'
-
+import { useWeb3React } from '@web3-react/core'
+import { useEffect, useMemo } from 'react'
 import { ModalHeader } from 'src/components/Modal'
-import ClassicModal, { ModalContent, ModalBody } from 'src/components/Modal/Classic'
-import { Column } from 'src/theme/components/Flex'
+import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
 import { getL1Connections, getL2Connections } from 'src/connections'
-import { L1Option, L2Option } from './Option'
-import ConnectionErrorContent from './ConnectionErrorContent'
 import { useL1ActivationState } from 'src/hooks/useL1WalletActivation'
-import { ActivationStatus } from 'src/zustand/l1Wallet'
+import { WalletConnectModal } from 'src/state/application/actions'
 import {
   useEthereumWalletConnectModalToggle,
   useStarknetWalletConnectModalToggle,
   useWalletConnectModalOpened,
 } from 'src/state/application/hooks'
-import { WalletConnectModal } from 'src/state/application/actions'
+import { Column } from 'src/theme/components/Flex'
+import { ActivationStatus } from 'src/zustand/l1Wallet'
+
+import ConnectionErrorContent from './ConnectionErrorContent'
+import { L1Option, L2Option } from './Option'
 
 // ETHEREUM
 
@@ -50,7 +50,7 @@ export function EthereumWalletConnectModal() {
           <ModalHeader title={t`Connect Ethereum wallet`} onDismiss={toggleEthereumWalletConnectModal} />
 
           <ModalBody>
-            <Column gap={'8'}>
+            <Column gap="8">
               {l1Connections
                 .filter((connection) => connection.shouldDisplay())
                 .map((connection) => (
@@ -94,7 +94,7 @@ export function StarknetWalletConnectModal() {
         <ModalHeader title={t`Connect Starknet wallet`} onDismiss={toggleStarknetWalletConnectModal} />
 
         <ModalBody>
-          <Column gap={'8'}>
+          <Column gap="8">
             {l2Connections
               .filter((connection) => connection.shouldDisplay())
               .map((connection) => (

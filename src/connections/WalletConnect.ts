@@ -1,5 +1,4 @@
 import { WalletConnect, WalletConnectConstructorArgs } from '@web3-react/walletconnect'
-
 import { RPC_URLS } from 'src/constants/networks'
 
 // Avoid testing for the best URL by only passing a single URL per chain.

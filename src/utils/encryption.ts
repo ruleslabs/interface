@@ -1,9 +1,9 @@
 import { t } from '@lingui/macro'
 import { Buffer } from 'buffer'
 
-export const DECRYPTION_ERROR = 'DecryptionError'
+const DECRYPTION_ERROR = 'DecryptionError'
 
-export class DecryptionError extends Error {
+class DecryptionError extends Error {
   constructor(message?: string) {
     super(message || t`Invalid password`)
     this.name = DECRYPTION_ERROR
@@ -75,6 +75,6 @@ export function decodeKey(key: Uint8Array): string {
   return `0x${arrayToHex(key)}`
 }
 
-export const hexToArray = (hex: string): Uint8Array => new Uint8Array(Buffer.from(hex, 'hex'))
+const hexToArray = (hex: string): Uint8Array => new Uint8Array(Buffer.from(hex, 'hex'))
 
 export const arrayToHex = (array: Uint8Array): string => Buffer.from(array).toString('hex')

@@ -27,7 +27,7 @@ export const sizes = {
   headerHeightMedium: 62,
 }
 
-export const fontSizes = {
+const fontSizes = {
   '0': '0',
   '14': '14px',
   '16': '16px',
@@ -36,20 +36,20 @@ export const fontSizes = {
   '32': '32px',
 }
 
-export const times = {
+const times = {
   slow: '500ms',
   medium: '250ms',
   fast: '125ms',
 }
 
-export const timings = {
+const timings = {
   ease: 'ease',
   in: 'ease-in',
   out: 'ease-out',
   inOut: 'ease-in-out',
 }
 
-export const opacities = {
+const opacities = {
   disabled: '0.5',
   enabled: '1',
   hover: '0.9',

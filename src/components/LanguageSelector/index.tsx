@@ -1,11 +1,10 @@
 import React, { useCallback } from 'react'
-import styled from 'styled-components/macro'
 import { redirect, useLocation } from 'react-router-dom'
-
 import Row from 'src/components/Row'
-import { SUPPORTED_LOCALES, LOCALE_LABEL, SupportedLocale } from 'src/constants/locales'
-import { TYPE } from 'src/styles/theme'
+import { LOCALE_LABEL, SUPPORTED_LOCALES, SupportedLocale } from 'src/constants/locales'
 import { useUserLocaleManager } from 'src/state/user/hooks'
+import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
 
 const StyledLanguageSelector = styled(Row)`
   gap: 8px;

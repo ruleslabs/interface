@@ -1,23 +1,23 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import GoogleReCAPTCHA from 'react-google-recaptcha'
-
+import Column from 'src/components/Column'
 import { ModalHeader } from 'src/components/Modal'
 import { ModalBody } from 'src/components/Modal/Classic'
-import Column from 'src/components/Column'
-import { TYPE } from 'src/styles/theme'
+import { useRequestTwoFactorAuthSecretRemoval } from 'src/graphql/data/Auth'
+import useCountdown from 'src/hooks/useCountdown'
+import { useAuthModalToggle } from 'src/state/application/hooks'
 import { AuthMode } from 'src/state/auth/actions'
 import {
-  useSetAuthMode,
   useAuthForm,
   useNewAuthUpdateLinkTime,
   useRefreshNewAuthUpdateLinkTime,
+  useSetAuthMode,
 } from 'src/state/auth/hooks'
-import { useAuthModalToggle } from 'src/state/application/hooks'
-import useCountdown from 'src/hooks/useCountdown'
+import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
+
 import ReCAPTCHA, { RecaptchaPolicy } from '../Recaptcha'
-import { useRequestTwoFactorAuthSecretRemoval } from 'src/graphql/data/Auth'
 
 const ResendCode = styled(TYPE.subtitle)`
   display: inline;

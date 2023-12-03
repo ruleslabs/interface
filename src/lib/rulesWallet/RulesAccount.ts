@@ -11,7 +11,6 @@ export class RulesAccount extends Account {
     // we also assume the cairo account version is 1 if there is an old address
     super(provider, address, constants.DUMMY_PK, cairoVersion)
 
-
     this.old = oldAddress ? new RulesAccount(provider, oldAddress, '0') : undefined
   }
 

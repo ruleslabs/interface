@@ -1,25 +1,25 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Trans } from '@lingui/macro'
-import { WeiAmount, constants } from '@rulesorg/sdk-core'
+import { constants, WeiAmount } from '@rulesorg/sdk-core'
 import { useProvider } from '@starknet-react/core'
-
-import { ModalBody } from 'src/components/Modal/Sidebar'
-import useCurrentUser from 'src/hooks/useCurrentUser'
-import { useETHBalance, useSetWalletModalMode } from 'src/state/wallet/hooks'
-import { WalletModalMode } from 'src/state/wallet/actions'
-import Column from 'src/components/Column'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { PrimaryButton } from 'src/components/Button'
-import useRulesAccount from 'src/hooks/useRulesAccount'
-import * as Text from 'src/theme/components/Text'
-import { useGetWalletConstructorCallData } from 'src/hooks/useCreateWallet'
-import StarknetSigner from '../StarknetSigner/Transaction'
-import useStarknetTx from 'src/hooks/useStarknetTx'
-import { Account, ec, hash, stark } from 'starknet'
-import { PaginationSpinner } from '../Spinner'
-import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import Column from 'src/components/Column'
+import { ModalBody } from 'src/components/Modal/Sidebar'
 import { DEPLOYMENT_DEPOSIT_SUGGESTION_FACTOR } from 'src/constants/misc'
-import { useModalOpened } from 'src/state/application/hooks'
+import { useGetWalletConstructorCallData } from 'src/hooks/useCreateWallet'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import useRulesAccount from 'src/hooks/useRulesAccount'
+import useStarknetTx from 'src/hooks/useStarknetTx'
 import { ApplicationModal } from 'src/state/application/actions'
+import { useModalOpened } from 'src/state/application/hooks'
+import { WalletModalMode } from 'src/state/wallet/actions'
+import { useETHBalance, useSetWalletModalMode } from 'src/state/wallet/hooks'
+import * as Text from 'src/theme/components/Text'
+import { Account, ec, hash, stark } from 'starknet'
+
+import { PaginationSpinner } from '../Spinner'
+import StarknetSigner from '../StarknetSigner/Transaction'
 
 export default function Deploy() {
   const [parsedDummyDeploymentMaxFee, setParsedDummyDeploymentMaxFee] = useState<WeiAmount | null>(null)
@@ -127,7 +127,7 @@ export default function Deploy() {
 
   return (
     <ModalBody>
-      <StarknetSigner action={'walletDeployment'} skipSignin allowUndeployed>
+      <StarknetSigner action="walletDeployment" skipSignin allowUndeployed>
         {componentContent}
       </StarknetSigner>
     </ModalBody>

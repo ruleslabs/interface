@@ -1,9 +1,10 @@
 import { isMobile } from 'src/utils/userAgent'
+
 import { Connection, ConnectionType } from './index'
 
 // misc
 
-export const getIsInjected = () => Boolean(window.ethereum)
+const getIsInjected = () => Boolean(window.ethereum)
 
 export const getIsGenericInjector = () => getIsInjected() && !getIsMetaMaskWallet() && !getIsCoinbaseWallet()
 
@@ -17,17 +18,17 @@ const allNonMetamaskFlags: NonMetaMaskFlag[] = ['isRabby', 'isBraveWallet', 'isT
 export const getIsMetaMaskWallet = () =>
   Boolean(window.ethereum?.isMetaMask && !allNonMetamaskFlags.some((flag) => window.ethereum?.[flag]))
 
-export const getIsCoinbaseWallet = () => Boolean(window.ethereum?.isCoinbaseWallet)
+const getIsCoinbaseWallet = () => Boolean(window.ethereum?.isCoinbaseWallet)
 
-export const getIsArgentXWallet = () => Boolean(window.starknet_argentX)
+const getIsArgentXWallet = () => Boolean(window.starknet_argentX)
 
-export const getIsBraavosWallet = () => Boolean(window.starknet_braavos)
+const getIsBraavosWallet = () => Boolean(window.starknet_braavos)
 
 // browser
 
 export const getIsCoinbaseWalletBrowser = () => isMobile && getIsCoinbaseWallet()
 
-export const getIsMetaMaskBrowser = () => isMobile && getIsMetaMaskWallet()
+const getIsMetaMaskBrowser = () => isMobile && getIsMetaMaskWallet()
 
 export const getIsInjectedMobileBrowser = () => getIsCoinbaseWalletBrowser() || getIsMetaMaskBrowser()
 
@@ -40,7 +41,7 @@ export const getShouldAdvertiseArgentX = () => !getIsArgentXWallet() && !isMobil
 export const getShouldAdvertiseBraavos = () => !getIsBraavosWallet()
 
 // https://eips.ethereum.org/EIPS/eip-1193#provider-errors
-export enum ErrorCode {
+enum ErrorCode {
   USER_REJECTED_REQUEST = 4001,
   UNAUTHORIZED = 4100,
   UNSUPPORTED_METHOD = 4200,

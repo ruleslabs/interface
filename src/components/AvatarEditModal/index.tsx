@@ -1,15 +1,14 @@
-import { useState, useCallback } from 'react'
-import styled from 'styled-components/macro'
-import { t } from '@lingui/macro'
 import { ApolloError } from '@apollo/client'
-
+import { t } from '@lingui/macro'
+import { useCallback, useState } from 'react'
 import { ModalHeader } from 'src/components/Modal'
-import ClassicModal, { ModalContent, ModalBody } from 'src/components/Modal/Classic'
-import { useAvatarEditModalToggle, useModalOpened } from 'src/state/application/hooks'
-import { ApplicationModal } from 'src/state/application/actions'
-import useDefaultAvatarUrls from 'src/hooks/useDefaultAvatarUrls'
-import { useEditAvatarMutation } from 'src/state/user/hooks'
+import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
 import useCurrentUser from 'src/hooks/useCurrentUser'
+import useDefaultAvatarUrls from 'src/hooks/useDefaultAvatarUrls'
+import { ApplicationModal } from 'src/state/application/actions'
+import { useAvatarEditModalToggle, useModalOpened } from 'src/state/application/hooks'
+import { useEditAvatarMutation } from 'src/state/user/hooks'
+import styled from 'styled-components/macro'
 
 const AvatarsGrid = styled.div`
   margin-top: 26px;

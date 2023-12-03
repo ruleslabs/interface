@@ -1,12 +1,11 @@
-import React, { useCallback } from 'react'
-import styled from 'styled-components/macro'
-import { DialogOverlay, DialogContent } from '@reach/dialog'
+import { DialogContent, DialogOverlay } from '@reach/dialog'
 import { animated, useTransition } from '@react-spring/web'
-
+import React, { useCallback } from 'react'
 import Column from 'src/components/Column'
 import useCloseModalOnNavigation from 'src/hooks/useCloseModalOnNavigation'
-import { round } from 'src/utils/math'
 import useWindowSize from 'src/hooks/useWindowSize'
+import { round } from 'src/utils/math'
+import styled from 'styled-components/macro'
 
 const DEFAULT_MODAL_WIDTH = 540
 

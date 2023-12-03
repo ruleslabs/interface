@@ -1,20 +1,20 @@
-import { useEffect } from 'react'
-import { Trans, t } from '@lingui/macro'
-import styled from 'styled-components/macro'
+import { t, Trans } from '@lingui/macro'
 import { ApolloError } from 'apollo-client'
-
-import { useSidebarModalOpened, useNotificationsModalToggle } from 'src/state/application/hooks'
-import SidebarModal, { ModalContent, ModalBody } from 'src/components/Modal/Sidebar'
-import { ApplicationSidebarModal } from 'src/state/application/actions'
-import { TYPE } from 'src/styles/theme'
+import { useEffect } from 'react'
 import Column, { ColumnCenter } from 'src/components/Column'
-import { useCurrentUserNotifications } from 'src/state/search/hooks'
-import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
-import NotificationRow from './NotificationRow'
-import { useMarkNotificationsAsReadMutation } from 'src/state/user/hooks'
+import SidebarModal, { ModalBody, ModalContent } from 'src/components/Modal/Sidebar'
 import useCurrentUser from 'src/hooks/useCurrentUser'
-import { ModalHeader } from '../Modal'
+import useInfiniteScroll from 'src/hooks/useInfiniteScroll'
+import { ApplicationSidebarModal } from 'src/state/application/actions'
+import { useNotificationsModalToggle, useSidebarModalOpened } from 'src/state/application/hooks'
+import { useCurrentUserNotifications } from 'src/state/search/hooks'
+import { useMarkNotificationsAsReadMutation } from 'src/state/user/hooks'
+import { TYPE } from 'src/styles/theme'
 import * as Icons from 'src/theme/components/Icons'
+import styled from 'styled-components/macro'
+
+import { ModalHeader } from '../Modal'
+import NotificationRow from './NotificationRow'
 
 const StyledModalBody = styled(ModalBody)`
   padding: 0;
@@ -75,7 +75,7 @@ export default function NotificationsModal() {
         <StyledModalBody>
           {!notifications.length && !isLoading && (
             <EmptyBox>
-              <Icons.Ghost width={'64'} />
+              <Icons.Ghost width="64" />
 
               <TYPE.body>
                 <Trans>No notifications yet</Trans>

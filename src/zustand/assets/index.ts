@@ -4,14 +4,14 @@ import { StoreState } from '../index'
 
 export type AssetsSlice = State & Actions
 
-export interface State {
+interface State {
   selectedTokenIds: string[]
   selectionModeEnabled: boolean
 
   tokenIdPlayingMedia: string | null
 }
 
-export interface Actions {
+interface Actions {
   toggleTokenIdSelection: (tokenId: string) => void
   toggleSelectionMode: () => void
 

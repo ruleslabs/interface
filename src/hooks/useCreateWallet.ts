@@ -1,8 +1,7 @@
-import { useCallback } from 'react'
-import { ec, getChecksumAddress, encode, hash, CallData } from 'starknet'
-
-import { encryptWithPassword, encodeKey, generateSalt, generateIV } from 'src/utils/encryption'
 import { constants } from '@rulesorg/sdk-core'
+import { useCallback } from 'react'
+import { encodeKey, encryptWithPassword, generateIV, generateSalt } from 'src/utils/encryption'
+import { CallData, ec, encode, getChecksumAddress, hash } from 'starknet'
 
 export function useGetWalletConstructorCallData() {
   const guardianPublicKey = process.env.REACT_APP_GUARDIAN_PUBLIC_KEY

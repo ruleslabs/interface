@@ -1,6 +1,5 @@
-import { useMemo } from 'react'
 import { gql, useQuery } from '@apollo/client'
-
+import { useMemo } from 'react'
 import LegalLayout from 'src/components/Layout/Legal'
 
 const AVAILABLE_PACKS_QUERY = gql`

@@ -13,7 +13,7 @@ export const MEDIA_QUERIES_BREAKPOINTS = {
   large: 1200,
 }
 
-export const MEDIA_QUERIES: { [key in keyof typeof MEDIA_QUERIES_BREAKPOINTS]: string } & {
+const MEDIA_QUERIES: { [key in keyof typeof MEDIA_QUERIES_BREAKPOINTS]: string } & {
   [key in keyof typeof MISC_MEDIA_QUERIES]: string
 } = Object.keys(MEDIA_QUERIES_BREAKPOINTS).reduce((acc: any, key: string) => {
   acc[key] = `only screen and (max-width: ${
@@ -91,7 +91,7 @@ const before = (Object.keys(BEFORES_CSS) as BeforeKey[]).reduce<{ [before in Bef
 )
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function colors(darkMode: boolean) {
+function colors(darkMode: boolean) {
   return {
     white: rawTokens.color.white,
     black: rawTokens.color.black,
@@ -126,7 +126,7 @@ export function colors(darkMode: boolean) {
   }
 }
 
-export function getTheme(darkMode: boolean) {
+function getTheme(darkMode: boolean) {
   return {
     ...colors(darkMode),
 
@@ -153,12 +153,12 @@ export default function StyledThemeProvider({ children }: StyledThemeProviderPro
   return <ThemeProvider theme={themeObject}>{children}</ThemeProvider>
 }
 
-export interface TextWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
+interface TextWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
   color?: string
   spanColor?: string
 }
 
-export interface TextProps extends TextWrapperProps {
+interface TextProps extends TextWrapperProps {
   fontSize?: number
   fontWeight?: number
   fontStyle?: string
@@ -201,22 +201,22 @@ const TextWrapper = styled(Text)<TextWrapperProps>`
 
 export const TYPE = {
   link(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'primary1'} clickable {...props} />
+    return <TextWrapper fontWeight={500} color="primary1" clickable {...props} />
   },
   subtitle(props: TextProps) {
-    return <TextWrapper fontWeight={400} color={'text2'} {...props} />
+    return <TextWrapper fontWeight={400} color="text2" {...props} />
   },
   small(props: TextProps) {
-    return <TextWrapper fontWeight={400} fontSize={14} color={'text1'} {...props} />
+    return <TextWrapper fontWeight={400} fontSize={14} color="text1" {...props} />
   },
   body(props: TextProps) {
-    return <TextWrapper fontWeight={500} fontSize={16} color={'text1'} {...props} />
+    return <TextWrapper fontWeight={500} fontSize={16} color="text1" {...props} />
   },
   medium(props: TextProps) {
-    return <TextWrapper fontWeight={500} fontSize={18} color={'text1'} {...props} />
+    return <TextWrapper fontWeight={500} fontSize={18} color="text1" {...props} />
   },
   large(props: TextProps) {
-    return <TextWrapper fontWeight={700} fontSize={26} color={'text1'} {...props} />
+    return <TextWrapper fontWeight={700} fontSize={26} color="text1" {...props} />
   },
 }
 

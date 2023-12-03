@@ -1,8 +1,7 @@
-import { useLingui } from '@lingui/react'
-import { useCallback } from 'react'
 import { msg } from '@lingui/macro'
-
+import { useLingui } from '@lingui/react'
 import { ScarcityName } from '@rulesorg/sdk-core'
+import { useCallback } from 'react'
 import { StxAction } from 'src/types/starknetTx'
 
 type Prefix =

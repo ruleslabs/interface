@@ -16,8 +16,4 @@ export const ColumnCenter = styled(Column)`
   align-items: center;
 `
 
-export const ColumnBetween = styled(Column)`
-  justify-content: space-between;
-`
-
 export default Column

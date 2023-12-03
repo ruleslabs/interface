@@ -1,26 +1,25 @@
-import { useCallback, useRef, useState } from 'react'
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
+import { useCallback, useRef, useState } from 'react'
 import GoogleReCAPTCHA from 'react-google-recaptcha'
-
-import { ModalHeader } from 'src/components/Modal'
-import { ModalBody } from 'src/components/Modal/Classic'
+import { PrimaryButton } from 'src/components/Button'
 import Column from 'src/components/Column'
 import Input from 'src/components/Input'
-import { TYPE } from 'src/styles/theme'
+import { ModalHeader } from 'src/components/Modal'
+import { ModalBody } from 'src/components/Modal/Classic'
+import ReCAPTCHA, { RecaptchaPolicy } from 'src/components/Recaptcha'
+import { useRequestPasswordUpdate } from 'src/graphql/data/Auth'
+import useCountdown from 'src/hooks/useCountdown'
+import { useAuthModalToggle } from 'src/state/application/hooks'
 import { AuthMode } from 'src/state/auth/actions'
 import {
-  useSetAuthMode,
+  useAuthActionHanlders,
   useAuthForm,
   useNewAuthUpdateLinkTime,
   useRefreshNewAuthUpdateLinkTime,
-  useAuthActionHanlders,
+  useSetAuthMode,
 } from 'src/state/auth/hooks'
-import { useAuthModalToggle } from 'src/state/application/hooks'
-import useCountdown from 'src/hooks/useCountdown'
-import { PrimaryButton } from 'src/components/Button'
-import ReCAPTCHA, { RecaptchaPolicy } from 'src/components/Recaptcha'
-import { useRequestPasswordUpdate } from 'src/graphql/data/Auth'
+import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
 
 const SubmitButton = styled(PrimaryButton)`
   height: 55px;

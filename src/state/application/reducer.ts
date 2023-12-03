@@ -1,18 +1,18 @@
 import { createReducer } from '@reduxjs/toolkit'
 
 import {
-  setOpenedModal,
-  setOpenedSidebarModal,
-  updateEtherPrice,
-  updateBlock,
-  updateEthereumBlockNumber,
   ApplicationModal,
   ApplicationSidebarModal,
-  WalletConnectModal,
+  setOpenedModal,
+  setOpenedSidebarModal,
   setOpenedWalletConnectModal,
+  updateBlock,
+  updateEthereumBlockNumber,
+  updateEtherPrice,
+  WalletConnectModal,
 } from './actions'
 
-export interface ApplicationState {
+interface ApplicationState {
   readonly openedModal: ApplicationModal | null
   readonly openedSidebarModal: ApplicationSidebarModal | null
   readonly openedWalletConnectModal: WalletConnectModal | null
@@ -22,7 +22,7 @@ export interface ApplicationState {
   readonly ethereumBlockNumber: { readonly [chainId: number]: number }
 }
 
-export const initialState: ApplicationState = {
+const initialState: ApplicationState = {
   openedModal: null,
   openedSidebarModal: null,
   openedWalletConnectModal: null,

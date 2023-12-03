@@ -1,6 +1,5 @@
-import { useEffect } from 'react'
 import { Connector } from '@web3-react/types'
-
+import { useEffect } from 'react'
 import { L1Connection, networkConnection, useGetL1Connection } from 'src/connections'
 import { useBoundStore } from 'src/zustand'
 

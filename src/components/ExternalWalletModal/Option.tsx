@@ -1,10 +1,11 @@
+import { useConnect } from '@starknet-react/core'
 import { Connection, L1Connection, L2Connection } from 'src/connections'
+import { useTryL1Activation } from 'src/hooks/useL1WalletActivation'
 import { Row } from 'src/theme/components/Flex'
 import * as Text from 'src/theme/components/Text'
-import * as styles from './Option.css'
-import { useTryL1Activation } from 'src/hooks/useL1WalletActivation'
 import noop from 'src/utils/noop'
-import { useConnect } from '@starknet-react/core'
+
+import * as styles from './Option.css'
 
 interface OptionProps {
   connection: Connection
@@ -13,7 +14,7 @@ interface OptionProps {
 
 function Option({ connection, activate }: OptionProps) {
   return (
-    <Row gap={'12'} className={styles.option} onClick={activate}>
+    <Row gap="12" className={styles.option} onClick={activate}>
       <img width={32} height={32} src={connection.getIcon?.()} />
       <Text.Body>{connection.getName()}</Text.Body>
     </Row>

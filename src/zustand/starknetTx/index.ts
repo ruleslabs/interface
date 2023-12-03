@@ -1,13 +1,13 @@
-import { StateCreator } from 'zustand'
-import { Call, DeployAccountContractPayload } from 'starknet'
 import { WeiAmount } from '@rulesorg/sdk-core'
+import { Call, DeployAccountContractPayload } from 'starknet'
+import { StateCreator } from 'zustand'
 
-import { StoreState } from '../index'
 import { createApplicationSlice } from '../application'
+import { StoreState } from '../index'
 
 export type StarknetTxSlice = State & Actions
 
-export interface State {
+interface State {
   stxCalls: Call[]
   stxMessages: string[]
   stxAccountDeploymentPayload: DeployAccountContractPayload | null
@@ -19,7 +19,7 @@ export interface State {
   stxAction: string | null
 }
 
-export interface Actions {
+interface Actions {
   stxSetCalls: (calls: Call[]) => void
   stxPushCalls: (...calls: Call[]) => void
 

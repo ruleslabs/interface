@@ -1,6 +1,7 @@
-import Box, { BoxProps } from './Box'
-import { Sprinkles, sprinkles } from '../css/sprinkles.css'
 import clsx from 'clsx'
+
+import { Sprinkles, sprinkles } from '../css/sprinkles.css'
+import Box, { BoxProps } from './Box'
 
 export interface TextProps extends BoxProps {
   loadingWidth?: Sprinkles['width']

@@ -1,5 +1,4 @@
 import { style } from '@vanilla-extract/css'
-
 import { breakpoints, sprinkles } from 'src/theme/css/sprinkles.css'
 import { sizes } from 'src/theme/css/vars.css'
 

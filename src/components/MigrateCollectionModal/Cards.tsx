@@ -1,23 +1,23 @@
-import { useCallback, useEffect, useMemo } from 'react'
-import { constants } from '@rulesorg/sdk-core'
-import { Trans } from '@lingui/macro'
-import { useAccount } from '@starknet-react/core'
 import { gql, useQuery } from '@apollo/client'
-import { Call, uint256 } from 'starknet'
-
-import useCurrentUser from 'src/hooks/useCurrentUser'
+import { Trans } from '@lingui/macro'
+import { constants } from '@rulesorg/sdk-core'
+import { useAccount } from '@starknet-react/core'
+import { useCallback, useEffect, useMemo } from 'react'
 import { PrimaryButton } from 'src/components/Button'
-import { TYPE } from 'src/styles/theme'
+import useCurrentUser from 'src/hooks/useCurrentUser'
 import useRulesAccount from 'src/hooks/useRulesAccount'
 import useStarknetTx from 'src/hooks/useStarknetTx'
-import { ModalBody } from '../Modal/Classic'
-import { StarknetStatus } from '../Web3Status'
-import { Column } from 'src/theme/components/Flex'
-import StarknetSigner from '../StarknetSigner/Transaction'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
-import { PaginationSpinner } from '../Spinner'
-import { useModalOpened } from 'src/state/application/hooks'
 import { ApplicationModal } from 'src/state/application/actions'
+import { useModalOpened } from 'src/state/application/hooks'
+import { TYPE } from 'src/styles/theme'
+import { Column } from 'src/theme/components/Flex'
+import { Call, uint256 } from 'starknet'
+
+import { ModalBody } from '../Modal/Classic'
+import { PaginationSpinner } from '../Spinner'
+import StarknetSigner from '../StarknetSigner/Transaction'
+import { StarknetStatus } from '../Web3Status'
 
 const MAX_CARDS_TRANSFERS = 200
 
@@ -139,11 +139,11 @@ export default function CardsTransferModal() {
 
   return (
     <ModalBody>
-      <StarknetSigner action={'transfer'}>
+      <StarknetSigner action="transfer">
         {loading ? (
           <PaginationSpinner loading />
         ) : (
-          <Column gap={'32'}>
+          <Column gap="32">
             <TYPE.body textAlign="justify">
               <Trans>
                 Due to Starknet limitations, you cannot transfer more than {MAX_CARDS_TRANSFERS} cards per transaction.

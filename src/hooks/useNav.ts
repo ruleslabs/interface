@@ -1,7 +1,8 @@
-import { useMigrateCollectionModalToggle } from 'src/state/application/hooks'
-import { useMemo } from 'react'
-import useLogout from './useLogout'
 import { t } from '@lingui/macro'
+import { useMemo } from 'react'
+import { useMigrateCollectionModalToggle } from 'src/state/application/hooks'
+
+import useLogout from './useLogout'
 
 export interface NavLink {
   name: string
@@ -10,15 +11,17 @@ export interface NavLink {
   external?: boolean
 }
 
-export type MenuLinks = NavLink[][]
+type MenuLinks = NavLink[][]
 
 export function useNavLinks(): MenuLinks {
   return useMemo(
     () => [
       [
-        { name: t`Packs`, link: '/packs' },
-        { name: t`Marketplace`, link: '/marketplace' },
-        { name: t`Community`, link: '/community' },
+        {
+          name: t`Marketplace`,
+          link: 'https://element.market/collections/rulesart?search%5Btoggles%5D[0]=BUY_NOW',
+          external: true,
+        },
       ],
       [{ name: 'Discord', link: 'https://discord.gg/rulesart', external: true }],
     ],
@@ -31,7 +34,7 @@ export interface NavUserSublinks {
   links: NavLink[]
 }
 
-export interface NavUserLinks {
+interface NavUserLinks {
   profile: NavUserSublinks
   wallet: NavUserSublinks
   misc: NavUserSublinks
@@ -53,8 +56,6 @@ export function useNavUserLinks(userSlug?: string): NavUserLinks | null {
         links: [
           { name: t`Cards`, link: `/user/${userSlug}/cards` },
           { name: t`Packs`, link: `/user/${userSlug}/packs` },
-          { name: t`Rulédex`, link: `/user/${userSlug}/ruledex` },
-          { name: t`Activity`, link: `/user/${userSlug}/activity` },
         ],
       },
       wallet: {
@@ -63,7 +64,7 @@ export function useNavUserLinks(userSlug?: string): NavUserLinks | null {
       },
       misc: {
         links: [
-          { name: t`Settings`, link: '/settings/profile' },
+          { name: t`Settings`, link: '/settings/starknet' },
           { name: t`Logout`, handler: logout },
         ],
       },

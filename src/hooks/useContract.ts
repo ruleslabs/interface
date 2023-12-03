@@ -1,20 +1,19 @@
-import { useMemo } from 'react'
-import { Contract, Abi } from 'starknet'
 import { Contract as EthereumContract } from '@ethersproject/contracts'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
-import { useWeb3React } from '@web3-react/core'
-
-import MulticallABI from 'src/abis/multicall.json'
-import EthereumStarkgateABI from 'src/abis/ethereum/starkgate.json'
-import EthereumMulticallABI from 'src/abis/ethereum/multicall.json'
 import { AddressMap, constants } from '@rulesorg/sdk-core'
+import { useWeb3React } from '@web3-react/core'
+import { useMemo } from 'react'
+import EthereumMulticallABI from 'src/abis/ethereum/multicall.json'
+import EthereumStarkgateABI from 'src/abis/ethereum/starkgate.json'
+import MulticallABI from 'src/abis/multicall.json'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { Abi, Contract } from 'starknet'
 
 //
 // Starknet
 //
 
-export function useContract(addressOrAddressesMap: string | AddressMap, abi: Abi): Contract | null {
+function useContract(addressOrAddressesMap: string | AddressMap, abi: Abi): Contract | null {
   const chainId = rulesSdk.networkInfos.starknetChainId
 
   return useMemo(() => {
@@ -45,7 +44,7 @@ function getProviderOrSigner(provider: Web3Provider, account?: string): Web3Prov
   return account ? getSigner(provider, account) : provider
 }
 
-export function useEthereumContract(
+function useEthereumContract(
   addressOrAddressesMap: string | AddressMap,
   abi: any,
   withSignerIfPossible = true

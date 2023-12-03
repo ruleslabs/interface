@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import * as resetStyles from './reset.css'
 import { Sprinkles, sprinkles } from './sprinkles.css'
 
-export interface Atoms extends Sprinkles {
+interface Atoms extends Sprinkles {
   reset?: string
 }
 

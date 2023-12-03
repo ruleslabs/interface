@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
-
 import { SupportedLocale } from 'src/constants/locales'
 import { initialLocale, useActiveLocale } from 'src/hooks/useActiveLocale'
 import { useUserLocaleManager } from 'src/state/user/hooks'
-import { Provider, dynamicActivate } from './provider'
+
+import { dynamicActivate, Provider } from './provider'
 
 dynamicActivate(initialLocale)
 

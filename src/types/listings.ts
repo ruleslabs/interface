@@ -1,4 +1,5 @@
 import { MessageSigningData } from 'src/graphql/data/__generated__/types-and-hooks'
+
 import { CardModel } from './assets'
 
 export interface CardListing {

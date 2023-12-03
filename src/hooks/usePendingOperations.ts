@@ -12,18 +12,6 @@ export function usePendingOperations(tokenId?: string) {
   )
 }
 
-export function useAllPendingOperations() {
-  const pendingOperations = useBoundStore((state) => state.pendingOperations, shallow)
-
-  return useMemo(
-    () =>
-      Object.keys(pendingOperations).flatMap((tokenId) =>
-        Object.keys(pendingOperations[tokenId]).map((txHash) => ({ ...pendingOperations[tokenId][txHash], tokenId }))
-      ),
-    [JSON.stringify(pendingOperations)]
-  )
-}
-
 export function useOperations() {
   const { cleanOperations, pushOperation } = useBoundStore(
     (state) => ({

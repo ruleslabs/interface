@@ -12,7 +12,8 @@
     "prepare": "yarn graphql && yarn i18n",
     "start": "craco start",
     "serve": "serve build -l 3000",
-    "build": "craco build"
+    "build": "craco build",
+    "lint": "yarn eslint --ignore-path .gitignore --cache --cache-location node_modules/.cache/eslint/ ."
   },
   "author": "Charles Lanier",
   "license": "ISC",
@@ -98,6 +99,7 @@
     "@types/url-join": "^4.0.1",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
+    "@uniswap/eslint-config": "^1.2.0",
     "@vanilla-extract/babel-plugin": "^1.2.0",
     "@vanilla-extract/webpack-plugin": "^2.2.0",
     "babel-plugin-styled-components": "^2.1.3",
@@ -105,6 +107,7 @@
     "css-loader": "^6.7.4",
     "eslint": "8.41.0",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-jest": "^27.6.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.27.1",
     "eslint-plugin-react-hooks": "^4.3.0",

@@ -1,18 +1,19 @@
-import { StateCreator } from 'zustand'
-
 import { ConnectionType } from 'src/connections'
 import { GenieCurrentUser } from 'src/types'
+import noop from 'src/utils/noop'
+import { StateCreator } from 'zustand'
+
 import { StoreState } from './index'
 
 export type UserSlice = State & Actions
 
-export interface State {
+interface State {
   currentUser: GenieCurrentUser | null
   currentUserRefresher: () => void
   selectedL1Wallet: ConnectionType | null
 }
 
-export interface Actions {
+interface Actions {
   setCurrentUser: (
     nextCurrentUserOrUpdated: GenieCurrentUser | null | ((prevCurrentUser: GenieCurrentUser | null) => void)
   ) => void
@@ -23,7 +24,7 @@ export interface Actions {
 
 export const createUserSlice: StateCreator<StoreState, [['zustand/immer', never]], [], UserSlice> = (set) => ({
   currentUser: null,
-  currentUserRefresher: () => {},
+  currentUserRefresher: noop,
   selectedL1Wallet: null,
 
   setCurrentUser: (nextCurrentUserOrUpdated) => {

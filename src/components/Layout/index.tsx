@@ -1,9 +1,7 @@
-import styled from 'styled-components/macro'
-
-import Header from 'src/components/Header'
 import Footer from 'src/components/Footer'
+import Header from 'src/components/Header'
 import useWindowSize from 'src/hooks/useWindowSize'
-import Maintenance from 'src/components/Maintenance'
+import styled from 'styled-components/macro'
 
 const MainContent = styled.main<{ windowHeight?: number }>`
   min-height: ${({ theme, windowHeight = 0 }) => windowHeight - theme.size.footerHeight}px;
@@ -23,7 +21,7 @@ export default function DefaultLayout({ children, FooterChildrenComponent }: Def
     <MainContent windowHeight={windowSize.height}>
       <Header />
 
-      {process.env.REACT_APP_MAINTENANCE === 'true' ? <Maintenance /> : children}
+      {children}
 
       <Footer>{FooterChildrenComponent?.()}</Footer>
     </MainContent>

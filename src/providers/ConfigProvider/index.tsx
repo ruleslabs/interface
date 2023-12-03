@@ -1,8 +1,7 @@
 import { useEffect } from 'react'
-import { shallow } from 'zustand/shallow'
-
 import { useCurrentUser } from 'src/graphql/data/CurrentUser'
 import { useBoundStore } from 'src/zustand'
+import { shallow } from 'zustand/shallow'
 
 interface RulesProviderProps {
   children: React.ReactNode

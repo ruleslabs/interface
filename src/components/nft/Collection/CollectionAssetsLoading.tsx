@@ -1,4 +1,5 @@
 import { ASSETS_PAGE_SIZE } from 'src/state/search/hooks'
+
 import { LoadingNftCard } from '../Card'
 
 interface LoadingAssetsProps {

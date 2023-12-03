@@ -1,26 +1,24 @@
-import React, { useCallback } from 'react'
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import clsx from 'clsx'
-
-import { TYPE } from 'src/styles/theme'
+import React from 'react'
 import { RowCenter } from 'src/components/Row'
-import Caret from 'src/components/Caret'
-import { ReactComponent as Checkmark } from 'src/images/checkmark.svg'
-import Box, { BoxProps } from 'src/theme/components/Box'
-import { Row, Column } from 'src/theme/components/Flex'
-import * as styles from './style.css'
-import * as Text from 'src/theme/components/Text'
-import Link from '../Link'
 import { getChainInfo } from 'src/constants/chainInfo'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { TYPE } from 'src/styles/theme'
+import Box, { BoxProps } from 'src/theme/components/Box'
+import { Column, Row } from 'src/theme/components/Flex'
+import * as Text from 'src/theme/components/Text'
+import styled from 'styled-components/macro'
+
 import { ColumnCenter } from '../Column'
+import Link from '../Link'
+import * as styles from './style.css'
 
 type ButtonProps = Omit<BoxProps, 'as'>
 
 /* Base */
 
-export interface EnlargeableButtonProps extends ButtonProps {
+interface EnlargeableButtonProps extends ButtonProps {
   large?: boolean
 }
 
@@ -28,7 +26,7 @@ export interface EnlargeableButtonProps extends ButtonProps {
 
 export const PrimaryButton = ({ className, large = false, disabled = false, ...props }: EnlargeableButtonProps) => (
   <Box
-    as={'button'}
+    as="button"
     className={clsx(className, styles.primaryButton({ large, disabled }))}
     disabled={disabled}
     {...props}
@@ -39,7 +37,7 @@ export const PrimaryButton = ({ className, large = false, disabled = false, ...p
 
 export const SecondaryButton = ({ className, large = false, disabled = false, ...props }: EnlargeableButtonProps) => (
   <Box
-    as={'button'}
+    as="button"
     className={clsx(className, styles.secondaryButton({ large, disabled }))}
     disabled={disabled}
     {...props}
@@ -161,74 +159,6 @@ export function RowButton({ children, ...props }: RowButtonProps) {
   )
 }
 
-const StyledBackButton = styled(RowButton)`
-  &:hover * {
-    text-decoration: underline;
-  }
-
-  svg {
-    width: 12px;
-    height: 12px;
-  }
-`
-
-export function BackButton(props: React.HTMLAttributes<HTMLButtonElement>) {
-  return (
-    <StyledBackButton {...props}>
-      <Caret direction="left" />
-      <TYPE.body fontWeight={600}>
-        <Trans>Back</Trans>
-      </TYPE.body>
-    </StyledBackButton>
-  )
-}
-
-const StyledRadioButton = styled(RowCenter)<{ selected?: boolean }>`
-  background: ${({ theme }) => theme.bg3};
-  border: 1px solid ${({ theme }) => theme.bg4};
-  border-radius: 50%;
-  width: 26px;
-  height: 26px;
-  cursor: pointer;
-  box-sizing: border-box;
-  justify-content: center;
-
-  ${({ selected, theme }) =>
-    selected
-      ? `
-        border: none;
-        background: ${theme.primary1};
-      `
-      : `
-        svg {
-          visibility: hidden;
-        }
-      `}
-
-  svg {
-    width: 16px;
-    height: 16px;
-    stroke: white;
-  }
-`
-
-interface RadioButtonProps extends React.HTMLAttributes<HTMLDivElement> {
-  selected?: boolean
-  onChange?: () => void
-}
-
-export function RadioButton({ selected, onChange, ...props }: RadioButtonProps) {
-  const handleChange = useCallback(() => {
-    onChange && onChange()
-  }, [onChange])
-
-  return (
-    <StyledRadioButton onClick={handleChange} selected={selected} {...props}>
-      <Checkmark />
-    </StyledRadioButton>
-  )
-}
-
 interface CardButtonProps extends BoxProps {
   title: string
   subtitle: string
@@ -238,14 +168,14 @@ interface CardButtonProps extends BoxProps {
 
 export const CardButton = ({ className, title, subtitle, icon, disabled, ...props }: CardButtonProps) => {
   return (
-    <Box as={'button'} className={clsx(className, styles.cardButton({ disabled }))} disabled={disabled} {...props}>
-      <Row gap={'12'} alignItems={'flex-start'}>
+    <Box as="button" className={clsx(className, styles.cardButton({ disabled }))} disabled={disabled} {...props}>
+      <Row gap="12" alignItems="flex-start">
         <Box className={styles.cardButtonIconContainer}>{icon()}</Box>
 
-        <Column gap={'4'}>
+        <Column gap="4">
           <Text.Body>{title}</Text.Body>
 
-          <Text.Custom fontWeight={'normal'} fontSize={'14'} color={'text2'}>
+          <Text.Custom fontWeight="normal" fontSize="14" color="text2">
             {subtitle}
           </Text.Custom>
         </Column>

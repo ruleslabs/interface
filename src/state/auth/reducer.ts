@@ -1,25 +1,25 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
-
-import {
-  updateEmailField,
-  updatePasswordField,
-  updateUsernameField,
-  setAuthMode,
-  refreshNewEmailVerificationCodeTime,
-  refreshNewAuthUpdateLinkTime,
-  updateFormCheckboxes,
-  setTwoFactorAuthToken,
-  AuthMode,
-  AuthFormCheckboxPayload,
-  AuthEmailPayload,
-  AuthUsernamePayload,
-  AuthPasswordPayload,
-  AuthModePayload,
-  TokenPayload,
-} from './actions'
 import { EMAIL_VERIFICATION_INTERVAL } from 'src/constants/misc'
 
-export interface AuthState {
+import {
+  AuthEmailPayload,
+  AuthFormCheckboxPayload,
+  AuthMode,
+  AuthModePayload,
+  AuthPasswordPayload,
+  AuthUsernamePayload,
+  refreshNewAuthUpdateLinkTime,
+  refreshNewEmailVerificationCodeTime,
+  setAuthMode,
+  setTwoFactorAuthToken,
+  TokenPayload,
+  updateEmailField,
+  updateFormCheckboxes,
+  updatePasswordField,
+  updateUsernameField,
+} from './actions'
+
+interface AuthState {
   form: {
     email: string
     password: string
@@ -35,7 +35,7 @@ export interface AuthState {
   twoFactorAuthToken: string | null
 }
 
-export const initialState: AuthState = {
+const initialState: AuthState = {
   form: {
     email: '',
     password: '',

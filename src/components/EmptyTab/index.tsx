@@ -1,13 +1,12 @@
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-
-import { TYPE } from 'src/styles/theme'
-import { ColumnCenter } from 'src/components/Column'
-import Row from 'src/components/Row'
-import Card from 'src/components/Card'
-import Link from 'src/components/Link'
 import { PrimaryButton } from 'src/components/Button'
+import Card from 'src/components/Card'
+import { ColumnCenter } from 'src/components/Column'
+import Link from 'src/components/Link'
+import Row from 'src/components/Row'
+import { TYPE } from 'src/styles/theme'
 import * as Icons from 'src/theme/components/Icons'
+import styled from 'styled-components/macro'
 
 const StyledEmptyTab = styled(ColumnCenter)`
   justify-content: center;
@@ -76,7 +75,7 @@ export default function EmptyTab({ emptyText }: EmptyTabProps) {
   return (
     <Card>
       <StyledEmptyTab>
-        <Icons.Ghost width={'64'} />
+        <Icons.Ghost width="64" />
         <TYPE.body>{emptyText}</TYPE.body>
       </StyledEmptyTab>
     </Card>

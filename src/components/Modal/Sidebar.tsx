@@ -1,16 +1,16 @@
-import React, { useCallback, useMemo } from 'react'
-import styled from 'styled-components/macro'
-import { DialogOverlay, DialogContent } from '@reach/dialog'
+import { DialogContent, DialogOverlay } from '@reach/dialog'
 import { animated, useTransition } from '@react-spring/web'
-
+import clsx from 'clsx'
+import React, { useCallback, useMemo } from 'react'
 import useCloseModalOnNavigation from 'src/hooks/useCloseModalOnNavigation'
-import { round } from 'src/utils/math'
-import { MEDIA_QUERIES_BREAKPOINTS } from 'src/styles/theme'
 import useWindowSize from 'src/hooks/useWindowSize'
+import { MEDIA_QUERIES_BREAKPOINTS } from 'src/styles/theme'
 import Box, { BoxProps } from 'src/theme/components/Box'
 import { Column } from 'src/theme/components/Flex'
+import { round } from 'src/utils/math'
+import styled from 'styled-components/macro'
+
 import * as styles from './Sidebar.css'
-import clsx from 'clsx'
 
 const DEFAULT_SIDEBAR_WIDTH = 280
 
@@ -125,7 +125,7 @@ export function ModalContent({ children, ...props }: React.HTMLAttributes<HTMLDi
 export function ModalBody({ children, className, ...props }: BoxProps) {
   return (
     <Box className={clsx(className, styles.modalBody)}>
-      <Column width={'full'} padding={'16'} {...props}>
+      <Column width="full" padding="16" {...props}>
         {children}
       </Column>
     </Box>

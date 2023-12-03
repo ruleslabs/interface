@@ -1,8 +1,9 @@
 import InfiniteScroll, { Props } from 'react-infinite-scroll-component'
+import Box from 'src/theme/components/Box'
+import noop from 'src/utils/noop'
 
 import LoadingAssets from './CollectionAssetsLoading'
 import * as styles from './CollectionNfts.css'
-import Box from 'src/theme/components/Box'
 
 interface CollectionNftsProps {
   children: React.ReactNode
@@ -16,7 +17,7 @@ interface CollectionNftsProps {
 export default function CollectionNfts({
   children,
   hasNext,
-  next = () => {},
+  next = noop,
   dataLength = 0,
   loading = false,
   ...props

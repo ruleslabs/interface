@@ -1,21 +1,19 @@
 import { useMemo } from 'react'
-
-import * as Text from 'src/theme/components/Text'
-import * as styles from './style.css'
-import Box, { BoxProps } from 'src/theme/components/Box'
-import SizingImage from 'src/images/sizingImage.png'
-import { NftPlayableMedia } from './media'
-import { NftAsset } from 'src/types'
-import { Column, Row } from 'src/theme/components/Flex'
-import Image from 'src/theme/components/Image'
+import Link from 'src/components/Link'
+import { LargeSpinner } from 'src/components/Spinner'
 import { useActiveLocale } from 'src/hooks/useActiveLocale'
 import useAssetsSelection from 'src/hooks/useAssetsSelection'
-import Link from 'src/components/Link'
-import Badges from 'src/components/Badges'
 import { usePendingOperations } from 'src/hooks/usePendingOperations'
 import useTrans from 'src/hooks/useTrans'
-import { LargeSpinner } from 'src/components/Spinner'
-import { Badge } from 'src/graphql/data/__generated__/types-and-hooks'
+import SizingImage from 'src/images/sizingImage.png'
+import Box, { BoxProps } from 'src/theme/components/Box'
+import { Column, Row } from 'src/theme/components/Flex'
+import Image from 'src/theme/components/Image'
+import * as Text from 'src/theme/components/Text'
+import { NftAsset } from 'src/types'
+
+import { NftPlayableMedia } from './media'
+import * as styles from './style.css'
 
 interface NftCardDisplay {
   href?: string
@@ -29,13 +27,12 @@ interface NftCardProps {
   asset: NftAsset
   display: NftCardDisplay
   onCardClick?: () => void
-  badges?: Badge[]
 }
 
 /**
  * NftCard is a component that displays an NFT asset.
  */
-export const NftCard = ({ asset, display, onCardClick, badges }: NftCardProps) => {
+export const NftCard = ({ asset, display, onCardClick }: NftCardProps) => {
   const { primaryInfo, secondaryInfo, subtitle, status } = display
 
   // trans
@@ -92,16 +89,14 @@ export const NftCard = ({ asset, display, onCardClick, badges }: NftCardProps) =
           tokenId={asset.tokenId}
         />
 
-        <Badges badges={badges} />
-
         {pendingOperation && <LargeSpinner className={styles.spinner} />}
 
         {statusComponent}
       </Box>
 
       <Box className={styles.detailsContainer}>
-        <Column gap={'8'}>
-          <Row gap={'4'} justifyContent={'space-between'}>
+        <Column gap="8">
+          <Row gap="4" justifyContent="space-between">
             <Text.Body className={styles.primaryInfo}>{primaryInfo}</Text.Body>
             {secondaryInfo && <Text.Small className={styles.secondaryInfo}>{secondaryInfo}</Text.Small>}
           </Row>
@@ -117,19 +112,19 @@ export const NftCard = ({ asset, display, onCardClick, badges }: NftCardProps) =
   )
 }
 
-export const Container = ({ children, href, ...props }: BoxProps) => (
+const Container = ({ children, href, ...props }: BoxProps) => (
   <Box {...props}>{href ? <Link href={href}>{children}</Link> : children}</Box>
 )
 
 export const LoadingNftCard = () => (
-  <Box className={styles.container()} background={'bg2'} overflow={'hidden'}>
-    <Box position={'relative'} width={'full'} loading={true}>
-      <Box position={'absolute'} width={'full'} height={'full'} />
-      <Box as={'img'} src={SizingImage} width={'full'} opacity={'0'} draggable={false} />
+  <Box className={styles.container()} background="bg2" overflow="hidden">
+    <Box position="relative" width="full" loading={true}>
+      <Box position="absolute" width="full" height="full" />
+      <Box as="img" src={SizingImage} width="full" opacity="0" draggable={false} />
     </Box>
 
     <Box className={styles.detailsContainer}>
-      <Text.Small loading={true} loadingWidth={'120'} />
+      <Text.Small loading={true} loadingWidth="120" />
     </Box>
   </Box>
 )

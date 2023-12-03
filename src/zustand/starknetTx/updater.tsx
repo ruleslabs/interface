@@ -1,10 +1,10 @@
-import { useCallback } from 'react'
 import ms from 'ms.macro'
-import { shallow } from 'zustand/shallow'
-
+import { useCallback } from 'react'
 import useInterval from 'src/hooks/useInterval'
 import useIsWindowVisible from 'src/hooks/useIsWindowVisible'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { shallow } from 'zustand/shallow'
+
 import { useBoundStore } from '..'
 
 const TX_STATUS_POLLING = ms`5s`

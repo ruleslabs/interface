@@ -1,4 +1,5 @@
 import { MutationFunction } from '@apollo/client'
+
 import { StxAction } from './starknetTx'
 
 export type GenieError = { message: string; id: string | null; render: () => React.ReactNode } | null

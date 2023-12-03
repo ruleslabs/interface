@@ -1,7 +1,7 @@
-import styled from 'styled-components/macro'
-
 import { SecondaryButton } from 'src/components/Button'
 import { Row } from 'src/theme/components/Flex'
+import styled from 'styled-components/macro'
+
 import NumericalInput from './NumericalInput'
 
 const SmallButton = styled(SecondaryButton)<{ glow?: boolean }>`
@@ -53,7 +53,7 @@ interface InputStepCounterProps {
 
 export default function InputStepCounter({ value, max, min, onIncrement, onDecrement }: InputStepCounterProps) {
   return (
-    <Row gap={'16'} width={'full'} alignItems={'normal'}>
+    <Row gap="16" width="full" alignItems="normal">
       <SmallButton disabled={value <= min} onClick={onDecrement}>
         -
       </SmallButton>

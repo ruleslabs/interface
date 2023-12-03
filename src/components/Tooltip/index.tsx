@@ -1,10 +1,9 @@
 import React from 'react'
-import styled from 'styled-components/macro'
-
-import { TYPE } from 'src/styles/theme'
 import Caret from 'src/components/Caret'
 import { RowCenter } from 'src/components/Row'
+import { TYPE } from 'src/styles/theme'
 import { CssDirection } from 'src/styles/theme'
+import styled from 'styled-components/macro'
 
 const StyledTooltip = styled.div`
   background: ${({ theme }) => theme.bg4};

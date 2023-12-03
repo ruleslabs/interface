@@ -1,5 +1,4 @@
 import { Trans } from '@lingui/macro'
-
 import { TYPE } from 'src/styles/theme'
 import { GenieError } from 'src/types'
 

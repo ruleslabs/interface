@@ -1,13 +1,12 @@
-import { useState, useCallback } from 'react'
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-
-import Column from 'src/components/Column'
-import { RowButton } from 'src/components/Button'
+import { useCallback, useState } from 'react'
 import Hover from 'src/components/AnimatedIcon/hover'
+import { RowButton } from 'src/components/Button'
+import Column from 'src/components/Column'
 import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
 
-export type SortData<T extends string> = { name: string; key: T; desc: boolean }
+type SortData<T extends string> = { name: string; key: T; desc: boolean }
 export type SortsData<T extends string> = SortData<T>[]
 
 const StyledSortButton = styled(RowButton)`

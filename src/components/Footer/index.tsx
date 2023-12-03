@@ -1,11 +1,10 @@
-import React from 'react'
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-
-import { RowBetween } from 'src/components/Row'
+import React from 'react'
 import LanguageSelector from 'src/components/LanguageSelector'
-import { TYPE } from 'src/styles/theme'
 import Link from 'src/components/Link'
+import { RowBetween } from 'src/components/Row'
+import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
 
 const StyledFooter = styled.footer`
   height: 80px;

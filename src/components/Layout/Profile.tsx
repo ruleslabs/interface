@@ -1,29 +1,24 @@
+import { t, Trans } from '@lingui/macro'
 import React, { useEffect, useMemo } from 'react'
-import styled from 'styled-components/macro'
-import { Trans, t } from '@lingui/macro'
 import { useParams } from 'react-router-dom'
-
-import { ActiveLink } from 'src/components/Link'
-import Section from 'src/components/Section'
-import { TYPE } from 'src/styles/theme'
-import { RowBetween, RowCenter } from 'src/components/Row'
-import { TabButton } from 'src/components/Button'
-import { useSearchUser } from 'src/state/user/hooks'
-import AvatarEditModal from 'src/components/AvatarEditModal'
-import { useDefaultAvatarIdFromUrl } from 'src/hooks/useDefaultAvatarUrls'
 import Avatar from 'src/components/Avatar'
-import { CertifiedBadge } from 'src/components/User/Badge'
-import UserRank from 'src/components/User/Rank'
-import { useAvatarEditModalToggle } from 'src/state/application/hooks'
-import * as Icons from 'src/theme/components/Icons'
+import AvatarEditModal from 'src/components/AvatarEditModal'
+import { TabButton } from 'src/components/Button'
+import { ActiveLink } from 'src/components/Link'
+import { RowBetween, RowCenter } from 'src/components/Row'
+import Section from 'src/components/Section'
 import useCurrentUser from 'src/hooks/useCurrentUser'
+import { useDefaultAvatarIdFromUrl } from 'src/hooks/useDefaultAvatarUrls'
 import useSearchedUser from 'src/hooks/useSearchedUser'
+import { useAvatarEditModalToggle } from 'src/state/application/hooks'
+import { useSearchUser } from 'src/state/user/hooks'
+import { TYPE } from 'src/styles/theme'
 import { Column, Row } from 'src/theme/components/Flex'
+import * as Icons from 'src/theme/components/Icons'
 import * as Text from 'src/theme/components/Text'
+import styled from 'styled-components/macro'
+
 import * as styles from './Profile.css'
-import useParsedCScore from 'src/hooks/useParsedCScore'
-import { GenieBadge } from 'src/types'
-import { BadgeIcon } from '../Badges'
 
 const Gradient = styled.div`
   background: ${({ theme }) => theme.gradient1};
@@ -111,11 +106,8 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
   // tabPaths
   const tabsNav = useMemo(
     () => [
-      { name: t`Deck`, path: '' },
       { name: t`Cards`, path: 'cards' },
       { name: t`Packs`, path: 'packs' },
-      { name: t`Rulédex`, path: 'ruledex' },
-      { name: t`Activity`, path: 'activity' },
     ],
     []
   )
@@ -155,32 +147,6 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
   // pp edit modal
   const toggleAvatarEditModal = useAvatarEditModalToggle()
 
-  // parsed cScore
-  const parsedCScore = useParsedCScore(user?.cScore)
-
-  // badges
-  const badges: GenieBadge[] = user?.badges ?? []
-  const badgesCount = useMemo(
-    () => badges.reduce<number>((acc, { quantity }) => acc + (quantity ?? 1), 0),
-    [badges.length]
-  )
-
-  // badges component
-  const badgesComponent = useMemo(() => {
-    return (
-      <>
-        {badges.map((badge) => (
-          <Row key={`${badge.type}-${badge.level}`} gap={'4'}>
-            <BadgeIcon badge={badge} width={'18'} />
-            <Text.Body>
-              <strong>{badge.quantity}</strong>
-            </Text.Body>
-          </Row>
-        ))}
-      </>
-    )
-  }, [badges.length])
-
   // TODO: clean this ugly code bruh
   if (error) return <TYPE.body>User not found</TYPE.body>
   else if (!user || !userSlug) return null
@@ -205,24 +171,9 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
                 )}
               </AvatarWrapper>
 
-              <Row gap={'4'}>
+              <Row gap="4">
                 <Text.HeadlineMedium>{user.username}</Text.HeadlineMedium>
-
-                {user.profile.certified && <CertifiedBadge />}
-                <UserRank rank={user.rank} />
               </Row>
-
-              <Column marginTop={'16'} gap={'6'}>
-                <Text.Body>
-                  Rules Score <strong>{parsedCScore}</strong>
-                </Text.Body>
-
-                <Text.Body>
-                  Badges <strong>{badgesCount}</strong>
-                </Text.Body>
-
-                <Row gap={'12'}>{badgesComponent}</Row>
-              </Column>
             </Column>
           </UserWrapper>
 

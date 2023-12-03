@@ -1,14 +1,14 @@
-import { useCallback } from 'react'
 import ms from 'ms.macro'
-import { shallow } from 'zustand/shallow'
-
-import useInterval from 'src/hooks/useInterval'
-import useIsWindowVisible from 'src/hooks/useIsWindowVisible'
-import { useBoundStore } from '..'
+import { useCallback } from 'react'
 import {
   StarknetTransactionStatus,
   useStarknetTransactionLazyQuery,
 } from 'src/graphql/data/__generated__/types-and-hooks'
+import useInterval from 'src/hooks/useInterval'
+import useIsWindowVisible from 'src/hooks/useIsWindowVisible'
+import { shallow } from 'zustand/shallow'
+
+import { useBoundStore } from '..'
 
 const PENDING_OPERATION_POLLING = ms`10s`
 

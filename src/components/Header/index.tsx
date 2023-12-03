@@ -1,20 +1,18 @@
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-
 import AccountStatus from 'src/components/AccountStatus'
 import { NavButton } from 'src/components/Button'
-import { RowCenter } from 'src/components/Row'
 import Link, { ActiveLink } from 'src/components/Link'
-import { useOpenSidebarModal } from 'src/state/application/hooks'
-import { ApplicationSidebarModal } from 'src/state/application/actions'
 import NavModalMobile from 'src/components/NavModal/Mobile'
+import { RowCenter } from 'src/components/Row'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import { useNavLinks } from 'src/hooks/useNav'
-
+import { ReactComponent as ExternalLinkIcon } from 'src/images/external-link.svg'
+import { ReactComponent as Hamburger } from 'src/images/hamburger.svg'
 import { ReactComponent as Logo } from 'src/images/logo.svg'
 import { ReactComponent as SmallLogo } from 'src/images/logo-plain.svg'
-import { ReactComponent as Hamburger } from 'src/images/hamburger.svg'
-import { ReactComponent as ExternalLinkIcon } from 'src/images/external-link.svg'
+import { ApplicationSidebarModal } from 'src/state/application/actions'
+import { useOpenSidebarModal } from 'src/state/application/hooks'
+import styled from 'styled-components/macro'
 
 const StyledHeader = styled.header`
   height: ${({ theme }) => theme.size.headerHeight}px;

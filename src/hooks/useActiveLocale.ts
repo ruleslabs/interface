@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES, SupportedLocale } from 'src/constants/locales'
 import store from 'src/state'
 import { useUserLocale } from 'src/state/user/hooks'
+
 import useLocationQuery from './useLocationQuery'
 
 /**
@@ -20,7 +20,7 @@ function parseLocale(maybeSupportedLocale: unknown): SupportedLocale | undefined
 /**
  * Returns the supported locale read from the user agent (navigator)
  */
-export function getNavigatorLocale(): SupportedLocale | undefined {
+function getNavigatorLocale(): SupportedLocale | undefined {
   if (!navigator.language) return undefined
 
   const [language, region] = navigator.language.split('-')

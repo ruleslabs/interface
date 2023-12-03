@@ -1,9 +1,9 @@
+import { gql, useMutation } from '@apollo/client'
 import { useCallback, useEffect } from 'react'
-import { useMutation, gql } from '@apollo/client'
-
 import { SupportedLocale } from 'src/constants/locales'
 import { AppState } from 'src/state'
-import { useAppSelector, useAppDispatch } from 'src/state/hooks'
+import { useAppDispatch, useAppSelector } from 'src/state/hooks'
+
 import { updateUserLocale } from './actions'
 
 const SEARCH_USER_MUTATION = gql`
@@ -37,15 +37,6 @@ const SEARCH_USER_MUTATION = gql`
   }
 `
 
-const SET_SOCIAL_LINKS_MUTATION = gql`
-  mutation ($instagramUsername: String!, $twitterUsername: String!) {
-    setSocialLinks(input: { instagramUsername: $instagramUsername, twitterUsername: $twitterUsername }) {
-      twitterUsername
-      instagramUsername
-    }
-  }
-`
-
 const EDIT_AVATAR_MUTATION = gql`
   mutation ($avatarId: Int!) {
     setAvatar(avatarId: $avatarId) {
@@ -70,10 +61,6 @@ export function useSearchUser(userSlug?: string) {
   }, [userSlug])
 
   return { searchedUser: data?.searchUser, ...mutationStatus }
-}
-
-export function useSetSocialLinksMutation() {
-  return useMutation(SET_SOCIAL_LINKS_MUTATION)
 }
 
 export function useEditAvatarMutation() {

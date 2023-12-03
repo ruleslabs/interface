@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
 import { t } from '@lingui/macro'
-
-import { useMigrateCollectionModalToggle, useModalOpened } from 'src/state/application/hooks'
+import { useEffect, useMemo, useState } from 'react'
 import { ApplicationModal } from 'src/state/application/actions'
+import { useMigrateCollectionModalToggle, useModalOpened } from 'src/state/application/hooks'
 import { ModalContents } from 'src/types'
+
 import { ModalHeader } from '../Modal'
 import ClassicModal, { ModalContent } from '../Modal/Classic'
-import Overview from './Overview'
 import CardsTransfer from './Cards'
+import Overview from './Overview'
 import PacksTransfer from './Packs'
 
 export enum MigrateCollectionModalMode {

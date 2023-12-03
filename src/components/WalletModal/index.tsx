@@ -1,22 +1,22 @@
-import { useMemo } from 'react'
 import { t } from '@lingui/macro'
-
+import { useMemo } from 'react'
 import SidebarModal, { ModalContent } from 'src/components/Modal/Sidebar'
-import { useModalOpened, useWalletModalToggle } from 'src/state/application/hooks'
 import { ApplicationModal } from 'src/state/application/actions'
-import { useSetWalletModalMode, useWalletModalMode } from 'src/state/wallet/hooks'
+import { useModalOpened, useWalletModalToggle } from 'src/state/application/hooks'
 import { WalletModalMode } from 'src/state/wallet/actions'
+import { useSetWalletModalMode, useWalletModalMode } from 'src/state/wallet/hooks'
 import { ModalContents } from 'src/types'
+
 import { ModalHeader } from '../Modal'
-import Overview from './Overview'
-import Deposit from './Deposit'
-import StarkgateDeposit from './StarkgateDeposit'
-import Withdraw from './Withdraw'
-import StarkgateWithdraw from './StarkgateWithdraw'
 import Deploy from './Deploy'
+import Deposit from './Deposit'
 import MigrateFunds from './MigrateFunds'
 import OldOverview from './OldOverview'
+import Overview from './Overview'
+import StarkgateDeposit from './StarkgateDeposit'
+import StarkgateWithdraw from './StarkgateWithdraw'
 import StarknetWithdraw from './StarknetWithdraw'
+import Withdraw from './Withdraw'
 
 function useModalContent(): ModalContents<WalletModalMode> {
   return useMemo(

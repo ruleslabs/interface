@@ -1,3 +1,4 @@
+/* eslint-disable no-irregular-whitespace */
 import LegalLayout from 'src/components/Layout/Legal'
 
 function Privacy() {

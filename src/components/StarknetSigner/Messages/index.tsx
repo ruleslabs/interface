@@ -1,18 +1,18 @@
-import { useCallback, useMemo, useState } from 'react'
-import styled from 'styled-components/macro'
 import { sign } from '@rulesorg/sdk-core'
-
+import { useCallback, useMemo, useState } from 'react'
+import Maintenance from 'src/components/LockedWallet/Maintenance'
+import SignerEscape from 'src/components/LockedWallet/SignerEscape'
+import { PaginationSpinner } from 'src/components/Spinner'
 import { Signature } from 'src/graphql/data/__generated__/types-and-hooks'
-import PrivateKeyDecipherForm from '../PrivateKeyDecipherForm'
+import { useMaintenance, useNeedsSignerEscape } from 'src/hooks/useCurrentUser'
 import useStarknetMessages from 'src/hooks/useStarknetMessages'
 import { StxAction } from 'src/types/starknetTx'
-import Error from '../Error'
-import { PaginationSpinner } from 'src/components/Spinner'
-import { useMaintenance, useNeedsSignerEscape } from 'src/hooks/useCurrentUser'
-import Confirmation from './Confirmation'
 import { ec, encode } from 'starknet'
-import SignerEscape from 'src/components/LockedWallet/SignerEscape'
-import Maintenance from 'src/components/LockedWallet/Maintenance'
+import styled from 'styled-components/macro'
+
+import Error from '../Error'
+import PrivateKeyDecipherForm from '../PrivateKeyDecipherForm'
+import Confirmation from './Confirmation'
 
 const DummyFocusInput = styled.input`
   max-height: 0;

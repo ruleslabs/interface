@@ -2,11 +2,11 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 
-import { UserSlice, createUserSlice } from './user'
-import { StarknetTxSlice, createStarknetTxSlice } from './starknetTx'
 import { ApplicationSlice, createApplicationSlice } from './application'
 import { AssetsSlice, createAssetsSlice } from './assets'
-import { L1WalletSlice, createL1WalletSlice } from './l1Wallet'
+import { createL1WalletSlice, L1WalletSlice } from './l1Wallet'
+import { createStarknetTxSlice, StarknetTxSlice } from './starknetTx'
+import { createUserSlice, UserSlice } from './user'
 
 export type StoreState = UserSlice & StarknetTxSlice & ApplicationSlice & AssetsSlice & L1WalletSlice
 

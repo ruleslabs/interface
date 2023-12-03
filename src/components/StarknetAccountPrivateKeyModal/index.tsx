@@ -1,15 +1,14 @@
+import { t, Trans } from '@lingui/macro'
 import { useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components/macro'
-import { Trans, t } from '@lingui/macro'
-
+import { ErrorCard } from 'src/components/Card'
+import Column from 'src/components/Column'
 import { ModalHeader } from 'src/components/Modal'
 import ClassicModal, { ModalBody, ModalContent } from 'src/components/Modal/Classic'
-import { useModalOpened, useStarknetAccountPrivateKeyModalToggle } from 'src/state/application/hooks'
-import { ApplicationModal } from 'src/state/application/actions'
-import Column from 'src/components/Column'
-import { ErrorCard } from 'src/components/Card'
-import LongString from 'src/components/Text/LongString'
 import PrivateKeyDecipherForm from 'src/components/StarknetSigner/PrivateKeyDecipherForm'
+import LongString from 'src/components/Text/LongString'
+import { ApplicationModal } from 'src/state/application/actions'
+import { useModalOpened, useStarknetAccountPrivateKeyModalToggle } from 'src/state/application/hooks'
+import styled from 'styled-components/macro'
 
 const PrivateKeyWarning = styled(ErrorCard)`
   font-weight: 700;

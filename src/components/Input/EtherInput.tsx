@@ -1,10 +1,9 @@
-import React, { useCallback, useRef } from 'react'
-import styled from 'styled-components/macro'
 import { WeiAmount } from '@rulesorg/sdk-core'
-
+import React, { useCallback, useRef } from 'react'
 import { RowCenter } from 'src/components/Row'
-import { TYPE } from 'src/styles/theme'
 import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
 
 const StyledEtherInput = styled(RowCenter)`
   padding: 12px;

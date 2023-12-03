@@ -5,7 +5,6 @@ export enum ApplicationModal {
   SETTINGS,
   NAV_USER_DESKTOP,
   AUTH,
-  DECK_INSERTION,
   PACK_PURCHASE,
   WALLET,
   AVATAR_EDIT,

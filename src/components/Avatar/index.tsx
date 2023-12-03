@@ -1,5 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react'
-
+import React, { useCallback, useEffect, useState } from 'react'
 import { BoxProps } from 'src/theme/components/Box'
 import Image from 'src/theme/components/Image'
 
@@ -16,5 +15,5 @@ export default function Avatar({ fallbackSrc, src, ...props }: AvatarProps) {
     setDefaultSrc(src)
   }, [src])
 
-  return <Image src={defaultSrc} {...props} onError={onFallback} borderRadius={'round'} />
+  return <Image src={defaultSrc} {...props} onError={onFallback} borderRadius="round" />
 }

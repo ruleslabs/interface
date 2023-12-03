@@ -1,7 +1,6 @@
 import { WeiAmount } from '@rulesorg/sdk-core'
 import JSBI from 'jsbi'
 
-export const EMAIL_VERIFICATION_CODE_LENGTH = 8
 export const TWO_FACTOR_AUTH_CODE_LENGTH = 6
 export const EMAIL_VERIFICATION_INTERVAL = process.env.NODE_ENV === 'production' ? 60_000 : 5_000 // 60s | 5s
 
@@ -21,13 +20,7 @@ export const BIG_INT_MAX_MARKETPLACE_OFFER_PRICE = JSBI.exponentiate(JSBI.BigInt
 
 export const CARD_ASPECT_RATIO = 1488 / 1062
 
-export const RULEDEX_CARDS_COUNT_LEVELS_MINS = [5, 10, 20, 50]
-
 export const MAX_SHORT_USERNAME_LENGTH = 14
-
-export const TOP_COLLECTOR_RANK_MAX = 100
-
-export const L2_STARKGATE_DEPOSIT_HANDLER_SELECTOR_NAME = 'handle_deposit'
 
 export const MAX_RECENT_WALLET_ACTIVITY_LEN = 10
 

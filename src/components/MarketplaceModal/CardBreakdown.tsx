@@ -1,9 +1,9 @@
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import Column from 'src/components/Column'
 import Row, { RowCenter } from 'src/components/Row'
-import { TYPE } from 'src/styles/theme'
 import Tag from 'src/components/Tag'
+import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
 
 const StyledCardBreakdown = styled(RowCenter)`
   gap: 16px;

@@ -1,18 +1,19 @@
-import { useCallback, useMemo } from 'react'
+import { constants } from '@rulesorg/sdk-core'
 import gql from 'graphql-tag'
+import { useCallback, useMemo } from 'react'
+
 import {
   CurrentUserHallOfFameQuery,
   HallOfFameQueryVariables,
   SortingOption,
-  UsersFilterInput,
-  UsersQueryVariables,
-  UsersSortInput,
-  UsersSortingType,
   useCurrentUserHallOfFameQuery,
   useHallOfFameQuery,
+  UsersFilterInput,
+  UsersQueryVariables,
+  UsersSortingType,
+  UsersSortInput,
   useUsersQuery,
 } from './__generated__/types-and-hooks'
-import { constants } from '@rulesorg/sdk-core'
 
 gql`
   query Users($filter: UsersFilterInput!, $sort: UsersSortInput!, $after: String, $first: Int) {
@@ -74,14 +75,14 @@ gql`
 
 // USERS SEARCH
 
-export interface CardsFetcherParams {
+interface CardsFetcherParams {
   filter: UsersFilterInput
   sort?: UsersSortInput
   first?: number
   after?: string
 }
 
-export const USERS_PAGE_SIZE = 10
+const USERS_PAGE_SIZE = 10
 
 const defaultUsersFetcherParams: Omit<UsersQueryVariables, 'filter'> = {
   first: USERS_PAGE_SIZE,
@@ -117,7 +118,7 @@ export function useUsers(params: CardsFetcherParams, skip?: boolean) {
 
 // HALL OF FAME
 
-export const HALL_OF_FAME_PAGE_SIZE = 10
+const HALL_OF_FAME_PAGE_SIZE = 10
 
 const defaultHallOfFameFetcherParams: Omit<HallOfFameQueryVariables, 'sort' | 'season'> = {
   first: HALL_OF_FAME_PAGE_SIZE,

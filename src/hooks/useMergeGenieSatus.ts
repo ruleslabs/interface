@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-
 import { GenieStatus } from 'src/types'
 
 export default function useMergeGenieSatus(...status: GenieStatus[]) {

@@ -1,12 +1,10 @@
-import React, { useMemo } from 'react'
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-
+import React, { useMemo } from 'react'
 import { RowCenter } from 'src/components/Row'
+import { ReactComponent as RulesPlainIcon } from 'src/images/logo-plain.svg'
 import { TYPE } from 'src/styles/theme'
 import * as Icons from 'src/theme/components/Icons'
-
-import { ReactComponent as RulesPlainIcon } from 'src/images/logo-plain.svg'
+import styled from 'styled-components/macro'
 
 const StyledWallet = styled(RowCenter)`
   padding: 12px;

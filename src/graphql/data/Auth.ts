@@ -1,19 +1,17 @@
 import gql from 'graphql-tag'
+import { useMemo } from 'react'
 
 import {
-  usePrepareSignUpMutation,
   useRemoveTwoFactorAuthSecretMutation,
   useRequestPasswordUpdateMutation,
   useRequestTwoFactorAuthSecretRemovalMutation,
   useRevokeSessionMutation,
   useSetTwoFactorAuthSecretMutation,
   useSignInMutation,
-  useSignUpMutation,
   useTwoFactorAuthSignInMutation,
   useUpdatePasswordMutation,
 } from './__generated__/types-and-hooks'
 import { formatApolloError, formatMutationFunction } from './utils'
-import { useMemo } from 'react'
 
 gql`
   mutation RevokeSession($payload: String) {
@@ -133,38 +131,6 @@ export function useRemoveTwoFactorAuthSecret() {
     () =>
       [
         formatMutationFunction(mutation, (data) => ({ accessToken: data.removeTwoFactorAuthSecret?.accessToken })),
-        {
-          loading,
-          error: formatApolloError(error),
-        },
-      ] as const,
-    [mutation, loading, error]
-  )
-}
-
-export function useSignUp() {
-  const [mutation, { loading, error }] = useSignUpMutation()
-
-  return useMemo(
-    () =>
-      [
-        formatMutationFunction(mutation, (data) => ({ accessToken: data.signUp?.accessToken })),
-        {
-          loading,
-          error: formatApolloError(error),
-        },
-      ] as const,
-    [mutation, loading, error]
-  )
-}
-
-export function usePrepareSignUp() {
-  const [mutation, { loading, error }] = usePrepareSignUpMutation()
-
-  return useMemo(
-    () =>
-      [
-        formatMutationFunction(mutation, (data) => ({ success: !!data })),
         {
           loading,
           error: formatApolloError(error),

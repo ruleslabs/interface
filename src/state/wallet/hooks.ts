@@ -1,19 +1,18 @@
-import { useMemo, useEffect, useState, useCallback } from 'react'
-import JSBI from 'jsbi'
-import { WeiAmount, constants } from '@rulesorg/sdk-core'
-import { Abi, num, uint256 } from 'starknet'
-import { useWeb3React } from '@web3-react/core'
 import { gql, useMutation } from '@apollo/client'
-
-import ERC20ABI from 'src/abis/ERC20.json'
+import { constants, WeiAmount } from '@rulesorg/sdk-core'
+import { useWeb3React } from '@web3-react/core'
+import JSBI from 'jsbi'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import AccountABI from 'src/abis/Account.json'
-
+import ERC20ABI from 'src/abis/ERC20.json'
 import { useMultipleContractSingleData } from 'src/lib/hooks/multicall'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { AppState } from 'src/state'
 import { useEthereumBlockNumber } from 'src/state/application/hooks'
 import { useAppDispatch, useAppSelector } from 'src/state/hooks'
-import { AppState } from 'src/state'
+import { Abi, num, uint256 } from 'starknet'
+
 import { setWalletModalMode, WalletModalMode } from './actions'
-import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 
 const RETRIEVE_ETHER_MUTATION = gql`
   mutation ($hash: String!) {
@@ -38,7 +37,7 @@ export function useSetWalletModalMode(): (walletModalMode: WalletModalMode) => v
 // balance
 
 // TODO: support multiple addresses
-export function useETHBalances(...addresses: (string | undefined)[]): { [address: string]: WeiAmount | undefined } {
+function useETHBalances(...addresses: (string | undefined)[]): { [address: string]: WeiAmount | undefined } {
   const results = useMultipleContractSingleData(
     [constants.ETH_ADDRESSES[rulesSdk.networkInfos.starknetChainId]],
     ERC20ABI as Abi,

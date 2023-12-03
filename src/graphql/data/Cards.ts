@@ -1,18 +1,18 @@
-import { useCallback, useMemo } from 'react'
-import gql from 'graphql-tag'
 import { ScarcityName } from '@rulesorg/sdk-core'
+import gql from 'graphql-tag'
+import { useCallback, useMemo } from 'react'
+import { Card } from 'src/types'
 
 import {
   CardsFilterInput,
   CardsQuery,
   CardsQueryVariables,
-  CardsSortInput,
   CardsSortingType,
+  CardsSortInput,
   SortingOption,
   useCardsCountQuery,
   useCardsQuery,
 } from './__generated__/types-and-hooks'
-import { Card } from 'src/types'
 
 gql`
   query Cards($filter: CardsFilterInput!, $sort: CardsSortInput!, $after: String, $first: Int) {
@@ -52,7 +52,7 @@ gql`
   }
 `
 
-export function formatCardQueryData({ node: queryCard }: NonNullable<CardsQuery['cards']>['edges'][number]): Card {
+function formatCardQueryData({ node: queryCard }: NonNullable<CardsQuery['cards']>['edges'][number]): Card {
   return {
     slug: queryCard.slug,
     serialNumber: queryCard.serialNumber,
@@ -69,14 +69,14 @@ export function formatCardQueryData({ node: queryCard }: NonNullable<CardsQuery[
   }
 }
 
-export interface CardsFetcherParams {
+interface CardsFetcherParams {
   filter: CardsFilterInput
   sort?: CardsSortInput
   first?: number
   after?: string
 }
 
-export const CARDS_PAGE_SIZE = 25
+const CARDS_PAGE_SIZE = 25
 
 const defaultCardsFetcherParams: Omit<CardsQueryVariables, 'filter'> = {
   first: CARDS_PAGE_SIZE,
@@ -118,7 +118,7 @@ export function useCards(params: CardsFetcherParams, skip?: boolean) {
 
 // Cards count
 
-export interface CardsCountFetcherParams {
+interface CardsCountFetcherParams {
   filter: CardsFilterInput
 }
 

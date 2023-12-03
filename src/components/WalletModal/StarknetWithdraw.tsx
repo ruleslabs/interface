@@ -1,24 +1,23 @@
-import { useCallback, useState, useMemo, useEffect } from 'react'
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
+import { constants } from '@rulesorg/sdk-core'
 import { useAccount } from '@starknet-react/core'
-
-import Column from 'src/components/Column'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { PrimaryButton } from 'src/components/Button'
-import tryParseWeiAmount from 'src/utils/tryParseWeiAmount'
+import Column from 'src/components/Column'
 import CurrencyInput from 'src/components/Input/CurrencyInput'
-import useCurrentUser from 'src/hooks/useCurrentUser'
 import StarknetSigner from 'src/components/StarknetSigner/Transaction'
-import { useETHBalance } from 'src/state/wallet/hooks'
 import Wallet from 'src/components/Wallet'
 import { StarknetStatus } from 'src/components/Web3Status'
-
-import { ReactComponent as Arrow } from 'src/images/arrow.svg'
-import { constants } from '@rulesorg/sdk-core'
-import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
-import { useModalOpened } from 'src/state/application/hooks'
-import { ApplicationModal } from 'src/state/application/actions'
+import useCurrentUser from 'src/hooks/useCurrentUser'
 import useStarknetTx from 'src/hooks/useStarknetTx'
+import { ReactComponent as Arrow } from 'src/images/arrow.svg'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { ApplicationModal } from 'src/state/application/actions'
+import { useModalOpened } from 'src/state/application/hooks'
+import { useETHBalance } from 'src/state/wallet/hooks'
+import tryParseWeiAmount from 'src/utils/tryParseWeiAmount'
+import styled from 'styled-components/macro'
+
 import { ModalBody } from '../Modal/Sidebar'
 
 const ArrowWrapper = styled(Column)`
@@ -93,7 +92,7 @@ export default function StarknetWithdraw() {
 
   return (
     <ModalBody>
-      <StarknetSigner action={'ethTransfer'}>
+      <StarknetSigner action="ethTransfer">
         <StarknetStatus>
           <Column gap={32}>
             <Column>

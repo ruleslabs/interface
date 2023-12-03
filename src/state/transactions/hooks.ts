@@ -1,6 +1,6 @@
-import { useMemo } from 'react'
 import { gql, useQuery } from '@apollo/client'
 import { TransferSingleEvent } from '@rulesorg/sdk-core'
+import { useMemo } from 'react'
 
 const USERS_QUERY_CONTENT = `
   usersByStarknetAddresses(starknetAddresses: $usersStarknetAddresses) {

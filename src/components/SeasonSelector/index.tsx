@@ -1,8 +1,8 @@
 import { constants } from '@rulesorg/sdk-core'
-
-import * as Text from 'src/theme/components/Text'
-import * as styles from './index.css'
 import { Row } from 'src/theme/components/Flex'
+import * as Text from 'src/theme/components/Text'
+
+import * as styles from './index.css'
 
 interface SeasonSelectorProps {
   selectedSeason: number

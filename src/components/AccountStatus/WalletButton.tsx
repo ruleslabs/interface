@@ -1,14 +1,12 @@
-import React, { useEffect } from 'react'
-import styled from 'styled-components/macro'
-
-import useCurrentUser, { useNeedsSignerEscape } from 'src/hooks/useCurrentUser'
-import { PrimaryButton } from 'src/components/Button'
-import { useETHBalance } from 'src/state/wallet/hooks'
-import useRulesAccount from 'src/hooks/useRulesAccount'
 import { useConnect } from '@starknet-react/core'
-
+import React, { useEffect } from 'react'
+import { PrimaryButton } from 'src/components/Button'
+import useCurrentUser, { useNeedsSignerEscape } from 'src/hooks/useCurrentUser'
+import useRulesAccount from 'src/hooks/useRulesAccount'
 import { ReactComponent as EthereumIcon } from 'src/images/ethereum-plain.svg'
+import { useETHBalance } from 'src/state/wallet/hooks'
 import Box from 'src/theme/components/Box'
+import styled from 'styled-components/macro'
 
 const StyledWalletButton = styled(PrimaryButton)<{ $alert: boolean }>`
   width: unset;

@@ -1,18 +1,18 @@
-import { useCallback, useMemo } from 'react'
-import { Plural, Trans } from '@lingui/macro'
 import { gql, useQuery } from '@apollo/client'
-
-import useCurrentUser from 'src/hooks/useCurrentUser'
+import { Plural, Trans } from '@lingui/macro'
+import { useCallback, useMemo } from 'react'
 import { PrimaryButton } from 'src/components/Button'
-import { TYPE } from 'src/styles/theme'
-import useRulesAccount from 'src/hooks/useRulesAccount'
-import { ModalBody } from '../Modal/Classic'
-import { StarknetStatus } from '../Web3Status'
-import { Column, Row } from 'src/theme/components/Flex'
-import { PaginationSpinner } from '../Spinner'
 import { useCardsCount } from 'src/graphql/data/Cards'
-import Link from '../Link'
+import useCurrentUser from 'src/hooks/useCurrentUser'
+import useRulesAccount from 'src/hooks/useRulesAccount'
+import { TYPE } from 'src/styles/theme'
+import { Column, Row } from 'src/theme/components/Flex'
 import { ModalContentProps } from 'src/types'
+
+import Link from '../Link'
+import { ModalBody } from '../Modal/Classic'
+import { PaginationSpinner } from '../Spinner'
+import { StarknetStatus } from '../Web3Status'
 import { MigrateCollectionModalMode } from '.'
 
 const USER_PACKS_BALANCES_QUERY = gql`
@@ -82,7 +82,7 @@ export default function MigrateCollectionModal({ setModalMode }: ModalContentPro
       {loading ? (
         <PaginationSpinner loading />
       ) : (
-        <Column gap={'32'}>
+        <Column gap="32">
           <TYPE.large>
             <Trans>Dear Rulers</Trans>
           </TYPE.large>
@@ -109,8 +109,8 @@ export default function MigrateCollectionModal({ setModalMode }: ModalContentPro
           </TYPE.body>
 
           <StarknetStatus>
-            <Row gap={'16'}>
-              <PrimaryButton onClick={onCardsTransfer} width={'full'} disabled={!cardsCount} large>
+            <Row gap="16">
+              <PrimaryButton onClick={onCardsTransfer} width="full" disabled={!cardsCount} large>
                 <Plural
                   value={cardsCount}
                   _0="No card to transfer"
@@ -119,7 +119,7 @@ export default function MigrateCollectionModal({ setModalMode }: ModalContentPro
                 />
               </PrimaryButton>
 
-              <PrimaryButton onClick={onPacksTransfer} width={'full'} disabled={!packsCount} large>
+              <PrimaryButton onClick={onPacksTransfer} width="full" disabled={!packsCount} large>
                 <Plural
                   value={packsCount}
                   _0="No pack to transfer"

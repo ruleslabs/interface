@@ -1,22 +1,21 @@
-import { useCallback, useState, useMemo } from 'react'
-import styled from 'styled-components/macro'
-import { Trans, t } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
+import { constants } from '@rulesorg/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-
-import useCurrentUser from 'src/hooks/useCurrentUser'
-import Column from 'src/components/Column'
-import CurrencyInput from 'src/components/Input/CurrencyInput'
+import { useCallback, useMemo, useState } from 'react'
 import { PrimaryButton } from 'src/components/Button'
-import { useEthereumETHBalance } from 'src/state/wallet/hooks'
-import tryParseWeiAmount from 'src/utils/tryParseWeiAmount'
-import { useEthereumStarkgateContract } from 'src/hooks/useContract'
+import Column from 'src/components/Column'
+import EthereumSigner from 'src/components/EthereumSigner'
+import CurrencyInput from 'src/components/Input/CurrencyInput'
 import Wallet from 'src/components/Wallet'
 import { EthereumStatus } from 'src/components/Web3Status'
-import EthereumSigner from 'src/components/EthereumSigner'
-import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
-
+import { useEthereumStarkgateContract } from 'src/hooks/useContract'
+import useCurrentUser from 'src/hooks/useCurrentUser'
 import { ReactComponent as Arrow } from 'src/images/arrow.svg'
-import { constants } from '@rulesorg/sdk-core'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { useEthereumETHBalance } from 'src/state/wallet/hooks'
+import tryParseWeiAmount from 'src/utils/tryParseWeiAmount'
+import styled from 'styled-components/macro'
+
 import { ModalBody } from '../Modal/Sidebar'
 
 const ArrowWrapper = styled(Column)`
@@ -146,7 +145,7 @@ export default function StarkgateDeposit() {
                 <Arrow />
               </ArrowWrapper>
 
-              <Wallet layer={'rules'} />
+              <Wallet layer="rules" />
             </Column>
 
             <PrimaryButton onClick={onDeposit} disabled={!canDeposit} large>

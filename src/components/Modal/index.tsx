@@ -1,11 +1,9 @@
-import styled from 'styled-components/macro'
-
 import { IconButton } from 'src/components/Button'
-import { RowBetween } from 'src/components/Row'
 import Caret from 'src/components/Caret'
-import * as Text from 'src/theme/components/Text'
-
+import { RowBetween } from 'src/components/Row'
 import { ReactComponent as CloseIcon } from 'src/images/close.svg'
+import * as Text from 'src/theme/components/Text'
+import styled from 'styled-components/macro'
 
 // MODAL HEADER
 
@@ -47,7 +45,7 @@ export function ModalHeader({ title, onDismiss, onBack }: ModalHeaderProps) {
         <div />
       )}
 
-      <Text.HeadlineSmall textAlign={'center'}>{title}</Text.HeadlineSmall>
+      <Text.HeadlineSmall textAlign="center">{title}</Text.HeadlineSmall>
 
       <IconButton onClick={onDismiss}>
         <CloseIcon />

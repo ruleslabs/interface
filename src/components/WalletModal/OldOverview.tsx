@@ -1,23 +1,22 @@
-import { useCallback, useMemo } from 'react'
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-
-import { ModalBody } from 'src/components/Modal/Sidebar'
-import { useMaintenance, useNeedsOldSignerEscape } from 'src/hooks/useCurrentUser'
-import { useSetWalletModalMode, useETHBalance } from 'src/state/wallet/hooks'
-import { WalletModalMode } from 'src/state/wallet/actions'
-import { RowCenter } from 'src/components/Row'
-import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
-import { TYPE } from 'src/styles/theme'
+import { useCallback, useMemo } from 'react'
 import { PrimaryButton } from 'src/components/Button'
-import useRulesAccount from 'src/hooks/useRulesAccount'
-import * as Text from 'src/theme/components/Text'
-import { PaginationSpinner } from '../Spinner'
-import { Column } from 'src/theme/components/Flex'
-import SignerEscape from '../LockedWallet/SignerEscape'
-
-import { ReactComponent as EthereumIcon } from 'src/images/ethereum-plain.svg'
+import { ModalBody } from 'src/components/Modal/Sidebar'
+import { RowCenter } from 'src/components/Row'
 import { MIN_OLD_BALANCE_TO_TRIGGER_MIGRATION } from 'src/constants/misc'
+import { useMaintenance, useNeedsOldSignerEscape } from 'src/hooks/useCurrentUser'
+import { useWeiAmountToEURValue } from 'src/hooks/useFiatPrice'
+import useRulesAccount from 'src/hooks/useRulesAccount'
+import { ReactComponent as EthereumIcon } from 'src/images/ethereum-plain.svg'
+import { WalletModalMode } from 'src/state/wallet/actions'
+import { useETHBalance, useSetWalletModalMode } from 'src/state/wallet/hooks'
+import { TYPE } from 'src/styles/theme'
+import { Column } from 'src/theme/components/Flex'
+import * as Text from 'src/theme/components/Text'
+import styled from 'styled-components/macro'
+
+import SignerEscape from '../LockedWallet/SignerEscape'
+import { PaginationSpinner } from '../Spinner'
 
 const ETHBalance = styled(RowCenter)`
   width: 100%;
@@ -69,7 +68,7 @@ export default function OldOverview() {
 
     if (canMigrate && balance) {
       return (
-        <Column gap={'24'} marginBottom={'32'}>
+        <Column gap="24" marginBottom="32">
           <Text.HeadlineSmall>
             <Trans>Your wallet has been upgraded, you can retrieve the funds from your old wallet</Trans>
           </Text.HeadlineSmall>
@@ -86,8 +85,8 @@ export default function OldOverview() {
 
   return (
     <ModalBody>
-      <Column gap={'32'}>
-        <Column gap={'8'}>
+      <Column gap="32">
+        <Column gap="8">
           <ETHBalance>
             <EthereumIcon />
             <TYPE.medium fontSize={36}>{balance ? `${balance.toFixed(6)}` : 'Loading ...'}</TYPE.medium>

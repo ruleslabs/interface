@@ -2,11 +2,11 @@ import { deepCopy } from '@ethersproject/properties'
 // This is the only file which should instantiate new Providers.
 import { StaticJsonRpcProvider } from '@ethersproject/providers'
 import { constants } from '@rulesorg/sdk-core'
+import { isPlain } from 'src/utils/serializable'
 
 import { AVERAGE_L1_BLOCK_TIME } from './chainInfo'
-import { RPC_URLS } from './networks'
-import { isPlain } from 'src/utils/serializable'
 import { CHAIN_IDS_TO_NAMES } from './chains'
+import { RPC_URLS } from './networks'
 
 class AppJsonRpcProvider extends StaticJsonRpcProvider {
   private _blockCache = new Map<string, Promise<any>>()

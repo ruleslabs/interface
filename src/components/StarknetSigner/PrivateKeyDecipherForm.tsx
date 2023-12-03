@@ -1,13 +1,12 @@
-import { useState, useCallback } from 'react'
-import styled from 'styled-components/macro'
-import { Trans, t } from '@lingui/macro'
-
-import Input from 'src/components/Input'
+import { t, Trans } from '@lingui/macro'
+import { useCallback, useState } from 'react'
+import { PrimaryButton } from 'src/components/Button'
 import Column from 'src/components/Column'
+import Input from 'src/components/Input'
+import useCurrentUser from 'src/hooks/useCurrentUser'
 import { TYPE } from 'src/styles/theme'
 import { decryptRulesPrivateKey } from 'src/utils/wallet'
-import { PrimaryButton } from 'src/components/Button'
-import useCurrentUser from 'src/hooks/useCurrentUser'
+import styled from 'styled-components/macro'
 
 const StyledForm = styled.form`
   width: 100%;

@@ -1,7 +1,17 @@
-import React, { useCallback } from 'react'
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-
+import React, { useCallback } from 'react'
+import AuthModal from 'src/components/AuthModal'
+import Avatar from 'src/components/Avatar'
+import { IconButton, PrimaryButton, SecondaryButton } from 'src/components/Button'
+import WalletUpgradeModal from 'src/components/MigrateCollectionModal'
+import NavModalUserDesktop from 'src/components/NavModal/UserDesktop'
+import NavModalUserMobile from 'src/components/NavModal/UserMobile'
+import NotificationsModal from 'src/components/NotificationsModal'
+import WalletModal from 'src/components/WalletModal'
+import useCurrentUser, { useNeedsSignerEscape } from 'src/hooks/useCurrentUser'
+import { ReactComponent as BellIcon } from 'src/images/bell.svg'
+import { ReactComponent as WalletIcon } from 'src/images/wallet.svg'
+import { ApplicationModal } from 'src/state/application/actions'
 import {
   useAuthModalToggle,
   useNavModalUserDesktopToggle,
@@ -9,24 +19,13 @@ import {
   useNotificationsModalToggle,
   useOpenModal,
 } from 'src/state/application/hooks'
-import { useSetAuthMode } from 'src/state/auth/hooks'
 import { AuthMode } from 'src/state/auth/actions'
-import AuthModal from 'src/components/AuthModal'
-import { IconButton, PrimaryButton, SecondaryButton } from 'src/components/Button'
-import WalletModal from 'src/components/WalletModal'
-import WalletUpgradeModal from 'src/components/MigrateCollectionModal'
-import Avatar from 'src/components/Avatar'
-import NavModalUserDesktop from 'src/components/NavModal/UserDesktop'
-import NavModalUserMobile from 'src/components/NavModal/UserMobile'
-import NotificationsModal from 'src/components/NotificationsModal'
-
-import { ReactComponent as BellIcon } from 'src/images/bell.svg'
-import { ReactComponent as WalletIcon } from 'src/images/wallet.svg'
-import WalletButton from './WalletButton'
-import useCurrentUser, { useNeedsSignerEscape } from 'src/hooks/useCurrentUser'
+import { useSetAuthMode } from 'src/state/auth/hooks'
 import { WalletModalMode } from 'src/state/wallet/actions'
 import { useSetWalletModalMode } from 'src/state/wallet/hooks'
-import { ApplicationModal } from 'src/state/application/actions'
+import styled from 'styled-components/macro'
+
+import WalletButton from './WalletButton'
 
 const StyledAccountStatus = styled.div`
   display: flex;

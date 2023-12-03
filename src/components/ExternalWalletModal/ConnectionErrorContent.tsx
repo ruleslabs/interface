@@ -1,14 +1,14 @@
 import { t } from '@lingui/macro'
+import { ModalHeader } from 'src/components/Modal'
+import { ModalBody } from 'src/components/Modal/Classic'
+import { useL1ActivationState } from 'src/hooks/useL1WalletActivation'
+import { useEthereumWalletConnectModalToggle } from 'src/state/application/hooks'
+import { Column } from 'src/theme/components/Flex'
+import * as Text from 'src/theme/components/Text'
+import noop from 'src/utils/noop'
+import { ActivationStatus } from 'src/zustand/l1Wallet'
 
 import { PrimaryButton, SecondaryButton } from '../Button'
-import * as Text from 'src/theme/components/Text'
-import { ActivationStatus } from 'src/zustand/l1Wallet'
-import noop from 'src/utils/noop'
-import { Column } from 'src/theme/components/Flex'
-import { useL1ActivationState } from 'src/hooks/useL1WalletActivation'
-import { ModalBody } from 'src/components/Modal/Classic'
-import { ModalHeader } from 'src/components/Modal'
-import { useEthereumWalletConnectModalToggle } from 'src/state/application/hooks'
 
 // TODO(cartcrom): move this to a top level modal, rather than inline in the drawer
 export default function ConnectionErrorContent() {
@@ -29,11 +29,11 @@ export default function ConnectionErrorContent() {
 
       <ModalBody>
         <Column>
-          <Text.Body marginBottom={'24'} textAlign={'center'}>
+          <Text.Body marginBottom="24" textAlign="center">
             The connection attempt failed. Please click try again and follow the steps to connect in your wallet.
           </Text.Body>
 
-          <PrimaryButton onClick={retry} marginBottom={'12'}>
+          <PrimaryButton onClick={retry} marginBottom="12">
             Try Again
           </PrimaryButton>
 

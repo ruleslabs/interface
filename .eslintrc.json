@@ -8,7 +8,6 @@
       "jsx": true
     }
   },
-  "ignorePatterns": ["node_modules/", "node_modules/**/*", "lib/", "**/__generated__/"],
   "settings": {
     "react": {
       "version": "detect"
@@ -16,26 +15,11 @@
   },
   "root": true,
   "extends": [
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react-hooks/recommended",
-    "prettier",
-    "plugin:prettier/recommended"
+    "@uniswap/eslint-config/react",
+    "prettier"
   ],
-  "plugins": ["simple-import-sort", "unused-imports"],
   "rules": {
-    "unused-imports/no-unused-imports": "error",
-    "simple-import-sort/imports": "off",
-    "simple-import-sort/exports": "off",
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/no-empty-function": "off",
-    "prettier/prettier": "error",
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/ban-ts-ignore": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-    "react/react-in-jsx-scope": "off",
     "react-hooks/exhaustive-deps": "off",
-    "object-shorthand": ["error", "always"]
+    "@typescript-eslint/no-unused-vars": "error"
   }
 }

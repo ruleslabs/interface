@@ -1,6 +1,5 @@
-import { useCallback } from 'react'
 import { authenticator } from 'otplib'
-
+import { useCallback } from 'react'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 
 export default function useNewTwoFactorAuthSecret() {

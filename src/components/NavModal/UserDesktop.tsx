@@ -1,17 +1,17 @@
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-
-import HintModal from 'src/components/Modal/Hint'
-import { useModalOpened, useNavModalUserDesktopToggle } from 'src/state/application/hooks'
-import { ApplicationModal } from 'src/state/application/actions'
-import { TYPE } from 'src/styles/theme'
 import Column from 'src/components/Column'
-import { TooltipCaret } from '../Tooltip'
+import Divider from 'src/components/Divider'
 import Link from 'src/components/Link'
+import HintModal from 'src/components/Modal/Hint'
 import useCurrentUser from 'src/hooks/useCurrentUser'
 import { NavUserSublinks, useNavUserLinks } from 'src/hooks/useNav'
+import { ApplicationModal } from 'src/state/application/actions'
+import { useModalOpened, useNavModalUserDesktopToggle } from 'src/state/application/hooks'
+import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
+
 import Actionable from '../Actionable'
-import Divider from 'src/components/Divider'
+import { TooltipCaret } from '../Tooltip'
 import NavProfile from './NavProfile'
 
 const StyledNavProfile = styled(NavProfile)`
@@ -105,7 +105,7 @@ export default function NavModalUserDesktop() {
         <FillTooltipCaret direction="top" />
 
         <Column gap={6}>
-          <Link href={`/user/${currentUser.slug}`}>
+          <Link href={`/user/${currentUser.slug}/cards`}>
             <StyledNavProfile />
           </Link>
 

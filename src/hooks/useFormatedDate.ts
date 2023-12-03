@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
 import moment from 'moment'
+import { useMemo } from 'react'
 
 import { useActiveLocale } from './useActiveLocale'
 

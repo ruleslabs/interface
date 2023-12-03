@@ -1,12 +1,11 @@
 import React from 'react'
-import styled from 'styled-components/macro'
-
-import useCurrentUser from 'src/hooks/useCurrentUser'
-import { RowCenter } from 'src/components/Row'
 import Avatar from 'src/components/Avatar'
 import Column from 'src/components/Column'
-import { TYPE } from 'src/styles/theme'
+import { RowCenter } from 'src/components/Row'
+import useCurrentUser from 'src/hooks/useCurrentUser'
 import useParsedCScore from 'src/hooks/useParsedCScore'
+import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
 
 const ProfileRow = styled(RowCenter)`
   gap: 8px;

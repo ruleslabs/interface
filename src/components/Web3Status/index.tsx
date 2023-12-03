@@ -1,18 +1,18 @@
-import React, { useMemo } from 'react'
 import { Trans } from '@lingui/macro'
-import { useWeb3React } from '@web3-react/core'
 import { useAccount } from '@starknet-react/core'
-
+import { useWeb3React } from '@web3-react/core'
+import React, { useMemo } from 'react'
 import { ErrorCard } from 'src/components/Card'
-import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
-import { PrimaryButton } from '../Button'
-import { useEthereumWalletConnectModalToggle, useStarknetWalletConnectModalToggle } from 'src/state/application/hooks'
-import { EthereumWalletConnectModal, StarknetWalletConnectModal } from '../ExternalWalletModal/Connect'
 import { useSwitchL1Chain } from 'src/hooks/useSwitchNetwork'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { useEthereumWalletConnectModalToggle, useStarknetWalletConnectModalToggle } from 'src/state/application/hooks'
+
+import { PrimaryButton } from '../Button'
+import { EthereumWalletConnectModal, StarknetWalletConnectModal } from '../ExternalWalletModal/Connect'
 
 // ETHEREUM
 
-export function EthereumStatusContent({ children }: React.HTMLAttributes<HTMLDivElement>) {
+function EthereumStatusContent({ children }: React.HTMLAttributes<HTMLDivElement>) {
   const { account, chainId } = useWeb3React()
 
   // modal
@@ -59,7 +59,7 @@ export function EthereumStatus(props: React.HTMLAttributes<HTMLDivElement>) {
 
 // STARKNET
 
-export function StarknetStatusContent({ children }: React.HTMLAttributes<HTMLDivElement>) {
+function StarknetStatusContent({ children }: React.HTMLAttributes<HTMLDivElement>) {
   const { account } = useAccount()
 
   // modal

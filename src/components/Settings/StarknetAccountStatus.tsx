@@ -1,18 +1,18 @@
-import styled from 'styled-components/macro'
-import { Trans, t } from '@lingui/macro'
-
+import { t, Trans } from '@lingui/macro'
 import Column from 'src/components/Column'
-import { PrimaryButton, SecondaryButton } from '../Button'
-import LongString from 'src/components/Text/LongString'
 import Link from 'src/components/Link'
 import Row from 'src/components/Row'
-import Subtitle from 'src/components/Text/Subtitle'
-import { useStarknetAccountPrivateKeyModalToggle } from 'src/state/application/hooks'
 import StarknetAccountPrivateKeyModal from 'src/components/StarknetAccountPrivateKeyModal'
+import LongString from 'src/components/Text/LongString'
+import Subtitle from 'src/components/Text/Subtitle'
 import { getChainInfo } from 'src/constants/chainInfo'
-import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import useRulesAccount from 'src/hooks/useRulesAccount'
+import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
+import { useStarknetAccountPrivateKeyModalToggle } from 'src/state/application/hooks'
 import { getChecksumAddress } from 'starknet'
+import styled from 'styled-components/macro'
+
+import { PrimaryButton, SecondaryButton } from '../Button'
 
 const ButtonsWrapper = styled(Row)`
   gap: 16px;

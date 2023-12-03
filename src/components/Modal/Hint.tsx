@@ -1,7 +1,6 @@
 import React from 'react'
-import styled from 'styled-components/macro'
-
 import useCloseModalOnNavigation from 'src/hooks/useCloseModalOnNavigation'
+import styled from 'styled-components/macro'
 
 const Overlay = styled.div`
   z-index: 99;

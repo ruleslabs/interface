@@ -1,15 +1,15 @@
 import { createReducer } from '@reduxjs/toolkit'
-
-import {
-  updateMarketplaceScarcityFilter,
-  updateMarketplaceSeasonsFilter,
-  updateMarketplaceLowSerialsFilter,
-  updateCardsScarcityFilter,
-  updateCardsSeasonsFilter,
-} from './actions'
 import { constants } from '@rulesorg/sdk-core'
 
-export interface MarketplaceState {
+import {
+  updateCardsScarcityFilter,
+  updateCardsSeasonsFilter,
+  updateMarketplaceLowSerialsFilter,
+  updateMarketplaceScarcityFilter,
+  updateMarketplaceSeasonsFilter,
+} from './actions'
+
+interface MarketplaceState {
   marketplaceFilters: {
     scarcities: number[]
     seasons: number[]
@@ -21,7 +21,7 @@ export interface MarketplaceState {
   }
 }
 
-export const initialState: MarketplaceState = {
+const initialState: MarketplaceState = {
   marketplaceFilters: {
     scarcities: Object.values(constants.ScarcityName).map((_, index) => index),
     seasons: Object.keys(constants.Seasons).map((season) => +season),

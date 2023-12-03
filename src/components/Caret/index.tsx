@@ -1,10 +1,8 @@
 import React from 'react'
-import styled, { css } from 'styled-components/macro'
-
-import { CssDirection } from 'src/styles/theme'
-
 import { ReactComponent as CaretRight } from 'src/images/caret-right.svg'
 import { ReactComponent as FilledCaretRight } from 'src/images/filled-caret-right.svg'
+import { CssDirection } from 'src/styles/theme'
+import styled, { css } from 'styled-components/macro'
 
 const CaretStyle = css<{ direction: CssDirection }>`
   transform: rotate(

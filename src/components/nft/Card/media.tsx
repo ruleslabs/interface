@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react'
-
-import Box from 'src/theme/components/Box'
-import * as styles from './media.css'
-import * as Icons from 'src/theme/components/Icons'
-import { Row } from 'src/theme/components/Flex'
-import Image from 'src/theme/components/Image'
 import useAssetPlayingMedia from 'src/hooks/useAssetPlayingMedia'
+import Box from 'src/theme/components/Box'
+import { Row } from 'src/theme/components/Flex'
+import * as Icons from 'src/theme/components/Icons'
+import Image from 'src/theme/components/Image'
+
+import * as styles from './media.css'
 
 interface NftPlayableMediaProps {
   src?: string
@@ -49,7 +49,7 @@ export const NftPlayableMedia = ({ src, mediaSrc, tokenId }: NftPlayableMediaPro
             </Box>
 
             <Row className={styles.innerMediaContainer}>
-              <Box as={'video'} className={styles.video} ref={mediaRef} loop playsInline>
+              <Box as="video" className={styles.video} ref={mediaRef} loop playsInline>
                 <source src={mediaSrc} />
               </Box>
             </Row>

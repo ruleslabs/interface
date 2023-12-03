@@ -1,10 +1,9 @@
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-
-import { TYPE } from 'src/styles/theme'
-
 import { ReactComponent as Close } from 'src/images/close.svg'
+import { TYPE } from 'src/styles/theme'
 import { Column } from 'src/theme/components/Flex'
+import styled from 'styled-components/macro'
+
 import { SecondaryButton } from '../Button'
 
 const StyledFail = styled(Close)`
@@ -44,10 +43,10 @@ interface ErrorProps {
 
 export default function Error({ error, retry }: ErrorProps) {
   return (
-    <Column gap={'24'} width={'full'}>
+    <Column gap="24" width="full">
       <StyledFail />
 
-      <Column gap={'8'}>
+      <Column gap="8">
         <Title>
           <Trans>Your transaction has been rejected</Trans>
         </Title>
@@ -55,7 +54,7 @@ export default function Error({ error, retry }: ErrorProps) {
         <ErrorMessage>{error}</ErrorMessage>
 
         {retry && (
-          <SecondaryButton onClick={retry} marginTop={'16'} large>
+          <SecondaryButton onClick={retry} marginTop="16" large>
             <Trans>Retry</Trans>
           </SecondaryButton>
         )}

@@ -1,18 +1,17 @@
-import { useMemo } from 'react'
-import styled from 'styled-components/macro'
-import { useQuery, gql } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import { Plural, t } from '@lingui/macro'
-
+import { useMemo } from 'react'
+import EmptyTab, { EmptyPacksTabOfCurrentUser } from 'src/components/EmptyTab'
+import Grid from 'src/components/Grid'
 import DefaultLayout from 'src/components/Layout'
 import ProfileLayout from 'src/components/Layout/Profile'
-import Section from 'src/components/Section'
-import Grid from 'src/components/Grid'
 import PackCard from 'src/components/Pack'
-import { TYPE } from 'src/styles/theme'
 import { RowBetween } from 'src/components/Row'
-import EmptyTab, { EmptyPacksTabOfCurrentUser } from 'src/components/EmptyTab'
+import Section from 'src/components/Section'
 import { PaginationSpinner } from 'src/components/Spinner'
 import useSearchedUser from 'src/hooks/useSearchedUser'
+import { TYPE } from 'src/styles/theme'
+import styled from 'styled-components/macro'
 
 const USER_PACKS_BALANCES_QUERY = gql`
   query ($slug: String!) {

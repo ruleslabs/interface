@@ -1,17 +1,16 @@
 import { useCallback } from 'react'
-
 import { AppState } from 'src/state'
 import { useAppDispatch, useAppSelector } from 'src/state/hooks'
+
 import {
+  AuthMode,
+  refreshNewAuthUpdateLinkTime,
+  setAuthMode,
+  setTwoFactorAuthToken,
   updateEmailField,
+  updateFormCheckboxes,
   updatePasswordField,
   updateUsernameField,
-  setAuthMode,
-  refreshNewEmailVerificationCodeTime,
-  refreshNewAuthUpdateLinkTime,
-  updateFormCheckboxes,
-  setTwoFactorAuthToken,
-  AuthMode,
 } from './actions'
 
 export function useAuthMode(): AppState['auth']['authMode'] {
@@ -35,16 +34,6 @@ export function useTwoFactorAuthToken(): AppState['auth']['twoFactorAuthToken'] 
 export function useSetTwoFactorAuthToken(): (token: string) => void {
   const dispatch = useAppDispatch()
   return useCallback((token: string) => dispatch(setTwoFactorAuthToken({ token })), [dispatch])
-}
-
-// email verification code time
-export function useRefreshNewEmailVerificationCodeTime(): () => void {
-  const dispatch = useAppDispatch()
-  return useCallback(() => dispatch(refreshNewEmailVerificationCodeTime()), [dispatch])
-}
-
-export function useNewEmailVerificationCodeTime(): AppState['auth']['newEmailVerificationCodeTime'] {
-  return useAppSelector((state: AppState) => state.auth.newEmailVerificationCodeTime)
 }
 
 // Pasword update link time
