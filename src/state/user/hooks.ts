@@ -12,22 +12,9 @@ const SEARCH_USER_MUTATION = gql`
       id
       username
       slug
-      cScore
-      rank
-      badges {
-        type
-        level
-        quantity
-      }
       profile {
         pictureUrl(derivative: "width=320")
         fallbackUrl(derivative: "width=320")
-        certified
-        twitterUsername
-        instagramUsername
-        discordMember {
-          id
-        }
       }
       starknetWallet {
         address

@@ -14,7 +14,6 @@ import { useAvatarEditModalToggle } from 'src/state/application/hooks'
 import { useSearchUser } from 'src/state/user/hooks'
 import { TYPE } from 'src/styles/theme'
 import { Column, Row } from 'src/theme/components/Flex'
-import * as Icons from 'src/theme/components/Icons'
 import * as Text from 'src/theme/components/Text'
 import styled from 'styled-components/macro'
 
@@ -75,15 +74,6 @@ const AvatarEditButton = styled(RowCenter)`
 
   &:hover {
     opacity: 1;
-  }
-`
-
-const SocialLink = styled.a`
-  color: ${({ theme }) => theme.text1};
-
-  svg {
-    width: 24px;
-    height: 24px;
   }
 `
 
@@ -177,23 +167,7 @@ export default function ProfileLayout({ children }: { children: React.ReactEleme
             </Column>
           </UserWrapper>
 
-          <RowCenter gap={12}>
-            {user?.profile?.instagramUsername && (
-              <SocialLink target="_blank" href={`https://instagram.com/${user.profile.instagramUsername}`}>
-                <Icons.Instagram />
-              </SocialLink>
-            )}
-            {user?.profile?.twitterUsername && (
-              <SocialLink target="_blank" href={`https://twitter.com/${user.profile.twitterUsername}`}>
-                <Icons.Twitter />
-              </SocialLink>
-            )}
-            {user?.profile?.discordMember && (
-              <SocialLink target="_blank" href={`https://discordapp.com/users/${user?.profile?.discordMember.id}`}>
-                <Icons.Discord />
-              </SocialLink>
-            )}
-          </RowCenter>
+          <div />
         </Row>
       </Section>
 

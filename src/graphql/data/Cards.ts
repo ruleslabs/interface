@@ -26,9 +26,6 @@ gql`
           id
           slug
           serialNumber
-          listing {
-            price
-          }
           tokenId
           cardModel {
             slug
@@ -56,7 +53,6 @@ function formatCardQueryData({ node: queryCard }: NonNullable<CardsQuery['cards'
   return {
     slug: queryCard.slug,
     serialNumber: queryCard.serialNumber,
-    ask: queryCard.listing?.price,
     tokenId: queryCard.tokenId,
     cardModel: {
       slug: queryCard.cardModel.slug,

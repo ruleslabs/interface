@@ -3,7 +3,6 @@ import Avatar from 'src/components/Avatar'
 import Column from 'src/components/Column'
 import { RowCenter } from 'src/components/Row'
 import useCurrentUser from 'src/hooks/useCurrentUser'
-import useParsedCScore from 'src/hooks/useParsedCScore'
 import { TYPE } from 'src/styles/theme'
 import styled from 'styled-components/macro'
 
@@ -30,9 +29,6 @@ export default function NavProfile(props: React.HTMLAttributes<HTMLDivElement>) 
   // current user
   const { currentUser } = useCurrentUser()
 
-  // parsed cScore
-  const parsedCScore = useParsedCScore(currentUser?.cScore, { rounded: false })
-
   if (!currentUser) return null
 
   return (
@@ -41,7 +37,6 @@ export default function NavProfile(props: React.HTMLAttributes<HTMLDivElement>) 
 
       <Column gap={4}>
         <TYPE.body fontWeight={500}>{currentUser.username}</TYPE.body>
-        <TYPE.subtitle>{parsedCScore}</TYPE.subtitle>
       </Column>
     </ProfileRow>
   )

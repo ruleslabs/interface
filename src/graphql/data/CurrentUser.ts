@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 import { useCallback, useMemo } from 'react'
-import { GenieCurrentUser, GenieProfile } from 'src/types'
+import { GenieCurrentUser } from 'src/types'
 
 import { CurrentUser, useCurrentUserQuery } from './__generated__/types-and-hooks'
 
@@ -11,15 +11,7 @@ gql`
       username
       email
       slug
-      boughtStarterPack
-      cScore
-      rank
       unreadNotificationsCount
-      badges {
-        type
-        level
-        quantity
-      }
       retrievableEthers {
         amount
         l1Recipient
@@ -42,18 +34,6 @@ gql`
         pictureUrl(derivative: "width=320")
         customAvatarUrl(derivative: "width=320")
         fallbackUrl(derivative: "width=320")
-        twitterUsername
-        instagramUsername
-        isDiscordVisible
-        certified
-        admin
-        discordMember {
-          id
-          username
-          discriminator
-          avatarUrl(derivative: "width=320")
-          guildAvatarUrl(derivative: "width=320")
-        }
       }
     }
   }
@@ -67,34 +47,14 @@ function formatCurrentUserQueryData(queryCurrentUser: NonNullable<CurrentUser>):
 
   if (!queryStarknetWallet.rulesPrivateKey) throw 'No private key found on current user'
 
-  let discordMember: GenieProfile['discordMember']
-  if (queryProfile.discordMember) {
-    discordMember = {
-      username: queryProfile.discordMember.username ?? '',
-      discriminator: queryProfile.discordMember.discriminator ?? '',
-      avatarUrl: queryProfile.discordMember.guildAvatarUrl ?? queryProfile.discordMember.avatarUrl,
-      id: queryProfile.discordMember.id ?? '',
-    }
-  }
-
   return {
     id: queryCurrentUser.id,
     username: queryCurrentUser.username,
     slug: queryCurrentUser.slug,
     email: queryCurrentUser.email,
-    boughtStarterPack: queryCurrentUser.boughtStarterPack,
-    cScore: queryCurrentUser.cScore,
-    rank: queryCurrentUser.rank,
     unreadNotificationsCount: queryCurrentUser.unreadNotificationsCount,
     hasTwoFactorAuthActivated: queryCurrentUser.hasTwoFactorAuthActivated,
     retrievableEthers: queryCurrentUser.retrievableEthers,
-    admin: !!queryCurrentUser.profile.admin,
-
-    badges: queryCurrentUser.badges.map(({ level, quantity, type }) => ({
-      level,
-      type,
-      quantity: quantity ?? 1,
-    })),
 
     starknetWallet: {
       address: queryStarknetWallet.address,
@@ -106,19 +66,14 @@ function formatCurrentUserQueryData(queryCurrentUser: NonNullable<CurrentUser>):
       currentPublicKey: queryStarknetWallet.currentPublicKey,
       currentOldPublicKey: queryStarknetWallet.currentOldPublicKey,
 
-      maintenance: queryStarknetWallet.maintenance,
       needsUpgrade: false,
+      maintenance: false,
     },
 
     profile: {
       pictureUrl: queryProfile.pictureUrl,
       customAvatarUrl: queryProfile.customAvatarUrl,
       fallbackUrl: queryProfile.fallbackUrl,
-      twitterUsername: queryProfile.twitterUsername,
-      instagramUsername: queryProfile.instagramUsername,
-      isDiscordVisible: queryProfile.isDiscordVisible,
-      certified: queryProfile.certified,
-      discordMember,
     },
   }
 }

@@ -20,48 +20,10 @@ gql`
 `
 
 gql`
-  mutation PrepareSignUp($email: String!, $username: String!, $recaptchaTokenV2: String!) {
-    prepareSignUp(input: { email: $email, username: $username, recaptchaTokenV2: $recaptchaTokenV2 })
-  }
-`
-
-gql`
   mutation SignIn($email: String!, $password: String!) {
     signIn(input: { email: $email, password: $password }) {
       accessToken
       twoFactorAuthToken
-    }
-  }
-`
-
-gql`
-  mutation SignUp(
-    $email: String!
-    $username: String!
-    $password: String!
-    $walletPublicKey: String!
-    $walletAddress: String!
-    $rulesPrivateKey: RulesPrivateKeyAttributes!
-    $emailVerificationCode: String!
-    $acceptCommercialEmails: Boolean!
-    $newcomer: Boolean!
-    $referentSlug: String
-  ) {
-    signUp(
-      input: {
-        email: $email
-        username: $username
-        password: $password
-        walletPublicKey: $walletPublicKey
-        walletAddress: $walletAddress
-        rulesPrivateKey: $rulesPrivateKey
-        emailVerificationCode: $emailVerificationCode
-        acceptCommercialEmails: $acceptCommercialEmails
-        newcomer: $newcomer
-        referentSlug: $referentSlug
-      }
-    ) {
-      accessToken
     }
   }
 `
