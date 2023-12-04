@@ -4,7 +4,6 @@ import { Trans } from '@lingui/macro'
 import moment from 'moment'
 import { useMemo } from 'react'
 import { ColumnCenter } from 'src/components/Column'
-import Link from 'src/components/Link'
 import { useActiveLocale } from 'src/hooks/useActiveLocale'
 import { TYPE } from 'src/styles/theme'
 import Image from 'src/theme/components/Image'
@@ -86,14 +85,12 @@ interface PackProps {
 }
 
 export default function Pack({
-  slug,
   name,
   releaseDate,
   pictureUrl,
   soldout = false,
   width,
   state = 'delivered',
-  isOwner = false,
 }: PackProps) {
   const locale = useActiveLocale()
 
@@ -107,36 +104,29 @@ export default function Pack({
     return lowerCasedDate.charAt(0).toUpperCase() + lowerCasedDate.slice(1)
   }, [releaseDate, locale])
 
-  const packLink = useMemo(
-    () => (isOwner && state === 'delivered' ? `/pack/${slug}/open` : `/pack/${slug}`),
-    [state, slug, isOwner]
-  )
-
   const disabled = useMemo(() => state === 'inDelivery' || state === 'opened', [state])
 
   return (
-    <Link href={packLink}>
-      <StyledPack width={width} disabled={disabled}>
-        <ImageWrapper>
-          <Image src={pictureUrl} width="full" />
-          {state === 'inDelivery' && <InDelivery src={`/assets/inDelivery.${locale}.png`} />}
-          {soldout && <Soldout src="/assets/soldout.png" />}
-        </ImageWrapper>
+    <StyledPack width={width} disabled={disabled}>
+      <ImageWrapper>
+        <Image src={pictureUrl} width="full" />
+        {state === 'inDelivery' && <InDelivery src={`/assets/inDelivery.${locale}.png`} />}
+        {soldout && <Soldout src="/assets/soldout.png" />}
+      </ImageWrapper>
 
-        {name && (
-          <PackInfos>
-            <TYPE.body textAlign="center" fontWeight={500}>
-              {name}
-            </TYPE.body>
+      {name && (
+        <PackInfos>
+          <TYPE.body textAlign="center" fontWeight={500}>
+            {name}
+          </TYPE.body>
 
-            {releaseDateFormatted && (
-              <TYPE.subtitle textAlign="center">
-                <Trans>Edited in {releaseDateFormatted}</Trans>
-              </TYPE.subtitle>
-            )}
-          </PackInfos>
-        )}
-      </StyledPack>
-    </Link>
+          {releaseDateFormatted && (
+            <TYPE.subtitle textAlign="center">
+              <Trans>Edited in {releaseDateFormatted}</Trans>
+            </TYPE.subtitle>
+          )}
+        </PackInfos>
+      )}
+    </StyledPack>
   )
 }

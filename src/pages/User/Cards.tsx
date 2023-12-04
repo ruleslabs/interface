@@ -216,7 +216,6 @@ function UserCards() {
             scarcity: card.cardModel.scarcityName,
           }}
           display={{
-            href: `/card/${card.cardModel.slug}/${card.serialNumber}`,
             primaryInfo: card.cardModel.artistName,
             secondaryInfo: `#${card.serialNumber}`,
             subtitle: parsedPrice
