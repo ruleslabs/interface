@@ -69,6 +69,38 @@ export function useETHBalance(address?: string): WeiAmount | undefined {
   return balances?.[address]
 }
 
+function useSTRKBalances(...addresses: (string | undefined)[]): { [address: string]: WeiAmount | undefined } {
+  const results = useMultipleContractSingleData(
+    [constants.STRK_ADDRESSES[rulesSdk.networkInfos.starknetChainId]],
+    ERC20ABI as Abi,
+    'balanceOf',
+    { address: addresses[0] } // TODO use the right hook ^^
+  )
+
+  return useMemo(() => {
+    return addresses.reduce<{ [address: string]: WeiAmount | undefined }>(
+      (acc, address: string | undefined, index: number) => {
+        const balance = results[index]?.result?.balance as any // as any... We'll do better later é_è
+        if (!balance?.low || !balance?.high || !address) {
+          return acc
+        }
+
+        const amount = uint256.uint256ToBN(balance)
+        acc[address] = WeiAmount.fromRawAmount(num.toHex(amount))
+        return acc
+      },
+      {}
+    )
+  }, [results, addresses])
+}
+
+export function useSTRKBalance(address?: string): WeiAmount | undefined {
+  const balances = useSTRKBalances(address)
+  if (!address) return
+
+  return balances?.[address]
+}
+
 /**
  * Is deployed
  */

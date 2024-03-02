@@ -139,6 +139,8 @@ export default function StarkgateDeposit() {
                 placeholder="0.0"
                 onUserInput={handleDepositAmountUpdate}
                 balance={balance}
+                currency={'ETH'}
+								onCurrencyChange={() => {}}
               />
 
               <ArrowWrapper>

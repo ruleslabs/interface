@@ -83,7 +83,7 @@ export default function StarkgateWithdraw() {
         calldata: [l1Account, amount, 0],
       },
     ])
-    increaseTxValue(parsedWithdrawAmount)
+    increaseTxValue('ETH', parsedWithdrawAmount)
     setSigning(true)
   }, [parsedWithdrawAmount, l1Account, setSigning, increaseTxValue, setCalls])
 
@@ -115,6 +115,8 @@ export default function StarkgateWithdraw() {
                 placeholder="0.0"
                 onUserInput={handleWithdrawAmountUpdate}
                 balance={balance}
+								currency={'ETH'}
+								onCurrencyChange={() => {}}
               />
 
               <ArrowWrapper>

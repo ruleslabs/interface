@@ -33,6 +33,7 @@ const stxActionDesc: { [id in StxAction]: MessageDescriptor } = {
   offerCreation: msg`Sale listing...`,
   walletDeployment: msg`Wallet deployment...`,
   ethTransfer: msg`ETH transfer...`,
+  strkTransfer: msg`STRK transfer...`,
   packTransfer: msg`Pack transfer...`,
 }
 
@@ -43,6 +44,7 @@ const stxActionConfirm: { [id in StxAction]: MessageDescriptor } = {
   offerCreation: msg`Confirm offer creation`,
   walletDeployment: msg`Confirm deployment`,
   ethTransfer: msg`Confrim transfer`,
+  strkTransfer: msg`Confrim transfer`,
   packTransfer: msg`Confrim transfer`,
 }
 
@@ -53,6 +55,7 @@ const stxActionSuccess: { [id in StxAction]: MessageDescriptor } = {
   offerCreation: msg`Your card has been listed on the marketplace.`,
   walletDeployment: msg`Your wallet deployment is on its way !`,
   ethTransfer: msg`Your ETH is on its way !`,
+  strkTransfer: msg`Your STRK is on its way !`,
   packTransfer: msg`Your pack is on its way !`,
 }
 

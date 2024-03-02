@@ -8,6 +8,7 @@ export interface ParsedNetworkFee {
 
 export type StxAction =
   | 'ethTransfer'
+  | 'strkTransfer'
   | 'packTransfer'
   | 'transfer'
   | 'offerCreation'
