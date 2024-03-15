@@ -188,7 +188,20 @@ export default function StarknetSigner({
                 </FeeWrapper>
               </Column>
 
-              {parsedTotalCost && !txValue.isNull() && (
+							{!txValue['STRK'].isNull() &&  (
+                <FeeWrapper>
+                  <TYPE.body fontWeight={700}>
+                    <Trans>Tokens</Trans>
+                  </TYPE.body>
+                  <Column gap={8} alignItems="end">
+                    <TYPE.body>
+										{txValue['STRK'].toSignificant(4)} STRK
+                    </TYPE.body>
+                  </Column>
+                </FeeWrapper>
+              )}
+
+              {parsedTotalCost && !(txValue['ETH'].isNull() && txValue['STRK'].isNull()) && (
                 <FeeWrapper>
                   <TYPE.body fontWeight={700}>
                     <Trans>Total</Trans>

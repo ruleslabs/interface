@@ -11,7 +11,7 @@ interface State {
   stxCalls: Call[]
   stxMessages: string[]
   stxAccountDeploymentPayload: DeployAccountContractPayload | null
-  stxValue: WeiAmount
+  stxValue: {'ETH': WeiAmount, 'STRK': WeiAmount}
   stxSigning: boolean
   stxHash: string | null
   stxMigration: boolean
@@ -31,7 +31,7 @@ interface Actions {
 
   stxResetStarknetTx: () => void
 
-  stxIncreaseValue: (amount: WeiAmount) => void
+  stxIncreaseValue: (currency: 'ETH'|'STRK', amount: WeiAmount) => void
 
   stxSetHash: (hash: string | null, action?: string | null) => void
 
@@ -44,7 +44,7 @@ const resetState = {
   stxCalls: [],
   stxMessages: [],
   stxAccountDeploymentPayload: null,
-  stxValue: WeiAmount.ZERO,
+  stxValue: {'ETH': WeiAmount.ZERO, 'STRK': WeiAmount.ZERO},
   stxSigning: false,
   stxMigration: false,
   stxBeforeExecutionCallback: null,
@@ -84,9 +84,9 @@ export const createStarknetTxSlice: StateCreator<StoreState, [['zustand/immer', 
 
   // TX VALUE
 
-  stxIncreaseValue: (amount) =>
+  stxIncreaseValue: (currency, amount) =>
     set((state) => {
-      state.stxValue = state.stxValue.add(amount)
+      state.stxValue[currency] = state.stxValue[currency].add(amount);
     }),
 
   // SIGNING

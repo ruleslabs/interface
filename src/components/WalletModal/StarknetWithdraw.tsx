@@ -14,7 +14,7 @@ import { ReactComponent as Arrow } from 'src/images/arrow.svg'
 import { rulesSdk } from 'src/lib/rulesWallet/rulesSdk'
 import { ApplicationModal } from 'src/state/application/actions'
 import { useModalOpened } from 'src/state/application/hooks'
-import { useETHBalance } from 'src/state/wallet/hooks'
+import { useETHBalance, useSTRKBalance } from 'src/state/wallet/hooks'
 import tryParseWeiAmount from 'src/utils/tryParseWeiAmount'
 import styled from 'styled-components/macro'
 
@@ -39,7 +39,12 @@ const ArrowWrapper = styled(Column)`
   }
 `
 
+function isEthCurrency(currency: 'ETH'|'STRK') {
+	return currency === 'ETH';
+}
+
 export default function StarknetWithdraw() {
+  const [withdrawCurrency, setWithdrawCurrency] = useState<'ETH'|'STRK'>('ETH')
   const [withdrawAmount, setWithdrawAmount] = useState('')
 
   // current user
@@ -53,7 +58,7 @@ export default function StarknetWithdraw() {
 
   // balance
   const address = currentUser?.starknetWallet.address ?? ''
-  const balance = useETHBalance(address)
+  const balance = isEthCurrency(withdrawCurrency) ? useETHBalance(address) : useSTRKBalance(address);
 
   // withdraw
   const handleWithdrawAmountUpdate = useCallback((value: string) => setWithdrawAmount(value), [setWithdrawAmount])
@@ -64,19 +69,19 @@ export default function StarknetWithdraw() {
 
   // call
   const handleConfirmation = useCallback(() => {
-    const ethAddress = constants.ETH_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
-    if (!parsedWithdrawAmount || !l2Address || !ethAddress) return
+    const tokenAddress = isEthCurrency(withdrawCurrency) ? constants.ETH_ADDRESSES[rulesSdk.networkInfos.starknetChainId] : constants.STRK_ADDRESSES[rulesSdk.networkInfos.starknetChainId]
+    if (!parsedWithdrawAmount || !l2Address || !tokenAddress) return
 
     const amount = parsedWithdrawAmount.quotient.toString()
 
     setCalls([
       {
-        contractAddress: ethAddress,
+        contractAddress: tokenAddress,
         entrypoint: 'transfer',
         calldata: [l2Address, amount, 0],
       },
     ])
-    increaseTxValue(parsedWithdrawAmount)
+    increaseTxValue(isEthCurrency(withdrawCurrency) ? 'ETH' : 'STRK', parsedWithdrawAmount)
     setSigning(true)
   }, [parsedWithdrawAmount, l2Address, setSigning, increaseTxValue, setCalls])
 
@@ -92,7 +97,7 @@ export default function StarknetWithdraw() {
 
   return (
     <ModalBody>
-      <StarknetSigner action="ethTransfer">
+      <StarknetSigner action={isEthCurrency(withdrawCurrency) ? 'ethTransfer' : 'strkTransfer'}>
         <StarknetStatus>
           <Column gap={32}>
             <Column>
@@ -101,6 +106,8 @@ export default function StarknetWithdraw() {
                 placeholder="0.0"
                 onUserInput={handleWithdrawAmountUpdate}
                 balance={balance}
+								currency={withdrawCurrency}
+								onCurrencyChange={() => {setWithdrawCurrency(isEthCurrency(withdrawCurrency) ? 'STRK' : 'ETH')}}
               />
 
               <ArrowWrapper>
@@ -114,7 +121,7 @@ export default function StarknetWithdraw() {
               {!+withdrawAmount || !parsedWithdrawAmount ? (
                 <Trans>Enter an amount</Trans>
               ) : balance?.lessThan(parsedWithdrawAmount) ? (
-                <Trans>Insufficient ETH balance</Trans>
+                <Trans>Insufficient {withdrawCurrency} balance</Trans>
               ) : (
                 <Trans>Next</Trans>
               )}

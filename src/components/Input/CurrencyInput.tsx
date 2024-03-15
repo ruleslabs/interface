@@ -4,6 +4,7 @@ import React, { useCallback, useRef } from 'react'
 import Column from 'src/components/Column'
 import Row, { RowCenter } from 'src/components/Row'
 import { ReactComponent as EthereumIcon } from 'src/images/ethereum.svg'
+import { ReactComponent as StarknetTokenIcon } from 'src/images/starknetToken.svg'
 import { TYPE } from 'src/styles/theme'
 import styled from 'styled-components/macro'
 
@@ -59,16 +60,19 @@ const Currency = styled(RowCenter)`
   border-radius: 6px;
 
   svg {
-    width: 20px;
+		width: auto;
+    height: 24px;
   }
 `
 
 interface CurrencyInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onUserInput: (value: string) => void
   balance?: WeiAmount
+  currency: "ETH"|"STRK"
+  onCurrencyChange: () => void
 }
 
-export default function CurrencyInput({ onUserInput, balance, ...props }: CurrencyInputProps) {
+export default function CurrencyInput({ onUserInput, balance, currency, onCurrencyChange, ...props }: CurrencyInputProps) {
   const handleInput = useCallback(
     (event) => {
       const value = event?.target?.value?.replace(',', '.')
@@ -86,9 +90,9 @@ export default function CurrencyInput({ onUserInput, balance, ...props }: Curren
     <StyledCurrencyInput onClick={setInputFocus}>
       <Row gap={8}>
         <Input onChange={handleInput} ref={inputRef} {...props} />
-        <Currency>
-          <EthereumIcon />
-          <TYPE.body>ETH</TYPE.body>
+        <Currency onClick={onCurrencyChange}>
+					{currency === 'ETH' ? (<EthereumIcon />) : (<StarknetTokenIcon />)}
+          <TYPE.body>{currency}</TYPE.body>
         </Currency>
       </Row>
       <TYPE.subtitle textAlign="right">

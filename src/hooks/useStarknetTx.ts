@@ -71,8 +71,8 @@ export function useEstimateFees() {
     if (!parsedNetworkFee) return null
 
     return {
-      cost: txValue.add(parsedNetworkFee.fee),
-      maxCost: txValue.add(parsedNetworkFee.maxFee),
+      cost: txValue['ETH'].add(parsedNetworkFee.fee),
+      maxCost: txValue['ETH'].add(parsedNetworkFee.maxFee),
     }
   }, [txValue, parsedNetworkFee?.maxFee])
 

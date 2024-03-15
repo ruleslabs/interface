@@ -1049,6 +1049,10 @@ msgid "Your {withdrawAmount} ETH withdraw is on its way"
 msgstr "Ton retrait de {withdrawAmount} ETH est en route"
 
 #: src/components/WithdrawModal/index.tsx
+msgid "Your {withdrawAmount} STRK withdraw is on its way"
+msgstr "Ton retrait de {withdrawAmount} STRK est en route"
+
+#: src/components/WithdrawModal/index.tsx
 msgid "Deposit ETH from your Ethereum wallet"
 msgstr "Dépose de l'ETH depuis ton portefeuille Ethereum"
 
@@ -1595,8 +1599,16 @@ msgid "ETH transfer..."
 msgstr "Transfert d'ETH..."
 
 #: src/hooks/useTrans.ts
+msgid "STRK transfer..."
+msgstr "Transfert de STRK..."
+
+#: src/hooks/useTrans.ts
 msgid "Your ETH is on its way !"
 msgstr "Ton ETH est en route !"
+
+#: src/hooks/useTrans.ts
+msgid "Your STRK is on its way !"
+msgstr "Ton STRK est en route !"
 
 #: src/hooks/useTrans.ts
 msgid "Your card is on its way !"
