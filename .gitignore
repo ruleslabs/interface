@@ -38,3 +38,5 @@ node_modules/
 # generated graphql types
 /src/graphql/**/__generated__
 schema.graphql
+
+.env
